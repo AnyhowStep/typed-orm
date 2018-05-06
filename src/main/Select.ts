@@ -1,5 +1,5 @@
 import * as sd from "schema-decorator";
-import {Table, Column, ColumnCollection, AnyColumn, AliasedTable, AnyAliasedTable} from "./Table";
+import {Table, Column, ColumnCollection, AnyColumn, AliasedTable, AnyAliasedTable, TypeOf} from "./Table";
 import {AnyTable} from "./AnyTable";
 
 
@@ -143,28 +143,136 @@ const appKey = new Table(
     {
         appId : sd.stringToNumber(),
         appKeyId : sd.string(),
-        appKeyTypeId : sd.string(),
+        appKeyTypeId : sd.number(),
         key : sd.string(),
     },
     ["appKeyId"],
     "appKeyId"
+);
+const appKeyType = new Table(
+    "appKeyType",
+    {
+        appKeyTypeId : sd.string(),
+        internalName : sd.string(),
+    },
+    ["appKeyTypeId"],
+    "appKeyTypeId"
 );
 
 
 const app3 = alias(app, "app3");
 declare const errer : TableAlias<typeof app3>;
 declare const errer2 : TableAlias<typeof app>;
-const s = selectFrom(app3)
+let s = selectFrom(app);
 const ssoClientAlias = alias(ssoClient, "ssoClient");
 
-const j = join(s, ssoClientAlias, [
-    s.app3.columns.ssoClientId
+let s1 = join(s, ssoClientAlias, [
+    s.app.columns.ssoClientId
 ], [
     ssoClientAlias.columns.ssoClientId
 ]);
 
-const j2 = join(j, appKey, [
-    app3.columns.appId
+let s2 = join(s1, appKey, [
+    app.columns.appId
 ], [
     appKey.columns.appId
 ]);
+
+type Expr<RequiredSelectT, T> = {req : RequiredSelectT, t : T, query : string,}
+
+declare function where<ExprT extends Expr<any, boolean>, SelectT extends {}> (
+    select : SelectT,
+    expr : ExprT,
+
+) :
+ExprT extends Expr<infer Required, boolean> ?
+    SelectT extends Required ?
+        {
+            select : SelectT,
+            expr : ExprT
+        }
+        : "Some columns in expression are not in FROM or JOIN clause"|void
+    : "Invalid expression"|void;
+
+declare function gt<ColumnT extends Column<any, any, any>> (
+    a : ColumnT,
+    b : number
+) : Expr<{
+    [table in (ColumnT extends Column<infer Table, any, any> ? Table : never)] : {
+        columns : {
+            [column in (ColumnT extends Column<any, infer Column, any> ? Column : never)] : ColumnT
+        }
+
+    }
+}, boolean>;
+const expr = gt(s2.appKey.columns.appId, 3);
+const w = where(s2, expr);
+
+type FetchColumn<ColumnT extends Column<any, any, any>|AliasedTable<any, any, {}>> = (
+    ColumnT extends Column<infer TableName, infer Name, infer T> ?
+    { [table in TableName] : { [name in Name] : T } } :
+    ColumnT extends AliasedTable<infer AliasT, any, infer Columns> ?
+    {
+        [table in AliasT] : {
+            [name in keyof Columns] : TypeOf<Columns[name]>
+        }
+    }:
+    never
+);
+type FetchResult<ColumnsT extends (Column<any, any, any>|AliasedTable<any, any, {}>)[] & { "0": (Column<any, any, any>|AliasedTable<any, any, {}>) }> = (
+    ColumnsT extends { "1": (Column<any, any, any>|AliasedTable<any, any, {}>) } ?
+    FetchColumn<ColumnsT[0]> & FetchColumn<ColumnsT[1]> :
+    ColumnsT extends { "0": (Column<any, any, any>|AliasedTable<any, any, {}>) } ?
+    FetchColumn<ColumnsT[0]> :
+    never
+);
+type MaxFetchResult<SelectT extends {
+    [alias : string] : AliasedTable<any, any, any>
+}> = (
+    {
+        [alias in keyof SelectT] : {
+            [name in keyof SelectT[alias]["columns"]] : TypeOf<SelectT[alias]["columns"][name]>
+        }
+    }
+);
+
+declare function columns<
+    SelectT extends {},
+    ColumnsT extends (Column<any, any, any>|AliasedTable<any, any, {}>)[] & { "0": (Column<any, any, any>|AliasedTable<any, any, {}>) }
+> (
+    columns : ColumnsT,
+    w : {
+        select : SelectT,
+        expr : Expr<any, boolean>
+    }
+) :
+MaxFetchResult<SelectT> extends FetchResult<ColumnsT> ?
+{
+    result : FetchResult<ColumnsT>
+} :
+never;
+const c = columns(
+    [
+        appKeyType.columns.internalName,//w.select.app,
+        w.select.appKey
+    ],
+    w
+)
+declare function get<
+    SelectT extends {},
+    ColumnT extends Column<any, any, any>
+> (
+    column : ColumnT,
+    w : {
+        select : SelectT,
+        expr : Expr<any, boolean>
+    }
+) :
+MaxFetchResult<SelectT> extends FetchResult<[ColumnT]> ?
+{
+    result : TypeOf<ColumnT>
+} :
+never;
+const g = get(w.select.app.columns.appId, w);
+c.result.app
+g.result
