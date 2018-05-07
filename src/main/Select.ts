@@ -112,6 +112,21 @@ declare function join<
             } :
             FromColumns<SelectT, ColumnsT>
 );
+declare function subSelect<
+    SelectT extends {
+        [alias : string] : AliasedTable<any, any, {}>
+    },
+    TableT extends AnyTable|AnyAliasedTable
+> (
+    select : SelectT,
+    table  : TableT
+) : (
+    TableAlias<TableT> extends keyof SelectT ?
+        ("Duplicate alias" & TableAlias<TableT>) :
+        SelectT & {
+            [alias in TableAlias<TableT>] : AliasedTable<alias, TableName<TableT>, TableFields<TableT>>
+        }
+);
 
 const ssoClient = new Table(
     "ssoClient",
@@ -182,7 +197,7 @@ type Expr<RequiredSelectT, T> = {req : RequiredSelectT, t : T, query : string,}
 
 declare function where<ExprT extends Expr<any, boolean>, SelectT extends {}> (
     select : SelectT,
-    expr : ExprT,
+    cb : (select : SelectT) => ExprT,
 
 ) :
 ExprT extends Expr<infer Required, boolean> ?
@@ -276,3 +291,117 @@ never;
 const g = get(w.select.app.columns.appId, w);
 c.result.app
 g.result
+
+declare function all<
+    SelectT extends {}
+> (
+    w : {
+        select : SelectT,
+        expr : Expr<any, boolean>
+    }
+) :
+{
+    result : MaxFetchResult<SelectT>
+};
+const a = all(w);
+
+declare function exists<SelectT extends {}> (
+    w : {
+        select : SelectT,
+        expr : Expr<any, boolean>
+    }
+) : Expr<{}, boolean>;
+declare function subwhere<SelectT extends {}> (callback : (s : SelectT) => Expr<{}, boolean>) : Expr<{}, boolean>;
+
+declare function columns<
+    SelectT extends {},
+    ColumnsT extends (Column<any, any, any>|AliasedTable<any, any, {}>)[] & { "0": (Column<any, any, any>|AliasedTable<any, any, {}>) }
+> (
+    columns : ColumnsT,
+    w : {
+        select : SelectT,
+        expr : Expr<any, boolean>
+    }
+) :
+MaxFetchResult<SelectT> extends FetchResult<ColumnsT> ?
+{
+    result : FetchResult<ColumnsT>
+} :
+never;
+declare function where<ExprT extends Expr<any, boolean>, SelectT extends {}> (
+    select : SelectT,
+    cb : (select : SelectT) => ExprT,
+
+) :
+ExprT extends Expr<infer Required, boolean> ?
+    SelectT extends Required ?
+        {
+            select : SelectT,
+            expr : ExprT
+        }
+        : "Some columns in expression are not in FROM or JOIN clause"|void
+    : "Invalid expression"|void;
+declare function selectV2<
+    ColumnsT extends (Column<any, any, any>|AliasedTable<any, any, {}>)[] & { "0": (Column<any, any, any>|AliasedTable<any, any, {}>) },
+    SelectT extends {},
+    ExprT extends Expr<any, boolean>
+> (
+    columns : ColumnsT,
+    select : SelectT,
+    cb : (select : SelectT) => ExprT
+) :
+MaxFetchResult<SelectT> extends FetchResult<ColumnsT> ?
+    ExprT extends Expr<infer Required, boolean> ?
+        SelectT extends Required ?
+            {
+                result : FetchResult<ColumnsT>
+            }
+            : "Some columns in expression are not in FROM or JOIN clause"|void
+        : "Invalid expression"|void
+    : never;
+
+columns(
+    [
+        app.columns.ssoClientId
+    ],
+    where(
+        selectFrom(app),
+        (s) => {
+            return exists(
+                where(
+                    subSelect(s, appKey),
+                    () => {
+                        return gt(appKey.columns.appId, 2);
+                    }
+                )
+            );
+        }
+    )
+)
+all(
+    where(
+        selectFrom(appKey),
+        () => {
+            //Error because we only selected from appKey
+            //but are trying to use app.apId
+            return gt(app.columns.appId, 2)
+        }
+    )
+)
+
+selectV2(
+    [
+        app.columns.ssoClientId
+    ],
+    selectFrom(app),
+    (s) => {
+        return exists(
+            where(
+                subSelect(s, appKey),
+                () => {
+                    return gt(app.columns.appId, 2);
+                }
+            )
+        );
+    }
+)
