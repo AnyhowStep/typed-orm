@@ -193,7 +193,15 @@ let s2 = join(s1, appKey, [
     appKey.columns.appId
 ]);
 
-type Expr<RequiredSelectT, T> = {req : RequiredSelectT, t : T, query : string,}
+interface DerivedColumn<RequiredSelectT extends { [str : string] : { columns : {[str : string] : Column<any, any, {}> }} }, TableT extends string, NameT extends string, T> extends Column<TableT, NameT, T> {
+    req : RequiredSelectT,
+}
+type Expr<RequiredSelectT extends { [str : string] : { columns : {[str : string] : Column<any, any, {}> }} }, T> = {
+    req : RequiredSelectT,
+    t : T,
+    query : string,
+    as : <NameT extends string>(name : NameT) => DerivedColumn<RequiredSelectT, "__derived", NameT, T>
+}
 
 declare function where<ExprT extends Expr<any, boolean>, SelectT extends {}> (
     select : SelectT,
@@ -220,10 +228,37 @@ declare function gt<ColumnT extends Column<any, any, any>> (
 
     }
 }, boolean>;
+declare function max<ColumnT extends Column<any, any, any>> (
+    col : ColumnT
+) : Expr<{
+    [table in (ColumnT extends Column<infer Table, any, any> ? Table : never)] : {
+        columns : {
+            [column in (ColumnT extends Column<any, infer Column, any> ? Column : never)] : ColumnT
+        }
+
+    }
+}, TypeOf<ColumnT>>;
 const expr = gt(s2.appKey.columns.appId, 3);
-const w = where(s2, expr);
+const w = where(s2, ()=>expr);
 
 type FetchColumn<ColumnT extends Column<any, any, any>|AliasedTable<any, any, {}>> = (
+    ColumnT extends Column<infer TableName, infer Name, infer T> ?
+    { [table in TableName] : { [name in Name] : T } } :
+    ColumnT extends AliasedTable<infer AliasT, any, infer Columns> ?
+    {
+        [table in AliasT] : {
+            [name in keyof Columns] : TypeOf<Columns[name]>
+        }
+    }:
+    never
+);
+type UsesColumn<ColumnT extends Column<any, any, any>|AliasedTable<any, any, {}>> = (
+    ColumnT extends DerivedColumn<infer RequiredT, infer TableName, infer Name, infer T> ?
+    {
+        [table in keyof RequiredT] : {
+            [name in keyof RequiredT[table]["columns"]] : TypeOf<RequiredT[table]["columns"][name]>
+        }
+    } :
     ColumnT extends Column<infer TableName, infer Name, infer T> ?
     { [table in TableName] : { [name in Name] : T } } :
     ColumnT extends AliasedTable<infer AliasT, any, infer Columns> ?
@@ -239,6 +274,13 @@ type FetchResult<ColumnsT extends (Column<any, any, any>|AliasedTable<any, any, 
     FetchColumn<ColumnsT[0]> & FetchColumn<ColumnsT[1]> :
     ColumnsT extends { "0": (Column<any, any, any>|AliasedTable<any, any, {}>) } ?
     FetchColumn<ColumnsT[0]> :
+    never
+);
+type UsesResult<ColumnsT extends (Column<any, any, any>|AliasedTable<any, any, {}>)[] & { "0": (Column<any, any, any>|AliasedTable<any, any, {}>) }> = (
+    ColumnsT extends { "1": (Column<any, any, any>|AliasedTable<any, any, {}>) } ?
+    UsesColumn<ColumnsT[0]> & UsesColumn<ColumnsT[1]> :
+    ColumnsT extends { "0": (Column<any, any, any>|AliasedTable<any, any, {}>) } ?
+    UsesColumn<ColumnsT[0]> :
     never
 );
 type MaxFetchResult<SelectT extends {
@@ -350,7 +392,7 @@ declare function selectV2<
     select : SelectT,
     cb : (select : SelectT) => ExprT
 ) :
-MaxFetchResult<SelectT> extends FetchResult<ColumnsT> ?
+MaxFetchResult<SelectT> extends UsesResult<ColumnsT> ?
     ExprT extends Expr<infer Required, boolean> ?
         SelectT extends Required ?
             {
@@ -394,14 +436,24 @@ selectV2(
         app.columns.ssoClientId
     ],
     selectFrom(app),
-    (s) => {
-        return exists(
-            where(
-                subSelect(s, appKey),
-                () => {
-                    return gt(app.columns.appId, 2);
-                }
-            )
-        );
-    }
+    (s) => exists(
+        where(
+            subSelect(s, appKey),
+            () => gt(app.columns.appId, 2)
+        )
+    )
+)
+
+const r = selectV2(
+    [
+        app.columns.ssoClientId,
+        max(app.columns.ssoClientId).as("latest")
+    ],
+    selectFrom(app),
+    (s) => exists(
+        where(
+            subSelect(s, appKey),
+            () => gt(app.columns.appId, 2)
+        )
+    )
 )
