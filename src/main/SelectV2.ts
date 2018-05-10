@@ -933,7 +933,25 @@ const f = db.from(app)
         [app.columns.appId]
     )
 
+const sub = db.select([ssoClient.columns.name])
+    .from(ssoClient)
+    .where((s) => {
+        return eq(
+            columnExpr(ssoClient.columns.ssoClientId),
+            columnExpr(app.columns.ssoClientId)
+        )
+    })
 const result = db.select([
+    /*
+        (
+            SELECT
+                name
+            FROM
+                ssoClient
+            WHERE
+                app.ssoClientId = ssoClient.ssoClientId
+        ) AS ssoClientName,
+    */
     app.columns.appId,//constTrue().as("test"),
 ]).from(app)
 //.join(appKey, [app.columns.appId])
@@ -953,11 +971,98 @@ const result = db.select([
     return eq(
         selectExpr(s.select([ssoClient.columns.name])
             .from(ssoClient)
-            .where((_s) => {
-                return eq(columnExpr(ssoClient.columns.name), columnExpr(app.columns.name));
+            .where(() => {
+                return eq(
+                    columnExpr(ssoClient.columns.name),
+                    columnExpr(app.columns.name)
+                );
             })),
         constStr("teset")
     );
     //return gt(columnExpr(app.columns.ssoClientId), constNum(2));
 })
 //.join(ssoClient, [app.columns.name], [ssoClient.columns.authenticationEndpoint]);
+
+declare function select<
+    SelectExprListT extends Tuple<InSelectExpr>,
+    SelectBuilderT extends SelectBuilder<
+        any,
+        any,
+        boolean,
+        any,
+
+        true,
+        any,
+        boolean,
+
+        any,
+        any,
+        any,
+        any,
+        any
+    >
+> (
+    sel : (selectBuilder : SelectBuilderT) => SelectExprListT,
+    selectBuilder : SelectBuilderT
+) : (
+    SelectBuilderT extends SelectBuilder<
+        any,
+        any,
+        boolean,
+        any,
+
+        true,
+        infer TableReferencesT,
+        boolean,
+
+        any,
+        any,
+        any,
+        any,
+        any
+    > ?
+        SelectBuilder<
+            RequiredColumnReferences<SelectExprListT>,
+            OutputColumnReferences<SelectExprListT>,
+            IsSingletonTuple<SelectExprListT>,
+            (
+                SelectExprListT extends {"1":any} ?
+                never :
+                SelectExprListT[0] extends Column<any, any, infer TypeT> ?
+                TypeT :
+                SelectExprListT[0] extends SelectColumnExpr<any, infer TypeT, any, any, any> ?
+                TypeT :
+                never
+            ),
+
+            true,
+            TableReferencesT,
+            (TableReferencesT extends RequiredColumnReferences<SelectExprListT> ? true : false)
+        > :
+        never
+);
+select(
+    //select [DISTINCT]
+    (s) => {
+        return [
+            app.columns.name
+        ]
+    },
+    result
+    //from
+    //join
+    //where
+)
+//group by
+//having
+//order by
+//limit
+//UNION SELECT ?
+/*
+    //And the column count, data types must match, names don't need to
+    .union(
+        select(
+
+        )
+    )
+*/
