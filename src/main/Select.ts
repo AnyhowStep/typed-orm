@@ -196,11 +196,12 @@ let s2 = join(s1, appKey, [
 interface DerivedColumn<RequiredSelectT extends { [str : string] : { columns : {[str : string] : Column<any, any, {}> }} }, TableT extends string, NameT extends string, T> extends Column<TableT, NameT, T> {
     req : RequiredSelectT,
 }
-type Expr<RequiredSelectT extends { [str : string] : { columns : {[str : string] : Column<any, any, {}> }} }, T> = {
+type Expr<RequiredSelectT extends { [str : string] : { columns : {[str : string] : Column<any, any, {}> }} }, T, ExtraInfoT extends { isGroupFunction? : boolean } = {}> = {
     req : RequiredSelectT,
     t : T,
     query : string,
-    as : <NameT extends string>(name : NameT) => DerivedColumn<RequiredSelectT, "__derived", NameT, T>
+    as : <NameT extends string>(name : NameT) => DerivedColumn<RequiredSelectT, "__derived", NameT, T>,
+    extraInfo : ExtraInfoT,
 }
 
 declare function where<ExprT extends Expr<any, boolean>, SelectT extends {}> (
@@ -237,17 +238,25 @@ declare function max<ColumnT extends Column<any, any, any>> (
         }
 
     }
-}, TypeOf<ColumnT>>;
+}, TypeOf<ColumnT>, { isGroupFunction : true }>;
 const expr = gt(s2.appKey.columns.appId, 3);
 const w = where(s2, ()=>expr);
 
 type FetchColumn<ColumnT extends Column<any, any, any>|AliasedTable<any, any, {}>> = (
     ColumnT extends Column<infer TableName, infer Name, infer T> ?
     { [table in TableName] : { [name in Name] : T } } :
+    ColumnT extends Table<infer AliasT, infer Columns, any, any> ?
+    {
+        [table in AliasT] : {
+            [name in keyof Columns] : TypeOf<Columns[name]>
+
+        }
+    }:
     ColumnT extends AliasedTable<infer AliasT, any, infer Columns> ?
     {
         [table in AliasT] : {
             [name in keyof Columns] : TypeOf<Columns[name]>
+
         }
     }:
     never
@@ -261,6 +270,12 @@ type UsesColumn<ColumnT extends Column<any, any, any>|AliasedTable<any, any, {}>
     } :
     ColumnT extends Column<infer TableName, infer Name, infer T> ?
     { [table in TableName] : { [name in Name] : T } } :
+    ColumnT extends Table<infer AliasT, infer Columns, any, any> ?
+    {
+        [table in AliasT] : {
+            [name in keyof Columns] : TypeOf<Columns[name]>
+        }
+    }:
     ColumnT extends AliasedTable<infer AliasT, any, infer Columns> ?
     {
         [table in AliasT] : {
@@ -443,11 +458,15 @@ selectV2(
         )
     )
 )
-
+declare const erwerwer : (typeof app) extends Table<any, infer WTF, any, any> ?
+    WTF : "lol";
+declare const fr : FetchColumn<typeof app>;
 const r = selectV2(
     [
-        app.columns.ssoClientId,
-        max(app.columns.ssoClientId).as("latest")
+        //app.columns.ssoClientId,
+        //max(app.columns.ssoClientId).as("latest"),
+        app
+        //ssoClient
     ],
     selectFrom(app),
     (s) => exists(
@@ -457,3 +476,114 @@ const r = selectV2(
         )
     )
 )
+
+declare function groupBy<
+    SelectResultT extends { result : {
+        [table : string] : {
+            [field : string] : any,
+        }
+    } },
+    ColumnsT extends (Column<any, any, any>)[] & { "0": (Column<any, any, any>) },
+> (
+    selectResult : SelectResultT,
+    columns : ColumnsT
+) :
+SelectResultT["result"] extends FetchResult<ColumnsT> ?
+    SelectResultT & { groupedBy : ColumnsT } :
+    never;
+const grouped = groupBy(r, [
+    app.columns.appId,
+]);
+/* TODO
+declare function having<
+SelectResultT extends { result : {
+    [table : string] : {
+        [field : string] : any,
+    }
+} },
+ExprT extends Expr<any, boolean>
+> (
+    selectResult : SelectResultT,
+    cb : (select : SelectResultT) => ExprT,
+
+) :
+ExprT extends Expr<infer Required, boolean> ?
+    SelectT extends Required ?
+        {
+            select : SelectT,
+            expr : ExprT
+        }
+        : "Some columns in expression are not in FROM or JOIN clause"|void
+    : "Invalid expression"|void;
+*/
+//TODO expr
+type OrderByElement = ([Column<any, any, any>, boolean]);
+type OrderByTuple = (OrderByElement)[] & { "0": (OrderByElement) };
+
+type OrderByUsesColumn<OrderByT extends OrderByElement> = (
+    OrderByT[0] extends DerivedColumn<infer RequiredT, infer TableName, infer Name, infer T> ?
+    {
+        [table in keyof RequiredT] : {
+            [name in keyof RequiredT[table]["columns"]] : TypeOf<RequiredT[table]["columns"][name]>
+        }
+    } :
+    OrderByT[0] extends Column<infer TableName, infer Name, infer T> ?
+    { [table in TableName] : { [name in Name] : T } } :
+    OrderByT[0] extends Table<infer AliasT, infer Columns, any, any> ?
+    {
+        [table in AliasT] : {
+            [name in keyof Columns] : TypeOf<Columns[name]>
+        }
+    }:
+    OrderByT[0] extends AliasedTable<infer AliasT, any, infer Columns> ?
+    {
+        [table in AliasT] : {
+            [name in keyof Columns] : TypeOf<Columns[name]>
+        }
+    }:
+    never
+);
+type OrderByUsesResult<OrderBysT extends OrderByTuple> = (
+    OrderBysT extends { "1" : OrderByElement } ?
+    OrderByUsesColumn<OrderBysT[0]> & OrderByUsesColumn<OrderBysT[1]> :
+    OrderBysT extends { "0" : OrderByElement } ?
+    OrderByUsesColumn<OrderBysT[0]> :
+    never
+);
+
+declare function orderBy<
+    SelectResultT extends { result : {
+        [table : string] : {
+            [field : string] : any,
+        }
+    } },
+    OrderBysT extends OrderByTuple,
+> (
+    selectResult : SelectResultT,
+    orderBys : OrderBysT
+) :
+SelectResultT["result"] extends OrderByUsesResult<OrderBysT> ?
+    SelectResultT & { orderedBy : OrderBysT } :
+    never;
+const ordered = orderBy(grouped, [
+    [app.columns.appId, true],
+    //[ssoClient.columns.name, true],
+]);
+
+declare function limit<
+    SelectResultT extends { result : {
+        [table : string] : {
+            [field : string] : any,
+        }
+    } },
+> (
+    selectResult : SelectResultT,
+    start : number,
+    count? : number
+) : SelectResultT & {
+    limit : {
+        start : number,
+        count? : number
+    },
+};
+const limited = limit(ordered, 5,20)
