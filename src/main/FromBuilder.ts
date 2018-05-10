@@ -324,11 +324,13 @@ type IsFromColumnTuple<
     TableReferencesT extends ColumnReferences,
     FromColumnsT extends Tuple<AnyColumn>
 > = (
-    FromColumnsT extends {"1":AnyColumn} ?
-    [IsFromColumn<TableReferencesT, FromColumnsT[0]>, IsFromColumn<TableReferencesT, FromColumnsT[1]>] :
-    FromColumnsT extends {"0":AnyColumn} ?
-    [IsFromColumn<TableReferencesT, FromColumnsT[0]>] :
-    never
+    {
+        [k in TupleKeys<FromColumnsT>] : (
+            FromColumnsT[k] extends AnyColumn ?
+                IsFromColumn<TableReferencesT, FromColumnsT[k]> :
+                never
+        )
+    } & { length : TupleLength<FromColumnsT> } & AnyColumn[]
 );
 
 type NullableJoinReferences<JoinReferencesT extends JoinReferences> = (
