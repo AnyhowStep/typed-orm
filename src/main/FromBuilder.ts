@@ -452,7 +452,7 @@ declare function from<
 );
 
 const f = from(app)
-    .rightJoin(appKey, [app.columns.appId], [appKey.columns.appId])
+    .rightJoin(appKey, [app.columns.appId, app.columns.appId, app.columns.appId, app.columns.appId, app.columns.appId], [appKey.columns.appId, appKey.columns.appId, appKey.columns.appId, appKey.columns.appId, appKey.columns.appId])
     //.rightJoin(ssoClient, [app.columns.ssoClientId], [ssoClient.columns.ssoClientId])
     //.leftJoin(user, [app.columns.appId], [user.columns.appId]);
 
