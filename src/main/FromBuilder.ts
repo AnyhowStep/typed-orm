@@ -303,13 +303,11 @@ type IsFromColumn<
                 (
                     NameT extends keyof TableReferencesT[AliasT]["columns"] ?
                         (
-                            TypeT extends sd.TypeOf<TableReferencesT[AliasT]["columns"][NameT]["assertDelegate"]> ?
+                            sd.TypeOf<TableReferencesT[AliasT]["columns"][NameT]["assertDelegate"]> extends TypeT ?
                                 (
-                                    sd.TypeOf<TableReferencesT[AliasT]["columns"][NameT]["assertDelegate"]> extends TypeT ?
-                                        (ColumnT) :
-                                        ("TypeT mismatch B"|sd.TypeOf<TableReferencesT[AliasT]["columns"][NameT]["assertDelegate"]>|void)
+                                    ColumnT
                                 ) :
-                                ("TypeT mismatch A"|TypeT|void)
+                                ("TypeT mismatch"|TypeT|void)
                         ) :
                         ("NameT is not a column"|NameT|void)
                 ) :
@@ -493,7 +491,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
     rightJoin<
         ToTableT extends AliasedTable<any, any, {}>,
         FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>,// ColumnReferenceTuple<T["columnReferences"]>,
-        ToColumnsT extends ToColumnTuple<ToTableT, FromColumnsInCallback<FromColumnsT>>
+        ToColumnsT extends ToColumnTuple<ToTableT, Tuple<AnyColumn>>
     > (
         this : FromBuilder<{
             columnReferences : any,
@@ -751,14 +749,14 @@ declare function from<
 
 let preF = from(app)
     .join(appKey, [app.columns.appId, app.columns.appId, app.columns.appId, app.columns.appId, app.columns.appId], [appKey.columns.appId, appKey.columns.appId, appKey.columns.appId, appKey.columns.appId, appKey.columns.appId])
-    .rightJoin(ssoClient, [app.columns.ssoClientId], [ssoClient.columns.ssoClientId])
+    .leftJoin(ssoClient, [app.columns.ssoClientId], [ssoClient.columns.ssoClientId])
 
 const tr = preF.test(c => [c.app.columns.ssoApiKey, c.app.columns.appId])
 const tr2 = preF.test([app.columns.ssoApiKey, app.columns.appId])
 
 let f = preF
 
-    .rightJoin(user, c => [c.app.columns.appId], [user.columns.appId]);
+    .rightJoin(user, [app.columns.appId], [user.columns.appId]);
 
 f.data.columnReferences.app.columns.appId
 f.data.joinReferences[0].columnReferences.app.columns.appId
