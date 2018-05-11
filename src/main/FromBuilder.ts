@@ -398,10 +398,21 @@ export type FromColumnsCallback<
     ColumnReferencesT extends ColumnReferences,
     TupleT extends ColumnReferenceTuple<ColumnReferencesT>
 > = (
+    TupleT |
     (
-        columnReferences : ColumnReferencesT,
-    ) => TupleT
+        (columnReferences : ColumnReferencesT) => TupleT
+    )
 );
+
+export type FromColumnsInCallback<
+    FromColumnsCallbackT extends FromColumnsCallback<any, Tuple<AnyColumn>>
+> = (
+    FromColumnsCallbackT extends Tuple<AnyColumn> ?
+    FromColumnsCallbackT :
+    FromColumnsCallbackT extends (...args : any[]) => infer TupleT ?
+    TupleT :
+    ("Invalid FromColumnsCallbackT or could not infer TupleT"|void|never)
+)
 
 export type WhereCallback<
     FromBuilderT extends FromBuilder<any>
@@ -477,9 +488,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
     test<
         FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>
     > (f : FromColumnsT) : (
-        FromColumnsT extends FromColumnsCallback<T["columnReferences"], infer TupleT> ?
-            TupleT :
-            "Invalid FromColumnsT or could not infer TupleT"
+        FromColumnsInCallback<FromColumnsT>
     );
     rightJoin<
         ToTableT extends AliasedTable<any, any, {}>,
@@ -745,6 +754,7 @@ let preF = from(app)
     .leftJoin(ssoClient, [app.columns.ssoClientId], [ssoClient.columns.ssoClientId])
 
 const tr = preF.test(c => [c.app.columns.ssoApiKey, c.app.columns.appId])
+const tr2 = preF.test([app.columns.ssoApiKey, app.columns.appId])
 
 let f = preF
 
