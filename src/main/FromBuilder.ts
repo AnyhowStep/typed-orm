@@ -395,27 +395,12 @@ declare class Expr<
 ;
 
 export type FromColumnsCallback<
-    T extends AnyFromBuilderData,
-    FromBuilderT extends FromBuilder<T>,
-    TupleT extends ColumnReferenceTuple<T["columnReferences"]>
+    ColumnReferencesT extends ColumnReferences,
+    TupleT extends ColumnReferenceTuple<ColumnReferencesT>
 > = (
-    (TupleT) |
     (
-        (
-            columnReferences : T["columnReferences"],
-            fromBuilder : FromBuilderT
-        ) => TupleT //ColumnReferenceTuple<DataT["columnReferences"]> :
-    )
-);
-export type FromColumnsOfCallback<FromColumnsCallbackT extends FromColumnsCallback<any, any, any>> = (
-    FromColumnsCallbackT extends FromColumnsCallback<any, any, infer TupleT> ?
-        TupleT :
-        ("Invalid FromColumnsCallbackT or could not infer TupleT"|void|never)
-    /*FromColumnsCallbackT extends ColumnReferenceTuple<any> ?
-    FromColumnsCallbackT :
-    FromColumnsCallbackT extends (...args:any[]) => infer T ?
-    T :
-    never*/
+        columnReferences : ColumnReferencesT,
+    ) => TupleT
 );
 
 export type WhereCallback<
@@ -489,7 +474,13 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     (IsFromColumnTuple<T["columnReferences"], FromColumnsT>|void)
             )
     );
-    test<FromColumnsT extends FromColumnsCallback<T, FromBuilder<T>, any>> (f : FromColumnsT) : FromColumnsOfCallback<FromColumnsT>;
+    test<
+        FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>
+    > (f : FromColumnsT) : (
+        FromColumnsT extends FromColumnsCallback<T["columnReferences"], infer TupleT> ?
+            TupleT :
+            "Invalid FromColumnsT or could not infer TupleT"
+    );
     rightJoin<
         ToTableT extends AliasedTable<any, any, {}>,
         FromColumnsT extends ColumnReferenceTuple<T["columnReferences"]>,
@@ -752,6 +743,8 @@ declare function from<
 let preF = from(app)
     .join(appKey, [app.columns.appId, app.columns.appId, app.columns.appId, app.columns.appId, app.columns.appId], [appKey.columns.appId, appKey.columns.appId, appKey.columns.appId, appKey.columns.appId, appKey.columns.appId])
     .leftJoin(ssoClient, [app.columns.ssoClientId], [ssoClient.columns.ssoClientId])
+
+const tr = preF.test(c => [c.app.columns.ssoApiKey, c.app.columns.appId])
 
 let f = preF
 
