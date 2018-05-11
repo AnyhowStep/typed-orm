@@ -490,8 +490,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
     );
     rightJoin<
         ToTableT extends AliasedTable<any, any, {}>,
-        FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>,// ColumnReferenceTuple<T["columnReferences"]>,
-        ToColumnsT extends ToColumnTuple<ToTableT, Tuple<AnyColumn>>
+        FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>,
+        ToColumnsT extends ToColumnTuple<ToTableT, FromColumnsInCallback<FromColumnsT>>
     > (
         this : FromBuilder<{
             columnReferences : any,
