@@ -171,6 +171,27 @@ export type ColumnReferences = {
         }
     }
 };
+export type Union<T> = (T[keyof T]);
+export type ColumnReferenceElementInner<ColumnReferencesT extends ColumnReferences> = ({
+    data: {
+        [k in keyof ColumnReferencesT] : (
+            Union<ColumnReferencesT[k]["columns"]>
+        )
+    }
+});
+export type ColumnReferenceElement<ColumnReferencesT extends ColumnReferences> = (
+    {
+        data : {
+            [k in keyof ColumnReferenceElementInner<ColumnReferencesT>] : (
+                Union<ColumnReferenceElementInner<ColumnReferencesT>[k]>
+            )
+        }
+    }["data"]["data"]
+);
+export type ColumnReferenceTuple<ColumnReferencesT extends ColumnReferences> = (
+    Tuple<ColumnReferenceElement<ColumnReferencesT>>
+);
+
 export type ColumnToReference<ColumnT extends AnyColumn> = (
     ColumnT extends Column<infer TableNameT, infer NameT, infer TypeT> ?
         (
@@ -306,7 +327,7 @@ type IsFromColumnTuple<
                 IsFromColumn<TableReferencesT, FromColumnsT[k]> :
                 never
         )
-    } & { length : TupleLength<FromColumnsT> } & AnyColumn[]
+    } & { length : TupleLength<FromColumnsT> } & (FromColumnsT[0])[]
 );
 
 type NullableJoinReferences<JoinReferencesT extends JoinReferences> = (
@@ -373,6 +394,30 @@ declare class Expr<
     }
 ;
 
+export type FromColumnsCallback<
+    T extends AnyFromBuilderData,
+    FromBuilderT extends FromBuilder<T>,
+    TupleT extends ColumnReferenceTuple<T["columnReferences"]>
+> = (
+    (TupleT) |
+    (
+        (
+            columnReferences : T["columnReferences"],
+            fromBuilder : FromBuilderT
+        ) => TupleT //ColumnReferenceTuple<DataT["columnReferences"]> :
+    )
+);
+export type FromColumnsOfCallback<FromColumnsCallbackT extends FromColumnsCallback<any, any, any>> = (
+    FromColumnsCallbackT extends FromColumnsCallback<any, any, infer TupleT> ?
+        TupleT :
+        ("Invalid FromColumnsCallbackT or could not infer TupleT"|void|never)
+    /*FromColumnsCallbackT extends ColumnReferenceTuple<any> ?
+    FromColumnsCallbackT :
+    FromColumnsCallbackT extends (...args:any[]) => infer T ?
+    T :
+    never*/
+);
+
 export type WhereCallback<
     FromBuilderT extends FromBuilder<any>
 > = (
@@ -405,7 +450,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
     data : T;
     join<
         ToTableT extends AliasedTable<any, any, {}>,
-        FromColumnsT extends Tuple<AnyColumn>,
+        FromColumnsT extends ColumnReferenceTuple<T["columnReferences"]>,
         ToColumnsT extends ToColumnTuple<ToTableT, FromColumnsT>
     > (
         this : FromBuilder<{
@@ -444,9 +489,10 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     (IsFromColumnTuple<T["columnReferences"], FromColumnsT>|void)
             )
     );
+    test<FromColumnsT extends FromColumnsCallback<T, FromBuilder<T>, any>> (f : FromColumnsT) : FromColumnsOfCallback<FromColumnsT>;
     rightJoin<
         ToTableT extends AliasedTable<any, any, {}>,
-        FromColumnsT extends Tuple<AnyColumn>,
+        FromColumnsT extends ColumnReferenceTuple<T["columnReferences"]>,
         ToColumnsT extends ToColumnTuple<ToTableT, FromColumnsT>
     > (
         this : FromBuilder<{
@@ -487,7 +533,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
     );
     leftJoin<
         ToTableT extends AliasedTable<any, any, {}>,
-        FromColumnsT extends Tuple<AnyColumn>,
+        FromColumnsT extends ColumnReferenceTuple<T["columnReferences"]>,
         ToColumnsT extends ToColumnTuple<ToTableT, FromColumnsT>
     > (
         this : FromBuilder<{
@@ -703,9 +749,12 @@ declare function from<
     }>
 );
 
-const f = from(app)
+let preF = from(app)
     .join(appKey, [app.columns.appId, app.columns.appId, app.columns.appId, app.columns.appId, app.columns.appId], [appKey.columns.appId, appKey.columns.appId, appKey.columns.appId, appKey.columns.appId, appKey.columns.appId])
-    .join(ssoClient, [app.columns.ssoClientId], [ssoClient.columns.ssoClientId])
+    .leftJoin(ssoClient, [app.columns.ssoClientId], [ssoClient.columns.ssoClientId])
+
+let f = preF
+
     .rightJoin(user, [app.columns.appId], [user.columns.appId]);
 
 f.data.columnReferences.app.columns.appId
@@ -768,7 +817,7 @@ declare class Expressions {
     true () : Expr<{}, true>;
     eq<
         LeftT extends RawExpr<any>,
-        RightT extends RawExpr<ExprType<LeftT>>
+        RightT extends RawExpr<ExprType<LeftT>|null>
     > (left : LeftT, right : RightT) : Expr<
         ExprUsedColumns<LeftT> & ExprUsedColumns<RightT>,
         boolean
