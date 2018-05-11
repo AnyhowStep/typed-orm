@@ -444,8 +444,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
     data : T;
     join<
         ToTableT extends AliasedTable<any, any, {}>,
-        FromColumnsT extends ColumnReferenceTuple<T["columnReferences"]>,
-        ToColumnsT extends ToColumnTuple<ToTableT, FromColumnsT>
+        FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>,
+        ToColumnsT extends ToColumnTuple<ToTableT, FromColumnsInCallback<FromColumnsT>>
     > (
         this : FromBuilder<{
             columnReferences : any,
@@ -460,7 +460,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
         TableAlias<ToTableT> extends keyof T["columnReferences"] ?
             ("Duplicate alias" | TableAlias<ToTableT> | void) :
             (
-                FromColumnsT extends IsFromColumnTuple<T["columnReferences"], FromColumnsT> ?
+                FromColumnsInCallback<FromColumnsT> extends IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>> ?
                     (
                         FromBuilder<{
                             columnReferences : (
@@ -480,7 +480,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             typeNarrowedColumns : T["typeNarrowedColumns"]
                         }>
                     ) :
-                    (IsFromColumnTuple<T["columnReferences"], FromColumnsT>|void)
+                    (IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>>|void)
             )
     );
     test<
@@ -531,8 +531,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
     );
     leftJoin<
         ToTableT extends AliasedTable<any, any, {}>,
-        FromColumnsT extends ColumnReferenceTuple<T["columnReferences"]>,
-        ToColumnsT extends ToColumnTuple<ToTableT, FromColumnsT>
+        FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>,
+        ToColumnsT extends ToColumnTuple<ToTableT, FromColumnsInCallback<FromColumnsT>>
     > (
         this : FromBuilder<{
             columnReferences : any,
@@ -547,7 +547,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
         TableAlias<ToTableT> extends keyof T["columnReferences"] ?
             ("Duplicate alias" | TableAlias<ToTableT> | void) :
             (
-                FromColumnsT extends IsFromColumnTuple<T["columnReferences"], FromColumnsT> ?
+                FromColumnsInCallback<FromColumnsT> extends IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>> ?
                     (
                         FromBuilder<{
                             columnReferences : (
@@ -567,7 +567,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             typeNarrowedColumns : T["typeNarrowedColumns"]
                         }>
                     ) :
-                    (IsFromColumnTuple<T["columnReferences"], FromColumnsT>|void)
+                    (IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>>|void)
             )
     );
     whereIsNotNull<
