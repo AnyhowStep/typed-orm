@@ -1051,8 +1051,8 @@ select(
     result
     //from
     //join
-    //where
 )
+//where
 //group by
 //having
 //order by
