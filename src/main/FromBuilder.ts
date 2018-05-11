@@ -1,5 +1,5 @@
 import * as sd from "schema-decorator";
-import {Simplify, Tuple, TupleKeys, TupleLength, TuplePush} from "./Tuple";
+import {Tuple, TupleKeys, TupleLength, TuplePush} from "./Tuple";
 
 export interface Column<TableNameT extends string, NameT extends string, TypeT> {
     table : TableNameT;
@@ -75,7 +75,7 @@ export class Table<
 /////////////////////////////////
 
 
-const ssoClient = new Table(
+export const ssoClient = new Table(
     "ssoClient",
     {
         ssoClientId : sd.stringToNumber(),
@@ -87,7 +87,7 @@ const ssoClient = new Table(
     "ssoClientId"*/
 );
 
-const app = new Table(
+export const app = new Table(
     "app",
     {
         appId : sd.stringToNumber(),
@@ -100,7 +100,7 @@ const app = new Table(
     "appId"*/
 );
 
-const appKey = new Table(
+export const appKey = new Table(
     "appKey",
     {
         appId : sd.stringToNumber(),
@@ -111,7 +111,7 @@ const appKey = new Table(
     /*["appKeyId"],
     "appKeyId"*/
 );
-const appKeyType = new Table(
+export const appKeyType = new Table(
     "appKeyType",
     {
         appKeyTypeId : sd.string(),
@@ -121,7 +121,7 @@ const appKeyType = new Table(
     "appKeyTypeId"*/
 );
 
-const user = new Table(
+export const user = new Table(
     "user",
     {
         appId : sd.naturalNumber(),
@@ -203,7 +203,7 @@ export type ColumnToReference<ColumnT extends AnyColumn> = (
                 }
             }
         ) :
-        ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
+        never//("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
 );
 export type PartialColumnReferences = {
     [table : string] : {
@@ -243,7 +243,7 @@ type NullableColumnReference<ColumnReferencesT extends ColumnReferences> = (
     }
 )
 
-type TableReference<TableT extends Table<any, {}>|AnyAliasedTable> = (
+export type TableReference<TableT extends Table<any, {}>|AnyAliasedTable> = (
     TableT extends Table<any, infer ColumnsT> ?
     {
         [alias in TableAlias<TableT>] : {
@@ -360,8 +360,16 @@ export type AnyFromBuilderData = {
     columnReferences : ColumnReferences,
     joinReferences : JoinReferences,
 
-    hasWhereClause : boolean,
     typeNarrowedColumns : ColumnReferences,
+
+    allowed : {
+        join : boolean,
+        where : boolean,
+        groupBy : boolean,
+        having : boolean,
+        orderBy : boolean,
+        limit : boolean,
+    }
 }
 
 interface SelectColumnExpr<
@@ -450,8 +458,16 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
         this : FromBuilder<{
             columnReferences : any,
             joinReferences : any,
-            hasWhereClause : false,
             typeNarrowedColumns : any,
+
+            allowed : {
+                join : true,
+                where : any,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+            }
         }>,
         toTable : ToTableT,
         from : FromColumnsT,
@@ -476,8 +492,9 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     >
                                 >
                             ),
-                            hasWhereClause : T["hasWhereClause"],
-                            typeNarrowedColumns : T["typeNarrowedColumns"]
+                            typeNarrowedColumns : T["typeNarrowedColumns"],
+
+                            allowed : T["allowed"],
                         }>
                     ) :
                     (IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>>|void)
@@ -496,8 +513,16 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
         this : FromBuilder<{
             columnReferences : any,
             joinReferences : any,
-            hasWhereClause : false,
             typeNarrowedColumns : any,
+
+            allowed : {
+                join : true,
+                where : any,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+            }
         }>,
         toTable : ToTableT,
         from : FromColumnsT,
@@ -522,8 +547,9 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     >
                                 >
                             ),
-                            hasWhereClause : T["hasWhereClause"],
                             typeNarrowedColumns : T["typeNarrowedColumns"]
+
+                            allowed : T["allowed"],
                         }>
                     ) :
                     (IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>>|void|never)
@@ -537,8 +563,16 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
         this : FromBuilder<{
             columnReferences : any,
             joinReferences : any,
-            hasWhereClause : false,
             typeNarrowedColumns : any,
+
+            allowed : {
+                join : true,
+                where : any,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+            }
         }>,
         toTable : ToTableT,
         from : FromColumnsT,
@@ -563,8 +597,9 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     >
                                 >
                             ),
-                            hasWhereClause : T["hasWhereClause"],
                             typeNarrowedColumns : T["typeNarrowedColumns"]
+
+                            allowed : T["allowed"],
                         }>
                     ) :
                     (IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>>|void)
@@ -573,6 +608,20 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
     whereIsNotNull<
         TypeNarrowCallbackT extends TypeNarrowCallback<FromBuilder<T>>
     > (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+
+            allowed : {
+                join : any,
+                where : true,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+            }
+        }>,
         typeNarrowCallback : TypeNarrowCallbackT
     ) : (
         ReturnType<TypeNarrowCallbackT> extends Column<infer TableNameT, infer NameT, infer TypeT> ?
@@ -600,7 +649,6 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 }
                             ),
                             joinReferences : T["joinReferences"],
-                            hasWhereClause : true,
                             typeNarrowedColumns : (
                                 T["typeNarrowedColumns"] &
                                 {
@@ -610,7 +658,16 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                         }
                                     }
                                 }
-                            )
+                            ),
+
+                            allowed : {
+                                join : false,
+                                where : T["allowed"]["where"],
+                                groupBy : T["allowed"]["groupBy"],
+                                having : T["allowed"]["having"],
+                                orderBy : T["allowed"]["orderBy"],
+                                limit : T["allowed"]["limit"],
+                            }
                         }>
                     ) :
                     ("ColumnT is not in ColumnReferences"|void|never)
@@ -620,6 +677,20 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
     whereIsNull<
         TypeNarrowCallbackT extends TypeNarrowCallback<FromBuilder<T>>
     > (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+
+            allowed : {
+                join : any,
+                where : true,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+            }
+        }>,
         typeNarrowCallback : TypeNarrowCallbackT
     ) : (
         ReturnType<TypeNarrowCallbackT> extends Column<infer TableNameT, infer NameT, infer TypeT> ?
@@ -647,7 +718,6 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 }
                             ),
                             joinReferences : T["joinReferences"],
-                            hasWhereClause : true,
                             typeNarrowedColumns : (
                                 T["typeNarrowedColumns"] &
                                 {
@@ -657,7 +727,16 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                         }
                                     }
                                 }
-                            )
+                            ),
+
+                            allowed : {
+                                join : false,
+                                where : T["allowed"]["where"],
+                                groupBy : T["allowed"]["groupBy"],
+                                having : T["allowed"]["having"],
+                                orderBy : T["allowed"]["orderBy"],
+                                limit : T["allowed"]["limit"],
+                            }
                         }>
                     ) :
                     ("ColumnT is not in ColumnReferences"|void|never)
@@ -668,6 +747,20 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
         TypeNarrowCallbackT extends TypeNarrowCallback<FromBuilder<T>>,
         ConstT extends number|string|null
     > (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+
+            allowed : {
+                join : any,
+                where : true,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+            }
+        }>,
         value : ConstT,
         typeNarrowCallback : TypeNarrowCallbackT
     ) : (
@@ -696,7 +789,6 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 }
                             ),
                             joinReferences : T["joinReferences"],
-                            hasWhereClause : true,
                             typeNarrowedColumns : (
                                 T["typeNarrowedColumns"] &
                                 {
@@ -706,7 +798,16 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                         }
                                     }
                                 }
-                            )
+                            ),
+
+                            allowed : {
+                                join : false,
+                                where : T["allowed"]["where"],
+                                groupBy : T["allowed"]["groupBy"],
+                                having : T["allowed"]["having"],
+                                orderBy : T["allowed"]["orderBy"],
+                                limit : T["allowed"]["limit"],
+                            }
                         }>
                     ) :
                     ("ColumnT is not in ColumnReferences"|void|never)
@@ -716,6 +817,20 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
     where<
         WhereCallbackT extends WhereCallback<FromBuilder<T>>
     > (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+
+            allowed : {
+                join : any,
+                where : true,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+            }
+        }>,
         whereCallback : WhereCallbackT
     ):(
         WhereCallbackT extends WhereCallback<FromBuilder<T>> ?
@@ -724,7 +839,20 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     (
                         T["columnReferences"] extends UsedReferencesT ?
                             (
-                                FromBuilder<T>
+                                FromBuilder<{
+                                    columnReferences : T["columnReferences"],
+                                    joinReferences : T["joinReferences"],
+                                    typeNarrowedColumns : T["typeNarrowedColumns"],
+
+                                    allowed : {
+                                        join : false,
+                                        where : T["allowed"]["where"],
+                                        groupBy : T["allowed"]["groupBy"],
+                                        having : T["allowed"]["having"],
+                                        orderBy : T["allowed"]["orderBy"],
+                                        limit : T["allowed"]["limit"],
+                                    }
+                                }>
                             ) :
                             ("UsedReferencesT has some columns not in FromBuilder's columnReferences"|void|never)
                     ) :
@@ -734,7 +862,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
     );
 }
 
-declare function from<
+export declare function from<
     TableT extends AnyAliasedTable
 > (
     table : TableT
@@ -742,8 +870,16 @@ declare function from<
     FromBuilder<{
         columnReferences : TableReference<TableT>,
         joinReferences : [JoinReference<TableReference<TableT>, false>],
-        hasWhereClause : false,
         typeNarrowedColumns : {},
+
+        allowed : {
+            join : true,
+            where : true,
+            groupBy : true,
+            having : true,
+            orderBy : true,
+            limit : true,
+        }
     }>
 );
 

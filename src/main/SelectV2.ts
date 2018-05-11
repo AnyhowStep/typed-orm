@@ -1051,18 +1051,57 @@ select(
     result
     //from
     //join
+    //where
 )
-//where
 //group by
 //having
 //order by
 //limit
 //UNION SELECT ?
 /*
-    //And the column count, data types must match, names don't need to
-    .union(
-        select(
-
-        )
+SELECT SQL_CALC_FOUND_ROWS
+	name
+FROM
+	app
+UNION
+    (
+        SELECT
+            name
+        FROM
+            ssoClient
+        LIMIT 0
     )
+LIMIT 10
+*/
+/*
+SELECT SQL_CALC_FOUND_ROWS
+    *
+FROM
+    (
+        (
+            SELECT
+                name
+            FROM
+                app
+            LIMIT 10
+        )
+        UNION
+        (
+            SELECT
+                name
+            FROM
+                ssoClient
+            LIMIT 3
+        )
+        ORDER BY name
+        LIMIT 10
+    )
+*/
+/*
+    //And the column count, data types must match, names don't need to
+    union(
+        select(/code/),
+        select(/code/),
+        select(/code/),
+    ).orderBy().limit()
 */
