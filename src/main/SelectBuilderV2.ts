@@ -174,16 +174,14 @@ export type TableColumns<TableT extends AnyAliasedTable> = (
 
 export type ColumnReferences = {
     [table : string] : {
-        columns : {
-            [column : string] : AnyColumn
-        }
+        [column : string] : AnyColumn
     }
 };
 export type Union<T> = (T[keyof T]);
 export type ColumnReferenceElementInner<ColumnReferencesT extends ColumnReferences> = ({
     data: {
         [k in keyof ColumnReferencesT] : (
-            Union<ColumnReferencesT[k]["columns"]>
+            Union<ColumnReferencesT[k]>
         )
     }
 });
@@ -205,9 +203,7 @@ export type ColumnToReference<ColumnT extends AnyColumn> = (
         (
             {
                 [table in TableNameT] : {
-                    columns : {
-                        [name in NameT] : Column<TableNameT, NameT, TypeT>
-                    }
+                    [name in NameT] : Column<TableNameT, NameT, TypeT>
                 }
             }
         ) :
@@ -215,16 +211,12 @@ export type ColumnToReference<ColumnT extends AnyColumn> = (
 );
 export type PartialColumnReferences = {
     [table : string] : {
-        columns : {
-            [column : string] : AnyColumn|undefined
-        }
+        [column : string] : AnyColumn|undefined
     }|undefined
 };
 export type ToPartialColumnReferences<ColumnReferencesT extends ColumnReferences> = {
     [table in keyof ColumnReferencesT]+? : {
-        columns : {
-            [column in keyof ColumnReferencesT[table]["columns"]]+? : ColumnReferencesT[table]["columns"][column]
-        }
+        [column in keyof ColumnReferencesT[table]]+? : ColumnReferencesT[table][column]
     }
 };
 
@@ -232,21 +224,19 @@ export type ToPartialColumnReferences<ColumnReferencesT extends ColumnReferences
 type NullableColumnReference<ColumnReferencesT extends ColumnReferences> = (
     {
         [table in keyof ColumnReferencesT] : {
-            columns : {
-                [column in keyof ColumnReferencesT[table]["columns"]] : (
-                    ColumnReferencesT[table]["columns"][column] extends Column<any, any, infer TypeT> ?
-                        (
-                            Column<table, column, TypeT|null>
-                        ) :
-                        (("Invalid ColumnT or could not infer TypeT of ColumnT"&table&column)&never&void)
-                        /*(
-                            //HACK
-                            ColumnReferencesT[table]["columns"][column] extends AnyColumn ?
-                                ColumnReferencesT[table]["columns"][column] :
-                                AnyColumn
-                        )*/
-                )
-            }
+            [column in keyof ColumnReferencesT[table]] : (
+                ColumnReferencesT[table][column] extends Column<any, any, infer TypeT> ?
+                    (
+                        Column<table, column, TypeT|null>
+                    ) :
+                    (("Invalid ColumnT or could not infer TypeT of ColumnT"&table&column)&never&void)
+                    /*(
+                        //HACK
+                        ColumnReferencesT[table]["columns"][column] extends AnyColumn ?
+                            ColumnReferencesT[table]["columns"][column] :
+                            AnyColumn
+                    )*/
+            )
         }
     }
 )
@@ -255,17 +245,13 @@ export type TableReference<TableT extends Table<any, {}>|AnyAliasedTable> = (
     TableT extends Table<any, infer ColumnsT> ?
     {
         [alias in TableAlias<TableT>] : {
-            columns : {
-                [name in keyof ColumnsT] : TableT["columns"][name]
-            }
+            [name in keyof ColumnsT] : TableT["columns"][name]
         }
     } :
     TableT extends AliasedTable<any, any, infer ColumnsT> ?
     {
         [alias in TableAlias<TableT>] : {
-            columns : {
-                [name in keyof ColumnsT] : TableT["columns"][name]
-            }
+            [name in keyof ColumnsT] : TableT["columns"][name]
         }
     } :
     never
@@ -337,9 +323,9 @@ type IsFromColumn<
         (
             AliasT extends keyof TableReferencesT ?
                 (
-                    NameT extends keyof TableReferencesT[AliasT]["columns"] ?
+                    NameT extends keyof TableReferencesT[AliasT] ?
                         (
-                            sd.TypeOf<TableReferencesT[AliasT]["columns"][NameT]["assertDelegate"]> extends TypeT ?
+                            sd.TypeOf<TableReferencesT[AliasT][NameT]["assertDelegate"]> extends TypeT ?
                                 (
                                     ColumnT
                                 ) :
@@ -540,11 +526,11 @@ export type SelectTupleElementType<
     SelectTupleElementT extends Column<any, any, infer TypeT> ?
     TypeT :
     SelectTupleElementT extends {
-        columns : infer ColumnsT
+        [name : string] : AnyColumn
     } ?
     {
-        [name in keyof ColumnsT] : (
-            ColumnsT[name] extends Column<any, any, infer TypeT> ?
+        [name in keyof SelectTupleElementT] : (
+            SelectTupleElementT[name] extends Column<any, any, infer TypeT> ?
                 TypeT :
                 never
         )
@@ -581,16 +567,14 @@ export type SelectTupleElementReplaceColumn<
     SelectTupleElementT extends Column<NewTableNameT, NewNameT, any> ?
     Column<NewTableNameT, NewNameT, NewTypeT> :
     SelectTupleElementT extends {
-        columns : infer ColumnsT
+        [name : string] : AnyColumn
     } ?
     {
-        columns : {
-            [name in keyof ColumnsT] : (
-                ColumnsT[name] extends Column<NewTableNameT, NewNameT, any> ?
-                    Column<NewTableNameT, NewNameT, NewTypeT> :
-                    ColumnsT[name]
-            )
-        }
+        [name in keyof SelectTupleElementT] : (
+            SelectTupleElementT[name] extends Column<NewTableNameT, NewNameT, any> ?
+                Column<NewTableNameT, NewNameT, NewTypeT> :
+                SelectTupleElementT[name]
+        )
     } :
     SelectTupleElementT
 );
@@ -651,12 +635,10 @@ export type SelectTupleElementToReference<ElementT extends SelectTupleElement<an
     ElementT extends AnyColumn ?
     ColumnToReference<ElementT> :
     ElementT extends {
-        columns : {
-            [name : string] : AnyColumn
-        }
+        [name : string] : AnyColumn
     } ?
     (
-        ElementT["columns"][keyof ElementT["columns"]] extends Column<infer TableNameT, any, any> ?
+        ElementT[keyof ElementT] extends Column<infer TableNameT, any, any> ?
             {
                 [k in TableNameT] : ElementT
             } :
@@ -775,12 +757,10 @@ export type GroupByTupleElementToReference<ElementT extends GroupByTupleElement<
     ElementT extends AnyColumn ?
     ColumnToReference<ElementT> :
     ElementT extends {
-        columns : {
-            [name : string] : AnyColumn
-        }
+        [name : string] : AnyColumn
     } ?
     (
-        ElementT["columns"][keyof ElementT["columns"]] extends Column<infer TableNameT, any, any> ?
+        ElementT[keyof ElementT] extends Column<infer TableNameT, any, any> ?
             {
                 [k in TableNameT] : ElementT
             } :
@@ -1132,19 +1112,17 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                             columnReferences : (
                                 {
                                     [table in keyof T["columnReferences"]] : {
-                                        columns : {
-                                            [column in keyof T["columnReferences"][table]["columns"]] : (
-                                                table extends TableNameT ?
-                                                    (
-                                                        column extends NameT ?
-                                                            (
-                                                                Column<TableNameT, NameT, Exclude<TypeT, null|undefined>>
-                                                            ) :
-                                                            (T["columnReferences"][table]["columns"][column])
-                                                    ) :
-                                                    (T["columnReferences"][table]["columns"][column])
-                                            )
-                                        }
+                                        [column in keyof T["columnReferences"][table]] : (
+                                            table extends TableNameT ?
+                                                (
+                                                    column extends NameT ?
+                                                        (
+                                                            Column<TableNameT, NameT, Exclude<TypeT, null|undefined>>
+                                                        ) :
+                                                        (T["columnReferences"][table][column])
+                                                ) :
+                                                (T["columnReferences"][table][column])
+                                        )
                                     }
                                 }
                             ),
@@ -1153,9 +1131,7 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                                 T["typeNarrowedColumns"] &
                                 {
                                     [table in TableNameT] : {
-                                        columns : {
-                                            [column in NameT] : Column<TableNameT, NameT, Exclude<TypeT, null|undefined>>
-                                        }
+                                        [column in NameT] : Column<TableNameT, NameT, Exclude<TypeT, null|undefined>>
                                     }
                                 }
                             ),
@@ -1227,19 +1203,17 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                             columnReferences : (
                                 {
                                     [table in keyof T["columnReferences"]] : {
-                                        columns : {
-                                            [column in keyof T["columnReferences"][table]["columns"]] : (
-                                                table extends TableNameT ?
-                                                    (
-                                                        column extends NameT ?
-                                                            (
-                                                                Column<TableNameT, NameT, null>
-                                                            ) :
-                                                            (T["columnReferences"][table]["columns"][column])
-                                                    ) :
-                                                    (T["columnReferences"][table]["columns"][column])
-                                            )
-                                        }
+                                        [column in keyof T["columnReferences"][table]] : (
+                                            table extends TableNameT ?
+                                                (
+                                                    column extends NameT ?
+                                                        (
+                                                            Column<TableNameT, NameT, null>
+                                                        ) :
+                                                        (T["columnReferences"][table][column])
+                                                ) :
+                                                (T["columnReferences"][table][column])
+                                        )
                                     }
                                 }
                             ),
@@ -1248,9 +1222,7 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                                 T["typeNarrowedColumns"] &
                                 {
                                     [table in TableNameT] : {
-                                        columns : {
-                                            [column in NameT] : Column<TableNameT, NameT, null>
-                                        }
+                                        [column in NameT] : Column<TableNameT, NameT, null>
                                     }
                                 }
                             ),
@@ -1324,19 +1296,17 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                             columnReferences : (
                                 {
                                     [table in keyof T["columnReferences"]] : {
-                                        columns : {
-                                            [column in keyof T["columnReferences"][table]["columns"]] : (
-                                                table extends TableNameT ?
-                                                    (
-                                                        column extends NameT ?
-                                                            (
-                                                                Column<TableNameT, NameT, ConstT>
-                                                            ) :
-                                                            (T["columnReferences"][table]["columns"][column])
-                                                    ) :
-                                                    (T["columnReferences"][table]["columns"][column])
-                                            )
-                                        }
+                                        [column in keyof T["columnReferences"][table]] : (
+                                            table extends TableNameT ?
+                                                (
+                                                    column extends NameT ?
+                                                        (
+                                                            Column<TableNameT, NameT, ConstT>
+                                                        ) :
+                                                        (T["columnReferences"][table][column])
+                                                ) :
+                                                (T["columnReferences"][table][column])
+                                        )
                                     }
                                 }
                             ),
@@ -1345,9 +1315,7 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                                 T["typeNarrowedColumns"] &
                                 {
                                     [table in TableNameT] : {
-                                        columns : {
-                                            [column in NameT] : Column<TableNameT, NameT, ConstT>
-                                        }
+                                        [column in NameT] : Column<TableNameT, NameT, ConstT>
                                     }
                                 }
                             ),
@@ -1894,28 +1862,24 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                                 T["typeWidenedColumns"] &
                                 {
                                     [table in TableNameT] : {
-                                        columns : {
-                                            [column in NameT] : Column<TableNameT, NameT, TypeT|WidenT>
-                                        }
+                                        [column in NameT] : Column<TableNameT, NameT, TypeT|WidenT>
                                     }
                                 }
                             ),
                             selectReferences : (
                                 {
                                     [table in keyof T["selectReferences"]] : {
-                                        columns : {
-                                            [column in keyof T["selectReferences"][table]["columns"]] : (
-                                                table extends TableNameT ?
-                                                    (
-                                                        column extends NameT ?
-                                                            (
-                                                                Column<TableNameT, NameT, TypeT|WidenT>
-                                                            ) :
-                                                            (T["selectReferences"][table]["columns"][column])
-                                                    ) :
-                                                    (T["selectReferences"][table]["columns"][column])
-                                            )
-                                        }
+                                        [column in keyof T["selectReferences"][table]] : (
+                                            table extends TableNameT ?
+                                                (
+                                                    column extends NameT ?
+                                                        (
+                                                            Column<TableNameT, NameT, TypeT|WidenT>
+                                                        ) :
+                                                        (T["selectReferences"][table][column])
+                                                ) :
+                                                (T["selectReferences"][table][column])
+                                        )
                                     }
                                 }
                             ),
@@ -2375,17 +2339,17 @@ let f = preF
 
     .rightJoin(user, [app.columns.appId], [user.columns.appId]);
 
-f.data.columnReferences.app.columns.appId
-f.data.joinReferences[0].columnReferences.app.columns.appId
+f.data.columnReferences.app.appId
+f.data.joinReferences[0].columnReferences.app.appId
 f.data.joinReferences[0].nullable
-f.data.columnReferences.appKey.columns.appId
-f.data.joinReferences[1].columnReferences.appKey.columns.appId
+f.data.columnReferences.appKey.appId
+f.data.joinReferences[1].columnReferences.appKey.appId
 f.data.joinReferences[1].nullable
-f.data.columnReferences.ssoClient.columns.ssoClientId
-f.data.joinReferences[2].columnReferences.ssoClient.columns.ssoClientId
+f.data.columnReferences.ssoClient.ssoClientId
+f.data.joinReferences[2].columnReferences.ssoClient.ssoClientId
 f.data.joinReferences[2].nullable
-f.data.columnReferences.user.columns.appId
-f.data.joinReferences[3].columnReferences.user.columns.appId
+f.data.columnReferences.user.appId
+f.data.joinReferences[3].columnReferences.user.appId
 f.data.joinReferences[3].nullable
 
 /*
@@ -2446,9 +2410,7 @@ type ExprUsedColumns<RawExprT extends RawExpr<any>> = (
     RawExprT extends Column<infer TableNameT, infer NameT, infer TypeT> ?
     {
         [table in TableNameT] : {
-            columns : {
-                [name in NameT] : Column<TableNameT, NameT, TypeT>
-            }
+            [name in NameT] : Column<TableNameT, NameT, TypeT>
         }
     } :
     RawExprT extends Expr<infer UsedColumnsT, any> ?
@@ -2494,11 +2456,11 @@ declare class Expressions {
 declare const e : Expressions;
 
 const w = f
-    .whereIsNotNull(c => c.app.columns.appId)
-    .whereIsEqual(3, c => c.app.columns.appId)
+    .whereIsNotNull(c => c.app.appId)
+    .whereIsEqual(3, c => c.app.appId)
     //.whereIsNull(c => c.app.columns.appId)
     .where((c) => {
-        return e.eq(1,c.app.columns.appId);
+        return e.eq(1,c.app.appId);
         //return e.eq(1, c.app.columns.appId);
         //const x : typeof test2;
         //return test2;
@@ -2521,25 +2483,25 @@ Examples
 function foo () {
     const subE = e.identity(from(app).select(c => [app.columns.name]));
     const f = from(app)
-        .join(appKey, c => [c.app.columns.appId], t => [t.appId])
-        .leftJoin(ssoClient, c => [c.app.columns.ssoClientId],  t => [t.ssoClientId])
+        .join(appKey, c => [c.app.appId], t => [t.appId])
+        .leftJoin(ssoClient, c => [c.app.ssoClientId],  t => [t.ssoClientId])
         .join(
             from(app)
-                .select(c => [c.app.columns.webhookKey, e.true().as("subexpr")])
+                .select(c => [c.app.webhookKey, e.true().as("subexpr")])
                 .as("subqueryTable"),
-            c => [c.app.columns.webhookKey],
+            c => [c.app.webhookKey],
             t => [t.webhookKey]
         )
-        .whereIsNotNull(c => c.app.columns.ssoApiKey)
+        .whereIsNotNull(c => c.app.ssoApiKey)
         .where(c => {
-            c.subqueryTable.columns.subexpr
-            return e.eq(c.app.columns.appId, 5);
+            c.subqueryTable.subexpr
+            return e.eq(c.app.appId, 5);
         })
         .select((c) => {
             return [
                 //c.app.columns.ssoApiKey.as("aliased"),
                 c.app,
-                c.ssoClient.columns.name,
+                c.ssoClient.name,
                 e.true().as("something"),
                 //e.eq(c.app.columns.ssoApiKey,"2").as("eq"),
                 //c.ssoClient.columns.initializeAfterAuthenticationEndpoint
@@ -2547,31 +2509,31 @@ function foo () {
         })
         .groupBy((s) => {
             return [
-                s.ssoClient.columns.initializeAfterAuthenticationEndpoint
+                s.ssoClient.initializeAfterAuthenticationEndpoint
             ];
         })
         .having((s) => {
-            return e.eq(s.__expr.columns.something, true);
+            return e.eq(s.__expr.something, true);
         })
         .orderBy((s) => {
             return [
                 //s.__expr.columns.aliased,
-                [s.app.columns.name, true],
-                [s.ssoClient.columns.authenticationEndpoint, false],
-                e.eq(s.app.columns.appId, 1),
-                [e.eq(s.app.columns.appId, 1), true]
+                [s.app.name, true],
+                [s.ssoClient.authenticationEndpoint, false],
+                e.eq(s.app.appId, 1),
+                [e.eq(s.app.appId, 1), true]
             ]
         })
         .limit(5)
         .offset(4)
-        .widen(s => s.app.columns.ssoApiKey, sd.nil())
-        .widen(s => s.ssoClient.columns.name, sd.number())
+        .widen(s => s.app.ssoApiKey, sd.nil())
+        .widen(s => s.ssoClient.name, sd.number())
         .union(
             from(app)
                 .select((s) => {
                     return [
                         s.app,
-                        s.app.columns.appId,
+                        s.app.appId,
                         e.true().as("test")
                     ]
                 })
@@ -2581,7 +2543,7 @@ function foo () {
                 .select((s) => {
                     return [
                         s.app,
-                        s.app.columns.appId,
+                        s.app.appId,
                         e.true().as("test3")
                     ]
                 })
