@@ -384,6 +384,11 @@ export interface AnyFromBuilderData {
         OrderByTupleElement<this["columnReferences"] & this["selectReferences"]>
     >,
 
+    limit : undefined|{
+        rowCount : number,
+        offset : number,
+    },
+
     allowed : {
         join : boolean,
         where : boolean,
@@ -392,6 +397,7 @@ export interface AnyFromBuilderData {
         having : boolean,
         orderBy : boolean,
         limit : boolean,
+        offset : boolean,
     }
 }
 
@@ -667,6 +673,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
+            limit : any,
 
             allowed : {
                 join : true,
@@ -676,6 +683,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 having : any,
                 orderBy : any,
                 limit : any,
+                offset : any,
             }
         }>,
         toTable : ToTableT,
@@ -705,6 +713,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             selectReferences : T["selectReferences"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
+                            limit : T["limit"],
 
                             allowed : T["allowed"],
                         }>
@@ -729,6 +738,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
+            limit : any,
 
             allowed : {
                 join : true,
@@ -738,6 +748,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 having : any,
                 orderBy : any,
                 limit : any,
+                offset : any,
             }
         }>,
         toTable : ToTableT,
@@ -767,6 +778,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             selectReferences : T["selectReferences"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
+                            limit : T["limit"],
 
                             allowed : T["allowed"],
                         }>
@@ -786,6 +798,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
+            limit : any,
 
             allowed : {
                 join : true,
@@ -795,6 +808,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 having : any,
                 orderBy : any,
                 limit : any,
+                offset : any,
             }
         }>,
         toTable : ToTableT,
@@ -824,6 +838,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             selectReferences : T["selectReferences"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
+                            limit : T["limit"],
 
                             allowed : T["allowed"],
                         }>
@@ -841,6 +856,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
+            limit : any,
 
             allowed : {
                 join : any,
@@ -850,6 +866,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 having : any,
                 orderBy : any,
                 limit : any,
+                offset : any,
             }
         }>,
         typeNarrowCallback : TypeNarrowCallbackT
@@ -892,6 +909,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             selectReferences : T["selectReferences"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
+                            limit : T["limit"],
 
                             allowed : {
                                 join : false,
@@ -901,6 +919,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 having : T["allowed"]["having"],
                                 orderBy : T["allowed"]["orderBy"],
                                 limit : T["allowed"]["limit"],
+                                offset : T["allowed"]["offset"],
                             }
                         }>
                     ) :
@@ -918,6 +937,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
+            limit : any,
 
             allowed : {
                 join : any,
@@ -927,6 +947,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 having : any,
                 orderBy : any,
                 limit : any,
+                offset : any,
             }
         }>,
         typeNarrowCallback : TypeNarrowCallbackT
@@ -969,6 +990,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             selectReferences : T["selectReferences"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
+                            limit : T["limit"],
 
                             allowed : {
                                 join : false,
@@ -978,6 +1000,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 having : T["allowed"]["having"],
                                 orderBy : T["allowed"]["orderBy"],
                                 limit : T["allowed"]["limit"],
+                                offset : T["allowed"]["offset"],
                             }
                         }>
                     ) :
@@ -996,6 +1019,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
+            limit : any,
 
             allowed : {
                 join : any,
@@ -1005,6 +1029,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 having : any,
                 orderBy : any,
                 limit : any,
+                offset : any,
             }
         }>,
         value : ConstT,
@@ -1048,6 +1073,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             selectReferences : T["selectReferences"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
+                            limit : T["limit"],
 
                             allowed : {
                                 join : false,
@@ -1057,6 +1083,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 having : T["allowed"]["having"],
                                 orderBy : T["allowed"]["orderBy"],
                                 limit : T["allowed"]["limit"],
+                                offset : T["allowed"]["offset"],
                             }
                         }>
                     ) :
@@ -1074,6 +1101,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
+            limit : any,
 
             allowed : {
                 join : any,
@@ -1083,6 +1111,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 having : any,
                 orderBy : any,
                 limit : any,
+                offset : any,
             }
         }>,
         whereCallback : WhereCallbackT
@@ -1100,6 +1129,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     selectReferences : T["selectReferences"],
                                     groupByReferences : T["groupByReferences"],
                                     orderBy : T["orderBy"],
+                                    limit : T["limit"],
 
                                     allowed : {
                                         join : false,
@@ -1109,6 +1139,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                         having : T["allowed"]["having"],
                                         orderBy : T["allowed"]["orderBy"],
                                         limit : T["allowed"]["limit"],
+                                        offset : T["allowed"]["offset"],
                                     }
                                 }>
                             ) :
@@ -1128,6 +1159,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
+            limit : any,
 
             allowed : {
                 join : any,
@@ -1137,6 +1169,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 having : any,
                 orderBy : any,
                 limit : any,
+                offset : any,
             }
         }>,
         selectCallback : SelectCallbackT
@@ -1150,6 +1183,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     selectReferences : SelectTupleToReference<ReturnType<SelectCallbackT>>,
                     groupByReferences : T["groupByReferences"],
                     orderBy : T["orderBy"],
+                    limit : T["limit"],
 
                     allowed : {
                         join : false,
@@ -1159,6 +1193,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                         having : true,
                         orderBy : true,
                         limit : true,
+                        offset : T["allowed"]["offset"],
                     }
                 }>
             ) :
@@ -1174,6 +1209,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
+            limit : any,
 
             allowed : {
                 join : any,
@@ -1183,6 +1219,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 having : any,
                 orderBy : any,
                 limit : any,
+                offset : any,
             }
         }>,
         groupByCallback : GroupByCallbackT
@@ -1196,6 +1233,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     selectReferences : T["selectReferences"],
                     groupByReferences : GroupByTupleToReference<ReturnType<GroupByCallbackT>>,
                     orderBy : T["orderBy"],
+                    limit : T["limit"],
 
                     allowed : {
                         join : false,
@@ -1205,6 +1243,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                         having : T["allowed"]["having"],
                         orderBy : T["allowed"]["orderBy"],
                         limit : T["allowed"]["limit"],
+                        offset : T["allowed"]["offset"],
                     }
                 }>
             ) :
@@ -1220,6 +1259,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
+            limit : any,
 
             allowed : {
                 join : any,
@@ -1229,6 +1269,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 having : true,
                 orderBy : any,
                 limit : any,
+                offset : any,
             }
         }>,
         havingCallback : HavingCallbackT
@@ -1246,6 +1287,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     selectReferences : T["selectReferences"],
                                     groupByReferences : T["groupByReferences"],
                                     orderBy : T["orderBy"],
+                                    limit : T["limit"],
 
                                     allowed : {
                                         join : false,
@@ -1255,6 +1297,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                         having : false,
                                         orderBy : T["allowed"]["orderBy"],
                                         limit : T["allowed"]["limit"],
+                                        offset : T["allowed"]["offset"],
                                     }
                                 }>
                             ) :
@@ -1274,6 +1317,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
+            limit : any,
 
             allowed : {
                 join : any,
@@ -1283,6 +1327,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 having : any,
                 orderBy : true,
                 limit : any,
+                offset : any,
             }
         }>,
         orderByCallback : OrderByCallbackT
@@ -1296,6 +1341,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     selectReferences : T["selectReferences"],
                     groupByReferences : T["groupByReferences"],
                     orderBy : ReturnType<OrderByCallbackT>,
+                    limit : T["limit"],
 
                     allowed : {
                         join : false,
@@ -1305,10 +1351,111 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                         having : false,
                         orderBy : false,
                         limit : T["allowed"]["limit"],
+                        offset : T["allowed"]["offset"],
                     }
                 }>
             ) :
             ("Invalid OrderByCallbackT"|void|never)
+    );
+    limit<RowCountT extends number> (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            selectReferences : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : any,
+
+            allowed : {
+                join : any,
+                where : any,
+                select : any,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : true,
+                offset : any,
+            }
+        }>,
+        rowCount : RowCountT
+    ):(
+        FromBuilder<{
+            columnReferences : T["columnReferences"],
+            joinReferences : T["joinReferences"],
+            typeNarrowedColumns : T["typeNarrowedColumns"],
+            selectReferences : T["selectReferences"],
+            groupByReferences : T["groupByReferences"],
+            orderBy : T["orderBy"],
+            limit : {
+                rowCount : RowCountT,
+                offset : 0,
+            },
+
+            allowed : {
+                join : false,
+                where : false,
+                select : false,
+                groupBy : false,
+                having : false,
+                orderBy : false,
+                limit : false,
+                //OFFSET is allowed after LIMIT
+                offset : true,
+            }
+        }>
+    );
+    offset<OffsetT extends number> (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            selectReferences : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : {
+                rowCount : any,
+                offset : any,
+            },
+
+            allowed : {
+                join : any,
+                where : any,
+                select : any,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+                offset : true,
+            }
+        }>,
+        offset : OffsetT
+    ):(
+        T["limit"] extends { rowCount : number } ?
+            FromBuilder<{
+                columnReferences : T["columnReferences"],
+                joinReferences : T["joinReferences"],
+                typeNarrowedColumns : T["typeNarrowedColumns"],
+                selectReferences : T["selectReferences"],
+                groupByReferences : T["groupByReferences"],
+                orderBy : T["orderBy"],
+                limit : {
+                    rowCount : T["limit"]["rowCount"],
+                    offset : OffsetT,
+                },
+
+                allowed : {
+                    join : false,
+                    where : false,
+                    select : false,
+                    groupBy : false,
+                    having : false,
+                    orderBy : false,
+                    limit : false,
+                    offset : false,
+                }
+            }> :
+            never
     );
 }
 
@@ -1324,16 +1471,19 @@ export declare function from<
         selectReferences : {},
         groupByReferences : {},
         orderBy : undefined,
+        limit : undefined,
 
         allowed : {
             join : true,
             where : true,
             select : true,
-            //Only allow the below clauses AFTER the SELECT clause
+            //Only allow the below clauses after the SELECT clause
             groupBy : false,
             having : false,
             orderBy : false,
             limit : false,
+            //OFFSET only allowed after LIMIT
+            offset : false,
         }
     }>
 );
@@ -1483,7 +1633,9 @@ function foo () {
                 e.eq(s.app.columns.appId, 1),
                 [e.eq(s.app.columns.appId, 1), true]
             ]
-        });
-    f.data.orderBy
+        })
+        .limit(5)
+        .offset(4);
+    f.data.limit.offset
 }
 foo();
