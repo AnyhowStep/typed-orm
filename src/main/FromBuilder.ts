@@ -396,7 +396,7 @@ export interface AnyFromBuilderData {
     //Doesn't perform any SQL queries, just relaxes the type constraints
     typeWidenedColumns : ColumnReferences,
 
-    union : undefined|Tuple<FromBuilder<AnyFromBuilderData>>,
+    union : undefined|Tuple<FromBuilder<any>>,
 
     allowed : {
         join : boolean,
@@ -1815,6 +1815,114 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             ) :
             ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
+    union<
+        FromBuilderT extends FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            typeWidenedColumns : any,
+            selectReferences : any,
+            selectTuple : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : any,
+            union : any,
+
+            allowed : {
+                join : false,
+                where : false,
+                select : false,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+                offset : any,
+                widen : any,
+                union : any,
+            }
+        }>
+    > (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            typeWidenedColumns : any,
+            selectReferences : any,
+            selectTuple : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : any,
+            union : any,
+
+            allowed : {
+                join : any,
+                where : any,
+                select : any,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+                offset : any,
+                widen : any,
+                union : {
+                    union : true,
+                    orderBy : any,
+                    limit : any,
+                    offset : any,
+                },
+            }
+        }>,
+        fromBuilder : FromBuilderT
+    ) : (
+        FromBuilderT extends FromBuilder<infer DataT> ?
+            (
+                DataT["selectTuple"] extends Tuple<any> ?
+                    (
+                        T["selectTuple"] extends Tuple<any> ?
+                            (
+                                SelectTupleToType<DataT["selectTuple"]> extends SelectTupleToType<T["selectTuple"]> ?
+                                    (
+                                        FromBuilder<{
+                                            columnReferences : T["columnReferences"],
+                                            joinReferences : T["joinReferences"],
+                                            typeNarrowedColumns : T["typeNarrowedColumns"],
+                                            typeWidenedColumns : T["typeWidenedColumns"],
+                                            selectReferences : T["selectReferences"],
+                                            selectTuple : T["selectTuple"],
+                                            groupByReferences : T["groupByReferences"],
+                                            orderBy : T["orderBy"],
+                                            limit : T["limit"],
+                                            union : T["union"] extends Tuple<any> ?
+                                                TuplePush<T["union"], FromBuilder<DataT>>:
+                                                [FromBuilder<DataT>],
+
+                                            allowed : {
+                                                join : false,
+                                                where : false,
+                                                select : false,
+                                                groupBy : false,
+                                                having : false,
+                                                orderBy : false,
+                                                limit : false,
+                                                offset : false,
+                                                widen : false,
+                                                union : {
+                                                    union : T["allowed"]["union"]["union"],
+                                                    orderBy : true,
+                                                    limit : true,
+                                                    offset : T["allowed"]["union"]["offset"],
+                                                },
+                                            }
+                                        }>
+                                    ) :
+                                    ("ColumnT is not in ColumnReferences"|void|never)
+                            ) :
+                            ("Invalid selectTuple"|void|never)
+                    ) :
+                    ("FromBuilderT has invalid selectTuple"|void|never)
+            ) :
+            ("Invalid FromBuilderT or cannot infer DataT"|void|never)
+    );
 }
 
 export declare function from<
@@ -1970,6 +2078,14 @@ Examples
 */
 
 function foo () {
+    const s2 = from(app)
+        .select((s) => {
+            return [
+                s.app,
+                s.app.columns.appId,
+                e.true().as("test")
+            ]
+        });
     const f = from(app)
         .join(appKey, [app.columns.appId], [appKey.columns.appId])
         .join(ssoClient, [app.columns.ssoClientId], [ssoClient.columns.ssoClientId])
@@ -1981,7 +2097,7 @@ function foo () {
             return [
                 //c.app.columns.ssoApiKey.as("aliased"),
                 c.app,
-                c.ssoClient.columns.ssoClientId,
+                c.ssoClient.columns.name,
                 e.true().as("something"),
                 //e.eq(c.app.columns.ssoApiKey,"2").as("eq"),
                 //c.ssoClient.columns.initializeAfterAuthenticationEndpoint
@@ -2007,16 +2123,29 @@ function foo () {
         .limit(5)
         .offset(4)
         .widen(s => s.app.columns.ssoApiKey, sd.nil())
-        .widen(s => s.app.columns.ssoApiKey, sd.number());
-    f.data.selectReferences.app.columns.ssoApiKey
-    const s2 = from(app)
-        .select((s) => {
-            return [
-                s.app,
-                s.app.columns.appId,
-                e.true().as("test")
-            ]
-        });
+        .widen(s => s.ssoClient.columns.name, sd.number())
+        .union(
+            from(app)
+                .select((s) => {
+                    return [
+                        s.app,
+                        s.app.columns.appId,
+                        e.true().as("test")
+                    ]
+                })
+        )
+        .union(
+            from(app)
+                .select((s) => {
+                    return [
+                        s.app,
+                        s.app.columns.appId,
+                        e.true().as("test3")
+                    ]
+                })
+        );//*/
+        f.data.union[1].data.selectReferences.__expr.columns.test3
+    const st : typeof s2["data"]["selectTuple"] extends Tuple<any> ? "yes" : "no";
     let err : SelectTupleReplaceColumn<typeof f["data"]["selectTuple"], "__expr", "something", "replaced"> = null as any;
     let duno : Tuple<SelectTupleElement<any>> = err;
     let x : SelectTupleToType<typeof f.data.selectTuple> = null as any;

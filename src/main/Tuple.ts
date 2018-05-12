@@ -210,5 +210,5 @@ export type TuplePush<TupleT extends Tuple<any>, NextT> = (
                 "0" : TupleT["0"]
             }
         ) :
-        ("Invalid TupleT or could not infer TypeT"|void|never)
+        never//("Invalid TupleT or could not infer TypeT"|void|never)
 );
