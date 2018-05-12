@@ -2404,9 +2404,43 @@ type RawExpr<TypeT> = (
             never
     )|
     Expr<any, TypeT>|
-    Column<any, any, TypeT>
+    Column<any, any, TypeT>|
+    SelectBuilder<{
+        columnReferences : any,
+        joinReferences : any,
+        typeNarrowedColumns : any,
+        selectReferences : any,
+        selectTuple : Tuple<JoinableSelectTupleElement<any>> & {
+            length : 1
+        },
+        groupByReferences : any,
+        orderBy : any,
+        limit : any,
+        typeWidenedColumns : any,
+        union : any,
+        unionOrderBy : any,
+        unionLimit : any,
+
+        allowed : {
+            join : false,
+            where : false,
+            select : false,
+            //Only allow the below clauses after the SELECT clause
+            groupBy : any,
+            having : any,
+            orderBy : any,
+            limit : any,
+            //OFFSET only allowed after LIMIT
+            offset : any,
+            widen : any,
+
+            union : any,
+        }
+    }>
 );
 type ExprUsedColumns<RawExprT extends RawExpr<any>> = (
+    RawExprT extends SelectBuilder<any> ?
+    {} :
     RawExprT extends AllowedExprConstants ?
     {} :
     RawExprT extends Column<infer TableNameT, infer NameT, infer TypeT> ?
@@ -2419,7 +2453,7 @@ type ExprUsedColumns<RawExprT extends RawExpr<any>> = (
     } :
     RawExprT extends Expr<infer UsedColumnsT, any> ?
     UsedColumnsT :
-    ("Invalid RawExprT or could not infer used columns"|void|never)
+    never//("Invalid RawExprT or could not infer used columns"|void|never)
 );
 type ExprType<RawExprT extends RawExpr<any>> = (
     RawExprT extends AllowedExprConstants ?
@@ -2428,7 +2462,17 @@ type ExprType<RawExprT extends RawExpr<any>> = (
     TypeT :
     RawExprT extends Expr<any, infer TypeT> ?
     TypeT :
-    ("Invalid RawExprT or could not infer TypeT"|void|never)
+    RawExprT extends SelectBuilder<infer DataT> ?
+        (
+            DataT["selectTuple"] extends (
+                Tuple<JoinableSelectTupleElement<any>> &
+                { length : 1 }
+            ) ?
+                SelectTupleElementType<DataT["selectTuple"][0]> :
+                ("Invalid selectTuple; must have 1 element, and not be a table"|void|never)
+        )
+     :
+    ("Invalid RawExprT or could not infer TypeT/DataT"|void|never)
 );
 
 declare class Expressions {
@@ -2439,6 +2483,12 @@ declare class Expressions {
     > (left : LeftT, right : RightT) : Expr<
         ExprUsedColumns<LeftT> & ExprUsedColumns<RightT>,
         boolean
+    >;
+    identity<
+        LeftT extends RawExpr<any>
+    > (left : LeftT) : Expr<
+        ExprUsedColumns<LeftT>,
+        ExprType<LeftT>
     >;
 }
 declare const e : Expressions;
@@ -2469,6 +2519,8 @@ Examples
 
 //declare function tuple<TupleT extends Tuple<any>>(t : TupleT) : TupleT;
 function foo () {
+    const subE = e.identity(from(app).select(c => [app.columns.appId]));
+    sub
     const f = from(app)
         .join(appKey, c => [c.app.columns.appId], t => [t.appId])
         .leftJoin(ssoClient, c => [c.app.columns.ssoClientId],  t => [t.ssoClientId])
