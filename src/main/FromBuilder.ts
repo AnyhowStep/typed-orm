@@ -5,6 +5,14 @@ export interface Column<TableNameT extends string, NameT extends string, TypeT> 
     table : TableNameT;
     name  : NameT;
     assertDelegate : sd.AssertDelegate<TypeT>;
+
+    as<AliasT extends string>(alias : AliasT) : SelectColumnExpr<
+        ColumnToReference<this>,
+        TypeT,
+
+        "__expr",
+        AliasT
+    >;
 }
 export type AnyColumn = Column<any, any, any>;
 
@@ -1349,7 +1357,7 @@ function foo () {
         })
         .select((c) => {
             return [
-                c.app.columns.ssoApiKey,
+                c.app.columns.ssoApiKey.as("aliased"),
                 c.app,
                 e.true().as("something"),
                 e.eq(c.app.columns.ssoApiKey,"2").as("eq"),
