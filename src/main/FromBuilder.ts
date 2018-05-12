@@ -396,6 +396,8 @@ export interface AnyFromBuilderData {
     //Doesn't perform any SQL queries, just relaxes the type constraints
     typeWidenedColumns : ColumnReferences,
 
+    union : undefined|Tuple<FromBuilder<AnyFromBuilderData>>,
+
     allowed : {
         join : boolean,
         where : boolean,
@@ -406,6 +408,13 @@ export interface AnyFromBuilderData {
         limit : boolean,
         offset : boolean,
         widen : boolean,
+
+        union : {
+            union : boolean,
+            orderBy : boolean,
+            limit : boolean,
+            offset : boolean,
+        },
     }
 }
 
@@ -788,12 +797,13 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
-            typeWidenedColumns : any,
             selectReferences : any,
             selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            typeWidenedColumns : any,
+            union : any,
 
             allowed : {
                 join : true,
@@ -805,6 +815,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : any,
                 widen : any,
+                union : any,
             }
         }>,
         toTable : ToTableT,
@@ -837,6 +848,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
+                            union : T["union"],
 
                             allowed : T["allowed"],
                         }>
@@ -864,6 +876,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            union : any,
 
             allowed : {
                 join : true,
@@ -875,6 +888,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : any,
                 widen : any,
+                union : any,
             }
         }>,
         toTable : ToTableT,
@@ -907,6 +921,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
+                            union : T["union"],
 
                             allowed : T["allowed"],
                         }>
@@ -929,6 +944,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            union : any,
 
             allowed : {
                 join : true,
@@ -940,6 +956,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : any,
                 widen : any,
+                union : any,
             }
         }>,
         toTable : ToTableT,
@@ -972,6 +989,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
+                            union : T["union"],
 
                             allowed : T["allowed"],
                         }>
@@ -992,6 +1010,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            union : any,
 
             allowed : {
                 join : any,
@@ -1003,6 +1022,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : any,
                 widen : any,
+                union : any,
             }
         }>,
         typeNarrowCallback : TypeNarrowCallbackT
@@ -1048,6 +1068,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
+                            union : T["union"],
 
                             allowed : {
                                 join : false,
@@ -1059,6 +1080,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 limit : T["allowed"]["limit"],
                                 offset : T["allowed"]["offset"],
                                 widen : T["allowed"]["widen"],
+                                union : T["allowed"]["union"],
                             }
                         }>
                     ) :
@@ -1079,6 +1101,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            union : any,
 
             allowed : {
                 join : any,
@@ -1090,6 +1113,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : any,
                 widen : any,
+                union : any,
             }
         }>,
         typeNarrowCallback : TypeNarrowCallbackT
@@ -1135,6 +1159,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
+                            union : T["union"],
 
                             allowed : {
                                 join : false,
@@ -1146,6 +1171,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 limit : T["allowed"]["limit"],
                                 offset : T["allowed"]["offset"],
                                 widen : T["allowed"]["widen"],
+                                union : T["allowed"]["union"],
                             }
                         }>
                     ) :
@@ -1167,6 +1193,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            union : any,
 
             allowed : {
                 join : any,
@@ -1178,6 +1205,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : any,
                 widen : any,
+                union : any,
             }
         }>,
         value : ConstT,
@@ -1224,6 +1252,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
+                            union : T["union"],
 
                             allowed : {
                                 join : false,
@@ -1235,6 +1264,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 limit : T["allowed"]["limit"],
                                 offset : T["allowed"]["offset"],
                                 widen : T["allowed"]["widen"],
+                                union : T["allowed"]["union"],
                             }
                         }>
                     ) :
@@ -1255,6 +1285,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            union : any,
 
             allowed : {
                 join : any,
@@ -1266,6 +1297,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : any,
                 widen : any,
+                union : any,
             }
         }>,
         whereCallback : WhereCallbackT
@@ -1286,6 +1318,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     groupByReferences : T["groupByReferences"],
                                     orderBy : T["orderBy"],
                                     limit : T["limit"],
+                                    union : T["union"],
 
                                     allowed : {
                                         join : false,
@@ -1297,6 +1330,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                         limit : T["allowed"]["limit"],
                                         offset : T["allowed"]["offset"],
                                         widen : T["allowed"]["widen"],
+                                        union : T["allowed"]["union"],
                                     }
                                 }>
                             ) :
@@ -1319,6 +1353,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            union : any,
 
             allowed : {
                 join : any,
@@ -1330,6 +1365,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : any,
                 widen : any,
+                union : any,
             }
         }>,
         selectCallback : SelectCallbackT
@@ -1346,6 +1382,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     groupByReferences : T["groupByReferences"],
                     orderBy : T["orderBy"],
                     limit : T["limit"],
+                    union : T["union"],
 
                     allowed : {
                         join : false,
@@ -1357,6 +1394,12 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                         limit : true,
                         offset : T["allowed"]["offset"],
                         widen : true,
+                        union : {
+                            union : true,
+                            orderBy : T["allowed"]["union"]["orderBy"],
+                            limit : T["allowed"]["union"]["limit"],
+                            offset : T["allowed"]["union"]["offset"],
+                        }
                     }
                 }>
             ) :
@@ -1375,6 +1418,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            union : any,
 
             allowed : {
                 join : any,
@@ -1386,6 +1430,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : any,
                 widen : any,
+                union : any,
             }
         }>,
         groupByCallback : GroupByCallbackT
@@ -1402,6 +1447,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     groupByReferences : GroupByTupleToReference<ReturnType<GroupByCallbackT>>,
                     orderBy : T["orderBy"],
                     limit : T["limit"],
+                    union : T["union"],
 
                     allowed : {
                         join : false,
@@ -1413,6 +1459,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                         limit : T["allowed"]["limit"],
                         offset : T["allowed"]["offset"],
                         widen : T["allowed"]["widen"],
+                        union : T["allowed"]["union"],
                     }
                 }>
             ) :
@@ -1431,6 +1478,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            union : any,
 
             allowed : {
                 join : any,
@@ -1442,6 +1490,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : any,
                 widen : any,
+                union : any,
             }
         }>,
         havingCallback : HavingCallbackT
@@ -1462,6 +1511,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     groupByReferences : T["groupByReferences"],
                                     orderBy : T["orderBy"],
                                     limit : T["limit"],
+                                    union : T["union"],
 
                                     allowed : {
                                         join : false,
@@ -1473,6 +1523,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                         limit : T["allowed"]["limit"],
                                         offset : T["allowed"]["offset"],
                                         widen : T["allowed"]["widen"],
+                                        union : T["allowed"]["union"],
                                     }
                                 }>
                             ) :
@@ -1495,6 +1546,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            union : any,
 
             allowed : {
                 join : any,
@@ -1506,6 +1558,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : any,
                 widen : any,
+                union : any,
             }
         }>,
         orderByCallback : OrderByCallbackT
@@ -1522,6 +1575,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     groupByReferences : T["groupByReferences"],
                     orderBy : ReturnType<OrderByCallbackT>,
                     limit : T["limit"],
+                    union : T["union"],
 
                     allowed : {
                         join : false,
@@ -1533,6 +1587,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                         limit : T["allowed"]["limit"],
                         offset : T["allowed"]["offset"],
                         widen : T["allowed"]["widen"],
+                        union : T["allowed"]["union"],
                     }
                 }>
             ) :
@@ -1549,6 +1604,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            union : any,
 
             allowed : {
                 join : any,
@@ -1560,6 +1616,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : true,
                 offset : any,
                 widen : any,
+                union : any,
             }
         }>,
         rowCount : RowCountT
@@ -1577,6 +1634,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 rowCount : RowCountT,
                 offset : 0,
             },
+            union : T["union"],
 
             allowed : {
                 join : false,
@@ -1589,6 +1647,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 //OFFSET is allowed after LIMIT
                 offset : true,
                 widen : T["allowed"]["widen"],
+                union : T["allowed"]["union"],
             }
         }>
     );
@@ -1606,6 +1665,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 rowCount : any,
                 offset : any,
             },
+            union : any,
 
             allowed : {
                 join : any,
@@ -1617,6 +1677,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : true,
                 widen : any,
+                union : any,
             }
         }>,
         offset : OffsetT
@@ -1635,6 +1696,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     rowCount : T["limit"]["rowCount"],
                     offset : OffsetT,
                 },
+                union : T["union"],
 
                 allowed : {
                     join : false,
@@ -1646,6 +1708,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     limit : false,
                     offset : false,
                     widen : T["allowed"]["widen"],
+                    union : T["allowed"]["union"],
                 }
             }> :
             never
@@ -1664,6 +1727,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             groupByReferences : any,
             orderBy : any,
             limit : any,
+            union : any,
 
             allowed : {
                 join : any,
@@ -1675,6 +1739,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : any,
                 offset : any,
                 widen : true,
+                union : any,
             }
         }>,
         typeWidenCallback : TypeWidenCallbackT,
@@ -1730,6 +1795,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
+                            union : T["union"],
 
                             allowed : {
                                 join : false,
@@ -1741,6 +1807,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 limit : false,
                                 offset : false,
                                 widen : T["allowed"]["widen"],
+                                union : T["allowed"]["union"],
                             }
                         }>
                     ) :
@@ -1759,12 +1826,13 @@ export declare function from<
         columnReferences : TableReference<TableT>,
         joinReferences : [JoinReference<TableReference<TableT>, false>],
         typeNarrowedColumns : {},
-        typeWidenedColumns : {},
         selectReferences : {},
         selectTuple : undefined,
         groupByReferences : {},
         orderBy : undefined,
         limit : undefined,
+        typeWidenedColumns : {},
+        union : undefined,
 
         allowed : {
             join : true,
@@ -1778,6 +1846,13 @@ export declare function from<
             //OFFSET only allowed after LIMIT
             offset : false,
             widen : false,
+
+            union : {
+                union : false,
+                orderBy : false,
+                limit : false,
+                offset : false,
+            }
         }
     }>
 );
