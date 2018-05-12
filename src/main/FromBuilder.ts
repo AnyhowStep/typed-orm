@@ -519,6 +519,7 @@ export type SelectCallback<
         never
 );
 
+
 export type TypeNarrowCallback<
     FromBuilderT extends FromBuilder<any>
 > = (
@@ -583,11 +584,26 @@ export type GroupByCallback<
 > = (
     FromBuilderT extends FromBuilder<infer DataT> ?
         (
-            selectReferences : DataT["selectReferences"],
+            columnReferences : DataT["columnReferences"] & DataT["selectReferences"],
             fromBuilder : FromBuilderT
         ) => (
             Tuple<
-                GroupByTupleElement<DataT["selectReferences"]>
+                GroupByTupleElement<DataT["columnReferences"] & DataT["selectReferences"]>
+            >
+        ):
+        never
+);
+export type HavingCallback<
+    FromBuilderT extends FromBuilder<any>
+> = (
+    FromBuilderT extends FromBuilder<infer DataT> ?
+        (
+            columnReferences : DataT["columnReferences"] & DataT["selectReferences"],
+            fromBuilder : FromBuilderT
+        ) => (
+            Expr<
+                ToPartialColumnReferences<DataT["columnReferences"] & DataT["selectReferences"]>,
+                boolean
             >
         ):
         never
@@ -1132,6 +1148,58 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             ) :
             ("Invalid SelectCallbackT"|void|never)
     );
+    having<
+        HavingCallbackT extends HavingCallback<FromBuilder<T>>
+    > (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            selectReferences : any,
+            groupByReferences : any,
+
+            allowed : {
+                join : any,
+                where : any,
+                select : any,
+                groupBy : any,
+                having : true,
+                orderBy : any,
+                limit : any,
+            }
+        }>,
+        havingCallback : HavingCallbackT
+    ):(
+        HavingCallbackT extends HavingCallback<FromBuilder<T>> ?
+            (
+                ReturnType<HavingCallbackT> extends Expr<infer UsedReferencesT, boolean> ?
+                    (
+                        T["columnReferences"] & T["selectReferences"] extends UsedReferencesT ?
+                            (
+                                FromBuilder<{
+                                    columnReferences : T["columnReferences"],
+                                    joinReferences : T["joinReferences"],
+                                    typeNarrowedColumns : T["typeNarrowedColumns"],
+                                    selectReferences : T["selectReferences"],
+                                    groupByReferences : T["groupByReferences"],
+
+                                    allowed : {
+                                        join : false,
+                                        where : false,
+                                        select : false,
+                                        groupBy : false,
+                                        having : false,
+                                        orderBy : T["allowed"]["orderBy"],
+                                        limit : T["allowed"]["limit"],
+                                    }
+                                }>
+                            ) :
+                            ("UsedReferencesT has some columns not in FromBuilder's columnReferences and selectReferences"|void|never)
+                    ) :
+                    ("Invalid ExprT or could not infer UsedReferencesT"|void|never)
+            ) :
+            ("Invalid HavingCallbackT"|void|never)
+    );
 }
 
 export declare function from<
@@ -1276,6 +1344,9 @@ function foo () {
         .join(appKey, [app.columns.appId], [appKey.columns.appId])
         .rightJoin(ssoClient, [app.columns.ssoClientId], [ssoClient.columns.ssoClientId])
         .whereIsNotNull(c => c.app.columns.ssoApiKey)
+        .where(c => {
+            return e.eq(c.app.columns.appId, 5);
+        })
         .select((c) => {
             return [
                 c.app.columns.ssoApiKey,
@@ -1289,7 +1360,10 @@ function foo () {
             return [
                 s.ssoClient.columns.initializeAfterAuthenticationEndpoint
             ];
+        })
+        .having((s) => {
+            return e.eq(s.__expr.columns.something, true);
         });
-        
+
 }
 foo();
