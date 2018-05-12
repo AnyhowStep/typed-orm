@@ -903,8 +903,8 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
     );
     rightJoin<
         ToTableT extends AliasedTable<any, any, {}>,
-        FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>,
-        ToColumnsT extends ToColumnsCallback<ToTableT, FromColumnsInCallback<FromColumnsT>>
+        FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>/*,
+        ToColumnsT extends ToColumnsCallback<ToTableT, FromColumnsInCallback<FromColumnsT>>*/
     > (
         this : SelectBuilder<{
             columnReferences : any,
@@ -935,7 +935,7 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
         }>,
         toTable : ToTableT,
         from : FromColumnsT,
-        to : ToColumnsT
+        to : ToColumnsCallback<ToTableT, FromColumnsInCallback<FromColumnsT>>
     ) : (
         TableAlias<ToTableT> extends keyof T["columnReferences"] ?
             ("Duplicate alias" | TableAlias<ToTableT> | void) :
@@ -975,8 +975,8 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
     );
     leftJoin<
         ToTableT extends AliasedTable<any, any, {}>,
-        FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>,
-        ToColumnsT extends ToColumnsCallback<ToTableT, FromColumnsInCallback<FromColumnsT>>
+        FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>/*,
+        ToColumnsT extends ToColumnsCallback<ToTableT, FromColumnsInCallback<FromColumnsT>>*/
     > (
         this : SelectBuilder<{
             columnReferences : any,
@@ -1007,7 +1007,7 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
         }>,
         toTable : ToTableT,
         from : FromColumnsT,
-        to : ToColumnsT
+        to : ToColumnsCallback<ToTableT, FromColumnsInCallback<FromColumnsT>>
     ) : (
         TableAlias<ToTableT> extends keyof T["columnReferences"] ?
             ("Duplicate alias" | TableAlias<ToTableT> | void) :
@@ -2390,7 +2390,7 @@ Examples
 function foo () {
     const f = from(app)
         .join(appKey, c => [c.app.columns.appId], t => [t.appId])
-        .join(ssoClient, c => [c.app.columns.ssoClientId],  t => [t.ssoClientId])
+        .leftJoin(ssoClient, c => [c.app.columns.ssoClientId],  t => [t.ssoClientId])
         .whereIsNotNull(c => c.app.columns.ssoApiKey)
         .where(c => {
             return e.eq(c.app.columns.appId, 5);
