@@ -387,6 +387,7 @@ export interface AnyFromBuilderData {
         OrderByTupleElement<this["columnReferences"] & this["selectReferences"]>
     >,
 
+    //Set by LIMIT and OFFSET clause
     limit : undefined|{
         rowCount : number,
         offset : number,
@@ -396,7 +397,19 @@ export interface AnyFromBuilderData {
     //Doesn't perform any SQL queries, just relaxes the type constraints
     typeWidenedColumns : ColumnReferences,
 
+    //Modified by UNION clause
     union : undefined|Tuple<FromBuilder<any>>,
+
+    //Set by ORDER BY clause
+    unionOrderBy : undefined|Tuple<
+        OrderByTupleElement<this["columnReferences"] & this["selectReferences"]>
+    >,
+
+    //Set by LIMIT and OFFSET clause
+    unionLimit : undefined|{
+        rowCount : number,
+        offset : number,
+    },
 
     allowed : {
         join : boolean,
@@ -804,6 +817,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             limit : any,
             typeWidenedColumns : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : true,
@@ -849,6 +864,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             orderBy : T["orderBy"],
                             limit : T["limit"],
                             union : T["union"],
+                            unionOrderBy : T["unionOrderBy"],
+                            unionLimit : T["unionLimit"],
 
                             allowed : T["allowed"],
                         }>
@@ -877,6 +894,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : true,
@@ -922,6 +941,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             orderBy : T["orderBy"],
                             limit : T["limit"],
                             union : T["union"],
+                            unionOrderBy : T["unionOrderBy"],
+                            unionLimit : T["unionLimit"],
 
                             allowed : T["allowed"],
                         }>
@@ -945,6 +966,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : true,
@@ -990,6 +1013,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             orderBy : T["orderBy"],
                             limit : T["limit"],
                             union : T["union"],
+                            unionOrderBy : T["unionOrderBy"],
+                            unionLimit : T["unionLimit"],
 
                             allowed : T["allowed"],
                         }>
@@ -1011,6 +1036,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : any,
@@ -1069,6 +1096,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             orderBy : T["orderBy"],
                             limit : T["limit"],
                             union : T["union"],
+                            unionOrderBy : T["unionOrderBy"],
+                            unionLimit : T["unionLimit"],
 
                             allowed : {
                                 join : false,
@@ -1102,6 +1131,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : any,
@@ -1160,6 +1191,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             orderBy : T["orderBy"],
                             limit : T["limit"],
                             union : T["union"],
+                            unionOrderBy : T["unionOrderBy"],
+                            unionLimit : T["unionLimit"],
 
                             allowed : {
                                 join : false,
@@ -1194,6 +1227,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : any,
@@ -1253,6 +1288,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             orderBy : T["orderBy"],
                             limit : T["limit"],
                             union : T["union"],
+                            unionOrderBy : T["unionOrderBy"],
+                            unionLimit : T["unionLimit"],
 
                             allowed : {
                                 join : false,
@@ -1286,6 +1323,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : any,
@@ -1319,6 +1358,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     orderBy : T["orderBy"],
                                     limit : T["limit"],
                                     union : T["union"],
+                                    unionOrderBy : T["unionOrderBy"],
+                                    unionLimit : T["unionLimit"],
 
                                     allowed : {
                                         join : false,
@@ -1354,6 +1395,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : any,
@@ -1383,6 +1426,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     orderBy : T["orderBy"],
                     limit : T["limit"],
                     union : T["union"],
+                    unionOrderBy : T["unionOrderBy"],
+                    unionLimit : T["unionLimit"],
 
                     allowed : {
                         join : false,
@@ -1419,6 +1464,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : any,
@@ -1448,6 +1495,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     orderBy : T["orderBy"],
                     limit : T["limit"],
                     union : T["union"],
+                    unionOrderBy : T["unionOrderBy"],
+                    unionLimit : T["unionLimit"],
 
                     allowed : {
                         join : false,
@@ -1479,6 +1528,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : any,
@@ -1512,6 +1563,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     orderBy : T["orderBy"],
                                     limit : T["limit"],
                                     union : T["union"],
+                                    unionOrderBy : T["unionOrderBy"],
+                                    unionLimit : T["unionLimit"],
 
                                     allowed : {
                                         join : false,
@@ -1547,6 +1600,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : any,
@@ -1576,6 +1631,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     orderBy : ReturnType<OrderByCallbackT>,
                     limit : T["limit"],
                     union : T["union"],
+                    unionOrderBy : T["unionOrderBy"],
+                    unionLimit : T["unionLimit"],
 
                     allowed : {
                         join : false,
@@ -1605,6 +1662,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : any,
@@ -1635,6 +1694,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 offset : 0,
             },
             union : T["union"],
+            unionOrderBy : T["unionOrderBy"],
+            unionLimit : T["unionLimit"],
 
             allowed : {
                 join : false,
@@ -1666,6 +1727,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 offset : any,
             },
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : any,
@@ -1697,6 +1760,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     offset : OffsetT,
                 },
                 union : T["union"],
+                unionOrderBy : T["unionOrderBy"],
+                unionLimit : T["unionLimit"],
 
                 allowed : {
                     join : false,
@@ -1728,6 +1793,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : any,
@@ -1796,6 +1863,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             orderBy : T["orderBy"],
                             limit : T["limit"],
                             union : T["union"],
+                            unionOrderBy : T["unionOrderBy"],
+                            unionLimit : T["unionLimit"],
 
                             allowed : {
                                 join : false,
@@ -1827,6 +1896,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : false,
@@ -1853,6 +1924,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             orderBy : any,
             limit : any,
             union : any,
+            unionOrderBy : any,
+            unionLimit : any,
 
             allowed : {
                 join : any,
@@ -1895,6 +1968,8 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                             union : T["union"] extends Tuple<any> ?
                                                 TuplePush<T["union"], FromBuilder<DataT>>:
                                                 [FromBuilder<DataT>],
+                                            unionOrderBy : T["unionOrderBy"],
+                                            unionLimit : T["unionLimit"],
 
                                             allowed : {
                                                 join : false,
@@ -1923,6 +1998,227 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             ) :
             ("Invalid FromBuilderT or cannot infer DataT"|void|never)
     );
+    orderBy<
+        OrderByCallbackT extends OrderByCallback<FromBuilder<T>>
+    > (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            typeWidenedColumns : any,
+            selectReferences : any,
+            selectTuple : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : any,
+            union : any,
+            unionOrderBy : any,
+            unionLimit : any,
+
+            allowed : {
+                join : any,
+                where : any,
+                select : any,
+                groupBy : any,
+                having : any,
+                orderBy : false,
+                limit : any,
+                offset : any,
+                widen : any,
+                union : {
+                    union : any,
+                    orderBy : true,
+                    limit : any,
+                    offset : any,
+                },
+            }
+        }>,
+        orderByCallback : OrderByCallbackT
+    ):(
+        OrderByCallbackT extends OrderByCallback<FromBuilder<T>> ?
+            (
+                FromBuilder<{
+                    columnReferences : T["columnReferences"],
+                    joinReferences : T["joinReferences"],
+                    typeNarrowedColumns : T["typeNarrowedColumns"],
+                    typeWidenedColumns : T["typeWidenedColumns"],
+                    selectReferences : T["selectReferences"],
+                    selectTuple : T["selectTuple"],
+                    groupByReferences : T["groupByReferences"],
+                    orderBy : T["orderBy"],
+                    limit : T["limit"],
+                    union : T["union"],
+                    unionOrderBy : ReturnType<OrderByCallbackT>,
+                    unionLimit : T["unionLimit"],
+
+                    allowed : {
+                        join : false,
+                        where : false,
+                        select : false,
+                        groupBy : false,
+                        having : false,
+                        orderBy : false,
+                        limit : false,
+                        offset : false,
+                        widen : false,
+                        union : {
+                            union : false,
+                            orderBy : false,
+                            limit : T["allowed"]["union"]["limit"],
+                            offset : T["allowed"]["union"]["offset"],
+                        },
+                    }
+                }>
+            ) :
+            ("Invalid OrderByCallbackT"|void|never)
+    );
+    limit<RowCountT extends number> (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            typeWidenedColumns : any,
+            selectReferences : any,
+            selectTuple : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : any,
+            union : any,
+            unionOrderBy : any,
+            unionLimit : any,
+
+            allowed : {
+                join : any,
+                where : any,
+                select : any,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : false,
+                offset : any,
+                widen : any,
+                union : {
+                    union : any,
+                    orderBy : any,
+                    limit : true,
+                    offset : any,
+                },
+            }
+        }>,
+        rowCount : RowCountT
+    ):(
+        FromBuilder<{
+            columnReferences : T["columnReferences"],
+            joinReferences : T["joinReferences"],
+            typeNarrowedColumns : T["typeNarrowedColumns"],
+            typeWidenedColumns : T["typeWidenedColumns"],
+            selectReferences : T["selectReferences"],
+            selectTuple : T["selectTuple"],
+            groupByReferences : T["groupByReferences"],
+            orderBy : T["orderBy"],
+            limit : T["limit"],
+            union : T["union"],
+            unionOrderBy : T["unionOrderBy"],
+            unionLimit : {
+                rowCount : RowCountT,
+                offset : 0,
+            },
+
+            allowed : {
+                join : false,
+                where : false,
+                select : false,
+                groupBy : false,
+                having : false,
+                orderBy : false,
+                limit : false,
+                offset : false,
+                widen : false,
+                union : {
+                    union : false,
+                    orderBy : false,
+                    limit : false,
+                    offset : true,
+                },
+            }
+        }>
+    );
+    offset<OffsetT extends number> (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            typeWidenedColumns : any,
+            selectReferences : any,
+            selectTuple : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : any,
+            union : any,
+            unionOrderBy : any,
+            unionLimit : {
+                rowCount : any,
+                offset : any,
+            },
+
+            allowed : {
+                join : any,
+                where : any,
+                select : any,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+                offset : false,
+                widen : any,
+                union : {
+                    union : any,
+                    orderBy : any,
+                    limit : any,
+                    offset : true,
+                },
+            }
+        }>,
+        offset : OffsetT
+    ):(
+        T["unionLimit"] extends { rowCount : number } ?
+            FromBuilder<{
+                columnReferences : T["columnReferences"],
+                joinReferences : T["joinReferences"],
+                typeNarrowedColumns : T["typeNarrowedColumns"],
+                typeWidenedColumns : T["typeWidenedColumns"],
+                selectReferences : T["selectReferences"],
+                selectTuple : T["selectTuple"],
+                groupByReferences : T["groupByReferences"],
+                orderBy : T["orderBy"],
+                limit : T["limit"],
+                union : T["union"],
+                unionOrderBy : T["unionOrderBy"],
+                unionLimit : {
+                    rowCount : T["unionLimit"]["rowCount"],
+                    offset : OffsetT,
+                },
+
+                allowed : {
+                    join : false,
+                    where : false,
+                    select : false,
+                    groupBy : false,
+                    having : false,
+                    orderBy : false,
+                    limit : false,
+                    offset : false,
+                    widen : false,
+                    union : {
+                        union : false,
+                        orderBy : false,
+                        limit : false,
+                        offset : false,
+                    },
+                }
+            }> :
+            never
+    );
 }
 
 export declare function from<
@@ -1941,6 +2237,8 @@ export declare function from<
         limit : undefined,
         typeWidenedColumns : {},
         union : undefined,
+        unionOrderBy : undefined,
+        unionLimit : undefined,
 
         allowed : {
             join : true,
@@ -2143,7 +2441,17 @@ function foo () {
                         e.true().as("test3")
                     ]
                 })
-        );//*/
+        )
+        .orderBy((s) => {
+            return [s.__expr.columns.something]
+        })
+        .limit(30)
+        .offset(56);//*/
+        f.data.orderBy
+        f.data.limit
+        f.data.union
+        f.data.unionOrderBy
+        f.data.unionLimit
         f.data.union[1].data.selectReferences.__expr.columns.test3
     const st : typeof s2["data"]["selectTuple"] extends Tuple<any> ? "yes" : "no";
     let err : SelectTupleReplaceColumn<typeof f["data"]["selectTuple"], "__expr", "something", "replaced"> = null as any;
