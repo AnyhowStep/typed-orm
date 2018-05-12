@@ -1,6 +1,20 @@
 import * as sd from "schema-decorator";
 import {Tuple, TupleKeys, TupleLength, TuplePush} from "./Tuple";
 
+export interface RawPaginationArgs {
+    page? : number|null|undefined;
+    itemsPerPage? : number|null|undefined;
+}
+export interface PaginateInfo {
+    itemsFound : number,
+    pagesFound : number,
+    page : number,
+    itemsPerPage : number,
+}
+export interface PaginateResult<T> {
+    info : PaginateInfo,
+    rows : T[],
+}
 export interface Column<TableNameT extends string, NameT extends string, TypeT> {
     table : TableNameT;
     name  : NameT;
@@ -2287,6 +2301,129 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
             AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<T["selectTuple"]>> :
             "Cannot use tables in SELECT clause when aliasing"|void|never
     );
+    fetchAll (
+        this : SelectBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            typeWidenedColumns : any,
+            selectReferences : any,
+            selectTuple : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : any,
+            union : any,
+            unionOrderBy : any,
+            unionLimit : any,
+
+            allowed : {
+                join : false,
+                where : false,
+                select : false,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+                offset : any,
+                widen : any,
+                union : any,
+            }
+        }>
+    ) : Promise<T["selectReferences"][]>;
+    fetchOne (
+        this : SelectBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            typeWidenedColumns : any,
+            selectReferences : any,
+            selectTuple : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : any,
+            union : any,
+            unionOrderBy : any,
+            unionLimit : any,
+
+            allowed : {
+                join : false,
+                where : false,
+                select : false,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+                offset : any,
+                widen : any,
+                union : any,
+            }
+        }>
+    ) : Promise<T["selectReferences"]>;
+    fetchZeroOrOne (
+        this : SelectBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            typeWidenedColumns : any,
+            selectReferences : any,
+            selectTuple : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : any,
+            union : any,
+            unionOrderBy : any,
+            unionLimit : any,
+
+            allowed : {
+                join : false,
+                where : false,
+                select : false,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+                offset : any,
+                widen : any,
+                union : any,
+            }
+        }>
+    ) : Promise<T["selectReferences"]|undefined>;
+    fetchValue (
+        this : AnySelectBuilderValueQuery
+    ) : (
+        T["selectTuple"] extends (
+            Tuple<JoinableSelectTupleElement<any>> &
+            { length : 1 }
+        ) ?
+            Promise<SelectTupleElementType<T["selectTuple"][0]>> :
+            never
+    );
+    fetchValueOrUndefined (
+        this : AnySelectBuilderValueQuery
+    ) : (
+        T["selectTuple"] extends (
+            Tuple<JoinableSelectTupleElement<any>> &
+            { length : 1 }
+        ) ?
+            Promise<SelectTupleElementType<T["selectTuple"][0]>|undefined> :
+            never
+    );
+    fetchValueArray (
+        this : AnySelectBuilderValueQuery
+    ) : (
+        T["selectTuple"] extends (
+            Tuple<JoinableSelectTupleElement<any>> &
+            { length : 1 }
+        ) ?
+            Promise<SelectTupleElementType<T["selectTuple"][0]>[]> :
+            never
+    );
+    //May not always work if GROUP BY, HAVING clauses use a select-expression,
+    //May not work as intended with UNION selects
+    count () : Promise<number>;
+
+    //Uses count() internally, same restrictions apply
+    paginate (paginationArgs? : RawPaginationArgs) : Promise<PaginateResult<T["selectReferences"]>>;
 }
 
 export declare function from<
@@ -2359,6 +2496,39 @@ f.data.joinReferences[3].nullable
     + Columns
     + Other Expr<> instances
 */
+type AnySelectBuilderValueQuery = SelectBuilder<{
+    columnReferences : any,
+    joinReferences : any,
+    typeNarrowedColumns : any,
+    selectReferences : any,
+    selectTuple : Tuple<JoinableSelectTupleElement<any>> & {
+        length : 1
+    },
+    groupByReferences : any,
+    orderBy : any,
+    limit : any,
+    typeWidenedColumns : any,
+    union : any,
+    unionOrderBy : any,
+    unionLimit : any,
+
+    allowed : {
+        join : false,
+        where : false,
+        select : false,
+        //Only allow the below clauses after the SELECT clause
+        groupBy : any,
+        having : any,
+        orderBy : any,
+        limit : any,
+        //OFFSET only allowed after LIMIT
+        offset : any,
+        widen : any,
+
+        union : any,
+    }
+}>;
+
 type AllowedExprConstants = number|string|boolean|Date|null|undefined;
 type RawExpr<TypeT> = (
     (
@@ -2369,38 +2539,7 @@ type RawExpr<TypeT> = (
     )|
     Expr<any, TypeT>|
     Column<any, any, TypeT>|
-    SelectBuilder<{
-        columnReferences : any,
-        joinReferences : any,
-        typeNarrowedColumns : any,
-        selectReferences : any,
-        selectTuple : Tuple<JoinableSelectTupleElement<any>> & {
-            length : 1
-        },
-        groupByReferences : any,
-        orderBy : any,
-        limit : any,
-        typeWidenedColumns : any,
-        union : any,
-        unionOrderBy : any,
-        unionLimit : any,
-
-        allowed : {
-            join : false,
-            where : false,
-            select : false,
-            //Only allow the below clauses after the SELECT clause
-            groupBy : any,
-            having : any,
-            orderBy : any,
-            limit : any,
-            //OFFSET only allowed after LIMIT
-            offset : any,
-            widen : any,
-
-            union : any,
-        }
-    }>
+    AnySelectBuilderValueQuery
 );
 type ExprUsedColumns<RawExprT extends RawExpr<any>> = (
     RawExprT extends SelectBuilder<any> ?
@@ -2483,11 +2622,21 @@ Examples
 function foo () {
     const subE = e.identity(from(app).select(c => [app.columns.name]));
     const f = from(app)
-        .join(appKey, c => [c.app.appId], t => [t.appId])
-        .leftJoin(ssoClient, c => [c.app.ssoClientId],  t => [t.ssoClientId])
+        .join(
+            appKey,
+            c => [c.app.appId],
+            t => [t.appId]
+        )
+        .leftJoin(
+            ssoClient,
+            c => [c.app.ssoClientId],
+            t => [t.ssoClientId])
         .join(
             from(app)
-                .select(c => [c.app.webhookKey, e.true().as("subexpr")])
+                .select(c => [
+                    c.app.webhookKey,
+                    e.true().as("subexpr")
+                ])
                 .as("subqueryTable"),
             c => [c.app.webhookKey],
             t => [t.webhookKey]
@@ -2501,6 +2650,7 @@ function foo () {
             return [
                 //c.app.columns.ssoApiKey.as("aliased"),
                 c.app,
+                c.ssoClient.name,
                 c.ssoClient.name,
                 e.true().as("something"),
                 //e.eq(c.app.columns.ssoApiKey,"2").as("eq"),
@@ -2534,6 +2684,7 @@ function foo () {
                     return [
                         s.app,
                         s.app.appId,
+                        s.app.appId,
                         e.true().as("test")
                     ]
                 })
@@ -2544,15 +2695,27 @@ function foo () {
                     return [
                         s.app,
                         s.app.appId,
+                        s.app.appId,
                         e.true().as("test3")
                     ]
                 })
         )
-        .orderBy((s) => {
+        .orderBy(() => {
             return [e.true()]
         })
         .limit(30)
         .offset(56);
+        //.execute() : Promise<SelectReferences>
+    f.paginate()
+        .then((result) => {
+            result
+        });
+    from(app)
+        .select(c => [c.app.name])
+        .paginate()
+        .then((result) => {
+            result
+        })
     f.data
 }
 foo();
