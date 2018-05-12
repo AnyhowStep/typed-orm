@@ -389,6 +389,10 @@ export interface AnyFromBuilderData {
         offset : number,
     },
 
+    //Widening is done after SELECT, before UNION, to allow other data types
+    //Doesn't perform any SQL queries, just relaxes the type constraints
+    typeWidenedColumns : ColumnReferences,
+
     allowed : {
         join : boolean,
         where : boolean,
@@ -398,6 +402,7 @@ export interface AnyFromBuilderData {
         orderBy : boolean,
         limit : boolean,
         offset : boolean,
+        widen : boolean,
     }
 }
 
@@ -551,6 +556,18 @@ export type TypeNarrowCallback<
         never
 );
 
+export type TypeWidenCallback<
+    FromBuilderT extends FromBuilder<any>
+> = (
+    FromBuilderT extends FromBuilder<infer DataT> ?
+        (
+            columnReferences : DataT["selectReferences"]
+        ) => (
+            AnyColumn
+        ):
+        never
+);
+
 
 export type GroupByTupleElement<ColumnReferencesT extends ColumnReferences> = (
     ColumnReferencesT[keyof ColumnReferencesT]|
@@ -670,6 +687,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -684,6 +702,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : any,
                 limit : any,
                 offset : any,
+                widen : any,
             }
         }>,
         toTable : ToTableT,
@@ -710,6 +729,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 >
                             ),
                             typeNarrowedColumns : T["typeNarrowedColumns"],
+                            typeWidenedColumns : T["typeWidenedColumns"],
                             selectReferences : T["selectReferences"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
@@ -735,6 +755,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -749,6 +770,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : any,
                 limit : any,
                 offset : any,
+                widen : any,
             }
         }>,
         toTable : ToTableT,
@@ -775,6 +797,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 >
                             ),
                             typeNarrowedColumns : T["typeNarrowedColumns"],
+                            typeWidenedColumns : T["typeWidenedColumns"],
                             selectReferences : T["selectReferences"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
@@ -795,6 +818,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -809,6 +833,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : any,
                 limit : any,
                 offset : any,
+                widen : any,
             }
         }>,
         toTable : ToTableT,
@@ -835,6 +860,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 >
                             ),
                             typeNarrowedColumns : T["typeNarrowedColumns"],
+                            typeWidenedColumns : T["typeWidenedColumns"],
                             selectReferences : T["selectReferences"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
@@ -853,6 +879,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -867,6 +894,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : any,
                 limit : any,
                 offset : any,
+                widen : any,
             }
         }>,
         typeNarrowCallback : TypeNarrowCallbackT
@@ -906,6 +934,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     }
                                 }
                             ),
+                            typeWidenedColumns : T["typeWidenedColumns"],
                             selectReferences : T["selectReferences"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
@@ -920,6 +949,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 orderBy : T["allowed"]["orderBy"],
                                 limit : T["allowed"]["limit"],
                                 offset : T["allowed"]["offset"],
+                                widen : T["allowed"]["widen"],
                             }
                         }>
                     ) :
@@ -934,6 +964,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -948,6 +979,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : any,
                 limit : any,
                 offset : any,
+                widen : any,
             }
         }>,
         typeNarrowCallback : TypeNarrowCallbackT
@@ -987,6 +1019,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     }
                                 }
                             ),
+                            typeWidenedColumns : T["typeWidenedColumns"],
                             selectReferences : T["selectReferences"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
@@ -1001,6 +1034,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 orderBy : T["allowed"]["orderBy"],
                                 limit : T["allowed"]["limit"],
                                 offset : T["allowed"]["offset"],
+                                widen : T["allowed"]["widen"],
                             }
                         }>
                     ) :
@@ -1016,6 +1050,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -1030,6 +1065,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : any,
                 limit : any,
                 offset : any,
+                widen : any,
             }
         }>,
         value : ConstT,
@@ -1070,6 +1106,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     }
                                 }
                             ),
+                            typeWidenedColumns : T["typeWidenedColumns"],
                             selectReferences : T["selectReferences"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
@@ -1084,6 +1121,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 orderBy : T["allowed"]["orderBy"],
                                 limit : T["allowed"]["limit"],
                                 offset : T["allowed"]["offset"],
+                                widen : T["allowed"]["widen"],
                             }
                         }>
                     ) :
@@ -1098,6 +1136,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -1112,6 +1151,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : any,
                 limit : any,
                 offset : any,
+                widen : any,
             }
         }>,
         whereCallback : WhereCallbackT
@@ -1126,6 +1166,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     columnReferences : T["columnReferences"],
                                     joinReferences : T["joinReferences"],
                                     typeNarrowedColumns : T["typeNarrowedColumns"],
+                                    typeWidenedColumns : T["typeWidenedColumns"],
                                     selectReferences : T["selectReferences"],
                                     groupByReferences : T["groupByReferences"],
                                     orderBy : T["orderBy"],
@@ -1140,6 +1181,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                         orderBy : T["allowed"]["orderBy"],
                                         limit : T["allowed"]["limit"],
                                         offset : T["allowed"]["offset"],
+                                        widen : T["allowed"]["widen"],
                                     }
                                 }>
                             ) :
@@ -1156,6 +1198,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -1170,6 +1213,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : any,
                 limit : any,
                 offset : any,
+                widen : any,
             }
         }>,
         selectCallback : SelectCallbackT
@@ -1180,6 +1224,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     columnReferences : T["columnReferences"],
                     joinReferences : T["joinReferences"],
                     typeNarrowedColumns : T["typeNarrowedColumns"],
+                    typeWidenedColumns : T["typeWidenedColumns"],
                     selectReferences : SelectTupleToReference<ReturnType<SelectCallbackT>>,
                     groupByReferences : T["groupByReferences"],
                     orderBy : T["orderBy"],
@@ -1194,6 +1239,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                         orderBy : true,
                         limit : true,
                         offset : T["allowed"]["offset"],
+                        widen : true,
                     }
                 }>
             ) :
@@ -1206,6 +1252,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -1220,6 +1267,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : any,
                 limit : any,
                 offset : any,
+                widen : any,
             }
         }>,
         groupByCallback : GroupByCallbackT
@@ -1230,6 +1278,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     columnReferences : T["columnReferences"],
                     joinReferences : T["joinReferences"],
                     typeNarrowedColumns : T["typeNarrowedColumns"],
+                    typeWidenedColumns : T["typeWidenedColumns"],
                     selectReferences : T["selectReferences"],
                     groupByReferences : GroupByTupleToReference<ReturnType<GroupByCallbackT>>,
                     orderBy : T["orderBy"],
@@ -1244,6 +1293,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                         orderBy : T["allowed"]["orderBy"],
                         limit : T["allowed"]["limit"],
                         offset : T["allowed"]["offset"],
+                        widen : T["allowed"]["widen"],
                     }
                 }>
             ) :
@@ -1256,6 +1306,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -1270,6 +1321,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : any,
                 limit : any,
                 offset : any,
+                widen : any,
             }
         }>,
         havingCallback : HavingCallbackT
@@ -1284,6 +1336,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     columnReferences : T["columnReferences"],
                                     joinReferences : T["joinReferences"],
                                     typeNarrowedColumns : T["typeNarrowedColumns"],
+                                    typeWidenedColumns : T["typeWidenedColumns"],
                                     selectReferences : T["selectReferences"],
                                     groupByReferences : T["groupByReferences"],
                                     orderBy : T["orderBy"],
@@ -1298,6 +1351,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                         orderBy : T["allowed"]["orderBy"],
                                         limit : T["allowed"]["limit"],
                                         offset : T["allowed"]["offset"],
+                                        widen : T["allowed"]["widen"],
                                     }
                                 }>
                             ) :
@@ -1314,6 +1368,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -1328,6 +1383,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : true,
                 limit : any,
                 offset : any,
+                widen : any,
             }
         }>,
         orderByCallback : OrderByCallbackT
@@ -1338,6 +1394,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     columnReferences : T["columnReferences"],
                     joinReferences : T["joinReferences"],
                     typeNarrowedColumns : T["typeNarrowedColumns"],
+                    typeWidenedColumns : T["typeWidenedColumns"],
                     selectReferences : T["selectReferences"],
                     groupByReferences : T["groupByReferences"],
                     orderBy : ReturnType<OrderByCallbackT>,
@@ -1352,6 +1409,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                         orderBy : false,
                         limit : T["allowed"]["limit"],
                         offset : T["allowed"]["offset"],
+                        widen : T["allowed"]["widen"],
                     }
                 }>
             ) :
@@ -1362,6 +1420,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -1376,6 +1435,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : any,
                 limit : true,
                 offset : any,
+                widen : any,
             }
         }>,
         rowCount : RowCountT
@@ -1384,6 +1444,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : T["columnReferences"],
             joinReferences : T["joinReferences"],
             typeNarrowedColumns : T["typeNarrowedColumns"],
+            typeWidenedColumns : T["typeWidenedColumns"],
             selectReferences : T["selectReferences"],
             groupByReferences : T["groupByReferences"],
             orderBy : T["orderBy"],
@@ -1402,6 +1463,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 limit : false,
                 //OFFSET is allowed after LIMIT
                 offset : true,
+                widen : T["allowed"]["widen"],
             }
         }>
     );
@@ -1410,6 +1472,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             columnReferences : any,
             joinReferences : any,
             typeNarrowedColumns : any,
+            typeWidenedColumns : any,
             selectReferences : any,
             groupByReferences : any,
             orderBy : any,
@@ -1427,6 +1490,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 orderBy : any,
                 limit : any,
                 offset : true,
+                widen : any,
             }
         }>,
         offset : OffsetT
@@ -1436,6 +1500,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 columnReferences : T["columnReferences"],
                 joinReferences : T["joinReferences"],
                 typeNarrowedColumns : T["typeNarrowedColumns"],
+                typeWidenedColumns : T["typeWidenedColumns"],
                 selectReferences : T["selectReferences"],
                 groupByReferences : T["groupByReferences"],
                 orderBy : T["orderBy"],
@@ -1453,9 +1518,97 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     orderBy : false,
                     limit : false,
                     offset : false,
+                    widen : T["allowed"]["widen"],
                 }
             }> :
             never
+    );
+    widen<
+        TypeWidenCallbackT extends TypeWidenCallback<FromBuilder<T>>,
+        WidenT
+    > (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            typeWidenedColumns : any,
+            selectReferences : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : any,
+
+            allowed : {
+                join : any,
+                where : any,
+                select : any,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+                offset : any,
+                widen : true,
+            }
+        }>,
+        typeWidenCallback : TypeWidenCallbackT,
+        assertWidened : sd.AssertDelegate<WidenT>
+    ) : (
+        ReturnType<TypeWidenCallbackT> extends Column<infer TableNameT, infer NameT, infer TypeT> ?
+            (
+                T["columnReferences"] extends ColumnToReference<ReturnType<TypeWidenCallbackT>> ?
+                    (
+                        FromBuilder<{
+                            columnReferences : T["columnReferences"],
+                            joinReferences : T["joinReferences"],
+                            typeNarrowedColumns : T["typeNarrowedColumns"],
+                            typeWidenedColumns : (
+                                T["typeWidenedColumns"] &
+                                {
+                                    [table in TableNameT] : {
+                                        columns : {
+                                            [column in NameT] : Column<TableNameT, NameT, TypeT|WidenT>
+                                        }
+                                    }
+                                }
+                            ),
+                            selectReferences : (
+                                {
+                                    [table in keyof T["selectReferences"]] : {
+                                        columns : {
+                                            [column in keyof T["selectReferences"][table]["columns"]] : (
+                                                table extends TableNameT ?
+                                                    (
+                                                        column extends NameT ?
+                                                            (
+                                                                Column<TableNameT, NameT, TypeT|WidenT>
+                                                            ) :
+                                                            (T["selectReferences"][table]["columns"][column])
+                                                    ) :
+                                                    (T["selectReferences"][table]["columns"][column])
+                                            )
+                                        }
+                                    }
+                                }
+                            ),
+                            groupByReferences : T["groupByReferences"],
+                            orderBy : T["orderBy"],
+                            limit : T["limit"],
+
+                            allowed : {
+                                join : false,
+                                where : false,
+                                select : false,
+                                groupBy : false,
+                                having : false,
+                                orderBy : false,
+                                limit : false,
+                                offset : false,
+                                widen : T["allowed"]["widen"],
+                            }
+                        }>
+                    ) :
+                    ("ColumnT is not in ColumnReferences"|void|never)
+            ) :
+            ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
 }
 
@@ -1468,6 +1621,7 @@ export declare function from<
         columnReferences : TableReference<TableT>,
         joinReferences : [JoinReference<TableReference<TableT>, false>],
         typeNarrowedColumns : {},
+        typeWidenedColumns : {},
         selectReferences : {},
         groupByReferences : {},
         orderBy : undefined,
@@ -1484,6 +1638,7 @@ export declare function from<
             limit : false,
             //OFFSET only allowed after LIMIT
             offset : false,
+            widen : false,
         }
     }>
 );
@@ -1635,7 +1790,29 @@ function foo () {
             ]
         })
         .limit(5)
-        .offset(4);
-    f.data.limit.offset
+        .offset(4)
+        .widen(s => s.app.columns.appId, sd.string());
+    f.data.selectReferences.app.columns.appId
 }
 foo();
+/*
+declare const a: number extends (number | null) ?
+  "yes" : "no";
+  declare const b: (number|null) extends number ?
+  "yes" : "no";
+  declare const c: null extends (number | null) ?
+  "yes" : "no";
+  declare const d: number|null extends null ?
+  "yes" : "no";
+
+declare let num: number;
+declare let nul: null;
+declare let either: (number | null);
+
+
+num = either;
+num = nul;
+
+nul = either;
+nul = num;
+*/
