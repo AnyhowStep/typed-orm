@@ -412,7 +412,7 @@ export interface AnySelectBuilderData {
 
     //Set by ORDER BY clause
     orderBy : undefined|Tuple<
-        OrderByTupleElement<this["columnReferences"] & this["selectReferences"]>
+        OrderByTupleElement</*this["columnReferences"] & this["selectReferences"]*/any>
     >,
 
     //Set by LIMIT and OFFSET clause
@@ -430,7 +430,7 @@ export interface AnySelectBuilderData {
 
     //Set by ORDER BY clause
     unionOrderBy : undefined|Tuple<
-        OrderByTupleElement<this["columnReferences"] & this["selectReferences"]>
+        OrderByTupleElement</*this["columnReferences"] & this["selectReferences"]*/any>
     >,
 
     //Set by LIMIT and OFFSET clause
@@ -625,6 +625,16 @@ export type SelectTupleReplaceColumn<
     }
 );
 
+export type JoinableSelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
+    (SelectColumnExpr<
+        ToPartialColumnReferences<ColumnReferencesT>,
+        any,
+        "__expr",
+        any
+    >)|
+    ColumnReferenceElement<ColumnReferencesT>
+);
+;
 export type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
     (SelectColumnExpr<
         ToPartialColumnReferences<ColumnReferencesT>,
@@ -678,6 +688,43 @@ export type SelectTupleToReference<
     SelectTupleToReferenceInner<TupleT, "8"> &
     SelectTupleToReferenceInner<TupleT, "9"> &
     SelectTupleToReferenceInner<TupleT, "10">
+);
+
+export type JoinableSelectTupleElementToRawColumn<ElementT extends JoinableSelectTupleElement<any>> = (
+    ElementT extends SelectColumnExpr<any, infer TypeT, any, infer NameT> ?
+    {
+        [name in NameT] : sd.AssertDelegate<TypeT>
+    } :
+    ElementT extends Column<any, infer NameT, infer TypeT> ?
+    {
+        [name in NameT] : sd.AssertDelegate<TypeT>
+    } :
+    {}
+);
+export type JoinableSelectTupleToRawColumn<
+    TupleT extends Tuple<JoinableSelectTupleElement<any>>,
+    K extends string
+> = (
+    TupleT extends {[k in K]:infer ElementT} ?
+        JoinableSelectTupleElementToRawColumn<ElementT> :
+        {}
+);
+export type JoinableSelectTupleToRawColumnCollection<
+    TupleT extends Tuple<JoinableSelectTupleElement<any>>
+> = (
+    //TODO More elements
+    //TODO Figure out a TupleReduce type
+    JoinableSelectTupleToRawColumn<TupleT, "0"> &
+    JoinableSelectTupleToRawColumn<TupleT, "1"> &
+    JoinableSelectTupleToRawColumn<TupleT, "2"> &
+    JoinableSelectTupleToRawColumn<TupleT, "3"> &
+    JoinableSelectTupleToRawColumn<TupleT, "4"> &
+    JoinableSelectTupleToRawColumn<TupleT, "5"> &
+    JoinableSelectTupleToRawColumn<TupleT, "6"> &
+    JoinableSelectTupleToRawColumn<TupleT, "7"> &
+    JoinableSelectTupleToRawColumn<TupleT, "8"> &
+    JoinableSelectTupleToRawColumn<TupleT, "9"> &
+    JoinableSelectTupleToRawColumn<TupleT, "10">
 );
 export type SelectCallback<
     FromBuilderT extends SelectBuilder<any>
@@ -2242,6 +2289,40 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
             }> :
             never
     );
+    as<AliasT extends string> (
+        this : SelectBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            typeWidenedColumns : any,
+            selectReferences : any,
+            selectTuple : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : any,
+            union : any,
+            unionOrderBy : any,
+            unionLimit : any,
+
+            allowed : {
+                join : false,
+                where : false,
+                select : false,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+                offset : any,
+                widen : any,
+                union : any,
+            }
+        }>,
+        alias : AliasT
+    ) : (
+        T["selectTuple"] extends Tuple<JoinableSelectTupleElement<T["columnReferences"]>> ?
+            AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<T["selectTuple"]>> :
+            "Cannot use tables in SELECT clause when aliasing"|void|never
+    );
 }
 
 export declare function from<
@@ -2391,8 +2472,16 @@ function foo () {
     const f = from(app)
         .join(appKey, c => [c.app.columns.appId], t => [t.appId])
         .leftJoin(ssoClient, c => [c.app.columns.ssoClientId],  t => [t.ssoClientId])
+        .join(
+            from(app)
+                .select(c => [c.app.columns.webhookKey, e.true().as("subexpr")])
+                .as("subqueryTable"),
+            c => [c.app.columns.webhookKey],
+            t => [t.webhookKey]
+        )
         .whereIsNotNull(c => c.app.columns.ssoApiKey)
         .where(c => {
+            c.subqueryTable.columns.subexpr
             return e.eq(c.app.columns.appId, 5);
         })
         .select((c) => {
