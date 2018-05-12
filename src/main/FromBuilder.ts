@@ -368,6 +368,9 @@ export type AnyFromBuilderData = {
     //Set by SELECT clause
     selectReferences : ColumnReferences,
 
+    //Set by GROUP BY clause
+    groupByReferences : ColumnReferences,
+
     allowed : {
         join : boolean,
         where : boolean,
@@ -528,6 +531,68 @@ export type TypeNarrowCallback<
         never
 );
 
+
+export type GroupByTupleElement<ColumnReferencesT extends ColumnReferences> = (
+    ColumnReferencesT[keyof ColumnReferencesT]|
+    ColumnReferenceElement<ColumnReferencesT>
+);
+export type GroupByTupleElementToReference<ElementT extends GroupByTupleElement<any>> = (
+    ElementT extends AnyColumn ?
+    ColumnToReference<ElementT> :
+    ElementT extends {
+        columns : {
+            [name : string] : AnyColumn
+        }
+    } ?
+    (
+        ElementT["columns"][keyof ElementT["columns"]] extends Column<infer TableNameT, any, any> ?
+            {
+                [k in TableNameT] : ElementT
+            } :
+            {}
+    ) :
+    {}
+);
+export type GroupByTupleToReferenceInner<
+    TupleT extends Tuple<GroupByTupleElement<any>>,
+    K extends string
+> = (
+    TupleT extends {[k in K]:infer ElementT} ?
+        GroupByTupleElementToReference<ElementT> :
+        {}
+);
+export type GroupByTupleToReference<
+    TupleT extends Tuple<GroupByTupleElement<any>>
+> = (
+    //TODO More elements
+    //TODO Figure out a TupleReduce type
+    GroupByTupleToReferenceInner<TupleT, "0"> &
+    GroupByTupleToReferenceInner<TupleT, "1"> &
+    GroupByTupleToReferenceInner<TupleT, "2"> &
+    GroupByTupleToReferenceInner<TupleT, "3"> &
+    GroupByTupleToReferenceInner<TupleT, "4"> &
+    GroupByTupleToReferenceInner<TupleT, "5"> &
+    GroupByTupleToReferenceInner<TupleT, "6"> &
+    GroupByTupleToReferenceInner<TupleT, "7"> &
+    GroupByTupleToReferenceInner<TupleT, "8"> &
+    GroupByTupleToReferenceInner<TupleT, "9"> &
+    GroupByTupleToReferenceInner<TupleT, "10">
+);
+export type GroupByCallback<
+    FromBuilderT extends FromBuilder<any>
+> = (
+    FromBuilderT extends FromBuilder<infer DataT> ?
+        (
+            selectReferences : DataT["selectReferences"],
+            fromBuilder : FromBuilderT
+        ) => (
+            Tuple<
+                GroupByTupleElement<DataT["selectReferences"]>
+            >
+        ):
+        never
+);
+
 export declare class FromBuilder<T extends AnyFromBuilderData> {
     data : T;
     join<
@@ -540,6 +605,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             joinReferences : any,
             typeNarrowedColumns : any,
             selectReferences : any,
+            groupByReferences : any,
 
             allowed : {
                 join : true,
@@ -576,6 +642,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             ),
                             typeNarrowedColumns : T["typeNarrowedColumns"],
                             selectReferences : T["selectReferences"],
+                            groupByReferences : T["groupByReferences"],
 
                             allowed : T["allowed"],
                         }>
@@ -598,6 +665,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             joinReferences : any,
             typeNarrowedColumns : any,
             selectReferences : any,
+            groupByReferences : any,
 
             allowed : {
                 join : true,
@@ -634,6 +702,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             ),
                             typeNarrowedColumns : T["typeNarrowedColumns"],
                             selectReferences : T["selectReferences"],
+                            groupByReferences : T["groupByReferences"],
 
                             allowed : T["allowed"],
                         }>
@@ -651,6 +720,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             joinReferences : any,
             typeNarrowedColumns : any,
             selectReferences : any,
+            groupByReferences : any,
 
             allowed : {
                 join : true,
@@ -687,6 +757,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             ),
                             typeNarrowedColumns : T["typeNarrowedColumns"],
                             selectReferences : T["selectReferences"],
+                            groupByReferences : T["groupByReferences"],
 
                             allowed : T["allowed"],
                         }>
@@ -702,6 +773,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             joinReferences : any,
             typeNarrowedColumns : any,
             selectReferences : any,
+            groupByReferences : any,
 
             allowed : {
                 join : any,
@@ -751,6 +823,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 }
                             ),
                             selectReferences : T["selectReferences"],
+                            groupByReferences : T["groupByReferences"],
 
                             allowed : {
                                 join : false,
@@ -775,6 +848,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             joinReferences : any,
             typeNarrowedColumns : any,
             selectReferences : any,
+            groupByReferences : any,
 
             allowed : {
                 join : any,
@@ -824,6 +898,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 }
                             ),
                             selectReferences : T["selectReferences"],
+                            groupByReferences : T["groupByReferences"],
 
                             allowed : {
                                 join : false,
@@ -849,6 +924,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             joinReferences : any,
             typeNarrowedColumns : any,
             selectReferences : any,
+            groupByReferences : any,
 
             allowed : {
                 join : any,
@@ -899,6 +975,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                 }
                             ),
                             selectReferences : T["selectReferences"],
+                            groupByReferences : T["groupByReferences"],
 
                             allowed : {
                                 join : false,
@@ -923,6 +1000,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             joinReferences : any,
             typeNarrowedColumns : any,
             selectReferences : any,
+            groupByReferences : any,
 
             allowed : {
                 join : any,
@@ -947,6 +1025,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     joinReferences : T["joinReferences"],
                                     typeNarrowedColumns : T["typeNarrowedColumns"],
                                     selectReferences : T["selectReferences"],
+                                    groupByReferences : T["groupByReferences"],
 
                                     allowed : {
                                         join : false,
@@ -973,11 +1052,12 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             joinReferences : any,
             typeNarrowedColumns : any,
             selectReferences : any,
+            groupByReferences : any,
 
             allowed : {
                 join : any,
-                where : true,
-                select : any,
+                where : any,
+                select : true,
                 groupBy : any,
                 having : any,
                 orderBy : any,
@@ -993,12 +1073,57 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     joinReferences : T["joinReferences"],
                     typeNarrowedColumns : T["typeNarrowedColumns"],
                     selectReferences : SelectTupleToReference<ReturnType<SelectCallbackT>>,
+                    groupByReferences : T["groupByReferences"],
 
                     allowed : {
                         join : false,
                         where : false,
                         select : false,
-                        groupBy : T["allowed"]["groupBy"],
+                        groupBy : true,
+                        having : true,
+                        orderBy : true,
+                        limit : true,
+                    }
+                }>
+            ) :
+            ("Invalid SelectCallbackT"|void|never)
+    );
+    groupBy<
+        GroupByCallbackT extends GroupByCallback<FromBuilder<T>>
+    > (
+        this : FromBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            selectReferences : any,
+            groupByReferences : any,
+
+            allowed : {
+                join : any,
+                where : any,
+                select : any,
+                groupBy : true,
+                having : any,
+                orderBy : any,
+                limit : any,
+            }
+        }>,
+        groupByCallback : GroupByCallbackT
+    ):(
+        GroupByCallbackT extends GroupByCallback<FromBuilder<T>> ?
+            (
+                FromBuilder<{
+                    columnReferences : T["columnReferences"],
+                    joinReferences : T["joinReferences"],
+                    typeNarrowedColumns : T["typeNarrowedColumns"],
+                    selectReferences : T["selectReferences"],
+                    groupByReferences : GroupByTupleToReference<ReturnType<GroupByCallbackT>>,
+
+                    allowed : {
+                        join : false,
+                        where : false,
+                        select : false,
+                        groupBy : false,
                         having : T["allowed"]["having"],
                         orderBy : T["allowed"]["orderBy"],
                         limit : T["allowed"]["limit"],
@@ -1019,15 +1144,17 @@ export declare function from<
         joinReferences : [JoinReference<TableReference<TableT>, false>],
         typeNarrowedColumns : {},
         selectReferences : {},
+        groupByReferences : {},
 
         allowed : {
             join : true,
             where : true,
             select : true,
-            groupBy : true,
-            having : true,
-            orderBy : true,
-            limit : true,
+            //Only allow the below clauses AFTER the SELECT clause
+            groupBy : false,
+            having : false,
+            orderBy : false,
+            limit : false,
         }
     }>
 );
@@ -1157,6 +1284,12 @@ function foo () {
                 e.eq(c.app.columns.ssoApiKey,"2").as("eq"),
                 c.ssoClient.columns.initializeAfterAuthenticationEndpoint
             ]
+        })
+        .groupBy((s) => {
+            return [
+                s.ssoClient.columns.initializeAfterAuthenticationEndpoint
+            ];
         });
+        
 }
 foo();
