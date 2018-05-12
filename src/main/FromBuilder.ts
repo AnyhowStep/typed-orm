@@ -376,6 +376,9 @@ export interface AnyFromBuilderData {
     //Set by SELECT clause
     selectReferences : ColumnReferences,
 
+    //Set by SELECT clause
+    selectTuple : undefined|Tuple<SelectTupleElement</*this["columnReferences"]*/any>>,
+
     //Set by GROUP BY clause
     groupByReferences : ColumnReferences,
 
@@ -472,6 +475,104 @@ export type WhereCallback<
             >
         ):
         never
+);
+
+export type SelectTupleElementType<
+    SelectTupleElementT extends SelectTupleElement<any>
+> = (
+    SelectTupleElementT extends SelectColumnExpr<
+        any,
+        infer TypeT,
+        any,
+        any
+    > ?
+    TypeT :
+    SelectTupleElementT extends Column<any, any, infer TypeT> ?
+    TypeT :
+    SelectTupleElementT extends {
+        columns : infer ColumnsT
+    } ?
+    {
+        [name in keyof ColumnsT] : (
+            ColumnsT[name] extends Column<any, any, infer TypeT> ?
+                TypeT :
+                never
+        )
+    } :
+    never
+);
+
+export type SelectTupleToType<
+    TupleT extends Tuple<SelectTupleElement<any>>
+> = (
+    {
+        [index in TupleKeys<TupleT>] : SelectTupleElementType<TupleT[index]>
+    } & { length : TupleLength<TupleT> } & (SelectTupleElementType<TupleT[TupleKeys<TupleT>]>)[]
+);
+
+export type SelectTupleElementReplaceColumn<
+    SelectTupleElementT extends SelectTupleElement<any>,
+    NewTableNameT extends string,
+    NewNameT extends string,
+    NewTypeT
+> = (
+    SelectTupleElementT extends SelectColumnExpr<
+        infer UsedReferencesT,
+        infer TypeT,
+        NewTableNameT,
+        NewNameT
+    > ?
+    SelectColumnExpr<
+        UsedReferencesT,
+        NewTypeT,
+        NewTableNameT,
+        NewNameT
+    > :
+    SelectTupleElementT extends Column<NewTableNameT, NewNameT, any> ?
+    Column<NewTableNameT, NewNameT, NewTypeT> :
+    SelectTupleElementT extends {
+        columns : infer ColumnsT
+    } ?
+    {
+        columns : {
+            [name in keyof ColumnsT] : (
+                ColumnsT[name] extends Column<NewTableNameT, NewNameT, any> ?
+                    Column<NewTableNameT, NewNameT, NewTypeT> :
+                    ColumnsT[name]
+            )
+        }
+    } :
+    SelectTupleElementT
+);
+export type SelectTupleReplaceColumn<
+    TupleT extends Tuple<SelectTupleElement<any>>,
+    NewTableNameT extends string,
+    NewNameT extends string,
+    NewTypeT
+> = (
+    {
+        [index in TupleKeys<TupleT>] : SelectTupleElementReplaceColumn<
+            TupleT[index],
+            NewTableNameT,
+            NewNameT,
+            NewTypeT
+        >
+    } &
+    { length : TupleLength<TupleT> } &
+    (SelectTupleElementReplaceColumn<
+        TupleT[TupleKeys<TupleT>],
+        NewTableNameT,
+        NewNameT,
+        NewTypeT
+    >)[] &
+    {
+        "0" : SelectTupleElementReplaceColumn<
+            TupleT[0],
+            NewTableNameT,
+            NewNameT,
+            NewTypeT
+        >
+    }
 );
 
 export type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
@@ -689,6 +790,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -731,6 +833,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             typeNarrowedColumns : T["typeNarrowedColumns"],
                             typeWidenedColumns : T["typeWidenedColumns"],
                             selectReferences : T["selectReferences"],
+                            selectTuple : T["selectTuple"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
@@ -757,6 +860,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -799,6 +903,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             typeNarrowedColumns : T["typeNarrowedColumns"],
                             typeWidenedColumns : T["typeWidenedColumns"],
                             selectReferences : T["selectReferences"],
+                            selectTuple : T["selectTuple"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
@@ -820,6 +925,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -862,6 +968,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             typeNarrowedColumns : T["typeNarrowedColumns"],
                             typeWidenedColumns : T["typeWidenedColumns"],
                             selectReferences : T["selectReferences"],
+                            selectTuple : T["selectTuple"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
@@ -881,6 +988,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -936,6 +1044,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             ),
                             typeWidenedColumns : T["typeWidenedColumns"],
                             selectReferences : T["selectReferences"],
+                            selectTuple : T["selectTuple"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
@@ -966,6 +1075,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -1021,6 +1131,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             ),
                             typeWidenedColumns : T["typeWidenedColumns"],
                             selectReferences : T["selectReferences"],
+                            selectTuple : T["selectTuple"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
@@ -1052,6 +1163,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -1108,6 +1220,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                             ),
                             typeWidenedColumns : T["typeWidenedColumns"],
                             selectReferences : T["selectReferences"],
+                            selectTuple : T["selectTuple"],
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
@@ -1138,6 +1251,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -1168,6 +1282,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     typeNarrowedColumns : T["typeNarrowedColumns"],
                                     typeWidenedColumns : T["typeWidenedColumns"],
                                     selectReferences : T["selectReferences"],
+                                    selectTuple : T["selectTuple"],
                                     groupByReferences : T["groupByReferences"],
                                     orderBy : T["orderBy"],
                                     limit : T["limit"],
@@ -1200,6 +1315,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -1226,6 +1342,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     typeNarrowedColumns : T["typeNarrowedColumns"],
                     typeWidenedColumns : T["typeWidenedColumns"],
                     selectReferences : SelectTupleToReference<ReturnType<SelectCallbackT>>,
+                    selectTuple : ReturnType<SelectCallbackT>,
                     groupByReferences : T["groupByReferences"],
                     orderBy : T["orderBy"],
                     limit : T["limit"],
@@ -1254,6 +1371,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -1280,6 +1398,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     typeNarrowedColumns : T["typeNarrowedColumns"],
                     typeWidenedColumns : T["typeWidenedColumns"],
                     selectReferences : T["selectReferences"],
+                    selectTuple : T["selectTuple"],
                     groupByReferences : GroupByTupleToReference<ReturnType<GroupByCallbackT>>,
                     orderBy : T["orderBy"],
                     limit : T["limit"],
@@ -1308,6 +1427,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -1338,6 +1458,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     typeNarrowedColumns : T["typeNarrowedColumns"],
                                     typeWidenedColumns : T["typeWidenedColumns"],
                                     selectReferences : T["selectReferences"],
+                                    selectTuple : T["selectTuple"],
                                     groupByReferences : T["groupByReferences"],
                                     orderBy : T["orderBy"],
                                     limit : T["limit"],
@@ -1370,6 +1491,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -1396,6 +1518,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                     typeNarrowedColumns : T["typeNarrowedColumns"],
                     typeWidenedColumns : T["typeWidenedColumns"],
                     selectReferences : T["selectReferences"],
+                    selectTuple : T["selectTuple"],
                     groupByReferences : T["groupByReferences"],
                     orderBy : ReturnType<OrderByCallbackT>,
                     limit : T["limit"],
@@ -1422,6 +1545,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -1446,6 +1570,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : T["typeNarrowedColumns"],
             typeWidenedColumns : T["typeWidenedColumns"],
             selectReferences : T["selectReferences"],
+            selectTuple : T["selectTuple"],
             groupByReferences : T["groupByReferences"],
             orderBy : T["orderBy"],
             limit : {
@@ -1474,6 +1599,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : {
@@ -1502,6 +1628,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                 typeNarrowedColumns : T["typeNarrowedColumns"],
                 typeWidenedColumns : T["typeWidenedColumns"],
                 selectReferences : T["selectReferences"],
+                selectTuple : T["selectTuple"],
                 groupByReferences : T["groupByReferences"],
                 orderBy : T["orderBy"],
                 limit : {
@@ -1533,6 +1660,7 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
             typeNarrowedColumns : any,
             typeWidenedColumns : any,
             selectReferences : any,
+            selectTuple : any,
             groupByReferences : any,
             orderBy : any,
             limit : any,
@@ -1589,6 +1717,16 @@ export declare class FromBuilder<T extends AnyFromBuilderData> {
                                     }
                                 }
                             ),
+                            selectTuple : (
+                                T["selectTuple"] extends Tuple<any> ?
+                                    SelectTupleReplaceColumn<
+                                        T["selectTuple"],
+                                        TableNameT,
+                                        NameT,
+                                        TypeT|WidenT
+                                    > :
+                                    T["selectTuple"]
+                                ),
                             groupByReferences : T["groupByReferences"],
                             orderBy : T["orderBy"],
                             limit : T["limit"],
@@ -1623,6 +1761,7 @@ export declare function from<
         typeNarrowedColumns : {},
         typeWidenedColumns : {},
         selectReferences : {},
+        selectTuple : undefined,
         groupByReferences : {},
         orderBy : undefined,
         limit : undefined,
@@ -1758,18 +1897,19 @@ Examples
 function foo () {
     const f = from(app)
         .join(appKey, [app.columns.appId], [appKey.columns.appId])
-        .rightJoin(ssoClient, [app.columns.ssoClientId], [ssoClient.columns.ssoClientId])
+        .join(ssoClient, [app.columns.ssoClientId], [ssoClient.columns.ssoClientId])
         .whereIsNotNull(c => c.app.columns.ssoApiKey)
         .where(c => {
             return e.eq(c.app.columns.appId, 5);
         })
         .select((c) => {
             return [
-                c.app.columns.ssoApiKey.as("aliased"),
+                //c.app.columns.ssoApiKey.as("aliased"),
                 c.app,
+                c.ssoClient.columns.ssoClientId,
                 e.true().as("something"),
-                e.eq(c.app.columns.ssoApiKey,"2").as("eq"),
-                c.ssoClient.columns.initializeAfterAuthenticationEndpoint
+                //e.eq(c.app.columns.ssoApiKey,"2").as("eq"),
+                //c.ssoClient.columns.initializeAfterAuthenticationEndpoint
             ]
         })
         .groupBy((s) => {
@@ -1782,7 +1922,7 @@ function foo () {
         })
         .orderBy((s) => {
             return [
-                s.__expr.columns.aliased,
+                //s.__expr.columns.aliased,
                 [s.app.columns.name, true],
                 [s.ssoClient.columns.authenticationEndpoint, false],
                 e.eq(s.app.columns.appId, 1),
@@ -1791,8 +1931,25 @@ function foo () {
         })
         .limit(5)
         .offset(4)
-        .widen(s => s.app.columns.appId, sd.string());
-    f.data.selectReferences.app.columns.appId
+        .widen(s => s.app.columns.ssoApiKey, sd.nil())
+        .widen(s => s.app.columns.ssoApiKey, sd.number());
+    f.data.selectReferences.app.columns.ssoApiKey
+    const s2 = from(app)
+        .select((s) => {
+            return [
+                s.app,
+                s.app.columns.appId,
+                e.true().as("test")
+            ]
+        });
+    let err : SelectTupleReplaceColumn<typeof f["data"]["selectTuple"], "__expr", "something", "replaced"> = null as any;
+    let duno : Tuple<SelectTupleElement<any>> = err;
+    let x : SelectTupleToType<typeof f.data.selectTuple> = null as any;
+    let y : SelectTupleToType<typeof s2.data.selectTuple> = null as any;
+    x = y;
+    y = x;
+    const a : typeof x extends typeof y ? "yes" : "no" = null as any;
+    const b : typeof y extends typeof x ? "yes" : "no" = null as any;
 }
 foo();
 /*
