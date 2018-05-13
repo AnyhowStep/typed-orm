@@ -296,12 +296,16 @@ export declare function insertInto<
         };
     }>
 );
-const x = insertInto(s.app).ignore().value({
-    ssoClientId : 1,
-    name : "test"
-}).onDuplicateKeyUpdate({
-    ssoClientId : 32
-});
+const x = insertInto(s.app)
+    .ignore()
+    .value({
+        appId : s.from(s.app).select(c => [c.app.appId]).limit(1),
+        ssoClientId : 1,
+        name : "test"
+    })
+    .onDuplicateKeyUpdate({
+        ssoClientId : 32
+    });
 x.data.onDuplicateKeyUpdate
 
 const y = insertInto(s.app, s.from(s.app).select(c => [c.app.name, c.app.ssoClientId])).ignore().columns(

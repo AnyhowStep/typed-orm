@@ -1,4 +1,4 @@
-export type Simplify<T> = { [Key in keyof T]: T[Key] };
+//export type Simplify<T> = { [Key in keyof T]: T[Key] };
 
 export type Tuple<T> = T[] & { "0" : T };
 export type TupleKeys<TupleT extends Tuple<any>> = Exclude<keyof TupleT, keyof any[]>;
@@ -212,6 +212,7 @@ export type TuplePush<TupleT extends Tuple<any>, NextT> = (
         ) :
         never//("Invalid TupleT or could not infer TypeT"|void|never)
 );
+/*
 type Col<A, B, C> = {
   a: A,
   b: B,
@@ -244,3 +245,4 @@ type FindDuplicate = {
 type HasDuplicate = true extends FindDuplicate[keyof FindDuplicate]?
   true :
   false;
+*/

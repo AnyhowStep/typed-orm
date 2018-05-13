@@ -1,8 +1,8 @@
 import * as sd from "schema-decorator";
 import {Tuple, TupleKeys, TupleLength, TuplePush} from "./Tuple";
 import {spread} from "@anyhowstep/type-util";
-
-
+import * as d from "./declaration";
+import * as def from "./definition";
 
 export interface RawPaginationArgs {
     page? : number|null|undefined;
@@ -18,584 +18,55 @@ export interface PaginateResult<T> {
     info : PaginateInfo,
     rows : T[],
 }
-export interface Column<TableNameT extends string, NameT extends string, TypeT> {
-    table : TableNameT;
-    name  : NameT;
-    assertDelegate : sd.AssertDelegate<TypeT>;
-
-    as<AliasT extends string>(alias : AliasT) : SelectColumnExpr<
-        ColumnToReference<this>,
-        TypeT,
-
-        "__expr",
-        AliasT
-    >;
-}
-export type AnyColumn = Column<any, any, any>;
-
-export type RawColumn = sd.AssertFunc<any>|Column<any, any, any>;
-export declare type RawColumnCollection = {
-    [name: string]: RawColumn;
-};
-export declare type TypeOf<RawColumnT extends RawColumn> = (
-    RawColumnT extends sd.AssertFunc<infer T> ?
-    T :
-    RawColumnT extends Column<any, any, infer T> ?
-    T :
-    never
-)
-export type ColumnCollection<AliasT extends string, RawColumnsT extends RawColumnCollection> = {
-    [name in keyof RawColumnsT] : Column<AliasT, name, TypeOf<RawColumnsT[name]>>
-};
-export type ColumnCollectionElement<ColumnCollectionT extends ColumnCollection<any, {}>> = (
-    ColumnCollectionT[keyof ColumnCollectionT]
-)
-
-export declare function toColumns<AliasT extends string, RawColumnCollectionT extends RawColumnCollection> (
-    alias  : string,
-    columns : RawColumnCollectionT
-) : ColumnCollection<AliasT, RawColumnCollectionT>;
-
-export type AliasedTable<AliasT extends string, NameT extends string, RawColumnCollectionT extends RawColumnCollection> = {
-    alias : AliasT;
-    name  : NameT;
-    columns : {
-        [name in keyof RawColumnCollectionT] : Column<AliasT, name, TypeOf<RawColumnCollectionT[name]>>
-    };
-};
-export type AnyAliasedTable = AliasedTable<any, any, {}>;
 
 
-export type Pk<RawColumnCollectionT extends RawColumnCollection> = (
-    (keyof RawColumnCollectionT)[] & { "0" : keyof RawColumnCollectionT }
-);
-
-export interface RawTableData {
-    //TODO
-    //pk? :  undefined|Pk<any>;
-    //TODO, Maybe allow string? I *think* BIGINT can have values too large for `number`
-    autoIncrement : undefined|Column<any, any, number>;/*(
-        ColumnCollectionElement<ColumnCollection<AliasT, RawColumnCollectionT>> extends Column<any, any, number> ?
-            ColumnCollectionElement<ColumnCollection<AliasT, RawColumnCollectionT>> :
-            never
-    );*/
-    hasServerDefaultValue : {
-        [name : string] : true;
-    };
-}
-
-type AutoIncrementDelegate<AliasT extends string, RawColumnCollectionT extends RawColumnCollection> = (
-    (columns : ColumnCollection<AliasT, RawColumnCollectionT>) => (
-        ColumnCollectionElement<ColumnCollection<AliasT, RawColumnCollectionT>>
-    )
-);
-
-type HasServerDefaultValueDelegate<AliasT extends string, RawColumnCollectionT extends RawColumnCollection> = (
-    (columns : ColumnCollection<AliasT, RawColumnCollectionT>) => (
-        Tuple<ColumnCollectionElement<ColumnCollection<AliasT, RawColumnCollectionT>>>
-    )
-);
-
-
-type FindNullableNames<RawColumnCollectionT extends RawColumnCollection> = (
-    {
-        [name in keyof RawColumnCollectionT] : (
-            null extends TypeOf<RawColumnCollectionT[name]> ?
-                name :
-                never
-        )
-    }[keyof RawColumnCollectionT]
-);
-function findNullableNames<RawColumnCollectionT extends RawColumnCollection> (
-    columns : ColumnCollection<any, RawColumnCollectionT>
-) : FindNullableNames<RawColumnCollectionT>[] {
-    const result : string[] = [];
-    for (let name in columns) {
-        if (columns.hasOwnProperty(name)) {
-            try {
-                columns[name].assertDelegate("test-null", null)
-                result.push(name);
-            } catch (_err) {
-                //Do nothing
-            }
-        }
-    }
-    return result as any;
-}
-function nullableToHasServerDefaultValue<ColumnCollectionT extends ColumnCollection<any, {}>> (
-    columns : ColumnCollectionT
-) : {
-    [name in FindNullableNames<ColumnCollectionT>] : true
-} {
-    return findNullableNames(columns)
-        .reduce<{ [name : string] : true }>((memo, name) => {
-            memo[name] = true;
-            return memo;
-        }, {}) as any;
-}
-
-/*PkT extends Pk<RawColumnCollectionT>,
-AutoIncrementT extends undefined|(PkT extends Array<infer E> ? E : never),
-HasDefaultValue extends undefined|Tuple<RawColumnCollectionT>,
-HasClientDefaultValue extends undefined|Tuple<RawColumnCollectionT>*/
-export class Table<NameT extends string, RawColumnCollectionT extends RawColumnCollection, DataT extends RawTableData/* = RawTableData<NameT, RawColumnCollectionT>*/> implements AliasedTable<NameT, NameT, RawColumnCollectionT> {
-    public readonly alias  : NameT;
-    public readonly name   : NameT;
-    public readonly columns : {
-        [name in keyof RawColumnCollectionT] : Column<NameT, name, TypeOf<RawColumnCollectionT[name]>>
-    };
-
-    public readonly data : DataT;
-    //public readonly pk : PkT;
-    //public readonly autoIncrement : AutoIncrementT;
-    private constructor (
-        name : NameT,
-        columns : RawColumnCollectionT,
-        data : DataT
-    ) {
-        this.alias = name;
-        this.name  = name;
-        this.columns = toColumns(name, columns);
-        this.data = data;
-    }
-    public static Create<
-        NameT extends string,
-        RawColumnCollectionT extends RawColumnCollection
-    > (
-        name : NameT,
-        rawColumns : RawColumnCollectionT,
-    ) : (
-        Table<
-            NameT,
-            RawColumnCollectionT,
-            {
-                autoIncrement : undefined,
-                hasServerDefaultValue : {
-                    [name in FindNullableNames<ColumnCollection<NameT, RawColumnCollectionT>>] : true
-                },
-            }
-        >
-    ) {
-        const columns = toColumns<NameT, RawColumnCollectionT>(name, rawColumns);
-
-        return new Table(name, columns, {
-            autoIncrement : undefined,
-            hasServerDefaultValue : nullableToHasServerDefaultValue(columns),
-        }) as any;
-    }
-    public as<NewAliasT extends string> (alias : NewAliasT) : AliasedTable<NewAliasT, NameT, RawColumnCollectionT> {
-        return {
-            alias : alias,
-            name : this.name,
-            columns : toColumns(alias, this.columns),
-        };
-    }
-    public assertIsOwnColumn (name : string, other : AnyColumn) {
-        if (other.table != this.alias) {
-            throw new Error(`Expected ${name}.table to be ${this.alias}, received ${other.table}`);
-        }
-        const column = this.columns[other.name];
-        if (column == undefined) {
-            throw new Error(`Table ${this.alias} has no such column ${other.name} of ${name}`);
-        }
-        if (column != other) {
-            throw new Error(`The column ${other.table}.${other.name} exists but is different from the instance received of ${name}`);
-        }
-    }
-    public autoIncrement<
-        AutoIncrementDelegateT extends AutoIncrementDelegate<NameT, RawColumnCollectionT>
-    > (
-        autoIncrementDelegate : AutoIncrementDelegateT
-    ) : (
-        Table<
-            NameT,
-            RawColumnCollectionT,
-            {
-                autoIncrement : ReturnType<AutoIncrementDelegateT>,
-                hasServerDefaultValue : DataT["hasServerDefaultValue"] & {
-                    [name in ReturnType<AutoIncrementDelegateT>["name"]] : true
-                },
-            }
-        >
-    ) {
-        const autoIncrement = autoIncrementDelegate(this.columns);
-        this.assertIsOwnColumn("autoIncrement", autoIncrement);
-        return new Table(
-            this.name,
-            this.columns,
-            spread(
-                this.data,
-                {
-                    autoIncrement : autoIncrement,
-                    hasServerDefaultValue : {
-                        ...this.data.hasServerDefaultValue,
-                        [autoIncrement.name] : true,
-                    }
-                }
-            )
-        ) as any;
-    }
-    public setHasServerDefaultValue<
-        HasServerDefaultValueDelegateT extends HasServerDefaultValueDelegate<NameT, RawColumnCollectionT>
-    > (
-        hasServerDefaultValueDelegate : HasServerDefaultValueDelegateT
-    ) : (
-        Table<
-            NameT,
-            RawColumnCollectionT,
-            {
-                autoIncrement : DataT["autoIncrement"],
-                hasServerDefaultValue : (
-                    ReturnType<HasServerDefaultValueDelegateT>[
-                        TupleKeys<ReturnType<HasServerDefaultValueDelegateT>>
-                    ] extends AnyColumn ?
-                        (
-                            {
-                                [k in ReturnType<HasServerDefaultValueDelegateT>[
-                                    TupleKeys<ReturnType<HasServerDefaultValueDelegateT>>
-                                ]["name"]] : true
-                            } &
-                            (
-                                DataT["autoIncrement"] extends AnyColumn ?
-                                    { [name in DataT["autoIncrement"]["name"]] : true } :
-                                    {}
-                            ) &
-                            {
-                                [name in FindNullableNames<ColumnCollection<NameT, RawColumnCollectionT>>] : true
-                            }
-                        ) :
-                        never
-                ),
-            }
-        >
-    ) {
-        const columns = hasServerDefaultValueDelegate(this.columns);
-        for (let i=0; i<columns.length; ++i) {
-            this.assertIsOwnColumn(`serverDefaultValue[${i}]`, columns[i]);
-        }
-
-        const hasServerDefaultValue : { [name : string] : true } = nullableToHasServerDefaultValue(this.columns);
-        for (let c of columns) {
-            hasServerDefaultValue[c.name] = true;
-        }
-        if (this.data.autoIncrement != undefined) {
-            hasServerDefaultValue[this.data.autoIncrement.name] = true;
-        }
-
-        return new Table(
-            this.name,
-            this.columns,
-            spread(
-                this.data,
-                {
-                    hasServerDefaultValue : hasServerDefaultValue,
-                }
-            )
-        ) as any;
-    }
-}
-
-
-/////////////////////////////////
-
-export const ssoClient = Table.Create(
-    "ssoClient",
-    {
-        ssoClientId : sd.stringToNumber(),
-        name : sd.string(),
-        authenticationEndpoint : sd.string(),
-        initializeAfterAuthenticationEndpoint : sd.nullable(sd.string()),
-    }
-).autoIncrement(c => c.ssoClientId);
-
-export const app = Table.Create(
-    "app",
-    {
-        appId : sd.stringToNumber(),
-        name : sd.string(),
-        ssoClientId : ssoClient.columns.ssoClientId,
-        ssoApiKey : sd.nullable(sd.string()),
-        webhookKey : sd.nullable(sd.string())
-    }
-).autoIncrement(c => c.appId);
-
-
-export const appKey = Table.Create(
-    "appKey",
-    {
-        appId : sd.stringToNumber(),
-        appKeyId : sd.string(),
-        appKeyTypeId : sd.number(),
-        key : sd.string(),
-    },
-).autoIncrement(c => c.appKeyId);
-
-export const appKeyType = Table.Create(
-    "appKeyType",
-    {
-        appKeyTypeId : sd.string(),
-        internalName : sd.string(),
-    }
-).autoIncrement(c => c.appKeyTypeId);
-
-export const user = Table.Create(
-    "user",
-    {
-        appId : sd.naturalNumber(),
-        externalUserId : sd.string(),
-        createdAt : sd.date(),
-    }
-);
 
 ///////////////////////////////////
 
-export type ColumnType<ColumnT extends AnyColumn> = (
-    ColumnT extends Column<any, any, infer T> ?
-    T :
-    never
-);
-
-export type TableAlias<TableT extends AnyAliasedTable> = (
-    TableT extends Table<infer Name, any, any> ?
-    Name :
-    TableT extends AliasedTable<infer Alias, any, {}> ?
-    Alias :
-    never
-);
-export type TableName<TableT extends AnyAliasedTable> = (
-    TableT extends Table<infer Name, any, any> ?
-    Name :
-    TableT extends AliasedTable<any, infer Name, any> ?
-    Name :
-    never
-);
-export type TableColumns<TableT extends AnyAliasedTable> = (
-    TableT extends Table<any, infer Columns, any> ?
-    Columns :
-    TableT extends AliasedTable<any, any, infer Columns> ?
-    Columns :
-    never
-);
-
-///////////////////////////////////
-
-export type ColumnReferences = {
-    [table : string] : {
-        [column : string] : AnyColumn
-    }
-};
-export type Union<T> = (T[keyof T]);
-export type ColumnReferenceElementInner<ColumnReferencesT extends ColumnReferences> = ({
-    data: {
-        [k in keyof ColumnReferencesT] : (
-            Union<ColumnReferencesT[k]>
-        )
-    }
-});
-export type ColumnReferenceElement<ColumnReferencesT extends ColumnReferences> = (
-    {
-        data : {
-            [k in keyof ColumnReferenceElementInner<ColumnReferencesT>] : (
-                Union<ColumnReferenceElementInner<ColumnReferencesT>[k]>
-            )
-        }
-    }["data"]["data"]
-);
-export type ColumnReferenceTuple<ColumnReferencesT extends ColumnReferences> = (
-    Tuple<ColumnReferenceElement<ColumnReferencesT>>
-);
-
-export type ColumnToReference<ColumnT extends AnyColumn> = (
-    ColumnT extends Column<infer TableNameT, infer NameT, infer TypeT> ?
+export type ColumnToReference<ColumnT extends d.AnyColumn> = (
+    ColumnT extends d.IColumn<infer TableNameT, infer NameT, infer TypeT> ?
         (
             {
                 [table in TableNameT] : {
-                    [name in NameT] : Column<TableNameT, NameT, TypeT>
+                    [name in NameT] : d.IColumn<TableNameT, NameT, TypeT>
                 }
             }
         ) :
         never//("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
 );
-export type PartialColumnReferences = {
-    [table : string] : {
-        [column : string] : AnyColumn|undefined
-    }|undefined
-};
-export type ToPartialColumnReferences<ColumnReferencesT extends ColumnReferences> = {
+export type ToPartialColumnReferences<ColumnReferencesT extends d.ColumnReferences> = {
     [table in keyof ColumnReferencesT]+? : {
-        [column in keyof ColumnReferencesT[table]]+? : ColumnReferencesT[table][column]
+        [column in keyof ColumnReferencesT[table]]+? : d.ColumnReferencesT[table][column]
     }
 };
 
-
-type NullableColumnReference<ColumnReferencesT extends ColumnReferences> = (
-    {
-        [table in keyof ColumnReferencesT] : {
-            [column in keyof ColumnReferencesT[table]] : (
-                ColumnReferencesT[table][column] extends Column<any, any, infer TypeT> ?
-                    (
-                        Column<table, column, TypeT|null>
-                    ) :
-                    (("Invalid ColumnT or could not infer TypeT of ColumnT"&table&column)&never&void)
-                    /*(
-                        //HACK
-                        ColumnReferencesT[table]["columns"][column] extends AnyColumn ?
-                            ColumnReferencesT[table]["columns"][column] :
-                            AnyColumn
-                    )*/
-            )
-        }
-    }
-)
-
-export type TableReference<TableT extends Table<any, {}, any>|AnyAliasedTable> = (
-    TableT extends Table<any, infer ColumnsT, any> ?
-    {
-        [alias in TableAlias<TableT>] : {
-            [name in keyof ColumnsT] : TableT["columns"][name]
-        }
-    } :
-    TableT extends AliasedTable<any, any, infer ColumnsT> ?
-    {
-        [alias in TableAlias<TableT>] : {
-            [name in keyof ColumnsT] : TableT["columns"][name]
-        }
-    } :
-    never
-);
-
-type JoinReference<
-    ColumnReferencesT extends ColumnReferences,
-    NullableT extends boolean,
-> = {
-    columnReferences : ColumnReferencesT,
-    nullable : NullableT,
-};
-type JoinReferences = Tuple<JoinReference<{}, boolean>>;
 
 //////////////////////////////
-
-type ToColumn<
-    TableT extends AliasedTable<any, any, {}>,
-    FromColumnT extends AnyColumn
-> = (
-    Column<TableAlias<TableT>, keyof TableColumns<TableT>, ColumnType<FromColumnT>|null>
-);
-type ToColumnTuple<
-    TableT extends AliasedTable<any, any, {}>,
-    FromColumnsT extends Tuple<AnyColumn>
-> = (
-    {
-        [k in TupleKeys<FromColumnsT>] : (
-            FromColumnsT[k] extends AnyColumn ?
-                ToColumn<TableT, FromColumnsT[k]> :
-                never
-        )
-    } &
-    { length : TupleLength<FromColumnsT> } &
-    (
-        FromColumnsT[TupleKeys<FromColumnsT>] extends AnyColumn ?
-            ToColumn<TableT, FromColumnsT[TupleKeys<FromColumnsT>]> :
-            never
-    )[] & {
-        "0" : ToColumn<TableT, FromColumnsT[0]>
-    }
-);
-
-export type ToColumnsCallback<
-    TableT extends AliasedTable<any, any, {}>,
-    FromColumnsT extends Tuple<AnyColumn>
-> = (
-    ToColumnTuple<TableT, FromColumnsT> |
-    (
-        (t : TableT["columns"]) => ToColumnTuple<TableT, FromColumnsT>
-    )
-);
 
 export type ToColumnsInCallback<
     ToColumnsCallbackT extends ToColumnsCallback<any, any>
 > = (
-    ToColumnsCallbackT extends Tuple<AnyColumn> ?
+    ToColumnsCallbackT extends Tuple<d.AnyColumn> ?
     ToColumnsCallbackT :
     ToColumnsCallbackT extends (...args : any[]) => infer TupleT ?
     TupleT :
     ("Invalid ToColumnsCallbackT or could not infer TupleT"|void|never)
 )
 
-type IsFromColumn<
-    TableReferencesT extends ColumnReferences,
-    ColumnT extends AnyColumn
-> = (
-    ColumnT extends Column<infer AliasT, infer NameT, infer TypeT> ?
-        (
-            AliasT extends keyof TableReferencesT ?
-                (
-                    NameT extends keyof TableReferencesT[AliasT] ?
-                        (
-                            sd.TypeOf<TableReferencesT[AliasT][NameT]["assertDelegate"]> extends TypeT ?
-                                (
-                                    ColumnT
-                                ) :
-                                ("TypeT mismatch"|TypeT|void)
-                        ) :
-                        ("NameT is not a column"|NameT|void)
-                ) :
-                ("AliasT is not a table reference"|AliasT|void)
-        ) :
-        ("Could not infer alias, name, or type from ColumnT"|ColumnT|void)
-);
-type IsFromColumnTuple<
-    TableReferencesT extends ColumnReferences,
-    FromColumnsT extends Tuple<AnyColumn>
-> = (
-    {
-        [k in TupleKeys<FromColumnsT>] : (
-            FromColumnsT[k] extends AnyColumn ?
-                IsFromColumn<TableReferencesT, FromColumnsT[k]> :
-                never
-        )
-    } & { length : TupleLength<FromColumnsT> } & (FromColumnsT[0])[]
-);
 
-type NullableJoinReferences<JoinReferencesT extends JoinReferences> = (
-    {
-        [index in TupleKeys<JoinReferencesT>] : (
-            JoinReferencesT[index] extends JoinReference<infer ColumnReferencesT, boolean> ?
-                JoinReference<
-                    ColumnReferencesT,
-                    true
-                > :
-                never
-        )
-    } &
-    { length : TupleLength<JoinReferencesT> } &
-    (
-        JoinReference<
-            JoinReferencesT["0"]["columnReferences"],
-            true
-        >
-    )[] &
-    {
-        "0" : (
-            JoinReference<
-                JoinReferencesT["0"]["columnReferences"],
-                true
-            >
-        )
-    }
-);
+
 
 export interface AnySelectBuilderData {
     //Used by WHERE clause
-    columnReferences : ColumnReferences,
+    columnReferences : d.ColumnReferences,
     //Modified by JOIN clauses
     joinReferences : JoinReferences,
 
     //Modified by WHERE clause
-    typeNarrowedColumns : ColumnReferences,
+    typeNarrowedColumns : d.ColumnReferences,
 
     //Set by SELECT clause
-    selectReferences : ColumnReferences,
+    selectReferences : d.ColumnReferences,
 
     //Set by SELECT clause
     selectTuple : undefined|Tuple<SelectTupleElement</*this["columnReferences"]*/any>>,
@@ -604,7 +75,7 @@ export interface AnySelectBuilderData {
     distinct : boolean,
 
     //Set by GROUP BY clause
-    groupByReferences : ColumnReferences,
+    groupByReferences : d.ColumnReferences,
 
     //Set by ORDER BY clause
     orderBy : undefined|Tuple<
@@ -619,7 +90,7 @@ export interface AnySelectBuilderData {
 
     //Widening is done after SELECT, before UNION, to allow other data types
     //Doesn't perform any SQL queries, just relaxes the type constraints
-    typeWidenedColumns : ColumnReferences,
+    typeWidenedColumns : d.ColumnReferences,
 
     //Modified by UNION clause
     union : undefined|Tuple<SelectBuilder<any>>,
@@ -653,102 +124,10 @@ export interface AnySelectBuilderData {
             limit : boolean,
             offset : boolean,
         },
-
-        /*
-            .insertInto(table)
-            .ignore()
-            .columns((s) => {
-                return {
-                    field0 : s.alias0.field2,
-                    field1 : s.alias1.field3,
-                };
-            })
-            .values(() => {
-                return {
-                    field0 : e.default(),
-                    field1 : 100
-                }
-            })
-            .values(() => {
-                return [
-                    {
-                        field0 : e.default(),
-                        field1 : 100
-                    },
-                    {
-                        field0 : 37,
-                        field1 : e.add(34, from(app).select(c => [c.app.appId]).limit(1))
-                    }
-                ]
-            })
-            .onDuplicateKeyUpdate((t, s) => {
-                return {
-                    field0 : e.values(t.field0),
-                };
-            })
-        */
-        /*insertInto : {
-            insertInto : boolean,
-            ignore : boolean,
-            columns : boolean,
-            values : boolean,
-            //TODO Ignoring for now
-            //onDuplicateKeyUpdate : boolean,
-        }*/
     }
 }
 
-interface SelectColumnExpr<
-    UsedReferencesT extends PartialColumnReferences,
-    TypeT,
 
-    TableNameT extends string,
-    NameT extends string
-> /*extends Expr<UsedReferencesT, TypeT>, Column<TableNameT, NameT, TypeT>*/ {
-    usedReferences : UsedReferencesT;
-    _dummyType? : TypeT;
-
-    table : TableNameT;
-    name : NameT;
-};
-
-export declare class Expr<
-    UsedReferencesT extends PartialColumnReferences,
-    TypeT
->
-    {
-        usedReferences : UsedReferencesT;
-        _dummyType? : TypeT;
-
-        as<AliasT extends string>(alias : AliasT) : SelectColumnExpr<
-            UsedReferencesT,
-            TypeT,
-
-            "__expr",
-            AliasT
-        >;
-    }
-;
-
-export type FromColumnsCallback<
-    ColumnReferencesT extends ColumnReferences,
-    TupleT extends ColumnReferenceTuple<ColumnReferencesT>
-> = (
-    TupleT |
-    (
-        (columnReferences : ColumnReferencesT) => TupleT
-    )
-);
-
-export type FromColumnsInCallback<
-    FromColumnsCallbackT extends FromColumnsCallback<any, Tuple<AnyColumn>>
-> = (
-    FromColumnsCallbackT extends Tuple<AnyColumn> ?
-    FromColumnsCallbackT :
-    FromColumnsCallbackT extends (...args : any[]) => infer TupleT ?
-    TupleT :
-    ("Invalid FromColumnsCallbackT or could not infer TupleT"|void|never)
-)
 
 export type WhereCallback<
     FromBuilderT extends SelectBuilder<any>
@@ -776,14 +155,14 @@ export type SelectTupleElementType<
         any
     > ?
     TypeT :
-    SelectTupleElementT extends Column<any, any, infer TypeT> ?
+    SelectTupleElementT extends d.IColumn<any, any, infer TypeT> ?
     TypeT :
     SelectTupleElementT extends {
-        [name : string] : AnyColumn
+        [name : string] : d.AnyColumn
     } ?
     {
         [name in keyof SelectTupleElementT] : (
-            SelectTupleElementT[name] extends Column<any, any, infer TypeT> ?
+            SelectTupleElementT[name] extends d.IColumn<any, any, infer TypeT> ?
                 TypeT :
                 never
         )
@@ -817,14 +196,14 @@ export type SelectTupleElementReplaceColumn<
         NewTableNameT,
         NewNameT
     > :
-    SelectTupleElementT extends Column<NewTableNameT, NewNameT, any> ?
+    SelectTupleElementT extends d.IColumn<NewTableNameT, NewNameT, any> ?
     Column<NewTableNameT, NewNameT, NewTypeT> :
     SelectTupleElementT extends {
-        [name : string] : AnyColumn
+        [name : string] : d.AnyColumn
     } ?
     {
         [name in keyof SelectTupleElementT] : (
-            SelectTupleElementT[name] extends Column<NewTableNameT, NewNameT, any> ?
+            SelectTupleElementT[name] extends d.IColumn<NewTableNameT, NewNameT, any> ?
                 Column<NewTableNameT, NewNameT, NewTypeT> :
                 SelectTupleElementT[name]
         )
@@ -862,7 +241,7 @@ export type SelectTupleReplaceColumn<
     }
 );
 
-export type JoinableSelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
+export type JoinableSelectTupleElement<ColumnReferencesT extends d.ColumnReferences> = (
     (SelectColumnExpr<
         ToPartialColumnReferences<ColumnReferencesT>,
         any,
@@ -872,7 +251,7 @@ export type JoinableSelectTupleElement<ColumnReferencesT extends ColumnReference
     ColumnReferenceElement<ColumnReferencesT>
 );
 
-export type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
+export type SelectTupleElement<ColumnReferencesT extends d.ColumnReferences> = (
     (SelectColumnExpr<
         ToPartialColumnReferences<ColumnReferencesT>,
         any,
@@ -885,10 +264,10 @@ export type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
 export type SelectTupleElementToColumnType<ElementT extends SelectTupleElement<any>> = (
     ElementT extends SelectColumnExpr<any, infer TypeT, infer TableNameT, infer NameT> ?
     Column<TableNameT, NameT, TypeT> :
-    ElementT extends Column<infer TableNameT, infer NameT, infer TypeT> ?
+    ElementT extends d.IColumn<infer TableNameT, infer NameT, infer TypeT> ?
     Column<TableNameT, NameT, TypeT> :
     ElementT extends {
-        [name : string] : AnyColumn
+        [name : string] : d.AnyColumn
     } ?
     ElementT[keyof ElementT] :
     never
@@ -900,20 +279,20 @@ export type SelectTupleHasDuplicateColumn<TupleT extends Tuple<SelectTupleElemen
         } &
         { length : TupleLength<TupleT> } &
         { "0" : SelectTupleElementToColumnType<TupleT[0]> } &
-        (AnyColumn)[]
+        (d.AnyColumn)[]
     >
 );
 
 export type SelectTupleElementToReference<ElementT extends SelectTupleElement<any>> = (
     ElementT extends SelectColumnExpr<any, infer TypeT, infer TableNameT, infer NameT> ?
     ColumnToReference<Column<TableNameT, NameT, TypeT>> :
-    ElementT extends AnyColumn ?
+    ElementT extends d.AnyColumn ?
     ColumnToReference<ElementT> :
     ElementT extends {
-        [name : string] : AnyColumn
+        [name : string] : d.AnyColumn
     } ?
     (
-        ElementT[keyof ElementT] extends Column<infer TableNameT, any, any> ?
+        ElementT[keyof ElementT] extends d.IColumn<infer TableNameT, any, any> ?
             {
                 [k in TableNameT] : ElementT
             } :
@@ -952,7 +331,7 @@ export type JoinableSelectTupleElementToRawColumn<ElementT extends JoinableSelec
     {
         [name in NameT] : sd.AssertDelegate<TypeT>
     } :
-    ElementT extends Column<any, infer NameT, infer TypeT> ?
+    ElementT extends d.IColumn<any, infer NameT, infer TypeT> ?
     {
         [name in NameT] : sd.AssertDelegate<TypeT>
     } :
@@ -999,17 +378,6 @@ export type SelectCallback<
 );
 
 
-export type TypeNarrowCallback<
-    FromBuilderT extends SelectBuilder<any>
-> = (
-    FromBuilderT extends SelectBuilder<infer DataT> ?
-        (
-            columnReferences : DataT["columnReferences"]
-        ) => (
-            AnyColumn
-        ):
-        never
-);
 
 export type TypeWidenCallback<
     FromBuilderT extends SelectBuilder<any>
@@ -1018,24 +386,24 @@ export type TypeWidenCallback<
         (
             columnReferences : DataT["selectReferences"]
         ) => (
-            AnyColumn
+            d.AnyColumn
         ):
         never
 );
 
 
-export type GroupByTupleElement<ColumnReferencesT extends ColumnReferences> = (
+export type GroupByTupleElement<ColumnReferencesT extends d.ColumnReferences> = (
     ColumnReferencesT[keyof ColumnReferencesT]|
     ColumnReferenceElement<ColumnReferencesT>
 );
 export type GroupByTupleElementToReference<ElementT extends GroupByTupleElement<any>> = (
-    ElementT extends AnyColumn ?
+    ElementT extends d.AnyColumn ?
     ColumnToReference<ElementT> :
     ElementT extends {
-        [name : string] : AnyColumn
+        [name : string] : d.AnyColumn
     } ?
     (
-        ElementT[keyof ElementT] extends Column<infer TableNameT, any, any> ?
+        ElementT[keyof ElementT] extends d.IColumn<infer TableNameT, any, any> ?
             {
                 [k in TableNameT] : ElementT
             } :
@@ -1098,14 +466,14 @@ export type HavingCallback<
         never
 );
 
-export type OrderByFirstComponent<ColumnReferencesT extends ColumnReferences> = (
+export type OrderByFirstComponent<ColumnReferencesT extends d.ColumnReferences> = (
     (Expr<
         ToPartialColumnReferences<ColumnReferencesT>,
         any
     >)|
     ColumnReferenceElement<ColumnReferencesT>
 );
-export type OrderByTupleElement<ColumnReferencesT extends ColumnReferences> = (
+export type OrderByTupleElement<ColumnReferencesT extends d.ColumnReferences> = (
     //Defaults to ASCENDING
     OrderByFirstComponent<ColumnReferencesT>|
     [
@@ -1131,421 +499,7 @@ export type OrderByCallback<
 
 export declare class SelectBuilder<T extends AnySelectBuilderData> {
     data : T;
-    join<
-        ToTableT extends AliasedTable<any, any, {}>,
-        FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>/*,
-        ToColumnsT extends ToColumnsCallback<ToTableT, FromColumnsInCallback<FromColumnsT>>*/
-    > (
-        this : SelectBuilder<{
-            columnReferences : any,
-            joinReferences : any,
-            typeNarrowedColumns : any,
-            selectReferences : any,
-            selectTuple : any,
-            distinct : any,
-            groupByReferences : any,
-            orderBy : any,
-            limit : any,
-            typeWidenedColumns : any,
-            union : any,
-            unionOrderBy : any,
-            unionLimit : any,
 
-            allowed : {
-                join : true,
-                where : any,
-                select : any,
-                distinct : any,
-                groupBy : any,
-                having : any,
-                orderBy : any,
-                limit : any,
-                offset : any,
-                widen : any,
-                union : any,
-            },
-        }>,
-        toTable : ToTableT,
-        from : FromColumnsT,
-        to : ToColumnsCallback<ToTableT, FromColumnsInCallback<FromColumnsT>>
-    ) : (
-        TableAlias<ToTableT> extends keyof T["columnReferences"] ?
-            ("Duplicate alias" | TableAlias<ToTableT> | void) :
-            (
-                FromColumnsInCallback<FromColumnsT> extends IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>> ?
-                    (
-                        SelectBuilder<{
-                            columnReferences : (
-                                T["columnReferences"] &
-                                TableReference<ToTableT>
-                            ),
-                            joinReferences : (
-                                TuplePush<
-                                    T["joinReferences"],
-                                    JoinReference<
-                                        TableReference<ToTableT>,
-                                        false
-                                    >
-                                >
-                            ),
-                            typeNarrowedColumns : T["typeNarrowedColumns"],
-                            typeWidenedColumns : T["typeWidenedColumns"],
-                            selectReferences : T["selectReferences"],
-                            selectTuple : T["selectTuple"],
-                            distinct : T["distinct"],
-                            groupByReferences : T["groupByReferences"],
-                            orderBy : T["orderBy"],
-                            limit : T["limit"],
-                            union : T["union"],
-                            unionOrderBy : T["unionOrderBy"],
-                            unionLimit : T["unionLimit"],
-
-                            allowed : T["allowed"],
-                        }>
-                    ) :
-                    (IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>>|void)
-            )
-    );
-    rightJoin<
-        ToTableT extends AliasedTable<any, any, {}>,
-        FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>/*,
-        ToColumnsT extends ToColumnsCallback<ToTableT, FromColumnsInCallback<FromColumnsT>>*/
-    > (
-        this : SelectBuilder<{
-            columnReferences : any,
-            joinReferences : any,
-            typeNarrowedColumns : any,
-            typeWidenedColumns : any,
-            selectReferences : any,
-            selectTuple : any,
-            distinct : any,
-            groupByReferences : any,
-            orderBy : any,
-            limit : any,
-            union : any,
-            unionOrderBy : any,
-            unionLimit : any,
-
-            allowed : {
-                join : true,
-                where : any,
-                select : any,
-                distinct : any,
-                groupBy : any,
-                having : any,
-                orderBy : any,
-                limit : any,
-                offset : any,
-                widen : any,
-                union : any,
-            }
-        }>,
-        toTable : ToTableT,
-        from : FromColumnsT,
-        to : ToColumnsCallback<ToTableT, FromColumnsInCallback<FromColumnsT>>
-    ) : (
-        TableAlias<ToTableT> extends keyof T["columnReferences"] ?
-            ("Duplicate alias" | TableAlias<ToTableT> | void) :
-            (
-                FromColumnsInCallback<FromColumnsT> extends IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>> ?
-                    (
-                        SelectBuilder<{
-                            columnReferences : (
-                                NullableColumnReference<T["columnReferences"]> &
-                                TableReference<ToTableT>
-                            ),
-                            joinReferences : (
-                                TuplePush<
-                                    NullableJoinReferences<T["joinReferences"]>,
-                                    JoinReference<
-                                        TableReference<ToTableT>,
-                                        false
-                                    >
-                                >
-                            ),
-                            typeNarrowedColumns : T["typeNarrowedColumns"],
-                            typeWidenedColumns : T["typeWidenedColumns"],
-                            selectReferences : T["selectReferences"],
-                            selectTuple : T["selectTuple"],
-                            distinct : T["distinct"],
-                            groupByReferences : T["groupByReferences"],
-                            orderBy : T["orderBy"],
-                            limit : T["limit"],
-                            union : T["union"],
-                            unionOrderBy : T["unionOrderBy"],
-                            unionLimit : T["unionLimit"],
-
-                            allowed : T["allowed"],
-                        }>
-                    ) :
-                    (IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>>|void|never)
-            )
-    );
-    leftJoin<
-        ToTableT extends AliasedTable<any, any, {}>,
-        FromColumnsT extends FromColumnsCallback<T["columnReferences"], Tuple<AnyColumn>>/*,
-        ToColumnsT extends ToColumnsCallback<ToTableT, FromColumnsInCallback<FromColumnsT>>*/
-    > (
-        this : SelectBuilder<{
-            columnReferences : any,
-            joinReferences : any,
-            typeNarrowedColumns : any,
-            typeWidenedColumns : any,
-            selectReferences : any,
-            selectTuple : any,
-            distinct : any,
-            groupByReferences : any,
-            orderBy : any,
-            limit : any,
-            union : any,
-            unionOrderBy : any,
-            unionLimit : any,
-
-            allowed : {
-                join : true,
-                where : any,
-                select : any,
-                distinct : any,
-                groupBy : any,
-                having : any,
-                orderBy : any,
-                limit : any,
-                offset : any,
-                widen : any,
-                union : any,
-            }
-        }>,
-        toTable : ToTableT,
-        from : FromColumnsT,
-        to : ToColumnsCallback<ToTableT, FromColumnsInCallback<FromColumnsT>>
-    ) : (
-        TableAlias<ToTableT> extends keyof T["columnReferences"] ?
-            ("Duplicate alias" | TableAlias<ToTableT> | void) :
-            (
-                FromColumnsInCallback<FromColumnsT> extends IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>> ?
-                    (
-                        SelectBuilder<{
-                            columnReferences : (
-                                T["columnReferences"] &
-                                NullableColumnReference<TableReference<ToTableT>>
-                            ),
-                            joinReferences : (
-                                TuplePush<
-                                    T["joinReferences"],
-                                    JoinReference<
-                                        TableReference<ToTableT>,
-                                        true
-                                    >
-                                >
-                            ),
-                            typeNarrowedColumns : T["typeNarrowedColumns"],
-                            typeWidenedColumns : T["typeWidenedColumns"],
-                            selectReferences : T["selectReferences"],
-                            selectTuple : T["selectTuple"],
-                            distinct : T["distinct"],
-                            groupByReferences : T["groupByReferences"],
-                            orderBy : T["orderBy"],
-                            limit : T["limit"],
-                            union : T["union"],
-                            unionOrderBy : T["unionOrderBy"],
-                            unionLimit : T["unionLimit"],
-
-                            allowed : T["allowed"],
-                        }>
-                    ) :
-                    (IsFromColumnTuple<T["columnReferences"], FromColumnsInCallback<FromColumnsT>>|void)
-            )
-    );
-    whereIsNotNull<
-        TypeNarrowCallbackT extends TypeNarrowCallback<SelectBuilder<T>>
-    > (
-        this : SelectBuilder<{
-            columnReferences : any,
-            joinReferences : any,
-            typeNarrowedColumns : any,
-            typeWidenedColumns : any,
-            selectReferences : any,
-            selectTuple : any,
-            distinct : any,
-            groupByReferences : any,
-            orderBy : any,
-            limit : any,
-            union : any,
-            unionOrderBy : any,
-            unionLimit : any,
-
-            allowed : {
-                join : any,
-                where : true,
-                select : any,
-                distinct : any,
-                groupBy : any,
-                having : any,
-                orderBy : any,
-                limit : any,
-                offset : any,
-                widen : any,
-                union : any,
-            }
-        }>,
-        typeNarrowCallback : TypeNarrowCallbackT
-    ) : (
-        ReturnType<TypeNarrowCallbackT> extends Column<infer TableNameT, infer NameT, infer TypeT> ?
-            (
-                T["columnReferences"] extends ColumnToReference<ReturnType<TypeNarrowCallbackT>> ?
-                    (
-                        SelectBuilder<{
-                            columnReferences : (
-                                {
-                                    [table in keyof T["columnReferences"]] : {
-                                        [column in keyof T["columnReferences"][table]] : (
-                                            table extends TableNameT ?
-                                                (
-                                                    column extends NameT ?
-                                                        (
-                                                            Column<TableNameT, NameT, Exclude<TypeT, null|undefined>>
-                                                        ) :
-                                                        (T["columnReferences"][table][column])
-                                                ) :
-                                                (T["columnReferences"][table][column])
-                                        )
-                                    }
-                                }
-                            ),
-                            joinReferences : T["joinReferences"],
-                            typeNarrowedColumns : (
-                                T["typeNarrowedColumns"] &
-                                {
-                                    [table in TableNameT] : {
-                                        [column in NameT] : Column<TableNameT, NameT, Exclude<TypeT, null|undefined>>
-                                    }
-                                }
-                            ),
-                            typeWidenedColumns : T["typeWidenedColumns"],
-                            selectReferences : T["selectReferences"],
-                            selectTuple : T["selectTuple"],
-                            distinct : T["distinct"],
-                            groupByReferences : T["groupByReferences"],
-                            orderBy : T["orderBy"],
-                            limit : T["limit"],
-                            union : T["union"],
-                            unionOrderBy : T["unionOrderBy"],
-                            unionLimit : T["unionLimit"],
-
-                            allowed : {
-                                join : false,
-                                where : T["allowed"]["where"],
-                                select : T["allowed"]["select"],
-                                distinct : T["allowed"]["distinct"],
-                                groupBy : T["allowed"]["groupBy"],
-                                having : T["allowed"]["having"],
-                                orderBy : T["allowed"]["orderBy"],
-                                limit : T["allowed"]["limit"],
-                                offset : T["allowed"]["offset"],
-                                widen : T["allowed"]["widen"],
-                                union : T["allowed"]["union"],
-                            }
-                        }>
-                    ) :
-                    ("ColumnT is not in ColumnReferences"|void|never)
-            ) :
-            ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
-    );
-    whereIsNull<
-        TypeNarrowCallbackT extends TypeNarrowCallback<SelectBuilder<T>>
-    > (
-        this : SelectBuilder<{
-            columnReferences : any,
-            joinReferences : any,
-            typeNarrowedColumns : any,
-            typeWidenedColumns : any,
-            selectReferences : any,
-            selectTuple : any,
-            distinct : any,
-            groupByReferences : any,
-            orderBy : any,
-            limit : any,
-            union : any,
-            unionOrderBy : any,
-            unionLimit : any,
-
-            allowed : {
-                join : any,
-                where : true,
-                select : any,
-                distinct : any,
-                groupBy : any,
-                having : any,
-                orderBy : any,
-                limit : any,
-                offset : any,
-                widen : any,
-                union : any,
-            }
-        }>,
-        typeNarrowCallback : TypeNarrowCallbackT
-    ) : (
-        ReturnType<TypeNarrowCallbackT> extends Column<infer TableNameT, infer NameT, infer TypeT> ?
-            (
-                T["columnReferences"] extends ColumnToReference<ReturnType<TypeNarrowCallbackT>> ?
-                    (
-                        SelectBuilder<{
-                            columnReferences : (
-                                {
-                                    [table in keyof T["columnReferences"]] : {
-                                        [column in keyof T["columnReferences"][table]] : (
-                                            table extends TableNameT ?
-                                                (
-                                                    column extends NameT ?
-                                                        (
-                                                            Column<TableNameT, NameT, null>
-                                                        ) :
-                                                        (T["columnReferences"][table][column])
-                                                ) :
-                                                (T["columnReferences"][table][column])
-                                        )
-                                    }
-                                }
-                            ),
-                            joinReferences : T["joinReferences"],
-                            typeNarrowedColumns : (
-                                T["typeNarrowedColumns"] &
-                                {
-                                    [table in TableNameT] : {
-                                        [column in NameT] : Column<TableNameT, NameT, null>
-                                    }
-                                }
-                            ),
-                            typeWidenedColumns : T["typeWidenedColumns"],
-                            selectReferences : T["selectReferences"],
-                            selectTuple : T["selectTuple"],
-                            distinct : T["distinct"],
-                            groupByReferences : T["groupByReferences"],
-                            orderBy : T["orderBy"],
-                            limit : T["limit"],
-                            union : T["union"],
-                            unionOrderBy : T["unionOrderBy"],
-                            unionLimit : T["unionLimit"],
-
-                            allowed : {
-                                join : false,
-                                where : T["allowed"]["where"],
-                                select : T["allowed"]["select"],
-                                distinct : T["allowed"]["distinct"],
-                                groupBy : T["allowed"]["groupBy"],
-                                having : T["allowed"]["having"],
-                                orderBy : T["allowed"]["orderBy"],
-                                limit : T["allowed"]["limit"],
-                                offset : T["allowed"]["offset"],
-                                widen : T["allowed"]["widen"],
-                                union : T["allowed"]["union"],
-                            }
-                        }>
-                    ) :
-                    ("ColumnT is not in ColumnReferences"|void|never)
-            ) :
-            ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
-    );
     whereIsEqual<
         TypeNarrowCallbackT extends TypeNarrowCallback<SelectBuilder<T>>,
         ConstT extends number|string|null
@@ -1582,9 +536,9 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
         value : ConstT,
         typeNarrowCallback : TypeNarrowCallbackT
     ) : (
-        ReturnType<TypeNarrowCallbackT> extends Column<infer TableNameT, infer NameT, infer TypeT> ?
+        ReturnType<TypeNarrowCallbackT> extends d.IColumn<infer TableNameT, infer NameT, infer TypeT> ?
             (
-                T["columnReferences"] extends ColumnToReference<ReturnType<TypeNarrowCallbackT>> ?
+                T["columnReferences"] extends d.ColumnToReference<ReturnType<TypeNarrowCallbackT>> ?
                     (
                         SelectBuilder<{
                             columnReferences : (
@@ -1609,7 +563,7 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                                 T["typeNarrowedColumns"] &
                                 {
                                     [table in TableNameT] : {
-                                        [column in NameT] : Column<TableNameT, NameT, ConstT>
+                                        [column in NameT] : d.IColumn<TableNameT, NameT, ConstT>
                                     }
                                 }
                             ),
@@ -1639,7 +593,7 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                             }
                         }>
                     ) :
-                    ("ColumnT is not in ColumnReferences"|void|never)
+                    ("ColumnT is not in d.ColumnReferences"|void|never)
             ) :
             ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
@@ -2241,9 +1195,9 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
         typeWidenCallback : TypeWidenCallbackT,
         assertWidened : sd.AssertDelegate<WidenT>
     ) : (
-        ReturnType<TypeWidenCallbackT> extends Column<infer TableNameT, infer NameT, infer TypeT> ?
+        ReturnType<TypeWidenCallbackT> extends d.IColumn<infer TableNameT, infer NameT, infer TypeT> ?
             (
-                T["columnReferences"] extends ColumnToReference<ReturnType<TypeWidenCallbackT>> ?
+                T["columnReferences"] extends d.ColumnToReference<ReturnType<TypeWidenCallbackT>> ?
                     (
                         SelectBuilder<{
                             columnReferences : T["columnReferences"],
@@ -2253,7 +1207,7 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                                 T["typeWidenedColumns"] &
                                 {
                                     [table in TableNameT] : {
-                                        [column in NameT] : Column<TableNameT, NameT, TypeT|WidenT>
+                                        [column in NameT] : d.IColumn<TableNameT, NameT, TypeT|WidenT>
                                     }
                                 }
                             ),
@@ -2307,7 +1261,7 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                             }
                         }>
                     ) :
-                    ("ColumnT is not in ColumnReferences"|void|never)
+                    ("ColumnT is not in d.ColumnReferences"|void|never)
             ) :
             ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
@@ -2423,7 +1377,7 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                                             }
                                         }>
                                     ) :
-                                    ("ColumnT is not in ColumnReferences"|void|never)
+                                    ("ColumnT is not in d.ColumnReferences"|void|never)
                             ) :
                             ("Invalid selectTuple"|void|never)
                     ) :
@@ -2948,6 +1902,46 @@ f.data.joinReferences[3].nullable
     + Columns
     + Other Expr<> instances
 */
+type SelectBuilderValueQuery<TypeT> = SelectBuilder<{
+    columnReferences : any,
+    joinReferences : any,
+    typeNarrowedColumns : any,
+    selectReferences : any,
+    selectTuple : Tuple<JoinableSelectTupleElement<any>> & {
+        length : 1
+    } & { "0": (SelectColumnExpr<
+        any,
+        TypeT,
+        "__expr",
+        any
+    >)|
+    Column<any, any, TypeT>},
+    distinct : any,
+    groupByReferences : any,
+    orderBy : any,
+    limit : any,
+    typeWidenedColumns : any,
+    union : any,
+    unionOrderBy : any,
+    unionLimit : any,
+
+    allowed : {
+        join : false,
+        where : false,
+        select : false,
+        //Only allow the below clauses after the SELECT clause
+        distinct : any,
+        groupBy : any,
+        having : any,
+        orderBy : any,
+        limit : any,
+        //OFFSET only allowed after LIMIT
+        offset : any,
+        widen : any,
+
+        union : any,
+    }
+}>;
 type AnySelectBuilderValueQuery = SelectBuilder<{
     columnReferences : any,
     joinReferences : any,
@@ -2993,17 +1987,28 @@ export type RawExpr<TypeT> = (
     )|
     Expr<any, TypeT>|
     Column<any, any, TypeT>|
-    AnySelectBuilderValueQuery
+    SelectBuilderValueQuery<TypeT>
+);
+export type RawExprNoUsedRef<TypeT> = (
+    (
+        //TODO `undefined` constant should be mapped to `null`
+        TypeT extends AllowedExprConstants ?
+            TypeT :
+            never
+    )|
+    Expr<{}, TypeT>|
+    Column<any, any, TypeT>|
+    SelectBuilderValueQuery<TypeT>
 );
 type ExprUsedColumns<RawExprT extends RawExpr<any>> = (
     RawExprT extends SelectBuilder<any> ?
     {} :
     RawExprT extends AllowedExprConstants ?
     {} :
-    RawExprT extends Column<infer TableNameT, infer NameT, infer TypeT> ?
+    RawExprT extends d.IColumn<infer TableNameT, infer NameT, infer TypeT> ?
     {
         [table in TableNameT] : {
-            [name in NameT] : Column<TableNameT, NameT, TypeT>
+            [name in NameT] : d.IColumn<TableNameT, NameT, TypeT>
         }
     } :
     RawExprT extends Expr<infer UsedColumnsT, any> ?
@@ -3013,7 +2018,7 @@ type ExprUsedColumns<RawExprT extends RawExpr<any>> = (
 type ExprType<RawExprT extends RawExpr<any>> = (
     RawExprT extends AllowedExprConstants ?
     RawExprT :
-    RawExprT extends Column<any, any, infer TypeT> ?
+    RawExprT extends d.IColumn<any, any, infer TypeT> ?
     TypeT :
     RawExprT extends Expr<any, infer TypeT> ?
     TypeT :
@@ -3074,18 +2079,18 @@ Examples
 
 //declare function tuple<TupleT extends Tuple<any>>(t : TupleT) : TupleT;
 
-type HasDuplicateColumn<TupleT extends Tuple<AnyColumn>> = {
+type HasDuplicateColumn<TupleT extends Tuple<d.AnyColumn>> = {
     [index in TupleKeys<TupleT>]: (
         //Only one element? No duplicate
         Exclude<TupleKeys<TupleT>, index> extends never ?
             (never) :
             (
                 //Is a column?
-                TupleT[index] extends Column<infer TableNameT, infer NameT, any> ?
+                TupleT[index] extends d.IColumn<infer TableNameT, infer NameT, any> ?
                     (
                         {
                             [other in Exclude<TupleKeys<TupleT>, index>] : (
-                                TupleT[other] extends Column<infer OtherTableNameT, infer OtherNameT, any> ?
+                                TupleT[other] extends d.IColumn<infer OtherTableNameT, infer OtherNameT, any> ?
                                     (
                                         Extract<TupleT[index], TupleT[other]> extends never ?
                                             never :
