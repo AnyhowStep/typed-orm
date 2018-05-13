@@ -213,7 +213,7 @@ export class Table<NameT extends string, RawColumnCollectionT extends RawColumnC
             {
                 autoIncrement : ReturnType<AutoIncrementDelegateT>,
                 hasServerDefaultValue : DataT["hasServerDefaultValue"] & {
-                    autoIncrement : true,
+                    [name in ReturnType<AutoIncrementDelegateT>["name"]] : true
                 },
             }
         >
@@ -229,7 +229,7 @@ export class Table<NameT extends string, RawColumnCollectionT extends RawColumnC
                     autoIncrement : autoIncrement,
                     hasServerDefaultValue : {
                         ...this.data.hasServerDefaultValue,
-                        autoIncrement : true,
+                        [autoIncrement.name] : true,
                     }
                 }
             )
@@ -257,7 +257,7 @@ export class Table<NameT extends string, RawColumnCollectionT extends RawColumnC
                             } &
                             (
                                 DataT["autoIncrement"] extends AnyColumn ?
-                                    { autoIncrement : true } :
+                                    { [name in DataT["autoIncrement"]["name"]] : true } :
                                     {}
                             ) &
                             {
@@ -712,7 +712,7 @@ interface SelectColumnExpr<
     name : NameT;
 };
 
-declare class Expr<
+export declare class Expr<
     UsedReferencesT extends PartialColumnReferences,
     TypeT
 >
@@ -2984,7 +2984,7 @@ type AnySelectBuilderValueQuery = SelectBuilder<{
 }>;
 
 type AllowedExprConstants = number|string|boolean|Date|null|undefined;
-type RawExpr<TypeT> = (
+export type RawExpr<TypeT> = (
     (
         //TODO `undefined` constant should be mapped to `null`
         TypeT extends AllowedExprConstants ?

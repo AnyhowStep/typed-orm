@@ -2336,6 +2336,7 @@ export declare function from<
         typeNarrowedColumns : {},
         selectReferences : {},
         selectTuple : undefined,
+        distinct : false,
         groupByReferences : {},
         orderBy : undefined,
         limit : undefined,
@@ -2348,6 +2349,7 @@ export declare function from<
             join : true,
             where : true,
             select : true,
+            distinct : false,
             //Only allow the below clauses after the SELECT clause
             groupBy : false,
             having : false,
