@@ -70,15 +70,15 @@ export type Pk<RawColumnCollectionT extends RawColumnCollection> = (
     (keyof RawColumnCollectionT)[] & { "0" : keyof RawColumnCollectionT }
 );
 
-export interface RawTableData<AliasT extends string, RawColumnCollectionT extends RawColumnCollection> {
+export interface RawTableData {
     //TODO
     //pk? :  undefined|Pk<any>;
     //TODO, Maybe allow string? I *think* BIGINT can have values too large for `number`
-    autoIncrement : undefined|(
+    autoIncrement : undefined|Column<any, any, number>;/*(
         ColumnCollectionElement<ColumnCollection<AliasT, RawColumnCollectionT>> extends Column<any, any, number> ?
             ColumnCollectionElement<ColumnCollection<AliasT, RawColumnCollectionT>> :
             never
-    );
+    );*/
     hasServerDefaultValue : {
         [name : string] : true;
     };
@@ -138,7 +138,7 @@ function nullableToHasServerDefaultValue<ColumnCollectionT extends ColumnCollect
 AutoIncrementT extends undefined|(PkT extends Array<infer E> ? E : never),
 HasDefaultValue extends undefined|Tuple<RawColumnCollectionT>,
 HasClientDefaultValue extends undefined|Tuple<RawColumnCollectionT>*/
-export class Table<NameT extends string, RawColumnCollectionT extends RawColumnCollection, DataT extends RawTableData<NameT, RawColumnCollectionT>/* = RawTableData<NameT, RawColumnCollectionT>*/> implements AliasedTable<NameT, NameT, RawColumnCollectionT> {
+export class Table<NameT extends string, RawColumnCollectionT extends RawColumnCollection, DataT extends RawTableData/* = RawTableData<NameT, RawColumnCollectionT>*/> implements AliasedTable<NameT, NameT, RawColumnCollectionT> {
     public readonly alias  : NameT;
     public readonly name   : NameT;
     public readonly columns : {
@@ -307,7 +307,6 @@ export const ssoClient = Table.Create(
         initializeAfterAuthenticationEndpoint : sd.nullable(sd.string()),
     }
 ).autoIncrement(c => c.ssoClientId);
-
 
 export const app = Table.Create(
     "app",
@@ -654,6 +653,48 @@ export interface AnySelectBuilderData {
             limit : boolean,
             offset : boolean,
         },
+
+        /*
+            .insertInto(table)
+            .ignore()
+            .columns((s) => {
+                return {
+                    field0 : s.alias0.field2,
+                    field1 : s.alias1.field3,
+                };
+            })
+            .values(() => {
+                return {
+                    field0 : e.default(),
+                    field1 : 100
+                }
+            })
+            .values(() => {
+                return [
+                    {
+                        field0 : e.default(),
+                        field1 : 100
+                    },
+                    {
+                        field0 : 37,
+                        field1 : e.add(34, from(app).select(c => [c.app.appId]).limit(1))
+                    }
+                ]
+            })
+            .onDuplicateKeyUpdate((t, s) => {
+                return {
+                    field0 : e.values(t.field0),
+                };
+            })
+        */
+        /*insertInto : {
+            insertInto : boolean,
+            ignore : boolean,
+            columns : boolean,
+            values : boolean,
+            //TODO Ignoring for now
+            //onDuplicateKeyUpdate : boolean,
+        }*/
     }
 }
 
@@ -1122,7 +1163,7 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                 offset : any,
                 widen : any,
                 union : any,
-            }
+            },
         }>,
         toTable : ToTableT,
         from : FromColumnsT,
@@ -2790,6 +2831,11 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
     paginate (paginationArgs? : RawPaginationArgs) : Promise<PaginateResult<T["selectReferences"]>>;
 
     /*insert<
+        TableT extends Table<any, any, {
+            autoIncrement : any,
+            hasServerDefaultValue : any,
+        }>,
+        InsertCallbackT extends InsertCallback<TableT>
     > (
         this : SelectBuilder<{
             columnReferences : any,
@@ -2820,9 +2866,10 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
                 union : any,
             }
         }>,
-        table: //Table<,
-        insertCallback :
+        table: TableT,
+        insertCallback : InsertCallbackT
     ) : (
+        ReturnType<InsertCallbackT>
         T["selectTuple"] extends Tuple<JoinableSelectTupleElement<T["columnReferences"]>> ?
             AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<T["selectTuple"]>> :
             "Cannot use tables in SELECT clause when aliasing"|void|never
