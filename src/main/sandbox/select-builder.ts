@@ -55,7 +55,7 @@ const user = table(
 
 const b = from(app)
     .join(appKey, c => [c.app.appId], t => [t.appId])
-    .whereIsNotNull(c => c.app.ssoApiKey);
+    .whereIsEqual(3, c => c.app.ssoApiKey);
     b.data.columnReferences.app.ssoApiKey
 
 declare const allowed : d.IsAllowedSelectBuilderOperation<typeof b["data"], d.SelectBuilderOperation.JOIN>;

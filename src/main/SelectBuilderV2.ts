@@ -34,11 +34,6 @@ export type ColumnToReference<ColumnT extends d.AnyColumn> = (
         ) :
         never//("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
 );
-export type ToPartialColumnReferences<ColumnReferencesT extends d.ColumnReferences> = {
-    [table in keyof ColumnReferencesT]+? : {
-        [column in keyof ColumnReferencesT[table]]+? : d.ColumnReferencesT[table][column]
-    }
-};
 
 
 //////////////////////////////
@@ -129,21 +124,6 @@ export interface AnySelectBuilderData {
 
 
 
-export type WhereCallback<
-    FromBuilderT extends SelectBuilder<any>
-> = (
-    FromBuilderT extends SelectBuilder<infer DataT> ?
-        (
-            columnReferences : DataT["columnReferences"],
-            fromBuilder : FromBuilderT
-        ) => (
-            Expr<
-                ToPartialColumnReferences<DataT["columnReferences"]>,
-                boolean
-            >
-        ):
-        never
-);
 
 export type SelectTupleElementType<
     SelectTupleElementT extends SelectTupleElement<any>
@@ -500,179 +480,7 @@ export type OrderByCallback<
 export declare class SelectBuilder<T extends AnySelectBuilderData> {
     data : T;
 
-    whereIsEqual<
-        TypeNarrowCallbackT extends TypeNarrowCallback<SelectBuilder<T>>,
-        ConstT extends number|string|null
-    > (
-        this : SelectBuilder<{
-            columnReferences : any,
-            joinReferences : any,
-            typeNarrowedColumns : any,
-            typeWidenedColumns : any,
-            selectReferences : any,
-            selectTuple : any,
-            distinct : any,
-            groupByReferences : any,
-            orderBy : any,
-            limit : any,
-            union : any,
-            unionOrderBy : any,
-            unionLimit : any,
 
-            allowed : {
-                join : any,
-                where : true,
-                select : any,
-                distinct : any,
-                groupBy : any,
-                having : any,
-                orderBy : any,
-                limit : any,
-                offset : any,
-                widen : any,
-                union : any,
-            }
-        }>,
-        value : ConstT,
-        typeNarrowCallback : TypeNarrowCallbackT
-    ) : (
-        ReturnType<TypeNarrowCallbackT> extends d.IColumn<infer TableNameT, infer NameT, infer TypeT> ?
-            (
-                T["columnReferences"] extends d.ColumnToReference<ReturnType<TypeNarrowCallbackT>> ?
-                    (
-                        SelectBuilder<{
-                            columnReferences : (
-                                {
-                                    [table in keyof T["columnReferences"]] : {
-                                        [column in keyof T["columnReferences"][table]] : (
-                                            table extends TableNameT ?
-                                                (
-                                                    column extends NameT ?
-                                                        (
-                                                            Column<TableNameT, NameT, ConstT>
-                                                        ) :
-                                                        (T["columnReferences"][table][column])
-                                                ) :
-                                                (T["columnReferences"][table][column])
-                                        )
-                                    }
-                                }
-                            ),
-                            joinReferences : T["joinReferences"],
-                            typeNarrowedColumns : (
-                                T["typeNarrowedColumns"] &
-                                {
-                                    [table in TableNameT] : {
-                                        [column in NameT] : d.IColumn<TableNameT, NameT, ConstT>
-                                    }
-                                }
-                            ),
-                            typeWidenedColumns : T["typeWidenedColumns"],
-                            selectReferences : T["selectReferences"],
-                            selectTuple : T["selectTuple"],
-                            distinct : T["distinct"],
-                            groupByReferences : T["groupByReferences"],
-                            orderBy : T["orderBy"],
-                            limit : T["limit"],
-                            union : T["union"],
-                            unionOrderBy : T["unionOrderBy"],
-                            unionLimit : T["unionLimit"],
-
-                            allowed : {
-                                join : false,
-                                where : T["allowed"]["where"],
-                                select : T["allowed"]["select"],
-                                distinct : T["allowed"]["distinct"],
-                                groupBy : T["allowed"]["groupBy"],
-                                having : T["allowed"]["having"],
-                                orderBy : T["allowed"]["orderBy"],
-                                limit : T["allowed"]["limit"],
-                                offset : T["allowed"]["offset"],
-                                widen : T["allowed"]["widen"],
-                                union : T["allowed"]["union"],
-                            }
-                        }>
-                    ) :
-                    ("ColumnT is not in d.ColumnReferences"|void|never)
-            ) :
-            ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
-    );
-    where<
-        WhereCallbackT extends WhereCallback<SelectBuilder<T>>
-    > (
-        this : SelectBuilder<{
-            columnReferences : any,
-            joinReferences : any,
-            typeNarrowedColumns : any,
-            typeWidenedColumns : any,
-            selectReferences : any,
-            selectTuple : any,
-            distinct : any,
-            groupByReferences : any,
-            orderBy : any,
-            limit : any,
-            union : any,
-            unionOrderBy : any,
-            unionLimit : any,
-
-            allowed : {
-                join : any,
-                where : true,
-                select : any,
-                distinct : any,
-                groupBy : any,
-                having : any,
-                orderBy : any,
-                limit : any,
-                offset : any,
-                widen : any,
-                union : any,
-            }
-        }>,
-        whereCallback : WhereCallbackT
-    ):(
-        WhereCallbackT extends WhereCallback<SelectBuilder<T>> ?
-            (
-                ReturnType<WhereCallbackT> extends Expr<infer UsedReferencesT, boolean> ?
-                    (
-                        T["columnReferences"] extends UsedReferencesT ?
-                            (
-                                SelectBuilder<{
-                                    columnReferences : T["columnReferences"],
-                                    joinReferences : T["joinReferences"],
-                                    typeNarrowedColumns : T["typeNarrowedColumns"],
-                                    typeWidenedColumns : T["typeWidenedColumns"],
-                                    selectReferences : T["selectReferences"],
-                                    selectTuple : T["selectTuple"],
-                                    distinct : T["distinct"],
-                                    groupByReferences : T["groupByReferences"],
-                                    orderBy : T["orderBy"],
-                                    limit : T["limit"],
-                                    union : T["union"],
-                                    unionOrderBy : T["unionOrderBy"],
-                                    unionLimit : T["unionLimit"],
-
-                                    allowed : {
-                                        join : false,
-                                        where : T["allowed"]["where"],
-                                        select : T["allowed"]["select"],
-                                        distinct : T["allowed"]["distinct"],
-                                        groupBy : T["allowed"]["groupBy"],
-                                        having : T["allowed"]["having"],
-                                        orderBy : T["allowed"]["orderBy"],
-                                        limit : T["allowed"]["limit"],
-                                        offset : T["allowed"]["offset"],
-                                        widen : T["allowed"]["widen"],
-                                        union : T["allowed"]["union"],
-                                    }
-                                }>
-                            ) :
-                            ("UsedReferencesT has some columns not in FromBuilder's columnReferences"|void|never)
-                    ) :
-                    ("Invalid ExprT or could not infer UsedReferencesT"|void|never)
-            ) :
-            ("Invalid WhereCallbackT"|void|never)
-    );
     select<
         SelectCallbackT extends SelectCallback<SelectBuilder<T>>
     > (

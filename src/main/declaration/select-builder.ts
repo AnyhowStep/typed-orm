@@ -14,6 +14,7 @@ import {IColumn, AnyColumn} from "./column";
 import {TableAlias, TableToReference} from "./table-operation";
 import {ToNullableColumnReferences, ReplaceColumnOfReference} from "./column-references-operation";
 import {TypeNarrowCallback} from "./type-narrow";
+import {WhereCallback} from "./where";
 
 export enum SelectBuilderOperation {
     JOIN = "JOIN",
@@ -228,7 +229,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> {
             )
     );
 
-    //WHERE CLAUSE
+    //TYPE-NARROW CLAUSE
     whereIsNotNull<TypeNarrowCallbackT extends TypeNarrowCallback<ISelectBuilder<DataT>>> (
         typeNarrowCallback : TypeNarrowCallbackT
     ) : (
@@ -287,6 +288,19 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> {
                 }> :
                 ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
+
+    //WHERE CLAUSE
+    where<WhereCallbackT extends WhereCallback<ISelectBuilder<DataT>>> (
+        whereCallback : WhereCallbackT
+    ):(
+        ISelectBuilder<{
+            allowed : DisableOperation<DataT, SelectBuilderOperation.JOIN>,
+            columnReferences : DataT["columnReferences"],
+            joins : DataT["joins"],
+        }>
+    );
+
+    //SELECT CLAUSE
 }
 
 export type AnySelectBuilder = ISelectBuilder<any>;

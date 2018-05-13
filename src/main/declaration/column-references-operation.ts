@@ -32,6 +32,7 @@ export type ToNullableColumnReferences<ColumnReferencesT extends ColumnReference
     }
 )
 
+//TODO Rename to References
 export type ReplaceColumnOfReference<
     ColumnReferencesT extends ColumnReferences,
     TableNameT extends string,
@@ -54,3 +55,9 @@ export type ReplaceColumnOfReference<
         }
     }
 );
+
+export type ToPartialColumnReferences<ColumnReferencesT extends ColumnReferences> = {
+    [table in keyof ColumnReferencesT]+? : {
+        [column in keyof ColumnReferencesT[table]]+? : ColumnReferencesT[table][column]
+    }
+};

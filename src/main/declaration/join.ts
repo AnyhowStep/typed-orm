@@ -72,7 +72,16 @@ export type JoinToColumn<
     TableT extends AnyAliasedTable,
     FromColumnT extends AnyColumn
 > = (
-    IColumn<TableAlias<TableT>, keyof TableColumns<TableT>, ColumnType<FromColumnT>|null>
+    {
+        [name in keyof TableColumns<TableT>] : (
+            IColumn<
+                TableAlias<TableT>,
+                name,
+                ColumnType<FromColumnT>|null
+            >
+        )
+    }[keyof TableColumns<TableT>]
+    //IColumn<TableAlias<TableT>, keyof TableColumns<TableT>, ColumnType<FromColumnT>|null>
 );
 
 export type JoinToTuple<
