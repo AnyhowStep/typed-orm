@@ -1,5 +1,8 @@
 import * as sd from "schema-decorator";
 import {Tuple, TupleKeys, TupleLength, TuplePush} from "./Tuple";
+import {spread} from "@anyhowstep/type-util";
+
+
 
 export interface RawPaginationArgs {
     page? : number|null|undefined;
@@ -44,6 +47,9 @@ export declare type TypeOf<RawColumnT extends RawColumn> = (
 export type ColumnCollection<AliasT extends string, RawColumnsT extends RawColumnCollection> = {
     [name in keyof RawColumnsT] : Column<AliasT, name, TypeOf<RawColumnsT[name]>>
 };
+export type ColumnCollectionElement<ColumnCollectionT extends ColumnCollection<any, {}>> = (
+    ColumnCollectionT[keyof ColumnCollectionT]
+)
 
 export declare function toColumns<AliasT extends string, RawColumnCollectionT extends RawColumnCollection> (
     alias  : string,
@@ -64,25 +70,118 @@ export type Pk<RawColumnCollectionT extends RawColumnCollection> = (
     (keyof RawColumnCollectionT)[] & { "0" : keyof RawColumnCollectionT }
 );
 
-export class Table<
-    NameT extends string,
-    RawColumnCollectionT extends RawColumnCollection,
-    //PkT extends Pk<RawColumnCollectionT>,
-    //AutoIncrementT extends undefined|(PkT extends Array<infer E> ? E : never)
-> implements AliasedTable<NameT, NameT, RawColumnCollectionT> {
+export interface RawTableData<AliasT extends string, RawColumnCollectionT extends RawColumnCollection> {
+    //TODO
+    //pk? :  undefined|Pk<any>;
+    //TODO, Maybe allow string? I *think* BIGINT can have values too large for `number`
+    autoIncrement : undefined|(
+        ColumnCollectionElement<ColumnCollection<AliasT, RawColumnCollectionT>> extends Column<any, any, number> ?
+            ColumnCollectionElement<ColumnCollection<AliasT, RawColumnCollectionT>> :
+            never
+    );
+    hasServerDefaultValue : {
+        [name : string] : true;
+    };
+}
+
+type AutoIncrementDelegate<AliasT extends string, RawColumnCollectionT extends RawColumnCollection> = (
+    (columns : ColumnCollection<AliasT, RawColumnCollectionT>) => (
+        ColumnCollectionElement<ColumnCollection<AliasT, RawColumnCollectionT>>
+    )
+);
+
+type HasServerDefaultValueDelegate<AliasT extends string, RawColumnCollectionT extends RawColumnCollection> = (
+    (columns : ColumnCollection<AliasT, RawColumnCollectionT>) => (
+        Tuple<ColumnCollectionElement<ColumnCollection<AliasT, RawColumnCollectionT>>>
+    )
+);
+
+
+type FindNullableNames<RawColumnCollectionT extends RawColumnCollection> = (
+    {
+        [name in keyof RawColumnCollectionT] : (
+            null extends TypeOf<RawColumnCollectionT[name]> ?
+                name :
+                never
+        )
+    }[keyof RawColumnCollectionT]
+);
+function findNullableNames<RawColumnCollectionT extends RawColumnCollection> (
+    columns : ColumnCollection<any, RawColumnCollectionT>
+) : FindNullableNames<RawColumnCollectionT>[] {
+    const result : string[] = [];
+    for (let name in columns) {
+        if (columns.hasOwnProperty(name)) {
+            try {
+                columns[name].assertDelegate("test-null", null)
+                result.push(name);
+            } catch (_err) {
+                //Do nothing
+            }
+        }
+    }
+    return result as any;
+}
+function nullableToHasServerDefaultValue<ColumnCollectionT extends ColumnCollection<any, {}>> (
+    columns : ColumnCollectionT
+) : {
+    [name in FindNullableNames<ColumnCollectionT>] : true
+} {
+    return findNullableNames(columns)
+        .reduce<{ [name : string] : true }>((memo, name) => {
+            memo[name] = true;
+            return memo;
+        }, {}) as any;
+}
+
+/*PkT extends Pk<RawColumnCollectionT>,
+AutoIncrementT extends undefined|(PkT extends Array<infer E> ? E : never),
+HasDefaultValue extends undefined|Tuple<RawColumnCollectionT>,
+HasClientDefaultValue extends undefined|Tuple<RawColumnCollectionT>*/
+export class Table<NameT extends string, RawColumnCollectionT extends RawColumnCollection, DataT extends RawTableData<NameT, RawColumnCollectionT>/* = RawTableData<NameT, RawColumnCollectionT>*/> implements AliasedTable<NameT, NameT, RawColumnCollectionT> {
     public readonly alias  : NameT;
     public readonly name   : NameT;
     public readonly columns : {
         [name in keyof RawColumnCollectionT] : Column<NameT, name, TypeOf<RawColumnCollectionT[name]>>
     };
+
+    public readonly data : DataT;
     //public readonly pk : PkT;
     //public readonly autoIncrement : AutoIncrementT;
-    public constructor (name : NameT, columns : RawColumnCollectionT/*, pk : PkT, autoIncrement : AutoIncrementT*/) {
+    private constructor (
+        name : NameT,
+        columns : RawColumnCollectionT,
+        data : DataT
+    ) {
         this.alias = name;
         this.name  = name;
         this.columns = toColumns(name, columns);
-        //this.pk = pk;
-        //this.autoIncrement = autoIncrement;
+        this.data = data;
+    }
+    public static Create<
+        NameT extends string,
+        RawColumnCollectionT extends RawColumnCollection
+    > (
+        name : NameT,
+        rawColumns : RawColumnCollectionT,
+    ) : (
+        Table<
+            NameT,
+            RawColumnCollectionT,
+            {
+                autoIncrement : undefined,
+                hasServerDefaultValue : {
+                    [name in FindNullableNames<ColumnCollection<NameT, RawColumnCollectionT>>] : true
+                },
+            }
+        >
+    ) {
+        const columns = toColumns<NameT, RawColumnCollectionT>(name, rawColumns);
+
+        return new Table(name, columns, {
+            autoIncrement : undefined,
+            hasServerDefaultValue : nullableToHasServerDefaultValue(columns),
+        }) as any;
     }
     public as<NewAliasT extends string> (alias : NewAliasT) : AliasedTable<NewAliasT, NameT, RawColumnCollectionT> {
         return {
@@ -91,25 +190,126 @@ export class Table<
             columns : toColumns(alias, this.columns),
         };
     }
+    public assertIsOwnColumn (name : string, other : AnyColumn) {
+        if (other.table != this.alias) {
+            throw new Error(`Expected ${name}.table to be ${this.alias}, received ${other.table}`);
+        }
+        const column = this.columns[other.name];
+        if (column == undefined) {
+            throw new Error(`Table ${this.alias} has no such column ${other.name} of ${name}`);
+        }
+        if (column != other) {
+            throw new Error(`The column ${other.table}.${other.name} exists but is different from the instance received of ${name}`);
+        }
+    }
+    public autoIncrement<
+        AutoIncrementDelegateT extends AutoIncrementDelegate<NameT, RawColumnCollectionT>
+    > (
+        autoIncrementDelegate : AutoIncrementDelegateT
+    ) : (
+        Table<
+            NameT,
+            RawColumnCollectionT,
+            {
+                autoIncrement : ReturnType<AutoIncrementDelegateT>,
+                hasServerDefaultValue : DataT["hasServerDefaultValue"] & {
+                    autoIncrement : true,
+                },
+            }
+        >
+    ) {
+        const autoIncrement = autoIncrementDelegate(this.columns);
+        this.assertIsOwnColumn("autoIncrement", autoIncrement);
+        return new Table(
+            this.name,
+            this.columns,
+            spread(
+                this.data,
+                {
+                    autoIncrement : autoIncrement,
+                    hasServerDefaultValue : {
+                        ...this.data.hasServerDefaultValue,
+                        autoIncrement : true,
+                    }
+                }
+            )
+        ) as any;
+    }
+    public setHasServerDefaultValue<
+        HasServerDefaultValueDelegateT extends HasServerDefaultValueDelegate<NameT, RawColumnCollectionT>
+    > (
+        hasServerDefaultValueDelegate : HasServerDefaultValueDelegateT
+    ) : (
+        Table<
+            NameT,
+            RawColumnCollectionT,
+            {
+                autoIncrement : DataT["autoIncrement"],
+                hasServerDefaultValue : (
+                    ReturnType<HasServerDefaultValueDelegateT>[
+                        TupleKeys<ReturnType<HasServerDefaultValueDelegateT>>
+                    ] extends AnyColumn ?
+                        (
+                            {
+                                [k in ReturnType<HasServerDefaultValueDelegateT>[
+                                    TupleKeys<ReturnType<HasServerDefaultValueDelegateT>>
+                                ]["name"]] : true
+                            } &
+                            (
+                                DataT["autoIncrement"] extends AnyColumn ?
+                                    { autoIncrement : true } :
+                                    {}
+                            ) &
+                            {
+                                [name in FindNullableNames<ColumnCollection<NameT, RawColumnCollectionT>>] : true
+                            }
+                        ) :
+                        never
+                ),
+            }
+        >
+    ) {
+        const columns = hasServerDefaultValueDelegate(this.columns);
+        for (let i=0; i<columns.length; ++i) {
+            this.assertIsOwnColumn(`serverDefaultValue[${i}]`, columns[i]);
+        }
+
+        const hasServerDefaultValue : { [name : string] : true } = nullableToHasServerDefaultValue(this.columns);
+        for (let c of columns) {
+            hasServerDefaultValue[c.name] = true;
+        }
+        if (this.data.autoIncrement != undefined) {
+            hasServerDefaultValue[this.data.autoIncrement.name] = true;
+        }
+
+        return new Table(
+            this.name,
+            this.columns,
+            spread(
+                this.data,
+                {
+                    hasServerDefaultValue : hasServerDefaultValue,
+                }
+            )
+        ) as any;
+    }
 }
 
 
 /////////////////////////////////
 
-
-export const ssoClient = new Table(
+export const ssoClient = Table.Create(
     "ssoClient",
     {
         ssoClientId : sd.stringToNumber(),
         name : sd.string(),
         authenticationEndpoint : sd.string(),
         initializeAfterAuthenticationEndpoint : sd.nullable(sd.string()),
-    }/*,
-    ["ssoClientId"],
-    "ssoClientId"*/
-);
+    }
+).autoIncrement(c => c.ssoClientId);
 
-export const app = new Table(
+
+export const app = Table.Create(
     "app",
     {
         appId : sd.stringToNumber(),
@@ -117,12 +317,11 @@ export const app = new Table(
         ssoClientId : ssoClient.columns.ssoClientId,
         ssoApiKey : sd.nullable(sd.string()),
         webhookKey : sd.nullable(sd.string())
-    }/*,
-    ["appId"],
-    "appId"*/
-);
+    }
+).autoIncrement(c => c.appId);
 
-export const appKey = new Table(
+
+export const appKey = Table.Create(
     "appKey",
     {
         appId : sd.stringToNumber(),
@@ -130,28 +329,23 @@ export const appKey = new Table(
         appKeyTypeId : sd.number(),
         key : sd.string(),
     },
-    /*["appKeyId"],
-    "appKeyId"*/
-);
-export const appKeyType = new Table(
+).autoIncrement(c => c.appKeyId);
+
+export const appKeyType = Table.Create(
     "appKeyType",
     {
         appKeyTypeId : sd.string(),
         internalName : sd.string(),
-    }/*,
-    ["appKeyTypeId"],
-    "appKeyTypeId"*/
-);
+    }
+).autoIncrement(c => c.appKeyTypeId);
 
-export const user = new Table(
+export const user = Table.Create(
     "user",
     {
         appId : sd.naturalNumber(),
         externalUserId : sd.string(),
         createdAt : sd.date(),
-    }/*,
-    ["appId", "externalUserId"],
-    undefined*/
+    }
 );
 
 ///////////////////////////////////
@@ -163,21 +357,21 @@ export type ColumnType<ColumnT extends AnyColumn> = (
 );
 
 export type TableAlias<TableT extends AnyAliasedTable> = (
-    TableT extends Table<infer Name, any> ?
+    TableT extends Table<infer Name, any, any> ?
     Name :
     TableT extends AliasedTable<infer Alias, any, {}> ?
     Alias :
     never
 );
 export type TableName<TableT extends AnyAliasedTable> = (
-    TableT extends Table<infer Name, any> ?
+    TableT extends Table<infer Name, any, any> ?
     Name :
     TableT extends AliasedTable<any, infer Name, any> ?
     Name :
     never
 );
 export type TableColumns<TableT extends AnyAliasedTable> = (
-    TableT extends Table<any, infer Columns> ?
+    TableT extends Table<any, infer Columns, any> ?
     Columns :
     TableT extends AliasedTable<any, any, infer Columns> ?
     Columns :
@@ -255,8 +449,8 @@ type NullableColumnReference<ColumnReferencesT extends ColumnReferences> = (
     }
 )
 
-export type TableReference<TableT extends Table<any, {}>|AnyAliasedTable> = (
-    TableT extends Table<any, infer ColumnsT> ?
+export type TableReference<TableT extends Table<any, {}, any>|AnyAliasedTable> = (
+    TableT extends Table<any, infer ColumnsT, any> ?
     {
         [alias in TableAlias<TableT>] : {
             [name in keyof ColumnsT] : TableT["columns"][name]
@@ -636,7 +830,7 @@ export type JoinableSelectTupleElement<ColumnReferencesT extends ColumnReference
     >)|
     ColumnReferenceElement<ColumnReferencesT>
 );
-;
+
 export type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
     (SelectColumnExpr<
         ToPartialColumnReferences<ColumnReferencesT>,
@@ -647,6 +841,28 @@ export type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
     ColumnReferencesT[keyof ColumnReferencesT]|
     ColumnReferenceElement<ColumnReferencesT>
 );
+export type SelectTupleElementToColumnType<ElementT extends SelectTupleElement<any>> = (
+    ElementT extends SelectColumnExpr<any, infer TypeT, infer TableNameT, infer NameT> ?
+    Column<TableNameT, NameT, TypeT> :
+    ElementT extends Column<infer TableNameT, infer NameT, infer TypeT> ?
+    Column<TableNameT, NameT, TypeT> :
+    ElementT extends {
+        [name : string] : AnyColumn
+    } ?
+    ElementT[keyof ElementT] :
+    never
+);
+export type SelectTupleHasDuplicateColumn<TupleT extends Tuple<SelectTupleElement<any>>> = (
+    HasDuplicateColumn<
+        {
+            [index in TupleKeys<TupleT>] : SelectTupleElementToColumnType<TupleT[index]>
+        } &
+        { length : TupleLength<TupleT> } &
+        { "0" : SelectTupleElementToColumnType<TupleT[0]> } &
+        (AnyColumn)[]
+    >
+);
+
 export type SelectTupleElementToReference<ElementT extends SelectTupleElement<any>> = (
     ElementT extends SelectColumnExpr<any, infer TypeT, infer TableNameT, infer NameT> ?
     ColumnToReference<Column<TableNameT, NameT, TypeT>> :
@@ -1498,40 +1714,44 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
     ):(
         SelectCallbackT extends SelectCallback<SelectBuilder<T>> ?
             (
-                SelectBuilder<{
-                    columnReferences : T["columnReferences"],
-                    joinReferences : T["joinReferences"],
-                    typeNarrowedColumns : T["typeNarrowedColumns"],
-                    typeWidenedColumns : T["typeWidenedColumns"],
-                    selectReferences : SelectTupleToReference<ReturnType<SelectCallbackT>>,
-                    selectTuple : ReturnType<SelectCallbackT>,
-                    distinct : T["distinct"],
-                    groupByReferences : T["groupByReferences"],
-                    orderBy : T["orderBy"],
-                    limit : T["limit"],
-                    union : T["union"],
-                    unionOrderBy : T["unionOrderBy"],
-                    unionLimit : T["unionLimit"],
+                true extends SelectTupleHasDuplicateColumn<ReturnType<SelectCallbackT>> ?
+                    (
+                        "Duplicate columns found in SELECT, consider aliasing"|void|never
+                    ) :
+                    SelectBuilder<{
+                        columnReferences : T["columnReferences"],
+                        joinReferences : T["joinReferences"],
+                        typeNarrowedColumns : T["typeNarrowedColumns"],
+                        typeWidenedColumns : T["typeWidenedColumns"],
+                        selectReferences : SelectTupleToReference<ReturnType<SelectCallbackT>>,
+                        selectTuple : ReturnType<SelectCallbackT>,
+                        distinct : T["distinct"],
+                        groupByReferences : T["groupByReferences"],
+                        orderBy : T["orderBy"],
+                        limit : T["limit"],
+                        union : T["union"],
+                        unionOrderBy : T["unionOrderBy"],
+                        unionLimit : T["unionLimit"],
 
-                    allowed : {
-                        join : false,
-                        where : false,
-                        select : false,
-                        distinct : true,
-                        groupBy : true,
-                        having : true,
-                        orderBy : true,
-                        limit : true,
-                        offset : T["allowed"]["offset"],
-                        widen : true,
-                        union : {
-                            union : true,
-                            orderBy : T["allowed"]["union"]["orderBy"],
-                            limit : T["allowed"]["union"]["limit"],
-                            offset : T["allowed"]["union"]["offset"],
+                        allowed : {
+                            join : false,
+                            where : false,
+                            select : false,
+                            distinct : true,
+                            groupBy : true,
+                            having : true,
+                            orderBy : true,
+                            limit : true,
+                            offset : T["allowed"]["offset"],
+                            widen : true,
+                            union : {
+                                union : true,
+                                orderBy : T["allowed"]["union"]["orderBy"],
+                                limit : T["allowed"]["union"]["limit"],
+                                offset : T["allowed"]["union"]["offset"],
+                            }
                         }
-                    }
-                }>
+                    }>
             ) :
             ("Invalid SelectCallbackT"|void|never)
     );
@@ -2571,11 +2791,41 @@ export declare class SelectBuilder<T extends AnySelectBuilderData> {
 
     /*insert<
     > (
-        this :,
-        table: ,
+        this : SelectBuilder<{
+            columnReferences : any,
+            joinReferences : any,
+            typeNarrowedColumns : any,
+            typeWidenedColumns : any,
+            selectReferences : any,
+            selectTuple : any,
+            distinct : any,
+            groupByReferences : any,
+            orderBy : any,
+            limit : any,
+            union : any,
+            unionOrderBy : any,
+            unionLimit : any,
+
+            allowed : {
+                join : false,
+                where : false,
+                select : false,
+                distinct : any,
+                groupBy : any,
+                having : any,
+                orderBy : any,
+                limit : any,
+                offset : any,
+                widen : any,
+                union : any,
+            }
+        }>,
+        table: //Table<,
         insertCallback :
     ) : (
-
+        T["selectTuple"] extends Tuple<JoinableSelectTupleElement<T["columnReferences"]>> ?
+            AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<T["selectTuple"]>> :
+            "Cannot use tables in SELECT clause when aliasing"|void|never
     );*/
 }
 
@@ -2776,6 +3026,45 @@ Examples
 */
 
 //declare function tuple<TupleT extends Tuple<any>>(t : TupleT) : TupleT;
+
+type HasDuplicateColumn<TupleT extends Tuple<AnyColumn>> = {
+    [index in TupleKeys<TupleT>]: (
+        //Only one element? No duplicate
+        Exclude<TupleKeys<TupleT>, index> extends never ?
+            (never) :
+            (
+                //Is a column?
+                TupleT[index] extends Column<infer TableNameT, infer NameT, any> ?
+                    (
+                        {
+                            [other in Exclude<TupleKeys<TupleT>, index>] : (
+                                TupleT[other] extends Column<infer OtherTableNameT, infer OtherNameT, any> ?
+                                    (
+                                        Extract<TupleT[index], TupleT[other]> extends never ?
+                                            never :
+                                            true
+                                    ) :
+                                    (never)
+                            )
+                        }[Exclude<TupleKeys<TupleT>, index>]
+                    ) :
+                    (never)
+            )
+    )
+}[TupleKeys<TupleT>];
+declare const dup : [typeof app.columns.appId, typeof app.columns.appId];
+declare const dup2 : [typeof app.columns.appId, typeof app.columns.ssoApiKey, typeof app.columns.appId];
+declare const dup3 : [typeof app.columns.appId|typeof app.columns.ssoApiKey, typeof app.columns.appId|typeof app.columns.webhookKey];
+declare const dup4 : [typeof app.columns.appId|typeof app.columns.ssoApiKey, typeof app.columns.appId];
+declare const noDup : [typeof app.columns.appId];
+
+declare const mustFindDup : HasDuplicateColumn<typeof dup>;
+declare const mustFindDup2 : HasDuplicateColumn<typeof dup2>;
+declare const mustFindDup3 : HasDuplicateColumn<typeof dup3>;
+declare const mustFindDup4 : HasDuplicateColumn<typeof dup4>;
+declare const mustNotFindDup : HasDuplicateColumn<typeof noDup>;
+
+
 function foo () {
     const subE = e.identity(from(app).select(c => [app.columns.name]));
     const f = from(app)
@@ -2807,7 +3096,6 @@ function foo () {
             return [
                 //c.app.columns.ssoApiKey.as("aliased"),
                 c.app,
-                c.ssoClient.name,
                 c.ssoClient.name,
                 e.true().as("something"),
                 //e.eq(c.app.columns.ssoApiKey,"2").as("eq"),
@@ -2841,8 +3129,7 @@ function foo () {
                 .select((s) => {
                     return [
                         s.app,
-                        s.app.appId,
-                        s.app.appId,
+                        s.app.appId.as("w"),
                         e.true().as("test")
                     ]
                 })
@@ -2852,8 +3139,7 @@ function foo () {
                 .select((s) => {
                     return [
                         s.app,
-                        s.app.appId,
-                        s.app.appId,
+                        s.app.appId.as("b"),
                         e.true().as("test3")
                     ]
                 })

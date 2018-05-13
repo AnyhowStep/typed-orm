@@ -212,3 +212,35 @@ export type TuplePush<TupleT extends Tuple<any>, NextT> = (
         ) :
         never//("Invalid TupleT or could not infer TypeT"|void|never)
 );
+type Col<A, B, C> = {
+  a: A,
+  b: B,
+  c: C,
+};
+type T = [
+  Col<"app", "id", number>
+  //Col<"app", "name">,
+  //Col<"app", "id2", string>
+];
+type FindDuplicate = {
+  [index in TupleKeys<T>]: (
+    Exclude<TupleKeys<T>, index> extends never ?
+        (false) :
+        (
+            T[index] extends Col<infer A, infer B, any> ?
+            (
+              T[Exclude<TupleKeys<T>, index>] extends Col<infer OtherA, infer OtherB, any>?
+              (
+                  [A, B] extends [OtherA, OtherB]?
+                  true :
+                  false
+              ) :
+              (never)
+            ) :
+            (never)
+        )
+  )
+};
+type HasDuplicate = true extends FindDuplicate[keyof FindDuplicate]?
+  true :
+  false;
