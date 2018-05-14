@@ -10,4 +10,4 @@ export interface AliasedTable<
     readonly name  : NameT;
     readonly columns : ColumnCollection<AliasT, RawColumnCollectionT>;
 }
-export type AnyAliasedTable = AliasedTable<any, any, {}>;
+export type AnyAliasedTable = AliasedTable<any, any, RawColumnCollection>;

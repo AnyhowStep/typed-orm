@@ -1,167 +1,60 @@
-import * as sd from "schema-decorator";
-import {ColumnReferences} from "./column-references";
-import {
-    Join,
-    AnyJoin,
-    JoinFromTupleCallback,
-    JoinFromTupleOfCallback,
-    JoinToTupleCallback,
-    MatchesJoinFromTuple,
-    ToNullableJoinTuple
-} from "./join";
-import {Tuple, TuplePush, TupleConcat} from "./tuple";
-import {AliasedTable, AnyAliasedTable} from "./aliased-table";
-import {IColumn, AnyColumn} from "./column";
-import {TableAlias, TableToReference} from "./table-operation";
-import {ToNullableColumnReferences, ReplaceColumnOfReference} from "./column-references-operation";
-import {TypeNarrowCallback} from "./type-narrow";
-import {WhereCallback} from "./where";
-import {
-    SelectCallback,
-    SelectTupleHasDuplicateColumn,
-    SelectTupleToReferences,
-    AnySelectTupleElement,
-    ReplaceColumnOfSelectTuple
-} from "./select";
-import {GroupByCallback, AnyGroupByTupleElement} from "./group-by";
-import {HavingCallback} from "./having";
-import {OrderByCallback, AnyOrderByTupleElement} from "./order-by";
-import {TypeWidenCallback} from "./widen";
-import {SelectTupleToType} from "./union";
-import {JoinableSelectTupleElement, JoinableSelectTupleToRawColumnCollection} from "./select-as";
-import {Querify} from "./querify";
+import * as d from "../declaration";
+import {tableToReference} from "./table-operation";
+import * as tuple from "./tuple";
 
-export enum SelectBuilderOperation {
-    JOIN = "JOIN",
-    NARROW = "NARROW", //Custom thing
-    WHERE = "WHERE",
-    SELECT = "SELECT",
-    DISTINCT = "DISTINCT",
-    SQL_CALC_FOUND_ROWS = "SQL_CALC_FOUND_ROWS",
-    GROUP_BY = "GROUP_BY",
-    HAVING = "HAVING",
-    ORDER_BY = "ORDER_BY",
-    LIMIT = "LIMIT",
-    OFFSET = "OFFSET",
-    WIDEN = "WIDEN", //Custom thing
-
-    UNION = "UNION",
-    UNION_ORDER_BY = "UNION_ORDER_BY",
-    UNION_LIMIT = "UNION_LIMIT",
-    UNION_OFFSET = "UNION_OFFSET",
-
-    AS = "AS",
-}
-
-export type DisableOperation<DataT extends AnySelectBuilderData, OperationT extends SelectBuilderOperation> = (
-    DataT["allowed"] extends Array<infer AllowedT> ?
-        (
-            AllowedT extends SelectBuilderOperation ?
-                (Exclude<AllowedT, OperationT>[]) :
-                (never)
-        ) :
-        (never)
-);
-export type EnableOperation<DataT extends AnySelectBuilderData, OperationT extends SelectBuilderOperation> = (
-    DataT["allowed"] extends Array<infer AllowedT> ?
-        (
-            AllowedT extends SelectBuilderOperation ?
-                (AllowedT|OperationT)[] :
-                (never)
-        ) :
-        (never)
-);
-
-export const ArbitraryRowCount = 999999999;
-
-export interface LimitData {
-    rowCount : number,
-    offset   : number,
-}
-
-export interface AnySelectBuilderData {
-    allowed : SelectBuilderOperation[],
-
-    //Modified by JOIN clause
-    //Used by WHERE clause
-    //Modified by WHERE clause
-    columnReferences : ColumnReferences,
-    //Modified by JOIN clauses
-    joins : Tuple<AnyJoin>,
-
-    selectReferences : ColumnReferences,
-    selectTuple : undefined|Tuple<AnySelectTupleElement>,
-
-    distinct : boolean,
-    sqlCalcFoundRows : boolean,
-
-    groupByTuple : undefined|Tuple<AnyGroupByTupleElement>,
-
-    orderByTuple : undefined|Tuple<AnyOrderByTupleElement>,
-
-    limit : undefined|LimitData,
-
-    unionOrderByTuple : undefined|Tuple<AnyOrderByTupleElement>,
-
-    unionLimit : undefined|LimitData,
-}
-
-export type IsAllowedSelectBuilderOperation<DataT extends AnySelectBuilderData, OperationT extends SelectBuilderOperation> = (
-    OperationT[] extends DataT["allowed"] ?
-        true : never
-);
-
-export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Querify {
+export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.ISelectBuilder<DataT> {
     data : DataT;
+
+    public constructor (data : DataT) {
+        this.data = data;
+    }
+
+    public assertAllowed (op : d.SelectBuilderOperation) {
+        if (this.data.allowed.indexOf(op) < 0) {
+            throw new Error(`${op} clause not allowed here`);
+        }
+    }
+
+    public assertNonDuplicateAlias (alias : string) {
+        if (this.data.columnReferences[alias] != undefined) {
+            throw new Error(`Duplicate alias ${alias}`);
+        }
+    }
+
+    public assertEqualLength (a : any[], b : any[]) {
+        if (a.length != b.length) {
+            throw new Error(`Tuple length mismatch; ${a.length} != ${b.length}`);
+        }
+    }
 
     //JOIN CLAUSE
     join<
-        ToTableT extends AnyAliasedTable,
-        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>
+        ToTableT extends d.AnyAliasedTable,
+        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>
     > (
         toTable : ToTableT,
         from : FromTupleT,
-        to : JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>>
-    ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ?
-            ("JOIN clause not allowed here"|void|never) :
-            (
-                TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
-                    ("Duplicate alias" | TableAlias<ToTableT> | void) :
-                    (
-                        JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
-                            (
-                                ISelectBuilder<{
-                                    allowed : DataT["allowed"],
+        to : d.JoinToTupleCallback<ToTableT, d.JoinFromTupleOfCallback<FromTupleT>>
+    ) {
+        this.assertAllowed(d.SelectBuilderOperation.JOIN);
+        this.assertNonDuplicateAlias(toTable.alias);
+        const toTuple = (to instanceof Function) ?
+            to(toTable.columns) :
+            to;
+        this.assertEqualLength(from, toTuple);
 
-                                    columnReferences : (
-                                        DataT["columnReferences"] &
-                                        TableToReference<ToTableT>
-                                    ),
-                                    joins : (
-                                        TuplePush<
-                                            DataT["joins"],
-                                            Join<
-                                                TableAlias<ToTableT>,
-                                                false
-                                            >
-                                        >
-                                    ),
-                                    selectReferences : DataT["selectReferences"],
-                                    selectTuple : DataT["selectTuple"],
-                                    distinct : DataT["distinct"],
-                                    sqlCalcFoundRows : DataT["sqlCalcFoundRows"],
-                                    groupByTuple : DataT["groupByTuple"],
-                                    orderByTuple : DataT["orderByTuple"],
-                                    limit : DataT["limit"],
-                                    unionOrderByTuple : DataT["unionOrderByTuple"],
-                                    unionLimit : DataT["unionLimit"],
-                                }>
-                            ) :
-                            (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
-                    )
-            )
-    );
+        return new SelectBuilder({
+            ...this.data,
+            columnReferences : {
+                ...this.data.columnReferences,
+                ...tableToReference(toTable),
+            },
+            joins : tuple.push(this.data.joins, {
+                alias : toTable.alias,
+                false
+            }),
+        });
+    }
     rightJoin<
         ToTableT extends AnyAliasedTable,
         FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>
@@ -1054,79 +947,27 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     );
 }
 
-export type AnySelectBuilder = ISelectBuilder<any>;
-
-export type CreateSelectBuilderDelegate = (
-    <TableT extends AnyAliasedTable> (
-        table : TableT
-    ) => (
-        ISelectBuilder<{
-            allowed : (
-                //Append whenever, cannot unjoin
-                //Uses columnReferences
-                SelectBuilderOperation.JOIN|
-
-                //Narrow before UNION, cannot un-narrow
-                //Uses columnReferences
-                SelectBuilderOperation.NARROW|
-
-                //Append and replace whenever, always ANDs with NARROW
-                //Uses columnReferences
-                SelectBuilderOperation.WHERE|
-
-                //Append before UNION
-                //Uses columnReferences
-                SelectBuilderOperation.SELECT|
-
-                //Toggle whenever
-                SelectBuilderOperation.DISTINCT|
-
-                //Toggle whenever
-                SelectBuilderOperation.SQL_CALC_FOUND_ROWS|
-
-                //Unset, append and replace whenever
-                //Uses columnReferences, selectReferences
-                SelectBuilderOperation.GROUP_BY|
-
-                //Append and replace whenever
-                //TECHNICALLY, can only use columns in GROUP BY, or columns in aggregate functions,
-                //But MySQL supports an extension that allows columns from SELECT
-                //As such, this library does not check for valid columns here
-                //As long as it is in columnReferences or selectReferences
-                SelectBuilderOperation.HAVING|
-
-                //Unset, append and replace whenever
-                //Uses columnReferences, selectReferences
-                SelectBuilderOperation.ORDER_BY|
-
-                //Replace whenever
-                SelectBuilderOperation.LIMIT|
-
-                //Replace whenever, sets LIMIT to arbitrary large number if LIMIT not set yet
-                SelectBuilderOperation.OFFSET|
-
-                //After SELECT, does not affect query, used for column compatibility with UNION
-                //Uses selectReferences
-                //SelectBuilderOperation.WIDEN|
-
-                //Append after SELECT
-                //SelectBuilderOperation.UNION|
-
-                //Unset, append and replace whenever
-                //Uses columnReferences, selectReferences
-                SelectBuilderOperation.UNION_ORDER_BY|
-
-                //Replace whenever
-                SelectBuilderOperation.UNION_LIMIT|
-
-                //Replace whenever, sets UNION_LIMIT to arbitrary large number if UNION_LIMIT not set yet
-                SelectBuilderOperation.UNION_OFFSET
-
-                //After SELECT
-                //SelectBuilderOperation.AS
-            )[],
-            columnReferences : TableToReference<TableT>,
-            joins : [Join<TableAlias<TableT>, false>],
+export const from : d.CreateSelectBuilderDelegate = (
+    <TableT extends d.AnyAliasedTable> (table : TableT) => {
+        return new SelectBuilder({
+            allowed : [
+                d.SelectBuilderOperation.JOIN,
+                d.SelectBuilderOperation.NARROW,
+                d.SelectBuilderOperation.WHERE,
+                d.SelectBuilderOperation.SELECT,
+                d.SelectBuilderOperation.DISTINCT,
+                d.SelectBuilderOperation.SQL_CALC_FOUND_ROWS,
+                d.SelectBuilderOperation.GROUP_BY,
+                d.SelectBuilderOperation.HAVING,
+                d.SelectBuilderOperation.ORDER_BY,
+                d.SelectBuilderOperation.LIMIT,
+                d.SelectBuilderOperation.OFFSET,
+                d.SelectBuilderOperation.UNION_ORDER_BY,
+                d.SelectBuilderOperation.UNION_LIMIT,
+                d.SelectBuilderOperation.UNION_OFFSET,
+            ],
+            columnReferences : tableToReference(table),
+            joins : [{alias : table.alias, nullable : false}],
             selectReferences : {},
             selectTuple : undefined,
             distinct : false,
@@ -1136,6 +977,6 @@ export type CreateSelectBuilderDelegate = (
             limit : undefined,
             unionOrderByTuple : undefined,
             unionLimit : undefined,
-        }>
-    )
+        });
+    }
 );

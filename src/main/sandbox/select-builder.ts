@@ -111,10 +111,10 @@ function foo () {
             t => [t.webhookKey]
         )
         .whereIsNotNull(c => c.app.ssoApiKey)
-        //.where(c => {
-        //    c.subqueryTable.subexpr
-        //    return e.eq(c.app.appId, 5);
-        //})
+        .where(c => {
+            c.subqueryTable.subexpr
+            return e.eq(c.app.appId, 5);
+        })
         .select((c) => {
             return [
                 //c.app.columns.ssoApiKey.as("aliased"),
