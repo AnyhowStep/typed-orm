@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "check2": "node --max-old-space-size=4096 ./node_modules/typescript/lib/tsc.js --noEmit"
   },
   "author": "",
   "license": "ISC",

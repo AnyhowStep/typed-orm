@@ -1,6 +1,7 @@
 import * as d from "../declaration";
 import {tableToReference} from "./table-operation";
 import * as tuple from "./tuple";
+import {spread} from "@anyhowstep/type-util";
 
 export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.ISelectBuilder<DataT> {
     data : DataT;
@@ -38,22 +39,27 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     ) {
         this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
+        const fromTuple = (from instanceof Array) ?
+            from :
+            from(this.data.columnReferences);
         const toTuple = (to instanceof Function) ?
             to(toTable.columns) :
             to;
-        this.assertEqualLength(from, toTuple);
+        this.assertEqualLength(fromTuple, toTuple);
 
-        return new SelectBuilder({
-            ...this.data,
-            columnReferences : {
-                ...this.data.columnReferences,
-                ...tableToReference(toTable),
-            },
-            joins : tuple.push(this.data.joins, {
-                alias : toTable.alias,
-                false
-            }),
-        });
+        return new SelectBuilder(spread(
+            this.data,
+            {
+                columnReferences : {
+                    ...this.data.columnReferences,
+                    ...tableToReference(toTable),
+                },
+                joins : tuple.push(this.data.joins, {
+                    alias : toTable.alias,
+                    nullable : false,
+                }),
+            }
+        ));
     }
     rightJoin<
         ToTableT extends AnyAliasedTable,
