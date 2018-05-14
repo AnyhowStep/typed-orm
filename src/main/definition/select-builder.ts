@@ -4,13 +4,25 @@ import {tableToReference} from "./table-operation";
 import * as tuple from "./tuple";
 import {spread, check} from "@anyhowstep/type-util";
 import {getJoinFrom, getJoinTo, toNullableJoinTuple} from "./join";
-import {toNullableColumnReferences} from "./column-references-operation";
+import {toNullableColumnReferences, replaceColumnOfReference} from "./column-references-operation";
+import {Expr} from "./expr";
+import {toExpr} from "./expr-operation";
+import * as e from "./expr-library";
+import {Column} from "./column";
+import {replaceColumnOfSelectTuple} from "./select";
+
+export interface ExtraSelectBuilderData {
+    readonly narrowExpr? : d.IExpr<any, boolean>;
+    readonly whereExpr? : d.IExpr<any, boolean>;
+}
 
 export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.ISelectBuilder<DataT> {
-    data : DataT;
+    readonly data : DataT;
+    readonly extraData : ExtraSelectBuilderData;
 
-    public constructor (data : DataT) {
+    public constructor (data : DataT, extraData : ExtraSelectBuilderData) {
         this.data = data;
+        this.extraData = extraData;
     }
 
     public assertAllowed (op : d.SelectBuilderOperation) {
@@ -58,7 +70,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                     nullable : false,
                 }),
             }
-        )) as any;
+        ), this.extraData) as any;
     }
     rightJoin<
         ToTableT extends d.AnyAliasedTable,
@@ -89,7 +101,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                     }
                 ),
             }
-        )) as any;
+        ), this.extraData) as any;
     };
     leftJoin<
         ToTableT extends d.AnyAliasedTable,
@@ -120,42 +132,146 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                     }
                 ),
             }
-        )) as any;
+        ), this.extraData) as any;
     };
 
     //TYPE-NARROW CLAUSE
-    whereIsNotNull<TypeNarrowCallbackT extends TypeNarrowCallback<ISelectBuilder<DataT>>> (
+    private appendNarrowData (newColumn : Column<any, any, any>) {
+        return spread(
+            this.data,
+            {
+                columnReferences : replaceColumnOfReference(this.data.columnReferences, newColumn),
+                selectReferences : replaceColumnOfReference(this.data.selectReferences, newColumn),
+                selectTuple : (
+                    this.data.selectTuple == undefined ?
+                        undefined :
+                        replaceColumnOfSelectTuple(this.data.selectTuple, newColumn)
+                ),
+            }
+        );
+    }
+    private appendWhereExpr (newExpr : d.IExpr<any, boolean>) {
+        if (this.extraData.whereExpr == undefined) {
+            return {
+                ...this.extraData,
+                whereExpr : newExpr,
+            };
+        } else {
+            return {
+                ...this.extraData,
+                whereExpr : e.and(
+                    this.extraData.whereExpr,
+                    newExpr
+                ),
+            };
+        }
+    }
+    private appendNarrowExpr (newExpr : d.IExpr<any, boolean>) {
+        //Must modify WHERE clause
+        const result = this.appendWhereExpr(newExpr);
+        //Append
+        result.narrowExpr = (this.extraData.narrowExpr == undefined) ?
+            newExpr :
+            e.and(
+                this.extraData.narrowExpr,
+                newExpr
+            );
+        return result;
+    }
+    whereIsNotNull<TypeNarrowCallbackT extends d.TypeNarrowCallback<d.ISelectBuilder<DataT>>> (
         typeNarrowCallback : TypeNarrowCallbackT
     ) {
-        return null as any;
+        this.assertAllowed(d.SelectBuilderOperation.NARROW);
+
+        const toReplace = typeNarrowCallback(this.data.columnReferences);
+        return new SelectBuilder(
+            this.appendNarrowData(new Column(
+                toReplace.table,
+                toReplace.name,
+                sd.notOptional(toReplace.assertDelegate)
+            )),
+            this.appendNarrowExpr(e.isNotNull(toReplace))
+        ) as any;
     };
-    whereIsNull<TypeNarrowCallbackT extends TypeNarrowCallback<ISelectBuilder<DataT>>> (
+    whereIsNull<TypeNarrowCallbackT extends d.TypeNarrowCallback<d.ISelectBuilder<DataT>>> (
         typeNarrowCallback : TypeNarrowCallbackT
     ) {
-        return null as any;
+        this.assertAllowed(d.SelectBuilderOperation.NARROW);
+
+        const toReplace = typeNarrowCallback(this.data.columnReferences);
+        return new SelectBuilder(
+            this.appendNarrowData(new Column(
+                toReplace.table,
+                toReplace.name,
+                sd.nil()
+            )),
+            this.appendNarrowExpr(e.isNull(toReplace))
+        ) as any;
     };
     whereIsEqual<
-        ConstT extends boolean|number|string|null,
-        TypeNarrowCallbackT extends TypeNarrowCallback<ISelectBuilder<DataT>>
+        ConstT extends boolean|number|string,
+        TypeNarrowCallbackT extends d.TypeNarrowCallback<d.ISelectBuilder<DataT>>
     > (
         value : ConstT,
         typeNarrowCallback : TypeNarrowCallbackT
     ) {
-        return null as any;
+        this.assertAllowed(d.SelectBuilderOperation.NARROW);
+
+        const toReplace = typeNarrowCallback(this.data.columnReferences);
+
+        return new SelectBuilder(
+            this.appendNarrowData(new Column(
+                toReplace.table,
+                toReplace.name,
+                sd.oneOf(value)
+            )),
+            this.appendNarrowExpr(e.and(
+                //Adding this so we don't compare against NULL
+                e.isNotNull(toReplace),
+                e.eq(toReplace, value) as any
+            ))
+        ) as any;
     };
 
     //WHERE CLAUSE
     //Replaces but ANDs with NARROW
-    where<WhereCallbackT extends WhereCallback<ISelectBuilder<DataT>>> (
+    where<WhereCallbackT extends d.WhereCallback<d.ISelectBuilder<DataT>>> (
         whereCallback : WhereCallbackT
     ) {
-        return null as any;
+        this.assertAllowed(d.SelectBuilderOperation.WHERE);
+
+        let condition : d.IExpr<any, boolean> = whereCallback(
+            this.data.columnReferences,
+            this as any
+        );
+        if (this.extraData.narrowExpr != undefined) {
+            condition = e.and(
+                this.extraData.narrowExpr,
+                condition
+            );
+        }
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                whereExpr : condition,
+            }
+        ) as any;
     };
     //Appends
-    andWhere<WhereCallbackT extends WhereCallback<ISelectBuilder<DataT>>> (
+    andWhere<WhereCallbackT extends d.WhereCallback<d.ISelectBuilder<DataT>>> (
         whereCallback : WhereCallbackT
     ) {
-        return null as any;
+        this.assertAllowed(d.SelectBuilderOperation.WHERE);
+
+        let condition : d.IExpr<any, boolean> = whereCallback(
+            this.data.columnReferences,
+            this as any
+        );
+        return new SelectBuilder(
+            this.data,
+            this.appendWhereExpr(condition)
+        ) as any;
     };
 
     //SELECT CLAUSE
@@ -166,20 +282,34 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     };
 
     //DISTINCT CLAUSE
-    distinct () {
-        return null as any;
-    };
-    distinct<DistinctT extends boolean> (distinct : DistinctT) {
-        return null as any;
-    };
+    //distinct ();
+    //distinct<DistinctT extends boolean> (distinct : DistinctT);
+    distinct (distinct : boolean = true) {
+        this.assertAllowed(d.SelectBuilderOperation.DISTINCT);
+
+        return new SelectBuilder(
+            spread(
+                this.data,
+                { distinct : distinct }
+            ),
+            this.extraData,
+        ) as any;
+    }
 
     //SQL_CALC_FOUND_ROWS CLAUSE
-    sqlCalcFoundRows () {
-        return null as any;
-    };
-    sqlCalcFoundRows<SqlCalcFoundRowsT extends boolean> (sqlCalcFoundRows : SqlCalcFoundRowsT) {
-        return null as any;
-    };
+    //sqlCalcFoundRows ();
+    //sqlCalcFoundRows<SqlCalcFoundRowsT extends boolean> (sqlCalcFoundRows : SqlCalcFoundRowsT);
+    sqlCalcFoundRows (sqlCalcFoundRows : boolean = true) {
+        this.assertAllowed(d.SelectBuilderOperation.SQL_CALC_FOUND_ROWS);
+
+        return new SelectBuilder(
+            spread(
+                this.data,
+                { sqlCalcFoundRows : sqlCalcFoundRows }
+            ),
+            this.extraData,
+        ) as any;
+    }
 
     //GROUP BY CLAUSE
     //Replaces
@@ -197,7 +327,13 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
 
     //REMOVES GROUP BY
     unsetGroupBy () {
-        return null as any;
+        return new SelectBuilder(
+            spread(
+                this.data,
+                { groupByTuple : undefined }
+            ),
+            this.extraData,
+        ) as any;
     };
 
     //HAVING CLAUSE
@@ -229,7 +365,13 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
 
     //REMOVES ORDER BY
     unsetOrderBy () {
-        return null as any;
+        return new SelectBuilder(
+            spread(
+                this.data,
+                { orderByTuple : undefined }
+            ),
+            this.extraData,
+        ) as any;
     };
 
     //LIMIT CLAUSE
@@ -244,7 +386,13 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
 
     //REMOVES LIMIT
     unsetLimit () {
-        return null as any;
+        return new SelectBuilder(
+            spread(
+                this.data,
+                { limit : undefined }
+            ),
+            this.extraData,
+        ) as any;
     };
 
     //WIDEN CLAUSE
@@ -293,7 +441,13 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
 
     //REMOVES UNION ORDER BY
     unsetUnionOrderBy () {
-        return null as any;
+        return new SelectBuilder(
+            spread(
+                this.data,
+                { unionOrderByTuple : undefined }
+            ),
+            this.extraData,
+        ) as any;
     };
 
     //UNION LIMIT CLAUSE
@@ -308,11 +462,18 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
 
     //REMOVES UNION LIMIT
     unsetUnionLimit () {
-        return null as any;
+        return new SelectBuilder(
+            spread(
+                this.data,
+                { unionLimit : undefined }
+            ),
+            this.extraData,
+        ) as any;
     };
 
     //AS CLAUSE
     as<AliasT extends string> (alias : AliasT) {
+        this.assertAllowed(d.SelectBuilderOperation.AS);
         return null as any;
     };
 
@@ -354,6 +515,6 @@ export const from : d.CreateSelectBuilderDelegate = (
             limit : undefined,
             unionOrderByTuple : undefined,
             unionLimit : undefined,
-        });
+        }, {});
     }
 );

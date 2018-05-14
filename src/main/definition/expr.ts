@@ -14,6 +14,7 @@ export class ColumnExpr<
     readonly name  : NameT;
     readonly assertDelegate : sd.AssertDelegate<TypeT>;
 
+    readonly originalQuery : string;
     readonly query : string;
 
     public constructor (
@@ -21,7 +22,7 @@ export class ColumnExpr<
         table : TableNameT,
         name : NameT,
         assert : sd.AssertFunc<TypeT>,
-        query : string
+        originalQuery : string
     ) {
         this.usedReferences = usedReferences;
         this.table = table;
@@ -29,7 +30,8 @@ export class ColumnExpr<
         this.assertDelegate = sd.toAssertDelegateExact(assert);
 
         const alias = Database.EscapeId(`${table}.${name}`);
-        this.query = `(${query}) AS ${alias}`;
+        this.originalQuery = originalQuery;
+        this.query = `(${originalQuery}) AS ${alias}`;
     }
 
     public querify () {

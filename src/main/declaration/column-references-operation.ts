@@ -42,7 +42,10 @@ export type ReplaceColumnOfReference<
     {
         [table in keyof ColumnReferencesT] : {
             [column in keyof ColumnReferencesT[table]] : (
-                table extends TableNameT ?
+                ColumnReferencesT[table][column] extends IColumn<TableNameT, NameT, any> ?
+                    IColumn<TableNameT, NameT, NewTypeT> :
+                    (ColumnReferencesT[table][column])
+                /*table extends TableNameT ?
                     (
                         column extends NameT ?
                             (
@@ -50,7 +53,7 @@ export type ReplaceColumnOfReference<
                             ) :
                             (ColumnReferencesT[table][column])
                     ) :
-                    (ColumnReferencesT[table][column])
+                    (ColumnReferencesT[table][column])*/
             )
         }
     }

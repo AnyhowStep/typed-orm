@@ -26,7 +26,11 @@ export type ExprUsedColumns<RawExprT extends RawExpr<any>> = (
 );
 export type ExprType<RawExprT extends RawExpr<any>> = (
     RawExprT extends AllowedExprConstants ?
-    RawExprT :
+    (
+        RawExprT extends undefined ?
+            null :
+            RawExprT
+    ) :
     RawExprT extends IColumn<any, any, infer TypeT> ?
     TypeT :
     RawExprT extends IExpr<any, infer TypeT> ?
@@ -42,4 +46,11 @@ export type ExprType<RawExprT extends RawExpr<any>> = (
         )
      :
     ("Invalid RawExprT or could not infer TypeT/DataT"|void|never)
+);
+
+export type RawToExpr<RawExprT extends RawExpr<any>> = (
+    IExpr<
+        ExprUsedColumns<RawExprT>,
+        ExprType<RawExprT>
+    >
 );

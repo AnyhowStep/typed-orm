@@ -173,16 +173,27 @@ function foo () {
         .limit(30)
         .offset(56);//*/
         //.execute() : Promise<SelectReferences>
-    f.paginate()
+    /*f.paginate()
         .then((result) => {
             result
-        });
-    from(app)
+        });*/
+    /*from(app)
         .select(c => [c.app.name])
         .paginate()
         .then((result) => {
             result
         })
-    f.data
+    f.data*/
+    from(app)
+        .join(
+            from(appKey)
+                .select(c => [c.appKey.key, c.appKey.appId, e.true().as("a")])
+                .as("other"),
+            c => [c.app.appId],
+            t => [t.appId]
+        )
+        .having((_s) => {
+            return e.true()
+        })
 }
 foo();

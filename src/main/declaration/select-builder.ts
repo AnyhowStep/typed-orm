@@ -28,7 +28,11 @@ import {HavingCallback} from "./having";
 import {OrderByCallback, AnyOrderByTupleElement} from "./order-by";
 import {TypeWidenCallback} from "./widen";
 import {SelectTupleToType} from "./union";
-import {JoinableSelectTupleElement, JoinableSelectTupleToRawColumnCollection} from "./select-as";
+import {
+    JoinableSelectTupleElement,
+    JoinableSelectTupleToRawColumnCollection,
+    JoinableSelectTupleHasDuplicateColumnName
+} from "./select-as";
 import {Querify} from "./querify";
 
 export enum SelectBuilderOperation {
@@ -112,7 +116,7 @@ export type IsAllowedSelectBuilderOperation<DataT extends AnySelectBuilderData, 
 );
 
 export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Querify {
-    data : DataT;
+    readonly data : DataT;
 
     //JOIN CLAUSE
     join<
@@ -341,7 +345,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
     whereIsEqual<
-        ConstT extends boolean|number|string|null,
+        ConstT extends boolean|number|string,
         TypeNarrowCallbackT extends TypeNarrowCallback<ISelectBuilder<DataT>>
     > (
         value : ConstT,
@@ -1049,7 +1053,11 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AS> extends never ?
             ("AS clause not allowed here"|void|never) :
             DataT["selectTuple"] extends Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> ?
-                AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<DataT["selectTuple"]>> :
+                (
+                    true extends JoinableSelectTupleHasDuplicateColumnName<DataT["selectTuple"]> ?
+                        "Cannot have duplicate column names in SELECT clause when aliasing"|void|never :
+                        AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<DataT["selectTuple"]>>
+                ) :
                 "Cannot use tables in SELECT clause when aliasing"|void|never
     );
 }

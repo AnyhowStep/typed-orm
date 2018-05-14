@@ -3,7 +3,8 @@ import {ColumnReferences} from "./column-references";
 import {IColumnExpr} from "./expr";
 import {ToPartialColumnReferences, ColumnOfReferences} from "./column-references-operation";
 import {IColumn} from "./column";
-import {Tuple} from "./tuple";
+import {Tuple, TupleKeys, TupleLength} from "./tuple";
+import {HasDuplicateColumn} from "./column-operation";
 
 export type JoinableSelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
     IColumnExpr<
@@ -102,4 +103,24 @@ export type JoinableSelectTupleToRawColumnCollection<
     JoinableSelectTupleToRawColumn<TupleT, "48"> &
     JoinableSelectTupleToRawColumn<TupleT, "49"> &
     JoinableSelectTupleToRawColumn<TupleT, "50">
+);
+
+
+export type JoinableSelectTupleElementToColumnName<ElementT extends JoinableSelectTupleElement<any>> = (
+    ElementT extends IColumnExpr<any, any, infer NameT, any> ?
+    IColumn<"dummy", NameT, any> :
+    ElementT extends IColumn<any, infer NameT, any> ?
+    IColumn<"dummy", NameT, any> :
+    never
+);
+export type JoinableSelectTupleHasDuplicateColumnName<TupleT extends Tuple<JoinableSelectTupleElement<any>>> = (
+    HasDuplicateColumn<
+        {
+            [index in TupleKeys<TupleT>] : JoinableSelectTupleElementToColumnName<TupleT[index]>
+        } &
+        { length : TupleLength<TupleT> } &
+        //HACK
+        (JoinableSelectTupleElementToColumnName<TupleT[TupleKeys<TupleT>]>)[] &
+        { "0" : JoinableSelectTupleElementToColumnName<TupleT[0]> }
+    >
 );

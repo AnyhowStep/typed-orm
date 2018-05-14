@@ -3,12 +3,12 @@ import {IExpr} from "./expr";
 import {ToPartialColumnReferences} from "./column-references-operation";
 
 export type WhereCallback<
-    FromBuilderT extends AnySelectBuilder
+    SelectBuilderT extends AnySelectBuilder
 > = (
-    FromBuilderT extends ISelectBuilder<infer DataT> ?
+    SelectBuilderT extends ISelectBuilder<infer DataT> ?
         (
             columnReferences : DataT["columnReferences"],
-            fromBuilder : FromBuilderT
+            selectBuilder : SelectBuilderT
         ) => (
             IExpr<
                 ToPartialColumnReferences<DataT["columnReferences"]>,

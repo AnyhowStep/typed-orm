@@ -13,7 +13,7 @@
   "dependencies": {
     "@anyhowstep/type-util": "^1.9.1",
     "enum-util": "^1.4.0",
-    "schema-decorator": "^1.29.0",
+    "schema-decorator": "^1.31.0",
     "type-util": "^0.1.5",
     "typed-mysql": "^1.9.1"
   },
