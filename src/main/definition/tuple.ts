@@ -8,3 +8,12 @@ export function push<TupleT extends d.Tuple<any>, NextT> (
     result.push(element);
     return result as any;
 }
+
+export function concat<
+    T extends d.Tuple<any>,
+    U extends d.Tuple<any>
+> (
+    t : T, u : U
+) : d.TupleConcat<T, U> {
+    return t.concat(u) as any;
+}

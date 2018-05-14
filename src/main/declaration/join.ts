@@ -7,23 +7,34 @@ import {TableAlias, TableColumns} from "./table-operation";
 import {ColumnType} from "./column-operation";
 import {ColumnOfReferences} from "./column-references-operation";
 
+//TODO Move "FROM" to its own thing, it isn't a JOIN
 export interface Join<
-    AliasT extends string,
+    JoinTypeT extends "FROM"|"INNER"|"LEFT"|"RIGHT",
+    TableT extends AnyAliasedTable,
     NullableT extends boolean,
 > {
-    alias : AliasT,
+    joinType : JoinTypeT,
+    table : TableT,
     nullable : NullableT,
+    //TODO Consider making these strongly typed?
+    from : JoinTypeT extends "FROM" ?
+        undefined :
+        Tuple<AnyColumn>,
+    to : JoinTypeT extends "FROM" ?
+        undefined :
+        Tuple<AnyColumn>,
 }
-export type AnyJoin = Join<any, any>;
+export type AnyJoin = Join<any, any, any>;
 
 export type ToNullableJoinTuple<TupleT extends Tuple<AnyJoin>> = (
     TupleT[TupleKeys<TupleT>] extends AnyJoin ?
         (
             {
                 [index in TupleKeys<TupleT>] : (
-                    TupleT[index] extends Join<infer AliasT, boolean> ?
+                    TupleT[index] extends Join<infer JoinTypeT, infer TableT, boolean> ?
                         Join<
-                            AliasT,
+                            JoinTypeT,
+                            TableT,
                             true
                         > :
                         never
@@ -31,15 +42,24 @@ export type ToNullableJoinTuple<TupleT extends Tuple<AnyJoin>> = (
             } &
             { length : TupleLength<TupleT> } &
             (
-                Join<
-                    TupleT[TupleKeys<TupleT>]["alias"],
-                    true
-                >
+                {
+                    [index in TupleKeys<TupleT>] : (
+                        TupleT[index] extends Join<infer JoinTypeT, infer TableT, boolean> ?
+                            Join<
+                                JoinTypeT,
+                                TableT,
+                                true
+                            > :
+                            never
+                    )
+                }[TupleKeys<TupleT>]
+
             )[] &
             {
                 "0" : (
                     Join<
-                        TupleT["0"]["alias"],
+                        TupleT["0"]["joinType"],
+                        TupleT["0"]["table"],
                         true
                     >
                 )

@@ -1,7 +1,7 @@
 import * as d from "../declaration";
 import {Expr} from "./expr";
 import {usedColumns, querify} from "./expr-operation";
-import {spread} from "@anyhowstep/type-util";
+import {combineReferences} from "./column-references-operation";
 import {booleanExpr} from "./expr-factory";
 
 function numberComparison (operator : string) {
@@ -13,7 +13,7 @@ function numberComparison (operator : string) {
         boolean
     > {
         return booleanExpr(
-            spread(
+            combineReferences(
                 usedColumns(left),
                 usedColumns(right)
             ),

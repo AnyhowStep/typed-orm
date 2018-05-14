@@ -1,4 +1,4 @@
-import * as s from "./SelectBuilderV2";
+//import * as s from "./SelectBuilderV2";
 /*
 
 insertInto(table)
@@ -45,6 +45,8 @@ insertInto(
         };
     })
 */
+
+/*
 export interface AnyInsertBuilderData {
     table : s.Table<any, any, any>;
     selectBuilder : undefined|s.SelectBuilder<any>;
@@ -320,3 +322,4 @@ const y = insertInto(s.app, s.from(s.app).select(c => [c.app.name, c.app.ssoClie
 ).onDuplicateKeyUpdate({
     ssoClientId : 32
 });
+*/

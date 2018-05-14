@@ -42,7 +42,7 @@ export function usedColumns<RawExprT extends d.RawExpr<any>> (
         } as any;
     }
     if (raw instanceof Expr) {
-        return raw.usedColumns;
+        return raw.usedReferences;
     }
     throw new Error(`Unknown raw expression (${typeof raw})${raw}`);
 }

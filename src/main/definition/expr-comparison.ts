@@ -2,8 +2,8 @@ import * as d from "../declaration";
 import * as sd from "schema-decorator";
 import {Expr} from "./expr";
 import {usedColumns, querify} from "./expr-operation";
-import {spread} from "@anyhowstep/type-util";
 import {booleanExpr} from "./expr-factory";
+import {copyReferences, combineReferences} from "./column-references-operation";
 
 export function isNull<
     RawT extends d.RawExpr<any>
@@ -38,7 +38,7 @@ export function eq<
             >
 ) {
     return booleanExpr(
-        spread(
+        combineReferences(
             usedColumns(left),
             usedColumns(right)
         ),
@@ -61,7 +61,7 @@ export function notEq<
             >
 ) {
     return booleanExpr(
-        spread(
+        combineReferences(
             usedColumns(left),
             usedColumns(right)
         ),
@@ -78,7 +78,7 @@ export function eqAllowNull<
     boolean|null
 > {
     return new Expr(
-        spread(
+        combineReferences(
             usedColumns(left),
             usedColumns(right)
         ),
@@ -96,7 +96,7 @@ export function notEqAllowNull<
     boolean|null
 > {
     return new Expr(
-        spread(
+        combineReferences(
             usedColumns(left),
             usedColumns(right)
         ),
@@ -120,10 +120,10 @@ export function isIn<
             >
 ) {
     const rightQuery : string[] = [];
-    let used : any = spread(usedColumns(left));
+    let used : any = copyReferences(usedColumns(left));
     for (let r of rightArr) {
         rightQuery.push(querify(r));
-        used = spread(used, usedColumns(r));
+        used = combineReferences(used, usedColumns(r));
     }
     return new Expr(
         used,
@@ -143,10 +143,10 @@ export function isInAllowNull<
     >
 ) {
     const rightQuery : string[] = [];
-    let used : any = spread(usedColumns(left));
+    let used : any = copyReferences(usedColumns(left));
     for (let r of rightArr) {
         rightQuery.push(querify(r));
-        used = spread(used, usedColumns(r));
+        used = combineReferences(used, usedColumns(r));
     }
     return new Expr(
         used,

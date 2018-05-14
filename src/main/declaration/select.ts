@@ -23,12 +23,12 @@ export type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
 export type AnySelectTupleElement = SelectTupleElement<any>;
 
 export type SelectCallback<
-    FromBuilderT extends AnySelectBuilder
+    SelectBuilderT extends AnySelectBuilder
 > = (
-    FromBuilderT extends ISelectBuilder<infer DataT> ?
+    SelectBuilderT extends ISelectBuilder<infer DataT> ?
         (
             columnReferences : DataT["columnReferences"],
-            fromBuilder : FromBuilderT
+            selectBuilder : SelectBuilderT
         ) => (
             Tuple<
                 SelectTupleElement<DataT["columnReferences"]>
@@ -37,15 +37,23 @@ export type SelectCallback<
         never
 );
 
+//Checking for duplicate columns should only care about the table name and name
+//TODO check this works
 export type SelectTupleElementToColumn<ElementT extends AnySelectTupleElement> = (
-    ElementT extends IColumnExpr<any, infer TableNameT, infer NameT, infer TypeT> ?
-    IColumn<TableNameT, NameT, TypeT> :
-    ElementT extends IColumn<infer TableNameT, infer NameT, infer TypeT> ?
-    IColumn<TableNameT, NameT, TypeT> :
+    ElementT extends IColumnExpr<any, infer TableNameT, infer NameT, any> ?
+    IColumn<TableNameT, NameT, any> :
+    ElementT extends IColumn<infer TableNameT, infer NameT, any> ?
+    IColumn<TableNameT, NameT, any> :
     ElementT extends {
         [name : string] : AnyColumn
     } ?
-    ElementT[keyof ElementT] :
+    {
+        [name in keyof ElementT] : (
+            ElementT[name] extends IColumn<infer TableNameT, infer NameT, any> ?
+                IColumn<TableNameT, NameT, any> :
+                never
+        )
+    }[keyof ElementT] :
     never
 );
 export type SelectTupleHasDuplicateColumn<TupleT extends Tuple<AnySelectTupleElement>> = (

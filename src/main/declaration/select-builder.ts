@@ -79,35 +79,35 @@ export type EnableOperation<DataT extends AnySelectBuilderData, OperationT exten
 export const ArbitraryRowCount = 999999999;
 
 export interface LimitData {
-    rowCount : number,
-    offset   : number,
+    readonly rowCount : number,
+    readonly offset   : number,
 }
 
 export interface AnySelectBuilderData {
-    allowed : SelectBuilderOperation[],
+    readonly allowed : SelectBuilderOperation[],
 
     //Modified by JOIN clause
     //Used by WHERE clause
     //Modified by WHERE clause
-    columnReferences : ColumnReferences,
+    readonly columnReferences : ColumnReferences,
     //Modified by JOIN clauses
-    joins : Tuple<AnyJoin>,
+    readonly joins : Tuple<AnyJoin>,
 
-    selectReferences : ColumnReferences,
-    selectTuple : undefined|Tuple<AnySelectTupleElement>,
+    readonly selectReferences : ColumnReferences,
+    readonly selectTuple : undefined|Tuple<AnySelectTupleElement>,
 
-    distinct : boolean,
-    sqlCalcFoundRows : boolean,
+    readonly distinct : boolean,
+    readonly sqlCalcFoundRows : boolean,
 
-    groupByTuple : undefined|Tuple<AnyGroupByTupleElement>,
+    readonly groupByTuple : undefined|Tuple<AnyGroupByTupleElement>,
 
-    orderByTuple : undefined|Tuple<AnyOrderByTupleElement>,
+    readonly orderByTuple : undefined|Tuple<AnyOrderByTupleElement>,
 
-    limit : undefined|LimitData,
+    readonly limit : undefined|LimitData,
 
-    unionOrderByTuple : undefined|Tuple<AnyOrderByTupleElement>,
+    readonly unionOrderByTuple : undefined|Tuple<AnyOrderByTupleElement>,
 
-    unionLimit : undefined|LimitData,
+    readonly unionLimit : undefined|LimitData,
 }
 
 export type IsAllowedSelectBuilderOperation<DataT extends AnySelectBuilderData, OperationT extends SelectBuilderOperation> = (
@@ -146,7 +146,8 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                         TuplePush<
                                             DataT["joins"],
                                             Join<
-                                                TableAlias<ToTableT>,
+                                                "INNER",
+                                                ToTableT,
                                                 false
                                             >
                                         >
@@ -193,7 +194,8 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                         TuplePush<
                                             ToNullableJoinTuple<DataT["joins"]>,
                                             Join<
-                                                TableAlias<ToTableT>,
+                                                "RIGHT",
+                                                ToTableT,
                                                 false
                                             >
                                         >
@@ -240,7 +242,8 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                         TuplePush<
                                             DataT["joins"],
                                             Join<
-                                                TableAlias<ToTableT>,
+                                                "LEFT",
+                                                ToTableT,
                                                 true
                                             >
                                         >
@@ -440,7 +443,14 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     ) : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.SELECT> extends never ?
             ("SELECT clause not allowed here"|void|never) :
-            true extends SelectTupleHasDuplicateColumn<ReturnType<SelectCallbackT>> ?
+            true extends SelectTupleHasDuplicateColumn<(
+                DataT["selectTuple"] extends Tuple<any> ?
+                    TupleConcat<
+                        DataT["selectTuple"],
+                        ReturnType<SelectCallbackT>
+                    > :
+                    ReturnType<SelectCallbackT>
+            )> ?
                 (
                     "Duplicate columns found in SELECT, consider aliasing"|void|never
                 ) :
@@ -871,6 +881,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                         (
                             DataT["selectTuple"] extends Tuple<any> ?
                                 (
+                                    //A run-time check is impossible, for now
                                     SelectTupleToType<OtherT["selectTuple"]> extends SelectTupleToType<DataT["selectTuple"]> ?
                                         ISelectBuilder<{
                                             allowed : DisableOperation<DataT, SelectBuilderOperation.NARROW|SelectBuilderOperation.SELECT>,
@@ -1134,7 +1145,7 @@ export type CreateSelectBuilderDelegate = (
                 //SelectBuilderOperation.AS
             )[],
             columnReferences : TableToReference<TableT>,
-            joins : [Join<TableAlias<TableT>, false>],
+            joins : [Join<"FROM", TableT, false>],
             selectReferences : {},
             selectTuple : undefined,
             distinct : false,

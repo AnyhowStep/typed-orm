@@ -29,7 +29,8 @@ export class ColumnExpr<
         this.name = name;
         this.assertDelegate = sd.toAssertDelegateExact(assert);
 
-        const alias = Database.EscapeId(`${table}.${name}`);
+        //const alias = Database.EscapeId(`${table}--${name}`);
+        const alias = Database.EscapeId(`${name}`);
         this.originalQuery = originalQuery;
         this.query = `(${originalQuery}) AS ${alias}`;
     }

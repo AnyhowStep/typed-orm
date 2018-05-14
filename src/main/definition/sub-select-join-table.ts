@@ -1,14 +1,60 @@
 import * as d from "../declaration";
+import {
+    isJoinableSelectTuple,
+    joinableSelectTupleHasDuplicateColumnName,
+    joinableSelectTupleToRawColumnCollection
+} from "./select-as";
+import {toColumnCollection} from "./column-collection";
+import {Database} from "typed-mysql";
+
+type SelectBuilderToRawColumnReferences<SelectBuilderT extends d.AnySelectBuilder> = (
+    SelectBuilderT extends d.ISelectBuilder<infer DataT> ?
+        (
+            DataT["selectTuple"] extends d.Tuple<d.JoinableSelectTupleElement<DataT["columnReferences"]>> ?
+                (
+                    true extends d.JoinableSelectTupleHasDuplicateColumnName<DataT["selectTuple"]> ?
+                        never :
+                        d.JoinableSelectTupleToRawColumnCollection<DataT["selectTuple"]>
+                ) :
+                never
+        ) :
+        never
+);
 
 export class SubSelectJoinTable<
     AliasT extends string,
-    RawColumnCollectionT extends d.RawColumnCollection
+    SelectBuilderT extends d.AnySelectBuilder
 > implements d.AliasedTable<
     AliasT,
     AliasT,
-    RawColumnCollectionT
+    SelectBuilderToRawColumnReferences<SelectBuilderT>
 > {
-    public constructor (alias : AliasT, selectBuilder : d.ISelectBuilder<>) {
+    readonly alias : AliasT;
+    readonly name  : AliasT;
+    readonly columns : d.ColumnCollection<AliasT, SelectBuilderToRawColumnReferences<SelectBuilderT>>;
+    readonly selectBuilder : SelectBuilderT;
 
+    public constructor (alias : AliasT, selectBuilder : SelectBuilderT) {
+        const columnReferences = selectBuilder.data.columnReferences;
+        const selectTuple = selectBuilder.data.selectTuple;
+        if (!isJoinableSelectTuple(columnReferences, selectTuple)) {
+            throw new Error(`Invalid select tuple`);
+        }
+        if (joinableSelectTupleHasDuplicateColumnName(selectTuple)) {
+            throw new Error(`selectTuple has duplicate names`);
+        }
+
+
+        this.alias = alias;
+        this.name  = alias;
+        this.columns = toColumnCollection(
+            this.alias,
+            joinableSelectTupleToRawColumnCollection(selectTuple)
+        ) as any;
+        this.selectBuilder = selectBuilder;
+    }
+
+    public querify () {
+        return `(${this.selectBuilder.querify()}) AS ${Database.EscapeId(this.alias)}`;
     }
 }

@@ -13,14 +13,22 @@ export class Column<
     readonly name  : NameT;
     readonly assertDelegate : sd.AssertDelegate<TypeT>;
 
-    readonly query : string;
+    readonly fullName : string;
+    //readonly query : string;
 
     constructor (table : TableNameT, name : NameT, assert : sd.AssertFunc<TypeT>) {
         this.table = table;
         this.name = name;
         this.assertDelegate = sd.toAssertDelegateExact(assert);
 
-        this.query = `${Database.EscapeId(table)}.${Database.EscapeId(name)}`;
+        if (table == "__expr") {
+            //this.fullName = Database.EscapeId(`${table}--${name}`);
+            this.fullName = Database.EscapeId(`${name}`);
+        } else {
+            this.fullName = `${Database.EscapeId(table)}.${Database.EscapeId(name)}`;
+        }
+        //const alias = Database.EscapeId(`${table}--${name}`);
+        //this.query = `${this.fullName} AS ${alias}`;
     }
 
     as<AliasT extends string>(alias : AliasT) : d.IColumnExpr<
@@ -34,11 +42,11 @@ export class Column<
             "__expr",
             alias,
             this.assertDelegate,
-            this.query
+            this.fullName
         );
     }
 
     public querify () {
-        return this.query;
+        return this.fullName;
     }
 }

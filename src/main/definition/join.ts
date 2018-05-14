@@ -27,8 +27,11 @@ export function toNullableJoinTuple<
 > (tuple : TupleT) : d.ToNullableJoinTuple<TupleT> {
     return tuple.map((e) => {
         return {
-            alias : e.alias,
+            joinType : e.joinType,
+            table : e.table,
             nullable : true,
+            from : e.from,
+            to : e.to,
         };
     }) as any;
 }

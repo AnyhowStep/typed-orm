@@ -102,7 +102,9 @@ export type JoinableSelectTupleToRawColumnCollection<
     JoinableSelectTupleToRawColumn<TupleT, "47"> &
     JoinableSelectTupleToRawColumn<TupleT, "48"> &
     JoinableSelectTupleToRawColumn<TupleT, "49"> &
-    JoinableSelectTupleToRawColumn<TupleT, "50">
+    JoinableSelectTupleToRawColumn<TupleT, "50"> &
+    //TODO verify this works
+    { [index : string] : never }
 );
 
 

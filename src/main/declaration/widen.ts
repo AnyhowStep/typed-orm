@@ -2,10 +2,10 @@ import {AnySelectBuilder, ISelectBuilder} from "./select-builder";
 import {ColumnOfReferences} from "./column-references-operation";
 
 export type TypeWidenCallback<
-    FromBuilderT extends AnySelectBuilder
+    SelectBuilderT extends AnySelectBuilder
 > = (
-    FromBuilderT extends ISelectBuilder<infer DataT> ?
-        (columnReferences : DataT["selectReferences"]) => (
+    SelectBuilderT extends ISelectBuilder<infer DataT> ?
+        (selectReferences : DataT["selectReferences"]) => (
             ColumnOfReferences<DataT["selectReferences"]>
         ):
         never

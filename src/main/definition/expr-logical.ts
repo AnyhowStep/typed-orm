@@ -2,7 +2,7 @@ import * as d from "../declaration";
 import * as sd from "schema-decorator";
 import {booleanExpr} from "./expr-factory";
 import {usedColumns, querify} from "./expr-operation";
-import {spread} from "@anyhowstep/type-util";
+import {combineReferences} from "./column-references-operation";
 import {Expr} from "./expr";
 
 function booleanBinaryOp (operator : string) {
@@ -14,7 +14,7 @@ function booleanBinaryOp (operator : string) {
         boolean
     > {
         return booleanExpr(
-            spread(
+            combineReferences(
                 usedColumns(left),
                 usedColumns(right)
             ),
@@ -27,6 +27,8 @@ function booleanBinaryOp (operator : string) {
     return result;
 }
 
+export const TRUE = new Expr({}, sd.oneOf(true), "TRUE");
+export const FALSE = new Expr({}, sd.oneOf(false), "FALSE");
 export const and = booleanBinaryOp("AND");
 export const or = booleanBinaryOp("OR");
 export const xor = booleanBinaryOp("XOR");

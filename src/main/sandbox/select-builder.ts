@@ -1,12 +1,8 @@
-import {CreateSelectBuilderDelegate, CreateTableDelegate} from "../declaration";
-import * as d from "../declaration";
+import * as d from "../definition";
 import * as sd from "schema-decorator";
+import * as mysql from "typed-mysql";
 
-declare const table : CreateTableDelegate;
-declare const from : CreateSelectBuilderDelegate;
-
-
-const ssoClient = table(
+const ssoClient = d.table(
     "ssoClient",
     {
         ssoClientId : sd.stringToNumber(),
@@ -15,7 +11,7 @@ const ssoClient = table(
         initializeAfterAuthenticationEndpoint : sd.nullable(sd.string()),
     }
 ).autoIncrement(c => c.ssoClientId);
-const app = table(
+const app = d.table(
     "app",
     {
         appId : sd.stringToNumber(),
@@ -26,7 +22,7 @@ const app = table(
     }
 ).autoIncrement(c => c.appId);
 
-const appKey = table(
+const appKey = d.table(
     "appKey",
     {
         appId : sd.stringToNumber(),
@@ -35,8 +31,8 @@ const appKey = table(
         key : sd.string(),
     },
 ).autoIncrement(c => c.appKeyId);
-
-const appKeyType = table(
+/*
+const appKeyType = d.table(
     "appKeyType",
     {
         appKeyTypeId : sd.string(),
@@ -44,7 +40,7 @@ const appKeyType = table(
     }
 ).autoIncrement(c => c.appKeyTypeId);
 
-const user = table(
+const user = d.table(
     "user",
     {
         appId : sd.naturalNumber(),
@@ -53,44 +49,41 @@ const user = table(
     }
 );
 
-const b = from(app)
+console.log(appKeyType.querify())
+console.log(user.querify())
+
+const b = d.from(app)
     .join(appKey, c => [c.app.appId], t => [t.appId])
-    .whereIsEqual(3, c => c.app.ssoApiKey);
-    b.data.columnReferences.app.ssoApiKey
-
-declare const allowed : d.IsAllowedSelectBuilderOperation<typeof b["data"], d.SelectBuilderOperation.JOIN>;
-
-
-declare class Expressions {
-    true () : d.IExpr<{}, true>;
-    eq<
-        LeftT extends d.RawExpr<any>,
-        RightT extends d.RawExpr<d.ExprType<LeftT>|null>
-    > (left : LeftT, right : RightT) : d.IExpr<
-        d.ExprUsedColumns<LeftT> & d.ExprUsedColumns<RightT>,
-        boolean
-    >;
-    identity<
-        ExprT extends d.RawExpr<any>
-    > (expr : ExprT) : d.IExpr<
-        d.ExprUsedColumns<ExprT>,
-        d.ExprType<ExprT>
-    >;
-}
-declare const e : Expressions;
-
-function foo () {
-    const subE = e.identity(from(app).select(c => [app.columns.name]));
-    const test = from(app)
+    .whereIsEqual(3, c => c.app.ssoApiKey)
+    .select(c => [c.app.appId])
+    .select(c => [c.app.appId.as("e")]);
+console.log(b.querify());
+*/
+async function foo () {
+    /*const test = d.from(app)
         .select((s) => {
             return [
                 s.app,
                 s.app.appId.as("w"),
-                e.true().as("test")
+                d.TRUE.as("test")
             ]
         });
+    console.log(test.querify());*/
 
-    const f = from(app)
+    const mysqlUsername = "payment-admin";
+    const mysqlPassword = "Y9dIMNcoXwaMRyxk";
+
+    const db = new mysql.Database({
+        host     : "localhost",
+        database : "payment-prototype-00",
+        user     : mysqlUsername,
+        password : mysqlPassword,
+    });
+    await db.connect();
+    await db.utcOnly();
+
+
+    const f = d.from(app)
         .join(
             appKey,
             c => [c.app.appId],
@@ -101,10 +94,12 @@ function foo () {
             c => [c.app.ssoClientId],
             t => [t.ssoClientId])
         .join(
-            from(app)
+            d.from(app)
                 .select(c => [
+                    c.app.appId,
                     c.app.webhookKey,
-                    e.true().as("subexpr")
+                    d.toExpr("Hello, world, SELECT * FROM app; TEST 'new string' \\\'").as("hello"),
+                    d.TRUE.as("something")
                 ])
                 .as("subqueryTable"),
             c => [c.app.webhookKey],
@@ -112,15 +107,18 @@ function foo () {
         )
         .whereIsNotNull(c => c.app.ssoApiKey)
         .where(c => {
-            c.subqueryTable.subexpr
-            return e.eq(c.app.appId, 5);
+
+            return d.and(
+                d.eq(c.app.appId, 5),
+                c.subqueryTable.something
+            );
         })
         .select((c) => {
             return [
                 //c.app.columns.ssoApiKey.as("aliased"),
                 c.app,
                 c.ssoClient.name,
-                e.true().as("something"),
+                d.TRUE.as("appId"),
                 //e.eq(c.app.columns.ssoApiKey,"2").as("eq"),
                 //c.ssoClient.columns.initializeAfterAuthenticationEndpoint
             ]
@@ -132,15 +130,15 @@ function foo () {
             ];
         })
         .having((s) => {
-            return e.eq(s.__expr.something, true);
+            return d.eq(s.__expr.appId, true);
         })
         .orderBy((s) => {
             return [
                 //s.__expr.columns.aliased,
                 [s.app.name, true],
                 [s.ssoClient.authenticationEndpoint, false],
-                e.eq(s.app.appId, 1),
-                [e.eq(s.app.appId, 1), true]
+                d.eq(s.app.appId, 1),
+                [d.eq(s.app.appId, 1), true]
             ]
         })
         .limit(5)
@@ -148,27 +146,27 @@ function foo () {
         .widen(s => s.app.ssoApiKey, sd.nil())
         .widen(s => s.ssoClient.name, sd.number())
         .union(
-            from(app)
+            d.from(app)
                 .select((s) => {
                     return [
                         s.app,
                         s.app.appId.as("w"),
-                        e.true().as("test")
+                        d.TRUE.as("appId")
                     ]
                 })
         )
         .union(
-            from(app)
+            d.from(app)
                 .select((s) => {
                     return [
                         s.app,
                         s.app.appId.as("b"),
-                        e.true().as("test3")
+                        d.TRUE.as("appId")
                     ]
                 })
         )
         .orderBy(() => {
-            return [e.true()]
+            return [d.TRUE]
         })
         .limit(30)
         .offset(56);//*/
@@ -184,16 +182,35 @@ function foo () {
             result
         })
     f.data*/
-    from(app)
+    d.from(app)
         .join(
-            from(appKey)
-                .select(c => [c.appKey.key, c.appKey.appId, e.true().as("a")])
+            d.from(appKey)
+                .select(c => [c.appKey.key, c.appKey.appId, d.TRUE.as("a")])
                 .as("other"),
             c => [c.app.appId],
             t => [t.appId]
         )
         .having((_s) => {
-            return e.true()
+            return d.lt(1, 100);
         })
+    console.log("---");
+    console.log(f.querify())
+
+    /*db.selectAny(f.querify()).then((result) => {
+        console.log(result)
+    })*/
+
+    /*db.getRawConnection().query(
+        {
+            sql : f.querify(),
+            nestTables : "---",
+        },
+        (error, results, fields) => {
+            console.log(error, results, fields);
+        }
+    );*/
 }
-foo();
+foo().catch((err) => {
+    console.error(err);
+    process.exit(1);
+});
