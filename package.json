@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "check": "tsc --noEmit",
-    "check2": "node --max-old-space-size=4096 ./node_modules/typescript/lib/tsc.js --noEmit"
+    "check2": "node --max-old-space-size=4096 ./node_modules/typescript/lib/tsc.js --noEmit --noErrorTruncation"
   },
   "author": "",
   "license": "ISC",

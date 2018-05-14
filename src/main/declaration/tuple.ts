@@ -15,7 +15,7 @@ function gen (max) {
 gen(50)
 */
 export type TupleLength<TupleT extends Tuple<any>> = (
-    TupleT extends {"50":any} ? 51 :
+    /*TupleT extends {"50":any} ? 51 :
     TupleT extends {"49":any} ? 50 :
     TupleT extends {"48":any} ? 49 :
     TupleT extends {"47":any} ? 48 :
@@ -44,7 +44,7 @@ export type TupleLength<TupleT extends Tuple<any>> = (
     TupleT extends {"24":any} ? 25 :
     TupleT extends {"23":any} ? 24 :
     TupleT extends {"22":any} ? 23 :
-    TupleT extends {"21":any} ? 22 :
+    TupleT extends {"21":any} ? 22 :*/
     TupleT extends {"20":any} ? 21 :
     TupleT extends {"19":any} ? 20 :
     TupleT extends {"18":any} ? 19 :
@@ -79,7 +79,7 @@ function gen (max) {
 gen(50)
 */
 export type TupleNextKey<TupleT extends Tuple<any>> = (
-    TupleT extends {"50":any} ? "51" :
+    /*TupleT extends {"50":any} ? "51" :
     TupleT extends {"49":any} ? "50" :
     TupleT extends {"48":any} ? "49" :
     TupleT extends {"47":any} ? "48" :
@@ -109,7 +109,7 @@ export type TupleNextKey<TupleT extends Tuple<any>> = (
     TupleT extends {"23":any} ? "24" :
     TupleT extends {"22":any} ? "23" :
     TupleT extends {"21":any} ? "22" :
-    TupleT extends {"20":any} ? "21" :
+    TupleT extends {"20":any} ? "21" :*/
     TupleT extends {"19":any} ? "20" :
     TupleT extends {"18":any} ? "19" :
     TupleT extends {"17":any} ? "18" :
@@ -143,7 +143,7 @@ function gen (max) {
 gen(50)
 */
 export type TupleNextLength<TupleT extends Tuple<any>> = (
-    TupleT extends {"50":any} ? 52 :
+    /*TupleT extends {"50":any} ? 52 :
     TupleT extends {"49":any} ? 51 :
     TupleT extends {"48":any} ? 50 :
     TupleT extends {"47":any} ? 49 :
@@ -172,7 +172,7 @@ export type TupleNextLength<TupleT extends Tuple<any>> = (
     TupleT extends {"24":any} ? 26 :
     TupleT extends {"23":any} ? 25 :
     TupleT extends {"22":any} ? 24 :
-    TupleT extends {"21":any} ? 23 :
+    TupleT extends {"21":any} ? 23 :*/
     TupleT extends {"20":any} ? 22 :
     TupleT extends {"19":any} ? 21 :
     TupleT extends {"18":any} ? 20 :

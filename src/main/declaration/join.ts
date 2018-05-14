@@ -65,7 +65,7 @@ export type JoinFromTupleOfCallback<
     JoinFromTupleCallbackT :
     JoinFromTupleCallbackT extends (...args : any[]) => infer TupleT ?
     TupleT :
-    ("Invalid FromColumnsCallbackT or could not infer TupleT"|void|never)
+    ("Invalid JoinFromTupleCallbackT or could not infer TupleT"|void|never)
 )
 
 export type JoinToColumn<
@@ -115,6 +115,17 @@ export type JoinToTupleCallback<
         (t : TableT["columns"]) => JoinToTuple<TableT, FromColumnsT>
     )
 );
+
+
+export type JoinToTupleOfCallback<
+    JoinToTupleCallbackT extends JoinToTupleCallback<AnyAliasedTable, Tuple<AnyColumn>>
+> = (
+    JoinToTupleCallbackT extends Tuple<AnyColumn> ?
+    JoinToTupleCallbackT :
+    JoinToTupleCallbackT extends (...args : any[]) => infer TupleT ?
+    TupleT :
+    ("Invalid JoinToTupleCallbackT or could not infer TupleT"|void|never)
+)
 
 export type MatchesJoinFromColumn<
     ColumnReferencesT extends ColumnReferences,
