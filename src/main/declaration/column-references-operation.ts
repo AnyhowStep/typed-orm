@@ -61,3 +61,9 @@ export type ToPartialColumnReferences<ColumnReferencesT extends ColumnReferences
         [column in keyof ColumnReferencesT[table]]+? : ColumnReferencesT[table][column]
     }
 };
+
+export type PartialToColumnReferences<PartialT extends ColumnReferences> = {
+    [table in keyof PartialT] : {
+        [column in keyof PartialT[table]] : Exclude<PartialT[table][column], undefined>
+    }
+}

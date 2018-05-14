@@ -1,4 +1,5 @@
 //export type Simplify<T> = { [Key in keyof T]: T[Key] };
+import {Add, Subtract, StringToNumber, NumberToString} from "./math";
 
 export type Tuple<T> = T[] & { "0" : T };
 export type TupleKeys<TupleT extends Tuple<any>> = Exclude<keyof TupleT, keyof any[]>;
@@ -245,4 +246,32 @@ type FindDuplicate = {
 type HasDuplicate = true extends FindDuplicate[keyof FindDuplicate]?
   true :
   false;
+*/
+
+
+export type TupleConcat<
+    T extends Tuple<any>,
+    U extends Tuple<any>
+> = (
+    {
+        [index in TupleKeys<T>]: T[index]
+    } &
+    {
+        [newIndex in NumberToString<Add<
+            StringToNumber<TupleKeys<U>>,
+            T["length"]
+        >>]: U[Subtract<StringToNumber<newIndex>, T["length"]>]
+    } &
+    {
+        length: Add<T["length"], U["length"]>;
+    } &
+    { "0" : T[0] } &
+    (T[TupleKeys<T>]|U[TupleKeys<U>])[]
+);
+/*
+declare const a: [1, 2, 3, 4];
+declare const b: ["a", "b", "c"];
+declare const c: TupleConcat<typeof a, typeof b>;
+declare const d: TupleConcat<typeof b, typeof a>;
+d.length
 */

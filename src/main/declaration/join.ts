@@ -8,22 +8,22 @@ import {ColumnType} from "./column-operation";
 import {ColumnOfReferences} from "./column-references-operation";
 
 export interface Join<
-    ColumnReferencesT extends ColumnReferences,
+    AliasT extends string,
     NullableT extends boolean,
 > {
-    columnReferences : ColumnReferencesT,
+    alias : AliasT,
     nullable : NullableT,
 }
-export type AnyJoin = Join<{}, any>;
+export type AnyJoin = Join<any, any>;
 
 export type ToNullableJoinTuple<TupleT extends Tuple<AnyJoin>> = (
     TupleT[TupleKeys<TupleT>] extends AnyJoin ?
         (
             {
                 [index in TupleKeys<TupleT>] : (
-                    TupleT[index] extends Join<infer ColumnReferencesT, boolean> ?
+                    TupleT[index] extends Join<infer AliasT, boolean> ?
                         Join<
-                            ColumnReferencesT,
+                            AliasT,
                             true
                         > :
                         never
@@ -32,14 +32,14 @@ export type ToNullableJoinTuple<TupleT extends Tuple<AnyJoin>> = (
             { length : TupleLength<TupleT> } &
             (
                 Join<
-                    TupleT[TupleKeys<TupleT>]["columnReferences"],
+                    TupleT[TupleKeys<TupleT>]["alias"],
                     true
                 >
             )[] &
             {
                 "0" : (
                     Join<
-                        TupleT["0"]["columnReferences"],
+                        TupleT["0"]["alias"],
                         true
                     >
                 )
