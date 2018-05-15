@@ -1,8 +1,9 @@
 {
   "name": "typed-orm",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "description": "A strongly typed MySQL ORM",
+  "main": "dist/src/main/index.js",
+  "types": "dist/src/main/index.d.ts",
   "scripts": {
     "test": "ts-node ./src/main/sandbox/select-builder",
     "check": "tsc --noEmit",
