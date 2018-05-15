@@ -1,6 +1,6 @@
 import {IColumn, AnyColumn} from "./column";
 import {TypeOf, RawColumnCollection} from "./column-collection";
-import {Tuple, TupleKeys} from "./tuple";
+import {Tuple, TupleKeys, TupleLength} from "./tuple";
 
 //TODO Rename to ColumnToReferences
 export type ColumnToReference<ColumnT extends AnyColumn> = (
@@ -56,3 +56,28 @@ export type HasDuplicateColumn<TupleT extends Tuple<AnyColumn>> = {
             )
     )
 }[TupleKeys<TupleT>];
+
+export type RenameTableOfColumn <
+    ColumnT extends AnyColumn,
+    NewTableNameT extends string
+> = (
+    ColumnT extends IColumn<any, infer NameT, infer TypeT> ?
+        IColumn<NewTableNameT, NameT, TypeT> :
+        never
+);
+export type RenameTableOfColumns <TupleT extends Tuple<AnyColumn>, NewTableNameT extends string> = (
+    TupleT[TupleKeys<TupleT>] extends AnyColumn ?
+        (
+            {
+                [index in TupleKeys<TupleT>] : (
+                    TupleT[index] extends AnyColumn ?
+                        RenameTableOfColumn<TupleT[index], NewTableNameT> :
+                        never
+                )
+            } &
+            { length : TupleLength<TupleT> } &
+            { "0" : RenameTableOfColumn<TupleT[0], NewTableNameT> } &
+            RenameTableOfColumn<TupleT[TupleKeys<TupleT>], NewTableNameT>[]
+        ) :
+        never
+);

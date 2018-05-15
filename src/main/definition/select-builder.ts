@@ -3,7 +3,7 @@ import * as sd from "schema-decorator";
 import {tableToReference} from "./table-operation";
 import * as tuple from "./tuple";
 import {spread, check} from "@anyhowstep/type-util";
-import {getJoinFrom, getJoinTo, toNullableJoinTuple} from "./join";
+import {getJoinFrom, getJoinTo, toNullableJoinTuple, getJoinToUsingFrom} from "./join";
 import {toNullableColumnReferences, replaceColumnOfReference, combineReferences, columnReferencesToSchema} from "./column-references-operation";
 import {and} from "./expr-logical";
 import {isNull, isNotNull, eq} from "./expr-comparison";
@@ -138,6 +138,104 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         this.assertNonDuplicateAlias(toTable.alias);
         const fromTuple = getJoinFrom(this.data.columnReferences, from);
         const toTuple = getJoinTo(toTable, to);
+        this.assertEqualLength(fromTuple, toTuple);
+
+        return new SelectBuilder(spread(
+            this.data,
+            {
+                columnReferences : combineReferences(
+                    this.data.columnReferences,
+                    toNullableColumnReferences(tableToReference(toTable))
+                ),
+                joins : tuple.push(
+                    this.data.joins,
+                    {
+                        joinType : "LEFT",
+                        table : toTable,
+                        nullable : true,
+                        from : fromTuple,
+                        to : toTuple,
+                    }
+                ),
+            }
+        ), this.extraData) as any;
+    };
+
+    //JOIN USING CLAUSE
+    joinUsing<
+        ToTableT extends d.AnyAliasedTable,
+        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>
+    > (
+        toTable : ToTableT,
+        from : FromTupleT
+    ) {
+        this.assertAllowed(d.SelectBuilderOperation.JOIN);
+        this.assertNonDuplicateAlias(toTable.alias);
+        const fromTuple = getJoinFrom(this.data.columnReferences, from);
+        const toTuple = getJoinToUsingFrom(toTable, fromTuple);
+        this.assertEqualLength(fromTuple, toTuple);
+
+        return new SelectBuilder(spread(
+            this.data,
+            {
+                columnReferences : combineReferences(
+                    this.data.columnReferences,
+                    tableToReference(toTable)
+                ),
+                joins : tuple.push(this.data.joins, {
+                    joinType : "INNER",
+                    table : toTable,
+                    nullable : false,
+                    from : fromTuple,
+                    to : toTuple,
+                }),
+            }
+        ), this.extraData) as any;
+    }
+    rightJoinUsing<
+        ToTableT extends d.AnyAliasedTable,
+        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>
+    > (
+        toTable : ToTableT,
+        from : FromTupleT
+    ) {
+        this.assertAllowed(d.SelectBuilderOperation.JOIN);
+        this.assertNonDuplicateAlias(toTable.alias);
+        const fromTuple = getJoinFrom(this.data.columnReferences, from);
+        const toTuple = getJoinToUsingFrom(toTable, fromTuple);
+        this.assertEqualLength(fromTuple, toTuple);
+
+        return new SelectBuilder(spread(
+            this.data,
+            {
+                columnReferences : combineReferences(
+                    toNullableColumnReferences(this.data.columnReferences),
+                    tableToReference(toTable)
+                ),
+                joins : tuple.push(
+                    toNullableJoinTuple(this.data.joins),
+                    {
+                        joinType : "RIGHT",
+                        table : toTable,
+                        nullable : false,
+                        from : fromTuple,
+                        to : toTuple,
+                    }
+                ),
+            }
+        ), this.extraData) as any;
+    };
+    leftJoinUsing<
+        ToTableT extends d.AnyAliasedTable,
+        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>
+    > (
+        toTable : ToTableT,
+        from : FromTupleT
+    ) {
+        this.assertAllowed(d.SelectBuilderOperation.JOIN);
+        this.assertNonDuplicateAlias(toTable.alias);
+        const fromTuple = getJoinFrom(this.data.columnReferences, from);
+        const toTuple = getJoinToUsingFrom(toTable, fromTuple);
         this.assertEqualLength(fromTuple, toTuple);
 
         return new SelectBuilder(spread(

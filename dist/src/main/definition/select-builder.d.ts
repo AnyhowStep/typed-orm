@@ -20,6 +20,9 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
     join<ToTableT extends d.AnyAliasedTable, FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>>(toTable: ToTableT, from: FromTupleT, to: d.JoinToTupleCallback<ToTableT, d.JoinFromTupleOfCallback<FromTupleT>>): any;
     rightJoin<ToTableT extends d.AnyAliasedTable, FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>>(toTable: ToTableT, from: FromTupleT, to: d.JoinToTupleCallback<ToTableT, d.JoinFromTupleOfCallback<FromTupleT>>): any;
     leftJoin<ToTableT extends d.AnyAliasedTable, FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>>(toTable: ToTableT, from: FromTupleT, to: d.JoinToTupleCallback<ToTableT, d.JoinFromTupleOfCallback<FromTupleT>>): any;
+    joinUsing<ToTableT extends d.AnyAliasedTable, FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>>(toTable: ToTableT, from: FromTupleT): any;
+    rightJoinUsing<ToTableT extends d.AnyAliasedTable, FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>>(toTable: ToTableT, from: FromTupleT): any;
+    leftJoinUsing<ToTableT extends d.AnyAliasedTable, FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>>(toTable: ToTableT, from: FromTupleT): any;
     private appendNarrowData(newColumn);
     private appendWhereExpr(newExpr);
     private appendNarrowExpr(newExpr);

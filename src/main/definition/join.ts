@@ -22,6 +22,19 @@ export function getJoinTo<
     }
 }
 
+export function getJoinToUsingFrom<
+    ToTableT extends d.AnyAliasedTable,
+    TupleT extends d.Tuple<d.AnyColumn>
+> (table : ToTableT, fromTuple : TupleT) : d.RenameTableOfColumns<TupleT, ToTableT["alias"]> {
+    return fromTuple.map((f) => {
+        const column = (table.columns as any)[f.name];
+        if (column == undefined) {
+            throw new Error(`Table ${table.alias} does not have column ${f.name}`);
+        }
+        return column;
+    }) as any;
+}
+
 export function toNullableJoinTuple<
     TupleT extends d.Tuple<d.AnyJoin>
 > (tuple : TupleT) : d.ToNullableJoinTuple<TupleT> {

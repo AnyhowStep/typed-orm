@@ -18,6 +18,16 @@ function getJoinTo(table, callback) {
     }
 }
 exports.getJoinTo = getJoinTo;
+function getJoinToUsingFrom(table, fromTuple) {
+    return fromTuple.map((f) => {
+        const column = table.columns[f.name];
+        if (column == undefined) {
+            throw new Error(`Table ${table.alias} does not have column ${f.name}`);
+        }
+        return column;
+    });
+}
+exports.getJoinToUsingFrom = getJoinToUsingFrom;
 function toNullableJoinTuple(tuple) {
     return tuple.map((e) => {
         return {

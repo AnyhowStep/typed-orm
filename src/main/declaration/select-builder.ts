@@ -34,6 +34,7 @@ import {
     JoinableSelectTupleHasDuplicateColumnName
 } from "./select-as";
 import {Querify} from "./querify";
+import {RenameTableOfColumns} from "./column-operation";
 
 export interface RawPaginationArgs {
     page? : number|null|undefined;
@@ -275,6 +276,155 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                     unionOrderByTuple : DataT["unionOrderByTuple"],
                                     unionLimit : DataT["unionLimit"],
                                 }>
+                            ) :
+                            (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
+                    )
+            )
+    );
+
+    //JOIN USING
+    joinUsing<
+        ToTableT extends AnyAliasedTable,
+        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>
+    > (
+        toTable : ToTableT,
+        from : FromTupleT
+    ) : (
+        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ?
+            ("JOIN USING clause not allowed here"|void|never) :
+            (
+                TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
+                    ("Duplicate alias" | TableAlias<ToTableT> | void) :
+                    (
+                        JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
+                            (
+                                RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ?
+                                    ISelectBuilder<{
+                                        allowed : DataT["allowed"],
+
+                                        columnReferences : (
+                                            DataT["columnReferences"] &
+                                            TableToReference<ToTableT>
+                                        ),
+                                        joins : (
+                                            TuplePush<
+                                                DataT["joins"],
+                                                Join<
+                                                    "INNER",
+                                                    ToTableT,
+                                                    false
+                                                >
+                                            >
+                                        ),
+                                        selectReferences : DataT["selectReferences"],
+                                        selectTuple : DataT["selectTuple"],
+                                        distinct : DataT["distinct"],
+                                        sqlCalcFoundRows : DataT["sqlCalcFoundRows"],
+                                        groupByTuple : DataT["groupByTuple"],
+                                        orderByTuple : DataT["orderByTuple"],
+                                        limit : DataT["limit"],
+                                        unionOrderByTuple : DataT["unionOrderByTuple"],
+                                        unionLimit : DataT["unionLimit"],
+                                    }> :
+                                    ("Cannot JOIN USING; to table is missing columns or types do not match"|void|never)
+                            ) :
+                            (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
+                    )
+            )
+    );
+    rightJoinUsing<
+        ToTableT extends AnyAliasedTable,
+        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>
+    > (
+        toTable : ToTableT,
+        from : FromTupleT
+    ) : (
+        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ?
+            ("JOIN clause not allowed here"|void|never) :
+            (
+                TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
+                    ("Duplicate alias" | TableAlias<ToTableT> | void) :
+                    (
+                        JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
+                            (
+                                RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ?
+                                    ISelectBuilder<{
+                                        allowed : DataT["allowed"],
+
+                                        columnReferences : (
+                                            ToNullableColumnReferences<DataT["columnReferences"]> &
+                                            TableToReference<ToTableT>
+                                        ),
+                                        joins : (
+                                            TuplePush<
+                                                ToNullableJoinTuple<DataT["joins"]>,
+                                                Join<
+                                                    "RIGHT",
+                                                    ToTableT,
+                                                    false
+                                                >
+                                            >
+                                        ),
+                                        selectReferences : DataT["selectReferences"],
+                                        selectTuple : DataT["selectTuple"],
+                                        distinct : DataT["distinct"],
+                                        sqlCalcFoundRows : DataT["sqlCalcFoundRows"],
+                                        groupByTuple : DataT["groupByTuple"],
+                                        orderByTuple : DataT["orderByTuple"],
+                                        limit : DataT["limit"],
+                                        unionOrderByTuple : DataT["unionOrderByTuple"],
+                                        unionLimit : DataT["unionLimit"],
+                                    }> :
+                                    ("Cannot RIGHT JOIN USING; to table is missing columns or types do not match"|void|never)
+                            ) :
+                            (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
+                    )
+            )
+    );
+    leftJoinUsing<
+        ToTableT extends AnyAliasedTable,
+        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>
+    > (
+        toTable : ToTableT,
+        from : FromTupleT
+    ) : (
+        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ?
+            ("JOIN clause not allowed here"|void|never) :
+            (
+                TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
+                    ("Duplicate alias" | TableAlias<ToTableT> | void) :
+                    (
+                        JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
+                            (
+                                RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ?
+                                    ISelectBuilder<{
+                                        allowed : DataT["allowed"],
+
+                                        columnReferences : (
+                                            DataT["columnReferences"] &
+                                            ToNullableColumnReferences<TableToReference<ToTableT>>
+                                        ),
+                                        joins : (
+                                            TuplePush<
+                                                DataT["joins"],
+                                                Join<
+                                                    "LEFT",
+                                                    ToTableT,
+                                                    true
+                                                >
+                                            >
+                                        ),
+                                        selectReferences : DataT["selectReferences"],
+                                        selectTuple : DataT["selectTuple"],
+                                        distinct : DataT["distinct"],
+                                        sqlCalcFoundRows : DataT["sqlCalcFoundRows"],
+                                        groupByTuple : DataT["groupByTuple"],
+                                        orderByTuple : DataT["orderByTuple"],
+                                        limit : DataT["limit"],
+                                        unionOrderByTuple : DataT["unionOrderByTuple"],
+                                        unionLimit : DataT["unionLimit"],
+                                    }> :
+                                    ("Cannot LEFT JOIN USING; to table is missing columns or types do not match"|void|never)
                             ) :
                             (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
                     )

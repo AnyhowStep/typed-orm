@@ -114,6 +114,60 @@ class SelectBuilder {
         }), this.extraData);
     }
     ;
+    //JOIN USING CLAUSE
+    joinUsing(toTable, from) {
+        this.assertAllowed(d.SelectBuilderOperation.JOIN);
+        this.assertNonDuplicateAlias(toTable.alias);
+        const fromTuple = join_1.getJoinFrom(this.data.columnReferences, from);
+        const toTuple = join_1.getJoinToUsingFrom(toTable, fromTuple);
+        this.assertEqualLength(fromTuple, toTuple);
+        return new SelectBuilder(type_util_1.spread(this.data, {
+            columnReferences: column_references_operation_1.combineReferences(this.data.columnReferences, table_operation_1.tableToReference(toTable)),
+            joins: tuple.push(this.data.joins, {
+                joinType: "INNER",
+                table: toTable,
+                nullable: false,
+                from: fromTuple,
+                to: toTuple,
+            }),
+        }), this.extraData);
+    }
+    rightJoinUsing(toTable, from) {
+        this.assertAllowed(d.SelectBuilderOperation.JOIN);
+        this.assertNonDuplicateAlias(toTable.alias);
+        const fromTuple = join_1.getJoinFrom(this.data.columnReferences, from);
+        const toTuple = join_1.getJoinToUsingFrom(toTable, fromTuple);
+        this.assertEqualLength(fromTuple, toTuple);
+        return new SelectBuilder(type_util_1.spread(this.data, {
+            columnReferences: column_references_operation_1.combineReferences(column_references_operation_1.toNullableColumnReferences(this.data.columnReferences), table_operation_1.tableToReference(toTable)),
+            joins: tuple.push(join_1.toNullableJoinTuple(this.data.joins), {
+                joinType: "RIGHT",
+                table: toTable,
+                nullable: false,
+                from: fromTuple,
+                to: toTuple,
+            }),
+        }), this.extraData);
+    }
+    ;
+    leftJoinUsing(toTable, from) {
+        this.assertAllowed(d.SelectBuilderOperation.JOIN);
+        this.assertNonDuplicateAlias(toTable.alias);
+        const fromTuple = join_1.getJoinFrom(this.data.columnReferences, from);
+        const toTuple = join_1.getJoinToUsingFrom(toTable, fromTuple);
+        this.assertEqualLength(fromTuple, toTuple);
+        return new SelectBuilder(type_util_1.spread(this.data, {
+            columnReferences: column_references_operation_1.combineReferences(this.data.columnReferences, column_references_operation_1.toNullableColumnReferences(table_operation_1.tableToReference(toTable))),
+            joins: tuple.push(this.data.joins, {
+                joinType: "LEFT",
+                table: toTable,
+                nullable: true,
+                from: fromTuple,
+                to: toTuple,
+            }),
+        }), this.extraData);
+    }
+    ;
     //TYPE-NARROW CLAUSE
     appendNarrowData(newColumn) {
         return type_util_1.spread(this.data, {
