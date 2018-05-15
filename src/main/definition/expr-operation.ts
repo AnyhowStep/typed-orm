@@ -4,6 +4,7 @@ import {Database} from "typed-mysql";
 import {SelectBuilder} from "./select-builder";
 import {Column} from "./column";
 import {Expr} from "./expr";
+import {StringBuilder} from "./StringBuilder";
 
 export function isAllowedExprConstant<RawExprT extends d.RawExpr<any>> (
     raw : RawExprT
@@ -104,13 +105,19 @@ export function querify (raw : d.RawExpr<any>) : string {
         }
     }
     if (raw instanceof Column) {
-        return raw.querify();
+        const sb = new StringBuilder();
+        raw.querify(sb);
+        return sb.toString();
     }
     if (raw instanceof Expr) {
-        return raw.querify();
+        const sb = new StringBuilder();
+        raw.querify(sb);
+        return sb.toString();
     }
     if (raw instanceof SelectBuilder) {
-        return raw.querify();
+        const sb = new StringBuilder();
+        raw.querify(sb);
+        return sb.toString();
     }
     throw new Error(`Unknown raw expression (${typeof raw})${raw}`);
 }

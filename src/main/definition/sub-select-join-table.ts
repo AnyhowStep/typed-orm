@@ -2,9 +2,10 @@ import * as d from "../declaration";
 import {
     isJoinableSelectTuple,
     joinableSelectTupleHasDuplicateColumnName,
-    joinableSelectTupleToRawColumnCollection
+    //joinableSelectTupleToRawColumnCollection,
+    joinableSelectTupleToColumnCollection
 } from "./select-as";
-import {toColumnCollection} from "./column-collection";
+//import {toColumnCollection} from "./column-collection";
 import {Database} from "typed-mysql";
 
 type SelectBuilderToRawColumnReferences<SelectBuilderT extends d.AnySelectBuilder> = (
@@ -47,14 +48,23 @@ export class SubSelectJoinTable<
 
         this.alias = alias;
         this.name  = alias;
-        this.columns = toColumnCollection(
+        this.columns = joinableSelectTupleToColumnCollection(
             this.alias,
-            joinableSelectTupleToRawColumnCollection(selectTuple)
+            selectTuple
         ) as any;
+        /*this.columns = toColumnCollection(
+            this.alias,
+            joinableSelectTupleToRawColumnCollection(selectTuple) as any
+        ) as any;*/
         this.selectBuilder = selectBuilder;
     }
 
-    public querify () {
-        return `(${this.selectBuilder.querify()}) AS ${Database.EscapeId(this.alias)}`;
+    public querify (sb : d.IStringBuilder) {
+        sb.appendLine("(");
+        sb.scope((sb) => {
+            this.selectBuilder.querify(sb);
+        });
+        sb.append(") AS ");
+        sb.appendLine(Database.EscapeId(this.alias));
     }
 }

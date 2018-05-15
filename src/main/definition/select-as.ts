@@ -81,3 +81,33 @@ export function joinableSelectTupleToRawColumnCollection<
         return memo;
     }, {} as any);
 }
+
+export function joinableSelectTupleToColumnCollection<
+    AliasT extends string,
+    TupleT extends d.Tuple<d.JoinableSelectTupleElement<any>>
+> (
+    alias : AliasT,
+    tuple : TupleT
+) : d.ColumnCollection<AliasT, d.JoinableSelectTupleToRawColumnCollection<TupleT>> {
+    return tuple.reduce<any>((memo, element) => {
+        if (element instanceof ColumnExpr) {
+            memo[element.name] = new Column(
+                alias,
+                element.name,
+                element.assertDelegate,
+                element.table
+            );
+        } else if (element instanceof Column) {
+            memo[element.name] = new Column(
+                alias,
+                element.name,
+                element.assertDelegate,
+                element.table
+            );
+        } else {
+            throw new Error(`Unknown joinable select tuple element, (${typeof element})${element}`);
+        }
+
+        return memo;
+    }, {} as any);
+}

@@ -10,7 +10,8 @@ import {isNull, isNotNull, eq} from "./expr-comparison";
 import {Column} from "./column";
 import {replaceColumnOfSelectTuple, selectTupleHasDuplicateColumn, selectTupleToReferences} from "./select";
 import {SubSelectJoinTable} from "./sub-select-join-table";
-import {ColumnExpr} from "./expr";
+import {ColumnExpr, Expr} from "./expr";
+import {Database} from "typed-mysql";
 
 export interface ExtraSelectBuilderData {
     readonly narrowExpr? : d.IExpr<any, boolean>;
@@ -378,8 +379,9 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         this.assertAllowed(d.SelectBuilderOperation.GROUP_BY);
 
         const tuple = groupByCallback(combineReferences(
-            this.data.columnReferences,
-            this.data.selectReferences
+            //For GROUP BY, we replace the selectReferences with columnReferences
+            this.data.selectReferences,
+            this.data.columnReferences
         ), this as any);
         return new SelectBuilder(
             spread(
@@ -398,8 +400,9 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         this.assertAllowed(d.SelectBuilderOperation.GROUP_BY);
 
         const tuple = groupByCallback(combineReferences(
-            this.data.columnReferences,
-            this.data.selectReferences
+            //For GROUP BY, we replace the selectReferences with columnReferences
+            this.data.selectReferences,
+            this.data.columnReferences
         ), this as any);
         return new SelectBuilder(
             spread(
@@ -600,8 +603,8 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             column.table,
             column.name,
             sd.or(
-                assertWidened,
-                column.assertDelegate
+                column.assertDelegate,
+                assertWidened
             )
         );
 
@@ -790,115 +793,191 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         ) as any;
     };
 
-    querify () {
-        //TODO a proper query string builder?
-        const buffer : string[] = [];
-        buffer.push("(");
-        buffer.push("SELECT");
+    querify (sb : d.IStringBuilder) {
+        const hasUnion = (
+            this.extraData.union != undefined ||
+            this.data.unionOrderByTuple != undefined ||
+            this.data.unionLimit != undefined
+        );
+        if (hasUnion) {
+            sb.appendLine("(");
+            sb.indent();
+        }
+
+        sb.append("SELECT");
         if (this.data.distinct) {
-            buffer.push("DISTINCT");
+            sb.append(" DISTINCT");
         }
         if (this.data.sqlCalcFoundRows) {
-            buffer.push("SQL_CALC_FOUND_ROWS");
+            sb.append(" SQL_CALC_FOUND_ROWS");
         }
-        if (this.data.selectTuple != undefined) {
-            buffer.push(this.data.selectTuple.map((element) => {
-                if (element instanceof ColumnExpr) {
-                    return `\t${element.querify()}`;
-                } else if (element instanceof Column) {
-                    return `\t${element.querify()}`;
-                } else if (element instanceof Object) {
-                    const names = Object.keys(element).sort();
-                    return names.map((n) => {
-                        return `\t${element[n].querify()}`
-                    }).join(",\n");
-                } else {
-                    throw new Error(`Unknown select tuple element (${typeof element})${element}`);
-                }
-            }).join(",\n"));
-        }
-        buffer.push("FROM");
-        buffer.push(`\t${this.data.joins[0].table.querify()}`);
-        for (let i=1; i<this.data.joins.length; ++i) {
-            const join = this.data.joins[i];
-            buffer.push(`${join.joinType} JOIN`);
-            buffer.push(`\t${join.table.querify()}`);
-            buffer.push("ON");
-            if (join.from == undefined || join.to == undefined || join.from.length != join.to.length) {
-                throw new Error(`Invalid JOIN ${i}, ${join.joinType} JOIN ${join.table.alias}`);
+        sb.appendLine();
+
+        sb.scope((sb) => {
+            if (this.data.selectTuple != undefined) {
+                sb.map(this.data.selectTuple, (sb, element) => {
+                    if (element instanceof ColumnExpr) {
+                        element.querify(sb);
+                    } else if (element instanceof Column) {
+                        //const str = element.as(element.name).querify();
+                        //return `\t${str}`;
+                        const alias = Database.EscapeId(`${element.table}--${element.name}`);
+                        element.querify(sb);
+                        sb.append(` AS ${alias}`);
+
+                    } else if (element instanceof Object) {
+                        const names = Object.keys(element).sort();
+                        sb.map(names, (sb, name) => {
+                            const sub = element[name];
+                            const alias = Database.EscapeId(`${sub.table}--${sub.name}`);
+                            sub.querify(sb);
+                            sb.append(` AS ${alias}`);
+                        }, ",\n");
+                    } else {
+                        throw new Error(`Unknown select tuple element (${typeof element})${element}`);
+                    }
+                }, ",\n");
             }
-            const conditionBuffer : string[] = [];
-            for (let column=0; column<join.from.length; ++column) {
-                const a = join.from[column];
-                const b = join.to[column];
-                conditionBuffer.push(`\t${a.querify()} = ${b.querify()}`);
+        });
+        sb.appendLine("FROM");
+        sb.scope((sb) => {
+            this.data.joins[0].table.querify(sb);
+        });
+        sb.map(
+            this.data.joins.slice(1),
+            (sb, join, index) => {
+                sb.appendLine(`${join.joinType} JOIN`);
+                sb.scope((sb) => {
+                    join.table.querify(sb);
+                });
+                sb.appendLine("ON");
+                sb.scope((sb) => {
+                    if (join.from == undefined || join.to == undefined || join.from.length != join.to.length) {
+                        throw new Error(`Invalid JOIN ${index}, ${join.joinType} JOIN ${join.table.alias}`);
+                    }
+                    const fromArr = join.from;
+                    const toArr = join.to;
+                    sb.map(
+                        fromArr,
+                        (sb, from, index) => {
+                            const to = toArr[index];
+                            from.querify(sb);
+                            sb.append(" = ");
+                            to.querify(sb);
+                        },
+                        " AND\n"
+                    );
+                });
             }
-            buffer.push(conditionBuffer.join(" AND\n"));
-        }
+        )
         if (this.extraData.whereExpr != undefined) {
-            buffer.push("WHERE");
-            buffer.push(this.extraData.whereExpr.querify());
+            sb.appendLine("WHERE");
+            const whereExpr = this.extraData.whereExpr;
+            sb.scope((sb) => {
+                whereExpr.querify(sb)
+            });
         }
         if (this.data.groupByTuple != undefined) {
-            buffer.push("GROUP BY");
-            buffer.push(this.data.groupByTuple
-                .map(e => `\t${e.querify()}`)
-                .join(", ")
-            );
+            sb.appendLine("GROUP BY");
+            const groupByTuple = this.data.groupByTuple;
+            sb.scope((sb) => {
+                sb.map(
+                    groupByTuple,
+                    (sb, e) => {
+                        e.querify(sb);
+                    },
+                    ",\n"
+                );
+            });
         }
         if (this.extraData.havingExpr != undefined) {
-            buffer.push("HAVING");
-            buffer.push(this.extraData.havingExpr.querify());
+            sb.appendLine("HAVING");
+            const havingExpr = this.extraData.havingExpr;
+            sb.scope((sb) => {
+                havingExpr.querify(sb)
+            });
         }
         if (this.data.orderByTuple != undefined) {
-            buffer.push("ORDER BY");
-            buffer.push(this.data.orderByTuple
-                .map(e => {
-                    if (e instanceof Column) {
-                        return `\t${e.querify()} ASC`;
-                    } else {
-                        const sort = e[1] ? "ASC" : "DESC";
-                        return `\t${e.querify()} ${sort}`;
-                    }
-                })
-                .join(", ")
-            );
+            sb.appendLine("ORDER BY");
+            const orderByTuple = this.data.orderByTuple;
+            sb.scope((sb) => {
+                sb.map(
+                    orderByTuple,
+                    (sb, e) => {
+                        if ((e instanceof Column) || (e instanceof Expr)) {
+                            e.querify(sb);
+                            sb.append(" ASC");
+                        } else {
+                            e[0].querify(sb);
+                            sb.append(e[1] ? " ASC" : " DESC");
+                        }
+                    },
+                    ",\n"
+                )
+            });
         }
         if (this.data.limit != undefined) {
-            buffer.push("LIMIT");
-            buffer.push(`\t${this.data.limit.rowCount}`);
-            buffer.push("OFFSET");
-            buffer.push(`\t${this.data.limit.offset}`);
+            const limit = this.data.limit;
+            sb.appendLine("LIMIT")
+                .scope((sb) => {
+                    sb.append(limit.rowCount.toString());
+                });
+            sb.appendLine("OFFSET")
+                .scope((sb) => {
+                    sb.append(limit.offset.toString());
+                });
         }
-        buffer.push(")");
+
+        if (hasUnion) {
+            sb.unindent();
+            sb.appendLine(")");
+        }
+
         if (this.extraData.union != undefined) {
-            for (let u of this.extraData.union) {
-                buffer.push("UNION (");
-                buffer.push(u.querify());
-                buffer.push(")");
-            }
-        }
-        if (this.data.unionOrderByTuple != undefined) {
-            buffer.push("ORDER BY");
-            buffer.push(this.data.unionOrderByTuple
-                .map(e => {
-                    if (e instanceof Column) {
-                        return `\t${e.querify()} ASC`;
-                    } else {
-                        const sort = e[1] ? "ASC" : "DESC";
-                        return `\t${e.querify()} ${sort}`;
-                    }
-                })
-                .join(", ")
+            sb.map(
+                this.extraData.union,
+                (sb, u) => {
+                    sb.appendLine("UNION");
+                    sb.appendLine("(");
+                    sb.scope((sb) => {
+                        u.querify(sb);
+                    });
+                    sb.appendLine(")");
+                },
+                "\n"
             );
         }
-        if (this.data.unionLimit != undefined) {
-            buffer.push("LIMIT");
-            buffer.push(`\t${this.data.unionLimit.rowCount}`);
-            buffer.push("OFFSET");
-            buffer.push(`\t${this.data.unionLimit.offset}`);
+        if (this.data.unionOrderByTuple != undefined) {
+            sb.appendLine("ORDER BY");
+            const unionOrderByTuple = this.data.unionOrderByTuple;
+            sb.scope((sb) => {
+                sb.map(
+                    unionOrderByTuple,
+                    (sb, e) => {
+                        if ((e instanceof Column) || (e instanceof Expr)) {
+                            e.querify(sb);
+                            sb.append(" ASC");
+                        } else {
+                            e[0].querify(sb);
+                            sb.append(e[1] ? " ASC" : " DESC");
+                        }
+                    },
+                    ",\n"
+                )
+            });
         }
-        return buffer.join("\n");
+        if (this.data.unionLimit != undefined) {
+            const unionLimit = this.data.unionLimit;
+            sb.appendLine("LIMIT")
+                .scope((sb) => {
+                    sb.append(unionLimit.rowCount.toString());
+                });
+            sb.appendLine("OFFSET")
+                .scope((sb) => {
+                    sb.append(unionLimit.offset.toString());
+                });
+        }
+        return sb.toString();
     }
 }
 

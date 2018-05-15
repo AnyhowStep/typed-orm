@@ -13,6 +13,7 @@ export * from "./join";
 export * from "./select-as";
 export * from "./select-builder";
 export * from "./select";
+export * from "./StringBuilder";
 export * from "./sub-select-join-table";
 export * from "./table-operation";
 export * from "./table";

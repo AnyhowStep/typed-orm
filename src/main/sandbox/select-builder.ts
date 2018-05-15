@@ -82,7 +82,34 @@ async function foo () {
     await db.connect();
     await db.utcOnly();
 
-
+    d.from(app)
+        .select(c => [
+            c.app.appId,
+            d.TRUE.as("something")
+        ])
+    d.from(app)
+        .select(c => [
+            c.app.appId,
+            d.TRUE.as("something")
+        ])
+        .as("subsubqueryTable")
+    d.from(app)
+        .join(
+            d.from(app)
+                .select(c => [
+                    c.app.appId,
+                    d.TRUE.as("something")
+                ])
+                .as("subsubqueryTable"),
+            c => [c.app.appId],
+            t => [t.appId]
+        )
+        .select(c => [
+            //c.app.appId,
+            //c.app.webhookKey,
+            //d.toExpr("Hello, world, SELECT * FROM app; TEST 'new string' \\\'").as("hello"),
+            c.subsubqueryTable.something.as("test")
+        ])
     const f = d.from(app)
         .join(
             appKey,
@@ -95,11 +122,31 @@ async function foo () {
             t => [t.ssoClientId])
         .join(
             d.from(app)
+                .join(
+                    d.from(app)
+                        .join(
+                            d.from(app)
+                                .select(c => [
+                                    c.app.appId,
+                                    d.TRUE.as("something")
+                                ])
+                                .as("subsubsubq"),
+                            c => [c.app.appId],
+                            t => [t.appId]
+                        )
+                        .select(c => [
+                            c.app.appId,
+                            c.subsubsubq.something
+                        ])
+                        .as("subsubqueryTable"),
+                    c => [c.app.appId],
+                    t => [t.appId]
+                )
                 .select(c => [
                     c.app.appId,
                     c.app.webhookKey,
                     d.toExpr("Hello, world, SELECT * FROM app; TEST 'new string' \\\'").as("hello"),
-                    d.TRUE.as("something")
+                    c.subsubqueryTable.something
                 ])
                 .as("subqueryTable"),
             c => [c.app.webhookKey],
@@ -108,29 +155,32 @@ async function foo () {
         .whereIsNotNull(c => c.app.ssoApiKey)
         .where(c => {
 
-            return d.and(
-                d.eq(c.app.appId, 5),
-                c.subqueryTable.something
+            return d.or(
+                d.and(
+                    d.eq(c.app.appId, 5),
+                    c.subqueryTable.something
+                ),
+                d.eq(c.subqueryTable.appId, 999)
             );
         })
         .select((c) => {
             return [
                 //c.app.columns.ssoApiKey.as("aliased"),
                 c.app,
-                c.ssoClient.name,
-                d.TRUE.as("appId"),
+                c.ssoClient.ssoClientId,
+                c.subqueryTable.something
                 //e.eq(c.app.columns.ssoApiKey,"2").as("eq"),
                 //c.ssoClient.columns.initializeAfterAuthenticationEndpoint
             ]
         })
-        .distinct()
+        //.distinct()
         .groupBy((s) => {
             return [
-                s.ssoClient.initializeAfterAuthenticationEndpoint
+                s.app.appId
             ];
         })
         .having((s) => {
-            return d.eq(s.__expr.appId, true);
+            return d.eq(s.subqueryTable.something, true);
         })
         .orderBy((s) => {
             return [
@@ -144,7 +194,7 @@ async function foo () {
         .limit(5)
         .offset(4)
         .widen(s => s.app.ssoApiKey, sd.nil())
-        .widen(s => s.ssoClient.name, sd.number())
+        .widen(s => s.ssoClient.ssoClientId, sd.string())
         .union(
             d.from(app)
                 .select((s) => {
@@ -160,7 +210,7 @@ async function foo () {
                 .select((s) => {
                     return [
                         s.app,
-                        s.app.appId.as("b"),
+                        s.app.name.as("b"),
                         d.TRUE.as("appId")
                     ]
                 })
@@ -194,11 +244,14 @@ async function foo () {
             return d.lt(1, 100);
         })
     console.log("---");
-    console.log(f.querify())
-
-    /*db.selectAny(f.querify()).then((result) => {
+    const sb = new d.StringBuilder();
+    f.querify(sb);
+    const query = sb.toString();
+    console.log(query);
+    //f.data.selectReferences;
+    db.selectAny(query).then((result) => {
         console.log(result)
-    })*/
+    })
 
     /*db.getRawConnection().query(
         {

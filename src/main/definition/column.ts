@@ -16,16 +16,37 @@ export class Column<
     readonly fullName : string;
     //readonly query : string;
 
-    constructor (table : TableNameT, name : NameT, assert : sd.AssertFunc<TypeT>) {
+    //HACK for JOINING with nested queries
+    readonly subTableName : string|undefined;
+    //HACK for referencing selected columns
+    readonly isSelectReference : boolean;
+
+    constructor (table : TableNameT, name : NameT, assert : sd.AssertFunc<TypeT>, subTableName? : string, isSelectReference? : boolean) {
         this.table = table;
         this.name = name;
         this.assertDelegate = sd.toAssertDelegateExact(assert);
 
+        //HACK
+        this.subTableName = subTableName;
+        //HACK
+        this.isSelectReference = (isSelectReference === true);
+
         if (table == "__expr") {
-            //this.fullName = Database.EscapeId(`${table}--${name}`);
-            this.fullName = Database.EscapeId(`${name}`);
+            this.fullName = Database.EscapeId(`${table}--${name}`);
+            //this.fullName = Database.EscapeId(`${name}`);
         } else {
-            this.fullName = `${Database.EscapeId(table)}.${Database.EscapeId(name)}`;
+            if (subTableName == undefined) {
+                if (this.isSelectReference) {
+                    this.fullName = Database.EscapeId(`${table}--${name}`);
+                } else {
+                    this.fullName = `${Database.EscapeId(table)}.${Database.EscapeId(name)}`;
+                }
+
+            } else {
+                const hackedName = Database.EscapeId(`${subTableName}--${name}`);
+                this.fullName = `${Database.EscapeId(table)}.${hackedName}`;
+            }
+
         }
         //const alias = Database.EscapeId(`${table}--${name}`);
         //this.query = `${this.fullName} AS ${alias}`;
@@ -46,7 +67,7 @@ export class Column<
         );
     }
 
-    public querify () {
-        return this.fullName;
+    public querify (sb : d.IStringBuilder) {
+        sb.append(this.fullName);
     }
 }

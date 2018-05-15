@@ -18,7 +18,8 @@ function booleanBinaryOp (operator : string) {
                 usedColumns(left),
                 usedColumns(right)
             ),
-            `${querify(left)} ${operator} ${querify(right)}`
+            //TODO More readable queries
+            `${querify(left)} ${operator}\n${querify(right)}`
         );
     }
     Object.defineProperty(result, "name", {

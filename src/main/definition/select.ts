@@ -96,13 +96,22 @@ export function selectTupleToReferences<
             memo[element.table][element.name] = new Column(
                 element.table,
                 element.name,
-                element.assertDelegate
+                element.assertDelegate,
+                undefined,
+                true
             );
         } else if (element instanceof Column) {
             if (memo[element.table] == undefined) {
                 memo[element.table] = {};
             }
-            memo[element.table][element.name] = element;
+            //memo[element.table][element.name] = element;
+            memo[element.table][element.name] = new Column(
+                element.table,
+                element.name,
+                element.assertDelegate,
+                undefined,
+                true
+            );
         } else if (element instanceof Object) {
             for (let name in element) {
                 if (element.hasOwnProperty(name)) {
@@ -110,7 +119,14 @@ export function selectTupleToReferences<
                     if (memo[sub.table] == undefined) {
                         memo[sub.table] = {};
                     }
-                    memo[sub.table][sub.name] = sub;
+                    //memo[sub.table][sub.name] = sub;
+                    memo[sub.table][sub.name] = new Column(
+                        sub.table,
+                        sub.name,
+                        sub.assertDelegate,
+                        undefined,
+                        true
+                    );
                 }
             }
         } else {

@@ -29,14 +29,20 @@ export class ColumnExpr<
         this.name = name;
         this.assertDelegate = sd.toAssertDelegateExact(assert);
 
-        //const alias = Database.EscapeId(`${table}--${name}`);
-        const alias = Database.EscapeId(`${name}`);
+        const alias = Database.EscapeId(`${table}--${name}`);
+        //const alias = Database.EscapeId(`${name}`);
         this.originalQuery = originalQuery;
-        this.query = `(${originalQuery}) AS ${alias}`;
+        //TODO
+        //These tests introduce more risk that a query will be evaluated incorrectly
+        if (/\s/.test(originalQuery) && !/^\(.+\)$/.test(originalQuery)) {
+            this.query = `(${originalQuery}) AS ${alias}`;
+        } else {
+            this.query = `${originalQuery} AS ${alias}`;
+        }
     }
 
-    public querify () {
-        return this.query;
+    public querify (sb : d.IStringBuilder) {
+        sb.append(this.query);
     }
 }
 
@@ -52,11 +58,17 @@ export class Expr<
     public constructor (
         usedReferences : UsedReferencesT,
         assert : sd.AssertFunc<TypeT>,
-        query : string
+        originalQuery : string
     ) {
         this.usedReferences = usedReferences;
         this.assertDelegate = sd.toAssertDelegateExact(assert);
-        this.query = `(${query})`;
+        //TODO
+        //These tests introduce more risk that a query will be evaluated incorrectly
+        if (/\s/.test(originalQuery)) {
+            this.query = `(${originalQuery})`;
+        } else {
+            this.query = originalQuery;
+        }
     }
 
     as<AliasT extends string>(alias : AliasT) : d.IColumnExpr<
@@ -74,7 +86,7 @@ export class Expr<
         );
     }
 
-    public querify () {
-        return this.query;
+    public querify (sb : d.IStringBuilder) {
+        sb.append(this.query);
     }
 }

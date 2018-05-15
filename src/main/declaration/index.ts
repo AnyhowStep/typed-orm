@@ -15,6 +15,7 @@ export * from "./querify";
 export * from "./select-as";
 export * from "./select-builder";
 export * from "./select";
+export * from "./IStringBuilder";
 export * from "./table-operation";
 export * from "./table";
 export * from "./tuple";

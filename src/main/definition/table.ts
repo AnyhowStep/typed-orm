@@ -48,8 +48,8 @@ export class Table<
         }
     }
 
-    querify () {
-        return this.query;
+    querify (sb : d.IStringBuilder) {
+        sb.append(this.query);
     }
 
     public as<NewAliasT extends string> (alias : NewAliasT) : d.AliasedTable<NewAliasT, NameT, RawColumnCollectionT> {
