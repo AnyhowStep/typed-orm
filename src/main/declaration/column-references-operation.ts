@@ -1,5 +1,6 @@
 import {ColumnReferences} from "./column-references";
 import {IColumn} from "./column";
+import {ColumnType} from "./column-operation";
 
 export type Union<T> = (T[keyof T]);
 export type ColumnOfReferencesInner<ColumnReferencesT extends ColumnReferences> = ({
@@ -68,5 +69,11 @@ export type ToPartialColumnReferences<ColumnReferencesT extends ColumnReferences
 export type PartialToColumnReferences<PartialT extends ColumnReferences> = {
     [table in keyof PartialT] : {
         [column in keyof PartialT[table]] : Exclude<PartialT[table][column], undefined>
+    }
+}
+
+export type ColumnReferencesToSchema<ColumnReferencesT extends ColumnReferences> = {
+    [table in keyof ColumnReferencesT] : {
+        [column in keyof ColumnReferencesT[table]] : ColumnType<ColumnReferencesT[table][column]>
     }
 }

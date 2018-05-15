@@ -45,7 +45,6 @@ export class SubSelectJoinTable<
             throw new Error(`selectTuple has duplicate names`);
         }
 
-
         this.alias = alias;
         this.name  = alias;
         this.columns = joinableSelectTupleToColumnCollection(

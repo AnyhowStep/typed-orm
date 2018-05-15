@@ -28,8 +28,14 @@ function booleanBinaryOp (operator : string) {
     return result;
 }
 
-export const TRUE = new Expr({}, sd.oneOf(true), "TRUE");
-export const FALSE = new Expr({}, sd.oneOf(false), "FALSE");
+export const TRUE = new Expr({}, (name : string, mixed : any) => {
+    const b = sd.numberToBoolean()(name, mixed);
+    return sd.oneOf(true)(name, b);
+}, "TRUE");
+export const FALSE = new Expr({}, (name : string, mixed : any) => {
+    const b = sd.numberToBoolean()(name, mixed);
+    return sd.oneOf(false)(name, b);
+}, "FALSE");
 export const and = booleanBinaryOp("AND");
 export const or = booleanBinaryOp("OR");
 export const xor = booleanBinaryOp("XOR");

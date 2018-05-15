@@ -4,16 +4,20 @@ import {tableToReference} from "./table-operation";
 import * as tuple from "./tuple";
 import {spread, check} from "@anyhowstep/type-util";
 import {getJoinFrom, getJoinTo, toNullableJoinTuple} from "./join";
-import {toNullableColumnReferences, replaceColumnOfReference, combineReferences} from "./column-references-operation";
+import {toNullableColumnReferences, replaceColumnOfReference, combineReferences, columnReferencesToSchema} from "./column-references-operation";
 import {and} from "./expr-logical";
 import {isNull, isNotNull, eq} from "./expr-comparison";
 import {Column} from "./column";
 import {replaceColumnOfSelectTuple, selectTupleHasDuplicateColumn, selectTupleToReferences} from "./select";
 import {SubSelectJoinTable} from "./sub-select-join-table";
 import {ColumnExpr, Expr} from "./expr";
-import {Database} from "typed-mysql";
+import {Database} from "./Database";
+import {StringBuilder} from "./StringBuilder";
+import * as e from "./expr-library";
+import * as mysql from "typed-mysql";
 
 export interface ExtraSelectBuilderData {
+    readonly db : Database;
     readonly narrowExpr? : d.IExpr<any, boolean>;
     readonly whereExpr? : d.IExpr<any, boolean>;
     readonly havingExpr? : d.IExpr<any, boolean>;
@@ -326,7 +330,8 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                     allowed : this.enableOperation([
                         d.SelectBuilderOperation.WIDEN,
                         d.SelectBuilderOperation.UNION,
-                        d.SelectBuilderOperation.AS
+                        d.SelectBuilderOperation.AS,
+                        d.SelectBuilderOperation.FETCH,
                     ]),
                     selectReferences : combineReferences(
                         this.data.selectReferences,
@@ -979,10 +984,198 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         }
         return sb.toString();
     }
+
+    //FETCH CLAUSE
+    private schema : sd.AssertDelegate<d.ColumnReferencesToSchema<DataT["selectReferences"]>>|undefined = undefined;
+    private getSchema () {
+        if (this.schema == undefined) {
+            this.schema = columnReferencesToSchema<DataT["selectReferences"]>(this.data.selectReferences);
+        }
+        return this.schema;
+    }
+    private readonly processRow = (row : any) => {
+        const result = {} as any;
+        for (let mangledName in row) {
+            const names  = mangledName.split("--");
+            const table  = names[0];
+            const column = names[1];
+            if (result[table] == undefined) {
+                result[table] = {};
+            }
+            result[table][column] = row[mangledName];
+        }
+        return this.getSchema()("row", result)
+    };
+    private getQuery () {
+        const sb = new StringBuilder();
+        this.querify(sb);
+        return sb.toString();
+    }
+    fetchAll () {
+        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        return this.extraData.db.selectAny(this.getQuery())
+            .then((raw) => {
+                return Promise.all(raw.rows.map(this.processRow));
+            }) as any;
+    }
+    fetchOne () {
+        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        return this.extraData.db.selectAny(this.getQuery())
+            .then((raw) => {
+                if (raw.rows.length != 1) {
+                    throw new Error(`Expected 1 row, received ${raw.rows.length}`);
+                }
+                return this.processRow(raw.rows[0]);
+            }) as any;
+    }
+    fetchZeroOrOne () {
+        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        return this.extraData.db.selectAny(this.getQuery())
+            .then((raw) => {
+                if (raw.rows.length > 1) {
+                    throw new Error(`Expected zero or one rows, received ${raw.rows.length}`);
+                }
+                if (raw.rows.length == 0) {
+                    return undefined;
+                } else {
+                    return this.processRow(raw.rows[0]);
+                }
+            }) as any;
+    }
+    fetchValue () {
+        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        return this.extraData.db.selectAny(this.getQuery())
+            .then((raw) => {
+                if (raw.rows.length != 1) {
+                    throw new Error(`Expected 1 row, received ${raw.rows.length}`);
+                }
+                if (raw.fields.length != 1) {
+                    throw new Error(`Expected 1 field, received ${raw.fields.length}`);
+                }
+                const row = this.processRow(raw.rows[0]);
+                const names = raw.fields[0].name.split("--");
+                return row[names[0]][names[1]];
+            }) as any;
+    }
+    fetchValueOrUndefined () {
+        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        return this.extraData.db.selectAny(this.getQuery())
+            .then((raw) => {
+                if (raw.rows.length == 0) {
+                    return undefined;
+                }
+
+                if (raw.rows.length > 1) {
+                    throw new Error(`Expected zero or one row, received ${raw.rows.length}`);
+                }
+                if (raw.fields.length != 1) {
+                    throw new Error(`Expected 1 field, received ${raw.fields.length}`);
+                }
+                const row = this.processRow(raw.rows[0]);
+                const names = raw.fields[0].name.split("--");
+                return row[names[0]][names[1]];
+            }) as any;
+    }
+    fetchValueArray () {
+        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        return this.extraData.db.selectAny(this.getQuery())
+            .then((raw) => {
+                if (raw.fields.length != 1) {
+                    throw new Error(`Expected 1 field, received ${raw.fields.length}`);
+                }
+                const names  = raw.fields[0].name.split("--");
+                const table  = names[0];
+                const column = names[1];
+
+                return Promise.all(raw.rows
+                    .map(this.processRow)
+                    .map(row => row[table][column])
+                );
+            }) as any;
+    }
+    count () : Promise<number> {
+        if (this.data.unionLimit != undefined) {
+            return this.unsetUnionLimit()
+                .count();
+        }
+        if (this.data.limit != undefined && this.extraData.union == undefined) {
+            return this.unsetLimit()
+                .count();
+        }
+        //We should now have one of the following,
+        //+ (SELECT ...)
+        //+ (SELECT ... LIMIT) UNION (SELECT ...)
+        //+ (SELECT ...) UNION (SELECT ...)
+        //+ (... FROM ...); If count() is called before select()
+
+        if (this.data.selectTuple == undefined) {
+            //We have not called select() yet
+            return this.select(() => [e.COUNT_ALL.as("count")])
+                .fetchValue();
+        } else {
+            //Already called select
+            return this.extraData.db.getNaturalNumber(`
+                SELECT
+                    COUNT(*) AS count
+                FROM
+                    (${this.getQuery()}) AS tmp
+            `);
+        }
+    }
+    paginate (rawPaginationArgs : d.RawPaginationArgs={}) {
+        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+
+        const paginationArgs = mysql.toPaginationArgs(
+            rawPaginationArgs,
+            this.extraData.db.getPaginationConfiguration()
+        );
+
+        return this.count()
+            .then((itemsFound) => {
+                const pagesFound = (
+                    Math.floor(itemsFound/paginationArgs.itemsPerPage) +
+                    (
+                        (itemsFound%paginationArgs.itemsPerPage == 0) ?
+                            0 : 1
+                    )
+                );
+                if (this.extraData.union == undefined) {
+                    return this
+                        .limit(paginationArgs.itemsPerPage)
+                        .offset(mysql.getPaginationStart(paginationArgs))
+                        .fetchAll()
+                        .then((rows : any[]) => {
+                            return {
+                                info : {
+                                    itemsFound : itemsFound,
+                                    pagesFound : pagesFound,
+                                    ...paginationArgs,
+                                },
+                                rows : rows,
+                            };
+                        });
+                } else {
+                    return this
+                        .unionLimit(paginationArgs.itemsPerPage)
+                        .unionOffset(mysql.getPaginationStart(paginationArgs))
+                        .fetchAll()
+                        .then((rows : any[]) => {
+                            return {
+                                info : {
+                                    itemsFound : itemsFound,
+                                    pagesFound : pagesFound,
+                                    ...paginationArgs,
+                                },
+                                rows : rows,
+                            };
+                        });
+                }
+            }) as any;
+    }
 }
 
-export const from : d.CreateSelectBuilderDelegate = (
-    <TableT extends d.AnyAliasedTable> (table : TableT) => {
+export function newCreateSelectBuilderDelegate (db : Database) : d.CreateSelectBuilderDelegate {
+    return <TableT extends d.AnyAliasedTable> (table : TableT) => {
         return new SelectBuilder({
             allowed : [
                 d.SelectBuilderOperation.JOIN,
@@ -1017,6 +1210,8 @@ export const from : d.CreateSelectBuilderDelegate = (
             limit : undefined,
             unionOrderByTuple : undefined,
             unionLimit : undefined,
-        }, {});
+        }, {
+            db : db,
+        });
     }
-);
+}

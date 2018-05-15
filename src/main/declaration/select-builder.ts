@@ -13,7 +13,7 @@ import {Tuple, TuplePush, TupleConcat} from "./tuple";
 import {AliasedTable, AnyAliasedTable} from "./aliased-table";
 import {IColumn, AnyColumn} from "./column";
 import {TableAlias, TableToReference} from "./table-operation";
-import {ToNullableColumnReferences, ReplaceColumnOfReference} from "./column-references-operation";
+import {ToNullableColumnReferences, ReplaceColumnOfReference, ColumnReferencesToSchema} from "./column-references-operation";
 import {TypeNarrowCallback} from "./type-narrow";
 import {WhereCallback} from "./where";
 import {
@@ -27,13 +27,28 @@ import {GroupByCallback, AnyGroupByTupleElement} from "./group-by";
 import {HavingCallback} from "./having";
 import {OrderByCallback, AnyOrderByTupleElement} from "./order-by";
 import {TypeWidenCallback} from "./widen";
-import {SelectTupleToType} from "./union";
+import {SelectTupleToType, SelectTupleElementType} from "./union";
 import {
     JoinableSelectTupleElement,
     JoinableSelectTupleToRawColumnCollection,
     JoinableSelectTupleHasDuplicateColumnName
 } from "./select-as";
 import {Querify} from "./querify";
+
+export interface RawPaginationArgs {
+    page? : number|null|undefined;
+    itemsPerPage? : number|null|undefined;
+}
+export interface PaginateInfo {
+    itemsFound : number,
+    pagesFound : number,
+    page : number,
+    itemsPerPage : number,
+}
+export interface PaginateResult<T> {
+    info : PaginateInfo,
+    rows : T[],
+}
 
 export enum SelectBuilderOperation {
     JOIN = "JOIN",
@@ -55,6 +70,8 @@ export enum SelectBuilderOperation {
     UNION_OFFSET = "UNION_OFFSET",
 
     AS = "AS",
+    //After SELECT
+    FETCH = "FETCH",
 }
 
 export type DisableOperation<DataT extends AnySelectBuilderData, OperationT extends SelectBuilderOperation> = (
@@ -455,7 +472,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     "Duplicate columns found in SELECT, consider aliasing"|void|never
                 ) :
                 ISelectBuilder<{
-                    allowed : EnableOperation<DataT, SelectBuilderOperation.WIDEN|SelectBuilderOperation.UNION|SelectBuilderOperation.AS>,
+                    allowed : EnableOperation<DataT, SelectBuilderOperation.WIDEN|SelectBuilderOperation.UNION|SelectBuilderOperation.AS|SelectBuilderOperation.FETCH>,
                     columnReferences : DataT["columnReferences"],
                     joins : DataT["joins"],
                     selectReferences : (
@@ -1071,6 +1088,64 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 ) :
                 "Cannot use tables in SELECT clause when aliasing"|void|never
     );
+
+    //FETCH CLAUSE
+    fetchAll () : (
+        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
+            ("Cannot FETCH here"|void|never) :
+            Promise<ColumnReferencesToSchema<DataT["selectReferences"]>[]>
+    );
+    fetchOne () : (
+        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
+            ("Cannot FETCH here"|void|never) :
+            Promise<ColumnReferencesToSchema<DataT["selectReferences"]>>
+    );
+    fetchZeroOrOne () : (
+        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
+            ("Cannot FETCH here"|void|never) :
+            Promise<ColumnReferencesToSchema<DataT["selectReferences"]>|undefined>
+    );
+    fetchValue () : (
+        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
+            ("Cannot FETCH here"|void|never) :
+            DataT["selectTuple"] extends (
+                Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> &
+                { length : 1 }
+            ) ?
+                Promise<SelectTupleElementType<DataT["selectTuple"][0]>> :
+                ("You can only fetchValue() if selecting one column"|void|never)
+    );
+    fetchValueOrUndefined () : (
+        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
+            ("Cannot FETCH here"|void|never) :
+            DataT["selectTuple"] extends (
+                Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> &
+                { length : 1 }
+            ) ?
+                Promise<SelectTupleElementType<DataT["selectTuple"][0]>|undefined> :
+                ("You can only fetchValueOrUndefined() if selecting one column"|void|never)
+    );
+    fetchValueArray () : (
+        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
+            ("Cannot FETCH here"|void|never) :
+            DataT["selectTuple"] extends (
+                Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> &
+                { length : 1 }
+            ) ?
+                Promise<SelectTupleElementType<DataT["selectTuple"][0]>[]> :
+                ("You can only fetchValueArray() if selecting one column"|void|never)
+    );
+    //TODO May not always work if GROUP BY, HAVING clauses use a select-expression,
+    //TODO May not work as intended with UNION selects
+    //Maybe just unset UNION LIMIT, or LIMIT
+    count () : Promise<number>;
+
+    //Uses count() internally
+    paginate (paginationArgs? : RawPaginationArgs) : (
+        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
+            ("Cannot FETCH here"|void|never) :
+            Promise<PaginateResult<ColumnReferencesToSchema<DataT["selectReferences"]>>>
+    );
 }
 
 export type AnySelectBuilder = ISelectBuilder<any>;
@@ -1143,6 +1218,9 @@ export type CreateSelectBuilderDelegate = (
 
                 //After SELECT
                 //SelectBuilderOperation.AS
+
+                //After SELECT
+                //SelectBuilderOperation.FETCH
             )[],
             columnReferences : TableToReference<TableT>,
             joins : [Join<"FROM", TableT, false>],

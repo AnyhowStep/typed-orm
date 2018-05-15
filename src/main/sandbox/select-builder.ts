@@ -1,6 +1,6 @@
 import * as d from "../definition";
 import * as sd from "schema-decorator";
-import * as mysql from "typed-mysql";
+//import * as mysql from "typed-mysql";
 
 const ssoClient = d.table(
     "ssoClient",
@@ -73,7 +73,7 @@ async function foo () {
     const mysqlUsername = "payment-admin";
     const mysqlPassword = "Y9dIMNcoXwaMRyxk";
 
-    const db = new mysql.Database({
+    const db = new d.Database({
         host     : "localhost",
         database : "payment-prototype-00",
         user     : mysqlUsername,
@@ -82,20 +82,20 @@ async function foo () {
     await db.connect();
     await db.utcOnly();
 
-    d.from(app)
+    db.from(app)
         .select(c => [
             c.app.appId,
             d.TRUE.as("something")
         ])
-    d.from(app)
+    db.from(app)
         .select(c => [
             c.app.appId,
             d.TRUE.as("something")
         ])
         .as("subsubqueryTable")
-    d.from(app)
+    db.from(app)
         .join(
-            d.from(app)
+            db.from(app)
                 .select(c => [
                     c.app.appId,
                     d.TRUE.as("something")
@@ -110,7 +110,7 @@ async function foo () {
             //d.toExpr("Hello, world, SELECT * FROM app; TEST 'new string' \\\'").as("hello"),
             c.subsubqueryTable.something.as("test")
         ])
-    const f = d.from(app)
+    const f = db.from(app)
         .join(
             appKey,
             c => [c.app.appId],
@@ -121,11 +121,11 @@ async function foo () {
             c => [c.app.ssoClientId],
             t => [t.ssoClientId])
         .join(
-            d.from(app)
+            db.from(app)
                 .join(
-                    d.from(app)
+                    db.from(app)
                         .join(
-                            d.from(app)
+                            db.from(app)
                                 .select(c => [
                                     c.app.appId,
                                     d.TRUE.as("something")
@@ -196,7 +196,7 @@ async function foo () {
         .widen(s => s.app.ssoApiKey, sd.nil())
         .widen(s => s.ssoClient.ssoClientId, sd.string())
         .union(
-            d.from(app)
+            db.from(app)
                 .select((s) => {
                     return [
                         s.app,
@@ -206,7 +206,7 @@ async function foo () {
                 })
         )
         .union(
-            d.from(app)
+            db.from(app)
                 .select((s) => {
                     return [
                         s.app,
@@ -232,9 +232,9 @@ async function foo () {
             result
         })
     f.data*/
-    d.from(app)
+    db.from(app)
         .join(
-            d.from(appKey)
+            db.from(appKey)
                 .select(c => [c.appKey.key, c.appKey.appId, d.TRUE.as("a")])
                 .as("other"),
             c => [c.app.appId],
@@ -244,14 +244,37 @@ async function foo () {
             return d.lt(1, 100);
         })
     console.log("---");
-    const sb = new d.StringBuilder();
+    console.log(await f.count());
+    console.log(JSON.stringify(await f.paginate({
+        itemsPerPage : 4,
+        page : 0,
+    })));
+    console.log(await db.from(app).limit(1).count());
+    /*const sb = new d.StringBuilder();
     f.querify(sb);
     const query = sb.toString();
     console.log(query);
     //f.data.selectReferences;
+    const schema = d.columnReferencesToSchema(f.data.selectReferences);
+
     db.selectAny(query).then((result) => {
-        console.log(result)
-    })
+        console.log(result);
+        const processed : any[] = [];
+        for (let row of result.rows) {
+            const obj = {} as any;
+            for (let mangledName in row) {
+                const names = mangledName.split("--");
+                const table = names[0];
+                const column = names[1];
+                if (obj[table] == undefined) {
+                    obj[table] = {};
+                }
+                obj[table][column] = row[mangledName];
+            }
+            processed.push(schema("obj", obj));
+        }
+        console.log(processed);
+    });
 
     /*db.getRawConnection().query(
         {

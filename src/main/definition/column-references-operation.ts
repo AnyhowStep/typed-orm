@@ -119,3 +119,20 @@ export function combineReferences<
     }
     return result;
 }
+
+export function columnReferencesToSchema<
+    ColumnReferencesT extends d.ColumnReferences
+> (columnReferences : ColumnReferencesT) : (
+    sd.AssertDelegate<d.ColumnReferencesToSchema<ColumnReferencesT>>
+) {
+    const result = {} as any;
+    for (let table in columnReferences) {
+        const fields = {} as any;
+        for (let column in columnReferences[table]) {
+            const c = columnReferences[table][column];
+            fields[c.name] = c.assertDelegate;
+        }
+        result[table] = sd.toSchema(fields);
+    }
+    return sd.toSchema(result) as any;
+}
