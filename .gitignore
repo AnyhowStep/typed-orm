@@ -1,1 +1,3 @@
 node_modules
+dist/src/main/sandbox/*
+src/main/sandbox/*

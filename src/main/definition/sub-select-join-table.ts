@@ -8,7 +8,7 @@ import {
 //import {toColumnCollection} from "./column-collection";
 import {Database} from "typed-mysql";
 
-type SelectBuilderToRawColumnReferences<SelectBuilderT extends d.AnySelectBuilder> = (
+export type SelectBuilderToRawColumnReferences<SelectBuilderT extends d.AnySelectBuilder> = (
     SelectBuilderT extends d.ISelectBuilder<infer DataT> ?
         (
             DataT["selectTuple"] extends d.Tuple<d.JoinableSelectTupleElement<DataT["columnReferences"]>> ?

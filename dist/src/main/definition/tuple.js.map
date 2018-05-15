@@ -1,0 +1,1 @@
+{"version":3,"file":"tuple.js","sourceRoot":"","sources":["../../../../src/main/definition/tuple.ts"],"names":[],"mappings":";;AAEA,cACI,KAAc,EACd,OAAe;IAEf,MAAM,MAAM,GAAG,KAAK,CAAC,KAAK,EAAE,CAAC;IAC7B,MAAM,CAAC,IAAI,CAAC,OAAO,CAAC,CAAC;IACrB,OAAO,MAAa,CAAC;AACzB,CAAC;AAPD,oBAOC;AAED,gBAII,CAAK,EAAE,CAAK;IAEZ,OAAO,CAAC,CAAC,MAAM,CAAC,CAAC,CAAQ,CAAC;AAC9B,CAAC;AAPD,wBAOC"}

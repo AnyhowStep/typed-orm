@@ -3,10 +3,10 @@ import * as d from "../declaration";
 export function tableToReference<TableT extends d.AnyAliasedTable> (
     table : TableT
 ) : d.TableToReference<TableT> {
-    const columns : d.TableToReference<TableT>[TableT["alias"]] = {} as any;
+    const columns = {} as any;
     for (let name in table.columns) {
         if (table.columns.hasOwnProperty(name)) {
-            columns[name] = table.columns[name];
+            columns[name] = (table.columns as any)[name];
         }
     }
     //Some day, we will have REAL string-literal types.
