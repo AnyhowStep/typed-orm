@@ -26,8 +26,8 @@ export declare type ToNullableJoinTuple<TupleT extends Tuple<AnyJoin>> = (TupleT
 export declare type JoinFromTupleCallback<ColumnReferencesT extends ColumnReferences, TupleT extends Tuple<ColumnOfReferences<ColumnReferencesT>>> = (TupleT | ((columnReferences: ColumnReferencesT) => TupleT));
 export declare type JoinFromTupleOfCallback<JoinFromTupleCallbackT extends JoinFromTupleCallback<any, Tuple<AnyColumn>>> = (JoinFromTupleCallbackT extends Tuple<AnyColumn> ? JoinFromTupleCallbackT : JoinFromTupleCallbackT extends (...args: any[]) => infer TupleT ? TupleT : ("Invalid JoinFromTupleCallbackT or could not infer TupleT" | void | never));
 export declare type JoinToColumn<TableT extends AnyAliasedTable, FromColumnT extends AnyColumn> = ({
-    [name in keyof TableColumns<TableT>]: (IColumn<TableAlias<TableT>, name, ColumnType<FromColumnT> | null>);
-}[keyof TableColumns<TableT>]);
+    [name in Extract<keyof TableColumns<TableT>, string>]: (IColumn<TableAlias<TableT>, name, ColumnType<FromColumnT> | null>);
+}[Extract<keyof TableColumns<TableT>, string>]);
 export declare type JoinToTuple<TableT extends AnyAliasedTable, FromColumnsT extends Tuple<AnyColumn>> = (FromColumnsT[TupleKeys<FromColumnsT>] extends AnyColumn ? ({
     [k in TupleKeys<FromColumnsT>]: (FromColumnsT[k] extends AnyColumn ? JoinToColumn<TableT, FromColumnsT[k]> : never);
 } & {

@@ -2,7 +2,8 @@ import { Add, Subtract, StringToNumber, NumberToString } from "./math";
 export declare type Tuple<T> = T[] & {
     "0": T;
 };
-export declare type TupleKeys<TupleT extends Tuple<any>> = Exclude<keyof TupleT, keyof any[]>;
+export declare type TupleKeys<TupleT extends Tuple<any>> = Exclude<keyof TupleT, //Extract<keyof TupleT, string>,
+keyof any[]>;
 export declare type TupleLength<TupleT extends Tuple<any>> = (TupleT extends {
     "20": any;
 } ? 21 : TupleT extends {
@@ -142,7 +143,7 @@ export declare type TuplePush<TupleT extends Tuple<any>, NextT> = (TupleT extend
 export declare type TupleConcat<T extends Tuple<any>, U extends Tuple<any>> = ({
     [index in TupleKeys<T>]: T[index];
 } & {
-    [newIndex in NumberToString<Add<StringToNumber<TupleKeys<U>>, T["length"]>>]: U[Subtract<StringToNumber<newIndex>, T["length"]>];
+    [newIndex in NumberToString<Add<StringToNumber<Extract<TupleKeys<U>, string>>, T["length"]>>]: U[Subtract<StringToNumber<newIndex>, T["length"]>];
 } & {
     length: Add<T["length"], U["length"]>;
 } & {

@@ -5,7 +5,7 @@ export declare class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderDat
     readonly db: Database;
     constructor(data: DataT, db: Database);
     ignore(ignore?: boolean): any;
-    private validateRow(row);
+    private validateRow;
     value(row: d.RawInsertRow<DataT["table"]>): any;
     values(rows: d.RawInsertRow<DataT["table"]>[]): any;
     querify(sb: d.IStringBuilder): void;

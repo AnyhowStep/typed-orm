@@ -18,5 +18,5 @@ export declare enum Unit {
     DAY_SECOND = "DAY_SECOND",
     DAY_MINUTE = "DAY_MINUTE",
     DAY_HOUR = "DAY_HOUR",
-    YEAR_MONTH = "YEAR_MONTH",
+    YEAR_MONTH = "YEAR_MONTH"
 }

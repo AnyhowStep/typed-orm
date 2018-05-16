@@ -7,12 +7,12 @@ import { Querify } from "../querify";
 export declare type RawInsertRow<TableT extends ITable<any, any, any, any>> = (TableT extends ITable<infer AliasT, infer NameT, infer RawColumnCollectionT, infer DataT> ? ({
     [name in Exclude<keyof RawColumnCollectionT, keyof DataT["hasServerDefaultValue"]>]: RawExprNoUsedRef<TypeOf<RawColumnCollectionT[name]>>;
 } & {
-    [name in keyof DataT["hasServerDefaultValue"]]?: (RawExprNoUsedRef<TypeOf<RawColumnCollectionT[name]>> | undefined);
+    [name in Extract<keyof DataT["hasServerDefaultValue"], string>]?: (RawExprNoUsedRef<TypeOf<RawColumnCollectionT[name]>> | undefined);
 }) : (never));
 export declare type InsertRow<TableT extends ITable<any, any, any, any>> = (TableT extends ITable<infer AliasT, infer NameT, infer RawColumnCollectionT, infer DataT> ? ({
     [name in Exclude<keyof RawColumnCollectionT, keyof DataT["hasServerDefaultValue"]>]: IExpr<{}, TypeOf<RawColumnCollectionT[name]>>;
 } & {
-    [name in keyof DataT["hasServerDefaultValue"]]?: (IExpr<{}, TypeOf<RawColumnCollectionT[name]>> | undefined);
+    [name in Extract<keyof DataT["hasServerDefaultValue"], string>]?: (IExpr<{}, TypeOf<RawColumnCollectionT[name]>> | undefined);
 }) : (never));
 export interface AnyInsertValueBuilderData {
     readonly table: ITable<any, any, any, any>;

@@ -49,7 +49,7 @@ export declare enum SelectBuilderOperation {
     UNION_LIMIT = "UNION_LIMIT",
     UNION_OFFSET = "UNION_OFFSET",
     AS = "AS",
-    FETCH = "FETCH",
+    FETCH = "FETCH"
 }
 export declare type DisableOperation<DataT extends AnySelectBuilderData, OperationT extends SelectBuilderOperation> = (DataT["allowed"] extends Array<infer AllowedT> ? (AllowedT extends SelectBuilderOperation ? (Exclude<AllowedT, OperationT>[]) : (never)) : (never));
 export declare type EnableOperation<DataT extends AnySelectBuilderData, OperationT extends SelectBuilderOperation> = (DataT["allowed"] extends Array<infer AllowedT> ? (AllowedT extends SelectBuilderOperation ? (AllowedT | OperationT)[] : (never)) : (never));

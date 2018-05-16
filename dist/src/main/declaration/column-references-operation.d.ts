@@ -13,8 +13,8 @@ export declare type ColumnOfReferences<ColumnReferencesT extends ColumnReference
     };
 }["data"]["data"]);
 export declare type ToNullableColumnReferences<ColumnReferencesT extends ColumnReferences> = ({
-    [table in keyof ColumnReferencesT]: {
-        [column in keyof ColumnReferencesT[table]]: (ColumnReferencesT[table][column] extends IColumn<any, any, infer TypeT> ? (IColumn<table, column, TypeT | null>) : (("Invalid ColumnT or could not infer TypeT of ColumnT" & table & column) & never & void));
+    [table in Extract<keyof ColumnReferencesT, string>]: {
+        [column in Extract<keyof ColumnReferencesT[table], string>]: (ColumnReferencesT[table][column] extends IColumn<any, any, infer TypeT> ? (IColumn<table, column, TypeT | null>) : (("Invalid ColumnT or could not infer TypeT of ColumnT" & table & column) & never & void));
     };
 });
 export declare type ReplaceColumnOfReference<ColumnReferencesT extends ColumnReferences, TableNameT extends string, NameT extends string, NewTypeT> = ({

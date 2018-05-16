@@ -5,10 +5,10 @@ export declare type TableName<TableT extends AnyAliasedTable> = (TableT extends 
 export declare type TableColumns<TableT extends AnyAliasedTable> = (TableT extends ITable<any, any, infer Columns, any> ? Columns : TableT extends AliasedTable<any, any, infer Columns> ? Columns : never);
 export declare type TableToReference<TableT extends AnyAliasedTable> = (TableT extends ITable<any, any, infer ColumnsT, any> ? {
     [alias in TableAlias<TableT>]: {
-        [name in keyof ColumnsT]: TableT["columns"][name];
+        [name in Extract<keyof ColumnsT, string>]: TableT["columns"][name];
     };
 } : TableT extends AliasedTable<any, any, infer ColumnsT> ? {
     [alias in TableAlias<TableT>]: {
-        [name in keyof ColumnsT]: TableT["columns"][name];
+        [name in Extract<keyof ColumnsT, string>]: TableT["columns"][name];
     };
 } : never);
