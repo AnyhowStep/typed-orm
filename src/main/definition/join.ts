@@ -14,7 +14,7 @@ export function getJoinFrom<
 export function getJoinTo<
     ToTableT extends d.AnyAliasedTable,
     JoinToTupleCallbackT extends d.JoinToTupleCallback<ToTableT, d.Tuple<d.AnyColumn>>
-> (table : ToTableT, callback : JoinToTupleCallbackT) : d.JoinToTupleOfCallback<JoinToTupleCallbackT> {
+> (table : ToTableT, callback : JoinToTupleCallbackT) : any {//HACK d.JoinToTupleOfCallback<JoinToTupleCallbackT> {
     if (callback instanceof Array) {
         return callback as any;
     } else {

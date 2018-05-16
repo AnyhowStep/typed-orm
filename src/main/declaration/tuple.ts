@@ -2,7 +2,10 @@
 import {Add, Subtract, StringToNumber, NumberToString} from "./math";
 
 export type Tuple<T> = T[] & { "0" : T };
-export type TupleKeys<TupleT extends Tuple<any>> = Exclude<keyof TupleT, keyof any[]>;
+export type TupleKeys<TupleT extends Tuple<any>> = Exclude<
+    keyof TupleT,//Extract<keyof TupleT, string>,
+    keyof any[]
+>;
 //TODO Find a better way to do this
 /*
 function gen (max) {
@@ -258,7 +261,7 @@ export type TupleConcat<
     } &
     {
         [newIndex in NumberToString<Add<
-            StringToNumber<TupleKeys<U>>,
+            StringToNumber<Extract<TupleKeys<U>, string>>,
             T["length"]
         >>]: U[Subtract<StringToNumber<newIndex>, T["length"]>]
     } &

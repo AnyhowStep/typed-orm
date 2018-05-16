@@ -14,7 +14,7 @@ export declare type RawColumnCollection = {
 };
 
 export type ColumnCollection<AliasT extends string, RawColumnCollectionT extends RawColumnCollection> = {
-    [name in keyof RawColumnCollectionT] : IColumn<AliasT, name, TypeOf<RawColumnCollectionT[name]>>
+    [name in Extract<keyof RawColumnCollectionT, string>] : IColumn<AliasT, name, TypeOf<RawColumnCollectionT[name]>>
 };
 export type AnyColumnCollection = ColumnCollection<any, {}>;
 export type ColumnCollectionElement<ColumnCollectionT extends AnyColumnCollection> = (

@@ -21,8 +21,8 @@ export type ColumnOfReferences<ColumnReferencesT extends ColumnReferences> = (
 );
 export type ToNullableColumnReferences<ColumnReferencesT extends ColumnReferences> = (
     {
-        [table in keyof ColumnReferencesT] : {
-            [column in keyof ColumnReferencesT[table]] : (
+        [table in Extract<keyof ColumnReferencesT, string>] : {
+            [column in Extract<keyof ColumnReferencesT[table], string>] : (
                 ColumnReferencesT[table][column] extends IColumn<any, any, infer TypeT> ?
                     (
                         IColumn<table, column, TypeT|null>

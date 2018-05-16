@@ -27,13 +27,13 @@ export type TableToReference<TableT extends AnyAliasedTable> = (
     TableT extends ITable<any, any, infer ColumnsT, any> ?
     {
         [alias in TableAlias<TableT>] : {
-            [name in keyof ColumnsT] : TableT["columns"][name]
+            [name in Extract<keyof ColumnsT, string>] : TableT["columns"][name]
         }
     } :
     TableT extends AliasedTable<any, any, infer ColumnsT> ?
     {
         [alias in TableAlias<TableT>] : {
-            [name in keyof ColumnsT] : TableT["columns"][name]
+            [name in Extract<keyof ColumnsT, string>] : TableT["columns"][name]
         }
     } :
     never

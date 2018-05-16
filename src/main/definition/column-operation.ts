@@ -22,7 +22,7 @@ export function nullableColumnNames<RawColumnCollectionT extends d.RawColumnColl
     for (let name in columns) {
         if (columns.hasOwnProperty(name)) {
             try {
-                columns[name].assertDelegate("test-null", null)
+                (columns as any)[name].assertDelegate("test-null", null)
                 result.push(name);
             } catch (_err) {
                 //Do nothing

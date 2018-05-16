@@ -58,13 +58,13 @@ export class Table<
             this.name,
             this.columns,
             this.data
-        );
+        ) as any;
     }
     assertIsOwnColumn (name : string, other : d.AnyColumn) {
         if (other.table != this.alias) {
             throw new Error(`Expected ${name}.table to be ${this.alias}, received ${other.table}`);
         }
-        const column = this.columns[other.name];
+        const column = (this.columns as any)[other.name];
         if (column == undefined) {
             throw new Error(`Table ${this.alias} has no such column ${other.name} of ${name}`);
         }
@@ -144,5 +144,5 @@ export const table : d.CreateTableDelegate = <
             autoIncrement : undefined,
             hasServerDefaultValue : nullableToHasServerDefaultValue(columns),
         }
-    );
+    ) as any;
 };

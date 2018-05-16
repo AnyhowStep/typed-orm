@@ -1,6 +1,6 @@
 {
   "name": "typed-orm",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A strongly typed MySQL ORM",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",
@@ -14,14 +14,14 @@
   "license": "ISC",
   "dependencies": {
     "@anyhowstep/type-util": "^1.9.1",
-    "enum-util": "^1.4.0",
-    "schema-decorator": "^1.31.0",
+    "enum-util": "^1.5.1",
+    "schema-decorator": "^1.32.1",
     "type-util": "^0.1.5",
     "typed-mysql": "^1.9.1"
   },
   "devDependencies": {
     "@types/node": "^10.0.4",
     "ts-node": "^6.0.3",
-    "typescript": "^2.8.3"
+    "typescript": "^2.9.0-dev.20180516"
   }
 }

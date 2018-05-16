@@ -93,14 +93,14 @@ export type JoinToColumn<
     FromColumnT extends AnyColumn
 > = (
     {
-        [name in keyof TableColumns<TableT>] : (
+        [name in Extract<keyof TableColumns<TableT>, string>] : (
             IColumn<
                 TableAlias<TableT>,
                 name,
                 ColumnType<FromColumnT>|null
             >
         )
-    }[keyof TableColumns<TableT>]
+    }[Extract<keyof TableColumns<TableT>, string>]
     //IColumn<TableAlias<TableT>, keyof TableColumns<TableT>, ColumnType<FromColumnT>|null>
 );
 

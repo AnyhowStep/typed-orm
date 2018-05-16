@@ -15,7 +15,7 @@ export type RawInsertRow<TableT extends ITable<any, any, any, any>> = (
                 >] : RawExprNoUsedRef<TypeOf<RawColumnCollectionT[name]>>
             } &
             {
-                [name in keyof DataT["hasServerDefaultValue"]]? : (
+                [name in Extract<keyof DataT["hasServerDefaultValue"], string>]? : (
                     RawExprNoUsedRef<TypeOf<RawColumnCollectionT[name]>>|undefined
                 )
             }
@@ -33,7 +33,7 @@ export type InsertRow<TableT extends ITable<any, any, any, any>> = (
                 >] : IExpr<{}, TypeOf<RawColumnCollectionT[name]>>
             } &
             {
-                [name in keyof DataT["hasServerDefaultValue"]]? : (
+                [name in Extract<keyof DataT["hasServerDefaultValue"], string>]? : (
                     IExpr<{}, TypeOf<RawColumnCollectionT[name]>>|undefined
                 )
             }
