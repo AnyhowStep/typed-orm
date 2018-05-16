@@ -5,6 +5,7 @@ export * from "./column-operation";
 export * from "./column-references-operation";
 export * from "./column";
 export * from "./Database";
+export * from "./EqualityBuilder";
 export * from "./expr-comparison";
 export * from "./expr-factory";
 export * from "./expr-library";

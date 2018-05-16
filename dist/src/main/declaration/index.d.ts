@@ -9,6 +9,7 @@ export * from "./expr-operation";
 export * from "./expr";
 export * from "./group-by";
 export * from "./having";
+export * from "./IEqualityBuilder";
 export * from "./join";
 export * from "./math";
 export * from "./order-by";

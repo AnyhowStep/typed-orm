@@ -9,6 +9,7 @@ __export(require("./column-operation"));
 __export(require("./column-references-operation"));
 __export(require("./column"));
 __export(require("./Database"));
+__export(require("./EqualityBuilder"));
 __export(require("./expr-comparison"));
 __export(require("./expr-factory"));
 __export(require("./expr-library"));
