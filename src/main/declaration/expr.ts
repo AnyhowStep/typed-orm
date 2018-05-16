@@ -90,7 +90,7 @@ export type SelectBuilderValueQuery<TypeT> = ISelectBuilder<{
 export type AllowedExprConstants = number|string|boolean|Date|null|undefined;
 export type RawExpr<TypeT> = (
     (
-        //TODO `undefined` constant should be mapped to `null`
+        //TODO `undefined` constant should be mapped to `null`, maybe; unsure
         TypeT extends AllowedExprConstants ?
             TypeT :
             never
@@ -101,7 +101,7 @@ export type RawExpr<TypeT> = (
 );
 export type RawExprNoUsedRef<TypeT> = (
     (
-        //TODO `undefined` constant should be mapped to `null`
+        //TODO `undefined` constant should be mapped to `null`, maybe; unsure
         TypeT extends AllowedExprConstants ?
             TypeT :
             never

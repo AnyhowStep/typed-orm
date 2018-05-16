@@ -1,10 +1,11 @@
-/*import * as d from "../../declaration";
+import * as d from "../../declaration";
 import {Database} from "../Database";
 import {spread} from "@anyhowstep/type-util";
 import {querify} from "../expr-operation";
 import {StringBuilder} from "../StringBuilder";
+import {Column} from "../column";
 
-export class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderData> implements d.IInsertValueBuilder<DataT> {
+export class InsertSelectBuilder<DataT extends d.AnyInsertSelectBuilderData> implements d.IInsertSelectBuilder<DataT> {
     readonly data : DataT;
     readonly db : Database;
 
@@ -14,7 +15,7 @@ export class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderData> imple
     }
 
     ignore (ignore : boolean=true) {
-        return new InsertValueBuilder(
+        return new InsertSelectBuilder(
             spread(
                 this.data,
                 {
@@ -25,62 +26,39 @@ export class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderData> imple
         ) as any;
     }
 
-    private validateRow (row : d.RawInsertRow<DataT["table"]>) {
+    columns<InsertColumnsCallbackT extends d.InsertColumnsCallback<DataT>> (
+        columnsCallback : InsertColumnsCallbackT
+    ) : d.IInsertSelectBuilder<{
+        table : DataT["table"];
+        selectBuilder : DataT["selectBuilder"];
+        ignore : DataT["ignore"];
+        columns : ReturnType<InsertColumnsCallbackT>;
+    }> {
+        const columns = columnsCallback(this.data.selectBuilder.data.selectReferences);
         for (let name in this.data.table.columns) {
-            if (this.data.table.columns.hasOwnProperty(name)) {
-                const value = row[name];
-                if (value === undefined) {
-                    if (!this.data.table.data.hasServerDefaultValue.hasOwnProperty(name)) {
-                        throw new Error(`Expected a value for column ${name}; received undefined`);
-                    }
-                } else {
-                    if (!(value instanceof Object) || (value instanceof Date)) {
-                        row[name] = this.data.table.columns[name].assertDelegate(
-                            name,
-                            value
-                        ) as any;
-                    }
-                }
+            if (
+                this.data.table.columns.hasOwnProperty(name) &&
+                columns[name] === undefined &&
+                !this.data.table.data.hasServerDefaultValue.hasOwnProperty(name)
+            ) {
+                throw new Error(`Expected a value for column ${name}; received undefined`);
             }
         }
+        return new InsertSelectBuilder(spread(
+            this.data,
+            {
+                columns : columns,
+            }
+        ), this.db) as any;
     }
-
-    value (row : d.RawInsertRow<DataT["table"]>) {
-        this.validateRow(row);
-
-        return new InsertValueBuilder(
-            spread(
-                this.data,
-                {
-                    values : (this.data.values == undefined) ?
-                        [row] :
-                        this.data.values.concat(row)
-                }
-            ),
-            this.db
-        ) as any;
-    }
-    values (rows : d.RawInsertRow<DataT["table"]>[]) {
-        for (let row of rows) {
-            this.validateRow(row);
-        }
-
-        return new InsertValueBuilder(
-            spread(
-                this.data,
-                {
-                    values : (this.data.values == undefined) ?
-                        rows.slice() :
-                        this.data.values.concat(rows)
-                }
-            ),
-            this.db
-        ) as any;
-    };
 
     querify (sb : d.IStringBuilder) {
-        const columnNames = Object.keys(this.data.table.columns)
-            .filter(name => this.data.table.columns.hasOwnProperty(name));
+        if (this.data.columns == undefined) {
+            throw new Error(`Call columns() first`);
+        }
+        const columns = this.data.columns;
+        const columnNames = Object.keys(columns)
+            .filter(name => columns.hasOwnProperty(name));
 
         sb.append("INSERT");
         if (this.data.ignore) {
@@ -98,7 +76,23 @@ export class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderData> imple
             })
             .append(")");
         });
-        sb.appendLine("VALUES");
+        sb.appendLine("SELECT");
+        sb.scope((sb) => {
+            sb.map(columnNames, (sb, name) => {
+                const raw = columns[name];
+                if (raw instanceof Column) {
+                    raw.querify(sb);
+                } else {
+                    sb.append(querify(raw));
+                }
+            }, ",\n")
+        });
+        sb.appendLine("FROM (");
+        sb.scope((sb) => {
+            this.data.selectBuilder.querify(sb);
+        })
+        sb.append(") AS `tmp`")
+        /*sb.appendLine("VALUES");
         sb.scope((sb) => {
             if (this.data.values != undefined) {
                 sb.map(this.data.values, (sb, values) => {
@@ -119,7 +113,7 @@ export class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderData> imple
                     sb.append(")");
                 }, ",\n");
             }
-        });
+        });*/
     }
 
     getQuery () {
@@ -129,10 +123,13 @@ export class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderData> imple
     }
 
     execute (
-        this : InsertValueBuilder<{
+        this : InsertSelectBuilder<{
             table : any,
+            selectBuilder : any,
             ignore : any,
-            values : any[],
+            columns : {
+                [name : string] : d.AnyColumn
+            },
         }>
     ) {
         return new Promise((resolve, reject) => {
@@ -171,4 +168,3 @@ export class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderData> imple
         }) as any;
     };
 }
-*/

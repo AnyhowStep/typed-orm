@@ -1,10 +1,26 @@
 import * as d from "../declaration";
 import * as mysql from "typed-mysql";
 import {newCreateSelectBuilderDelegate} from "./select-builder";
-import {InsertValueBuilder} from "./insert";
+import {InsertSelectBuilder, InsertValueBuilder} from "./insert";
 
 export class Database extends mysql.Database {
     readonly from : d.CreateSelectBuilderDelegate = newCreateSelectBuilderDelegate(this);
+    readonly insertSelectInto : d.CreateInsertSelectBuilderDelegate = (
+        <
+            TableT extends d.ITable<any, any, any, any>,
+            SelectBuilderT extends d.AnySelectBuilder
+        > (
+            table : TableT,
+            selectBuilder : SelectBuilderT
+        ) => {
+            return new InsertSelectBuilder({
+                table : table,
+                selectBuilder : selectBuilder,
+                ignore : false,
+                columns : undefined,
+            }, this);
+        }
+    );
     readonly insertValueInto : d.CreateInsertValueBuilderDelegate = (
         <TableT extends d.ITable<any, any, any, any>> (table : TableT) => {
             return new InsertValueBuilder({

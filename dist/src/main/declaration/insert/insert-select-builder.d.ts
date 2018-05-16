@@ -5,20 +5,21 @@ import { TypeOf } from "../column-collection";
 import { ColumnOfReferences } from "../column-references-operation";
 import * as mysql from "typed-mysql";
 import { Querify } from "../querify";
-export interface AnyInsertBuilderData {
+import { AllowedExprConstants } from "../expr";
+export interface AnyInsertSelectBuilderData {
     readonly table: ITable<any, any, any, any>;
     readonly selectBuilder: AnySelectBuilder;
     readonly ignore: boolean;
     readonly columns: undefined | {
-        [name: string]: AnyColumn;
+        [name: string]: AnyColumn | AllowedExprConstants;
     };
 }
-export declare type InsertColumnsCallback<DataT extends AnyInsertBuilderData> = (DataT["table"] extends ITable<any, any, infer RawColumnCollectionT, infer TableDataT> ? (DataT["selectBuilder"] extends ISelectBuilder<infer SelectDataT> ? (s: SelectDataT["selectReferences"]) => ({
-    [name in Exclude<keyof RawColumnCollectionT, keyof TableDataT["hasServerDefaultValue"]>]: (ColumnOfReferences<SelectDataT["selectReferences"]> & IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>);
+export declare type InsertColumnsCallback<DataT extends AnyInsertSelectBuilderData> = (DataT["table"] extends ITable<any, any, infer RawColumnCollectionT, infer TableDataT> ? (DataT["selectBuilder"] extends ISelectBuilder<infer SelectDataT> ? (s: SelectDataT["selectReferences"]) => ({
+    [name in Exclude<keyof RawColumnCollectionT, keyof TableDataT["hasServerDefaultValue"]>]: ((ColumnOfReferences<SelectDataT["selectReferences"]> & IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>) | (TypeOf<RawColumnCollectionT[name]>));
 } & {
-    [name in keyof TableDataT["hasServerDefaultValue"]]?: (ColumnOfReferences<SelectDataT["selectReferences"]> & IColumn<any, any, TypeOf<RawColumnCollectionT[name]>> | undefined);
+    [name in keyof TableDataT["hasServerDefaultValue"]]?: ((ColumnOfReferences<SelectDataT["selectReferences"]> & IColumn<any, any, TypeOf<RawColumnCollectionT[name]>> | undefined) | (TypeOf<RawColumnCollectionT[name]> | undefined));
 }) : (never)) : (never));
-export interface IInsertSelectBuilder<DataT extends AnyInsertBuilderData> extends Querify {
+export interface IInsertSelectBuilder<DataT extends AnyInsertSelectBuilderData> extends Querify {
     readonly data: DataT;
     ignore(): IInsertSelectBuilder<{
         table: DataT["table"];
@@ -43,7 +44,7 @@ export interface IInsertSelectBuilder<DataT extends AnyInsertBuilderData> extend
         selectBuilder: any;
         ignore: any;
         columns: {
-            [name: string]: AnyColumn;
+            [name: string]: AnyColumn | AllowedExprConstants;
         };
     }>): (DataT["table"] extends ITable<any, any, any, infer TableDataT> ? (mysql.MysqlInsertResult & (TableDataT["autoIncrement"] extends AnyColumn ? {
         [name in TableDataT["autoIncrement"]["name"]]: (DataT["ignore"] extends true ? number | undefined : number);

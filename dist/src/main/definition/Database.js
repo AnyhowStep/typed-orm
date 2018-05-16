@@ -7,6 +7,14 @@ class Database extends mysql.Database {
     constructor() {
         super(...arguments);
         this.from = select_builder_1.newCreateSelectBuilderDelegate(this);
+        this.insertSelectInto = ((table, selectBuilder) => {
+            return new insert_1.InsertSelectBuilder({
+                table: table,
+                selectBuilder: selectBuilder,
+                ignore: false,
+                columns: undefined,
+            }, this);
+        });
         this.insertValueInto = ((table) => {
             return new insert_1.InsertValueBuilder({
                 table: table,

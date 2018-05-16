@@ -1,105 +1,74 @@
 "use strict";
-/*import * as d from "../../declaration";
-import {Database} from "../Database";
-import {spread} from "@anyhowstep/type-util";
-import {querify} from "../expr-operation";
-import {StringBuilder} from "../StringBuilder";
-
-export class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderData> implements d.IInsertValueBuilder<DataT> {
-    readonly data : DataT;
-    readonly db : Database;
-
-    public constructor (data : DataT, db : Database) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const Database_1 = require("../Database");
+const type_util_1 = require("@anyhowstep/type-util");
+const expr_operation_1 = require("../expr-operation");
+const StringBuilder_1 = require("../StringBuilder");
+const column_1 = require("../column");
+class InsertSelectBuilder {
+    constructor(data, db) {
         this.data = data;
         this.db = db;
     }
-
-    ignore (ignore : boolean=true) {
-        return new InsertValueBuilder(
-            spread(
-                this.data,
-                {
-                    ignore : ignore
-                }
-            ),
-            this.db
-        ) as any;
+    ignore(ignore = true) {
+        return new InsertSelectBuilder(type_util_1.spread(this.data, {
+            ignore: ignore
+        }), this.db);
     }
-
-    private validateRow (row : d.RawInsertRow<DataT["table"]>) {
+    columns(columnsCallback) {
+        const columns = columnsCallback(this.data.selectBuilder.data.selectReferences);
         for (let name in this.data.table.columns) {
-            if (this.data.table.columns.hasOwnProperty(name)) {
-                const value = row[name];
-                if (value === undefined) {
-                    if (!this.data.table.data.hasServerDefaultValue.hasOwnProperty(name)) {
-                        throw new Error(`Expected a value for column ${name}; received undefined`);
-                    }
-                } else {
-                    if (!(value instanceof Object) || (value instanceof Date)) {
-                        row[name] = this.data.table.columns[name].assertDelegate(
-                            name,
-                            value
-                        ) as any;
-                    }
-                }
+            if (this.data.table.columns.hasOwnProperty(name) &&
+                columns[name] === undefined &&
+                !this.data.table.data.hasServerDefaultValue.hasOwnProperty(name)) {
+                throw new Error(`Expected a value for column ${name}; received undefined`);
             }
         }
+        return new InsertSelectBuilder(type_util_1.spread(this.data, {
+            columns: columns,
+        }), this.db);
     }
-
-    value (row : d.RawInsertRow<DataT["table"]>) {
-        this.validateRow(row);
-
-        return new InsertValueBuilder(
-            spread(
-                this.data,
-                {
-                    values : (this.data.values == undefined) ?
-                        [row] :
-                        this.data.values.concat(row)
-                }
-            ),
-            this.db
-        ) as any;
-    }
-    values (rows : d.RawInsertRow<DataT["table"]>[]) {
-        for (let row of rows) {
-            this.validateRow(row);
+    querify(sb) {
+        if (this.data.columns == undefined) {
+            throw new Error(`Call columns() first`);
         }
-
-        return new InsertValueBuilder(
-            spread(
-                this.data,
-                {
-                    values : (this.data.values == undefined) ?
-                        rows.slice() :
-                        this.data.values.concat(rows)
-                }
-            ),
-            this.db
-        ) as any;
-    };
-
-    querify (sb : d.IStringBuilder) {
-        const columnNames = Object.keys(this.data.table.columns)
-            .filter(name => this.data.table.columns.hasOwnProperty(name));
-
+        const columns = this.data.columns;
+        const columnNames = Object.keys(columns)
+            .filter(name => columns.hasOwnProperty(name));
         sb.append("INSERT");
         if (this.data.ignore) {
             sb.append(" IGNORE");
         }
         sb.appendLine(" INTO");
         sb.scope((sb) => {
-            sb.append(Database.EscapeId(this.data.table.name))
-            .appendLine(" (")
-            .scope((sb) => {
+            sb.append(Database_1.Database.EscapeId(this.data.table.name))
+                .appendLine(" (")
+                .scope((sb) => {
                 //column names
                 sb.map(columnNames, (sb, name) => {
-                    sb.append(Database.EscapeId(name));
-                }, ",\n")
+                    sb.append(Database_1.Database.EscapeId(name));
+                }, ",\n");
             })
-            .append(")");
+                .append(")");
         });
-        sb.appendLine("VALUES");
+        sb.appendLine("SELECT");
+        sb.scope((sb) => {
+            sb.map(columnNames, (sb, name) => {
+                const raw = columns[name];
+                if (raw instanceof column_1.Column) {
+                    raw.querify(sb);
+                }
+                else {
+                    sb.append(expr_operation_1.querify(raw));
+                }
+            }, ",\n");
+        });
+        sb.appendLine("FROM (");
+        sb.scope((sb) => {
+            this.data.selectBuilder.querify(sb);
+        });
+        sb.append(") AS `tmp`");
+        /*sb.appendLine("VALUES");
         sb.scope((sb) => {
             if (this.data.values != undefined) {
                 sb.map(this.data.values, (sb, values) => {
@@ -120,57 +89,43 @@ export class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderData> imple
                     sb.append(")");
                 }, ",\n");
             }
-        });
+        });*/
     }
-
-    getQuery () {
-        const sb = new StringBuilder();
+    getQuery() {
+        const sb = new StringBuilder_1.StringBuilder();
         this.querify(sb);
         return sb.toString();
     }
-
-    execute (
-        this : InsertValueBuilder<{
-            table : any,
-            ignore : any,
-            values : any[],
-        }>
-    ) {
+    execute() {
         return new Promise((resolve, reject) => {
-            this.db.rawQuery(
-                this.getQuery(),
-                undefined,
-                (err, result, _fields) => {
-                    if (err == undefined) {
-                        if (result == undefined) {
-                            reject(new Error(`Expected a result`))
-                        } else {
-                            if (this.data.table.data.autoIncrement == undefined) {
-                                resolve({
-                                    ...result,
-                                });
-                            } else {
-                                if (result.insertId == 0) {
-                                    if (!this.data.ignore) {
-                                        throw new Error(`Expected to INSERT a new row, received zero for insertId`);
-                                    }
-                                }
-                                resolve({
-                                    ...result,
-                                    [this.data.table.data.autoIncrement.name] : (result.insertId == 0) ?
-                                        undefined :
-                                        result.insertId,
-                                });
-                            }
-
+            this.db.rawQuery(this.getQuery(), undefined, (err, result, _fields) => {
+                if (err == undefined) {
+                    if (result == undefined) {
+                        reject(new Error(`Expected a result`));
+                    }
+                    else {
+                        if (this.data.table.data.autoIncrement == undefined) {
+                            resolve(Object.assign({}, result));
                         }
-                    } else {
-                        reject(err);
+                        else {
+                            if (result.insertId == 0) {
+                                if (!this.data.ignore) {
+                                    throw new Error(`Expected to INSERT a new row, received zero for insertId`);
+                                }
+                            }
+                            resolve(Object.assign({}, result, { [this.data.table.data.autoIncrement.name]: (result.insertId == 0) ?
+                                    undefined :
+                                    result.insertId }));
+                        }
                     }
                 }
-            );
-        }) as any;
-    };
+                else {
+                    reject(err);
+                }
+            });
+        });
+    }
+    ;
 }
-*/
+exports.InsertSelectBuilder = InsertSelectBuilder;
 //# sourceMappingURL=insert-select-builder.js.map

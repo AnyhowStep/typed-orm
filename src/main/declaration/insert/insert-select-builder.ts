@@ -5,13 +5,14 @@ import {TypeOf} from "../column-collection";
 import {ColumnOfReferences} from "../column-references-operation";
 import * as mysql from "typed-mysql";
 import {Querify} from "../querify";
+import {AllowedExprConstants} from "../expr";
 
-export interface AnyInsertBuilderData {
+export interface AnyInsertSelectBuilderData {
     readonly table : ITable<any, any, any, any>;
     readonly selectBuilder : AnySelectBuilder;
     readonly ignore : boolean;
     readonly columns : undefined|{
-        [name : string] : AnyColumn
+        [name : string] : AnyColumn|AllowedExprConstants
     };
 
     //TODO Not implementing until I understand it well enough
@@ -20,7 +21,7 @@ export interface AnyInsertBuilderData {
     };*/
 }
 
-export type InsertColumnsCallback<DataT extends AnyInsertBuilderData> = (
+export type InsertColumnsCallback<DataT extends AnyInsertSelectBuilderData> = (
     DataT["table"] extends ITable<any, any, infer RawColumnCollectionT, infer TableDataT> ?
         (
             DataT["selectBuilder"] extends ISelectBuilder<infer SelectDataT> ?
@@ -29,15 +30,25 @@ export type InsertColumnsCallback<DataT extends AnyInsertBuilderData> = (
                         [name in Exclude<
                             keyof RawColumnCollectionT,
                             keyof TableDataT["hasServerDefaultValue"]
-                            >] : (
-                            ColumnOfReferences<SelectDataT["selectReferences"]> &
-                            IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>
+                        >] : (
+                            (
+                                ColumnOfReferences<SelectDataT["selectReferences"]> &
+                                IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>
+                            ) |
+                            (
+                                TypeOf<RawColumnCollectionT[name]>
+                            )
                         )
                     } &
                     {
                         [name in keyof TableDataT["hasServerDefaultValue"]]? : (
-                            ColumnOfReferences<SelectDataT["selectReferences"]> &
-                            IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>|undefined
+                            (
+                                ColumnOfReferences<SelectDataT["selectReferences"]> &
+                                IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>|undefined
+                            ) |
+                            (
+                                TypeOf<RawColumnCollectionT[name]>|undefined
+                            )
                         )
                     }
                 ) :
@@ -46,7 +57,7 @@ export type InsertColumnsCallback<DataT extends AnyInsertBuilderData> = (
         (never)
 )
 
-export interface IInsertSelectBuilder<DataT extends AnyInsertBuilderData> extends Querify {
+export interface IInsertSelectBuilder<DataT extends AnyInsertSelectBuilderData> extends Querify {
     readonly data : DataT;
 
     ignore () : IInsertSelectBuilder<{
@@ -77,7 +88,7 @@ export interface IInsertSelectBuilder<DataT extends AnyInsertBuilderData> extend
             selectBuilder : any,
             ignore : any,
             columns : {
-                [name : string] : AnyColumn
+                [name : string] : AnyColumn|AllowedExprConstants
             },
         }>
     ) : (
