@@ -1,3 +1,5 @@
+export * from "./insert";
+
 export * from "./aliased-table";
 export * from "./column-collection";
 export * from "./column-operation";

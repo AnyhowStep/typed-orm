@@ -111,7 +111,7 @@ function querify(raw) {
     if (raw instanceof select_builder_1.SelectBuilder) {
         const sb = new StringBuilder_1.StringBuilder();
         raw.querify(sb);
-        return sb.toString();
+        return "(" + sb.toString() + ")";
     }
     throw new Error(`Unknown raw expression (${typeof raw})${raw}`);
 }

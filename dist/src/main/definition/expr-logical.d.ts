@@ -6,7 +6,7 @@ export declare const and: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICo
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {
@@ -25,7 +25,7 @@ export declare const and: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICo
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {
@@ -45,7 +45,7 @@ export declare const or: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICol
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {
@@ -64,7 +64,7 @@ export declare const or: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICol
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {
@@ -84,7 +84,7 @@ export declare const xor: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICo
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {
@@ -103,7 +103,7 @@ export declare const xor: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICo
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {

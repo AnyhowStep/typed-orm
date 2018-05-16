@@ -1,3 +1,5 @@
+export * from "./insert";
+
 export * from "./column-collection";
 export * from "./column-operation";
 export * from "./column-references-operation";
@@ -18,4 +20,4 @@ export * from "./StringBuilder";
 export * from "./sub-select-join-table";
 export * from "./table-operation";
 export * from "./table";
-export * from "./tuple";
+//export * from "./tuple";

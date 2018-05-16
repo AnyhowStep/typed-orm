@@ -4,7 +4,7 @@ export declare const lt: <LeftT extends number | d.IColumn<any, any, number> | d
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {
@@ -23,7 +23,7 @@ export declare const lt: <LeftT extends number | d.IColumn<any, any, number> | d
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {
@@ -43,7 +43,7 @@ export declare const gt: <LeftT extends number | d.IColumn<any, any, number> | d
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {
@@ -62,7 +62,7 @@ export declare const gt: <LeftT extends number | d.IColumn<any, any, number> | d
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {
@@ -82,7 +82,7 @@ export declare const ltEq: <LeftT extends number | d.IColumn<any, any, number> |
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {
@@ -101,7 +101,7 @@ export declare const ltEq: <LeftT extends number | d.IColumn<any, any, number> |
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {
@@ -121,7 +121,7 @@ export declare const gtEq: <LeftT extends number | d.IColumn<any, any, number> |
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {
@@ -140,7 +140,7 @@ export declare const gtEq: <LeftT extends number | d.IColumn<any, any, number> |
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: any[] & {
         "0": any;
     } & {

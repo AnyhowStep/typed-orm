@@ -3,6 +3,7 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
+__export(require("./insert"));
 __export(require("./column-collection"));
 __export(require("./column-operation"));
 __export(require("./column-references-operation"));
@@ -23,5 +24,5 @@ __export(require("./StringBuilder"));
 __export(require("./sub-select-join-table"));
 __export(require("./table-operation"));
 __export(require("./table"));
-__export(require("./tuple"));
+//export * from "./tuple";
 //# sourceMappingURL=index.js.map

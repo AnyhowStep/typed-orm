@@ -23,7 +23,7 @@ export declare type SelectBuilderValueQuery<TypeT> = ISelectBuilder<{
     allowed: any;
     columnReferences: any;
     joins: any;
-    selectReferences: {};
+    selectReferences: any;
     selectTuple: (Tuple<ValueQueryTupleElement<any>> & {
         length: 1;
     } & {
