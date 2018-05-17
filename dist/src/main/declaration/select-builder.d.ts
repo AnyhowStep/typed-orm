@@ -107,7 +107,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     leftJoin<ToTableT extends AnyAliasedTable, FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>>(toTable: ToTableT, from: FromTupleT, to: JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>>): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ? ("JOIN clause not allowed here" | void | never) : (TableAlias<ToTableT> extends keyof DataT["columnReferences"] ? ("Duplicate alias" | TableAlias<ToTableT> | void) : (JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ? (ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: (DataT["columnReferences"] & ToNullableColumnReferences<TableToReference<ToTableT>>);
-        joins: (TuplePush<DataT["joins"], Join<"LEFT", ToTableT, ToNullableColumnReferences<TableToReference<ToTableT>>, true>>);
+        joins: (TuplePush<DataT["joins"], Join<"LEFT", ToTableT, TableToReference<ToTableT>, true>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
         distinct: DataT["distinct"];
@@ -149,7 +149,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     leftJoinUsing<ToTableT extends AnyAliasedTable, FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>>(toTable: ToTableT, from: FromTupleT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ? ("JOIN clause not allowed here" | void | never) : (TableAlias<ToTableT> extends keyof DataT["columnReferences"] ? ("Duplicate alias" | TableAlias<ToTableT> | void) : (JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ? (RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ? ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: (DataT["columnReferences"] & ToNullableColumnReferences<TableToReference<ToTableT>>);
-        joins: (TuplePush<DataT["joins"], Join<"LEFT", ToTableT, ToNullableColumnReferences<TableToReference<ToTableT>>, true>>);
+        joins: (TuplePush<DataT["joins"], Join<"LEFT", ToTableT, TableToReference<ToTableT>, true>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
         distinct: DataT["distinct"];

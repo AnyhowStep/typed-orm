@@ -1221,7 +1221,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
                 if (raw.rows.length != 1) {
-                    throw new Error(`Expected 1 row, received ${raw.rows.length}`);
+                    throw new Error(`Expected one result, received ${raw.rows.length}`);
                 }
                 return this.processRow(raw.rows[0]);
             }) as any;
@@ -1231,7 +1231,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
                 if (raw.rows.length > 1) {
-                    throw new Error(`Expected zero or one rows, received ${raw.rows.length}`);
+                    throw new Error(`Expected zero or one result, received ${raw.rows.length}`);
                 }
                 if (raw.rows.length == 0) {
                     return undefined;
@@ -1245,10 +1245,10 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
                 if (raw.rows.length != 1) {
-                    throw new Error(`Expected 1 row, received ${raw.rows.length}`);
+                    throw new Error(`Expected one result, received ${raw.rows.length}`);
                 }
                 if (raw.fields.length != 1) {
-                    throw new Error(`Expected 1 field, received ${raw.fields.length}`);
+                    throw new Error(`Expected one field, received ${raw.fields.length}`);
                 }
                 const row = this.processRow(raw.rows[0]);
                 const names = raw.fields[0].name.split("--");
@@ -1264,10 +1264,10 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                 }
 
                 if (raw.rows.length > 1) {
-                    throw new Error(`Expected zero or one row, received ${raw.rows.length}`);
+                    throw new Error(`Expected zero or one result, received ${raw.rows.length}`);
                 }
                 if (raw.fields.length != 1) {
-                    throw new Error(`Expected 1 field, received ${raw.fields.length}`);
+                    throw new Error(`Expected one field, received ${raw.fields.length}`);
                 }
                 const row = this.processRow(raw.rows[0]);
                 const names = raw.fields[0].name.split("--");
@@ -1279,7 +1279,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
                 if (raw.fields.length != 1) {
-                    throw new Error(`Expected 1 field, received ${raw.fields.length}`);
+                    throw new Error(`Expected one field, received ${raw.fields.length}`);
                 }
                 const names  = raw.fields[0].name.split("--");
                 const table  = names[0];

@@ -269,7 +269,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                             Join<
                                                 "LEFT",
                                                 ToTableT,
-                                                ToNullableColumnReferences<TableToReference<ToTableT>>,
+                                                TableToReference<ToTableT>,
                                                 true
                                             >
                                         >
@@ -420,7 +420,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                                 Join<
                                                     "LEFT",
                                                     ToTableT,
-                                                    ToNullableColumnReferences<TableToReference<ToTableT>>,
+                                                    TableToReference<ToTableT>,
                                                     true
                                                 >
                                             >
