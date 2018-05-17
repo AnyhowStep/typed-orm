@@ -839,6 +839,25 @@ class SelectBuilder {
             `);
         }
     }
+    exists() {
+        if (this.data.selectTuple == undefined) {
+            return this.extraData.db.getBoolean(`
+                SELECT EXISTS (
+                    SELECT
+                        *
+                    FROM
+                        ${this.getQuery()}
+                )
+            `);
+        }
+        else {
+            return this.extraData.db.getBoolean(`
+                SELECT EXISTS (
+                    ${this.getQuery()}
+                )
+            `);
+        }
+    }
     paginate(rawPaginationArgs = {}) {
         this.assertAllowed(d.SelectBuilderOperation.FETCH);
         const paginationArgs = mysql.toPaginationArgs(rawPaginationArgs, this.extraData.db.getPaginationConfiguration());

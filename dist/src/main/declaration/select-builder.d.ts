@@ -634,6 +634,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         length: 1;
     }) ? Promise<SelectTupleElementType<DataT["selectTuple"][0]>[]> : ("You can only fetchValueArray() if selecting one column" | void | never));
     count(): Promise<number>;
+    exists(): Promise<boolean>;
     paginate(paginationArgs?: RawPaginationArgs): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : Promise<PaginateResult<ColumnReferencesToSchema<DataT["selectReferences"]>>>);
 }
 export declare type AnySelectBuilder = ISelectBuilder<any>;

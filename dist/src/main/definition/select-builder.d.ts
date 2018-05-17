@@ -84,6 +84,7 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
     fetchValueOrUndefined(): any;
     fetchValueArray(): any;
     count(): Promise<number>;
+    exists(): Promise<boolean>;
     paginate(rawPaginationArgs?: d.RawPaginationArgs): any;
 }
 export declare function newCreateSelectBuilderDelegate(db: Database): d.CreateSelectBuilderDelegate;
