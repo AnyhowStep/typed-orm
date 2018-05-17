@@ -198,3 +198,13 @@ export const table : d.CreateTableDelegate = <
         }
     ) as any;
 };
+
+export type TableRow <TableT extends d.ITable<any, any, any, any>> = (
+    TableT extends d.ITable<any, any, infer RawColumnCollectionT, any> ?
+        (
+            {
+                [name in keyof RawColumnCollectionT] : d.TypeOf<RawColumnCollectionT[name]>
+            }
+        ) :
+        (never)
+);

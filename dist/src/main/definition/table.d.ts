@@ -15,3 +15,6 @@ export declare class Table<AliasT extends string, NameT extends string, RawColum
     setImmutable(): any;
 }
 export declare const table: d.CreateTableDelegate;
+export declare type TableRow<TableT extends d.ITable<any, any, any, any>> = (TableT extends d.ITable<any, any, infer RawColumnCollectionT, any> ? ({
+    [name in keyof RawColumnCollectionT]: d.TypeOf<RawColumnCollectionT[name]>;
+}) : (never));
