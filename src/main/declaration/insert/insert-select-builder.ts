@@ -32,8 +32,10 @@ export type InsertColumnsCallback<DataT extends AnyInsertSelectBuilderData> = (
                             keyof TableDataT["hasServerDefaultValue"]
                         >] : (
                             (
-                                ColumnOfReferences<SelectDataT["selectReferences"]> &
-                                IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>
+                                Extract<
+                                    ColumnOfReferences<SelectDataT["selectReferences"]>,
+                                    IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>
+                                >
                             ) |
                             (
                                 TypeOf<RawColumnCollectionT[name]>
@@ -43,8 +45,10 @@ export type InsertColumnsCallback<DataT extends AnyInsertSelectBuilderData> = (
                     {
                         [name in Extract<keyof TableDataT["hasServerDefaultValue"], string>]? : (
                             (
-                                ColumnOfReferences<SelectDataT["selectReferences"]> &
-                                IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>|undefined
+                                Extract<
+                                    ColumnOfReferences<SelectDataT["selectReferences"]>,
+                                    IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>
+                                >|undefined
                             ) |
                             (
                                 TypeOf<RawColumnCollectionT[name]>|undefined

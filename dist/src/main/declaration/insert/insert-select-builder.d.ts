@@ -15,9 +15,9 @@ export interface AnyInsertSelectBuilderData {
     };
 }
 export declare type InsertColumnsCallback<DataT extends AnyInsertSelectBuilderData> = (DataT["table"] extends ITable<any, any, infer RawColumnCollectionT, infer TableDataT> ? (DataT["selectBuilder"] extends ISelectBuilder<infer SelectDataT> ? (s: SelectDataT["selectReferences"]) => ({
-    [name in Exclude<keyof RawColumnCollectionT, keyof TableDataT["hasServerDefaultValue"]>]: ((ColumnOfReferences<SelectDataT["selectReferences"]> & IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>) | (TypeOf<RawColumnCollectionT[name]>));
+    [name in Exclude<keyof RawColumnCollectionT, keyof TableDataT["hasServerDefaultValue"]>]: ((Extract<ColumnOfReferences<SelectDataT["selectReferences"]>, IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>>) | (TypeOf<RawColumnCollectionT[name]>));
 } & {
-    [name in Extract<keyof TableDataT["hasServerDefaultValue"], string>]?: (((ColumnOfReferences<SelectDataT["selectReferences"]> & IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>) | undefined) | (TypeOf<RawColumnCollectionT[name]> | undefined));
+    [name in Extract<keyof TableDataT["hasServerDefaultValue"], string>]?: ((Extract<ColumnOfReferences<SelectDataT["selectReferences"]>, IColumn<any, any, TypeOf<RawColumnCollectionT[name]>>> | undefined) | (TypeOf<RawColumnCollectionT[name]> | undefined));
 }) : (never)) : (never));
 export interface IInsertSelectBuilder<DataT extends AnyInsertSelectBuilderData> extends Querify {
     readonly data: DataT;

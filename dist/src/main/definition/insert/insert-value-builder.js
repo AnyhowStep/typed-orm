@@ -15,19 +15,18 @@ class InsertValueBuilder {
         }), this.db);
     }
     validateRow(row) {
-        for (let name in this.data.table.columns) {
-            if (this.data.table.columns.hasOwnProperty(name)) {
-                const value = row[name];
-                if (value === undefined) {
-                    if (!this.data.table.data.hasServerDefaultValue.hasOwnProperty(name)) {
-                        throw new Error(`Expected a value for column ${name}; received undefined`);
-                    }
-                }
-                else {
-                    if (!(value instanceof Object) || (value instanceof Date)) {
-                        row[name] = this.data.table.columns[name].assertDelegate(name, value);
-                    }
-                }
+        const table = this.data.table;
+        for (let name in row) {
+            if (!table.columns.hasOwnProperty(name)) {
+                throw new Error(`Unexpected column ${name}; it does not exist on table ${this.data.table.name}`);
+            }
+            const value = row[name];
+            if (value === undefined && !table.data.hasServerDefaultValue.hasOwnProperty(name)) {
+                throw new Error(`Expected a value for column ${name}; received undefined`);
+            }
+            //If we specify a value, it better match our assertion
+            if (!(value instanceof Object) || (value instanceof Date)) {
+                row[name] = table.columns[name].assertDelegate("name", value);
             }
         }
     }

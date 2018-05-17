@@ -35,13 +35,19 @@ export class InsertSelectBuilder<DataT extends d.AnyInsertSelectBuilderData> imp
         columns : ReturnType<InsertColumnsCallbackT>;
     }> {
         const columns = columnsCallback(this.data.selectBuilder.data.selectReferences);
-        for (let name in this.data.table.columns) {
-            if (
-                this.data.table.columns.hasOwnProperty(name) &&
-                columns[name] === undefined &&
-                !this.data.table.data.hasServerDefaultValue.hasOwnProperty(name)
-            ) {
+        const table = this.data.table;
+
+        for (let name in columns) {
+            if (!table.columns.hasOwnProperty(name)) {
+                throw new Error(`Unexpected column ${name}; it does not exist on table ${this.data.table.name}`);
+            }
+            const value = columns[name];
+            if (value === undefined && !table.data.hasServerDefaultValue.hasOwnProperty(name)) {
                 throw new Error(`Expected a value for column ${name}; received undefined`);
+            }
+            //If we specify a value, it better match our assertion
+            if (!(value instanceof Object) || (value instanceof Date)) {
+                columns[name] = table.columns[name].assertDelegate("name", value);
             }
         }
         return new InsertSelectBuilder(spread(
