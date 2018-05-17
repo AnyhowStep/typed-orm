@@ -36,6 +36,7 @@ export declare type SelectBuilderValueQuery<TypeT> = ISelectBuilder<{
     limit: any;
     unionOrderByTuple: any;
     unionLimit: any;
+    aggregateCallback: any;
 }>;
 export declare type AllowedExprConstants = number | string | boolean | Date | null | undefined;
 export declare type RawExpr<TypeT> = ((TypeT extends AllowedExprConstants ? TypeT : never) | IExpr<any, TypeT> | IColumn<any, any, TypeT> | SelectBuilderValueQuery<TypeT>);

@@ -61,6 +61,7 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
         limit: any;
         unionOrderByTuple: any;
         unionLimit: any;
+        aggregateCallback: any;
     }>>(other: SelectBuilderT): any;
     unionOrderBy<OrderByCallbackT extends d.OrderByCallback<d.ISelectBuilder<DataT>>>(orderByCallback: OrderByCallbackT): any;
     appendUnionOrderBy<OrderByCallbackT extends d.OrderByCallback<d.ISelectBuilder<DataT>>>(orderByCallback: OrderByCallbackT): any;
@@ -70,12 +71,14 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
     unsetUnionLimit(): any;
     as<AliasT extends string>(alias: AliasT): any;
     readonly from: d.CreateSubSelectBuilderDelegate<DataT["columnReferences"]>;
+    aggregate<AggregateCallbackT extends d.AggregateCallback<DataT>>(aggregateCallback: AggregateCallbackT): any;
     querifyColumnReferences(sb: d.IStringBuilder): void;
     querifyWhere(sb: d.IStringBuilder): void;
     querify(sb: d.IStringBuilder): string;
     private schema;
     private getSchema;
     private readonly processRow;
+    private readonly aggregateRow;
     private getQuery;
     fetchAll(): any;
     fetchOne(): any;

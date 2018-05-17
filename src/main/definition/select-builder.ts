@@ -441,6 +441,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                         d.SelectBuilderOperation.UNION,
                         d.SelectBuilderOperation.AS,
                         d.SelectBuilderOperation.FETCH,
+                        d.SelectBuilderOperation.AGGREGATE,
                     ]),
                     selectReferences : combineReferences(
                         this.data.selectReferences,
@@ -470,6 +471,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                         d.SelectBuilderOperation.UNION,
                         d.SelectBuilderOperation.AS,
                         d.SelectBuilderOperation.FETCH,
+                        d.SelectBuilderOperation.AGGREGATE,
                     ]),
                     selectReferences : selectAllReference(this.data.columnReferences),
                     selectTuple : joinTupleToSelectTuple(this.data.joins),
@@ -781,6 +783,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         limit : any,
         unionOrderByTuple : any,
         unionLimit : any,
+        aggregateCallback : any,
     }>> (other : SelectBuilderT) {
         this.assertAllowed(d.SelectBuilderOperation.UNION);
 
@@ -979,12 +982,34 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                 limit : undefined,
                 unionOrderByTuple : undefined,
                 unionLimit : undefined,
+                aggregateCallback : undefined,
             }, {
                 db : this.extraData.db,
             }) as any;
         }
     );
 
+    //AGGREGATE
+    aggregate<AggregateCallbackT extends d.AggregateCallback<DataT>> (
+        aggregateCallback : AggregateCallbackT
+    ) {
+        this.assertAllowed(d.SelectBuilderOperation.AGGREGATE);
+
+        return new SelectBuilder(
+            spread(
+                this.data,
+                {
+                    allowed : this.disableOperation([
+                        d.SelectBuilderOperation.WIDEN
+                    ]),
+                    aggregateCallback : aggregateCallback,
+                }
+            ),
+            this.extraData
+        ) as any;
+    }
+
+    //QUERIFY
     querifyColumnReferences (sb : d.IStringBuilder) {
         sb.scope((sb) => {
             this.data.joins[0].table.querify(sb);
@@ -1204,6 +1229,14 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         }
         return this.getSchema()("row", result)
     };
+    private readonly aggregateRow = (row : any) => {
+        row = this.processRow(row);
+        if (this.data.aggregateCallback == undefined) {
+            return row;
+        } else {
+            return this.data.aggregateCallback(row);
+        }
+    }
     private getQuery () {
         const sb = new StringBuilder();
         this.querify(sb);
@@ -1213,7 +1246,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         this.assertAllowed(d.SelectBuilderOperation.FETCH);
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
-                return Promise.all(raw.rows.map(this.processRow));
+                return Promise.all(raw.rows.map(this.aggregateRow));
             }) as any;
     }
     fetchOne () {
@@ -1223,7 +1256,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                 if (raw.rows.length != 1) {
                     throw new Error(`Expected one result, received ${raw.rows.length}`);
                 }
-                return this.processRow(raw.rows[0]);
+                return this.aggregateRow(raw.rows[0]);
             }) as any;
     }
     fetchZeroOrOne () {
@@ -1236,7 +1269,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                 if (raw.rows.length == 0) {
                     return undefined;
                 } else {
-                    return this.processRow(raw.rows[0]);
+                    return this.aggregateRow(raw.rows[0]);
                 }
             }) as any;
     }
@@ -1428,6 +1461,7 @@ export function newCreateSelectBuilderDelegate (db : Database) : d.CreateSelectB
             limit : undefined,
             unionOrderByTuple : undefined,
             unionLimit : undefined,
+            aggregateCallback : undefined,
         }, {
             db : db,
         });

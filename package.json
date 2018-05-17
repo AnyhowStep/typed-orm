@@ -1,6 +1,6 @@
 {
   "name": "typed-orm",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "A strongly typed MySQL ORM",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",

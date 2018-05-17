@@ -59,6 +59,7 @@ class SelectBuilder {
                 limit: undefined,
                 unionOrderByTuple: undefined,
                 unionLimit: undefined,
+                aggregateCallback: undefined,
             }, {
                 db: this.extraData.db,
             });
@@ -77,6 +78,15 @@ class SelectBuilder {
                 result[table][column] = row[mangledName];
             }
             return this.getSchema()("row", result);
+        };
+        this.aggregateRow = (row) => {
+            row = this.processRow(row);
+            if (this.data.aggregateCallback == undefined) {
+                return row;
+            }
+            else {
+                return this.data.aggregateCallback(row);
+            }
         };
         this.data = data;
         this.extraData = extraData;
@@ -307,6 +317,7 @@ class SelectBuilder {
                 d.SelectBuilderOperation.UNION,
                 d.SelectBuilderOperation.AS,
                 d.SelectBuilderOperation.FETCH,
+                d.SelectBuilderOperation.AGGREGATE,
             ]),
             selectReferences: column_references_operation_1.combineReferences(this.data.selectReferences, 
             //We don't need to convert the entire newTuple to references
@@ -327,6 +338,7 @@ class SelectBuilder {
                 d.SelectBuilderOperation.UNION,
                 d.SelectBuilderOperation.AS,
                 d.SelectBuilderOperation.FETCH,
+                d.SelectBuilderOperation.AGGREGATE,
             ]),
             selectReferences: select_1.selectAllReference(this.data.columnReferences),
             selectTuple: select_1.joinTupleToSelectTuple(this.data.joins),
@@ -561,6 +573,17 @@ class SelectBuilder {
         return new sub_select_join_table_1.SubSelectJoinTable(alias, this);
     }
     ;
+    //AGGREGATE
+    aggregate(aggregateCallback) {
+        this.assertAllowed(d.SelectBuilderOperation.AGGREGATE);
+        return new SelectBuilder(type_util_1.spread(this.data, {
+            allowed: this.disableOperation([
+                d.SelectBuilderOperation.WIDEN
+            ]),
+            aggregateCallback: aggregateCallback,
+        }), this.extraData);
+    }
+    //QUERIFY
     querifyColumnReferences(sb) {
         sb.scope((sb) => {
             this.data.joins[0].table.querify(sb);
@@ -744,7 +767,7 @@ class SelectBuilder {
         this.assertAllowed(d.SelectBuilderOperation.FETCH);
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
-            return Promise.all(raw.rows.map(this.processRow));
+            return Promise.all(raw.rows.map(this.aggregateRow));
         });
     }
     fetchOne() {
@@ -754,7 +777,7 @@ class SelectBuilder {
             if (raw.rows.length != 1) {
                 throw new Error(`Expected one result, received ${raw.rows.length}`);
             }
-            return this.processRow(raw.rows[0]);
+            return this.aggregateRow(raw.rows[0]);
         });
     }
     fetchZeroOrOne() {
@@ -768,7 +791,7 @@ class SelectBuilder {
                 return undefined;
             }
             else {
-                return this.processRow(raw.rows[0]);
+                return this.aggregateRow(raw.rows[0]);
             }
         });
     }
@@ -942,6 +965,7 @@ function newCreateSelectBuilderDelegate(db) {
             limit: undefined,
             unionOrderByTuple: undefined,
             unionLimit: undefined,
+            aggregateCallback: undefined,
         }, {
             db: db,
         });

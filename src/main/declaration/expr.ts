@@ -85,6 +85,7 @@ export type SelectBuilderValueQuery<TypeT> = ISelectBuilder<{
     limit : any,
     unionOrderByTuple : any,
     unionLimit : any,
+    aggregateCallback : any,
 }>;
 
 export type AllowedExprConstants = number|string|boolean|Date|null|undefined;

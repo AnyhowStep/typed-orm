@@ -76,6 +76,9 @@ export enum SelectBuilderOperation {
     AS = "AS",
     //After SELECT
     FETCH = "FETCH",
+
+    //After SELECT, will change the return value of fetchAll(), fetchOne(), fetchZeroOrOne(), paginate()
+    AGGREGATE = "AGGREGATE",
 }
 
 export type DisableOperation<DataT extends AnySelectBuilderData, OperationT extends SelectBuilderOperation> = (
@@ -104,6 +107,28 @@ export interface LimitData {
     readonly offset   : number,
 }
 
+export type AggregateCallback<DataT extends AnySelectBuilderData> = (
+    (
+        row : ColumnReferencesToSchemaWithJoins<
+            DataT["selectReferences"],
+            DataT["joins"]
+        >
+    ) => Promise<any>|any
+);
+
+export type FetchRowResult<DataT extends AnySelectBuilderData> = (
+    DataT["aggregateCallback"] extends ((row : any) => infer R) ?
+        (
+            R extends Promise<infer P> ?
+                P :
+                R
+        ) :
+        ColumnReferencesToSchemaWithJoins<
+            DataT["selectReferences"],
+            DataT["joins"]
+        >
+);
+
 //TODO Maybe have a field where it just stores table data?
 //Right now, it's all in the `joins` field
 export interface AnySelectBuilderData {
@@ -131,6 +156,8 @@ export interface AnySelectBuilderData {
     readonly unionOrderByTuple : undefined|Tuple<AnyOrderByTupleElement>,
 
     readonly unionLimit : undefined|LimitData,
+
+    readonly aggregateCallback : undefined|((row : any) => Promise<any>),
 }
 
 export type IsAllowedSelectBuilderOperation<DataT extends AnySelectBuilderData, OperationT extends SelectBuilderOperation> = (
@@ -185,6 +212,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                     limit : DataT["limit"],
                                     unionOrderByTuple : DataT["unionOrderByTuple"],
                                     unionLimit : DataT["unionLimit"],
+                                    aggregateCallback : DataT["aggregateCallback"],
                                 }>
                             ) :
                             (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
@@ -234,6 +262,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                     limit : DataT["limit"],
                                     unionOrderByTuple : DataT["unionOrderByTuple"],
                                     unionLimit : DataT["unionLimit"],
+                                    aggregateCallback : DataT["aggregateCallback"],
                                 }>
                             ) :
                             (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
@@ -283,6 +312,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                     limit : DataT["limit"],
                                     unionOrderByTuple : DataT["unionOrderByTuple"],
                                     unionLimit : DataT["unionLimit"],
+                                    aggregateCallback : DataT["aggregateCallback"],
                                 }>
                             ) :
                             (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
@@ -334,6 +364,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                         limit : DataT["limit"],
                                         unionOrderByTuple : DataT["unionOrderByTuple"],
                                         unionLimit : DataT["unionLimit"],
+                                        aggregateCallback : DataT["aggregateCallback"],
                                     }> :
                                     ("Cannot JOIN USING; to table is missing columns or types do not match"|void|never)
                             ) :
@@ -384,6 +415,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                         limit : DataT["limit"],
                                         unionOrderByTuple : DataT["unionOrderByTuple"],
                                         unionLimit : DataT["unionLimit"],
+                                        aggregateCallback : DataT["aggregateCallback"],
                                     }> :
                                     ("Cannot RIGHT JOIN USING; to table is missing columns or types do not match"|void|never)
                             ) :
@@ -434,6 +466,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                         limit : DataT["limit"],
                                         unionOrderByTuple : DataT["unionOrderByTuple"],
                                         unionLimit : DataT["unionLimit"],
+                                        aggregateCallback : DataT["aggregateCallback"],
                                     }> :
                                     ("Cannot LEFT JOIN USING; to table is missing columns or types do not match"|void|never)
                             ) :
@@ -487,6 +520,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     limit : DataT["limit"],
                     unionOrderByTuple : DataT["unionOrderByTuple"],
                     unionLimit : DataT["unionLimit"],
+                    aggregateCallback : DataT["aggregateCallback"],
                 }> :
                 ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
@@ -534,6 +568,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     limit : DataT["limit"],
                     unionOrderByTuple : DataT["unionOrderByTuple"],
                     unionLimit : DataT["unionLimit"],
+                    aggregateCallback : DataT["aggregateCallback"],
                 }> :
                 ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
@@ -585,6 +620,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     limit : DataT["limit"],
                     unionOrderByTuple : DataT["unionOrderByTuple"],
                     unionLimit : DataT["unionLimit"],
+                    aggregateCallback : DataT["aggregateCallback"],
                 }> :
                 ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
@@ -609,6 +645,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
     //Appends
@@ -630,6 +667,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
 
@@ -651,7 +689,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     "Duplicate columns found in SELECT, consider aliasing"|void|never
                 ) :
                 ISelectBuilder<{
-                    allowed : EnableOperation<DataT, SelectBuilderOperation.WIDEN|SelectBuilderOperation.UNION|SelectBuilderOperation.AS|SelectBuilderOperation.FETCH>,
+                    allowed : EnableOperation<DataT, SelectBuilderOperation.WIDEN|SelectBuilderOperation.UNION|SelectBuilderOperation.AS|SelectBuilderOperation.FETCH|SelectBuilderOperation.AGGREGATE>,
                     columnReferences : DataT["columnReferences"],
                     joins : DataT["joins"],
                     selectReferences : (
@@ -673,6 +711,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     limit : DataT["limit"],
                     unionOrderByTuple : DataT["unionOrderByTuple"],
                     unionLimit : DataT["unionLimit"],
+                    aggregateCallback : DataT["aggregateCallback"],
                 }>
     );
     selectAll () : (
@@ -681,7 +720,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             (
                 DataT["selectTuple"] extends undefined ?
                     ISelectBuilder<{
-                        allowed : EnableOperation<DataT, SelectBuilderOperation.WIDEN|SelectBuilderOperation.UNION|SelectBuilderOperation.AS|SelectBuilderOperation.FETCH>,
+                        allowed : EnableOperation<DataT, SelectBuilderOperation.WIDEN|SelectBuilderOperation.UNION|SelectBuilderOperation.AS|SelectBuilderOperation.FETCH|SelectBuilderOperation.AGGREGATE>,
                         columnReferences : DataT["columnReferences"],
                         joins : DataT["joins"],
                         selectReferences : DataT["columnReferences"],
@@ -693,6 +732,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                         limit : DataT["limit"],
                         unionOrderByTuple : DataT["unionOrderByTuple"],
                         unionLimit : DataT["unionLimit"],
+                        aggregateCallback : DataT["aggregateCallback"],
                     }> :
                     ("selectAll() must be called before select()"|void|never)
             )
@@ -715,6 +755,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
     distinct<DistinctT extends boolean> (distinct : DistinctT) : (
@@ -733,6 +774,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
 
@@ -753,6 +795,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
     sqlCalcFoundRows<SqlCalcFoundRowsT extends boolean> (sqlCalcFoundRows : SqlCalcFoundRowsT) : (
@@ -771,6 +814,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
 
@@ -794,6 +838,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
     //Appends
@@ -822,6 +867,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
 
@@ -840,6 +886,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             limit : DataT["limit"],
             unionOrderByTuple : DataT["unionOrderByTuple"],
             unionLimit : DataT["unionLimit"],
+            aggregateCallback : DataT["aggregateCallback"],
         }>
     );
 
@@ -862,6 +909,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
     //Appends
@@ -883,6 +931,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
 
@@ -906,6 +955,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
     //Appends
@@ -934,6 +984,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
 
@@ -952,6 +1003,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             limit : DataT["limit"],
             unionOrderByTuple : DataT["unionOrderByTuple"],
             unionLimit : DataT["unionLimit"],
+            aggregateCallback : DataT["aggregateCallback"],
         }>
     );
 
@@ -982,6 +1034,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 ),
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
 
@@ -1012,6 +1065,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 ),
                 unionOrderByTuple : DataT["unionOrderByTuple"],
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
 
@@ -1030,6 +1084,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             limit : undefined,
             unionOrderByTuple : DataT["unionOrderByTuple"],
             unionLimit : DataT["unionLimit"],
+            aggregateCallback : DataT["aggregateCallback"],
         }>
     );
 
@@ -1077,6 +1132,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     limit : DataT["limit"],
                     unionOrderByTuple : DataT["unionOrderByTuple"],
                     unionLimit : DataT["unionLimit"],
+                    aggregateCallback : DataT["aggregateCallback"],
                 }> :
                 ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
@@ -1096,6 +1152,8 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         limit : any,
         unionOrderByTuple : any,
         unionLimit : any,
+        //Has no effect on the query
+        aggregateCallback : any,
     }>> (selectBuilder : SelectBuilderT) : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.UNION> extends never ?
             ("UNION clause not allowed here"|void|never) :
@@ -1120,6 +1178,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                             limit : DataT["limit"],
                                             unionOrderByTuple : DataT["unionOrderByTuple"],
                                             unionLimit : DataT["unionLimit"],
+                                            aggregateCallback : DataT["aggregateCallback"],
                                         }> :
                                         (
                                             "Cannot UNION; SELECT tuples have incompatible types"|
@@ -1156,6 +1215,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 limit : DataT["limit"],
                 unionOrderByTuple : ReturnType<OrderByCallbackT>,
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
     //Appends
@@ -1184,6 +1244,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                         ReturnType<OrderByCallbackT>
                 ),
                 unionLimit : DataT["unionLimit"],
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
 
@@ -1202,6 +1263,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             limit : DataT["limit"],
             unionOrderByTuple : undefined,
             unionLimit : DataT["unionLimit"],
+            aggregateCallback : DataT["aggregateCallback"],
         }>
     );
 
@@ -1232,6 +1294,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                             offset : 0,
                         }
                 ),
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
 
@@ -1262,6 +1325,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                             offset : OffsetT,
                         }
                 ),
+                aggregateCallback : DataT["aggregateCallback"],
             }>
     );
 
@@ -1280,6 +1344,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             limit : DataT["limit"],
             unionOrderByTuple : DataT["unionOrderByTuple"],
             unionLimit : undefined,
+            aggregateCallback : DataT["aggregateCallback"],
         }>
     );
 
@@ -1299,6 +1364,30 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 "Cannot use tables in SELECT clause when aliasing"|void|never
     );
 
+    //AGGREGATE
+    //TODO unsetAggregate(), maybe allow composition of aggregation
+    aggregate<AggregateCallbackT extends AggregateCallback<DataT>> (
+        aggregateCallback : AggregateCallbackT
+    ) : (
+        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AGGREGATE> extends never ?
+            ("AGGREGATE not allowed here"|void|never) :
+            ISelectBuilder<{
+                allowed : DisableOperation<DataT, SelectBuilderOperation.WIDEN>,
+                columnReferences : DataT["columnReferences"],
+                joins : DataT["joins"],
+                selectReferences : DataT["selectReferences"],
+                selectTuple : DataT["selectTuple"],
+                distinct : DataT["distinct"],
+                sqlCalcFoundRows : DataT["sqlCalcFoundRows"],
+                groupByTuple : DataT["groupByTuple"],
+                orderByTuple : DataT["orderByTuple"],
+                limit : DataT["limit"],
+                unionOrderByTuple : DataT["unionOrderByTuple"],
+                unionLimit : DataT["unionLimit"],
+                aggregateCallback : AggregateCallbackT,
+            }>
+    );
+
     //QUERIFY
     querifyColumnReferences (sb : IStringBuilder) : void;
     querifyWhere (sb : IStringBuilder) : void;
@@ -1307,26 +1396,17 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     fetchAll () : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
             ("Cannot FETCH here"|void|never) :
-            Promise<ColumnReferencesToSchemaWithJoins<
-                DataT["selectReferences"],
-                DataT["joins"]
-            >[]>
+            Promise<FetchRowResult<DataT>[]>
     );
     fetchOne () : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
             ("Cannot FETCH here"|void|never) :
-            Promise<ColumnReferencesToSchemaWithJoins<
-                DataT["selectReferences"],
-                DataT["joins"]
-            >>
+            Promise<FetchRowResult<DataT>>
     );
     fetchZeroOrOne () : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
             ("Cannot FETCH here"|void|never) :
-            Promise<ColumnReferencesToSchemaWithJoins<
-                DataT["selectReferences"],
-                DataT["joins"]
-            >|undefined>
+            Promise<FetchRowResult<DataT>|undefined>
     );
     fetchValue () : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
@@ -1370,12 +1450,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
             ("Cannot FETCH here"|void|never) :
             Promise<
-                PaginateResult<
-                    ColumnReferencesToSchemaWithJoins<
-                        DataT["selectReferences"],
-                        DataT["joins"]
-                    >
-                >
+                PaginateResult<FetchRowResult<DataT>>
             >
     );
 }
@@ -1465,6 +1540,7 @@ export type CreateSelectBuilderDelegate = (
             limit : undefined,
             unionOrderByTuple : undefined,
             unionLimit : undefined,
+            aggregateCallback : undefined,
         }>
     )
 );
@@ -1542,6 +1618,9 @@ export type CreateSubSelectBuilderDelegate<ColumnReferencesT extends ColumnRefer
 
                     //After SELECT
                     //SelectBuilderOperation.FETCH
+
+                    //After SELECT
+                    //SelectBuilderOperation.AGGREGATE
                 )[],
                 columnReferences : TableToReference<TableT> & ColumnReferencesT,
                 joins : [Join<"FROM", TableT, TableToReference<TableT>, false>],
@@ -1554,6 +1633,41 @@ export type CreateSubSelectBuilderDelegate<ColumnReferencesT extends ColumnRefer
                 limit : undefined,
                 unionOrderByTuple : undefined,
                 unionLimit : undefined,
+                aggregateCallback : undefined,
             }>
     )
 );
+
+/*
+== Aggregation API ==
+Desired usage:
+
+const query = from(chargePreAuthorization)
+    .leftJoinUsing(
+        chargePreAuthorizationInformation,
+        c => [c.chargePreAuthorization.chargePreAuthorizationId]
+    )
+    .selectAll()
+    .aggregate(async (obj) => {
+        return {
+            ...obj,
+            errors : await from(chargePreAuthorizationError)
+                .whereIsEqual(
+                    obj.chargePreAuthorization.chargePreAuthorizationId,
+                    c => c.chargePreAuthorizationError.chargePreAuthorizationErrorId
+                )
+                .selectAll()
+                .paginate(),
+            methodType : e.toKey(s.MethodType, obj.chargePreAuthorization.methodTypeId),
+        }
+    })
+
+Then,
+query.where(<condition>).fetchAll()
+query.where(<condition>).fetchOne()
+query.where(<condition>).fetchZeroOrOne()
+query.where(<condition>).paginate()
+
+And the document will be the return value of `aggregate`
+
+*/

@@ -21,6 +21,7 @@ export declare const and: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICo
     limit: any;
     unionOrderByTuple: any;
     unionLimit: any;
+    aggregateCallback: any;
 }>, RightT extends boolean | d.IExpr<any, boolean> | d.IColumn<any, any, boolean> | d.ISelectBuilder<{
     allowed: any;
     columnReferences: any;
@@ -40,6 +41,7 @@ export declare const and: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICo
     limit: any;
     unionOrderByTuple: any;
     unionLimit: any;
+    aggregateCallback: any;
 }>>(left: LeftT, right: RightT) => Expr<(LeftT extends d.ISelectBuilder<any> ? {} : LeftT extends d.AllowedExprConstants ? {} : LeftT extends d.IColumn<infer TableNameT, infer NameT, infer TypeT> ? { [table in TableNameT]: { [name in NameT]: d.IColumn<TableNameT, NameT, TypeT>; }; } : LeftT extends d.IExpr<infer UsedColumnsT, any> ? UsedColumnsT : never) & (RightT extends d.ISelectBuilder<any> ? {} : RightT extends d.AllowedExprConstants ? {} : RightT extends d.IColumn<infer TableNameT, infer NameT, infer TypeT> ? { [table in TableNameT]: { [name in NameT]: d.IColumn<TableNameT, NameT, TypeT>; }; } : RightT extends d.IExpr<infer UsedColumnsT, any> ? UsedColumnsT : never), boolean>;
 export declare const or: <LeftT extends boolean | d.IExpr<any, boolean> | d.IColumn<any, any, boolean> | d.ISelectBuilder<{
     allowed: any;
@@ -60,6 +62,7 @@ export declare const or: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICol
     limit: any;
     unionOrderByTuple: any;
     unionLimit: any;
+    aggregateCallback: any;
 }>, RightT extends boolean | d.IExpr<any, boolean> | d.IColumn<any, any, boolean> | d.ISelectBuilder<{
     allowed: any;
     columnReferences: any;
@@ -79,6 +82,7 @@ export declare const or: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICol
     limit: any;
     unionOrderByTuple: any;
     unionLimit: any;
+    aggregateCallback: any;
 }>>(left: LeftT, right: RightT) => Expr<(LeftT extends d.ISelectBuilder<any> ? {} : LeftT extends d.AllowedExprConstants ? {} : LeftT extends d.IColumn<infer TableNameT, infer NameT, infer TypeT> ? { [table in TableNameT]: { [name in NameT]: d.IColumn<TableNameT, NameT, TypeT>; }; } : LeftT extends d.IExpr<infer UsedColumnsT, any> ? UsedColumnsT : never) & (RightT extends d.ISelectBuilder<any> ? {} : RightT extends d.AllowedExprConstants ? {} : RightT extends d.IColumn<infer TableNameT, infer NameT, infer TypeT> ? { [table in TableNameT]: { [name in NameT]: d.IColumn<TableNameT, NameT, TypeT>; }; } : RightT extends d.IExpr<infer UsedColumnsT, any> ? UsedColumnsT : never), boolean>;
 export declare const xor: <LeftT extends boolean | d.IExpr<any, boolean> | d.IColumn<any, any, boolean> | d.ISelectBuilder<{
     allowed: any;
@@ -99,6 +103,7 @@ export declare const xor: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICo
     limit: any;
     unionOrderByTuple: any;
     unionLimit: any;
+    aggregateCallback: any;
 }>, RightT extends boolean | d.IExpr<any, boolean> | d.IColumn<any, any, boolean> | d.ISelectBuilder<{
     allowed: any;
     columnReferences: any;
@@ -118,5 +123,6 @@ export declare const xor: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICo
     limit: any;
     unionOrderByTuple: any;
     unionLimit: any;
+    aggregateCallback: any;
 }>>(left: LeftT, right: RightT) => Expr<(LeftT extends d.ISelectBuilder<any> ? {} : LeftT extends d.AllowedExprConstants ? {} : LeftT extends d.IColumn<infer TableNameT, infer NameT, infer TypeT> ? { [table in TableNameT]: { [name in NameT]: d.IColumn<TableNameT, NameT, TypeT>; }; } : LeftT extends d.IExpr<infer UsedColumnsT, any> ? UsedColumnsT : never) & (RightT extends d.ISelectBuilder<any> ? {} : RightT extends d.AllowedExprConstants ? {} : RightT extends d.IColumn<infer TableNameT, infer NameT, infer TypeT> ? { [table in TableNameT]: { [name in NameT]: d.IColumn<TableNameT, NameT, TypeT>; }; } : RightT extends d.IExpr<infer UsedColumnsT, any> ? UsedColumnsT : never), boolean>;
 export declare function not<RawT extends d.RawExpr<boolean>>(raw: RawT): Expr<d.ExprUsedColumns<RawT>, boolean>;
