@@ -4,6 +4,11 @@ import { TypeOf } from "../column-collection";
 import { AnyColumn } from "../column";
 import * as mysql from "typed-mysql";
 import { Querify } from "../querify";
+export declare type ValueInsertRow<TableT extends ITable<any, any, any, any>> = (TableT extends ITable<infer AliasT, infer NameT, infer RawColumnCollectionT, infer DataT> ? ({
+    [name in Exclude<keyof RawColumnCollectionT, keyof DataT["hasServerDefaultValue"]>]: TypeOf<RawColumnCollectionT[name]>;
+} & {
+    [name in Extract<keyof DataT["hasServerDefaultValue"], string>]?: (TypeOf<RawColumnCollectionT[name]> | undefined);
+}) : (never));
 export declare type RawInsertRow<TableT extends ITable<any, any, any, any>> = (TableT extends ITable<infer AliasT, infer NameT, infer RawColumnCollectionT, infer DataT> ? ({
     [name in Exclude<keyof RawColumnCollectionT, keyof DataT["hasServerDefaultValue"]>]: RawExprNoUsedRef<TypeOf<RawColumnCollectionT[name]>>;
 } & {

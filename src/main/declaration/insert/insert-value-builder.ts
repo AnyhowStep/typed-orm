@@ -5,6 +5,24 @@ import {AnyColumn} from "../column";
 import * as mysql from "typed-mysql";
 import {Querify} from "../querify";
 
+export type ValueInsertRow<TableT extends ITable<any, any, any, any>> = (
+    TableT extends ITable<infer AliasT, infer NameT, infer RawColumnCollectionT, infer DataT> ?
+        (
+            {
+                [name in Exclude<
+                    keyof RawColumnCollectionT,
+                    keyof DataT["hasServerDefaultValue"]
+                >] : TypeOf<RawColumnCollectionT[name]>
+            } &
+            {
+                [name in Extract<keyof DataT["hasServerDefaultValue"], string>]? : (
+                    TypeOf<RawColumnCollectionT[name]>|undefined
+                )
+            }
+        ) :
+        (never)
+);
+
 export type RawInsertRow<TableT extends ITable<any, any, any, any>> = (
     TableT extends ITable<infer AliasT, infer NameT, infer RawColumnCollectionT, infer DataT> ?
         (
