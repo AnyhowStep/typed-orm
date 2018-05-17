@@ -264,8 +264,8 @@ export type NullableJoinTableNames<
 > = (
     {
         [index in TupleKeys<JoinTupleT>] : (
-            JoinTupleT[index] extends Join<any, infer TableNameT, any, true> ?
-                TableNameT :
+            JoinTupleT[index] extends Join<any, infer TableT, any, true> ?
+                TableT["alias"] :
                 never
         )
     }[TupleKeys<JoinTupleT>]

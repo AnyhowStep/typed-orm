@@ -1369,10 +1369,14 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     paginate (paginationArgs? : RawPaginationArgs) : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
             ("Cannot FETCH here"|void|never) :
-            Promise<PaginateResult<ColumnReferencesToSchemaWithJoins<
-                DataT["selectReferences"],
-                DataT["joins"]
-            >>>
+            Promise<
+                PaginateResult<
+                    ColumnReferencesToSchemaWithJoins<
+                        DataT["selectReferences"],
+                        DataT["joins"]
+                    >
+                >
+            >
     );
 }
 

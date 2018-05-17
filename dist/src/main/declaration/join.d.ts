@@ -55,7 +55,7 @@ export declare type ReplaceColumnOfJoinTuple<JoinTupleT extends Tuple<AnyJoin>, 
     "0": ReplaceColumnOfJoin<JoinTupleT[0], TableNameT, NameT, NewTypeT>;
 }) : (never));
 export declare type NullableJoinTableNames<JoinTupleT extends Tuple<AnyJoin>> = ({
-    [index in TupleKeys<JoinTupleT>]: (JoinTupleT[index] extends Join<any, infer TableNameT, any, true> ? TableNameT : never);
+    [index in TupleKeys<JoinTupleT>]: (JoinTupleT[index] extends Join<any, infer TableT, any, true> ? TableT["alias"] : never);
 }[TupleKeys<JoinTupleT>]);
 export declare type ColumnOfJoin<JoinT extends AnyJoin, TableNameT extends string, NameT extends string> = (JoinT["table"]["alias"] extends TableNameT ? (JoinT["columnReferences"][TableNameT][NameT] extends AnyColumn ? JoinT["columnReferences"][TableNameT][NameT] : never) : never);
 export declare type ColumnOfJoinTuple<JoinTupleT extends Tuple<AnyJoin>, TableNameT extends string, NameT extends string> = ({
