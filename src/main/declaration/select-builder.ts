@@ -1321,6 +1321,8 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     //Maybe just unset UNION LIMIT, or LIMIT
     count () : Promise<number>;
 
+    exists () : Promise<boolean>;
+
     //Uses count() internally
     paginate (paginationArgs? : RawPaginationArgs) : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?

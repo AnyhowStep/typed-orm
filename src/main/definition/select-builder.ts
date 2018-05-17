@@ -1301,6 +1301,24 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             `);
         }
     }
+    exists () : Promise<boolean> {
+        if (this.data.selectTuple == undefined) {
+            return this.extraData.db.getBoolean(`
+                SELECT EXISTS (
+                    SELECT
+                        *
+                    FROM
+                        ${this.getQuery()}
+                )
+            `);
+        } else {
+            return this.extraData.db.getBoolean(`
+                SELECT EXISTS (
+                    ${this.getQuery()}
+                )
+            `);
+        }
+    }
     paginate (rawPaginationArgs : d.RawPaginationArgs={}) {
         this.assertAllowed(d.SelectBuilderOperation.FETCH);
 
