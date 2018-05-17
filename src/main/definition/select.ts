@@ -1,7 +1,8 @@
 import * as d from "../declaration";
 import {Column} from "./column";
 import {ColumnExpr} from "./expr";
-import {replaceColumnOfReference} from "./column-references-operation";
+import {replaceColumnOfReference, copyReferences} from "./column-references-operation";
+import {tableToReference} from "./table-operation";
 
 export function replaceColumnOfSelectTuple<
     TupleT extends d.Tuple<d.AnySelectTupleElement>,
@@ -134,4 +135,35 @@ export function selectTupleToReferences<
         }
         return memo;
     }, {} as any);
+}
+
+export function selectAllReference<ColumnReferencesT extends d.ColumnReferences> (
+    columnReferences : ColumnReferencesT
+) {
+    const result = copyReferences(columnReferences);
+    for (let table in result) {
+        for (let name in result[table]) {
+            const element = result[table][name];
+            result[table][name] = new Column(
+                element.table,
+                element.name,
+                element.assertDelegate,
+                undefined,
+                true
+            );
+        }
+    }
+    return result;
+}
+
+export function joinTupleToSelectTuple<
+    JoinTupleT extends d.Tuple<d.Join<any, any, any>>
+> (
+    joinTuple : JoinTupleT
+) : d.JoinTupleToSelectTuple<JoinTupleT> {
+    const result : any[] = [];
+    for (let join of joinTuple) {
+        result.push(tableToReference(join.table)[join.table.alias]);
+    }
+    return result as any;
 }

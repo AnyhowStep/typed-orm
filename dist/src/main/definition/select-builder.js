@@ -307,6 +307,23 @@ class SelectBuilder {
         }), this.extraData);
     }
     ;
+    selectAll() {
+        this.assertAllowed(d.SelectBuilderOperation.SELECT);
+        if (this.data.selectTuple != undefined) {
+            throw new Error("selectAll() must be called before select()");
+        }
+        return new SelectBuilder(type_util_1.spread(this.data, {
+            allowed: this.enableOperation([
+                d.SelectBuilderOperation.WIDEN,
+                d.SelectBuilderOperation.UNION,
+                d.SelectBuilderOperation.AS,
+                d.SelectBuilderOperation.FETCH,
+            ]),
+            selectReferences: select_1.selectAllReference(this.data.columnReferences),
+            selectTuple: select_1.joinTupleToSelectTuple(this.data.joins),
+        }), this.extraData);
+    }
+    ;
     //DISTINCT CLAUSE
     //distinct ();
     //distinct<DistinctT extends boolean> (distinct : DistinctT);

@@ -8,7 +8,7 @@ import { TableAlias, TableToReference } from "./table-operation";
 import { ToNullableColumnReferences, ReplaceColumnOfReference, ColumnReferencesToSchema } from "./column-references-operation";
 import { TypeNarrowCallback } from "./type-narrow";
 import { WhereCallback } from "./where";
-import { SelectCallback, SelectTupleHasDuplicateColumn, SelectTupleToReferences, AnySelectTupleElement, ReplaceColumnOfSelectTuple } from "./select";
+import { SelectCallback, SelectTupleHasDuplicateColumn, SelectTupleToReferences, AnySelectTupleElement, ReplaceColumnOfSelectTuple, JoinTupleToSelectTuple } from "./select";
 import { GroupByCallback, AnyGroupByTupleElement } from "./group-by";
 import { HavingCallback } from "./having";
 import { OrderByCallback, AnyOrderByTupleElement } from "./order-by";
@@ -244,6 +244,20 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         unionOrderByTuple: DataT["unionOrderByTuple"];
         unionLimit: DataT["unionLimit"];
     }>);
+    selectAll(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.SELECT> extends never ? ("SELECT clause not allowed here" | void | never) : (DataT["selectTuple"] extends undefined ? ISelectBuilder<{
+        allowed: EnableOperation<DataT, SelectBuilderOperation.WIDEN | SelectBuilderOperation.UNION | SelectBuilderOperation.AS | SelectBuilderOperation.FETCH>;
+        columnReferences: DataT["columnReferences"];
+        joins: DataT["joins"];
+        selectReferences: DataT["columnReferences"];
+        selectTuple: JoinTupleToSelectTuple<DataT["joins"]>;
+        distinct: DataT["distinct"];
+        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
+        groupByTuple: DataT["groupByTuple"];
+        orderByTuple: DataT["orderByTuple"];
+        limit: DataT["limit"];
+        unionOrderByTuple: DataT["unionOrderByTuple"];
+        unionLimit: DataT["unionLimit"];
+    }> : ("selectAll() must be called before select()" | void | never)));
     distinct(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.DISTINCT> extends never ? ("DISTINCT clause not allowed here" | void | never) : ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: DataT["columnReferences"];

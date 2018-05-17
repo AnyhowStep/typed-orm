@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const column_1 = require("./column");
 const expr_1 = require("./expr");
 const column_references_operation_1 = require("./column-references-operation");
+const table_operation_1 = require("./table-operation");
 function replaceColumnOfSelectTuple(tuple, newColumn) {
     return tuple.map((element) => {
         if (element instanceof expr_1.ColumnExpr) {
@@ -104,4 +105,23 @@ function selectTupleToReferences(tuple) {
     }, {});
 }
 exports.selectTupleToReferences = selectTupleToReferences;
+function selectAllReference(columnReferences) {
+    const result = column_references_operation_1.copyReferences(columnReferences);
+    for (let table in result) {
+        for (let name in result[table]) {
+            const element = result[table][name];
+            result[table][name] = new column_1.Column(element.table, element.name, element.assertDelegate, undefined, true);
+        }
+    }
+    return result;
+}
+exports.selectAllReference = selectAllReference;
+function joinTupleToSelectTuple(joinTuple) {
+    const result = [];
+    for (let join of joinTuple) {
+        result.push(table_operation_1.tableToReference(join.table)[join.table.alias]);
+    }
+    return result;
+}
+exports.joinTupleToSelectTuple = joinTupleToSelectTuple;
 //# sourceMappingURL=select.js.map

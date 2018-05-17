@@ -8,7 +8,7 @@ import {toNullableColumnReferences, replaceColumnOfReference, combineReferences,
 import {and} from "./expr-logical";
 import {isNull, isNotNull, eq} from "./expr-comparison";
 import {Column} from "./column";
-import {replaceColumnOfSelectTuple, selectTupleHasDuplicateColumn, selectTupleToReferences} from "./select";
+import {replaceColumnOfSelectTuple, selectTupleHasDuplicateColumn, selectTupleToReferences, selectAllReference, joinTupleToSelectTuple} from "./select";
 import {SubSelectJoinTable} from "./sub-select-join-table";
 import {ColumnExpr, Expr} from "./expr";
 import {Database} from "./Database";
@@ -438,6 +438,30 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                         selectTupleToReferences(selectTuple),
                     ),
                     selectTuple : newTuple,
+                }
+            ),
+            this.extraData
+        ) as any;
+    };
+    selectAll () {
+        this.assertAllowed(d.SelectBuilderOperation.SELECT);
+
+        if (this.data.selectTuple != undefined) {
+            throw new Error("selectAll() must be called before select()");
+        }
+
+        return new SelectBuilder(
+            spread(
+                this.data,
+                {
+                    allowed : this.enableOperation([
+                        d.SelectBuilderOperation.WIDEN,
+                        d.SelectBuilderOperation.UNION,
+                        d.SelectBuilderOperation.AS,
+                        d.SelectBuilderOperation.FETCH,
+                    ]),
+                    selectReferences : selectAllReference(this.data.columnReferences),
+                    selectTuple : joinTupleToSelectTuple(this.data.joins),
                 }
             ),
             this.extraData

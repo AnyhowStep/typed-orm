@@ -33,6 +33,7 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
     andWhere<WhereCallbackT extends d.WhereCallback<d.ISelectBuilder<DataT>>>(whereCallback: WhereCallbackT): any;
     private appendSelectTuple;
     select<SelectCallbackT extends d.SelectCallback<d.ISelectBuilder<DataT>>>(selectCallback: SelectCallbackT): any;
+    selectAll(): any;
     distinct(distinct?: boolean): any;
     sqlCalcFoundRows(sqlCalcFoundRows?: boolean): any;
     groupBy<GroupByCallbackT extends d.GroupByCallback<d.ISelectBuilder<DataT>>>(groupByCallback: GroupByCallbackT): any;

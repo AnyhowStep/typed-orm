@@ -9,6 +9,7 @@ import {
 } from "./column-references-operation";
 import {IColumn, AnyColumn} from "./column";
 import {HasDuplicateColumn, ColumnToReference} from "./column-operation";
+import {Join} from "./join";
 
 export type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
     (IColumnExpr<
@@ -227,6 +228,23 @@ export type ReplaceColumnOfSelectTuple<
                     NewTypeT
                 >
             }
+        ) :
+        (never)
+);
+
+export type JoinTupleToSelectTuple<JoinTupleT extends Tuple<Join<any, any, any>>> = (
+    JoinTupleT[TupleKeys<JoinTupleT>] extends Join<any, any, any> ?
+        (
+            {
+                [index in TupleKeys<JoinTupleT>] : (
+                    JoinTupleT[index] extends Join<any, any, any> ?
+                        JoinTupleT[index]["table"]["columns"] :
+                        never
+                )
+            } &
+            { "0" : JoinTupleT[0]["table"]["columns"] } &
+            { length : TupleLength<JoinTupleT> } &
+            (JoinTupleT[TupleKeys<JoinTupleT>]["table"]["columns"])[]
         ) :
         (never)
 );
