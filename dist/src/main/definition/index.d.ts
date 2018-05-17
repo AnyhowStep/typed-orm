@@ -1,4 +1,5 @@
 export * from "./insert";
+export * from "./update";
 export * from "./column-collection";
 export * from "./column-operation";
 export * from "./column-references-operation";

@@ -4,6 +4,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./insert"));
+__export(require("./update"));
 __export(require("./column-collection"));
 __export(require("./column-operation"));
 __export(require("./column-references-operation"));

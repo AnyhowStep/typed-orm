@@ -35,6 +35,7 @@ import {
 } from "./select-as";
 import {Querify} from "./querify";
 import {RenameTableOfColumns} from "./column-operation";
+import {IStringBuilder} from "./IStringBuilder";
 
 export interface RawPaginationArgs {
     page? : number|null|undefined;
@@ -1226,6 +1227,9 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         }>
     );
 
+    //SUBQUERY
+    readonly from : CreateSubSelectBuilderDelegate<DataT["columnReferences"]>;
+
     //AS CLAUSE
     as<AliasT extends string> (alias : AliasT) : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AS> extends never ?
@@ -1238,6 +1242,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 ) :
                 "Cannot use tables in SELECT clause when aliasing"|void|never
     );
+
+    //QUERIFY
+    querifyColumnReferences (sb : IStringBuilder) : void;
+    querifyWhere (sb : IStringBuilder) : void;
 
     //FETCH CLAUSE
     fetchAll () : (
@@ -1384,5 +1392,94 @@ export type CreateSelectBuilderDelegate = (
             unionOrderByTuple : undefined,
             unionLimit : undefined,
         }>
+    )
+);
+
+export type CreateSubSelectBuilderDelegate<ColumnReferencesT extends ColumnReferences> = (
+    <TableT extends AnyAliasedTable> (
+        table : TableT
+    ) => (
+        TableAlias<TableT> extends keyof ColumnReferencesT ?
+            ("Duplicate alias" | TableAlias<TableT> | void) :
+            ISelectBuilder<{
+                allowed : (
+                    //Append whenever, cannot unjoin
+                    //Uses columnReferences
+                    SelectBuilderOperation.JOIN|
+
+                    //Narrow before UNION, cannot un-narrow
+                    //Uses columnReferences
+                    SelectBuilderOperation.NARROW|
+
+                    //Append and replace whenever, always ANDs with NARROW
+                    //Uses columnReferences
+                    SelectBuilderOperation.WHERE|
+
+                    //Append before UNION
+                    //Uses columnReferences
+                    SelectBuilderOperation.SELECT|
+
+                    //Toggle whenever
+                    SelectBuilderOperation.DISTINCT|
+
+                    //Toggle whenever
+                    SelectBuilderOperation.SQL_CALC_FOUND_ROWS|
+
+                    //Unset, append and replace whenever
+                    //Uses columnReferences, selectReferences
+                    SelectBuilderOperation.GROUP_BY|
+
+                    //Append and replace whenever
+                    //TECHNICALLY, can only use columns in GROUP BY, or columns in aggregate functions,
+                    //But MySQL supports an extension that allows columns from SELECT
+                    //As such, this library does not check for valid columns here
+                    //As long as it is in columnReferences or selectReferences
+                    SelectBuilderOperation.HAVING|
+
+                    //Unset, append and replace whenever
+                    //Uses columnReferences, selectReferences
+                    SelectBuilderOperation.ORDER_BY|
+
+                    //Replace whenever
+                    SelectBuilderOperation.LIMIT|
+
+                    //Replace whenever, sets LIMIT to arbitrary large number if LIMIT not set yet
+                    SelectBuilderOperation.OFFSET|
+
+                    //After SELECT, does not affect query, used for column compatibility with UNION
+                    //Uses selectReferences
+                    //SelectBuilderOperation.WIDEN|
+
+                    //Append after SELECT
+                    //SelectBuilderOperation.UNION|
+
+                    //Unset, append and replace whenever
+                    //Uses columnReferences, selectReferences
+                    SelectBuilderOperation.UNION_ORDER_BY|
+
+                    //Replace whenever
+                    SelectBuilderOperation.UNION_LIMIT|
+
+                    //Replace whenever, sets UNION_LIMIT to arbitrary large number if UNION_LIMIT not set yet
+                    SelectBuilderOperation.UNION_OFFSET
+
+                    //After SELECT
+                    //SelectBuilderOperation.AS
+
+                    //After SELECT
+                    //SelectBuilderOperation.FETCH
+                )[],
+                columnReferences : TableToReference<TableT> & ColumnReferencesT,
+                joins : [Join<"FROM", TableT, false>],
+                selectReferences : {},
+                selectTuple : undefined,
+                distinct : false,
+                sqlCalcFoundRows : false,
+                groupByTuple : undefined,
+                orderByTuple : undefined,
+                limit : undefined,
+                unionOrderByTuple : undefined,
+                unionLimit : undefined,
+            }>
     )
 );

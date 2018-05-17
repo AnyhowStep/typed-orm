@@ -26,7 +26,7 @@ class InsertValueBuilder {
             }
             //If we specify a value, it better match our assertion
             if (!(value instanceof Object) || (value instanceof Date)) {
-                row[name] = table.columns[name].assertDelegate("name", value);
+                row[name] = table.columns[name].assertDelegate(name, value);
             }
         }
     }

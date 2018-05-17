@@ -10,6 +10,9 @@ export class InsertSelectBuilder<DataT extends d.AnyInsertSelectBuilderData> imp
     readonly db : Database;
 
     public constructor (data : DataT, db : Database) {
+        if (data.selectBuilder.data.selectTuple == undefined) {
+            throw new Error(`Call select() first`);
+        }
         this.data = data;
         this.db = db;
     }
@@ -47,7 +50,7 @@ export class InsertSelectBuilder<DataT extends d.AnyInsertSelectBuilderData> imp
             }
             //If we specify a value, it better match our assertion
             if (!(value instanceof Object) || (value instanceof Date)) {
-                columns[name] = table.columns[name].assertDelegate("name", value);
+                columns[name] = table.columns[name].assertDelegate(name, value);
             }
         }
         return new InsertSelectBuilder(spread(

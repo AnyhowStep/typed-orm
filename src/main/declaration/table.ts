@@ -10,6 +10,12 @@ export interface RawTableData {
     hasServerDefaultValue : {
         [name : string] : true;
     };
+    //By default, all columns of the table are mutable.
+    //Calling setMutable() will set only the specified columns as mutable.
+    //Calling setImmutable() will make them all immutable.
+    isMutable : {
+        [name : string] : true;
+    };
 }
 
 export type AutoIncrementDelegate<ColumnCollectionT extends AnyColumnCollection> = (
@@ -17,6 +23,9 @@ export type AutoIncrementDelegate<ColumnCollectionT extends AnyColumnCollection>
 );
 
 export type HasServerDefaultValueDelegate<ColumnCollectionT extends AnyColumnCollection> = (
+    (columns : ColumnCollectionT) => Tuple<ColumnCollectionElement<ColumnCollectionT>>
+);
+export type IsMutableDelegate<ColumnCollectionT extends AnyColumnCollection> = (
     (columns : ColumnCollectionT) => Tuple<ColumnCollectionElement<ColumnCollectionT>>
 );
 
@@ -47,7 +56,8 @@ export interface ITable<
                         {
                             [name in AutoIncrementNameT] : true
                         }
-                    )
+                    ),
+                    isMutable : DataT["isMutable"],
                 }
             > :
             ("Invalid return type or could not infer AutoIncrementNameT"|void|never)
@@ -67,29 +77,62 @@ export interface ITable<
                 {
                     autoIncrement : DataT["autoIncrement"],
                     hasServerDefaultValue : (
-                            (
-                                {
-                                    [k in ReturnType<HasServerDefaultValueDelegateT>[
-                                        TupleKeys<ReturnType<HasServerDefaultValueDelegateT>>
-                                    ]["name"]] : true
-                                } &
-                                (
-                                    DataT["autoIncrement"] extends AnyColumn ?
-                                        { [name in DataT["autoIncrement"]["name"]] : true } :
-                                        {}
-                                ) &
-                                {
-                                    [name in NullableColumnNames<ColumnCollection<
-                                        NameT,
-                                        RawColumnCollectionT
-                                    >>] : true
-                                }
-                            )
+                        {
+                            [k in ReturnType<HasServerDefaultValueDelegateT>[
+                                TupleKeys<ReturnType<HasServerDefaultValueDelegateT>>
+                            ]["name"]] : true
+                        } &
+                        (
+                            DataT["autoIncrement"] extends AnyColumn ?
+                                { [name in DataT["autoIncrement"]["name"]] : true } :
+                                {}
+                        ) &
+                        {
+                            [name in NullableColumnNames<ColumnCollection<
+                                NameT,
+                                RawColumnCollectionT
+                            >>] : true
+                        }
                     ),
+                    isMutable : DataT["isMutable"],
                 }
             > :
             never
     );
+    setIsMutable<
+        IsMutableDelegateT extends IsMutableDelegate<ColumnCollection<AliasT, RawColumnCollectionT>>
+    > (
+        isMutableDelegate : IsMutableDelegateT
+    ) : (
+        ReturnType<IsMutableDelegateT>[
+            TupleKeys<ReturnType<IsMutableDelegateT>>
+        ] extends AnyColumn ?
+            ITable<
+                AliasT,
+                NameT,
+                RawColumnCollectionT,
+                {
+                    autoIncrement : DataT["autoIncrement"],
+                    hasServerDefaultValue : DataT["hasServerDefaultValue"],
+                    isMutable : {
+                        [k in ReturnType<IsMutableDelegateT>[
+                            TupleKeys<ReturnType<IsMutableDelegateT>>
+                        ]["name"]] : true
+                    },
+                }
+            > :
+            never
+    );
+    setImmutable () : ITable<
+        AliasT,
+        NameT,
+        RawColumnCollectionT,
+        {
+            autoIncrement : DataT["autoIncrement"],
+            hasServerDefaultValue : DataT["hasServerDefaultValue"],
+            isMutable : {},
+        }
+    >;
 }
 
 export type CreateTableDelegate = (
@@ -109,6 +152,9 @@ export type CreateTableDelegate = (
                 hasServerDefaultValue : {
                     [name in NullableColumnNames<ColumnCollection<NameT, RawColumnCollectionT>>] : true
                 },
+                isMutable : {
+                    [name in keyof RawColumnCollectionT] : true
+                }
             }
         >
     )

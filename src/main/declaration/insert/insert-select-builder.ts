@@ -6,6 +6,7 @@ import {ColumnOfReferences} from "../column-references-operation";
 import * as mysql from "typed-mysql";
 import {Querify} from "../querify";
 import {AllowedExprConstants} from "../expr";
+import {Tuple} from "../tuple";
 
 export interface AnyInsertSelectBuilderData {
     readonly table : ITable<any, any, any, any>;
@@ -161,11 +162,17 @@ export type CreateInsertSelectBuilderDelegate = (
         table : TableT,
         selectBuilder : SelectBuilderT
     ) => (
-        IInsertSelectBuilder<{
-            table : TableT;
-            selectBuilder : SelectBuilderT;
-            ignore : false;
-            columns : undefined;
-        }>
+        SelectBuilderT extends ISelectBuilder<infer DataT> ?
+            (
+                DataT["selectTuple"] extends Tuple<any> ?
+                    IInsertSelectBuilder<{
+                        table : TableT;
+                        selectBuilder : SelectBuilderT;
+                        ignore : false;
+                        columns : undefined;
+                    }> :
+                    ("Call select() first"|void|never)
+            ) :
+            ("Invalid SelectBuilder or could not infer DataT"|void|never)
     )
 );

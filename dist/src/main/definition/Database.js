@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mysql = require("typed-mysql");
 const select_builder_1 = require("./select-builder");
 const insert_1 = require("./insert");
+const update_1 = require("./update");
 class Database extends mysql.Database {
     constructor() {
         super(...arguments);
@@ -20,6 +21,15 @@ class Database extends mysql.Database {
                 table: table,
                 ignore: false,
                 values: undefined,
+            }, this);
+        });
+        //TODO Implement proper transactions?
+        //TODO Remove mysql.Database dependency?
+        this.updateTable = ((selectBuilder) => {
+            return new update_1.UpdateBuilder({
+                selectBuilder: selectBuilder,
+                ignoreErrors: false,
+                assignments: undefined,
             }, this);
         });
     }

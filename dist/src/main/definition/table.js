@@ -11,6 +11,13 @@ function nullableToHasServerDefaultValue(columns) {
         return memo;
     }, {});
 }
+function toMutable(columns) {
+    return Object.keys(columns)
+        .reduce((memo, name) => {
+        memo[name] = true;
+        return memo;
+    }, {});
+}
 class Table {
     constructor(alias, name, columns, data) {
         this.alias = alias;
@@ -66,6 +73,23 @@ class Table {
             hasServerDefaultValue: hasServerDefaultValue,
         }));
     }
+    setIsMutable(isMutableDelegate) {
+        const columns = isMutableDelegate(this.columns);
+        for (let i = 0; i < columns.length; ++i) {
+            this.assertIsOwnColumn(`isMutable[${i}]`, columns[i]);
+        }
+        return new Table(this.alias, this.name, this.columns, type_util_1.spread(this.data, {
+            isMutable: columns.reduce((memo, column) => {
+                memo[column.name] = true;
+                return memo;
+            }, {}),
+        }));
+    }
+    setImmutable() {
+        return new Table(this.alias, this.name, this.columns, type_util_1.spread(this.data, {
+            isMutable: {},
+        }));
+    }
 }
 exports.Table = Table;
 exports.table = (name, rawColumns) => {
@@ -73,6 +97,7 @@ exports.table = (name, rawColumns) => {
     return new Table(name, name, columns, {
         autoIncrement: undefined,
         hasServerDefaultValue: nullableToHasServerDefaultValue(columns),
+        isMutable: toMutable(columns),
     });
 };
 //# sourceMappingURL=table.js.map

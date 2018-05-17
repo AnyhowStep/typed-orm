@@ -37,7 +37,7 @@ export class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderData> imple
             }
             //If we specify a value, it better match our assertion
             if (!(value instanceof Object) || (value instanceof Date)) {
-                row[name] = table.columns[name].assertDelegate("name", value) as any;
+                row[name] = table.columns[name].assertDelegate(name, value) as any;
             }
         }
     }

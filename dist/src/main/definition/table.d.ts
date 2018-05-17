@@ -11,5 +11,7 @@ export declare class Table<AliasT extends string, NameT extends string, RawColum
     assertIsOwnColumn(name: string, other: d.AnyColumn): void;
     autoIncrement<AutoIncrementDelegateT extends d.AutoIncrementDelegate<d.ColumnCollection<AliasT, RawColumnCollectionT>>>(autoIncrementDelegate: AutoIncrementDelegateT): any;
     setHasServerDefaultValue<HasServerDefaultValueDelegateT extends d.HasServerDefaultValueDelegate<d.ColumnCollection<AliasT, RawColumnCollectionT>>>(hasServerDefaultValueDelegate: HasServerDefaultValueDelegateT): any;
+    setIsMutable<IsMutableDelegateT extends d.IsMutableDelegate<d.ColumnCollection<AliasT, RawColumnCollectionT>>>(isMutableDelegate: IsMutableDelegateT): any;
+    setImmutable(): any;
 }
 export declare const table: d.CreateTableDelegate;

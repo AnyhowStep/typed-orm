@@ -19,6 +19,49 @@ const e = require("./expr-library");
 const mysql = require("typed-mysql");
 class SelectBuilder {
     constructor(data, extraData) {
+        //SUBSELECT
+        this.from = ((table) => {
+            if (this.data.columnReferences[table.alias] != undefined) {
+                throw new Error(`Duplicate alias ${table.alias}, try using AS clause`);
+            }
+            return new SelectBuilder({
+                allowed: [
+                    d.SelectBuilderOperation.JOIN,
+                    d.SelectBuilderOperation.NARROW,
+                    d.SelectBuilderOperation.WHERE,
+                    d.SelectBuilderOperation.SELECT,
+                    d.SelectBuilderOperation.DISTINCT,
+                    d.SelectBuilderOperation.SQL_CALC_FOUND_ROWS,
+                    d.SelectBuilderOperation.GROUP_BY,
+                    d.SelectBuilderOperation.HAVING,
+                    d.SelectBuilderOperation.ORDER_BY,
+                    d.SelectBuilderOperation.LIMIT,
+                    d.SelectBuilderOperation.OFFSET,
+                    d.SelectBuilderOperation.UNION_ORDER_BY,
+                    d.SelectBuilderOperation.UNION_LIMIT,
+                    d.SelectBuilderOperation.UNION_OFFSET,
+                ],
+                columnReferences: column_references_operation_1.combineReferences(this.data.columnReferences, table_operation_1.tableToReference(table)),
+                joins: [type_util_1.check({
+                        joinType: "FROM",
+                        table: table,
+                        nullable: false,
+                        from: undefined,
+                        to: undefined,
+                    })],
+                selectReferences: {},
+                selectTuple: undefined,
+                distinct: false,
+                sqlCalcFoundRows: false,
+                groupByTuple: undefined,
+                orderByTuple: undefined,
+                limit: undefined,
+                unionOrderByTuple: undefined,
+                unionLimit: undefined,
+            }, {
+                db: this.extraData.db,
+            });
+        });
         //FETCH CLAUSE
         this.schema = undefined;
         this.processRow = (row) => {
@@ -491,51 +534,7 @@ class SelectBuilder {
         return new sub_select_join_table_1.SubSelectJoinTable(alias, this);
     }
     ;
-    querify(sb) {
-        const hasUnion = (this.extraData.union != undefined ||
-            this.data.unionOrderByTuple != undefined ||
-            this.data.unionLimit != undefined);
-        if (hasUnion) {
-            sb.appendLine("(");
-            sb.indent();
-        }
-        sb.append("SELECT");
-        if (this.data.distinct) {
-            sb.append(" DISTINCT");
-        }
-        if (this.data.sqlCalcFoundRows) {
-            sb.append(" SQL_CALC_FOUND_ROWS");
-        }
-        sb.appendLine();
-        sb.scope((sb) => {
-            if (this.data.selectTuple != undefined) {
-                sb.map(this.data.selectTuple, (sb, element) => {
-                    if (element instanceof expr_1.ColumnExpr) {
-                        element.querify(sb);
-                    }
-                    else if (element instanceof column_1.Column) {
-                        //const str = element.as(element.name).querify();
-                        //return `\t${str}`;
-                        const alias = Database_1.Database.EscapeId(`${element.table}--${element.name}`);
-                        element.querify(sb);
-                        sb.append(` AS ${alias}`);
-                    }
-                    else if (element instanceof Object) {
-                        const names = Object.keys(element).sort();
-                        sb.map(names, (sb, name) => {
-                            const sub = element[name];
-                            const alias = Database_1.Database.EscapeId(`${sub.table}--${sub.name}`);
-                            sub.querify(sb);
-                            sb.append(` AS ${alias}`);
-                        }, ",\n");
-                    }
-                    else {
-                        throw new Error(`Unknown select tuple element (${typeof element})${element}`);
-                    }
-                }, ",\n");
-            }
-        });
-        sb.appendLine("FROM");
+    querifyColumnReferences(sb) {
         sb.scope((sb) => {
             this.data.joins[0].table.querify(sb);
         });
@@ -559,6 +558,8 @@ class SelectBuilder {
                 }, " AND\n");
             });
         });
+    }
+    querifyWhere(sb) {
         if (this.extraData.whereExpr != undefined) {
             sb.appendLine("WHERE");
             const whereExpr = this.extraData.whereExpr;
@@ -566,6 +567,55 @@ class SelectBuilder {
                 whereExpr.querify(sb);
             });
         }
+    }
+    querify(sb) {
+        const hasUnion = (this.extraData.union != undefined ||
+            this.data.unionOrderByTuple != undefined ||
+            this.data.unionLimit != undefined);
+        if (hasUnion) {
+            sb.appendLine("(");
+            sb.indent();
+        }
+        if (this.data.selectTuple != undefined) {
+            sb.append("SELECT");
+            if (this.data.distinct) {
+                sb.append(" DISTINCT");
+            }
+            if (this.data.sqlCalcFoundRows) {
+                sb.append(" SQL_CALC_FOUND_ROWS");
+            }
+            sb.appendLine();
+            const selectTuple = this.data.selectTuple;
+            sb.scope((sb) => {
+                sb.map(selectTuple, (sb, element) => {
+                    if (element instanceof expr_1.ColumnExpr) {
+                        element.querify(sb);
+                    }
+                    else if (element instanceof column_1.Column) {
+                        //const str = element.as(element.name).querify();
+                        //return `\t${str}`;
+                        const alias = Database_1.Database.EscapeId(`${element.table}--${element.name}`);
+                        element.querify(sb);
+                        sb.append(` AS ${alias}`);
+                    }
+                    else if (element instanceof Object) {
+                        const names = Object.keys(element).sort();
+                        sb.map(names, (sb, name) => {
+                            const sub = element[name];
+                            const alias = Database_1.Database.EscapeId(`${sub.table}--${sub.name}`);
+                            sub.querify(sb);
+                            sb.append(` AS ${alias}`);
+                        }, ",\n");
+                    }
+                    else {
+                        throw new Error(`Unknown select tuple element (${typeof element})${element}`);
+                    }
+                }, ",\n");
+            });
+            sb.appendLine("FROM");
+        }
+        this.querifyColumnReferences(sb);
+        this.querifyWhere(sb);
         if (this.data.groupByTuple != undefined) {
             sb.appendLine("GROUP BY");
             const groupByTuple = this.data.groupByTuple;
@@ -808,6 +858,7 @@ class SelectBuilder {
     }
 }
 exports.SelectBuilder = SelectBuilder;
+//TODO Move to Database?
 function newCreateSelectBuilderDelegate(db) {
     return (table) => {
         return new SelectBuilder({

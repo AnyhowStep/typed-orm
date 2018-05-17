@@ -68,6 +68,9 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
     unionOffset<OffsetT extends number>(offset: OffsetT): any;
     unsetUnionLimit(): any;
     as<AliasT extends string>(alias: AliasT): any;
+    readonly from: d.CreateSubSelectBuilderDelegate<DataT["columnReferences"]>;
+    querifyColumnReferences(sb: d.IStringBuilder): void;
+    querifyWhere(sb: d.IStringBuilder): void;
     querify(sb: d.IStringBuilder): string;
     private schema;
     private getSchema;

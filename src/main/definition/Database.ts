@@ -2,6 +2,7 @@ import * as d from "../declaration";
 import * as mysql from "typed-mysql";
 import {newCreateSelectBuilderDelegate} from "./select-builder";
 import {InsertSelectBuilder, InsertValueBuilder} from "./insert";
+import {UpdateBuilder} from "./update";
 
 export class Database extends mysql.Database {
     readonly from : d.CreateSelectBuilderDelegate = newCreateSelectBuilderDelegate(this);
@@ -18,7 +19,7 @@ export class Database extends mysql.Database {
                 selectBuilder : selectBuilder,
                 ignore : false,
                 columns : undefined,
-            }, this);
+            }, this) as any;
         }
     );
     readonly insertValueInto : d.CreateInsertValueBuilderDelegate = (
@@ -27,6 +28,21 @@ export class Database extends mysql.Database {
                 table : table,
                 ignore : false,
                 values : undefined,
+            }, this);
+        }
+    );
+    //TODO Implement proper transactions?
+    //TODO Remove mysql.Database dependency?
+    readonly updateTable : d.CreateUpdateBuilderDelegate = (
+        <
+            SelectBuilderT extends d.AnySelectBuilder
+        > (
+            selectBuilder : SelectBuilderT
+        ) => {
+            return new UpdateBuilder({
+                selectBuilder : selectBuilder,
+                ignoreErrors : false,
+                assignments : undefined,
             }, this);
         }
     );

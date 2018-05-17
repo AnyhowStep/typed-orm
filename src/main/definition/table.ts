@@ -15,6 +15,17 @@ function nullableToHasServerDefaultValue<ColumnCollectionT extends d.AnyColumnCo
             return memo;
         }, {}) as any;
 }
+function toMutable<ColumnCollectionT extends d.AnyColumnCollection> (
+    columns : ColumnCollectionT
+) : {
+    [name in keyof ColumnCollectionT] : true
+} {
+    return Object.keys(columns)
+        .reduce<{ [name : string] : true }>((memo, name) => {
+            memo[name] = true;
+            return memo;
+        }, {}) as any;
+}
 
 export class Table<
     AliasT extends string,
@@ -95,7 +106,7 @@ export class Table<
             )
         ) as any;
     }
-    public setHasServerDefaultValue<
+    setHasServerDefaultValue<
         HasServerDefaultValueDelegateT extends d.HasServerDefaultValueDelegate<d.ColumnCollection<AliasT, RawColumnCollectionT>>
     > (
         hasServerDefaultValueDelegate : HasServerDefaultValueDelegateT
@@ -125,6 +136,46 @@ export class Table<
             )
         ) as any;
     }
+
+    setIsMutable<
+        IsMutableDelegateT extends d.IsMutableDelegate<d.ColumnCollection<AliasT, RawColumnCollectionT>>
+    > (
+        isMutableDelegate : IsMutableDelegateT
+    ) {
+        const columns = isMutableDelegate(this.columns);
+        for (let i=0; i<columns.length; ++i) {
+            this.assertIsOwnColumn(`isMutable[${i}]`, columns[i]);
+        }
+
+        return new Table(
+            this.alias,
+            this.name,
+            this.columns,
+            spread(
+                this.data,
+                {
+                    isMutable : columns.reduce<{ [name : string] : true }>((memo, column) => {
+                        memo[column.name] = true;
+                        return memo;
+                    }, {}) as any,
+                }
+            )
+        ) as any;
+    }
+
+    setImmutable () {
+        return new Table(
+            this.alias,
+            this.name,
+            this.columns,
+            spread(
+                this.data,
+                {
+                    isMutable : {},
+                }
+            )
+        ) as any;
+    }
 }
 
 export const table : d.CreateTableDelegate = <
@@ -143,6 +194,7 @@ export const table : d.CreateTableDelegate = <
         {
             autoIncrement : undefined,
             hasServerDefaultValue : nullableToHasServerDefaultValue(columns),
+            isMutable : toMutable(columns),
         }
     ) as any;
 };

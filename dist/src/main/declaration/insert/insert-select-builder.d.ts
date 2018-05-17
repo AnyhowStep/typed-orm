@@ -6,6 +6,7 @@ import { ColumnOfReferences } from "../column-references-operation";
 import * as mysql from "typed-mysql";
 import { Querify } from "../querify";
 import { AllowedExprConstants } from "../expr";
+import { Tuple } from "../tuple";
 export interface AnyInsertSelectBuilderData {
     readonly table: ITable<any, any, any, any>;
     readonly selectBuilder: AnySelectBuilder;
@@ -50,9 +51,9 @@ export interface IInsertSelectBuilder<DataT extends AnyInsertSelectBuilderData> 
         [name in TableDataT["autoIncrement"]["name"]]: (DataT["ignore"] extends true ? number | undefined : number);
     } : {})) : ("Could not infer TableDataT of table" | void | never));
 }
-export declare type CreateInsertSelectBuilderDelegate = (<TableT extends ITable<any, any, any, any>, SelectBuilderT extends AnySelectBuilder>(table: TableT, selectBuilder: SelectBuilderT) => (IInsertSelectBuilder<{
+export declare type CreateInsertSelectBuilderDelegate = (<TableT extends ITable<any, any, any, any>, SelectBuilderT extends AnySelectBuilder>(table: TableT, selectBuilder: SelectBuilderT) => (SelectBuilderT extends ISelectBuilder<infer DataT> ? (DataT["selectTuple"] extends Tuple<any> ? IInsertSelectBuilder<{
     table: TableT;
     selectBuilder: SelectBuilderT;
     ignore: false;
     columns: undefined;
-}>));
+}> : ("Call select() first" | void | never)) : ("Invalid SelectBuilder or could not infer DataT" | void | never)));

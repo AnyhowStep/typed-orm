@@ -4,4 +4,5 @@ export declare class Database extends mysql.Database {
     readonly from: d.CreateSelectBuilderDelegate;
     readonly insertSelectInto: d.CreateInsertSelectBuilderDelegate;
     readonly insertValueInto: d.CreateInsertValueBuilderDelegate;
+    readonly updateTable: d.CreateUpdateBuilderDelegate;
 }

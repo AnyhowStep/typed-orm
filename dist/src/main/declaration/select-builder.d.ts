@@ -17,6 +17,7 @@ import { SelectTupleToType, SelectTupleElementType } from "./union";
 import { JoinableSelectTupleElement, JoinableSelectTupleToRawColumnCollection, JoinableSelectTupleHasDuplicateColumnName } from "./select-as";
 import { Querify } from "./querify";
 import { RenameTableOfColumns } from "./column-operation";
+import { IStringBuilder } from "./IStringBuilder";
 export interface RawPaginationArgs {
     page?: number | null | undefined;
     itemsPerPage?: number | null | undefined;
@@ -602,7 +603,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         unionOrderByTuple: DataT["unionOrderByTuple"];
         unionLimit: undefined;
     }>);
+    readonly from: CreateSubSelectBuilderDelegate<DataT["columnReferences"]>;
     as<AliasT extends string>(alias: AliasT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AS> extends never ? ("AS clause not allowed here" | void | never) : DataT["selectTuple"] extends Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> ? (true extends JoinableSelectTupleHasDuplicateColumnName<DataT["selectTuple"]> ? "Cannot have duplicate column names in SELECT clause when aliasing" | void | never : AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<DataT["selectTuple"]>>) : "Cannot use tables in SELECT clause when aliasing" | void | never);
+    querifyColumnReferences(sb: IStringBuilder): void;
+    querifyWhere(sb: IStringBuilder): void;
     fetchAll(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : Promise<ColumnReferencesToSchema<DataT["selectReferences"]>[]>);
     fetchOne(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : Promise<ColumnReferencesToSchema<DataT["selectReferences"]>>);
     fetchZeroOrOne(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : Promise<ColumnReferencesToSchema<DataT["selectReferences"]> | undefined>);
@@ -622,6 +626,20 @@ export declare type AnySelectBuilder = ISelectBuilder<any>;
 export declare type CreateSelectBuilderDelegate = (<TableT extends AnyAliasedTable>(table: TableT) => (ISelectBuilder<{
     allowed: (SelectBuilderOperation.JOIN | SelectBuilderOperation.NARROW | SelectBuilderOperation.WHERE | SelectBuilderOperation.SELECT | SelectBuilderOperation.DISTINCT | SelectBuilderOperation.SQL_CALC_FOUND_ROWS | SelectBuilderOperation.GROUP_BY | SelectBuilderOperation.HAVING | SelectBuilderOperation.ORDER_BY | SelectBuilderOperation.LIMIT | SelectBuilderOperation.OFFSET | SelectBuilderOperation.UNION_ORDER_BY | SelectBuilderOperation.UNION_LIMIT | SelectBuilderOperation.UNION_OFFSET)[];
     columnReferences: TableToReference<TableT>;
+    joins: [Join<"FROM", TableT, false>];
+    selectReferences: {};
+    selectTuple: undefined;
+    distinct: false;
+    sqlCalcFoundRows: false;
+    groupByTuple: undefined;
+    orderByTuple: undefined;
+    limit: undefined;
+    unionOrderByTuple: undefined;
+    unionLimit: undefined;
+}>));
+export declare type CreateSubSelectBuilderDelegate<ColumnReferencesT extends ColumnReferences> = (<TableT extends AnyAliasedTable>(table: TableT) => (TableAlias<TableT> extends keyof ColumnReferencesT ? ("Duplicate alias" | TableAlias<TableT> | void) : ISelectBuilder<{
+    allowed: (SelectBuilderOperation.JOIN | SelectBuilderOperation.NARROW | SelectBuilderOperation.WHERE | SelectBuilderOperation.SELECT | SelectBuilderOperation.DISTINCT | SelectBuilderOperation.SQL_CALC_FOUND_ROWS | SelectBuilderOperation.GROUP_BY | SelectBuilderOperation.HAVING | SelectBuilderOperation.ORDER_BY | SelectBuilderOperation.LIMIT | SelectBuilderOperation.OFFSET | SelectBuilderOperation.UNION_ORDER_BY | SelectBuilderOperation.UNION_LIMIT | SelectBuilderOperation.UNION_OFFSET)[];
+    columnReferences: TableToReference<TableT> & ColumnReferencesT;
     joins: [Join<"FROM", TableT, false>];
     selectReferences: {};
     selectTuple: undefined;

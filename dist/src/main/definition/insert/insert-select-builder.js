@@ -7,6 +7,9 @@ const StringBuilder_1 = require("../StringBuilder");
 const column_1 = require("../column");
 class InsertSelectBuilder {
     constructor(data, db) {
+        if (data.selectBuilder.data.selectTuple == undefined) {
+            throw new Error(`Call select() first`);
+        }
         this.data = data;
         this.db = db;
     }
@@ -28,7 +31,7 @@ class InsertSelectBuilder {
             }
             //If we specify a value, it better match our assertion
             if (!(value instanceof Object) || (value instanceof Date)) {
-                columns[name] = table.columns[name].assertDelegate("name", value);
+                columns[name] = table.columns[name].assertDelegate(name, value);
             }
         }
         return new InsertSelectBuilder(type_util_1.spread(this.data, {
