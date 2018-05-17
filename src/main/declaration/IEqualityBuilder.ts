@@ -123,3 +123,13 @@ export interface IEqualityBuilder<
 
     readonly convert : ConvertFuncT;
 }
+
+export type IdentifierType<IEqualityBuilderT extends IEqualityBuilder<any>> = (
+    IEqualityBuilderT extends IEqualityBuilder<infer ConvertFuncT> ?
+        (
+            ConvertFuncT extends ((raw : infer RawT) => any) ?
+                RawT :
+                never
+        ) :
+        (never)
+);

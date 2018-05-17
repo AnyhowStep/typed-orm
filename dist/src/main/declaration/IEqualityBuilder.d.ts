@@ -27,3 +27,4 @@ export interface IEqualityBuilder<ConvertFuncT extends undefined | ((raw: any) =
     addTable<IdentifierT extends object, TableT extends ITable<any, any, any, any>>(identifierAssert: sd.AssertFunc<IdentifierT>, table: TableT): (TableT["columns"] extends TableColumnsWithMapping<IdentifierT> ? EqualityBuilderAddTableResult<ConvertFuncT, IdentifierT, TableT> : ("Invalid table, does not have all the columns of IdentifierT" | void | never));
     readonly convert: ConvertFuncT;
 }
+export declare type IdentifierType<IEqualityBuilderT extends IEqualityBuilder<any>> = (IEqualityBuilderT extends IEqualityBuilder<infer ConvertFuncT> ? (ConvertFuncT extends ((raw: infer RawT) => any) ? RawT : never) : (never));
