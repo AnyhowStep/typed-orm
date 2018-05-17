@@ -1,10 +1,20 @@
 import * as sd from "schema-decorator";
 import {IColumn} from "./column";
 import {IExpr} from "./expr";
+import {ITable} from "./table";
+//import {TypedRawColumn} from "./column-collection";
 
 export type ColumnMapping<IdentifierT> = {
     [name in keyof IdentifierT] : IColumn<any, any, IdentifierT[name]>
 }
+export type TableColumnsWithMapping<IdentifierT> = (
+    {
+        [name in keyof IdentifierT] : IColumn<any, any, IdentifierT[name]>
+    }
+    /*ITable<any, any, {
+        [name in keyof IdentifierT] : TypedRawColumn<IdentifierT[name]>
+    }, any>*/
+)
 
 export type ToEqualityExprFunc<
     IdentifierT extends object,
@@ -21,6 +31,16 @@ export type ToEqualityExprFunc<
                 never
         )
     }[keyof IdentifierT], boolean>
+);
+export type TableToEqualityExprFunc<
+    IdentifierT extends object,
+    TableT extends ITable<any, any, any, any>
+> = (
+    (rawIdentifier : IdentifierT) => IExpr<{
+        [table in TableT["alias"]] : {
+            [name in Extract<keyof IdentifierT, string>] : IColumn<TableT["alias"], name, IdentifierT[name]>
+        }
+    }, boolean>
 );
 
 export type EqualityBuilderAddResult<
@@ -51,7 +71,37 @@ export type EqualityBuilderAddResult<
    >
 );
 
-export interface IEqualityBuilder<ConvertFuncT extends undefined|ToEqualityExprFunc<any, any> = undefined> {
+export type EqualityBuilderAddTableResult<
+    ConvertFuncT extends undefined|ToEqualityExprFunc<any, any>,
+    IdentifierT extends object,
+    TableT extends ITable<any, any, any, any>
+> = (
+   IEqualityBuilder<
+       ConvertFuncT extends undefined ?
+           TableToEqualityExprFunc<IdentifierT, TableT> :
+           (
+               (
+                   ConvertFuncT &
+                   TableToEqualityExprFunc<IdentifierT, TableT>
+               ) &
+               (
+                   ConvertFuncT extends (raw : infer ARawT) => infer AReturnT ?
+                       (
+                           TableToEqualityExprFunc<IdentifierT, TableT> extends (raw : infer BRawT) => infer BReturnT ?
+                               (
+                                   (raw : ARawT|BRawT) => (AReturnT|BReturnT)
+                               ) :
+                               never
+                       ) :
+                       never
+               )
+           )
+   >
+);
+
+export interface IEqualityBuilder<
+    ConvertFuncT extends undefined|((raw : any) => IExpr<{}, boolean>) = undefined
+> {
     add<
         IdentifierT extends object,
         MappingT extends ColumnMapping<IdentifierT>
@@ -59,5 +109,17 @@ export interface IEqualityBuilder<ConvertFuncT extends undefined|ToEqualityExprF
         identifierAssert : sd.AssertFunc<IdentifierT>,
         mapping : MappingT
     ) : EqualityBuilderAddResult<ConvertFuncT, IdentifierT, MappingT>;
+    addTable<
+        IdentifierT extends object,
+        TableT extends ITable<any, any, any, any>
+    > (
+        identifierAssert : sd.AssertFunc<IdentifierT>,
+        table : TableT
+    ) : (
+        TableT["columns"] extends TableColumnsWithMapping<IdentifierT> ?
+            EqualityBuilderAddTableResult<ConvertFuncT, IdentifierT, TableT> :
+            ("Invalid table, does not have all the columns of IdentifierT"|void|never)
+    );
+
     readonly convert : ConvertFuncT;
 }

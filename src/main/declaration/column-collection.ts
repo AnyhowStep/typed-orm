@@ -2,6 +2,7 @@ import * as sd from "schema-decorator";
 import {IColumn, AnyColumn} from "./column";
 
 export type RawColumn = sd.AssertFunc<any>|AnyColumn;
+export type TypedRawColumn<T> = sd.AssertFunc<T>|IColumn<any, any, T>;
 export declare type TypeOf<RawColumnT extends RawColumn> = (
     RawColumnT extends sd.AssertFunc<infer T> ?
     T :
