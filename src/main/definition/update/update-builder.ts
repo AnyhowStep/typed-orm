@@ -26,13 +26,11 @@ export class UpdateBuilder<DataT extends d.AnyUpdateBuilderData> implements d.IU
         ) as any;
     }
 
-    set<AssignmentsCallbackT extends d.AssignmentsCallback<DataT>> (
+    set<
+        AssignmentsCallbackT extends d.AssignmentsCallback<DataT>
+    > (
         assignmentsCallback : AssignmentsCallbackT
-    ) : d.IUpdateBuilder<{
-        selectBuilder : DataT["selectBuilder"];
-        ignoreErrors : DataT["ignoreErrors"];
-        assignments : ReturnType<AssignmentsCallbackT>;
-    }> {
+    ) {
         const columnReferences = this.data.selectBuilder.data.columnReferences;
         const assignments = assignmentsCallback(
             columnReferences,
@@ -133,17 +131,7 @@ export class UpdateBuilder<DataT extends d.AnyUpdateBuilderData> implements d.IU
         return sb.toString();
     }
 
-    execute (
-        this : UpdateBuilder<{
-            selectBuilder : any,
-            ignoreErrors : any,
-            assignments : {
-                [table : string] : {
-                    [name : string] : d.RawExpr<any>
-                }
-            },
-        }>
-    ) {
+    execute () {
         return new Promise((resolve, reject) => {
             if (this.getAssignmentArr().length == 0) {
                 resolve ({

@@ -1,11 +1,11 @@
 import * as sd from "schema-decorator";
 import { ColumnReferences } from "./column-references";
-import { Join, AnyJoin, JoinFromTupleCallback, JoinFromTupleOfCallback, JoinToTupleCallback, MatchesJoinFromTuple, ToNullableJoinTuple } from "./join";
+import { Join, AnyJoin, JoinFromTupleCallback, JoinFromTupleOfCallback, JoinToTupleCallback, MatchesJoinFromTuple, ToNullableJoinTuple, ReplaceColumnOfJoinTuple } from "./join";
 import { Tuple, TuplePush, TupleConcat } from "./tuple";
 import { AliasedTable, AnyAliasedTable } from "./aliased-table";
 import { IColumn, AnyColumn } from "./column";
 import { TableAlias, TableToReference } from "./table-operation";
-import { ToNullableColumnReferences, ReplaceColumnOfReference, ColumnReferencesToSchema } from "./column-references-operation";
+import { ToNullableColumnReferences, ReplaceColumnOfReference, ColumnReferencesToSchemaWithJoins } from "./column-references-operation";
 import { TypeNarrowCallback } from "./type-narrow";
 import { WhereCallback } from "./where";
 import { SelectCallback, SelectTupleHasDuplicateColumn, SelectTupleToReferences, AnySelectTupleElement, ReplaceColumnOfSelectTuple, JoinTupleToSelectTuple } from "./select";
@@ -79,7 +79,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     join<ToTableT extends AnyAliasedTable, FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>>(toTable: ToTableT, from: FromTupleT, to: JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>>): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ? ("JOIN clause not allowed here" | void | never) : (TableAlias<ToTableT> extends keyof DataT["columnReferences"] ? ("Duplicate alias" | TableAlias<ToTableT> | void) : (JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ? (ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: (DataT["columnReferences"] & TableToReference<ToTableT>);
-        joins: (TuplePush<DataT["joins"], Join<"INNER", ToTableT, false>>);
+        joins: (TuplePush<DataT["joins"], Join<"INNER", ToTableT, TableToReference<ToTableT>, false>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
         distinct: DataT["distinct"];
@@ -93,7 +93,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     rightJoin<ToTableT extends AnyAliasedTable, FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>>(toTable: ToTableT, from: FromTupleT, to: JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>>): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ? ("JOIN clause not allowed here" | void | never) : (TableAlias<ToTableT> extends keyof DataT["columnReferences"] ? ("Duplicate alias" | TableAlias<ToTableT> | void) : (JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ? (ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: (ToNullableColumnReferences<DataT["columnReferences"]> & TableToReference<ToTableT>);
-        joins: (TuplePush<ToNullableJoinTuple<DataT["joins"]>, Join<"RIGHT", ToTableT, false>>);
+        joins: (TuplePush<ToNullableJoinTuple<DataT["joins"]>, Join<"RIGHT", ToTableT, TableToReference<ToTableT>, false>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
         distinct: DataT["distinct"];
@@ -107,7 +107,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     leftJoin<ToTableT extends AnyAliasedTable, FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>>(toTable: ToTableT, from: FromTupleT, to: JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>>): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ? ("JOIN clause not allowed here" | void | never) : (TableAlias<ToTableT> extends keyof DataT["columnReferences"] ? ("Duplicate alias" | TableAlias<ToTableT> | void) : (JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ? (ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: (DataT["columnReferences"] & ToNullableColumnReferences<TableToReference<ToTableT>>);
-        joins: (TuplePush<DataT["joins"], Join<"LEFT", ToTableT, true>>);
+        joins: (TuplePush<DataT["joins"], Join<"LEFT", ToTableT, ToNullableColumnReferences<TableToReference<ToTableT>>, true>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
         distinct: DataT["distinct"];
@@ -121,7 +121,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     joinUsing<ToTableT extends AnyAliasedTable, FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>>(toTable: ToTableT, from: FromTupleT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ? ("JOIN USING clause not allowed here" | void | never) : (TableAlias<ToTableT> extends keyof DataT["columnReferences"] ? ("Duplicate alias" | TableAlias<ToTableT> | void) : (JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ? (RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ? ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: (DataT["columnReferences"] & TableToReference<ToTableT>);
-        joins: (TuplePush<DataT["joins"], Join<"INNER", ToTableT, false>>);
+        joins: (TuplePush<DataT["joins"], Join<"INNER", ToTableT, TableToReference<ToTableT>, false>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
         distinct: DataT["distinct"];
@@ -135,7 +135,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     rightJoinUsing<ToTableT extends AnyAliasedTable, FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>>(toTable: ToTableT, from: FromTupleT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ? ("JOIN clause not allowed here" | void | never) : (TableAlias<ToTableT> extends keyof DataT["columnReferences"] ? ("Duplicate alias" | TableAlias<ToTableT> | void) : (JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ? (RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ? ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: (ToNullableColumnReferences<DataT["columnReferences"]> & TableToReference<ToTableT>);
-        joins: (TuplePush<ToNullableJoinTuple<DataT["joins"]>, Join<"RIGHT", ToTableT, false>>);
+        joins: (TuplePush<ToNullableJoinTuple<DataT["joins"]>, Join<"RIGHT", ToTableT, TableToReference<ToTableT>, false>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
         distinct: DataT["distinct"];
@@ -149,7 +149,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     leftJoinUsing<ToTableT extends AnyAliasedTable, FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>>(toTable: ToTableT, from: FromTupleT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ? ("JOIN clause not allowed here" | void | never) : (TableAlias<ToTableT> extends keyof DataT["columnReferences"] ? ("Duplicate alias" | TableAlias<ToTableT> | void) : (JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ? (RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ? ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: (DataT["columnReferences"] & ToNullableColumnReferences<TableToReference<ToTableT>>);
-        joins: (TuplePush<DataT["joins"], Join<"LEFT", ToTableT, true>>);
+        joins: (TuplePush<DataT["joins"], Join<"LEFT", ToTableT, ToNullableColumnReferences<TableToReference<ToTableT>>, true>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
         distinct: DataT["distinct"];
@@ -163,7 +163,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     whereIsNotNull<TypeNarrowCallbackT extends TypeNarrowCallback<ISelectBuilder<DataT>>>(typeNarrowCallback: TypeNarrowCallbackT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.NARROW> extends never ? ("NARROW clause not allowed here" | void | never) : ReturnType<TypeNarrowCallbackT> extends IColumn<infer TableNameT, infer NameT, infer TypeT> ? ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: ReplaceColumnOfReference<DataT["columnReferences"], TableNameT, NameT, Exclude<TypeT, null | undefined>>;
-        joins: DataT["joins"];
+        joins: ReplaceColumnOfJoinTuple<DataT["joins"], TableNameT, NameT, Exclude<TypeT, null | undefined>>;
         selectReferences: ReplaceColumnOfReference<DataT["selectReferences"], TableNameT, NameT, Exclude<TypeT, null | undefined>>;
         selectTuple: (DataT["selectTuple"] extends Tuple<any> ? ReplaceColumnOfSelectTuple<DataT["selectTuple"], TableNameT, NameT, Exclude<TypeT, null | undefined>> : undefined);
         distinct: DataT["distinct"];
@@ -177,7 +177,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     whereIsNull<TypeNarrowCallbackT extends TypeNarrowCallback<ISelectBuilder<DataT>>>(typeNarrowCallback: TypeNarrowCallbackT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.NARROW> extends never ? ("NARROW clause not allowed here" | void | never) : ReturnType<TypeNarrowCallbackT> extends IColumn<infer TableNameT, infer NameT, infer TypeT> ? ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: ReplaceColumnOfReference<DataT["columnReferences"], TableNameT, NameT, null>;
-        joins: DataT["joins"];
+        joins: ReplaceColumnOfJoinTuple<DataT["joins"], TableNameT, NameT, null>;
         selectReferences: ReplaceColumnOfReference<DataT["selectReferences"], TableNameT, NameT, null>;
         selectTuple: (DataT["selectTuple"] extends Tuple<any> ? ReplaceColumnOfSelectTuple<DataT["selectTuple"], TableNameT, NameT, null> : undefined);
         distinct: DataT["distinct"];
@@ -191,7 +191,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     whereIsEqual<ConstT extends boolean | number | string, TypeNarrowCallbackT extends TypeNarrowCallback<ISelectBuilder<DataT>>>(value: ConstT, typeNarrowCallback: TypeNarrowCallbackT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.NARROW> extends never ? ("NARROW clause not allowed here" | void | never) : ReturnType<TypeNarrowCallbackT> extends IColumn<infer TableNameT, infer NameT, infer TypeT> ? ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: ReplaceColumnOfReference<DataT["columnReferences"], TableNameT, NameT, ConstT>;
-        joins: DataT["joins"];
+        joins: ReplaceColumnOfJoinTuple<DataT["joins"], TableNameT, NameT, ConstT>;
         selectReferences: ReplaceColumnOfReference<DataT["selectReferences"], TableNameT, NameT, ConstT>;
         selectTuple: (DataT["selectTuple"] extends Tuple<any> ? ReplaceColumnOfSelectTuple<DataT["selectTuple"], TableNameT, NameT, ConstT> : undefined);
         distinct: DataT["distinct"];
@@ -483,7 +483,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     widen<TypeWidenCallbackT extends TypeWidenCallback<ISelectBuilder<DataT>>, WidenT>(typeWidenCallback: TypeWidenCallbackT, assertWidened: sd.AssertFunc<WidenT>): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.WIDEN> extends never ? ("WIDEN clause not allowed here" | void | never) : ReturnType<TypeWidenCallbackT> extends IColumn<infer TableNameT, infer NameT, infer TypeT> ? ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: DataT["columnReferences"];
-        joins: DataT["joins"];
+        joins: ReplaceColumnOfJoinTuple<DataT["joins"], TableNameT, NameT, TypeT | WidenT>;
         selectReferences: ReplaceColumnOfReference<DataT["selectReferences"], TableNameT, NameT, TypeT | WidenT>;
         selectTuple: (DataT["selectTuple"] extends Tuple<any> ? ReplaceColumnOfSelectTuple<DataT["selectTuple"], TableNameT, NameT, TypeT | WidenT> : undefined);
         distinct: DataT["distinct"];
@@ -621,9 +621,9 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     as<AliasT extends string>(alias: AliasT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AS> extends never ? ("AS clause not allowed here" | void | never) : DataT["selectTuple"] extends Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> ? (true extends JoinableSelectTupleHasDuplicateColumnName<DataT["selectTuple"]> ? "Cannot have duplicate column names in SELECT clause when aliasing" | void | never : AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<DataT["selectTuple"]>>) : "Cannot use tables in SELECT clause when aliasing" | void | never);
     querifyColumnReferences(sb: IStringBuilder): void;
     querifyWhere(sb: IStringBuilder): void;
-    fetchAll(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : Promise<ColumnReferencesToSchema<DataT["selectReferences"]>[]>);
-    fetchOne(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : Promise<ColumnReferencesToSchema<DataT["selectReferences"]>>);
-    fetchZeroOrOne(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : Promise<ColumnReferencesToSchema<DataT["selectReferences"]> | undefined>);
+    fetchAll(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : Promise<ColumnReferencesToSchemaWithJoins<DataT["selectReferences"], DataT["joins"]>[]>);
+    fetchOne(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : Promise<ColumnReferencesToSchemaWithJoins<DataT["selectReferences"], DataT["joins"]>>);
+    fetchZeroOrOne(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : Promise<ColumnReferencesToSchemaWithJoins<DataT["selectReferences"], DataT["joins"]> | undefined>);
     fetchValue(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : DataT["selectTuple"] extends (Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> & {
         length: 1;
     }) ? Promise<SelectTupleElementType<DataT["selectTuple"][0]>> : ("You can only fetchValue() if selecting one column" | void | never));
@@ -635,13 +635,13 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     }) ? Promise<SelectTupleElementType<DataT["selectTuple"][0]>[]> : ("You can only fetchValueArray() if selecting one column" | void | never));
     count(): Promise<number>;
     exists(): Promise<boolean>;
-    paginate(paginationArgs?: RawPaginationArgs): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : Promise<PaginateResult<ColumnReferencesToSchema<DataT["selectReferences"]>>>);
+    paginate(paginationArgs?: RawPaginationArgs): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ? ("Cannot FETCH here" | void | never) : Promise<PaginateResult<ColumnReferencesToSchemaWithJoins<DataT["selectReferences"], DataT["joins"]>>>);
 }
 export declare type AnySelectBuilder = ISelectBuilder<any>;
 export declare type CreateSelectBuilderDelegate = (<TableT extends AnyAliasedTable>(table: TableT) => (ISelectBuilder<{
     allowed: (SelectBuilderOperation.JOIN | SelectBuilderOperation.NARROW | SelectBuilderOperation.WHERE | SelectBuilderOperation.SELECT | SelectBuilderOperation.DISTINCT | SelectBuilderOperation.SQL_CALC_FOUND_ROWS | SelectBuilderOperation.GROUP_BY | SelectBuilderOperation.HAVING | SelectBuilderOperation.ORDER_BY | SelectBuilderOperation.LIMIT | SelectBuilderOperation.OFFSET | SelectBuilderOperation.UNION_ORDER_BY | SelectBuilderOperation.UNION_LIMIT | SelectBuilderOperation.UNION_OFFSET)[];
     columnReferences: TableToReference<TableT>;
-    joins: [Join<"FROM", TableT, false>];
+    joins: [Join<"FROM", TableT, TableToReference<TableT>, false>];
     selectReferences: {};
     selectTuple: undefined;
     distinct: false;
@@ -655,7 +655,7 @@ export declare type CreateSelectBuilderDelegate = (<TableT extends AnyAliasedTab
 export declare type CreateSubSelectBuilderDelegate<ColumnReferencesT extends ColumnReferences> = (<TableT extends AnyAliasedTable>(table: TableT) => (TableAlias<TableT> extends keyof ColumnReferencesT ? ("Duplicate alias" | TableAlias<TableT> | void) : ISelectBuilder<{
     allowed: (SelectBuilderOperation.JOIN | SelectBuilderOperation.NARROW | SelectBuilderOperation.WHERE | SelectBuilderOperation.SELECT | SelectBuilderOperation.DISTINCT | SelectBuilderOperation.SQL_CALC_FOUND_ROWS | SelectBuilderOperation.GROUP_BY | SelectBuilderOperation.HAVING | SelectBuilderOperation.ORDER_BY | SelectBuilderOperation.LIMIT | SelectBuilderOperation.OFFSET | SelectBuilderOperation.UNION_ORDER_BY | SelectBuilderOperation.UNION_LIMIT | SelectBuilderOperation.UNION_OFFSET)[];
     columnReferences: TableToReference<TableT> & ColumnReferencesT;
-    joins: [Join<"FROM", TableT, false>];
+    joins: [Join<"FROM", TableT, TableToReference<TableT>, false>];
     selectReferences: {};
     selectTuple: undefined;
     distinct: false;

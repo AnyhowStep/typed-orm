@@ -2,6 +2,7 @@ import * as d from "../declaration";
 import * as sd from "schema-decorator";
 import {Column} from "./column";
 import {spread} from "@anyhowstep/type-util";
+import {nullableJoinTableNames, assertDelegateOfJoinTuple} from "./join";
 
 export function toNullableColumnReferences<ColumnReferencesT extends d.ColumnReferences> (
     columnReferences : ColumnReferencesT
@@ -63,7 +64,14 @@ export function replaceColumnOfReference<
         if (curColumn.table == newColumn.table && curColumn.name == newColumn.name) {
             //Create a copy
             columnReferences = copyReferences(columnReferences);
-            columnReferences[newColumn.table][newColumn.name] = newColumn;
+            const oldColumn = columnReferences[newColumn.table][newColumn.name];
+            columnReferences[newColumn.table][newColumn.name] = new Column(
+                newColumn.table,
+                newColumn.name,
+                newColumn.assertDelegate,
+                (oldColumn as any).subTableName,
+                (oldColumn as any).isSelectReference
+            );
             return columnReferences as any;
         } else {
             return columnReferences as any;
@@ -119,7 +127,7 @@ export function combineReferences<
     }
     return result;
 }
-
+/*
 export function columnReferencesToSchema<
     ColumnReferencesT extends d.ColumnReferences
 > (columnReferences : ColumnReferencesT) : (
@@ -133,6 +141,54 @@ export function columnReferencesToSchema<
             fields[c.name] = c.assertDelegate;
         }
         result[table] = sd.toSchema(fields);
+    }
+    return sd.toSchema(result) as any;
+}
+*/
+
+export function columnReferencesToSchemaWithJoins<
+    ColumnReferencesT extends d.ColumnReferences,
+    JoinTupleT extends d.Tuple<d.AnyJoin>
+> (
+    columnReferences : ColumnReferencesT,
+    joins : JoinTupleT
+) : (
+    sd.AssertDelegate<d.ColumnReferencesToSchemaWithJoins<
+        ColumnReferencesT,
+        JoinTupleT
+    >>
+) {
+    const nullableTables = nullableJoinTableNames(joins);
+    const result = {} as any;
+    for (let table in columnReferences) {
+        const fields = {} as any;
+        for (let column in columnReferences[table]) {
+            const c = columnReferences[table][column];
+            if (table == "__expr") {
+                //HACK special case
+                fields[c.name] = c.assertDelegate;
+            } else {
+                fields[c.name] = assertDelegateOfJoinTuple(joins, table, column);
+            }
+        }
+        const isNullable = nullableTables.indexOf(table as any) >= 0;
+        if (isNullable) {
+            const nullFields = {} as any;
+            for (let column in columnReferences[table]) {
+                nullFields[column] = sd.nil();
+            }
+            const allNullSchema = sd.toSchema(nullFields);
+            const nonNullableSchema = sd.toSchema(fields);
+            result[table] = sd.or(
+                nonNullableSchema,
+                (name : string, mixed : any) => {
+                    allNullSchema(name, mixed);
+                    return undefined;
+                }
+            );
+        } else {
+            result[table] = sd.toSchema(fields);
+        }
     }
     return sd.toSchema(result) as any;
 }

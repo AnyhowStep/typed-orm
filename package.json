@@ -1,6 +1,6 @@
 {
   "name": "typed-orm",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "A strongly typed MySQL ORM",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",
@@ -8,7 +8,7 @@
     "test": "ts-node ./src/main/sandbox/select-builder",
     "check": "tsc --noEmit",
     "check2": "node --max-old-space-size=4096 ./node_modules/typescript/lib/tsc.js --noEmit --noErrorTruncation",
-    "build": "tsc -d"
+    "build": "(rm -r ./dist || true) && tsc -d"
   },
   "author": "",
   "license": "ISC",

@@ -4,4 +4,4 @@ export declare function replaceColumnOfSelectTuple<TupleT extends d.Tuple<d.AnyS
 export declare function selectTupleHasDuplicateColumn(tuple: d.Tuple<d.AnySelectTupleElement>): boolean;
 export declare function selectTupleToReferences<TupleT extends d.Tuple<d.AnySelectTupleElement>>(tuple: TupleT): d.SelectTupleToReferences<TupleT>;
 export declare function selectAllReference<ColumnReferencesT extends d.ColumnReferences>(columnReferences: ColumnReferencesT): ColumnReferencesT;
-export declare function joinTupleToSelectTuple<JoinTupleT extends d.Tuple<d.Join<any, any, any>>>(joinTuple: JoinTupleT): d.JoinTupleToSelectTuple<JoinTupleT>;
+export declare function joinTupleToSelectTuple<JoinTupleT extends d.Tuple<d.AnyJoin>>(joinTuple: JoinTupleT): d.JoinTupleToSelectTuple<JoinTupleT>;

@@ -45,5 +45,5 @@ export class Database extends mysql.Database {
                 assignments : undefined,
             }, this);
         }
-    );
+    ) as any;
 }

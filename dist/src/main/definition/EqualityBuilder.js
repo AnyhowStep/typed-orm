@@ -36,6 +36,9 @@ class EqualityBuilder {
             }
             let result = undefined;
             for (let key in mapping) {
+                if (!raw.hasOwnProperty(key)) {
+                    throw new Error(`Unknown key ${key}`);
+                }
                 const value = raw[key];
                 const column = mapping[key];
                 const check = (value == undefined) ?

@@ -7,13 +7,14 @@ import {
     JoinFromTupleOfCallback,
     JoinToTupleCallback,
     MatchesJoinFromTuple,
-    ToNullableJoinTuple
+    ToNullableJoinTuple,
+    ReplaceColumnOfJoinTuple
 } from "./join";
 import {Tuple, TuplePush, TupleConcat} from "./tuple";
 import {AliasedTable, AnyAliasedTable} from "./aliased-table";
 import {IColumn, AnyColumn} from "./column";
 import {TableAlias, TableToReference} from "./table-operation";
-import {ToNullableColumnReferences, ReplaceColumnOfReference, ColumnReferencesToSchema} from "./column-references-operation";
+import {ToNullableColumnReferences, ReplaceColumnOfReference, ColumnReferencesToSchemaWithJoins} from "./column-references-operation";
 import {TypeNarrowCallback} from "./type-narrow";
 import {WhereCallback} from "./where";
 import {
@@ -103,6 +104,8 @@ export interface LimitData {
     readonly offset   : number,
 }
 
+//TODO Maybe have a field where it just stores table data?
+//Right now, it's all in the `joins` field
 export interface AnySelectBuilderData {
     readonly allowed : SelectBuilderOperation[],
 
@@ -168,6 +171,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                             Join<
                                                 "INNER",
                                                 ToTableT,
+                                                TableToReference<ToTableT>,
                                                 false
                                             >
                                         >
@@ -216,6 +220,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                             Join<
                                                 "RIGHT",
                                                 ToTableT,
+                                                TableToReference<ToTableT>,
                                                 false
                                             >
                                         >
@@ -264,6 +269,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                             Join<
                                                 "LEFT",
                                                 ToTableT,
+                                                ToNullableColumnReferences<TableToReference<ToTableT>>,
                                                 true
                                             >
                                         >
@@ -314,6 +320,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                                 Join<
                                                     "INNER",
                                                     ToTableT,
+                                                    TableToReference<ToTableT>,
                                                     false
                                                 >
                                             >
@@ -363,6 +370,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                                 Join<
                                                     "RIGHT",
                                                     ToTableT,
+                                                    TableToReference<ToTableT>,
                                                     false
                                                 >
                                             >
@@ -412,6 +420,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                                 Join<
                                                     "LEFT",
                                                     ToTableT,
+                                                    ToNullableColumnReferences<TableToReference<ToTableT>>,
                                                     true
                                                 >
                                             >
@@ -448,7 +457,13 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                         NameT,
                         Exclude<TypeT, null|undefined>
                     >,
-                    joins : DataT["joins"],
+                    //TODO Narrow here, too
+                    joins : ReplaceColumnOfJoinTuple<
+                        DataT["joins"],
+                        TableNameT,
+                        NameT,
+                        Exclude<TypeT, null|undefined>
+                    >,
                     selectReferences : ReplaceColumnOfReference<
                         DataT["selectReferences"],
                         TableNameT,
@@ -489,7 +504,13 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                         NameT,
                         null
                     >,
-                    joins : DataT["joins"],
+                    //TODO Narrow here, too
+                    joins : ReplaceColumnOfJoinTuple<
+                        DataT["joins"],
+                        TableNameT,
+                        NameT,
+                        null
+                    >,
                     selectReferences : ReplaceColumnOfReference<
                         DataT["selectReferences"],
                         TableNameT,
@@ -534,7 +555,13 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                         NameT,
                         ConstT
                     >,
-                    joins : DataT["joins"],
+                    //TODO Narrow here, too
+                    joins : ReplaceColumnOfJoinTuple<
+                        DataT["joins"],
+                        TableNameT,
+                        NameT,
+                        ConstT
+                    >,
                     selectReferences : ReplaceColumnOfReference<
                         DataT["selectReferences"],
                         TableNameT,
@@ -1020,7 +1047,13 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 ISelectBuilder<{
                     allowed : DataT["allowed"],
                     columnReferences : DataT["columnReferences"],
-                    joins : DataT["joins"],
+                    //TODO Widen here, too
+                    joins : ReplaceColumnOfJoinTuple<
+                        DataT["joins"],
+                        TableNameT,
+                        NameT,
+                        TypeT|WidenT
+                    >,
                     selectReferences : ReplaceColumnOfReference<
                         DataT["selectReferences"],
                         TableNameT,
@@ -1274,17 +1307,26 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     fetchAll () : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
             ("Cannot FETCH here"|void|never) :
-            Promise<ColumnReferencesToSchema<DataT["selectReferences"]>[]>
+            Promise<ColumnReferencesToSchemaWithJoins<
+                DataT["selectReferences"],
+                DataT["joins"]
+            >[]>
     );
     fetchOne () : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
             ("Cannot FETCH here"|void|never) :
-            Promise<ColumnReferencesToSchema<DataT["selectReferences"]>>
+            Promise<ColumnReferencesToSchemaWithJoins<
+                DataT["selectReferences"],
+                DataT["joins"]
+            >>
     );
     fetchZeroOrOne () : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
             ("Cannot FETCH here"|void|never) :
-            Promise<ColumnReferencesToSchema<DataT["selectReferences"]>|undefined>
+            Promise<ColumnReferencesToSchemaWithJoins<
+                DataT["selectReferences"],
+                DataT["joins"]
+            >|undefined>
     );
     fetchValue () : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
@@ -1327,7 +1369,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     paginate (paginationArgs? : RawPaginationArgs) : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
             ("Cannot FETCH here"|void|never) :
-            Promise<PaginateResult<ColumnReferencesToSchema<DataT["selectReferences"]>>>
+            Promise<PaginateResult<ColumnReferencesToSchemaWithJoins<
+                DataT["selectReferences"],
+                DataT["joins"]
+            >>>
     );
 }
 
@@ -1406,7 +1451,7 @@ export type CreateSelectBuilderDelegate = (
                 //SelectBuilderOperation.FETCH
             )[],
             columnReferences : TableToReference<TableT>,
-            joins : [Join<"FROM", TableT, false>],
+            joins : [Join<"FROM", TableT, TableToReference<TableT>, false>],
             selectReferences : {},
             selectTuple : undefined,
             distinct : false,
@@ -1495,7 +1540,7 @@ export type CreateSubSelectBuilderDelegate<ColumnReferencesT extends ColumnRefer
                     //SelectBuilderOperation.FETCH
                 )[],
                 columnReferences : TableToReference<TableT> & ColumnReferencesT,
-                joins : [Join<"FROM", TableT, false>],
+                joins : [Join<"FROM", TableT, TableToReference<TableT>, false>],
                 selectReferences : {},
                 selectTuple : undefined,
                 distinct : false,

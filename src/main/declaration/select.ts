@@ -9,7 +9,7 @@ import {
 } from "./column-references-operation";
 import {IColumn, AnyColumn} from "./column";
 import {HasDuplicateColumn, ColumnToReference} from "./column-operation";
-import {Join} from "./join";
+import {AnyJoin} from "./join";
 
 export type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
     (IColumnExpr<
@@ -232,19 +232,32 @@ export type ReplaceColumnOfSelectTuple<
         (never)
 );
 
-export type JoinTupleToSelectTuple<JoinTupleT extends Tuple<Join<any, any, any>>> = (
-    JoinTupleT[TupleKeys<JoinTupleT>] extends Join<any, any, any> ?
+export type JoinToSelect<JoinT extends AnyJoin> = (
+    JoinT["nullable"] extends true ?
+        (
+            {
+                [name in JoinT["columnReferences"]] : (
+                    JoinT["columnReferences"][name]|null
+                )
+            }
+        ) :
+        (
+            JoinT["columnReferences"]
+        )
+);
+export type JoinTupleToSelectTuple<JoinTupleT extends Tuple<AnyJoin>> = (
+    JoinTupleT[TupleKeys<JoinTupleT>] extends AnyJoin ?
         (
             {
                 [index in TupleKeys<JoinTupleT>] : (
-                    JoinTupleT[index] extends Join<any, any, any> ?
-                        JoinTupleT[index]["table"]["columns"] :
+                    JoinTupleT[index] extends AnyJoin ?
+                        JoinToSelect<JoinTupleT[index]> :
                         never
                 )
             } &
-            { "0" : JoinTupleT[0]["table"]["columns"] } &
+            { "0" : JoinToSelect<JoinTupleT[0]> } &
             { length : TupleLength<JoinTupleT> } &
-            (JoinTupleT[TupleKeys<JoinTupleT>]["table"]["columns"])[]
+            JoinToSelect<JoinTupleT[TupleKeys<JoinTupleT>]>[]
         ) :
         (never)
 );

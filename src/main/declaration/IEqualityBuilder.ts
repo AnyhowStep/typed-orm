@@ -4,9 +4,11 @@ import {IExpr} from "./expr";
 import {ITable} from "./table";
 //import {TypedRawColumn} from "./column-collection";
 
-export type ColumnMapping<IdentifierT> = {
-    [name in keyof IdentifierT] : IColumn<any, any, IdentifierT[name]>
-}
+export type ColumnMapping<IdentifierT> = (
+    {
+        [name in keyof IdentifierT] : IColumn<any, any, IdentifierT[name]>
+    }
+)
 export type TableColumnsWithMapping<IdentifierT> = (
     {
         [name in keyof IdentifierT] : IColumn<any, any, IdentifierT[name]>
@@ -108,7 +110,11 @@ export interface IEqualityBuilder<
     > (
         identifierAssert : sd.AssertFunc<IdentifierT>,
         mapping : MappingT
-    ) : EqualityBuilderAddResult<ConvertFuncT, IdentifierT, MappingT>;
+    ) : (
+        ColumnMapping<IdentifierT> extends MappingT ?
+            EqualityBuilderAddResult<ConvertFuncT, IdentifierT, MappingT> :
+            ("Extra fields not allowed in mapping"|void|never)
+    );
     addTable<
         IdentifierT extends object,
         TableT extends ITable<any, any, any, any>

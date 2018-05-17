@@ -37,7 +37,11 @@ export class EqualityBuilder<
     > (
         identifierAssert : sd.AssertFunc<IdentifierT>,
         mapping : MappingT
-    ) : d.EqualityBuilderAddResult<ConvertFuncT, IdentifierT, MappingT> {
+    ) : (
+        d.ColumnMapping<IdentifierT> extends MappingT ?
+            d.EqualityBuilderAddResult<ConvertFuncT, IdentifierT, MappingT> :
+            ("Extra fields not allowed in mapping"|void|never)
+    ) {
         const assertDelegate = sd.toAssertDelegateExact(identifierAssert);
         const newConvert = (raw : any) => {
             try {
@@ -47,6 +51,9 @@ export class EqualityBuilder<
             }
             let result : any = undefined;
             for (let key in mapping) {
+                if (!raw.hasOwnProperty(key)) {
+                    throw new Error(`Unknown key ${key}`);
+                }
                 const value = (raw as any)[key];
                 const column = mapping[key];
                 const check = (value == undefined) ?

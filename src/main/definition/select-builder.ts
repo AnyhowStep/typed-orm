@@ -3,8 +3,8 @@ import * as sd from "schema-decorator";
 import {tableToReference} from "./table-operation";
 import * as tuple from "./tuple";
 import {spread, check} from "@anyhowstep/type-util";
-import {getJoinFrom, getJoinTo, toNullableJoinTuple, getJoinToUsingFrom} from "./join";
-import {toNullableColumnReferences, replaceColumnOfReference, combineReferences, columnReferencesToSchema} from "./column-references-operation";
+import {getJoinFrom, getJoinTo, toNullableJoinTuple, getJoinToUsingFrom, replaceColumnOfJoinTuple} from "./join";
+import {toNullableColumnReferences, replaceColumnOfReference, combineReferences, columnReferencesToSchemaWithJoins} from "./column-references-operation";
 import {and} from "./expr-logical";
 import {isNull, isNotNull, eq} from "./expr-comparison";
 import {Column} from "./column";
@@ -85,6 +85,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                 joins : tuple.push(this.data.joins, {
                     joinType : "INNER",
                     table : toTable,
+                    columnReferences : tableToReference(toTable),
                     nullable : false,
                     from : fromTuple,
                     to : toTuple,
@@ -118,6 +119,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                     {
                         joinType : "RIGHT",
                         table : toTable,
+                        columnReferences : tableToReference(toTable),
                         nullable : false,
                         from : fromTuple,
                         to : toTuple,
@@ -152,6 +154,8 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                     {
                         joinType : "LEFT",
                         table : toTable,
+                        //Not nullable reference!
+                        columnReferences : tableToReference(toTable),
                         nullable : true,
                         from : fromTuple,
                         to : toTuple,
@@ -185,6 +189,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                 joins : tuple.push(this.data.joins, {
                     joinType : "INNER",
                     table : toTable,
+                    columnReferences : tableToReference(toTable),
                     nullable : false,
                     from : fromTuple,
                     to : toTuple,
@@ -217,6 +222,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                     {
                         joinType : "RIGHT",
                         table : toTable,
+                        columnReferences : tableToReference(toTable),
                         nullable : false,
                         from : fromTuple,
                         to : toTuple,
@@ -250,6 +256,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                     {
                         joinType : "LEFT",
                         table : toTable,
+                        columnReferences : tableToReference(toTable),
                         nullable : true,
                         from : fromTuple,
                         to : toTuple,
@@ -265,6 +272,10 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             this.data,
             {
                 columnReferences : replaceColumnOfReference(this.data.columnReferences, newColumn),
+                joins : replaceColumnOfJoinTuple(
+                    this.data.joins,
+                    newColumn
+                ),
                 selectReferences : replaceColumnOfReference(this.data.selectReferences, newColumn),
                 selectTuple : (
                     this.data.selectTuple == undefined ?
@@ -739,6 +750,10 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             spread(
                 this.data,
                 {
+                    joins : replaceColumnOfJoinTuple(
+                        this.data.joins,
+                        newColumn
+                    ),
                     selectReferences : replaceColumnOfReference(this.data.selectReferences, newColumn),
                     selectTuple : (
                         this.data.selectTuple == undefined ?
@@ -947,9 +962,10 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                     this.data.columnReferences,
                     tableToReference(table)
                 ),
-                joins : [check<d.Join<"FROM", TableT, false>>({
+                joins : [check<d.Join<"FROM", TableT, d.TableToReference<TableT>, false>>({
                     joinType : "FROM",
                     table : table,
+                    columnReferences : tableToReference(table),
                     nullable : false,
                     from : undefined,
                     to : undefined,
@@ -1165,10 +1181,13 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     }
 
     //FETCH CLAUSE
-    private schema : sd.AssertDelegate<d.ColumnReferencesToSchema<DataT["selectReferences"]>>|undefined = undefined;
+    private schema : sd.AssertDelegate<d.ColumnReferencesToSchemaWithJoins<DataT["selectReferences"], DataT["joins"]>>|undefined = undefined;
     private getSchema () {
         if (this.schema == undefined) {
-            this.schema = columnReferencesToSchema<DataT["selectReferences"]>(this.data.selectReferences);
+            this.schema = columnReferencesToSchemaWithJoins<
+                DataT["selectReferences"],
+                DataT["joins"]
+            >(this.data.selectReferences, this.data.joins);
         }
         return this.schema;
     }
@@ -1233,7 +1252,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                 }
                 const row = this.processRow(raw.rows[0]);
                 const names = raw.fields[0].name.split("--");
-                return row[names[0]][names[1]];
+                return (row as any)[names[0]][names[1]];
             }) as any;
     }
     fetchValueOrUndefined () {
@@ -1252,7 +1271,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                 }
                 const row = this.processRow(raw.rows[0]);
                 const names = raw.fields[0].name.split("--");
-                return row[names[0]][names[1]];
+                return (row as any)[names[0]][names[1]];
             }) as any;
     }
     fetchValueArray () {
@@ -1268,7 +1287,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
 
                 return Promise.all(raw.rows
                     .map(this.processRow)
-                    .map(row => row[table][column])
+                    .map(row => (row as any)[table][column])
                 );
             }) as any;
     }
@@ -1392,9 +1411,10 @@ export function newCreateSelectBuilderDelegate (db : Database) : d.CreateSelectB
                 d.SelectBuilderOperation.UNION_OFFSET,
             ],
             columnReferences : tableToReference(table),
-            joins : [check<d.Join<"FROM", TableT, false>>({
+            joins : [check<d.Join<"FROM", TableT, d.TableToReference<TableT>, false>>({
                 joinType : "FROM",
                 table : table,
+                columnReferences : tableToReference(table),
                 nullable : false,
                 from : undefined,
                 to : undefined,

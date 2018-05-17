@@ -116,6 +116,8 @@ function selectAllReference(columnReferences) {
     return result;
 }
 exports.selectAllReference = selectAllReference;
+//TODO Fix this, it shouldn't use the JOIN tuple,
+//The NARROW clauses might have restricted the type
 function joinTupleToSelectTuple(joinTuple) {
     const result = [];
     for (let join of joinTuple) {

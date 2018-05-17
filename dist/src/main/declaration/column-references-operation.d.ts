@@ -1,6 +1,8 @@
 import { ColumnReferences } from "./column-references";
 import { IColumn } from "./column";
 import { ColumnType } from "./column-operation";
+import { Tuple } from "./tuple";
+import { AnyJoin, NullableJoinTableNames, ColumnOfJoinTuple } from "./join";
 export declare type Union<T> = (T[keyof T]);
 export declare type ColumnOfReferencesInner<ColumnReferencesT extends ColumnReferences> = ({
     data: {
@@ -32,8 +34,12 @@ export declare type PartialToColumnReferences<PartialT extends ColumnReferences>
         [column in keyof PartialT[table]]: Exclude<PartialT[table][column], undefined>;
     };
 };
-export declare type ColumnReferencesToSchema<ColumnReferencesT extends ColumnReferences> = {
-    [table in keyof ColumnReferencesT]: {
-        [column in keyof ColumnReferencesT[table]]: ColumnType<ColumnReferencesT[table][column]>;
+export declare type ColumnReferencesToSchemaWithJoins<ColumnReferencesT extends ColumnReferences, JoinTupleT extends Tuple<AnyJoin>> = ({
+    [table in Exclude<Extract<keyof ColumnReferencesT, string>, NullableJoinTableNames<JoinTupleT>>]: {
+        [name in Extract<keyof ColumnReferencesT[table], string>]: ColumnType<ColumnOfJoinTuple<JoinTupleT, table, name>>;
     };
-};
+} & {
+    [table in Extract<Extract<keyof ColumnReferencesT, string>, NullableJoinTableNames<JoinTupleT>>]?: {
+        [name in Extract<keyof ColumnReferencesT[table], string>]: ColumnType<ColumnOfJoinTuple<JoinTupleT, table, name>>;
+    };
+});

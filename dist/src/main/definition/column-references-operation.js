@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 const column_1 = require("./column");
 const type_util_1 = require("@anyhowstep/type-util");
+const join_1 = require("./join");
 function toNullableColumnReferences(columnReferences) {
     const result = {};
     for (let table in columnReferences) {
@@ -40,7 +41,8 @@ function replaceColumnOfReference(columnReferences, newColumn) {
         if (curColumn.table == newColumn.table && curColumn.name == newColumn.name) {
             //Create a copy
             columnReferences = copyReferences(columnReferences);
-            columnReferences[newColumn.table][newColumn.name] = newColumn;
+            const oldColumn = columnReferences[newColumn.table][newColumn.name];
+            columnReferences[newColumn.table][newColumn.name] = new column_1.Column(newColumn.table, newColumn.name, newColumn.assertDelegate, oldColumn.subTableName, oldColumn.isSelectReference);
             return columnReferences;
         }
         else {
@@ -91,17 +93,57 @@ function combineReferences(t, u) {
     return result;
 }
 exports.combineReferences = combineReferences;
-function columnReferencesToSchema(columnReferences) {
-    const result = {};
+/*
+export function columnReferencesToSchema<
+    ColumnReferencesT extends d.ColumnReferences
+> (columnReferences : ColumnReferencesT) : (
+    sd.AssertDelegate<d.ColumnReferencesToSchema<ColumnReferencesT>>
+) {
+    const result = {} as any;
     for (let table in columnReferences) {
-        const fields = {};
+        const fields = {} as any;
         for (let column in columnReferences[table]) {
             const c = columnReferences[table][column];
             fields[c.name] = c.assertDelegate;
         }
         result[table] = sd.toSchema(fields);
     }
+    return sd.toSchema(result) as any;
+}
+*/
+function columnReferencesToSchemaWithJoins(columnReferences, joins) {
+    const nullableTables = join_1.nullableJoinTableNames(joins);
+    const result = {};
+    for (let table in columnReferences) {
+        const fields = {};
+        for (let column in columnReferences[table]) {
+            const c = columnReferences[table][column];
+            if (table == "__expr") {
+                //HACK special case
+                fields[c.name] = c.assertDelegate;
+            }
+            else {
+                fields[c.name] = join_1.assertDelegateOfJoinTuple(joins, table, column);
+            }
+        }
+        const isNullable = nullableTables.indexOf(table) >= 0;
+        if (isNullable) {
+            const nullFields = {};
+            for (let column in columnReferences[table]) {
+                nullFields[column] = sd.nil();
+            }
+            const allNullSchema = sd.toSchema(nullFields);
+            const nonNullableSchema = sd.toSchema(fields);
+            result[table] = sd.or(nonNullableSchema, (name, mixed) => {
+                allNullSchema(name, mixed);
+                return undefined;
+            });
+        }
+        else {
+            result[table] = sd.toSchema(fields);
+        }
+    }
     return sd.toSchema(result);
 }
-exports.columnReferencesToSchema = columnReferencesToSchema;
+exports.columnReferencesToSchemaWithJoins = columnReferencesToSchemaWithJoins;
 //# sourceMappingURL=column-references-operation.js.map

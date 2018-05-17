@@ -45,6 +45,7 @@ class SelectBuilder {
                 joins: [type_util_1.check({
                         joinType: "FROM",
                         table: table,
+                        columnReferences: table_operation_1.tableToReference(table),
                         nullable: false,
                         from: undefined,
                         to: undefined,
@@ -115,6 +116,7 @@ class SelectBuilder {
             joins: tuple.push(this.data.joins, {
                 joinType: "INNER",
                 table: toTable,
+                columnReferences: table_operation_1.tableToReference(toTable),
                 nullable: false,
                 from: fromTuple,
                 to: toTuple,
@@ -132,6 +134,7 @@ class SelectBuilder {
             joins: tuple.push(join_1.toNullableJoinTuple(this.data.joins), {
                 joinType: "RIGHT",
                 table: toTable,
+                columnReferences: table_operation_1.tableToReference(toTable),
                 nullable: false,
                 from: fromTuple,
                 to: toTuple,
@@ -150,6 +153,8 @@ class SelectBuilder {
             joins: tuple.push(this.data.joins, {
                 joinType: "LEFT",
                 table: toTable,
+                //Not nullable reference!
+                columnReferences: table_operation_1.tableToReference(toTable),
                 nullable: true,
                 from: fromTuple,
                 to: toTuple,
@@ -169,6 +174,7 @@ class SelectBuilder {
             joins: tuple.push(this.data.joins, {
                 joinType: "INNER",
                 table: toTable,
+                columnReferences: table_operation_1.tableToReference(toTable),
                 nullable: false,
                 from: fromTuple,
                 to: toTuple,
@@ -186,6 +192,7 @@ class SelectBuilder {
             joins: tuple.push(join_1.toNullableJoinTuple(this.data.joins), {
                 joinType: "RIGHT",
                 table: toTable,
+                columnReferences: table_operation_1.tableToReference(toTable),
                 nullable: false,
                 from: fromTuple,
                 to: toTuple,
@@ -204,6 +211,7 @@ class SelectBuilder {
             joins: tuple.push(this.data.joins, {
                 joinType: "LEFT",
                 table: toTable,
+                columnReferences: table_operation_1.tableToReference(toTable),
                 nullable: true,
                 from: fromTuple,
                 to: toTuple,
@@ -215,6 +223,7 @@ class SelectBuilder {
     appendNarrowData(newColumn) {
         return type_util_1.spread(this.data, {
             columnReferences: column_references_operation_1.replaceColumnOfReference(this.data.columnReferences, newColumn),
+            joins: join_1.replaceColumnOfJoinTuple(this.data.joins, newColumn),
             selectReferences: column_references_operation_1.replaceColumnOfReference(this.data.selectReferences, newColumn),
             selectTuple: (this.data.selectTuple == undefined ?
                 undefined :
@@ -453,6 +462,7 @@ class SelectBuilder {
         const column = typeWidenCallback(this.data.selectReferences);
         const newColumn = new column_1.Column(column.table, column.name, sd.or(column.assertDelegate, assertWidened));
         return new SelectBuilder(type_util_1.spread(this.data, {
+            joins: join_1.replaceColumnOfJoinTuple(this.data.joins, newColumn),
             selectReferences: column_references_operation_1.replaceColumnOfReference(this.data.selectReferences, newColumn),
             selectTuple: (this.data.selectTuple == undefined ?
                 undefined :
@@ -721,7 +731,7 @@ class SelectBuilder {
     }
     getSchema() {
         if (this.schema == undefined) {
-            this.schema = column_references_operation_1.columnReferencesToSchema(this.data.selectReferences);
+            this.schema = column_references_operation_1.columnReferencesToSchemaWithJoins(this.data.selectReferences, this.data.joins);
         }
         return this.schema;
     }
@@ -918,6 +928,7 @@ function newCreateSelectBuilderDelegate(db) {
             joins: [type_util_1.check({
                     joinType: "FROM",
                     table: table,
+                    columnReferences: table_operation_1.tableToReference(table),
                     nullable: false,
                     from: undefined,
                     to: undefined,

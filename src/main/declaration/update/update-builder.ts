@@ -1,10 +1,13 @@
-import {ISelectBuilder, AnySelectBuilder} from "../select-builder";
+import {ISelectBuilder, AnySelectBuilder, AnySelectBuilderData} from "../select-builder";
 import {IColumn} from "../column";
 import {TypeOf} from "../column-collection";
 import {ColumnOfReferences, ToPartialColumnReferences} from "../column-references-operation";
 import * as mysql from "typed-mysql";
 import {Querify} from "../querify";
 import {RawExpr, IExpr, SelectBuilderValueQuery} from "../expr";
+import {Tuple} from "../tuple";
+import {AnyJoin, TableOfJoinTuple} from "../join";
+import {ITable} from "../table";
 
 export interface AnyUpdateBuilderData {
     readonly selectBuilder : AnySelectBuilder;
@@ -17,12 +20,57 @@ export interface AnyUpdateBuilderData {
     };
 }
 
-export type AssignmentsCallback<DataT extends AnyUpdateBuilderData> = (
-    DataT["selectBuilder"] extends ISelectBuilder<infer SelectDataT> ?
-        (c : SelectDataT["columnReferences"], s : DataT["selectBuilder"]) => (
-            {
-                [table in keyof SelectDataT["columnReferences"]]? : {
-                    [column in keyof SelectDataT["columnReferences"][table]]? : (
+export type MutableKeys<
+    JoinTupleT extends Tuple<AnyJoin>,
+    TableNameT extends string
+> = (
+    TableOfJoinTuple<JoinTupleT, TableNameT> extends ITable<any, any, any, infer TableDataT> ?
+        keyof TableDataT["isMutable"] :
+        never
+);
+
+export type AllAssignments<SelectDataT extends AnySelectBuilderData> = (
+    {
+        [table in Extract<keyof SelectDataT["columnReferences"], string>] : (
+            Extract<
+                keyof SelectDataT["columnReferences"][table],
+                MutableKeys<
+                    SelectDataT["joins"],
+                    table
+                >
+            > extends never ?
+                { [name : string] : never } :
+                {
+                    [column in Extract<
+                        keyof SelectDataT["columnReferences"][table],
+                        MutableKeys<
+                            SelectDataT["joins"],
+                            table
+                        >
+                    >] : any
+                }
+        )
+    }
+);
+export type Assignments<SelectDataT extends AnySelectBuilderData> = (
+    {
+        [table in Extract<keyof SelectDataT["columnReferences"], string>]? : (
+            Extract<
+                keyof SelectDataT["columnReferences"][table],
+                MutableKeys<
+                    SelectDataT["joins"],
+                    table
+                >
+            > extends never ?
+                { [name : string] : never } :
+                {
+                    [column in Extract<
+                        keyof SelectDataT["columnReferences"][table],
+                        MutableKeys<
+                            SelectDataT["joins"],
+                            table
+                        >
+                    >]? : (
                         (
                             Extract<
                                 ColumnOfReferences<SelectDataT["columnReferences"]>,
@@ -43,8 +91,14 @@ export type AssignmentsCallback<DataT extends AnyUpdateBuilderData> = (
                         )
                     )
                 }
-            }
-        ) :
+        )
+    }
+);
+
+//TODO Take Mutability into account
+export type AssignmentsCallback<DataT extends AnyUpdateBuilderData> = (
+    DataT["selectBuilder"] extends ISelectBuilder<infer SelectDataT> ?
+        (c : SelectDataT["columnReferences"], s : DataT["selectBuilder"]) => Assignments<SelectDataT> :
         (never)
 )
 
@@ -62,25 +116,26 @@ export interface IUpdateBuilder<DataT extends AnyUpdateBuilderData> extends Quer
         assignments : DataT["assignments"];
     }>;
 
-    set<AssignmentsCallbackT extends AssignmentsCallback<DataT>> (
+    set<
+        AssignmentsCallbackT extends AssignmentsCallback<DataT>
+    > (
         assignmentsCallback : AssignmentsCallbackT
-    ) : IUpdateBuilder<{
-        selectBuilder : DataT["selectBuilder"];
-        ignoreErrors : DataT["ignoreErrors"];
-        assignments : ReturnType<AssignmentsCallbackT>;
-    }>;
+    ) : (
+        AllAssignments<DataT["selectBuilder"]["data"]> extends ReturnType<AssignmentsCallbackT> ?
+            IUpdateBuilder<{
+                selectBuilder : DataT["selectBuilder"];
+                ignoreErrors : DataT["ignoreErrors"];
+                assignments : ReturnType<AssignmentsCallbackT>;
+            }> :
+            ("Invalid assignments; some tables/columns cannot be updated"|void|never)
+    );
 
-    execute (
-        this : IUpdateBuilder<{
-            selectBuilder : any,
-            ignoreErrors : any,
-            assignments : {
-                [table : string] : {
-                    [name : string] : RawExpr<any>
-                }
-            },
-        }>
-    ) : mysql.MysqlUpdateResult;
+    execute () : (
+        DataT["assignments"] extends undefined ?
+            ("Call set() first"|void|never) :
+            Promise<mysql.MysqlUpdateResult>
+
+    );
 }
 
 export type CreateUpdateBuilderDelegate = (

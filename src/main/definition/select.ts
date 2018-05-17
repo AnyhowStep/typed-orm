@@ -155,9 +155,10 @@ export function selectAllReference<ColumnReferencesT extends d.ColumnReferences>
     }
     return result;
 }
-
+//TODO Fix this, it shouldn't use the JOIN tuple,
+//The NARROW clauses might have restricted the type
 export function joinTupleToSelectTuple<
-    JoinTupleT extends d.Tuple<d.Join<any, any, any>>
+    JoinTupleT extends d.Tuple<d.AnyJoin>
 > (
     joinTuple : JoinTupleT
 ) : d.JoinTupleToSelectTuple<JoinTupleT> {
