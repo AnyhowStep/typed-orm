@@ -6,6 +6,7 @@ import { ToPartialColumnReferences, ColumnOfReferences, ReplaceColumnOfReference
 import { IColumn, AnyColumn } from "./column";
 import { HasDuplicateColumn, ColumnToReference } from "./column-operation";
 import { AnyJoin } from "./join";
+import { TypeOf } from "./column-collection";
 export declare type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = ((IColumnExpr<ToPartialColumnReferences<ColumnReferencesT>, "__expr", any, any>) | ColumnReferencesT[keyof ColumnReferencesT] | ColumnOfReferences<ColumnReferencesT>);
 export declare type AnySelectTupleElement = SelectTupleElement<any>;
 export declare type SelectCallback<SelectBuilderT extends AnySelectBuilder> = (SelectBuilderT extends ISelectBuilder<infer DataT> ? (columnReferences: DataT["columnReferences"], selectBuilder: SelectBuilderT) => (Tuple<SelectTupleElement<DataT["columnReferences"]>>) : never);
@@ -43,7 +44,7 @@ export declare type ReplaceColumnOfSelectTuple<TupleT extends Tuple<AnySelectTup
     "0": ReplaceColumnOfSelectTupleElement<TupleT[0], TableNameT, NameT, NewTypeT>;
 }) : (never));
 export declare type JoinToSelect<JoinT extends AnyJoin> = (JoinT["nullable"] extends true ? ({
-    [name in JoinT["columnReferences"]]: (JoinT["columnReferences"][name] | null);
+    [name in JoinT["columnReferences"]]: (JoinT["columnReferences"][name] extends IColumn<infer TableNameT, name, infer TypeT> ? IColumn<TableNameT, name, TypeT | null> : IColumn<JoinT["columnReferences"][name]["table"]["alias"], name, TypeOf<JoinT["columnReferences"][name]> | null>);
 }) : (JoinT["columnReferences"]));
 export declare type JoinTupleToSelectTuple<JoinTupleT extends Tuple<AnyJoin>> = (JoinTupleT[TupleKeys<JoinTupleT>] extends AnyJoin ? ({
     [index in TupleKeys<JoinTupleT>]: (JoinTupleT[index] extends AnyJoin ? JoinToSelect<JoinTupleT[index]> : never);

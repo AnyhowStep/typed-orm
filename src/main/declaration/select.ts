@@ -10,6 +10,7 @@ import {
 import {IColumn, AnyColumn} from "./column";
 import {HasDuplicateColumn, ColumnToReference} from "./column-operation";
 import {AnyJoin} from "./join";
+import {TypeOf} from "./column-collection";
 
 export type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
     (IColumnExpr<
@@ -237,7 +238,18 @@ export type JoinToSelect<JoinT extends AnyJoin> = (
         (
             {
                 [name in JoinT["columnReferences"]] : (
-                    JoinT["columnReferences"][name]|null
+                    JoinT["columnReferences"][name] extends IColumn<infer TableNameT, name, infer TypeT> ?
+                        IColumn<
+                            TableNameT,
+                            name,
+                            TypeT|null
+                        > :
+                        //Final attempt to infer the right type...
+                        IColumn<
+                            JoinT["columnReferences"][name]["table"]["alias"],
+                            name,
+                            TypeOf<JoinT["columnReferences"][name]>|null
+                        >
                 )
             }
         ) :
