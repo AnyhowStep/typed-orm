@@ -16,9 +16,10 @@ import {StringBuilder} from "./StringBuilder";
 import * as e from "./expr-library";
 import * as mysql from "typed-mysql";
 import {toExpr} from "./expr-operation";
+import {ConnectedDatabase} from "./ConnectedDatabase";
 
 export interface ExtraSelectBuilderData {
-    readonly db : Database;
+    readonly db : Database|ConnectedDatabase;
     readonly narrowExpr? : d.IExpr<any, boolean>;
     readonly whereExpr? : d.IExpr<any, boolean>;
     readonly havingExpr? : d.IExpr<any, boolean>;
@@ -1444,7 +1445,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
 }
 
 //TODO Move to Database?
-export function newCreateSelectBuilderDelegate (db : Database) : d.CreateSelectBuilderDelegate {
+export function newCreateSelectBuilderDelegate (db : Database|ConnectedDatabase) : d.CreateSelectBuilderDelegate {
     return <TableT extends d.AnyAliasedTable> (table : TableT) => {
         return new SelectBuilder({
             allowed : [

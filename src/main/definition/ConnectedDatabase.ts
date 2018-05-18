@@ -3,9 +3,8 @@ import * as mysql from "typed-mysql";
 import {newCreateSelectBuilderDelegate} from "./select-builder";
 import {InsertSelectBuilder, InsertValueBuilder} from "./insert";
 import {UpdateBuilder} from "./update";
-import {ConnectedDatabase} from "./ConnectedDatabase";
 
-export class Database extends mysql.Database {
+export class ConnectedDatabase extends mysql.ConnectedDatabase {
     readonly from : d.CreateSelectBuilderDelegate = newCreateSelectBuilderDelegate(this);
     readonly insertSelectInto : d.CreateInsertSelectBuilderDelegate = (
         <
@@ -47,16 +46,4 @@ export class Database extends mysql.Database {
             }, this);
         }
     ) as any;
-    public async transaction(callback: (db: ConnectedDatabase) => Promise<void>): Promise<void> {
-        const allocated = new ConnectedDatabase(
-            this.isUtcOnly(),
-            await this.allocatePoolConnection()
-        );
-        allocated.setPaginationConfiguration(this.getPaginationConfiguration());
-
-        await allocated.beginTransaction();
-        await callback(allocated);
-        await allocated.commit();
-        allocated.releaseConnection();
-    }
 }

@@ -1,9 +1,10 @@
 import * as d from "../../declaration";
 import { Database } from "../Database";
+import { ConnectedDatabase } from "../ConnectedDatabase";
 export declare class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderData> implements d.IInsertValueBuilder<DataT> {
     readonly data: DataT;
-    readonly db: Database;
-    constructor(data: DataT, db: Database);
+    readonly db: Database | ConnectedDatabase;
+    constructor(data: DataT, db: Database | ConnectedDatabase);
     ignore(ignore?: boolean): any;
     private validateRow;
     value(row: d.RawInsertRow<DataT["table"]>): any;

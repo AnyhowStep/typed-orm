@@ -1,9 +1,10 @@
 import * as d from "../../declaration";
 import { Database } from "../Database";
+import { ConnectedDatabase } from "../ConnectedDatabase";
 export declare class UpdateBuilder<DataT extends d.AnyUpdateBuilderData> implements d.IUpdateBuilder<DataT> {
     readonly data: DataT;
-    readonly db: Database;
-    constructor(data: DataT, db: Database);
+    readonly db: Database | ConnectedDatabase;
+    constructor(data: DataT, db: Database | ConnectedDatabase);
     ignoreErrors(ignoreErrors?: boolean): any;
     set<AssignmentsCallbackT extends d.AssignmentsCallback<DataT>>(assignmentsCallback: AssignmentsCallbackT): any;
     private getAssignments;

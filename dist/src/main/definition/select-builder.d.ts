@@ -1,8 +1,9 @@
 import * as d from "../declaration";
 import * as sd from "schema-decorator";
 import { Database } from "./Database";
+import { ConnectedDatabase } from "./ConnectedDatabase";
 export interface ExtraSelectBuilderData {
-    readonly db: Database;
+    readonly db: Database | ConnectedDatabase;
     readonly narrowExpr?: d.IExpr<any, boolean>;
     readonly whereExpr?: d.IExpr<any, boolean>;
     readonly havingExpr?: d.IExpr<any, boolean>;
@@ -91,4 +92,4 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
     exists(): Promise<boolean>;
     paginate(rawPaginationArgs?: d.RawPaginationArgs): any;
 }
-export declare function newCreateSelectBuilderDelegate(db: Database): d.CreateSelectBuilderDelegate;
+export declare function newCreateSelectBuilderDelegate(db: Database | ConnectedDatabase): d.CreateSelectBuilderDelegate;

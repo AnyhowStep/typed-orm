@@ -1,5 +1,6 @@
 import * as d from "../../declaration";
 import {Database} from "../Database";
+import {ConnectedDatabase} from "../ConnectedDatabase";
 import {spread} from "@anyhowstep/type-util";
 import {querify} from "../expr-operation";
 import {StringBuilder} from "../StringBuilder";
@@ -7,9 +8,9 @@ import {Column} from "../column";
 
 export class InsertSelectBuilder<DataT extends d.AnyInsertSelectBuilderData> implements d.IInsertSelectBuilder<DataT> {
     readonly data : DataT;
-    readonly db : Database;
+    readonly db : Database|ConnectedDatabase;
 
-    public constructor (data : DataT, db : Database) {
+    public constructor (data : DataT, db : Database|ConnectedDatabase) {
         if (data.selectBuilder.data.selectTuple == undefined) {
             throw new Error(`Call select() first`);
         }

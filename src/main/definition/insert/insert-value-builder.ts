@@ -1,14 +1,15 @@
 import * as d from "../../declaration";
 import {Database} from "../Database";
+import {ConnectedDatabase} from "../ConnectedDatabase";
 import {spread} from "@anyhowstep/type-util";
 import {querify} from "../expr-operation";
 import {StringBuilder} from "../StringBuilder";
 
 export class InsertValueBuilder<DataT extends d.AnyInsertValueBuilderData> implements d.IInsertValueBuilder<DataT> {
     readonly data : DataT;
-    readonly db : Database;
+    readonly db : Database|ConnectedDatabase;
 
-    public constructor (data : DataT, db : Database) {
+    public constructor (data : DataT, db : Database|ConnectedDatabase) {
         this.data = data;
         this.db = db;
     }
