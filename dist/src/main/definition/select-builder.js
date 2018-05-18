@@ -17,6 +17,7 @@ const Database_1 = require("./Database");
 const StringBuilder_1 = require("./StringBuilder");
 const e = require("./expr-library");
 const mysql = require("typed-mysql");
+const expr_operation_1 = require("./expr-operation");
 class SelectBuilder {
     constructor(data, extraData) {
         //SUBSELECT
@@ -577,6 +578,17 @@ class SelectBuilder {
         return new sub_select_join_table_1.SubSelectJoinTable(alias, this);
     }
     ;
+    asExpr(alias) {
+        this.assertAllowed(d.SelectBuilderOperation.AS);
+        if (this.data.selectTuple == undefined || this.data.selectTuple.length != 1) {
+            throw new Error(`Must SELECT one column only`);
+        }
+        if (!(this.data.selectTuple[0] instanceof expr_1.ColumnExpr) &&
+            !(this.data.selectTuple[0] instanceof column_1.Column)) {
+            throw new Error(`Invalid SELECT; must select a column or column expression`);
+        }
+        return expr_operation_1.toExpr(this).as(alias);
+    }
     //AGGREGATE
     aggregate(aggregateCallback) {
         this.assertAllowed(d.SelectBuilderOperation.AGGREGATE);

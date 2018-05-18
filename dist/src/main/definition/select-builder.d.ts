@@ -70,6 +70,7 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
     unionOffset<OffsetT extends number>(offset: OffsetT): any;
     unsetUnionLimit(): any;
     as<AliasT extends string>(alias: AliasT): any;
+    asExpr<AliasT extends string>(alias: AliasT): any;
     readonly from: d.CreateSubSelectBuilderDelegate<DataT["columnReferences"]>;
     aggregate<AggregateCallbackT extends d.AggregateCallback<DataT>>(aggregateCallback: AggregateCallbackT): any;
     querifyColumnReferences(sb: d.IStringBuilder): void;

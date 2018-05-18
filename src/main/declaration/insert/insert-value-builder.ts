@@ -107,7 +107,7 @@ export interface IInsertValueBuilder<DataT extends AnyInsertValueBuilderData> ex
                 mysql.MysqlInsertResult &
                 (
                     TableDataT["autoIncrement"] extends AnyColumn ?
-                        //No auto increment
+                        //The auto-incremented id
                         {
                             [name in TableDataT["autoIncrement"]["name"]] : (
                                 DataT["ignore"] extends true ?
@@ -115,7 +115,7 @@ export interface IInsertValueBuilder<DataT extends AnyInsertValueBuilderData> ex
                                     number
                             )
                         } :
-                        //The auto-incremented id
+                        //No auto increment
                         {}
                 )
             ) :

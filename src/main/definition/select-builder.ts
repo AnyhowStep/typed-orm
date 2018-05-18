@@ -15,6 +15,7 @@ import {Database} from "./Database";
 import {StringBuilder} from "./StringBuilder";
 import * as e from "./expr-library";
 import * as mysql from "typed-mysql";
+import {toExpr} from "./expr-operation";
 
 export interface ExtraSelectBuilderData {
     readonly db : Database;
@@ -937,6 +938,19 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             this as any
         ) as any;
     };
+    asExpr<AliasT extends string> (alias : AliasT) {
+        this.assertAllowed(d.SelectBuilderOperation.AS);
+        if (this.data.selectTuple == undefined || this.data.selectTuple.length != 1) {
+            throw new Error(`Must SELECT one column only`);
+        }
+        if (
+            !(this.data.selectTuple[0] instanceof ColumnExpr) &&
+            !(this.data.selectTuple[0] instanceof Column)
+        ) {
+            throw new Error(`Invalid SELECT; must select a column or column expression`);
+        }
+        return toExpr(this).as(alias) as any;
+    }
 
     //SUBSELECT
     readonly from : d.CreateSubSelectBuilderDelegate<DataT["columnReferences"]> = (

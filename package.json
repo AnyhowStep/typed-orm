@@ -1,13 +1,13 @@
 {
   "name": "typed-orm",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "A strongly typed MySQL ORM",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",
   "scripts": {
     "test": "ts-node ./src/main/sandbox/select-builder",
-    "check": "tsc --noEmit",
-    "check2": "node --max-old-space-size=4096 ./node_modules/typescript/lib/tsc.js --noEmit --noErrorTruncation",
+    "check": "tsc --noEmit --diagnostics",
+    "check2": "node --max-old-space-size=4096 ./node_modules/typescript/lib/tsc.js --noEmit --noErrorTruncation --diagnostics",
     "build": "(rm -r ./dist || true) && tsc -d"
   },
   "author": "",

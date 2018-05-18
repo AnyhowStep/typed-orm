@@ -38,6 +38,7 @@ import {
 import {Querify} from "./querify";
 import {RenameTableOfColumns} from "./column-operation";
 import {IStringBuilder} from "./IStringBuilder";
+import {SelectBuilderValueQuery, IColumnExpr} from "./expr";
 
 export interface RawPaginationArgs {
     page? : number|null|undefined;
@@ -1361,7 +1362,19 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                         "Cannot have duplicate column names in SELECT clause when aliasing"|void|never :
                         AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<DataT["selectTuple"]>>
                 ) :
-                "Cannot use tables in SELECT clause when aliasing"|void|never
+                ("Cannot use tables in SELECT clause when aliasing"|void|never)
+    );
+    asExpr<AliasT extends string> (alias : AliasT) : (
+        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AS> extends never ?
+            ("AS clause not allowed here"|void|never) :
+            this extends SelectBuilderValueQuery<infer TypeT> ?
+                IColumnExpr<
+                    {},
+                    "__expr",
+                    AliasT,
+                    TypeT
+                > :
+                ("Cannot be used as an expression"|void|never)
     );
 
     //AGGREGATE

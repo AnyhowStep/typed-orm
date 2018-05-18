@@ -18,6 +18,7 @@ import { JoinableSelectTupleElement, JoinableSelectTupleToRawColumnCollection, J
 import { Querify } from "./querify";
 import { RenameTableOfColumns } from "./column-operation";
 import { IStringBuilder } from "./IStringBuilder";
+import { SelectBuilderValueQuery, IColumnExpr } from "./expr";
 export interface RawPaginationArgs {
     page?: number | null | undefined;
     itemsPerPage?: number | null | undefined;
@@ -659,7 +660,8 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         aggregateCallback: DataT["aggregateCallback"];
     }>);
     readonly from: CreateSubSelectBuilderDelegate<DataT["columnReferences"]>;
-    as<AliasT extends string>(alias: AliasT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AS> extends never ? ("AS clause not allowed here" | void | never) : DataT["selectTuple"] extends Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> ? (true extends JoinableSelectTupleHasDuplicateColumnName<DataT["selectTuple"]> ? "Cannot have duplicate column names in SELECT clause when aliasing" | void | never : AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<DataT["selectTuple"]>>) : "Cannot use tables in SELECT clause when aliasing" | void | never);
+    as<AliasT extends string>(alias: AliasT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AS> extends never ? ("AS clause not allowed here" | void | never) : DataT["selectTuple"] extends Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> ? (true extends JoinableSelectTupleHasDuplicateColumnName<DataT["selectTuple"]> ? "Cannot have duplicate column names in SELECT clause when aliasing" | void | never : AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<DataT["selectTuple"]>>) : ("Cannot use tables in SELECT clause when aliasing" | void | never));
+    asExpr<AliasT extends string>(alias: AliasT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AS> extends never ? ("AS clause not allowed here" | void | never) : this extends SelectBuilderValueQuery<infer TypeT> ? IColumnExpr<{}, "__expr", AliasT, TypeT> : ("Cannot be used as an expression" | void | never));
     aggregate<AggregateCallbackT extends AggregateCallback<DataT>>(aggregateCallback: AggregateCallbackT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AGGREGATE> extends never ? ("AGGREGATE not allowed here" | void | never) : ISelectBuilder<{
         allowed: DisableOperation<DataT, SelectBuilderOperation.WIDEN>;
         columnReferences: DataT["columnReferences"];
