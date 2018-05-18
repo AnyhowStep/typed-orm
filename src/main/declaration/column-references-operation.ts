@@ -3,6 +3,7 @@ import {IColumn} from "./column";
 import {ColumnType} from "./column-operation";
 import {Tuple} from "./tuple";
 import {AnyJoin, NullableJoinTableNames, ColumnOfJoinTuple} from "./join";
+//import { Column } from "../definition";
 
 export type Union<T> = (T[keyof T]);
 export type ColumnOfReferencesInner<ColumnReferencesT extends ColumnReferences> = ({
@@ -80,26 +81,69 @@ export type ColumnReferencesToSchema<ColumnReferencesT extends ColumnReferences>
         [column in keyof ColumnReferencesT[table]] : ColumnType<ColumnReferencesT[table][column]>
     }
 }*/
+export type IsUnionString<S extends string> = {
+    [str in S] : Exclude<S, str>
+}[S];
+
 export type ColumnReferencesToSchemaWithJoins<
     ColumnReferencesT extends ColumnReferences,
     JoinTupleT extends Tuple<AnyJoin>
 > = (
-    //Required tables
-    {
-        [table in Exclude<Extract<keyof ColumnReferencesT, string>, NullableJoinTableNames<JoinTupleT>>] : {
-            //Get the columnReferences of JoinTupleT[table]
-            [name in Extract<keyof ColumnReferencesT[table], string>] : ColumnType<
-                ColumnOfJoinTuple<JoinTupleT, table, name>
-            >
-        }
-    } &
-    //Optional tables
-    {
-        [table in Extract<Extract<keyof ColumnReferencesT, string>, NullableJoinTableNames<JoinTupleT>>]? : {
-            //Get the columnReferences of JoinTupleT[table]
-            [name in Extract<keyof ColumnReferencesT[table], string>] : ColumnType<
-                ColumnOfJoinTuple<JoinTupleT, table, name>
-            >
-        }
-    }
+    IsUnionString<Extract<keyof ColumnReferencesT, string>> extends never ?
+        //Only one table
+        (
+            Extract<keyof ColumnReferencesT, string> extends "__expr" ?
+                //Expressions only
+                (
+                    {
+                        __expr : {
+                            [name in Extract<keyof ColumnReferencesT["__expr"], string>] : ColumnType<
+                                ColumnReferencesT["__expr"][name]
+                            >
+                        }
+                    }
+                ) :
+                //FROM clause
+                (
+                    {
+                        //Get the columnReferences of JoinTupleT[table]
+                        [name in Extract<keyof ColumnReferencesT[Extract<keyof ColumnReferencesT, string>], string>] : ColumnType<
+                            ColumnOfJoinTuple<JoinTupleT, Extract<keyof ColumnReferencesT, string>, name>
+                        >
+                    }
+                )
+        ) :
+        //Multiple tables
+        (
+            //Required tables
+            {
+                [table in Exclude<Extract<keyof ColumnReferencesT, string>, NullableJoinTableNames<JoinTupleT>|"__expr">] : {
+                    //Get the columnReferences of JoinTupleT[table]
+                    [name in Extract<keyof ColumnReferencesT[table], string>] : ColumnType<
+                        ColumnOfJoinTuple<JoinTupleT, table, name>
+                    >
+                }
+            } &
+            //Optional tables
+            {
+                [table in Exclude<Extract<Extract<keyof ColumnReferencesT, string>, NullableJoinTableNames<JoinTupleT>>, "__expr">]? : {
+                    //Get the columnReferences of JoinTupleT[table]
+                    [name in Extract<keyof ColumnReferencesT[table], string>] : ColumnType<
+                        ColumnOfJoinTuple<JoinTupleT, table, name>
+                    >
+                }
+            } &
+            //Special case
+            (
+                "__expr" extends keyof ColumnReferencesT ?
+                    {
+                        __expr : {
+                            [name in Extract<keyof ColumnReferencesT["__expr"], string>] : ColumnType<
+                                ColumnReferencesT["__expr"][name]
+                            >
+                        }
+                    } :
+                    {}
+            )
+        )
 )

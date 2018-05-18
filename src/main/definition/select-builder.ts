@@ -1231,6 +1231,12 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     };
     private readonly aggregateRow = (row : any) => {
         row = this.processRow(row);
+
+        const keys = Object.keys(row);
+        if (keys.length == 1) {
+            row = {...row[keys[0]]};
+        }
+
         if (this.data.aggregateCallback == undefined) {
             return row;
         } else {
