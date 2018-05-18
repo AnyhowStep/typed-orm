@@ -34,12 +34,25 @@ export declare type PartialToColumnReferences<PartialT extends ColumnReferences>
         [column in keyof PartialT[table]]: Exclude<PartialT[table][column], undefined>;
     };
 };
-export declare type ColumnReferencesToSchemaWithJoins<ColumnReferencesT extends ColumnReferences, JoinTupleT extends Tuple<AnyJoin>> = ({
-    [table in Exclude<Extract<keyof ColumnReferencesT, string>, NullableJoinTableNames<JoinTupleT>>]: {
+export declare type IsUnionString<S extends string> = {
+    [str in S]: Exclude<S, str>;
+}[S];
+export declare type ColumnReferencesToSchemaWithJoins<ColumnReferencesT extends ColumnReferences, JoinTupleT extends Tuple<AnyJoin>> = (IsUnionString<Extract<keyof ColumnReferencesT, string>> extends never ? (Extract<keyof ColumnReferencesT, string> extends "__expr" ? ({
+    __expr: {
+        [name in Extract<keyof ColumnReferencesT["__expr"], string>]: ColumnType<ColumnReferencesT["__expr"][name]>;
+    };
+}) : ({
+    [name in Extract<keyof ColumnReferencesT[Extract<keyof ColumnReferencesT, string>], string>]: ColumnType<ColumnOfJoinTuple<JoinTupleT, Extract<keyof ColumnReferencesT, string>, name>>;
+})) : ({
+    [table in Exclude<Extract<keyof ColumnReferencesT, string>, NullableJoinTableNames<JoinTupleT> | "__expr">]: {
         [name in Extract<keyof ColumnReferencesT[table], string>]: ColumnType<ColumnOfJoinTuple<JoinTupleT, table, name>>;
     };
 } & {
-    [table in Extract<Extract<keyof ColumnReferencesT, string>, NullableJoinTableNames<JoinTupleT>>]?: {
+    [table in Exclude<Extract<Extract<keyof ColumnReferencesT, string>, NullableJoinTableNames<JoinTupleT>>, "__expr">]?: {
         [name in Extract<keyof ColumnReferencesT[table], string>]: ColumnType<ColumnOfJoinTuple<JoinTupleT, table, name>>;
     };
-});
+} & ("__expr" extends keyof ColumnReferencesT ? {
+    __expr: {
+        [name in Extract<keyof ColumnReferencesT["__expr"], string>]: ColumnType<ColumnReferencesT["__expr"][name]>;
+    };
+} : {})));

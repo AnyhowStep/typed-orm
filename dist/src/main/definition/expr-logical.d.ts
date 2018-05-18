@@ -1,7 +1,7 @@
 import * as d from "../declaration";
 import { Expr } from "./expr";
-export declare const TRUE: Expr<{}, boolean>;
-export declare const FALSE: Expr<{}, boolean>;
+export declare const TRUE: Expr<{}, true>;
+export declare const FALSE: Expr<{}, false>;
 export declare const and: <LeftT extends boolean | d.IExpr<any, boolean> | d.IColumn<any, any, boolean> | d.ISelectBuilder<{
     allowed: any;
     columnReferences: any;

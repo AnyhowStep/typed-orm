@@ -81,6 +81,10 @@ class SelectBuilder {
         };
         this.aggregateRow = (row) => {
             row = this.processRow(row);
+            const keys = Object.keys(row);
+            if (keys.length == 1) {
+                row = Object.assign({}, row[keys[0]]);
+            }
             if (this.data.aggregateCallback == undefined) {
                 return row;
             }
