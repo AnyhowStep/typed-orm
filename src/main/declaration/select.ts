@@ -237,7 +237,7 @@ export type JoinToSelect<JoinT extends AnyJoin> = (
     JoinT["nullable"] extends true ?
         (
             {
-                [name in JoinT["columnReferences"]] : (
+                [name in Extract<keyof JoinT["columnReferences"], string>] : (
                     JoinT["columnReferences"][name] extends IColumn<infer TableNameT, name, infer TypeT> ?
                         IColumn<
                             TableNameT,
