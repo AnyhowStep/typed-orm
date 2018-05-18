@@ -2,12 +2,14 @@ import {
     AllowedExprConstants,
     RawExpr,
     IExpr,
-    SelectBuilderValueQuery,
-    ValueQueryTupleElementType
+    //SelectBuilderValueQuery,
+    //ValueQueryTupleElementType,
+    IColumnExpr
 } from "./expr";
 import {ISelectBuilder, AnySelectBuilder} from "./select-builder";
 import {IColumn} from "./column";
 import {Tuple} from "./tuple";
+import {TypeOf} from "./column-collection";
 
 export type ExprUsedColumns<RawExprT extends RawExpr<any>> = (
     RawExprT extends AnySelectBuilder ?
@@ -38,11 +40,11 @@ export type ExprType<RawExprT extends RawExpr<any>> = (
     RawExprT extends ISelectBuilder<infer DataT> ?
         (
             DataT["selectTuple"] extends (
-                Tuple<SelectBuilderValueQuery<any>> &
+                Tuple<IColumn<any, any, any>|IColumnExpr<any, "__expr", any, any>> &
                 { length : 1 }
             ) ?
                 //If it's from a subquery. it's possible it may be null
-                ValueQueryTupleElementType<DataT["selectTuple"][0]>|null :
+                TypeOf<DataT["selectTuple"][0]["assertDelegate"]>|null :
                 ("Invalid selectTuple; must have 1 element, and not be a table"|void|never)
         )
      :
