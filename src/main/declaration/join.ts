@@ -278,9 +278,13 @@ export type ColumnOfJoin<
 > = (
     JoinT["table"]["alias"] extends TableNameT ?
         (
-            JoinT["columnReferences"][TableNameT][NameT] extends AnyColumn ?
-                JoinT["columnReferences"][TableNameT][NameT] :
-                never
+            //NameT extends Extract<keyof JoinT["columnReferences"][TableNameT], string> ?
+                (
+                    JoinT["columnReferences"][TableNameT][NameT] extends AnyColumn ?
+                        JoinT["columnReferences"][TableNameT][NameT] :
+                        never
+                ) //:
+                //never
         ) :
         never
 )

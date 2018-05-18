@@ -246,7 +246,7 @@ export type JoinToSelect<JoinT extends AnyJoin> = (
                         > :
                         //Final attempt to infer the right type...
                         IColumn<
-                            JoinT["columnReferences"][name]["table"]["alias"],
+                            JoinT["table"]["alias"],
                             name,
                             TypeOf<JoinT["columnReferences"][name]>|null
                         >

@@ -44,7 +44,7 @@ export declare type ReplaceColumnOfSelectTuple<TupleT extends Tuple<AnySelectTup
     "0": ReplaceColumnOfSelectTupleElement<TupleT[0], TableNameT, NameT, NewTypeT>;
 }) : (never));
 export declare type JoinToSelect<JoinT extends AnyJoin> = (JoinT["nullable"] extends true ? ({
-    [name in Extract<keyof JoinT["columnReferences"], string>]: (JoinT["columnReferences"][name] extends IColumn<infer TableNameT, name, infer TypeT> ? IColumn<TableNameT, name, TypeT | null> : IColumn<JoinT["columnReferences"][name]["table"]["alias"], name, TypeOf<JoinT["columnReferences"][name]> | null>);
+    [name in Extract<keyof JoinT["columnReferences"], string>]: (JoinT["columnReferences"][name] extends IColumn<infer TableNameT, name, infer TypeT> ? IColumn<TableNameT, name, TypeT | null> : IColumn<JoinT["table"]["alias"], name, TypeOf<JoinT["columnReferences"][name]> | null>);
 }) : (JoinT["columnReferences"]));
 export declare type JoinTupleToSelectTuple<JoinTupleT extends Tuple<AnyJoin>> = (JoinTupleT[TupleKeys<JoinTupleT>] extends AnyJoin ? ({
     [index in TupleKeys<JoinTupleT>]: (JoinTupleT[index] extends AnyJoin ? JoinToSelect<JoinTupleT[index]> : never);
