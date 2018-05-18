@@ -78,7 +78,8 @@ export function assertDelegate<RawExprT extends d.RawExpr<any>> (
         return raw.assertDelegate;
     }
     if (raw instanceof SelectBuilder) {
-        return raw.data.selectTuple[0].assertDelegate;
+        //If it's from a subquery. it's possible it may be null
+        return sd.nullable(raw.data.selectTuple[0].assertDelegate) as any;
     }
     throw new Error(`Unknown raw expression (${typeof raw})${raw}`);
 }

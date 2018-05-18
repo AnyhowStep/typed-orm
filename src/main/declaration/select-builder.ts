@@ -1372,7 +1372,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     {},
                     "__expr",
                     AliasT,
-                    TypeT
+                    TypeT|null
                 > :
                 ("Cannot be used as an expression"|void|never)
     );

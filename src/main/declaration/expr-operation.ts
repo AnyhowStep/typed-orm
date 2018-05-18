@@ -41,7 +41,8 @@ export type ExprType<RawExprT extends RawExpr<any>> = (
                 Tuple<SelectBuilderValueQuery<any>> &
                 { length : 1 }
             ) ?
-                ValueQueryTupleElementType<DataT["selectTuple"][0]> :
+                //If it's from a subquery. it's possible it may be null
+                ValueQueryTupleElementType<DataT["selectTuple"][0]>|null :
                 ("Invalid selectTuple; must have 1 element, and not be a table"|void|never)
         )
      :

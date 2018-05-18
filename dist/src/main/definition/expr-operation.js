@@ -72,7 +72,8 @@ function assertDelegate(raw) {
         return raw.assertDelegate;
     }
     if (raw instanceof select_builder_1.SelectBuilder) {
-        return raw.data.selectTuple[0].assertDelegate;
+        //If it's from a subquery. it's possible it may be null
+        return sd.nullable(raw.data.selectTuple[0].assertDelegate);
     }
     throw new Error(`Unknown raw expression (${typeof raw})${raw}`);
 }
