@@ -80,6 +80,10 @@ export type SelectBuilderValueQuery<TypeT> = ISelectBuilder<{
         }
     ),
     aggregateCallback : any,
+
+    __columnReferencesColumns : any,
+    __joinAliases : any,
+    __selectReferencesColumns : any,
 }>;
 
 export type AllowedExprConstants = number|string|boolean|Date|null|undefined;

@@ -12,8 +12,8 @@ import {
 } from "./join";
 import {Tuple, TuplePush, TupleConcat} from "./tuple";
 import {AliasedTable, AnyAliasedTable} from "./aliased-table";
-import {IColumn} from "./column";
-import {TableAlias, TableToReference} from "./table-operation";
+import {IColumn, AnyColumn} from "./column";
+import {TableAlias, TableToReference, TableToColumnUnion} from "./table-operation";
 import {ToNullableColumnReferences, ReplaceColumnOfReference, ColumnReferencesToSchemaWithJoins} from "./column-references-operation";
 import {TypeNarrowCallback} from "./type-narrow";
 import {WhereCallback} from "./where";
@@ -36,7 +36,7 @@ import {
     JoinableSelectTupleHasDuplicateColumnName
 } from "./select-as";
 import {Querify} from "./querify";
-import {RenameTableOfColumns} from "./column-operation";
+import {RenameTableOfColumns, ToNullableColumn, ReplaceColumnIfNamed} from "./column-operation";
 import {IStringBuilder} from "./IStringBuilder";
 import {SelectBuilderValueQuery, IColumnExpr} from "./expr";
 
@@ -133,6 +133,12 @@ export interface AnySelectBuilderData {
     readonly selectTuple : undefined|Tuple<AnySelectTupleElement>,
 
     readonly aggregateCallback : undefined|((row : any) => Promise<any>),
+
+    //HACK These types do not contain any data,
+    //they're just hacks to make the type system simpler
+    readonly __columnReferencesColumns : AnyColumn;
+    readonly __joinAliases : string;
+    readonly __selectReferencesColumns : undefined|AnyColumn;
 }
 /*
 export type IsAllowedSelectBuilderOperation<DataT extends AnySelectBuilderData, OperationT extends SelectBuilderOperation> = (
@@ -178,10 +184,19 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                             ),
                             selectReferences : DataT["selectReferences"],
                             selectTuple : DataT["selectTuple"],
-
-
-
                             aggregateCallback : DataT["aggregateCallback"],
+
+                            __columnReferencesColumns : (
+                                DataT["__columnReferencesColumns"] |
+                                TableToColumnUnion<ToTableT>
+                            ),
+                            __joinAliases : (
+                                DataT["__joinAliases"] |
+                                ToTableT["alias"]
+                            ),
+                            __selectReferencesColumns : (
+                                DataT["__selectReferencesColumns"]
+                            )
                         }>
                     ) :
                     (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
@@ -221,10 +236,19 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                             ),
                             selectReferences : DataT["selectReferences"],
                             selectTuple : DataT["selectTuple"],
-
-
-
                             aggregateCallback : DataT["aggregateCallback"],
+
+                            __columnReferencesColumns : (
+                                ToNullableColumn<DataT["__columnReferencesColumns"]> |
+                                TableToColumnUnion<ToTableT>
+                            ),
+                            __joinAliases : (
+                                DataT["__joinAliases"] |
+                                ToTableT["alias"]
+                            ),
+                            __selectReferencesColumns : (
+                                DataT["__selectReferencesColumns"]
+                            )
                         }>
                     ) :
                     (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
@@ -264,10 +288,19 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                             ),
                             selectReferences : DataT["selectReferences"],
                             selectTuple : DataT["selectTuple"],
-
-
-
                             aggregateCallback : DataT["aggregateCallback"],
+
+                            __columnReferencesColumns : (
+                                DataT["__columnReferencesColumns"] |
+                                ToNullableColumn<TableToColumnUnion<ToTableT>>
+                            ),
+                            __joinAliases : (
+                                DataT["__joinAliases"] |
+                                ToTableT["alias"]
+                            ),
+                            __selectReferencesColumns : (
+                                DataT["__selectReferencesColumns"]
+                            )
                         }>
                     ) :
                     (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
@@ -309,10 +342,19 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                 ),
                                 selectReferences : DataT["selectReferences"],
                                 selectTuple : DataT["selectTuple"],
-
-
-
                                 aggregateCallback : DataT["aggregateCallback"],
+
+                                __columnReferencesColumns : (
+                                    DataT["__columnReferencesColumns"] |
+                                    TableToColumnUnion<ToTableT>
+                                ),
+                                __joinAliases : (
+                                    DataT["__joinAliases"] |
+                                    ToTableT["alias"]
+                                ),
+                                __selectReferencesColumns : (
+                                    DataT["__selectReferencesColumns"]
+                                )
                             }> :
                             ("Cannot JOIN USING; to table is missing columns or types do not match"|void|never)
                     ) :
@@ -353,10 +395,19 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                 ),
                                 selectReferences : DataT["selectReferences"],
                                 selectTuple : DataT["selectTuple"],
-
-
-
                                 aggregateCallback : DataT["aggregateCallback"],
+
+                                __columnReferencesColumns : (
+                                    ToNullableColumn<DataT["__columnReferencesColumns"]> |
+                                    TableToColumnUnion<ToTableT>
+                                ),
+                                __joinAliases : (
+                                    DataT["__joinAliases"] |
+                                    ToTableT["alias"]
+                                ),
+                                __selectReferencesColumns : (
+                                    DataT["__selectReferencesColumns"]
+                                )
                             }> :
                             ("Cannot RIGHT JOIN USING; to table is missing columns or types do not match"|void|never)
                     ) :
@@ -397,10 +448,19 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                 ),
                                 selectReferences : DataT["selectReferences"],
                                 selectTuple : DataT["selectTuple"],
-
-
-
                                 aggregateCallback : DataT["aggregateCallback"],
+
+                                __columnReferencesColumns : (
+                                    DataT["__columnReferencesColumns"] |
+                                    ToNullableColumn<TableToColumnUnion<ToTableT>>
+                                ),
+                                __joinAliases : (
+                                    DataT["__joinAliases"] |
+                                    ToTableT["alias"]
+                                ),
+                                __selectReferencesColumns : (
+                                    DataT["__selectReferencesColumns"]
+                                )
                             }> :
                             ("Cannot LEFT JOIN USING; to table is missing columns or types do not match"|void|never)
                     ) :
@@ -419,6 +479,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
         typeNarrowCallback : TypeNarrowCallbackT
     ) : (
@@ -456,6 +520,26 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                         undefined
                 ),
                 aggregateCallback : DataT["aggregateCallback"],
+
+                __columnReferencesColumns : (
+                    ReplaceColumnIfNamed<
+                        DataT["__columnReferencesColumns"],
+                        TableNameT,
+                        NameT,
+                        Exclude<TypeT, null|undefined>
+                    >
+                ),
+                __joinAliases : DataT["__joinAliases"],
+                __selectReferencesColumns : (
+                    DataT["__selectReferencesColumns"] extends AnyColumn ?
+                        ReplaceColumnIfNamed<
+                            DataT["__selectReferencesColumns"],
+                            TableNameT,
+                            NameT,
+                            Exclude<TypeT, null|undefined>
+                        > :
+                        undefined
+                )
             }> :
             ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
@@ -469,6 +553,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
         typeNarrowCallback : TypeNarrowCallbackT
     ) : (
@@ -506,6 +594,26 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                         undefined
                 ),
                 aggregateCallback : DataT["aggregateCallback"],
+
+                __columnReferencesColumns : (
+                    ReplaceColumnIfNamed<
+                        DataT["__columnReferencesColumns"],
+                        TableNameT,
+                        NameT,
+                        null
+                    >
+                ),
+                __joinAliases : DataT["__joinAliases"],
+                __selectReferencesColumns : (
+                    DataT["__selectReferencesColumns"] extends AnyColumn ?
+                        ReplaceColumnIfNamed<
+                            DataT["__selectReferencesColumns"],
+                            TableNameT,
+                            NameT,
+                            null
+                        > :
+                        undefined
+                )
             }> :
             ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
@@ -522,6 +630,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
         value : ConstT,
         typeNarrowCallback : TypeNarrowCallbackT
@@ -560,6 +672,26 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                         undefined
                 ),
                 aggregateCallback : DataT["aggregateCallback"],
+
+                __columnReferencesColumns : (
+                    ReplaceColumnIfNamed<
+                        DataT["__columnReferencesColumns"],
+                        TableNameT,
+                        NameT,
+                        ConstT
+                    >
+                ),
+                __joinAliases : DataT["__joinAliases"],
+                __selectReferencesColumns : (
+                    DataT["__selectReferencesColumns"] extends AnyColumn ?
+                        ReplaceColumnIfNamed<
+                            DataT["__selectReferencesColumns"],
+                            TableNameT,
+                            NameT,
+                            ConstT
+                        > :
+                        undefined
+                )
             }> :
             ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
@@ -585,6 +717,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
         selectCallback : SelectCallbackT
     ) : (
@@ -617,6 +753,14 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                         ReturnType<SelectCallbackT>
                 ),
                 aggregateCallback : DataT["aggregateCallback"],
+
+                __columnReferencesColumns : (
+                    DataT["__columnReferencesColumns"]
+                ),
+                __joinAliases : DataT["__joinAliases"],
+                __selectReferencesColumns : (
+                    DataT["__selectReferencesColumns"]
+                )
             }>
     );
     selectAll (
@@ -629,6 +773,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>
     ) : (
         DataT["selectTuple"] extends undefined ?
@@ -640,6 +788,14 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 selectReferences : DataT["columnReferences"],
                 selectTuple : JoinTupleToSelectTuple<DataT["joins"]>,
                 aggregateCallback : DataT["aggregateCallback"],
+
+                __columnReferencesColumns : (
+                    DataT["__columnReferencesColumns"]
+                ),
+                __joinAliases : DataT["__joinAliases"],
+                __selectReferencesColumns : (
+                    DataT["__selectReferencesColumns"]
+                )
             }> :
             ("selectAll() must be called before select()"|void|never)
     );
@@ -713,6 +869,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : undefined,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
         typeWidenCallback : TypeWidenCallbackT,
         assertWidened : sd.AssertFunc<WidenT>
@@ -749,6 +909,14 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
 
 
                 aggregateCallback : DataT["aggregateCallback"],
+
+                __columnReferencesColumns : (
+                    DataT["__columnReferencesColumns"]
+                ),
+                __joinAliases : DataT["__joinAliases"],
+                __selectReferencesColumns : (
+                    DataT["__selectReferencesColumns"]
+                )
             }> :
             ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
@@ -764,6 +932,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>
     > (
         this : ISelectBuilder<{
@@ -775,6 +947,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
         selectBuilder : SelectBuilderT
     ) : (
@@ -795,6 +971,14 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                         selectReferences : DataT["selectReferences"],
                                         selectTuple : DataT["selectTuple"],
                                         aggregateCallback : DataT["aggregateCallback"],
+
+                                        __columnReferencesColumns : (
+                                            DataT["__columnReferencesColumns"]
+                                        ),
+                                        __joinAliases : DataT["__joinAliases"],
+                                        __selectReferencesColumns : (
+                                            DataT["__selectReferencesColumns"]
+                                        )
                                     }> :
                                     (
                                         "Cannot UNION; SELECT tuples have incompatible types"|
@@ -834,7 +1018,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     unsetUnionLimit () : ISelectBuilder<DataT>;
 
     //SUBQUERY
-    readonly from : CreateSubSelectBuilderDelegate<DataT["columnReferences"]>;
+    readonly from : CreateSubSelectBuilderDelegate<DataT["columnReferences"], DataT["__columnReferencesColumns"]>;
 
     //AS CLAUSE
     as<AliasT extends string> (
@@ -847,6 +1031,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
         alias : AliasT
     ) : (
@@ -868,6 +1056,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
         alias : AliasT
     ) : (
@@ -893,6 +1085,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
         aggregateCallback : AggregateCallbackT
     ) : (
@@ -904,6 +1100,14 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectReferences : DataT["selectReferences"],
             selectTuple : DataT["selectTuple"],
             aggregateCallback : AggregateCallbackT,
+
+            __columnReferencesColumns : (
+                DataT["__columnReferencesColumns"]
+            ),
+            __joinAliases : DataT["__joinAliases"],
+            __selectReferencesColumns : (
+                DataT["__selectReferencesColumns"]
+            )
         }>
     );
 
@@ -922,6 +1126,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
     ) : Promise<FetchRowResult<DataT>[]>;
     fetchOne (
@@ -934,6 +1142,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
     ) : Promise<FetchRowResult<DataT>>;
     fetchZeroOrOne (
@@ -946,6 +1158,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
     ) : Promise<FetchRowResult<DataT>|undefined>;
     fetchValue (
@@ -958,6 +1174,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
     ) : (
         DataT["selectTuple"] extends (
@@ -977,6 +1197,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
     ) : (
         DataT["selectTuple"] extends (
@@ -996,6 +1220,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
     ) : (
         DataT["selectTuple"] extends (
@@ -1023,6 +1251,10 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
             selectTuple : any,
             //Has no effect on the query
             aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
         }>,
         paginationArgs? : RawPaginationArgs
     ) : Promise<PaginateResult<FetchRowResult<DataT>>>;
@@ -1042,11 +1274,23 @@ export type CreateSelectBuilderDelegate = (
             selectReferences : {},
             selectTuple : undefined,
             aggregateCallback : undefined,
+
+            __columnReferencesColumns : (
+                TableToColumnUnion<TableT>
+            ),
+            __joinAliases : TableT["alias"],
+            __selectReferencesColumns : undefined
         }>
     )
 );
 
-export type CreateSubSelectBuilderDelegate<ColumnReferencesT extends ColumnReferences> = (
+//TODO I think joins should not allow duplicates?
+//However, not 100% sure
+export type CreateSubSelectBuilderDelegate<
+    ColumnReferencesT extends ColumnReferences,
+    //Technically, can derive from ColumnReferencesT
+    ColumnReferencesColumnsT extends AnyColumn
+> = (
     <TableT extends AnyAliasedTable> (
         table : TableT
     ) => (
@@ -1060,6 +1304,13 @@ export type CreateSubSelectBuilderDelegate<ColumnReferencesT extends ColumnRefer
                 selectReferences : {},
                 selectTuple : undefined,
                 aggregateCallback : undefined,
+
+                __columnReferencesColumns : (
+                    ColumnReferencesColumnsT |
+                    TableToColumnUnion<TableT>
+                ),
+                __joinAliases : TableT["alias"],
+                __selectReferencesColumns : undefined
             }>
     )
 );

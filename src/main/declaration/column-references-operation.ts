@@ -6,18 +6,24 @@ import {AnyJoin, NullableJoinTableNames, ColumnOfJoinTuple} from "./join";
 //import { Column } from "../definition";
 
 export type Union<T> = (T[keyof T]);
-export type ColumnOfReferencesImpl<ColumnReferencesT extends ColumnReferences> = ({
+/*export type ColumnOfReferencesImpl<ColumnReferencesT extends ColumnReferences> = ({
     [table in Extract<keyof ColumnReferencesT, string>] : {
         [column in Extract<keyof ColumnReferencesT[table], string>] : ColumnReferencesT[table][column]
     }[Extract<keyof ColumnReferencesT[table], string>]
-}[Extract<keyof ColumnReferencesT, string>]);
+}[Extract<keyof ColumnReferencesT, string>]);*/
+export type ColumnOfReferencesImpl<ColumnReferencesT extends ColumnReferences> = ({
+    [table in keyof ColumnReferencesT] : {
+        [column in keyof ColumnReferencesT[table]] : ColumnReferencesT[table][column]
+    }[keyof ColumnReferencesT[table]]
+}[keyof ColumnReferencesT]);
 export type ColumnOfReferences<ColumnReferencesT extends ColumnReferences> = (
     //HACK-y
     ColumnOfReferencesImpl<ColumnReferencesT> extends AnyColumn ?
     (
-        AnyColumn extends ColumnOfReferencesImpl<ColumnReferencesT> ?
+        ColumnOfReferencesImpl<ColumnReferencesT>
+        /*AnyColumn extends ColumnOfReferencesImpl<ColumnReferencesT> ?
             ColumnOfReferencesImpl<ColumnReferencesT> :
-            never
+            never*/
     ) :
     never
 );

@@ -754,6 +754,10 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         selectReferences : any,
         selectTuple : any,
         aggregateCallback : any,
+
+        __columnReferencesColumns : any,
+        __joinAliases : any,
+        __selectReferencesColumns : any,
     }>> (other : SelectBuilderT) {
         this.assertAfterSelect();
 
@@ -903,7 +907,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     }
 
     //SUBSELECT
-    readonly from : d.CreateSubSelectBuilderDelegate<DataT["columnReferences"]> = (
+    readonly from : d.CreateSubSelectBuilderDelegate<DataT["columnReferences"], DataT["__columnReferencesColumns"]> = (
         <TableT extends d.AnyAliasedTable> (table : TableT) => {
             if (this.data.columnReferences[table.alias] != undefined) {
                 throw new Error(`Duplicate alias ${table.alias}, try using AS clause`);
@@ -925,14 +929,11 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                 })],
                 selectReferences : {},
                 selectTuple : undefined,
-                distinct : false,
-                sqlCalcFoundRows : false,
-                groupByTuple : undefined,
-                orderByTuple : undefined,
-                limit : undefined,
-                unionOrderByTuple : undefined,
-                unionLimit : undefined,
                 aggregateCallback : undefined,
+
+                __columnReferencesColumns : undefined as any,
+                __joinAliases : undefined as any,
+                __selectReferencesColumns : undefined as any,
             }, {
                 db : this.extraData.db,
                 distinct : false,
@@ -1396,6 +1397,10 @@ export function newCreateSelectBuilderDelegate (db : Database|ConnectedDatabase)
             selectReferences : {},
             selectTuple : undefined,
             aggregateCallback : undefined,
+
+            __columnReferencesColumns : undefined as any,
+            __joinAliases : undefined as any,
+            __selectReferencesColumns : undefined as any,
         }, {
             db : db,
             distinct : false,

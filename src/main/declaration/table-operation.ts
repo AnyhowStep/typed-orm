@@ -1,5 +1,6 @@
 import {AliasedTable, AnyAliasedTable} from "./aliased-table";
 import {ITable} from "./table";
+import {AnyColumn} from "./column";
 
 export type TableAlias<TableT extends AnyAliasedTable> = (
     TableT extends ITable<infer Alias, any, any, any> ?
@@ -37,4 +38,34 @@ export type TableToReference<TableT extends AnyAliasedTable> = (
         }
     } :
     never
+);
+export type TableToColumnUnion<TableT extends AnyAliasedTable> = (
+    /*TableT extends ITable<any, any, infer ColumnsT, any> ?
+    (
+        {
+            [k in keyof TableT["columns"]] : (
+                TableT["columns"][k] extends AnyColumn ?
+                    TableT["columns"][k] :
+                    never
+            )
+        }[keyof TableT["columns"]]
+    ) :
+    TableT extends AliasedTable<any, any, infer ColumnsT> ?
+    (
+        {
+            [k in keyof TableT["columns"]] : (
+                TableT["columns"][k] extends AnyColumn ?
+                    TableT["columns"][k] :
+                    never
+            )
+        }[keyof TableT["columns"]]
+    ) :
+    never*/
+    {
+        [k in keyof TableT["columns"]] : (
+            TableT["columns"][k] extends AnyColumn ?
+                TableT["columns"][k] :
+                never
+        )
+    }[keyof TableT["columns"]]
 );

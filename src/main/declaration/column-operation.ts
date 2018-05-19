@@ -81,3 +81,20 @@ export type RenameTableOfColumns <TupleT extends Tuple<AnyColumn>, NewTableNameT
         ) :
         never
 );
+
+export type ToNullableColumn<ColumnT extends AnyColumn> = (
+    ColumnT extends IColumn<infer TableNameT, infer NameT, infer TypeT> ?
+        IColumn<TableNameT, NameT, TypeT|null> :
+        never
+);
+
+export type ReplaceColumnIfNamed<
+    ColumnT extends AnyColumn,
+    TableNameT extends string,
+    NameT extends string,
+    NewTypeT
+> = (
+    ColumnT extends IColumn<TableNameT,NameT, any> ?
+        IColumn<TableNameT, NameT, NewTypeT> :
+        ColumnT
+);

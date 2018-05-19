@@ -12,7 +12,7 @@ import {HasDuplicateColumn, ColumnToReference} from "./column-operation";
 import {AnyJoin} from "./join";
 import {TypeOf} from "./column-collection";
 
-export type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
+export type SelectTupleElement<ColumnReferencesT extends ColumnReferences, ColumnReferencesColumnsT extends AnyColumn> = (
     (IColumnExpr<
         ToPartialColumnReferences<ColumnReferencesT>,
         "__expr",
@@ -20,9 +20,10 @@ export type SelectTupleElement<ColumnReferencesT extends ColumnReferences> = (
         any
     >)|
     ColumnReferencesT[keyof ColumnReferencesT]|
-    ColumnOfReferences<ColumnReferencesT>
+    ColumnOfReferences<ColumnReferencesT>|
+    ColumnReferencesColumnsT
 );
-export type AnySelectTupleElement = SelectTupleElement<any>;
+export type AnySelectTupleElement = SelectTupleElement<any, any>;
 
 export type SelectCallback<
     SelectBuilderT extends AnySelectBuilder
@@ -33,7 +34,7 @@ export type SelectCallback<
             selectBuilder : SelectBuilderT
         ) => (
             Tuple<
-                SelectTupleElement<DataT["columnReferences"]>
+                SelectTupleElement<DataT["columnReferences"], DataT["__columnReferencesColumns"]>
             >
         ):
         never
