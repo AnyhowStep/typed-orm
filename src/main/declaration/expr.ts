@@ -59,7 +59,8 @@ export type ValueQueryTupleElementType<SelectTupleElementT extends AnyValueQuery
 );
 
 export type SelectBuilderValueQuery<TypeT> = ISelectBuilder<{
-    allowed : any,
+    hasSelect : true,
+    hasUnion : any,
     columnReferences : any,
     joins : any,
     selectReferences : any,

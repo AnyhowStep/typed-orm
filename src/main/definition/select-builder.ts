@@ -50,9 +50,14 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         this.extraData = extraData;
     }
 
-    public assertAllowed (op : d.SelectBuilderOperation) {
-        if (this.data.allowed.indexOf(op) < 0) {
-            throw new Error(`${op} clause not allowed here`);
+    public assertAfterSelect () {
+        if (!this.data.hasSelect) {
+            throw new Error(`SELECT clause required`);
+        }
+    }
+    public assertBeforeUnion () {
+        if (this.data.hasUnion) {
+            throw new Error(`Must be before UNION clause`);
         }
     }
 
@@ -66,17 +71,8 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         if (a.length != b.length) {
             throw new Error(`Tuple length mismatch; ${a.length} != ${b.length}`);
         }
-    }
 
-    private enableOperation (toEnable : d.SelectBuilderOperation[]) {
-        return this.data.allowed.concat(toEnable);
     }
-    private disableOperation (toDisable : d.SelectBuilderOperation[]) {
-        return this.data.allowed.filter((i) => {
-            return toDisable.indexOf(i) < 0;
-        });
-    }
-
     //JOIN CLAUSE
     join<
         ToTableT extends d.AnyAliasedTable,
@@ -327,7 +323,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     whereIsNotNull<TypeNarrowCallbackT extends d.TypeNarrowCallback<DataT["columnReferences"]>> (
         typeNarrowCallback : TypeNarrowCallbackT
     ) {
-        this.assertAllowed(d.SelectBuilderOperation.NARROW);
+        this.assertBeforeUnion();
 
         const toReplace = typeNarrowCallback(this.data.columnReferences)
         if (!(toReplace instanceof Column)) {
@@ -345,7 +341,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     whereIsNull<TypeNarrowCallbackT extends d.TypeNarrowCallback<DataT["columnReferences"]>> (
         typeNarrowCallback : TypeNarrowCallbackT
     ) {
-        this.assertAllowed(d.SelectBuilderOperation.NARROW);
+        this.assertBeforeUnion();
 
         const toReplace = typeNarrowCallback(this.data.columnReferences);
         if (!(toReplace instanceof Column)) {
@@ -367,7 +363,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         value : ConstT,
         typeNarrowCallback : TypeNarrowCallbackT
     ) {
-        this.assertAllowed(d.SelectBuilderOperation.NARROW);
+        this.assertBeforeUnion();
 
         const toReplace = typeNarrowCallback(this.data.columnReferences)
         if (!(toReplace instanceof Column)) {
@@ -395,7 +391,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     ) {
         let condition : d.IExpr<any, boolean> = whereCallback(
             this.data.columnReferences,
-            this
+            this as any
         );
         if (this.extraData.narrowExpr != undefined) {
             condition = and(
@@ -409,7 +405,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                 ...this.extraData,
                 whereExpr : condition,
             }
-        ) as any;
+        );
     };
     //Appends
     andWhere<WhereCallbackT extends d.WhereCallback<d.ISelectBuilder<DataT>>> (
@@ -417,12 +413,12 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     ) {
         let condition : d.IExpr<any, boolean> = whereCallback(
             this.data.columnReferences,
-            this
+            this as any
         );
         return new SelectBuilder(
             this.data,
             this.appendWhereExpr(condition)
-        ) as any;
+        );
     };
 
     //SELECT CLAUSE
@@ -436,7 +432,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     select<SelectCallbackT extends d.SelectCallback<d.ISelectBuilder<DataT>>> (
         selectCallback : SelectCallbackT
     ) {
-        this.assertAllowed(d.SelectBuilderOperation.SELECT);
+        this.assertBeforeUnion();
 
         const selectTuple = selectCallback(
             this.data.columnReferences,
@@ -452,13 +448,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             spread(
                 this.data,
                 {
-                    allowed : this.enableOperation([
-                        d.SelectBuilderOperation.WIDEN,
-                        d.SelectBuilderOperation.UNION,
-                        d.SelectBuilderOperation.AS,
-                        d.SelectBuilderOperation.FETCH,
-                        d.SelectBuilderOperation.AGGREGATE,
-                    ]),
+                    hasSelect : true,
                     selectReferences : combineReferences(
                         this.data.selectReferences,
                         //We don't need to convert the entire newTuple to references
@@ -472,7 +462,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         ) as any;
     };
     selectAll () {
-        this.assertAllowed(d.SelectBuilderOperation.SELECT);
+        this.assertBeforeUnion();
 
         if (this.data.selectTuple != undefined) {
             throw new Error("selectAll() must be called before select()");
@@ -482,13 +472,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             spread(
                 this.data,
                 {
-                    allowed : this.enableOperation([
-                        d.SelectBuilderOperation.WIDEN,
-                        d.SelectBuilderOperation.UNION,
-                        d.SelectBuilderOperation.AS,
-                        d.SelectBuilderOperation.FETCH,
-                        d.SelectBuilderOperation.AGGREGATE,
-                    ]),
+                    hasSelect : true,
                     selectReferences : selectAllReference(this.data.columnReferences),
                     selectTuple : joinTupleToSelectTuple(this.data.joins),
                 }
@@ -726,7 +710,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         typeWidenCallback : TypeWidenCallbackT,
         assertWidened : sd.AssertFunc<WidenT>
     ) {
-        this.assertAllowed(d.SelectBuilderOperation.WIDEN);
+        this.assertAfterSelect();
 
         const column = typeWidenCallback(this.data.selectReferences);
         if (!(column instanceof Column)) {
@@ -763,14 +747,15 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
 
     //UNION CLAUSE
     union<SelectBuilderT extends d.ISelectBuilder<{
-        allowed : any,
+        hasSelect : true,
+        hasUnion : any,
         columnReferences : any,
         joins : any,
         selectReferences : any,
         selectTuple : any,
         aggregateCallback : any,
     }>> (other : SelectBuilderT) {
-        this.assertAllowed(d.SelectBuilderOperation.UNION);
+        this.assertAfterSelect();
 
         if (this.data.selectTuple == undefined) {
             throw new Error(`Cannot UNION; SELECT clause missing on select`);
@@ -786,10 +771,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             spread(
                 this.data,
                 {
-                    allowed : this.disableOperation([
-                        d.SelectBuilderOperation.NARROW,
-                        d.SelectBuilderOperation.SELECT
-                    ]),
+                    hasUnion : true,
                 }
             ),
             {
@@ -899,7 +881,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
 
     //AS CLAUSE
     as<AliasT extends string> (alias : AliasT) {
-        this.assertAllowed(d.SelectBuilderOperation.AS);
+        this.assertAfterSelect();
 
         return new SubSelectJoinTable(
             alias,
@@ -907,7 +889,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         ) as any;
     };
     asExpr<AliasT extends string> (alias : AliasT) {
-        this.assertAllowed(d.SelectBuilderOperation.AS);
+        this.assertAfterSelect();
         if (this.data.selectTuple == undefined || this.data.selectTuple.length != 1) {
             throw new Error(`Must SELECT one column only`);
         }
@@ -927,10 +909,8 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                 throw new Error(`Duplicate alias ${table.alias}, try using AS clause`);
             }
             return new SelectBuilder({
-                allowed : [
-                    d.SelectBuilderOperation.NARROW,
-                    d.SelectBuilderOperation.SELECT,
-                ],
+                hasSelect : false,
+                hasUnion : false,
                 columnReferences : combineReferences(
                     this.data.columnReferences,
                     tableToReference(table)
@@ -965,15 +945,12 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     aggregate<AggregateCallbackT extends d.AggregateCallback<DataT>> (
         aggregateCallback : AggregateCallbackT
     ) {
-        this.assertAllowed(d.SelectBuilderOperation.AGGREGATE);
+        this.assertAfterSelect();
 
         return new SelectBuilder(
             spread(
                 this.data,
                 {
-                    allowed : this.disableOperation([
-                        d.SelectBuilderOperation.WIDEN
-                    ]),
                     aggregateCallback : aggregateCallback,
                 }
             ),
@@ -1221,14 +1198,14 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         return sb.toString();
     }
     fetchAll () {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
                 return Promise.all(raw.rows.map(this.aggregateRow));
             }) as any;
     }
     fetchOne () {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
                 if (raw.rows.length != 1) {
@@ -1238,7 +1215,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             }) as any;
     }
     fetchZeroOrOne () {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
                 if (raw.rows.length > 1) {
@@ -1252,7 +1229,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             }) as any;
     }
     fetchValue () {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
                 if (raw.rows.length != 1) {
@@ -1267,7 +1244,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             }) as any;
     }
     fetchValueOrUndefined () {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
                 if (raw.rows.length == 0) {
@@ -1286,7 +1263,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             }) as any;
     }
     fetchValueArray () {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
                 if (raw.fields.length != 1) {
@@ -1350,7 +1327,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         }
     }
     paginate (rawPaginationArgs : d.RawPaginationArgs={}) {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
 
         const paginationArgs = mysql.toPaginationArgs(
             rawPaginationArgs,
@@ -1405,10 +1382,8 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
 export function newCreateSelectBuilderDelegate (db : Database|ConnectedDatabase) : d.CreateSelectBuilderDelegate {
     return <TableT extends d.AnyAliasedTable> (table : TableT) => {
         return new SelectBuilder({
-            allowed : [
-                d.SelectBuilderOperation.NARROW,
-                d.SelectBuilderOperation.SELECT,
-            ],
+            hasSelect : false,
+            hasUnion : false,
             columnReferences : tableToReference(table),
             joins : [check<d.Join<"FROM", TableT, d.TableToReference<TableT>, false>>({
                 joinType : "FROM",

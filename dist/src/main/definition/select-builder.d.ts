@@ -25,11 +25,10 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
     readonly data: DataT;
     readonly extraData: ExtraSelectBuilderData;
     constructor(data: DataT, extraData: ExtraSelectBuilderData);
-    assertAllowed(op: d.SelectBuilderOperation): void;
+    assertAfterSelect(): void;
+    assertBeforeUnion(): void;
     assertNonDuplicateAlias(alias: string): void;
     assertEqualLength(a: any[], b: any[]): void;
-    private enableOperation;
-    private disableOperation;
     join<ToTableT extends d.AnyAliasedTable, FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"]>>(toTable: ToTableT, from: FromTupleT, to: d.JoinToTupleCallback<ToTableT, d.JoinFromTupleOfCallback<FromTupleT>>): any;
     rightJoin<ToTableT extends d.AnyAliasedTable, FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"]>>(toTable: ToTableT, from: FromTupleT, to: d.JoinToTupleCallback<ToTableT, d.JoinFromTupleOfCallback<FromTupleT>>): any;
     leftJoin<ToTableT extends d.AnyAliasedTable, FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"]>>(toTable: ToTableT, from: FromTupleT, to: d.JoinToTupleCallback<ToTableT, d.JoinFromTupleOfCallback<FromTupleT>>): any;
@@ -42,8 +41,8 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
     whereIsNotNull<TypeNarrowCallbackT extends d.TypeNarrowCallback<DataT["columnReferences"]>>(typeNarrowCallback: TypeNarrowCallbackT): any;
     whereIsNull<TypeNarrowCallbackT extends d.TypeNarrowCallback<DataT["columnReferences"]>>(typeNarrowCallback: TypeNarrowCallbackT): any;
     whereIsEqual<ConstT extends boolean | number | string, TypeNarrowCallbackT extends d.TypeNarrowCallback<DataT["columnReferences"]>>(value: ConstT, typeNarrowCallback: TypeNarrowCallbackT): any;
-    where<WhereCallbackT extends d.WhereCallback<d.ISelectBuilder<DataT>>>(whereCallback: WhereCallbackT): any;
-    andWhere<WhereCallbackT extends d.WhereCallback<d.ISelectBuilder<DataT>>>(whereCallback: WhereCallbackT): any;
+    where<WhereCallbackT extends d.WhereCallback<d.ISelectBuilder<DataT>>>(whereCallback: WhereCallbackT): SelectBuilder<DataT>;
+    andWhere<WhereCallbackT extends d.WhereCallback<d.ISelectBuilder<DataT>>>(whereCallback: WhereCallbackT): SelectBuilder<DataT>;
     private appendSelectTuple;
     select<SelectCallbackT extends d.SelectCallback<d.ISelectBuilder<DataT>>>(selectCallback: SelectCallbackT): any;
     selectAll(): any;
@@ -62,7 +61,8 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
     unsetLimit(): SelectBuilder<DataT>;
     widen<TypeWidenCallbackT extends d.TypeWidenCallback<DataT["selectReferences"]>, WidenT>(typeWidenCallback: TypeWidenCallbackT, assertWidened: sd.AssertFunc<WidenT>): any;
     union<SelectBuilderT extends d.ISelectBuilder<{
-        allowed: any;
+        hasSelect: true;
+        hasUnion: any;
         columnReferences: any;
         joins: any;
         selectReferences: any;

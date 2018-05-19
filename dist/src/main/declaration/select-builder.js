@@ -1,18 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-//Refactor to hasSelect, hasUnion
-var SelectBuilderOperation;
-(function (SelectBuilderOperation) {
-    SelectBuilderOperation["NARROW"] = "NARROW";
-    SelectBuilderOperation["SELECT"] = "SELECT";
-    SelectBuilderOperation["WIDEN"] = "WIDEN";
-    SelectBuilderOperation["UNION"] = "UNION";
-    SelectBuilderOperation["AS"] = "AS";
-    //After SELECT
-    SelectBuilderOperation["FETCH"] = "FETCH";
-    //After SELECT, will change the return value of fetchAll(), fetchOne(), fetchZeroOrOne(), paginate()
-    SelectBuilderOperation["AGGREGATE"] = "AGGREGATE";
-})(SelectBuilderOperation = exports.SelectBuilderOperation || (exports.SelectBuilderOperation = {}));
 /*
 == Aggregation API ==
 Desired usage:

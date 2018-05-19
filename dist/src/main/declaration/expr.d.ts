@@ -20,7 +20,8 @@ export declare type ValueQueryTupleElement<ColumnReferencesT extends ColumnRefer
 export declare type AnyValueQueryTupleElement = ValueQueryTupleElement<any>;
 export declare type ValueQueryTupleElementType<SelectTupleElementT extends AnyValueQueryTupleElement> = (SelectTupleElementT extends IColumnExpr<any, any, any, infer TypeT> ? TypeT : SelectTupleElementT extends IColumn<any, any, infer TypeT> ? TypeT : never);
 export declare type SelectBuilderValueQuery<TypeT> = ISelectBuilder<{
-    allowed: any;
+    hasSelect: true;
+    hasUnion: any;
     columnReferences: any;
     joins: any;
     selectReferences: any;

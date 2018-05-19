@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const d = require("../declaration");
 const sd = require("schema-decorator");
 const table_operation_1 = require("./table-operation");
 const tuple = require("./tuple");
@@ -27,10 +26,8 @@ class SelectBuilder {
                 throw new Error(`Duplicate alias ${table.alias}, try using AS clause`);
             }
             return new SelectBuilder({
-                allowed: [
-                    d.SelectBuilderOperation.NARROW,
-                    d.SelectBuilderOperation.SELECT,
-                ],
+                hasSelect: false,
+                hasUnion: false,
                 columnReferences: column_references_operation_1.combineReferences(this.data.columnReferences, table_operation_1.tableToReference(table)),
                 joins: [type_util_1.check({
                         joinType: "FROM",
@@ -87,9 +84,14 @@ class SelectBuilder {
         this.data = data;
         this.extraData = extraData;
     }
-    assertAllowed(op) {
-        if (this.data.allowed.indexOf(op) < 0) {
-            throw new Error(`${op} clause not allowed here`);
+    assertAfterSelect() {
+        if (!this.data.hasSelect) {
+            throw new Error(`SELECT clause required`);
+        }
+    }
+    assertBeforeUnion() {
+        if (this.data.hasUnion) {
+            throw new Error(`Must be before UNION clause`);
         }
     }
     assertNonDuplicateAlias(alias) {
@@ -101,14 +103,6 @@ class SelectBuilder {
         if (a.length != b.length) {
             throw new Error(`Tuple length mismatch; ${a.length} != ${b.length}`);
         }
-    }
-    enableOperation(toEnable) {
-        return this.data.allowed.concat(toEnable);
-    }
-    disableOperation(toDisable) {
-        return this.data.allowed.filter((i) => {
-            return toDisable.indexOf(i) < 0;
-        });
     }
     //JOIN CLAUSE
     join(toTable, from, to) {
@@ -248,7 +242,7 @@ class SelectBuilder {
         return result;
     }
     whereIsNotNull(typeNarrowCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.NARROW);
+        this.assertBeforeUnion();
         const toReplace = typeNarrowCallback(this.data.columnReferences);
         if (!(toReplace instanceof column_1.Column)) {
             throw new Error(`Expected a column`);
@@ -257,7 +251,7 @@ class SelectBuilder {
     }
     ;
     whereIsNull(typeNarrowCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.NARROW);
+        this.assertBeforeUnion();
         const toReplace = typeNarrowCallback(this.data.columnReferences);
         if (!(toReplace instanceof column_1.Column)) {
             throw new Error(`Expected a column`);
@@ -266,7 +260,7 @@ class SelectBuilder {
     }
     ;
     whereIsEqual(value, typeNarrowCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.NARROW);
+        this.assertBeforeUnion();
         const toReplace = typeNarrowCallback(this.data.columnReferences);
         if (!(toReplace instanceof column_1.Column)) {
             throw new Error(`Expected a column`);
@@ -302,20 +296,14 @@ class SelectBuilder {
         }
     }
     select(selectCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.SELECT);
+        this.assertBeforeUnion();
         const selectTuple = selectCallback(this.data.columnReferences, this);
         const newTuple = this.appendSelectTuple(selectTuple);
         if (select_1.selectTupleHasDuplicateColumn(newTuple)) {
             throw new Error(`Duplicate column found, try aliasing`);
         }
         return new SelectBuilder(type_util_1.spread(this.data, {
-            allowed: this.enableOperation([
-                d.SelectBuilderOperation.WIDEN,
-                d.SelectBuilderOperation.UNION,
-                d.SelectBuilderOperation.AS,
-                d.SelectBuilderOperation.FETCH,
-                d.SelectBuilderOperation.AGGREGATE,
-            ]),
+            hasSelect: true,
             selectReferences: column_references_operation_1.combineReferences(this.data.selectReferences, 
             //We don't need to convert the entire newTuple to references
             //Since part of newTuple was already converted before
@@ -325,18 +313,12 @@ class SelectBuilder {
     }
     ;
     selectAll() {
-        this.assertAllowed(d.SelectBuilderOperation.SELECT);
+        this.assertBeforeUnion();
         if (this.data.selectTuple != undefined) {
             throw new Error("selectAll() must be called before select()");
         }
         return new SelectBuilder(type_util_1.spread(this.data, {
-            allowed: this.enableOperation([
-                d.SelectBuilderOperation.WIDEN,
-                d.SelectBuilderOperation.UNION,
-                d.SelectBuilderOperation.AS,
-                d.SelectBuilderOperation.FETCH,
-                d.SelectBuilderOperation.AGGREGATE,
-            ]),
+            hasSelect: true,
             selectReferences: select_1.selectAllReference(this.data.columnReferences),
             selectTuple: select_1.joinTupleToSelectTuple(this.data.joins),
         }), this.extraData);
@@ -445,7 +427,7 @@ class SelectBuilder {
     ;
     //WIDEN CLAUSE
     widen(typeWidenCallback, assertWidened) {
-        this.assertAllowed(d.SelectBuilderOperation.WIDEN);
+        this.assertAfterSelect();
         const column = typeWidenCallback(this.data.selectReferences);
         if (!(column instanceof column_1.Column)) {
             throw new Error(`Expected a column`);
@@ -462,7 +444,7 @@ class SelectBuilder {
     ;
     //UNION CLAUSE
     union(other) {
-        this.assertAllowed(d.SelectBuilderOperation.UNION);
+        this.assertAfterSelect();
         if (this.data.selectTuple == undefined) {
             throw new Error(`Cannot UNION; SELECT clause missing on select`);
         }
@@ -473,10 +455,7 @@ class SelectBuilder {
             throw new Error(`Cannot UNION; Column count mismatch`);
         }
         return new SelectBuilder(type_util_1.spread(this.data, {
-            allowed: this.disableOperation([
-                d.SelectBuilderOperation.NARROW,
-                d.SelectBuilderOperation.SELECT
-            ]),
+            hasUnion: true,
         }), Object.assign({}, this.extraData, { union: (this.extraData.union == undefined) ?
                 [other] :
                 this.extraData.union.concat([other]) }));
@@ -535,12 +514,12 @@ class SelectBuilder {
     ;
     //AS CLAUSE
     as(alias) {
-        this.assertAllowed(d.SelectBuilderOperation.AS);
+        this.assertAfterSelect();
         return new sub_select_join_table_1.SubSelectJoinTable(alias, this);
     }
     ;
     asExpr(alias) {
-        this.assertAllowed(d.SelectBuilderOperation.AS);
+        this.assertAfterSelect();
         if (this.data.selectTuple == undefined || this.data.selectTuple.length != 1) {
             throw new Error(`Must SELECT one column only`);
         }
@@ -552,11 +531,8 @@ class SelectBuilder {
     }
     //AGGREGATE
     aggregate(aggregateCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.AGGREGATE);
+        this.assertAfterSelect();
         return new SelectBuilder(type_util_1.spread(this.data, {
-            allowed: this.disableOperation([
-                d.SelectBuilderOperation.WIDEN
-            ]),
             aggregateCallback: aggregateCallback,
         }), this.extraData);
     }
@@ -741,14 +717,14 @@ class SelectBuilder {
         return sb.toString();
     }
     fetchAll() {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
             return Promise.all(raw.rows.map(this.aggregateRow));
         });
     }
     fetchOne() {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
             if (raw.rows.length != 1) {
@@ -758,7 +734,7 @@ class SelectBuilder {
         });
     }
     fetchZeroOrOne() {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
             if (raw.rows.length > 1) {
@@ -773,7 +749,7 @@ class SelectBuilder {
         });
     }
     fetchValue() {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
             if (raw.rows.length != 1) {
@@ -788,7 +764,7 @@ class SelectBuilder {
         });
     }
     fetchValueOrUndefined() {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
             if (raw.rows.length == 0) {
@@ -806,7 +782,7 @@ class SelectBuilder {
         });
     }
     fetchValueArray() {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         return this.extraData.db.selectAny(this.getQuery())
             .then((raw) => {
             if (raw.fields.length != 1) {
@@ -869,7 +845,7 @@ class SelectBuilder {
         }
     }
     paginate(rawPaginationArgs = {}) {
-        this.assertAllowed(d.SelectBuilderOperation.FETCH);
+        this.assertAfterSelect();
         const paginationArgs = mysql.toPaginationArgs(rawPaginationArgs, this.extraData.db.getPaginationConfiguration());
         return this.count()
             .then((itemsFound) => {
@@ -908,10 +884,8 @@ exports.SelectBuilder = SelectBuilder;
 function newCreateSelectBuilderDelegate(db) {
     return (table) => {
         return new SelectBuilder({
-            allowed: [
-                d.SelectBuilderOperation.NARROW,
-                d.SelectBuilderOperation.SELECT,
-            ],
+            hasSelect: false,
+            hasUnion: false,
             columnReferences: table_operation_1.tableToReference(table),
             joins: [type_util_1.check({
                     joinType: "FROM",

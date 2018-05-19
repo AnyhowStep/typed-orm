@@ -55,12 +55,14 @@ export interface PaginateResult<T> {
     rows : T[],
 }
 
-//Refactor to hasSelect, hasUnion
+/*
 export enum SelectBuilderOperation {
+    //All these are BEFORE UNION
     NARROW = "NARROW", //Custom thing
     SELECT = "SELECT",
 
-    WIDEN = "WIDEN", //Custom thing
+    //All these are AFTER SELECT
+    WIDEN = "WIDEN", //Custom thing - This one is before AGGREGATE
 
     UNION = "UNION",
 
@@ -91,7 +93,7 @@ export type EnableOperation<DataT extends AnySelectBuilderData, OperationT exten
         ) :
         (never)
 );
-
+*/
 export type AggregateCallback<DataT extends AnySelectBuilderData> = (
     (
         row : ColumnReferencesToSchemaWithJoins<
@@ -117,7 +119,8 @@ export type FetchRowResult<DataT extends AnySelectBuilderData> = (
 //TODO Maybe have a field where it just stores table data?
 //Right now, it's all in the `joins` field
 export interface AnySelectBuilderData {
-    readonly allowed : SelectBuilderOperation[],
+    readonly hasSelect : boolean,
+    readonly hasUnion : boolean,
 
     //Modified by JOIN clause
     //Used by WHERE clause
@@ -131,11 +134,11 @@ export interface AnySelectBuilderData {
 
     readonly aggregateCallback : undefined|((row : any) => Promise<any>),
 }
-
+/*
 export type IsAllowedSelectBuilderOperation<DataT extends AnySelectBuilderData, OperationT extends SelectBuilderOperation> = (
     OperationT[] extends DataT["allowed"] ?
         true : never
-);
+);*/
 
 export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Querify {
     readonly data : DataT;
@@ -155,7 +158,8 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
                     (
                         ISelectBuilder<{
-                            allowed : DataT["allowed"],
+                            hasSelect : DataT["hasSelect"],
+                            hasUnion : DataT["hasUnion"],
 
                             columnReferences : (
                                 DataT["columnReferences"] &
@@ -197,7 +201,8 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
                     (
                         ISelectBuilder<{
-                            allowed : DataT["allowed"],
+                            hasSelect : DataT["hasSelect"],
+                            hasUnion : DataT["hasUnion"],
 
                             columnReferences : (
                                 ToNullableColumnReferences<DataT["columnReferences"]> &
@@ -239,7 +244,8 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
                     (
                         ISelectBuilder<{
-                            allowed : DataT["allowed"],
+                            hasSelect : DataT["hasSelect"],
+                            hasUnion : DataT["hasUnion"],
 
                             columnReferences : (
                                 DataT["columnReferences"] &
@@ -283,7 +289,8 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     (
                         RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ?
                             ISelectBuilder<{
-                                allowed : DataT["allowed"],
+                                hasSelect : DataT["hasSelect"],
+                                hasUnion : DataT["hasUnion"],
 
                                 columnReferences : (
                                     DataT["columnReferences"] &
@@ -326,7 +333,8 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     (
                         RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ?
                             ISelectBuilder<{
-                                allowed : DataT["allowed"],
+                                hasSelect : DataT["hasSelect"],
+                                hasUnion : DataT["hasUnion"],
 
                                 columnReferences : (
                                     ToNullableColumnReferences<DataT["columnReferences"]> &
@@ -369,7 +377,8 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     (
                         RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ?
                             ISelectBuilder<{
-                                allowed : DataT["allowed"],
+                                hasSelect : DataT["hasSelect"],
+                                hasUnion : DataT["hasUnion"],
 
                                 columnReferences : (
                                     DataT["columnReferences"] &
@@ -401,140 +410,158 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
 
     //TYPE-NARROW CLAUSE
     whereIsNotNull<TypeNarrowCallbackT extends TypeNarrowCallback<DataT["columnReferences"]>> (
+        this : ISelectBuilder<{
+            hasSelect : any,
+            hasUnion : false,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
         typeNarrowCallback : TypeNarrowCallbackT
     ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.NARROW> extends never ?
-            ("NARROW clause not allowed here"|void|never) :
-            ReturnType<TypeNarrowCallbackT> extends IColumn<infer TableNameT, infer NameT, infer TypeT> ?
-                ISelectBuilder<{
-                    allowed : DataT["allowed"],
-                    columnReferences : ReplaceColumnOfReference<
-                        DataT["columnReferences"],
-                        TableNameT,
-                        NameT,
-                        Exclude<TypeT, null|undefined>
-                    >,
-                    //TODO Narrow here, too
-                    joins : ReplaceColumnOfJoinTuple<
-                        DataT["joins"],
-                        TableNameT,
-                        NameT,
-                        Exclude<TypeT, null|undefined>
-                    >,
-                    selectReferences : ReplaceColumnOfReference<
-                        DataT["selectReferences"],
-                        TableNameT,
-                        NameT,
-                        Exclude<TypeT, null|undefined>
-                    >,
-                    selectTuple : (
-                        DataT["selectTuple"] extends Tuple<any> ?
-                            ReplaceColumnOfSelectTuple<
-                                DataT["selectTuple"],
-                                TableNameT,
-                                NameT,
-                                Exclude<TypeT, null|undefined>
-                            > :
-                            undefined
-                    ),
-
-
-
-                    aggregateCallback : DataT["aggregateCallback"],
-                }> :
-                ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
+        ReturnType<TypeNarrowCallbackT> extends IColumn<infer TableNameT, infer NameT, infer TypeT> ?
+            ISelectBuilder<{
+                hasSelect : DataT["hasSelect"],
+                hasUnion : DataT["hasUnion"],
+                columnReferences : ReplaceColumnOfReference<
+                    DataT["columnReferences"],
+                    TableNameT,
+                    NameT,
+                    Exclude<TypeT, null|undefined>
+                >,
+                //TODO Narrow here, too
+                joins : ReplaceColumnOfJoinTuple<
+                    DataT["joins"],
+                    TableNameT,
+                    NameT,
+                    Exclude<TypeT, null|undefined>
+                >,
+                selectReferences : ReplaceColumnOfReference<
+                    DataT["selectReferences"],
+                    TableNameT,
+                    NameT,
+                    Exclude<TypeT, null|undefined>
+                >,
+                selectTuple : (
+                    DataT["selectTuple"] extends Tuple<any> ?
+                        ReplaceColumnOfSelectTuple<
+                            DataT["selectTuple"],
+                            TableNameT,
+                            NameT,
+                            Exclude<TypeT, null|undefined>
+                        > :
+                        undefined
+                ),
+                aggregateCallback : DataT["aggregateCallback"],
+            }> :
+            ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
     whereIsNull<TypeNarrowCallbackT extends TypeNarrowCallback<DataT["columnReferences"]>> (
+        this : ISelectBuilder<{
+            hasSelect : any,
+            hasUnion : false,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
         typeNarrowCallback : TypeNarrowCallbackT
     ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.NARROW> extends never ?
-            ("NARROW clause not allowed here"|void|never) :
-            ReturnType<TypeNarrowCallbackT> extends IColumn<infer TableNameT, infer NameT, infer TypeT> ?
-                ISelectBuilder<{
-                    allowed : DataT["allowed"],
-                    columnReferences : ReplaceColumnOfReference<
-                        DataT["columnReferences"],
-                        TableNameT,
-                        NameT,
-                        null
-                    >,
-                    //TODO Narrow here, too
-                    joins : ReplaceColumnOfJoinTuple<
-                        DataT["joins"],
-                        TableNameT,
-                        NameT,
-                        null
-                    >,
-                    selectReferences : ReplaceColumnOfReference<
-                        DataT["selectReferences"],
-                        TableNameT,
-                        NameT,
-                        null
-                    >,
-                    selectTuple : (
-                        DataT["selectTuple"] extends Tuple<any> ?
-                            ReplaceColumnOfSelectTuple<
-                                DataT["selectTuple"],
-                                TableNameT,
-                                NameT,
-                                null
-                            > :
-                            undefined
-                    ),
-
-
-
-                    aggregateCallback : DataT["aggregateCallback"],
-                }> :
-                ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
+        ReturnType<TypeNarrowCallbackT> extends IColumn<infer TableNameT, infer NameT, infer TypeT> ?
+            ISelectBuilder<{
+                hasSelect : DataT["hasSelect"],
+                hasUnion : DataT["hasUnion"],
+                columnReferences : ReplaceColumnOfReference<
+                    DataT["columnReferences"],
+                    TableNameT,
+                    NameT,
+                    null
+                >,
+                //TODO Narrow here, too
+                joins : ReplaceColumnOfJoinTuple<
+                    DataT["joins"],
+                    TableNameT,
+                    NameT,
+                    null
+                >,
+                selectReferences : ReplaceColumnOfReference<
+                    DataT["selectReferences"],
+                    TableNameT,
+                    NameT,
+                    null
+                >,
+                selectTuple : (
+                    DataT["selectTuple"] extends Tuple<any> ?
+                        ReplaceColumnOfSelectTuple<
+                            DataT["selectTuple"],
+                            TableNameT,
+                            NameT,
+                            null
+                        > :
+                        undefined
+                ),
+                aggregateCallback : DataT["aggregateCallback"],
+            }> :
+            ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
     whereIsEqual<
         ConstT extends boolean|number|string,
         TypeNarrowCallbackT extends TypeNarrowCallback<DataT["columnReferences"]>
     > (
+        this : ISelectBuilder<{
+            hasSelect : any,
+            hasUnion : false,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
         value : ConstT,
         typeNarrowCallback : TypeNarrowCallbackT
     ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.NARROW> extends never ?
-            ("NARROW clause not allowed here"|void|never) :
-            ReturnType<TypeNarrowCallbackT> extends IColumn<infer TableNameT, infer NameT, infer TypeT> ?
-                ISelectBuilder<{
-                    allowed : DataT["allowed"],
-                    columnReferences : ReplaceColumnOfReference<
-                        DataT["columnReferences"],
-                        TableNameT,
-                        NameT,
-                        ConstT
-                    >,
-                    //TODO Narrow here, too
-                    joins : ReplaceColumnOfJoinTuple<
-                        DataT["joins"],
-                        TableNameT,
-                        NameT,
-                        ConstT
-                    >,
-                    selectReferences : ReplaceColumnOfReference<
-                        DataT["selectReferences"],
-                        TableNameT,
-                        NameT,
-                        ConstT
-                    >,
-                    selectTuple : (
-                        DataT["selectTuple"] extends Tuple<any> ?
-                            ReplaceColumnOfSelectTuple<
-                                DataT["selectTuple"],
-                                TableNameT,
-                                NameT,
-                                ConstT
-                            > :
-                            undefined
-                    ),
-
-
-
-                    aggregateCallback : DataT["aggregateCallback"],
-                }> :
-                ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
+        ReturnType<TypeNarrowCallbackT> extends IColumn<infer TableNameT, infer NameT, infer TypeT> ?
+            ISelectBuilder<{
+                hasSelect : DataT["hasSelect"],
+                hasUnion : DataT["hasUnion"],
+                columnReferences : ReplaceColumnOfReference<
+                    DataT["columnReferences"],
+                    TableNameT,
+                    NameT,
+                    ConstT
+                >,
+                //TODO Narrow here, too
+                joins : ReplaceColumnOfJoinTuple<
+                    DataT["joins"],
+                    TableNameT,
+                    NameT,
+                    ConstT
+                >,
+                selectReferences : ReplaceColumnOfReference<
+                    DataT["selectReferences"],
+                    TableNameT,
+                    NameT,
+                    ConstT
+                >,
+                selectTuple : (
+                    DataT["selectTuple"] extends Tuple<any> ?
+                        ReplaceColumnOfSelectTuple<
+                            DataT["selectTuple"],
+                            TableNameT,
+                            NameT,
+                            ConstT
+                        > :
+                        undefined
+                ),
+                aggregateCallback : DataT["aggregateCallback"],
+            }> :
+            ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
 
     //WHERE CLAUSE
@@ -549,61 +576,72 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
 
     //SELECT CLAUSE
     select<SelectCallbackT extends SelectCallback<ISelectBuilder<DataT>>> (
+        this : ISelectBuilder<{
+            hasSelect : any,
+            hasUnion : false,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
         selectCallback : SelectCallbackT
     ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.SELECT> extends never ?
-            ("SELECT clause not allowed here"|void|never) :
-            true extends SelectTupleHasDuplicateColumn<(
-                DataT["selectTuple"] extends Tuple<any> ?
-                    TupleConcat<
-                        DataT["selectTuple"],
-                        ReturnType<SelectCallbackT>
-                    > :
+        true extends SelectTupleHasDuplicateColumn<(
+            DataT["selectTuple"] extends Tuple<any> ?
+                TupleConcat<
+                    DataT["selectTuple"],
                     ReturnType<SelectCallbackT>
-            )> ?
-                (
-                    "Duplicate columns found in SELECT, consider aliasing"|void|never
-                ) :
-                ISelectBuilder<{
-                    allowed : EnableOperation<DataT, SelectBuilderOperation.WIDEN|SelectBuilderOperation.UNION|SelectBuilderOperation.AS|SelectBuilderOperation.FETCH|SelectBuilderOperation.AGGREGATE>,
-                    columnReferences : DataT["columnReferences"],
-                    joins : DataT["joins"],
-                    selectReferences : (
-                        DataT["selectReferences"] &
-                        SelectTupleToReferences<ReturnType<SelectCallbackT>>
-                    ),
-                    selectTuple : (
-                        DataT["selectTuple"] extends Tuple<any> ?
-                            TupleConcat<
-                                DataT["selectTuple"],
-                                ReturnType<SelectCallbackT>
-                            > :
-                            ReturnType<SelectCallbackT>
-                    ),
-
-
-
-                    aggregateCallback : DataT["aggregateCallback"],
-                }>
-    );
-    selectAll () : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.SELECT> extends never ?
-            ("SELECT clause not allowed here"|void|never) :
+                > :
+                ReturnType<SelectCallbackT>
+        )> ?
             (
-                DataT["selectTuple"] extends undefined ?
-                    ISelectBuilder<{
-                        allowed : EnableOperation<DataT, SelectBuilderOperation.WIDEN|SelectBuilderOperation.UNION|SelectBuilderOperation.AS|SelectBuilderOperation.FETCH|SelectBuilderOperation.AGGREGATE>,
-                        columnReferences : DataT["columnReferences"],
-                        joins : DataT["joins"],
-                        selectReferences : DataT["columnReferences"],
-                        selectTuple : JoinTupleToSelectTuple<DataT["joins"]>,
-
-
-
-                        aggregateCallback : DataT["aggregateCallback"],
-                    }> :
-                    ("selectAll() must be called before select()"|void|never)
-            )
+                "Duplicate columns found in SELECT, consider aliasing"|void|never
+            ) :
+            ISelectBuilder<{
+                hasSelect : true,
+                hasUnion : DataT["hasUnion"],
+                columnReferences : DataT["columnReferences"],
+                joins : DataT["joins"],
+                selectReferences : (
+                    DataT["selectReferences"] &
+                    SelectTupleToReferences<ReturnType<SelectCallbackT>>
+                ),
+                selectTuple : (
+                    DataT["selectTuple"] extends Tuple<any> ?
+                        TupleConcat<
+                            DataT["selectTuple"],
+                            ReturnType<SelectCallbackT>
+                        > :
+                        ReturnType<SelectCallbackT>
+                ),
+                aggregateCallback : DataT["aggregateCallback"],
+            }>
+    );
+    selectAll (
+        this : ISelectBuilder<{
+            hasSelect : false,
+            hasUnion : false,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>
+    ) : (
+        DataT["selectTuple"] extends undefined ?
+            ISelectBuilder<{
+                hasSelect : true,
+                hasUnion : DataT["hasUnion"],
+                columnReferences : DataT["columnReferences"],
+                joins : DataT["joins"],
+                selectReferences : DataT["columnReferences"],
+                selectTuple : JoinTupleToSelectTuple<DataT["joins"]>,
+                aggregateCallback : DataT["aggregateCallback"],
+            }> :
+            ("selectAll() must be called before select()"|void|never)
     );
 
     //DISTINCT CLAUSE
@@ -661,94 +699,116 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     unsetLimit () : ISelectBuilder<DataT>;
 
     //WIDEN CLAUSE
+    //After select, before aggregate
     widen<
         TypeWidenCallbackT extends TypeWidenCallback<DataT["selectReferences"]>,
         WidenT
     > (
+        this : ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : undefined,
+        }>,
         typeWidenCallback : TypeWidenCallbackT,
         assertWidened : sd.AssertFunc<WidenT>
     ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.WIDEN> extends never ?
-            ("WIDEN clause not allowed here"|void|never) :
-            ReturnType<TypeWidenCallbackT> extends IColumn<infer TableNameT, infer NameT, infer TypeT> ?
-                ISelectBuilder<{
-                    allowed : DataT["allowed"],
-                    columnReferences : DataT["columnReferences"],
-                    //TODO Widen here, too
-                    joins : ReplaceColumnOfJoinTuple<
-                        DataT["joins"],
-                        TableNameT,
-                        NameT,
-                        TypeT|WidenT
-                    >,
-                    selectReferences : ReplaceColumnOfReference<
-                        DataT["selectReferences"],
-                        TableNameT,
-                        NameT,
-                        TypeT|WidenT
-                    >,
-                    selectTuple : (
-                        DataT["selectTuple"] extends Tuple<any> ?
-                            ReplaceColumnOfSelectTuple<
-                                DataT["selectTuple"],
-                                TableNameT,
-                                NameT,
-                                TypeT|WidenT
-                            > :
-                            undefined
-                    ),
+        ReturnType<TypeWidenCallbackT> extends IColumn<infer TableNameT, infer NameT, infer TypeT> ?
+            ISelectBuilder<{
+                hasSelect : DataT["hasSelect"],
+                hasUnion : DataT["hasUnion"],
+                columnReferences : DataT["columnReferences"],
+                //TODO Widen here, too
+                joins : ReplaceColumnOfJoinTuple<
+                    DataT["joins"],
+                    TableNameT,
+                    NameT,
+                    TypeT|WidenT
+                >,
+                selectReferences : ReplaceColumnOfReference<
+                    DataT["selectReferences"],
+                    TableNameT,
+                    NameT,
+                    TypeT|WidenT
+                >,
+                selectTuple : (
+                    DataT["selectTuple"] extends Tuple<any> ?
+                        ReplaceColumnOfSelectTuple<
+                            DataT["selectTuple"],
+                            TableNameT,
+                            NameT,
+                            TypeT|WidenT
+                        > :
+                        undefined
+                ),
 
 
 
-                    aggregateCallback : DataT["aggregateCallback"],
-                }> :
-                ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
+                aggregateCallback : DataT["aggregateCallback"],
+            }> :
+            ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
 
     //UNION CLAUSE
-    union<SelectBuilderT extends ISelectBuilder<{
-        allowed : any,
-        columnReferences : any,
-        joins : any,
-        selectReferences : any,
-        selectTuple : any,
-        //Has no effect on the query
-        aggregateCallback : any,
-    }>> (selectBuilder : SelectBuilderT) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.UNION> extends never ?
-            ("UNION clause not allowed here"|void|never) :
-            SelectBuilderT extends ISelectBuilder<infer OtherT> ?
-                (
-                    OtherT["selectTuple"] extends Tuple<any> ?
-                        (
-                            DataT["selectTuple"] extends Tuple<any> ?
-                                (
-                                    //A run-time check is impossible, for now
-                                    SelectTupleToType<OtherT["selectTuple"]> extends SelectTupleToType<DataT["selectTuple"]> ?
-                                        ISelectBuilder<{
-                                            allowed : DisableOperation<DataT, SelectBuilderOperation.NARROW|SelectBuilderOperation.SELECT>,
-                                            columnReferences : DataT["columnReferences"],
-                                            joins : DataT["joins"],
-                                            selectReferences : DataT["selectReferences"],
-                                            selectTuple : DataT["selectTuple"],
-
-
-
-                                            aggregateCallback : DataT["aggregateCallback"],
-                                        }> :
-                                        (
-                                            "Cannot UNION; SELECT tuples have incompatible types"|
-                                            void|
-                                            never|
-                                            ("self" & SelectTupleToType<DataT["selectTuple"]>)|
-                                            ("other" & SelectTupleToType<DataT["selectTuple"]>)
-                                        )
-                                ) :
-                                ("Cannot UNION; Invalid selectTuple, does SELECT clause exist?"|void|never)
-                        ) :
-                        ("Cannot UNION; sub-select has invalid selectTuple; does SELECT clause exist?"|void|never)
-                ) :
-                ("Invalid sub-select, or could not infer OtherT"|void|never)
+    union<
+        SelectBuilderT extends ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>
+    > (
+        this : ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
+        selectBuilder : SelectBuilderT
+    ) : (
+        //TODO Clean up
+        SelectBuilderT extends ISelectBuilder<infer OtherT> ?
+            (
+                OtherT["selectTuple"] extends Tuple<any> ?
+                    (
+                        DataT["selectTuple"] extends Tuple<any> ?
+                            (
+                                //A run-time check is impossible, for now
+                                SelectTupleToType<OtherT["selectTuple"]> extends SelectTupleToType<DataT["selectTuple"]> ?
+                                    ISelectBuilder<{
+                                        hasSelect : DataT["hasSelect"],
+                                        hasUnion : true,
+                                        columnReferences : DataT["columnReferences"],
+                                        joins : DataT["joins"],
+                                        selectReferences : DataT["selectReferences"],
+                                        selectTuple : DataT["selectTuple"],
+                                        aggregateCallback : DataT["aggregateCallback"],
+                                    }> :
+                                    (
+                                        "Cannot UNION; SELECT tuples have incompatible types"|
+                                        void|
+                                        never|
+                                        ("self" & SelectTupleToType<DataT["selectTuple"]>)|
+                                        ("other" & SelectTupleToType<DataT["selectTuple"]>)
+                                    )
+                            ) :
+                            ("Cannot UNION; Invalid selectTuple, does SELECT clause exist?"|void|never)
+                    ) :
+                    ("Cannot UNION; sub-select has invalid selectTuple; does SELECT clause exist?"|void|never)
+            ) :
+            ("Invalid sub-select, or could not infer OtherT"|void|never)
     );
 
     //UNION ORDER BY CLAUSE
@@ -777,48 +837,74 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     readonly from : CreateSubSelectBuilderDelegate<DataT["columnReferences"]>;
 
     //AS CLAUSE
-    as<AliasT extends string> (alias : AliasT) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AS> extends never ?
-            ("AS clause not allowed here"|void|never) :
-            DataT["selectTuple"] extends Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> ?
-                (
-                    true extends JoinableSelectTupleHasDuplicateColumnName<DataT["selectTuple"]> ?
-                        "Cannot have duplicate column names in SELECT clause when aliasing"|void|never :
-                        AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<DataT["selectTuple"]>>
-                ) :
-                ("Cannot use tables in SELECT clause when aliasing"|void|never)
+    as<AliasT extends string> (
+        this : ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
+        alias : AliasT
+    ) : (
+        DataT["selectTuple"] extends Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> ?
+            (
+                true extends JoinableSelectTupleHasDuplicateColumnName<DataT["selectTuple"]> ?
+                    "Cannot have duplicate column names in SELECT clause when aliasing"|void|never :
+                    AliasedTable<AliasT, AliasT, JoinableSelectTupleToRawColumnCollection<DataT["selectTuple"]>>
+            ) :
+            ("Cannot use tables in SELECT clause when aliasing"|void|never)
     );
-    asExpr<AliasT extends string> (alias : AliasT) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AS> extends never ?
-            ("AS clause not allowed here"|void|never) :
-            this extends SelectBuilderValueQuery<infer TypeT> ?
-                IColumnExpr<
-                    {},
-                    "__expr",
-                    AliasT,
-                    TypeT|null
-                > :
-                ("Cannot be used as an expression"|void|never)
+    asExpr<AliasT extends string> (
+        this : ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
+        alias : AliasT
+    ) : (
+        this extends SelectBuilderValueQuery<infer TypeT> ?
+            IColumnExpr<
+                {},
+                "__expr",
+                AliasT,
+                TypeT|null
+            > :
+            ("Cannot be used as an expression"|void|never)
     );
 
     //AGGREGATE
     //TODO unsetAggregate(), maybe allow composition of aggregation
     aggregate<AggregateCallbackT extends AggregateCallback<DataT>> (
+        this : ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
         aggregateCallback : AggregateCallbackT
     ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.AGGREGATE> extends never ?
-            ("AGGREGATE not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DisableOperation<DataT, SelectBuilderOperation.WIDEN>,
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-
-                aggregateCallback : AggregateCallbackT,
-            }>
+        ISelectBuilder<{
+            hasSelect : DataT["hasSelect"],
+            hasUnion : DataT["hasUnion"],
+            columnReferences : DataT["columnReferences"],
+            joins : DataT["joins"],
+            selectReferences : DataT["selectReferences"],
+            selectTuple : DataT["selectTuple"],
+            aggregateCallback : AggregateCallbackT,
+        }>
     );
 
     //QUERIFY
@@ -826,50 +912,98 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     querifyWhere (sb : IStringBuilder) : void;
 
     //FETCH CLAUSE
-    fetchAll () : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
-            ("Cannot FETCH here"|void|never) :
-            Promise<FetchRowResult<DataT>[]>
+    fetchAll (
+        this : ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
+    ) : Promise<FetchRowResult<DataT>[]>;
+    fetchOne (
+        this : ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
+    ) : Promise<FetchRowResult<DataT>>;
+    fetchZeroOrOne (
+        this : ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
+    ) : Promise<FetchRowResult<DataT>|undefined>;
+    fetchValue (
+        this : ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
+    ) : (
+        DataT["selectTuple"] extends (
+            Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> &
+            { length : 1 }
+        ) ?
+            Promise<SelectTupleElementType<DataT["selectTuple"][0]>> :
+            ("You can only fetchValue() if selecting one column"|void|never)
     );
-    fetchOne () : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
-            ("Cannot FETCH here"|void|never) :
-            Promise<FetchRowResult<DataT>>
+    fetchValueOrUndefined (
+        this : ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
+    ) : (
+        DataT["selectTuple"] extends (
+            Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> &
+            { length : 1 }
+        ) ?
+            Promise<SelectTupleElementType<DataT["selectTuple"][0]>|undefined> :
+            ("You can only fetchValueOrUndefined() if selecting one column"|void|never)
     );
-    fetchZeroOrOne () : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
-            ("Cannot FETCH here"|void|never) :
-            Promise<FetchRowResult<DataT>|undefined>
-    );
-    fetchValue () : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
-            ("Cannot FETCH here"|void|never) :
-            DataT["selectTuple"] extends (
-                Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> &
-                { length : 1 }
-            ) ?
-                Promise<SelectTupleElementType<DataT["selectTuple"][0]>> :
-                ("You can only fetchValue() if selecting one column"|void|never)
-    );
-    fetchValueOrUndefined () : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
-            ("Cannot FETCH here"|void|never) :
-            DataT["selectTuple"] extends (
-                Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> &
-                { length : 1 }
-            ) ?
-                Promise<SelectTupleElementType<DataT["selectTuple"][0]>|undefined> :
-                ("You can only fetchValueOrUndefined() if selecting one column"|void|never)
-    );
-    fetchValueArray () : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
-            ("Cannot FETCH here"|void|never) :
-            DataT["selectTuple"] extends (
-                Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> &
-                { length : 1 }
-            ) ?
-                Promise<SelectTupleElementType<DataT["selectTuple"][0]>[]> :
-                ("You can only fetchValueArray() if selecting one column"|void|never)
+    fetchValueArray (
+        this : ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
+    ) : (
+        DataT["selectTuple"] extends (
+            Tuple<JoinableSelectTupleElement<DataT["columnReferences"]>> &
+            { length : 1 }
+        ) ?
+            Promise<SelectTupleElementType<DataT["selectTuple"][0]>[]> :
+            ("You can only fetchValueArray() if selecting one column"|void|never)
     );
     //TODO May not always work if GROUP BY, HAVING clauses use a select-expression,
     //TODO May not work as intended with UNION selects
@@ -879,13 +1013,19 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     exists () : Promise<boolean>;
 
     //Uses count() internally
-    paginate (paginationArgs? : RawPaginationArgs) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.FETCH> extends never ?
-            ("Cannot FETCH here"|void|never) :
-            Promise<
-                PaginateResult<FetchRowResult<DataT>>
-            >
-    );
+    paginate (
+        this : ISelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+        }>,
+        paginationArgs? : RawPaginationArgs
+    ) : Promise<PaginateResult<FetchRowResult<DataT>>>;
 }
 
 export type AnySelectBuilder = ISelectBuilder<any>;
@@ -895,28 +1035,8 @@ export type CreateSelectBuilderDelegate = (
         table : TableT
     ) => (
         ISelectBuilder<{
-            allowed : (
-                //Narrow before UNION, cannot un-narrow
-                //Uses columnReferences
-                SelectBuilderOperation.NARROW|
-
-                //Append before UNION
-                //Uses columnReferences
-                SelectBuilderOperation.SELECT
-
-                //After SELECT, does not affect query, used for column compatibility with UNION
-                //Uses selectReferences
-                //SelectBuilderOperation.WIDEN|
-
-                //Append after SELECT
-                //SelectBuilderOperation.UNION|
-
-                //After SELECT
-                //SelectBuilderOperation.AS
-
-                //After SELECT
-                //SelectBuilderOperation.FETCH
-            )[],
+            hasSelect : false,
+            hasUnion : false,
             columnReferences : TableToReference<TableT>,
             joins : [Join<"FROM", TableT, TableToReference<TableT>, false>],
             selectReferences : {},
@@ -933,32 +1053,8 @@ export type CreateSubSelectBuilderDelegate<ColumnReferencesT extends ColumnRefer
         TableAlias<TableT> extends keyof ColumnReferencesT ?
             ("Duplicate alias" | TableAlias<TableT> | void) :
             ISelectBuilder<{
-                allowed : (
-
-                    //Narrow before UNION, cannot un-narrow
-                    //Uses columnReferences
-                    SelectBuilderOperation.NARROW|
-
-                    //Append before UNION
-                    //Uses columnReferences
-                    SelectBuilderOperation.SELECT
-
-                    //After SELECT, does not affect query, used for column compatibility with UNION
-                    //Uses selectReferences
-                    //SelectBuilderOperation.WIDEN|
-
-                    //Append after SELECT
-                    //SelectBuilderOperation.UNION|
-
-                    //After SELECT
-                    //SelectBuilderOperation.AS
-
-                    //After SELECT
-                    //SelectBuilderOperation.FETCH
-
-                    //After SELECT
-                    //SelectBuilderOperation.AGGREGATE
-                )[],
+                hasSelect : false,
+                hasUnion : false,
                 columnReferences : TableToReference<TableT> & ColumnReferencesT,
                 joins : [Join<"FROM", TableT, TableToReference<TableT>, false>],
                 selectReferences : {},
