@@ -62,9 +62,9 @@ export type ToNullableJoinTuple<TupleT extends Tuple<AnyJoin>> = (
             {
                 "0" : (
                     Join<
-                        TupleT["0"]["joinType"],
-                        TupleT["0"]["table"],
-                        TupleT["0"]["columnReferences"],
+                        TupleT[0]["joinType"],
+                        TupleT[0]["table"],
+                        TupleT[0]["columnReferences"],
                         true
                     >
                 )
@@ -74,23 +74,31 @@ export type ToNullableJoinTuple<TupleT extends Tuple<AnyJoin>> = (
 );
 
 export type JoinFromTupleCallback<
-    ColumnReferencesT extends ColumnReferences,
-    TupleT extends Tuple<ColumnOfReferences<ColumnReferencesT>>
+    ColumnReferencesT extends ColumnReferences
 > = (
-    TupleT |
+    Tuple<ColumnOfReferences<ColumnReferencesT>> |
     (
-        (columnReferences : ColumnReferencesT) => TupleT
+        (columnReferences : ColumnReferencesT) => Tuple<ColumnOfReferences<ColumnReferencesT>>
     )
 );
 
 export type JoinFromTupleOfCallback<
-    JoinFromTupleCallbackT extends JoinFromTupleCallback<any, Tuple<AnyColumn>>
+    JoinFromTupleCallbackT extends JoinFromTupleCallback<any>
 > = (
-    JoinFromTupleCallbackT extends Tuple<AnyColumn> ?
-    JoinFromTupleCallbackT :
-    JoinFromTupleCallbackT extends (...args : any[]) => infer TupleT ?
-    TupleT :
-    ("Invalid JoinFromTupleCallbackT or could not infer TupleT"|void|never)
+    JoinFromTupleCallbackT extends JoinFromTupleCallback<infer ColumnReferencesT> ?
+        (
+            JoinFromTupleCallbackT extends Tuple<ColumnOfReferences<ColumnReferencesT>> ?
+            JoinFromTupleCallbackT :
+            JoinFromTupleCallbackT extends (...args : any[]) => infer TupleT ?
+            (
+                TupleT extends Tuple<ColumnOfReferences<ColumnReferencesT>> ?
+                    TupleT :
+                    never
+            ) :
+            //("Invalid JoinFromTupleCallbackT or could not infer TupleT"|void|never)
+            never
+        ) :
+        never
 )
 
 export type JoinToColumn<

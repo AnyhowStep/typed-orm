@@ -6,7 +6,7 @@ import {Column} from "./column";
 
 export function getJoinFrom<
     ColumnReferencesT extends d.ColumnReferences,
-    JoinFromTupleCallbackT extends d.JoinFromTupleCallback<ColumnReferencesT, d.Tuple<d.AnyColumn>>
+    JoinFromTupleCallbackT extends d.JoinFromTupleCallback<ColumnReferencesT>
 > (columnReferences : ColumnReferencesT, callback : JoinFromTupleCallbackT) : d.JoinFromTupleOfCallback<JoinFromTupleCallbackT> {
     if (callback instanceof Array) {
         return callback as any;

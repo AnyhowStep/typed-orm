@@ -12,7 +12,7 @@ import {
 } from "./join";
 import {Tuple, TuplePush, TupleConcat} from "./tuple";
 import {AliasedTable, AnyAliasedTable} from "./aliased-table";
-import {IColumn, AnyColumn} from "./column";
+import {IColumn} from "./column";
 import {TableAlias, TableToReference} from "./table-operation";
 import {ToNullableColumnReferences, ReplaceColumnOfReference, ColumnReferencesToSchemaWithJoins} from "./column-references-operation";
 import {TypeNarrowCallback} from "./type-narrow";
@@ -172,7 +172,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     //JOIN CLAUSE
     join<
         ToTableT extends AnyAliasedTable,
-        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>
+        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"]>
     > (
         toTable : ToTableT,
         from : FromTupleT,
@@ -222,7 +222,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     );
     rightJoin<
         ToTableT extends AnyAliasedTable,
-        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>
+        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"]>
     > (
         toTable : ToTableT,
         from : FromTupleT,
@@ -272,7 +272,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     );
     leftJoin<
         ToTableT extends AnyAliasedTable,
-        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>
+        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"]>
     > (
         toTable : ToTableT,
         from : FromTupleT,
@@ -324,7 +324,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     //JOIN USING
     joinUsing<
         ToTableT extends AnyAliasedTable,
-        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>
+        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"]>
     > (
         toTable : ToTableT,
         from : FromTupleT
@@ -375,7 +375,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     );
     rightJoinUsing<
         ToTableT extends AnyAliasedTable,
-        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>
+        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"]>
     > (
         toTable : ToTableT,
         from : FromTupleT
@@ -426,7 +426,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     );
     leftJoinUsing<
         ToTableT extends AnyAliasedTable,
-        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"], Tuple<AnyColumn>>
+        FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"]>
     > (
         toTable : ToTableT,
         from : FromTupleT
@@ -477,7 +477,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     );
 
     //TYPE-NARROW CLAUSE
-    whereIsNotNull<TypeNarrowCallbackT extends TypeNarrowCallback<ISelectBuilder<DataT>>> (
+    whereIsNotNull<TypeNarrowCallbackT extends TypeNarrowCallback<DataT["columnReferences"]>> (
         typeNarrowCallback : TypeNarrowCallbackT
     ) : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.NARROW> extends never ?
@@ -525,7 +525,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 }> :
                 ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
     );
-    whereIsNull<TypeNarrowCallbackT extends TypeNarrowCallback<ISelectBuilder<DataT>>> (
+    whereIsNull<TypeNarrowCallbackT extends TypeNarrowCallback<DataT["columnReferences"]>> (
         typeNarrowCallback : TypeNarrowCallbackT
     ) : (
         IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.NARROW> extends never ?
@@ -575,7 +575,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     );
     whereIsEqual<
         ConstT extends boolean|number|string,
-        TypeNarrowCallbackT extends TypeNarrowCallback<ISelectBuilder<DataT>>
+        TypeNarrowCallbackT extends TypeNarrowCallback<DataT["columnReferences"]>
     > (
         value : ConstT,
         typeNarrowCallback : TypeNarrowCallbackT
@@ -1091,7 +1091,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
 
     //WIDEN CLAUSE
     widen<
-        TypeWidenCallbackT extends TypeWidenCallback<ISelectBuilder<DataT>>,
+        TypeWidenCallbackT extends TypeWidenCallback<DataT["selectReferences"]>,
         WidenT
     > (
         typeWidenCallback : TypeWidenCallbackT,

@@ -265,18 +265,27 @@ class SelectBuilder {
     whereIsNotNull(typeNarrowCallback) {
         this.assertAllowed(d.SelectBuilderOperation.NARROW);
         const toReplace = typeNarrowCallback(this.data.columnReferences);
+        if (!(toReplace instanceof column_1.Column)) {
+            throw new Error(`Expected a column`);
+        }
         return new SelectBuilder(this.appendNarrowData(new column_1.Column(toReplace.table, toReplace.name, sd.notOptional(toReplace.assertDelegate))), this.appendNarrowExpr(expr_comparison_1.isNotNull(toReplace)));
     }
     ;
     whereIsNull(typeNarrowCallback) {
         this.assertAllowed(d.SelectBuilderOperation.NARROW);
         const toReplace = typeNarrowCallback(this.data.columnReferences);
+        if (!(toReplace instanceof column_1.Column)) {
+            throw new Error(`Expected a column`);
+        }
         return new SelectBuilder(this.appendNarrowData(new column_1.Column(toReplace.table, toReplace.name, sd.nil())), this.appendNarrowExpr(expr_comparison_1.isNull(toReplace)));
     }
     ;
     whereIsEqual(value, typeNarrowCallback) {
         this.assertAllowed(d.SelectBuilderOperation.NARROW);
         const toReplace = typeNarrowCallback(this.data.columnReferences);
+        if (!(toReplace instanceof column_1.Column)) {
+            throw new Error(`Expected a column`);
+        }
         return new SelectBuilder(this.appendNarrowData(new column_1.Column(toReplace.table, toReplace.name, sd.oneOf(value))), this.appendNarrowExpr(expr_logical_1.and(
         //Adding this so we don't compare against NULL
         expr_comparison_1.isNotNull(toReplace), expr_comparison_1.eq(toReplace, value))));
@@ -477,6 +486,9 @@ class SelectBuilder {
     widen(typeWidenCallback, assertWidened) {
         this.assertAllowed(d.SelectBuilderOperation.WIDEN);
         const column = typeWidenCallback(this.data.selectReferences);
+        if (!(column instanceof column_1.Column)) {
+            throw new Error(`Expected a column`);
+        }
         const newColumn = new column_1.Column(column.table, column.name, sd.or(column.assertDelegate, assertWidened));
         return new SelectBuilder(type_util_1.spread(this.data, {
             joins: join_1.replaceColumnOfJoinTuple(this.data.joins, newColumn),

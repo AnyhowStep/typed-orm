@@ -1,19 +1,15 @@
 import { ColumnReferences } from "./column-references";
-import { IColumn } from "./column";
+import { IColumn, AnyColumn } from "./column";
 import { ColumnType } from "./column-operation";
 import { Tuple } from "./tuple";
 import { AnyJoin, NullableJoinTableNames, ColumnOfJoinTuple } from "./join";
 export declare type Union<T> = (T[keyof T]);
-export declare type ColumnOfReferencesInner<ColumnReferencesT extends ColumnReferences> = ({
-    data: {
-        [k in keyof ColumnReferencesT]: (Union<ColumnReferencesT[k]>);
-    };
-});
-export declare type ColumnOfReferences<ColumnReferencesT extends ColumnReferences> = ({
-    data: {
-        [k in keyof ColumnOfReferencesInner<ColumnReferencesT>]: (Union<ColumnOfReferencesInner<ColumnReferencesT>[k]>);
-    };
-}["data"]["data"]);
+export declare type ColumnOfReferencesImpl<ColumnReferencesT extends ColumnReferences> = ({
+    [table in Extract<keyof ColumnReferencesT, string>]: {
+        [column in Extract<keyof ColumnReferencesT[table], string>]: ColumnReferencesT[table][column];
+    }[Extract<keyof ColumnReferencesT[table], string>];
+}[Extract<keyof ColumnReferencesT, string>]);
+export declare type ColumnOfReferences<ColumnReferencesT extends ColumnReferences> = (ColumnOfReferencesImpl<ColumnReferencesT> extends AnyColumn ? (AnyColumn extends ColumnOfReferencesImpl<ColumnReferencesT> ? ColumnOfReferencesImpl<ColumnReferencesT> : never) : never);
 export declare type ToNullableColumnReferences<ColumnReferencesT extends ColumnReferences> = ({
     [table in Extract<keyof ColumnReferencesT, string>]: {
         [column in Extract<keyof ColumnReferencesT[table], string>]: (ColumnReferencesT[table][column] extends IColumn<any, any, infer TypeT> ? (IColumn<table, column, TypeT | null>) : (("Invalid ColumnT or could not infer TypeT of ColumnT" & table & column) & never & void));

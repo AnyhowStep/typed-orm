@@ -1,3 +1,3 @@
-import { AnySelectBuilder, ISelectBuilder } from "./select-builder";
 import { ColumnOfReferences } from "./column-references-operation";
-export declare type TypeNarrowCallback<FromBuilderT extends AnySelectBuilder> = (FromBuilderT extends ISelectBuilder<infer DataT> ? (columnReferences: DataT["columnReferences"]) => ColumnOfReferences<DataT["columnReferences"]> : never);
+import { ColumnReferences } from "./column-references";
+export declare type TypeNarrowCallback<ColumnReferencesT extends ColumnReferences> = ((columnReferences: ColumnReferencesT) => ColumnOfReferences<ColumnReferencesT>);

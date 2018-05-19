@@ -1,27 +1,27 @@
 import {ColumnReferences} from "./column-references";
-import {IColumn} from "./column";
+import {IColumn, AnyColumn} from "./column";
 import {ColumnType} from "./column-operation";
 import {Tuple} from "./tuple";
 import {AnyJoin, NullableJoinTableNames, ColumnOfJoinTuple} from "./join";
 //import { Column } from "../definition";
 
 export type Union<T> = (T[keyof T]);
-export type ColumnOfReferencesInner<ColumnReferencesT extends ColumnReferences> = ({
-    data: {
-        [k in keyof ColumnReferencesT] : (
-            Union<ColumnReferencesT[k]>
-        )
-    }
-});
+export type ColumnOfReferencesImpl<ColumnReferencesT extends ColumnReferences> = ({
+    [table in Extract<keyof ColumnReferencesT, string>] : {
+        [column in Extract<keyof ColumnReferencesT[table], string>] : ColumnReferencesT[table][column]
+    }[Extract<keyof ColumnReferencesT[table], string>]
+}[Extract<keyof ColumnReferencesT, string>]);
 export type ColumnOfReferences<ColumnReferencesT extends ColumnReferences> = (
-    {
-        data : {
-            [k in keyof ColumnOfReferencesInner<ColumnReferencesT>] : (
-                Union<ColumnOfReferencesInner<ColumnReferencesT>[k]>
-            )
-        }
-    }["data"]["data"]
+    //HACK-y
+    ColumnOfReferencesImpl<ColumnReferencesT> extends AnyColumn ?
+    (
+        AnyColumn extends ColumnOfReferencesImpl<ColumnReferencesT> ?
+            ColumnOfReferencesImpl<ColumnReferencesT> :
+            never
+    ) :
+    never
 );
+
 export type ToNullableColumnReferences<ColumnReferencesT extends ColumnReferences> = (
     {
         [table in Extract<keyof ColumnReferencesT, string>] : {

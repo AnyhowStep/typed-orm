@@ -65,7 +65,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     //JOIN CLAUSE
     join<
         ToTableT extends d.AnyAliasedTable,
-        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>
+        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"]>
     > (
         toTable : ToTableT,
         from : FromTupleT,
@@ -73,7 +73,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     ) {
         this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
-        const fromTuple = getJoinFrom(this.data.columnReferences, from);
+        const fromTuple = getJoinFrom(this.data.columnReferences, from as any);
         const toTuple = getJoinTo(toTable, to);
         this.assertEqualLength(fromTuple, toTuple);
 
@@ -97,7 +97,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     }
     rightJoin<
         ToTableT extends d.AnyAliasedTable,
-        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>
+        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"]>
     > (
         toTable : ToTableT,
         from : FromTupleT,
@@ -105,7 +105,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     ) {
         this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
-        const fromTuple = getJoinFrom(this.data.columnReferences, from);
+        const fromTuple = getJoinFrom(this.data.columnReferences, from as any);
         const toTuple = getJoinTo(toTable, to);
         this.assertEqualLength(fromTuple, toTuple);
 
@@ -132,7 +132,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     };
     leftJoin<
         ToTableT extends d.AnyAliasedTable,
-        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>
+        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"]>
     > (
         toTable : ToTableT,
         from : FromTupleT,
@@ -140,7 +140,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     ) {
         this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
-        const fromTuple = getJoinFrom(this.data.columnReferences, from);
+        const fromTuple = getJoinFrom(this.data.columnReferences, from as any);
         const toTuple = getJoinTo(toTable, to);
         this.assertEqualLength(fromTuple, toTuple);
 
@@ -170,14 +170,14 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     //JOIN USING CLAUSE
     joinUsing<
         ToTableT extends d.AnyAliasedTable,
-        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>
+        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"]>
     > (
         toTable : ToTableT,
         from : FromTupleT
     ) {
         this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
-        const fromTuple = getJoinFrom(this.data.columnReferences, from);
+        const fromTuple = getJoinFrom(this.data.columnReferences, from as any);
         const toTuple = getJoinToUsingFrom(toTable, fromTuple);
         this.assertEqualLength(fromTuple, toTuple);
 
@@ -201,14 +201,14 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     }
     rightJoinUsing<
         ToTableT extends d.AnyAliasedTable,
-        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>
+        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"]>
     > (
         toTable : ToTableT,
         from : FromTupleT
     ) {
         this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
-        const fromTuple = getJoinFrom(this.data.columnReferences, from);
+        const fromTuple = getJoinFrom(this.data.columnReferences, from as any);
         const toTuple = getJoinToUsingFrom(toTable, fromTuple);
         this.assertEqualLength(fromTuple, toTuple);
 
@@ -235,14 +235,14 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     };
     leftJoinUsing<
         ToTableT extends d.AnyAliasedTable,
-        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"], d.Tuple<d.AnyColumn>>
+        FromTupleT extends d.JoinFromTupleCallback<DataT["columnReferences"]>
     > (
         toTable : ToTableT,
         from : FromTupleT
     ) {
         this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
-        const fromTuple = getJoinFrom(this.data.columnReferences, from);
+        const fromTuple = getJoinFrom(this.data.columnReferences, from as any);
         const toTuple = getJoinToUsingFrom(toTable, fromTuple);
         this.assertEqualLength(fromTuple, toTuple);
 
@@ -315,12 +315,15 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             );
         return result;
     }
-    whereIsNotNull<TypeNarrowCallbackT extends d.TypeNarrowCallback<d.ISelectBuilder<DataT>>> (
+    whereIsNotNull<TypeNarrowCallbackT extends d.TypeNarrowCallback<DataT["columnReferences"]>> (
         typeNarrowCallback : TypeNarrowCallbackT
     ) {
         this.assertAllowed(d.SelectBuilderOperation.NARROW);
 
-        const toReplace = typeNarrowCallback(this.data.columnReferences);
+        const toReplace = typeNarrowCallback(this.data.columnReferences)
+        if (!(toReplace instanceof Column)) {
+            throw new Error(`Expected a column`);
+        }
         return new SelectBuilder(
             this.appendNarrowData(new Column(
                 toReplace.table,
@@ -330,12 +333,15 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
             this.appendNarrowExpr(isNotNull(toReplace))
         ) as any;
     };
-    whereIsNull<TypeNarrowCallbackT extends d.TypeNarrowCallback<d.ISelectBuilder<DataT>>> (
+    whereIsNull<TypeNarrowCallbackT extends d.TypeNarrowCallback<DataT["columnReferences"]>> (
         typeNarrowCallback : TypeNarrowCallbackT
     ) {
         this.assertAllowed(d.SelectBuilderOperation.NARROW);
 
         const toReplace = typeNarrowCallback(this.data.columnReferences);
+        if (!(toReplace instanceof Column)) {
+            throw new Error(`Expected a column`);
+        }
         return new SelectBuilder(
             this.appendNarrowData(new Column(
                 toReplace.table,
@@ -347,14 +353,17 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
     };
     whereIsEqual<
         ConstT extends boolean|number|string,
-        TypeNarrowCallbackT extends d.TypeNarrowCallback<d.ISelectBuilder<DataT>>
+        TypeNarrowCallbackT extends d.TypeNarrowCallback<DataT["columnReferences"]>
     > (
         value : ConstT,
         typeNarrowCallback : TypeNarrowCallbackT
     ) {
         this.assertAllowed(d.SelectBuilderOperation.NARROW);
 
-        const toReplace = typeNarrowCallback(this.data.columnReferences);
+        const toReplace = typeNarrowCallback(this.data.columnReferences)
+        if (!(toReplace instanceof Column)) {
+            throw new Error(`Expected a column`);
+        }
 
         return new SelectBuilder(
             this.appendNarrowData(new Column(
@@ -732,7 +741,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
 
     //WIDEN CLAUSE
     widen<
-        TypeWidenCallbackT extends d.TypeWidenCallback<d.ISelectBuilder<DataT>>,
+        TypeWidenCallbackT extends d.TypeWidenCallback<DataT["selectReferences"]>,
         WidenT
     > (
         typeWidenCallback : TypeWidenCallbackT,
@@ -741,6 +750,9 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         this.assertAllowed(d.SelectBuilderOperation.WIDEN);
 
         const column = typeWidenCallback(this.data.selectReferences);
+        if (!(column instanceof Column)) {
+            throw new Error(`Expected a column`);
+        }
         const newColumn = new Column(
             column.table,
             column.name,

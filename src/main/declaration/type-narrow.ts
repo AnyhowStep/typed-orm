@@ -1,12 +1,8 @@
-import {AnySelectBuilder, ISelectBuilder} from "./select-builder";
 import {ColumnOfReferences} from "./column-references-operation";
+import {ColumnReferences} from "./column-references";
 
 export type TypeNarrowCallback<
-    FromBuilderT extends AnySelectBuilder
+    ColumnReferencesT extends ColumnReferences
 > = (
-    FromBuilderT extends ISelectBuilder<infer DataT> ?
-        (
-            columnReferences : DataT["columnReferences"]
-        ) => ColumnOfReferences<DataT["columnReferences"]> :
-        never
+    (columnReferences : ColumnReferencesT) => ColumnOfReferences<ColumnReferencesT>
 );

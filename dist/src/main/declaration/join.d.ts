@@ -22,10 +22,10 @@ export declare type ToNullableJoinTuple<TupleT extends Tuple<AnyJoin>> = (TupleT
 } & ({
     [index in TupleKeys<TupleT>]: (TupleT[index] extends Join<infer JoinTypeT, infer TableT, infer ColumnReferencesT, boolean> ? Join<JoinTypeT, TableT, ColumnReferencesT, true> : never);
 }[TupleKeys<TupleT>])[] & {
-    "0": (Join<TupleT["0"]["joinType"], TupleT["0"]["table"], TupleT["0"]["columnReferences"], true>);
+    "0": (Join<TupleT[0]["joinType"], TupleT[0]["table"], TupleT[0]["columnReferences"], true>);
 }) : (never));
-export declare type JoinFromTupleCallback<ColumnReferencesT extends ColumnReferences, TupleT extends Tuple<ColumnOfReferences<ColumnReferencesT>>> = (TupleT | ((columnReferences: ColumnReferencesT) => TupleT));
-export declare type JoinFromTupleOfCallback<JoinFromTupleCallbackT extends JoinFromTupleCallback<any, Tuple<AnyColumn>>> = (JoinFromTupleCallbackT extends Tuple<AnyColumn> ? JoinFromTupleCallbackT : JoinFromTupleCallbackT extends (...args: any[]) => infer TupleT ? TupleT : ("Invalid JoinFromTupleCallbackT or could not infer TupleT" | void | never));
+export declare type JoinFromTupleCallback<ColumnReferencesT extends ColumnReferences> = (Tuple<ColumnOfReferences<ColumnReferencesT>> | ((columnReferences: ColumnReferencesT) => Tuple<ColumnOfReferences<ColumnReferencesT>>));
+export declare type JoinFromTupleOfCallback<JoinFromTupleCallbackT extends JoinFromTupleCallback<any>> = (JoinFromTupleCallbackT extends JoinFromTupleCallback<infer ColumnReferencesT> ? (JoinFromTupleCallbackT extends Tuple<ColumnOfReferences<ColumnReferencesT>> ? JoinFromTupleCallbackT : JoinFromTupleCallbackT extends (...args: any[]) => infer TupleT ? (TupleT extends Tuple<ColumnOfReferences<ColumnReferencesT>> ? TupleT : never) : never) : never);
 export declare type JoinToColumn<TableT extends AnyAliasedTable, FromColumnT extends AnyColumn> = ({
     [name in Extract<keyof TableColumns<TableT>, string>]: (IColumn<TableAlias<TableT>, name, ColumnType<FromColumnT> | null>);
 }[Extract<keyof TableColumns<TableT>, string>]);
