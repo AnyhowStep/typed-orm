@@ -78,8 +78,6 @@ export type SelectBuilderValueQuery<TypeT> = ISelectBuilder<{
             )
         }
     ),
-    distinct : any,
-    sqlCalcFoundRows : any,
     groupByTuple : any,
     orderByTuple : any,
     limit : any,

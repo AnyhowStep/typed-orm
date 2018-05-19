@@ -29,8 +29,6 @@ export declare type SelectBuilderValueQuery<TypeT> = ISelectBuilder<{
     } & {
         "0": (IColumnExpr<any, "__expr", any, TypeT> | IColumn<any, any, TypeT>);
     });
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;

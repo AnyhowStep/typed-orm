@@ -69,8 +69,6 @@ export interface AnySelectBuilderData {
     readonly joins: Tuple<AnyJoin>;
     readonly selectReferences: ColumnReferences;
     readonly selectTuple: undefined | Tuple<AnySelectTupleElement>;
-    readonly distinct: boolean;
-    readonly sqlCalcFoundRows: boolean;
     readonly groupByTuple: undefined | Tuple<AnyGroupByTupleElement>;
     readonly orderByTuple: undefined | Tuple<AnyOrderByTupleElement>;
     readonly limit: undefined | LimitData;
@@ -87,8 +85,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: (TuplePush<DataT["joins"], Join<"INNER", ToTableT, TableToReference<ToTableT>, false>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -102,8 +98,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: (TuplePush<ToNullableJoinTuple<DataT["joins"]>, Join<"RIGHT", ToTableT, TableToReference<ToTableT>, false>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -117,8 +111,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: (TuplePush<DataT["joins"], Join<"LEFT", ToTableT, TableToReference<ToTableT>, true>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -132,8 +124,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: (TuplePush<DataT["joins"], Join<"INNER", ToTableT, TableToReference<ToTableT>, false>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -147,8 +137,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: (TuplePush<ToNullableJoinTuple<DataT["joins"]>, Join<"RIGHT", ToTableT, TableToReference<ToTableT>, false>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -162,8 +150,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: (TuplePush<DataT["joins"], Join<"LEFT", ToTableT, TableToReference<ToTableT>, true>>);
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -177,8 +163,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: ReplaceColumnOfJoinTuple<DataT["joins"], TableNameT, NameT, Exclude<TypeT, null | undefined>>;
         selectReferences: ReplaceColumnOfReference<DataT["selectReferences"], TableNameT, NameT, Exclude<TypeT, null | undefined>>;
         selectTuple: (DataT["selectTuple"] extends Tuple<any> ? ReplaceColumnOfSelectTuple<DataT["selectTuple"], TableNameT, NameT, Exclude<TypeT, null | undefined>> : undefined);
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -192,8 +176,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: ReplaceColumnOfJoinTuple<DataT["joins"], TableNameT, NameT, null>;
         selectReferences: ReplaceColumnOfReference<DataT["selectReferences"], TableNameT, NameT, null>;
         selectTuple: (DataT["selectTuple"] extends Tuple<any> ? ReplaceColumnOfSelectTuple<DataT["selectTuple"], TableNameT, NameT, null> : undefined);
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -207,8 +189,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: ReplaceColumnOfJoinTuple<DataT["joins"], TableNameT, NameT, ConstT>;
         selectReferences: ReplaceColumnOfReference<DataT["selectReferences"], TableNameT, NameT, ConstT>;
         selectTuple: (DataT["selectTuple"] extends Tuple<any> ? ReplaceColumnOfSelectTuple<DataT["selectTuple"], TableNameT, NameT, ConstT> : undefined);
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -222,8 +202,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -237,8 +215,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -252,8 +228,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: (DataT["selectReferences"] & SelectTupleToReferences<ReturnType<SelectCallbackT>>);
         selectTuple: (DataT["selectTuple"] extends Tuple<any> ? TupleConcat<DataT["selectTuple"], ReturnType<SelectCallbackT>> : ReturnType<SelectCallbackT>);
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -267,8 +241,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["columnReferences"];
         selectTuple: JoinTupleToSelectTuple<DataT["joins"]>;
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -276,14 +248,12 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         unionLimit: DataT["unionLimit"];
         aggregateCallback: DataT["aggregateCallback"];
     }> : ("selectAll() must be called before select()" | void | never)));
-    distinct(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.DISTINCT> extends never ? ("DISTINCT clause not allowed here" | void | never) : ISelectBuilder<{
+    distinct(distinct?: boolean): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.DISTINCT> extends never ? ("DISTINCT clause not allowed here" | void | never) : ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: DataT["columnReferences"];
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: true;
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -291,44 +261,12 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         unionLimit: DataT["unionLimit"];
         aggregateCallback: DataT["aggregateCallback"];
     }>);
-    distinct<DistinctT extends boolean>(distinct: DistinctT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.DISTINCT> extends never ? ("DISTINCT clause not allowed here" | void | never) : ISelectBuilder<{
+    sqlCalcFoundRows(sqlCalcFoundRows?: boolean): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.SQL_CALC_FOUND_ROWS> extends never ? ("SQL_CALC_FOUND_ROWS clause not allowed here" | void | never) : ISelectBuilder<{
         allowed: DataT["allowed"];
         columnReferences: DataT["columnReferences"];
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DistinctT;
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
-        groupByTuple: DataT["groupByTuple"];
-        orderByTuple: DataT["orderByTuple"];
-        limit: DataT["limit"];
-        unionOrderByTuple: DataT["unionOrderByTuple"];
-        unionLimit: DataT["unionLimit"];
-        aggregateCallback: DataT["aggregateCallback"];
-    }>);
-    sqlCalcFoundRows(): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.SQL_CALC_FOUND_ROWS> extends never ? ("SQL_CALC_FOUND_ROWS clause not allowed here" | void | never) : ISelectBuilder<{
-        allowed: DataT["allowed"];
-        columnReferences: DataT["columnReferences"];
-        joins: DataT["joins"];
-        selectReferences: DataT["selectReferences"];
-        selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: true;
-        groupByTuple: DataT["groupByTuple"];
-        orderByTuple: DataT["orderByTuple"];
-        limit: DataT["limit"];
-        unionOrderByTuple: DataT["unionOrderByTuple"];
-        unionLimit: DataT["unionLimit"];
-        aggregateCallback: DataT["aggregateCallback"];
-    }>);
-    sqlCalcFoundRows<SqlCalcFoundRowsT extends boolean>(sqlCalcFoundRows: SqlCalcFoundRowsT): (IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.SQL_CALC_FOUND_ROWS> extends never ? ("SQL_CALC_FOUND_ROWS clause not allowed here" | void | never) : ISelectBuilder<{
-        allowed: DataT["allowed"];
-        columnReferences: DataT["columnReferences"];
-        joins: DataT["joins"];
-        selectReferences: DataT["selectReferences"];
-        selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: SqlCalcFoundRowsT;
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -342,8 +280,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: ReturnType<GroupByCallbackT>;
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -357,8 +293,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: (DataT["groupByTuple"] extends Tuple<any> ? TupleConcat<DataT["groupByTuple"], ReturnType<GroupByCallbackT>> : ReturnType<GroupByCallbackT>);
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -372,8 +306,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: undefined;
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -387,8 +319,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -402,8 +332,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -417,8 +345,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: ReturnType<OrderByCallbackT>;
         limit: DataT["limit"];
@@ -432,8 +358,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: (DataT["orderByTuple"] extends Tuple<any> ? TupleConcat<DataT["orderByTuple"], ReturnType<OrderByCallbackT>> : ReturnType<OrderByCallbackT>);
         limit: DataT["limit"];
@@ -447,8 +371,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: undefined;
         limit: DataT["limit"];
@@ -462,8 +384,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: (DataT["limit"] extends LimitData ? {
@@ -483,8 +403,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: (DataT["limit"] extends LimitData ? {
@@ -504,8 +422,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: undefined;
@@ -519,8 +435,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: ReplaceColumnOfJoinTuple<DataT["joins"], TableNameT, NameT, TypeT | WidenT>;
         selectReferences: ReplaceColumnOfReference<DataT["selectReferences"], TableNameT, NameT, TypeT | WidenT>;
         selectTuple: (DataT["selectTuple"] extends Tuple<any> ? ReplaceColumnOfSelectTuple<DataT["selectTuple"], TableNameT, NameT, TypeT | WidenT> : undefined);
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -534,8 +448,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: any;
         selectReferences: any;
         selectTuple: any;
-        distinct: any;
-        sqlCalcFoundRows: any;
         groupByTuple: any;
         orderByTuple: any;
         limit: any;
@@ -548,8 +460,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -563,8 +473,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -578,8 +486,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -593,8 +499,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -608,8 +512,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -629,8 +531,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -650,8 +550,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -668,8 +566,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins: DataT["joins"];
         selectReferences: DataT["selectReferences"];
         selectTuple: DataT["selectTuple"];
-        distinct: DataT["distinct"];
-        sqlCalcFoundRows: DataT["sqlCalcFoundRows"];
         groupByTuple: DataT["groupByTuple"];
         orderByTuple: DataT["orderByTuple"];
         limit: DataT["limit"];
@@ -702,8 +598,6 @@ export declare type CreateSelectBuilderDelegate = (<TableT extends AnyAliasedTab
     joins: [Join<"FROM", TableT, TableToReference<TableT>, false>];
     selectReferences: {};
     selectTuple: undefined;
-    distinct: false;
-    sqlCalcFoundRows: false;
     groupByTuple: undefined;
     orderByTuple: undefined;
     limit: undefined;
@@ -717,8 +611,6 @@ export declare type CreateSubSelectBuilderDelegate<ColumnReferencesT extends Col
     joins: [Join<"FROM", TableT, TableToReference<TableT>, false>];
     selectReferences: {};
     selectTuple: undefined;
-    distinct: false;
-    sqlCalcFoundRows: false;
     groupByTuple: undefined;
     orderByTuple: undefined;
     limit: undefined;

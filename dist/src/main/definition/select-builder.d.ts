@@ -8,6 +8,8 @@ export interface ExtraSelectBuilderData {
     readonly whereExpr?: d.IExpr<any, boolean>;
     readonly havingExpr?: d.IExpr<any, boolean>;
     readonly union?: d.ISelectBuilder<any>[];
+    distinct: boolean;
+    sqlCalcFoundRows: boolean;
 }
 export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.ISelectBuilder<DataT> {
     readonly data: DataT;
@@ -55,8 +57,6 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
         joins: any;
         selectReferences: any;
         selectTuple: any;
-        distinct: any;
-        sqlCalcFoundRows: any;
         groupByTuple: any;
         orderByTuple: any;
         limit: any;

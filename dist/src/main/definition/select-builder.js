@@ -63,6 +63,8 @@ class SelectBuilder {
                 aggregateCallback: undefined,
             }, {
                 db: this.extraData.db,
+                distinct: false,
+                sqlCalcFoundRows: false,
             });
         });
         //FETCH CLAUSE
@@ -656,10 +658,10 @@ class SelectBuilder {
         }
         if (this.data.selectTuple != undefined) {
             sb.append("SELECT");
-            if (this.data.distinct) {
+            if (this.extraData.distinct) {
                 sb.append(" DISTINCT");
             }
-            if (this.data.sqlCalcFoundRows) {
+            if (this.extraData.sqlCalcFoundRows) {
                 sb.append(" SQL_CALC_FOUND_ROWS");
             }
             sb.appendLine();
@@ -986,8 +988,6 @@ function newCreateSelectBuilderDelegate(db) {
                 })],
             selectReferences: {},
             selectTuple: undefined,
-            distinct: false,
-            sqlCalcFoundRows: false,
             groupByTuple: undefined,
             orderByTuple: undefined,
             limit: undefined,
@@ -996,6 +996,8 @@ function newCreateSelectBuilderDelegate(db) {
             aggregateCallback: undefined,
         }, {
             db: db,
+            distinct: false,
+            sqlCalcFoundRows: false,
         });
     };
 }

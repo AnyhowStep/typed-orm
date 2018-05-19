@@ -14,8 +14,6 @@ export declare const and: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICo
     } & {
         "0": d.IColumn<any, any, boolean> | d.IColumnExpr<any, "__expr", any, boolean>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;
@@ -34,8 +32,6 @@ export declare const and: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICo
     } & {
         "0": d.IColumn<any, any, boolean> | d.IColumnExpr<any, "__expr", any, boolean>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;
@@ -55,8 +51,6 @@ export declare const or: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICol
     } & {
         "0": d.IColumn<any, any, boolean> | d.IColumnExpr<any, "__expr", any, boolean>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;
@@ -75,8 +69,6 @@ export declare const or: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICol
     } & {
         "0": d.IColumn<any, any, boolean> | d.IColumnExpr<any, "__expr", any, boolean>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;
@@ -96,8 +88,6 @@ export declare const xor: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICo
     } & {
         "0": d.IColumn<any, any, boolean> | d.IColumnExpr<any, "__expr", any, boolean>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;
@@ -116,8 +106,6 @@ export declare const xor: <LeftT extends boolean | d.IExpr<any, boolean> | d.ICo
     } & {
         "0": d.IColumn<any, any, boolean> | d.IColumnExpr<any, "__expr", any, boolean>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;

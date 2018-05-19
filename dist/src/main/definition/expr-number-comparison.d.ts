@@ -12,8 +12,6 @@ export declare const lt: <LeftT extends number | d.IColumn<any, any, number> | d
     } & {
         "0": d.IColumn<any, any, number> | d.IColumnExpr<any, "__expr", any, number>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;
@@ -32,8 +30,6 @@ export declare const lt: <LeftT extends number | d.IColumn<any, any, number> | d
     } & {
         "0": d.IColumn<any, any, number> | d.IColumnExpr<any, "__expr", any, number>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;
@@ -53,8 +49,6 @@ export declare const gt: <LeftT extends number | d.IColumn<any, any, number> | d
     } & {
         "0": d.IColumn<any, any, number> | d.IColumnExpr<any, "__expr", any, number>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;
@@ -73,8 +67,6 @@ export declare const gt: <LeftT extends number | d.IColumn<any, any, number> | d
     } & {
         "0": d.IColumn<any, any, number> | d.IColumnExpr<any, "__expr", any, number>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;
@@ -94,8 +86,6 @@ export declare const ltEq: <LeftT extends number | d.IColumn<any, any, number> |
     } & {
         "0": d.IColumn<any, any, number> | d.IColumnExpr<any, "__expr", any, number>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;
@@ -114,8 +104,6 @@ export declare const ltEq: <LeftT extends number | d.IColumn<any, any, number> |
     } & {
         "0": d.IColumn<any, any, number> | d.IColumnExpr<any, "__expr", any, number>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;
@@ -135,8 +123,6 @@ export declare const gtEq: <LeftT extends number | d.IColumn<any, any, number> |
     } & {
         "0": d.IColumn<any, any, number> | d.IColumnExpr<any, "__expr", any, number>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;
@@ -155,8 +141,6 @@ export declare const gtEq: <LeftT extends number | d.IColumn<any, any, number> |
     } & {
         "0": d.IColumn<any, any, number> | d.IColumnExpr<any, "__expr", any, number>;
     };
-    distinct: any;
-    sqlCalcFoundRows: any;
     groupByTuple: any;
     orderByTuple: any;
     limit: any;

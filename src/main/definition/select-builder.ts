@@ -24,6 +24,9 @@ export interface ExtraSelectBuilderData {
     readonly whereExpr? : d.IExpr<any, boolean>;
     readonly havingExpr? : d.IExpr<any, boolean>;
     readonly union? : d.ISelectBuilder<any>[];
+
+    distinct : boolean,
+    sqlCalcFoundRows : boolean,
 }
 
 export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.ISelectBuilder<DataT> {
@@ -789,9 +792,6 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
         joins : any,
         selectReferences : any,
         selectTuple : any,
-        distinct : any,
-        //Technically, not allowed to use SQL_CALC_FOUND_ROWS here
-        sqlCalcFoundRows : any,
         groupByTuple : any,
         orderByTuple : any,
         limit : any,
@@ -1012,6 +1012,8 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                 aggregateCallback : undefined,
             }, {
                 db : this.extraData.db,
+                distinct : false,
+                sqlCalcFoundRows : false,
             }) as any;
         }
     );
@@ -1092,10 +1094,10 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
 
         if (this.data.selectTuple != undefined) {
             sb.append("SELECT");
-            if (this.data.distinct) {
+            if (this.extraData.distinct) {
                 sb.append(" DISTINCT");
             }
-            if (this.data.sqlCalcFoundRows) {
+            if (this.extraData.sqlCalcFoundRows) {
                 sb.append(" SQL_CALC_FOUND_ROWS");
             }
             sb.appendLine();
@@ -1487,8 +1489,6 @@ export function newCreateSelectBuilderDelegate (db : Database|ConnectedDatabase)
             })],
             selectReferences : {},
             selectTuple : undefined,
-            distinct : false,
-            sqlCalcFoundRows : false,
             groupByTuple : undefined,
             orderByTuple : undefined,
             limit : undefined,
@@ -1497,6 +1497,8 @@ export function newCreateSelectBuilderDelegate (db : Database|ConnectedDatabase)
             aggregateCallback : undefined,
         }, {
             db : db,
+            distinct : false,
+            sqlCalcFoundRows : false,
         });
     }
 }
