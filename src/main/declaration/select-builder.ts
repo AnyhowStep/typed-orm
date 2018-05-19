@@ -25,9 +25,9 @@ import {
     ReplaceColumnOfSelectTuple,
     JoinTupleToSelectTuple
 } from "./select";
-import {GroupByCallback, AnyGroupByTupleElement} from "./group-by";
+import {GroupByCallback} from "./group-by";
 import {HavingCallback} from "./having";
-import {OrderByCallback, AnyOrderByTupleElement} from "./order-by";
+import {OrderByCallback} from "./order-by";
 import {TypeWidenCallback} from "./widen";
 import {SelectTupleToType, SelectTupleElementType} from "./union";
 import {
@@ -55,24 +55,15 @@ export interface PaginateResult<T> {
     rows : T[],
 }
 
+//Refactor to hasSelect, hasUnion
 export enum SelectBuilderOperation {
-    JOIN = "JOIN",
     NARROW = "NARROW", //Custom thing
-    WHERE = "WHERE",
     SELECT = "SELECT",
-    DISTINCT = "DISTINCT",
-    SQL_CALC_FOUND_ROWS = "SQL_CALC_FOUND_ROWS",
-    GROUP_BY = "GROUP_BY",
-    HAVING = "HAVING",
-    ORDER_BY = "ORDER_BY",
-    LIMIT = "LIMIT",
-    OFFSET = "OFFSET",
+
     WIDEN = "WIDEN", //Custom thing
 
     UNION = "UNION",
-    UNION_ORDER_BY = "UNION_ORDER_BY",
-    UNION_LIMIT = "UNION_LIMIT",
-    UNION_OFFSET = "UNION_OFFSET",
+
 
     AS = "AS",
     //After SELECT
@@ -100,13 +91,6 @@ export type EnableOperation<DataT extends AnySelectBuilderData, OperationT exten
         ) :
         (never)
 );
-
-export const ArbitraryRowCount = 999999999;
-
-export interface LimitData {
-    readonly rowCount : number,
-    readonly offset   : number,
-}
 
 export type AggregateCallback<DataT extends AnySelectBuilderData> = (
     (
@@ -145,16 +129,6 @@ export interface AnySelectBuilderData {
     readonly selectReferences : ColumnReferences,
     readonly selectTuple : undefined|Tuple<AnySelectTupleElement>,
 
-    readonly groupByTuple : undefined|Tuple<AnyGroupByTupleElement>,
-
-    readonly orderByTuple : undefined|Tuple<AnyOrderByTupleElement>,
-
-    readonly limit : undefined|LimitData,
-
-    readonly unionOrderByTuple : undefined|Tuple<AnyOrderByTupleElement>,
-
-    readonly unionLimit : undefined|LimitData,
-
     readonly aggregateCallback : undefined|((row : any) => Promise<any>),
 }
 
@@ -175,46 +149,38 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         from : FromTupleT,
         to : JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>>
     ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ?
-            ("JOIN clause not allowed here"|void|never) :
+        TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
+            ("Duplicate alias" | TableAlias<ToTableT> | void) :
             (
-                TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
-                    ("Duplicate alias" | TableAlias<ToTableT> | void) :
+                JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
                     (
-                        JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
-                            (
-                                ISelectBuilder<{
-                                    allowed : DataT["allowed"],
+                        ISelectBuilder<{
+                            allowed : DataT["allowed"],
 
-                                    columnReferences : (
-                                        DataT["columnReferences"] &
-                                        TableToReference<ToTableT>
-                                    ),
-                                    joins : (
-                                        TuplePush<
-                                            DataT["joins"],
-                                            Join<
-                                                "INNER",
-                                                ToTableT,
-                                                TableToReference<ToTableT>,
-                                                false
-                                            >
-                                        >
-                                    ),
-                                    selectReferences : DataT["selectReferences"],
-                                    selectTuple : DataT["selectTuple"],
+                            columnReferences : (
+                                DataT["columnReferences"] &
+                                TableToReference<ToTableT>
+                            ),
+                            joins : (
+                                TuplePush<
+                                    DataT["joins"],
+                                    Join<
+                                        "INNER",
+                                        ToTableT,
+                                        TableToReference<ToTableT>,
+                                        false
+                                    >
+                                >
+                            ),
+                            selectReferences : DataT["selectReferences"],
+                            selectTuple : DataT["selectTuple"],
 
 
-                                    groupByTuple : DataT["groupByTuple"],
-                                    orderByTuple : DataT["orderByTuple"],
-                                    limit : DataT["limit"],
-                                    unionOrderByTuple : DataT["unionOrderByTuple"],
-                                    unionLimit : DataT["unionLimit"],
-                                    aggregateCallback : DataT["aggregateCallback"],
-                                }>
-                            ) :
-                            (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
-                    )
+
+                            aggregateCallback : DataT["aggregateCallback"],
+                        }>
+                    ) :
+                    (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
             )
     );
     rightJoin<
@@ -225,46 +191,38 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         from : FromTupleT,
         to : JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>>
     ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ?
-            ("JOIN clause not allowed here"|void|never) :
+        TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
+            ("Duplicate alias" | TableAlias<ToTableT> | void) :
             (
-                TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
-                    ("Duplicate alias" | TableAlias<ToTableT> | void) :
+                JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
                     (
-                        JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
-                            (
-                                ISelectBuilder<{
-                                    allowed : DataT["allowed"],
+                        ISelectBuilder<{
+                            allowed : DataT["allowed"],
 
-                                    columnReferences : (
-                                        ToNullableColumnReferences<DataT["columnReferences"]> &
-                                        TableToReference<ToTableT>
-                                    ),
-                                    joins : (
-                                        TuplePush<
-                                            ToNullableJoinTuple<DataT["joins"]>,
-                                            Join<
-                                                "RIGHT",
-                                                ToTableT,
-                                                TableToReference<ToTableT>,
-                                                false
-                                            >
-                                        >
-                                    ),
-                                    selectReferences : DataT["selectReferences"],
-                                    selectTuple : DataT["selectTuple"],
+                            columnReferences : (
+                                ToNullableColumnReferences<DataT["columnReferences"]> &
+                                TableToReference<ToTableT>
+                            ),
+                            joins : (
+                                TuplePush<
+                                    ToNullableJoinTuple<DataT["joins"]>,
+                                    Join<
+                                        "RIGHT",
+                                        ToTableT,
+                                        TableToReference<ToTableT>,
+                                        false
+                                    >
+                                >
+                            ),
+                            selectReferences : DataT["selectReferences"],
+                            selectTuple : DataT["selectTuple"],
 
 
-                                    groupByTuple : DataT["groupByTuple"],
-                                    orderByTuple : DataT["orderByTuple"],
-                                    limit : DataT["limit"],
-                                    unionOrderByTuple : DataT["unionOrderByTuple"],
-                                    unionLimit : DataT["unionLimit"],
-                                    aggregateCallback : DataT["aggregateCallback"],
-                                }>
-                            ) :
-                            (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
-                    )
+
+                            aggregateCallback : DataT["aggregateCallback"],
+                        }>
+                    ) :
+                    (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
             )
     );
     leftJoin<
@@ -275,46 +233,38 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         from : FromTupleT,
         to : JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>>
     ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ?
-            ("JOIN clause not allowed here"|void|never) :
+        TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
+            ("Duplicate alias" | TableAlias<ToTableT> | void) :
             (
-                TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
-                    ("Duplicate alias" | TableAlias<ToTableT> | void) :
+                JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
                     (
-                        JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
-                            (
-                                ISelectBuilder<{
-                                    allowed : DataT["allowed"],
+                        ISelectBuilder<{
+                            allowed : DataT["allowed"],
 
-                                    columnReferences : (
-                                        DataT["columnReferences"] &
-                                        ToNullableColumnReferences<TableToReference<ToTableT>>
-                                    ),
-                                    joins : (
-                                        TuplePush<
-                                            DataT["joins"],
-                                            Join<
-                                                "LEFT",
-                                                ToTableT,
-                                                TableToReference<ToTableT>,
-                                                true
-                                            >
-                                        >
-                                    ),
-                                    selectReferences : DataT["selectReferences"],
-                                    selectTuple : DataT["selectTuple"],
+                            columnReferences : (
+                                DataT["columnReferences"] &
+                                ToNullableColumnReferences<TableToReference<ToTableT>>
+                            ),
+                            joins : (
+                                TuplePush<
+                                    DataT["joins"],
+                                    Join<
+                                        "LEFT",
+                                        ToTableT,
+                                        TableToReference<ToTableT>,
+                                        true
+                                    >
+                                >
+                            ),
+                            selectReferences : DataT["selectReferences"],
+                            selectTuple : DataT["selectTuple"],
 
 
-                                    groupByTuple : DataT["groupByTuple"],
-                                    orderByTuple : DataT["orderByTuple"],
-                                    limit : DataT["limit"],
-                                    unionOrderByTuple : DataT["unionOrderByTuple"],
-                                    unionLimit : DataT["unionLimit"],
-                                    aggregateCallback : DataT["aggregateCallback"],
-                                }>
-                            ) :
-                            (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
-                    )
+
+                            aggregateCallback : DataT["aggregateCallback"],
+                        }>
+                    ) :
+                    (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
             )
     );
 
@@ -326,48 +276,40 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         toTable : ToTableT,
         from : FromTupleT
     ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ?
-            ("JOIN USING clause not allowed here"|void|never) :
+        TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
+            ("Duplicate alias" | TableAlias<ToTableT> | void) :
             (
-                TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
-                    ("Duplicate alias" | TableAlias<ToTableT> | void) :
+                JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
                     (
-                        JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
-                            (
-                                RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ?
-                                    ISelectBuilder<{
-                                        allowed : DataT["allowed"],
+                        RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ?
+                            ISelectBuilder<{
+                                allowed : DataT["allowed"],
 
-                                        columnReferences : (
-                                            DataT["columnReferences"] &
-                                            TableToReference<ToTableT>
-                                        ),
-                                        joins : (
-                                            TuplePush<
-                                                DataT["joins"],
-                                                Join<
-                                                    "INNER",
-                                                    ToTableT,
-                                                    TableToReference<ToTableT>,
-                                                    false
-                                                >
-                                            >
-                                        ),
-                                        selectReferences : DataT["selectReferences"],
-                                        selectTuple : DataT["selectTuple"],
+                                columnReferences : (
+                                    DataT["columnReferences"] &
+                                    TableToReference<ToTableT>
+                                ),
+                                joins : (
+                                    TuplePush<
+                                        DataT["joins"],
+                                        Join<
+                                            "INNER",
+                                            ToTableT,
+                                            TableToReference<ToTableT>,
+                                            false
+                                        >
+                                    >
+                                ),
+                                selectReferences : DataT["selectReferences"],
+                                selectTuple : DataT["selectTuple"],
 
 
-                                        groupByTuple : DataT["groupByTuple"],
-                                        orderByTuple : DataT["orderByTuple"],
-                                        limit : DataT["limit"],
-                                        unionOrderByTuple : DataT["unionOrderByTuple"],
-                                        unionLimit : DataT["unionLimit"],
-                                        aggregateCallback : DataT["aggregateCallback"],
-                                    }> :
-                                    ("Cannot JOIN USING; to table is missing columns or types do not match"|void|never)
-                            ) :
-                            (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
-                    )
+
+                                aggregateCallback : DataT["aggregateCallback"],
+                            }> :
+                            ("Cannot JOIN USING; to table is missing columns or types do not match"|void|never)
+                    ) :
+                    (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
             )
     );
     rightJoinUsing<
@@ -377,48 +319,40 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         toTable : ToTableT,
         from : FromTupleT
     ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ?
-            ("JOIN clause not allowed here"|void|never) :
+        TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
+            ("Duplicate alias" | TableAlias<ToTableT> | void) :
             (
-                TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
-                    ("Duplicate alias" | TableAlias<ToTableT> | void) :
+                JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
                     (
-                        JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
-                            (
-                                RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ?
-                                    ISelectBuilder<{
-                                        allowed : DataT["allowed"],
+                        RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ?
+                            ISelectBuilder<{
+                                allowed : DataT["allowed"],
 
-                                        columnReferences : (
-                                            ToNullableColumnReferences<DataT["columnReferences"]> &
-                                            TableToReference<ToTableT>
-                                        ),
-                                        joins : (
-                                            TuplePush<
-                                                ToNullableJoinTuple<DataT["joins"]>,
-                                                Join<
-                                                    "RIGHT",
-                                                    ToTableT,
-                                                    TableToReference<ToTableT>,
-                                                    false
-                                                >
-                                            >
-                                        ),
-                                        selectReferences : DataT["selectReferences"],
-                                        selectTuple : DataT["selectTuple"],
+                                columnReferences : (
+                                    ToNullableColumnReferences<DataT["columnReferences"]> &
+                                    TableToReference<ToTableT>
+                                ),
+                                joins : (
+                                    TuplePush<
+                                        ToNullableJoinTuple<DataT["joins"]>,
+                                        Join<
+                                            "RIGHT",
+                                            ToTableT,
+                                            TableToReference<ToTableT>,
+                                            false
+                                        >
+                                    >
+                                ),
+                                selectReferences : DataT["selectReferences"],
+                                selectTuple : DataT["selectTuple"],
 
 
-                                        groupByTuple : DataT["groupByTuple"],
-                                        orderByTuple : DataT["orderByTuple"],
-                                        limit : DataT["limit"],
-                                        unionOrderByTuple : DataT["unionOrderByTuple"],
-                                        unionLimit : DataT["unionLimit"],
-                                        aggregateCallback : DataT["aggregateCallback"],
-                                    }> :
-                                    ("Cannot RIGHT JOIN USING; to table is missing columns or types do not match"|void|never)
-                            ) :
-                            (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
-                    )
+
+                                aggregateCallback : DataT["aggregateCallback"],
+                            }> :
+                            ("Cannot RIGHT JOIN USING; to table is missing columns or types do not match"|void|never)
+                    ) :
+                    (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
             )
     );
     leftJoinUsing<
@@ -428,48 +362,40 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         toTable : ToTableT,
         from : FromTupleT
     ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.JOIN> extends never ?
-            ("JOIN clause not allowed here"|void|never) :
+        TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
+            ("Duplicate alias" | TableAlias<ToTableT> | void) :
             (
-                TableAlias<ToTableT> extends keyof DataT["columnReferences"] ?
-                    ("Duplicate alias" | TableAlias<ToTableT> | void) :
+                JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
                     (
-                        JoinFromTupleOfCallback<FromTupleT> extends MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>> ?
-                            (
-                                RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ?
-                                    ISelectBuilder<{
-                                        allowed : DataT["allowed"],
+                        RenameTableOfColumns<JoinFromTupleOfCallback<FromTupleT>, ToTableT["alias"]> extends JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>> ?
+                            ISelectBuilder<{
+                                allowed : DataT["allowed"],
 
-                                        columnReferences : (
-                                            DataT["columnReferences"] &
-                                            ToNullableColumnReferences<TableToReference<ToTableT>>
-                                        ),
-                                        joins : (
-                                            TuplePush<
-                                                DataT["joins"],
-                                                Join<
-                                                    "LEFT",
-                                                    ToTableT,
-                                                    TableToReference<ToTableT>,
-                                                    true
-                                                >
-                                            >
-                                        ),
-                                        selectReferences : DataT["selectReferences"],
-                                        selectTuple : DataT["selectTuple"],
+                                columnReferences : (
+                                    DataT["columnReferences"] &
+                                    ToNullableColumnReferences<TableToReference<ToTableT>>
+                                ),
+                                joins : (
+                                    TuplePush<
+                                        DataT["joins"],
+                                        Join<
+                                            "LEFT",
+                                            ToTableT,
+                                            TableToReference<ToTableT>,
+                                            true
+                                        >
+                                    >
+                                ),
+                                selectReferences : DataT["selectReferences"],
+                                selectTuple : DataT["selectTuple"],
 
 
-                                        groupByTuple : DataT["groupByTuple"],
-                                        orderByTuple : DataT["orderByTuple"],
-                                        limit : DataT["limit"],
-                                        unionOrderByTuple : DataT["unionOrderByTuple"],
-                                        unionLimit : DataT["unionLimit"],
-                                        aggregateCallback : DataT["aggregateCallback"],
-                                    }> :
-                                    ("Cannot LEFT JOIN USING; to table is missing columns or types do not match"|void|never)
-                            ) :
-                            (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
-                    )
+
+                                aggregateCallback : DataT["aggregateCallback"],
+                            }> :
+                            ("Cannot LEFT JOIN USING; to table is missing columns or types do not match"|void|never)
+                    ) :
+                    (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
             )
     );
 
@@ -513,11 +439,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     ),
 
 
-                    groupByTuple : DataT["groupByTuple"],
-                    orderByTuple : DataT["orderByTuple"],
-                    limit : DataT["limit"],
-                    unionOrderByTuple : DataT["unionOrderByTuple"],
-                    unionLimit : DataT["unionLimit"],
+
                     aggregateCallback : DataT["aggregateCallback"],
                 }> :
                 ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
@@ -561,11 +483,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     ),
 
 
-                    groupByTuple : DataT["groupByTuple"],
-                    orderByTuple : DataT["orderByTuple"],
-                    limit : DataT["limit"],
-                    unionOrderByTuple : DataT["unionOrderByTuple"],
-                    unionLimit : DataT["unionLimit"],
+
                     aggregateCallback : DataT["aggregateCallback"],
                 }> :
                 ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
@@ -613,11 +531,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     ),
 
 
-                    groupByTuple : DataT["groupByTuple"],
-                    orderByTuple : DataT["orderByTuple"],
-                    limit : DataT["limit"],
-                    unionOrderByTuple : DataT["unionOrderByTuple"],
-                    unionLimit : DataT["unionLimit"],
+
                     aggregateCallback : DataT["aggregateCallback"],
                 }> :
                 ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
@@ -627,47 +541,11 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     //Replaces but ANDs with NARROW
     where<WhereCallbackT extends WhereCallback<ISelectBuilder<DataT>>> (
         whereCallback : WhereCallbackT
-    ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.WHERE> extends never ?
-            ("WHERE clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    ) : ISelectBuilder<DataT>;
     //Appends
     andWhere<WhereCallbackT extends WhereCallback<ISelectBuilder<DataT>>> (
         whereCallback : WhereCallbackT
-    ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.WHERE> extends never ?
-            ("WHERE clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    ) : ISelectBuilder<DataT>;
 
     //SELECT CLAUSE
     select<SelectCallbackT extends SelectCallback<ISelectBuilder<DataT>>> (
@@ -704,11 +582,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     ),
 
 
-                    groupByTuple : DataT["groupByTuple"],
-                    orderByTuple : DataT["orderByTuple"],
-                    limit : DataT["limit"],
-                    unionOrderByTuple : DataT["unionOrderByTuple"],
-                    unionLimit : DataT["unionLimit"],
+
                     aggregateCallback : DataT["aggregateCallback"],
                 }>
     );
@@ -725,11 +599,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                         selectTuple : JoinTupleToSelectTuple<DataT["joins"]>,
 
 
-                        groupByTuple : DataT["groupByTuple"],
-                        orderByTuple : DataT["orderByTuple"],
-                        limit : DataT["limit"],
-                        unionOrderByTuple : DataT["unionOrderByTuple"],
-                        unionLimit : DataT["unionLimit"],
+
                         aggregateCallback : DataT["aggregateCallback"],
                     }> :
                     ("selectAll() must be called before select()"|void|never)
@@ -737,314 +607,58 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     );
 
     //DISTINCT CLAUSE
-    distinct (distinct? : boolean) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.DISTINCT> extends never ?
-            ("DISTINCT clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    distinct (distinct? : boolean) : ISelectBuilder<DataT>;
 
     //SQL_CALC_FOUND_ROWS CLAUSE
-    sqlCalcFoundRows (sqlCalcFoundRows? : boolean) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.SQL_CALC_FOUND_ROWS> extends never ?
-            ("SQL_CALC_FOUND_ROWS clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    sqlCalcFoundRows (sqlCalcFoundRows? : boolean) : ISelectBuilder<DataT>;
 
     //GROUP BY CLAUSE
     //Replaces
     groupBy<GroupByCallbackT extends GroupByCallback<ISelectBuilder<DataT>>> (
         groupByCallback : GroupByCallbackT
-    ):(
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.GROUP_BY> extends never ?
-            ("GROUP_BY clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : ReturnType<GroupByCallbackT>,
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    ) : ISelectBuilder<DataT>;
     //Appends
     appendGroupBy<GroupByCallbackT extends GroupByCallback<ISelectBuilder<DataT>>> (
         groupByCallback : GroupByCallbackT
-    ):(
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.GROUP_BY> extends never ?
-            ("GROUP_BY clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : (
-                    DataT["groupByTuple"] extends Tuple<any> ?
-                        TupleConcat<
-                            DataT["groupByTuple"],
-                            ReturnType<GroupByCallbackT>
-                        > :
-                        ReturnType<GroupByCallbackT>
-                ),
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    ) : ISelectBuilder<DataT>;
 
     //REMOVES GROUP BY
-    unsetGroupBy () : (
-        ISelectBuilder<{
-            allowed : DataT["allowed"],
-            columnReferences : DataT["columnReferences"],
-            joins : DataT["joins"],
-            selectReferences : DataT["selectReferences"],
-            selectTuple : DataT["selectTuple"],
-
-
-            groupByTuple : undefined,
-            orderByTuple : DataT["orderByTuple"],
-            limit : DataT["limit"],
-            unionOrderByTuple : DataT["unionOrderByTuple"],
-            unionLimit : DataT["unionLimit"],
-            aggregateCallback : DataT["aggregateCallback"],
-        }>
-    );
+    unsetGroupBy () : ISelectBuilder<DataT>;
 
     //HAVING CLAUSE
+    //TECHNICALLY, can only use columns in GROUP BY, or columns in aggregate functions,
+    //But MySQL supports an extension that allows columns from SELECT
+    //As such, this library does not check for valid columns here
+    //As long as it is in columnReferences or selectReferences
     having<HavingCallbackT extends HavingCallback<ISelectBuilder<DataT>>> (
         havingCallback : HavingCallbackT
-    ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.HAVING> extends never ?
-            ("HAVING clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    ) : ISelectBuilder<DataT>;
     //Appends
     andHaving<HavingCallbackT extends HavingCallback<ISelectBuilder<DataT>>> (
         havingCallback : HavingCallbackT
-    ) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.HAVING> extends never ?
-            ("HAVING clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    ) : ISelectBuilder<DataT>;
 
     //ORDER BY CLAUSE
     //Replaces
     orderBy<OrderByCallbackT extends OrderByCallback<ISelectBuilder<DataT>>> (
         orderByCallback : OrderByCallbackT
-    ):(
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.ORDER_BY> extends never ?
-            ("ORDER_BY clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : ReturnType<OrderByCallbackT>,
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    ) : ISelectBuilder<DataT>;
     //Appends
     appendOrderBy<OrderByCallbackT extends OrderByCallback<ISelectBuilder<DataT>>> (
         orderByCallback : OrderByCallbackT
-    ):(
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.ORDER_BY> extends never ?
-            ("ORDER_BY clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : (
-                    DataT["orderByTuple"] extends Tuple<any> ?
-                        TupleConcat<
-                            DataT["orderByTuple"],
-                            ReturnType<OrderByCallbackT>
-                        > :
-                        ReturnType<OrderByCallbackT>
-                ),
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    ) : ISelectBuilder<DataT>;
 
     //REMOVES ORDER BY
-    unsetOrderBy () : (
-        ISelectBuilder<{
-            allowed : DataT["allowed"],
-            columnReferences : DataT["columnReferences"],
-            joins : DataT["joins"],
-            selectReferences : DataT["selectReferences"],
-            selectTuple : DataT["selectTuple"],
-
-
-            groupByTuple : DataT["groupByTuple"],
-            orderByTuple : undefined,
-            limit : DataT["limit"],
-            unionOrderByTuple : DataT["unionOrderByTuple"],
-            unionLimit : DataT["unionLimit"],
-            aggregateCallback : DataT["aggregateCallback"],
-        }>
-    );
+    unsetOrderBy () : ISelectBuilder<DataT>;
 
     //LIMIT CLAUSE
-    limit<RowCountT extends number> (rowCount : RowCountT) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.LIMIT> extends never ?
-            ("LIMIT clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : (
-                    DataT["limit"] extends LimitData ?
-                        {
-                            rowCount : RowCountT,
-                            offset : DataT["limit"]["offset"],
-                        } :
-                        {
-                            rowCount : RowCountT,
-                            offset : 0,
-                        }
-                ),
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    limit (rowCount : number) : ISelectBuilder<DataT>;
 
     //OFFSET CLAUSE
-    offset<OffsetT extends number> (offset : OffsetT) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.OFFSET> extends never ?
-            ("OFFSET clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : (
-                    DataT["limit"] extends LimitData ?
-                        {
-                            rowCount : DataT["limit"]["rowCount"],
-                            offset : OffsetT,
-                        } :
-                        {
-                            rowCount : typeof ArbitraryRowCount,
-                            offset : OffsetT,
-                        }
-                ),
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    offset (offset : number) : ISelectBuilder<DataT>;
 
     //REMOVES LIMIT
-    unsetLimit () : (
-        ISelectBuilder<{
-            allowed : DataT["allowed"],
-            columnReferences : DataT["columnReferences"],
-            joins : DataT["joins"],
-            selectReferences : DataT["selectReferences"],
-            selectTuple : DataT["selectTuple"],
-
-
-            groupByTuple : DataT["groupByTuple"],
-            orderByTuple : DataT["orderByTuple"],
-            limit : undefined,
-            unionOrderByTuple : DataT["unionOrderByTuple"],
-            unionLimit : DataT["unionLimit"],
-            aggregateCallback : DataT["aggregateCallback"],
-        }>
-    );
+    unsetLimit () : ISelectBuilder<DataT>;
 
     //WIDEN CLAUSE
     widen<
@@ -1085,11 +699,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     ),
 
 
-                    groupByTuple : DataT["groupByTuple"],
-                    orderByTuple : DataT["orderByTuple"],
-                    limit : DataT["limit"],
-                    unionOrderByTuple : DataT["unionOrderByTuple"],
-                    unionLimit : DataT["unionLimit"],
+
                     aggregateCallback : DataT["aggregateCallback"],
                 }> :
                 ("Invalid ColumnT or cannot infer TableNameT/NameT/TypeT"|void|never)
@@ -1102,11 +712,6 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         joins : any,
         selectReferences : any,
         selectTuple : any,
-        groupByTuple : any,
-        orderByTuple : any,
-        limit : any,
-        unionOrderByTuple : any,
-        unionLimit : any,
         //Has no effect on the query
         aggregateCallback : any,
     }>> (selectBuilder : SelectBuilderT) : (
@@ -1128,11 +733,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                             selectTuple : DataT["selectTuple"],
 
 
-                                            groupByTuple : DataT["groupByTuple"],
-                                            orderByTuple : DataT["orderByTuple"],
-                                            limit : DataT["limit"],
-                                            unionOrderByTuple : DataT["unionOrderByTuple"],
-                                            unionLimit : DataT["unionLimit"],
+
                                             aggregateCallback : DataT["aggregateCallback"],
                                         }> :
                                         (
@@ -1154,154 +755,23 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
     //Replaces
     unionOrderBy<OrderByCallbackT extends OrderByCallback<ISelectBuilder<DataT>>> (
         orderByCallback : OrderByCallbackT
-    ):(
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.UNION_ORDER_BY> extends never ?
-            ("UNION_ORDER_BY clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : ReturnType<OrderByCallbackT>,
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    ) : ISelectBuilder<DataT>;
     //Appends
     appendUnionOrderBy<OrderByCallbackT extends OrderByCallback<ISelectBuilder<DataT>>> (
         orderByCallback : OrderByCallbackT
-    ):(
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.UNION_ORDER_BY> extends never ?
-            ("UNION_ORDER_BY clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : (
-                    DataT["unionOrderByTuple"] extends Tuple<any> ?
-                        TupleConcat<
-                            DataT["unionOrderByTuple"],
-                            ReturnType<OrderByCallbackT>
-                        > :
-                        ReturnType<OrderByCallbackT>
-                ),
-                unionLimit : DataT["unionLimit"],
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    ) : ISelectBuilder<DataT>;
 
     //REMOVES UNION ORDER BY
-    unsetUnionOrderBy () : (
-        ISelectBuilder<{
-            allowed : DataT["allowed"],
-            columnReferences : DataT["columnReferences"],
-            joins : DataT["joins"],
-            selectReferences : DataT["selectReferences"],
-            selectTuple : DataT["selectTuple"],
-
-
-            groupByTuple : DataT["groupByTuple"],
-            orderByTuple : DataT["orderByTuple"],
-            limit : DataT["limit"],
-            unionOrderByTuple : undefined,
-            unionLimit : DataT["unionLimit"],
-            aggregateCallback : DataT["aggregateCallback"],
-        }>
-    );
+    unsetUnionOrderBy () : ISelectBuilder<DataT>;
 
     //UNION LIMIT CLAUSE
-    unionLimit<RowCountT extends number> (rowCount : RowCountT) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.UNION_LIMIT> extends never ?
-            ("UNION_LIMIT clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : (
-                    DataT["unionLimit"] extends LimitData ?
-                        {
-                            rowCount : RowCountT,
-                            offset : DataT["unionLimit"]["offset"],
-                        } :
-                        {
-                            rowCount : RowCountT,
-                            offset : 0,
-                        }
-                ),
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    unionLimit (rowCount : number) : ISelectBuilder<DataT>;
 
     //UNION OFFSET CLAUSE
-    unionOffset<OffsetT extends number> (offset : OffsetT) : (
-        IsAllowedSelectBuilderOperation<DataT, SelectBuilderOperation.UNION_OFFSET> extends never ?
-            ("UNION_OFFSET clause not allowed here"|void|never) :
-            ISelectBuilder<{
-                allowed : DataT["allowed"],
-                columnReferences : DataT["columnReferences"],
-                joins : DataT["joins"],
-                selectReferences : DataT["selectReferences"],
-                selectTuple : DataT["selectTuple"],
-
-
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : (
-                    DataT["unionLimit"] extends LimitData ?
-                        {
-                            rowCount : DataT["unionLimit"]["rowCount"],
-                            offset : OffsetT,
-                        } :
-                        {
-                            rowCount : typeof ArbitraryRowCount,
-                            offset : OffsetT,
-                        }
-                ),
-                aggregateCallback : DataT["aggregateCallback"],
-            }>
-    );
+    unionOffset (offset : number) : ISelectBuilder<DataT>;
 
     //REMOVES UNION LIMIT
-    unsetUnionLimit () : (
-        ISelectBuilder<{
-            allowed : DataT["allowed"],
-            columnReferences : DataT["columnReferences"],
-            joins : DataT["joins"],
-            selectReferences : DataT["selectReferences"],
-            selectTuple : DataT["selectTuple"],
-
-
-            groupByTuple : DataT["groupByTuple"],
-            orderByTuple : DataT["orderByTuple"],
-            limit : DataT["limit"],
-            unionOrderByTuple : DataT["unionOrderByTuple"],
-            unionLimit : undefined,
-            aggregateCallback : DataT["aggregateCallback"],
-        }>
-    );
+    unsetUnionLimit () : ISelectBuilder<DataT>;
 
     //SUBQUERY
     readonly from : CreateSubSelectBuilderDelegate<DataT["columnReferences"]>;
@@ -1346,11 +816,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 selectTuple : DataT["selectTuple"],
 
 
-                groupByTuple : DataT["groupByTuple"],
-                orderByTuple : DataT["orderByTuple"],
-                limit : DataT["limit"],
-                unionOrderByTuple : DataT["unionOrderByTuple"],
-                unionLimit : DataT["unionLimit"],
+
                 aggregateCallback : AggregateCallbackT,
             }>
     );
@@ -1430,48 +896,13 @@ export type CreateSelectBuilderDelegate = (
     ) => (
         ISelectBuilder<{
             allowed : (
-                //Append whenever, cannot unjoin
-                //Uses columnReferences
-                SelectBuilderOperation.JOIN|
-
                 //Narrow before UNION, cannot un-narrow
                 //Uses columnReferences
                 SelectBuilderOperation.NARROW|
 
-                //Append and replace whenever, always ANDs with NARROW
-                //Uses columnReferences
-                SelectBuilderOperation.WHERE|
-
                 //Append before UNION
                 //Uses columnReferences
-                SelectBuilderOperation.SELECT|
-
-                //Toggle whenever
-                SelectBuilderOperation.DISTINCT|
-
-                //Toggle whenever
-                SelectBuilderOperation.SQL_CALC_FOUND_ROWS|
-
-                //Unset, append and replace whenever
-                //Uses columnReferences, selectReferences
-                SelectBuilderOperation.GROUP_BY|
-
-                //Append and replace whenever
-                //TECHNICALLY, can only use columns in GROUP BY, or columns in aggregate functions,
-                //But MySQL supports an extension that allows columns from SELECT
-                //As such, this library does not check for valid columns here
-                //As long as it is in columnReferences or selectReferences
-                SelectBuilderOperation.HAVING|
-
-                //Unset, append and replace whenever
-                //Uses columnReferences, selectReferences
-                SelectBuilderOperation.ORDER_BY|
-
-                //Replace whenever
-                SelectBuilderOperation.LIMIT|
-
-                //Replace whenever, sets LIMIT to arbitrary large number if LIMIT not set yet
-                SelectBuilderOperation.OFFSET|
+                SelectBuilderOperation.SELECT
 
                 //After SELECT, does not affect query, used for column compatibility with UNION
                 //Uses selectReferences
@@ -1479,16 +910,6 @@ export type CreateSelectBuilderDelegate = (
 
                 //Append after SELECT
                 //SelectBuilderOperation.UNION|
-
-                //Unset, append and replace whenever
-                //Uses columnReferences, selectReferences
-                SelectBuilderOperation.UNION_ORDER_BY|
-
-                //Replace whenever
-                SelectBuilderOperation.UNION_LIMIT|
-
-                //Replace whenever, sets UNION_LIMIT to arbitrary large number if UNION_LIMIT not set yet
-                SelectBuilderOperation.UNION_OFFSET
 
                 //After SELECT
                 //SelectBuilderOperation.AS
@@ -1500,11 +921,6 @@ export type CreateSelectBuilderDelegate = (
             joins : [Join<"FROM", TableT, TableToReference<TableT>, false>],
             selectReferences : {},
             selectTuple : undefined,
-            groupByTuple : undefined,
-            orderByTuple : undefined,
-            limit : undefined,
-            unionOrderByTuple : undefined,
-            unionLimit : undefined,
             aggregateCallback : undefined,
         }>
     )
@@ -1518,48 +934,14 @@ export type CreateSubSelectBuilderDelegate<ColumnReferencesT extends ColumnRefer
             ("Duplicate alias" | TableAlias<TableT> | void) :
             ISelectBuilder<{
                 allowed : (
-                    //Append whenever, cannot unjoin
-                    //Uses columnReferences
-                    SelectBuilderOperation.JOIN|
 
                     //Narrow before UNION, cannot un-narrow
                     //Uses columnReferences
                     SelectBuilderOperation.NARROW|
 
-                    //Append and replace whenever, always ANDs with NARROW
-                    //Uses columnReferences
-                    SelectBuilderOperation.WHERE|
-
                     //Append before UNION
                     //Uses columnReferences
-                    SelectBuilderOperation.SELECT|
-
-                    //Toggle whenever
-                    SelectBuilderOperation.DISTINCT|
-
-                    //Toggle whenever
-                    SelectBuilderOperation.SQL_CALC_FOUND_ROWS|
-
-                    //Unset, append and replace whenever
-                    //Uses columnReferences, selectReferences
-                    SelectBuilderOperation.GROUP_BY|
-
-                    //Append and replace whenever
-                    //TECHNICALLY, can only use columns in GROUP BY, or columns in aggregate functions,
-                    //But MySQL supports an extension that allows columns from SELECT
-                    //As such, this library does not check for valid columns here
-                    //As long as it is in columnReferences or selectReferences
-                    SelectBuilderOperation.HAVING|
-
-                    //Unset, append and replace whenever
-                    //Uses columnReferences, selectReferences
-                    SelectBuilderOperation.ORDER_BY|
-
-                    //Replace whenever
-                    SelectBuilderOperation.LIMIT|
-
-                    //Replace whenever, sets LIMIT to arbitrary large number if LIMIT not set yet
-                    SelectBuilderOperation.OFFSET|
+                    SelectBuilderOperation.SELECT
 
                     //After SELECT, does not affect query, used for column compatibility with UNION
                     //Uses selectReferences
@@ -1567,16 +949,6 @@ export type CreateSubSelectBuilderDelegate<ColumnReferencesT extends ColumnRefer
 
                     //Append after SELECT
                     //SelectBuilderOperation.UNION|
-
-                    //Unset, append and replace whenever
-                    //Uses columnReferences, selectReferences
-                    SelectBuilderOperation.UNION_ORDER_BY|
-
-                    //Replace whenever
-                    SelectBuilderOperation.UNION_LIMIT|
-
-                    //Replace whenever, sets UNION_LIMIT to arbitrary large number if UNION_LIMIT not set yet
-                    SelectBuilderOperation.UNION_OFFSET
 
                     //After SELECT
                     //SelectBuilderOperation.AS
@@ -1591,11 +963,6 @@ export type CreateSubSelectBuilderDelegate<ColumnReferencesT extends ColumnRefer
                 joins : [Join<"FROM", TableT, TableToReference<TableT>, false>],
                 selectReferences : {},
                 selectTuple : undefined,
-                groupByTuple : undefined,
-                orderByTuple : undefined,
-                limit : undefined,
-                unionOrderByTuple : undefined,
-                unionLimit : undefined,
                 aggregateCallback : undefined,
             }>
     )

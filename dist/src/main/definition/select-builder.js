@@ -18,6 +18,7 @@ const StringBuilder_1 = require("./StringBuilder");
 const e = require("./expr-library");
 const mysql = require("typed-mysql");
 const expr_operation_1 = require("./expr-operation");
+exports.ArbitraryRowCount = 999999999;
 class SelectBuilder {
     constructor(data, extraData) {
         //SUBSELECT
@@ -27,20 +28,8 @@ class SelectBuilder {
             }
             return new SelectBuilder({
                 allowed: [
-                    d.SelectBuilderOperation.JOIN,
                     d.SelectBuilderOperation.NARROW,
-                    d.SelectBuilderOperation.WHERE,
                     d.SelectBuilderOperation.SELECT,
-                    d.SelectBuilderOperation.DISTINCT,
-                    d.SelectBuilderOperation.SQL_CALC_FOUND_ROWS,
-                    d.SelectBuilderOperation.GROUP_BY,
-                    d.SelectBuilderOperation.HAVING,
-                    d.SelectBuilderOperation.ORDER_BY,
-                    d.SelectBuilderOperation.LIMIT,
-                    d.SelectBuilderOperation.OFFSET,
-                    d.SelectBuilderOperation.UNION_ORDER_BY,
-                    d.SelectBuilderOperation.UNION_LIMIT,
-                    d.SelectBuilderOperation.UNION_OFFSET,
                 ],
                 columnReferences: column_references_operation_1.combineReferences(this.data.columnReferences, table_operation_1.tableToReference(table)),
                 joins: [type_util_1.check({
@@ -123,7 +112,6 @@ class SelectBuilder {
     }
     //JOIN CLAUSE
     join(toTable, from, to) {
-        this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
         const fromTuple = join_1.getJoinFrom(this.data.columnReferences, from);
         const toTuple = join_1.getJoinTo(toTable, to);
@@ -141,7 +129,6 @@ class SelectBuilder {
         }), this.extraData);
     }
     rightJoin(toTable, from, to) {
-        this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
         const fromTuple = join_1.getJoinFrom(this.data.columnReferences, from);
         const toTuple = join_1.getJoinTo(toTable, to);
@@ -160,7 +147,6 @@ class SelectBuilder {
     }
     ;
     leftJoin(toTable, from, to) {
-        this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
         const fromTuple = join_1.getJoinFrom(this.data.columnReferences, from);
         const toTuple = join_1.getJoinTo(toTable, to);
@@ -181,7 +167,6 @@ class SelectBuilder {
     ;
     //JOIN USING CLAUSE
     joinUsing(toTable, from) {
-        this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
         const fromTuple = join_1.getJoinFrom(this.data.columnReferences, from);
         const toTuple = join_1.getJoinToUsingFrom(toTable, fromTuple);
@@ -199,7 +184,6 @@ class SelectBuilder {
         }), this.extraData);
     }
     rightJoinUsing(toTable, from) {
-        this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
         const fromTuple = join_1.getJoinFrom(this.data.columnReferences, from);
         const toTuple = join_1.getJoinToUsingFrom(toTable, fromTuple);
@@ -218,7 +202,6 @@ class SelectBuilder {
     }
     ;
     leftJoinUsing(toTable, from) {
-        this.assertAllowed(d.SelectBuilderOperation.JOIN);
         this.assertNonDuplicateAlias(toTable.alias);
         const fromTuple = join_1.getJoinFrom(this.data.columnReferences, from);
         const toTuple = join_1.getJoinToUsingFrom(toTable, fromTuple);
@@ -296,7 +279,6 @@ class SelectBuilder {
     //WHERE CLAUSE
     //Replaces but ANDs with NARROW
     where(whereCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.WHERE);
         let condition = whereCallback(this.data.columnReferences, this);
         if (this.extraData.narrowExpr != undefined) {
             condition = expr_logical_1.and(this.extraData.narrowExpr, condition);
@@ -306,7 +288,6 @@ class SelectBuilder {
     ;
     //Appends
     andWhere(whereCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.WHERE);
         let condition = whereCallback(this.data.columnReferences, this);
         return new SelectBuilder(this.data, this.appendWhereExpr(condition));
     }
@@ -365,56 +346,46 @@ class SelectBuilder {
     //distinct ();
     //distinct<DistinctT extends boolean> (distinct : DistinctT);
     distinct(distinct = true) {
-        this.assertAllowed(d.SelectBuilderOperation.DISTINCT);
-        return new SelectBuilder(type_util_1.spread(this.data, { distinct: distinct }), this.extraData);
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { distinct: distinct }));
     }
     //SQL_CALC_FOUND_ROWS CLAUSE
     //sqlCalcFoundRows ();
     //sqlCalcFoundRows<SqlCalcFoundRowsT extends boolean> (sqlCalcFoundRows : SqlCalcFoundRowsT);
     sqlCalcFoundRows(sqlCalcFoundRows = true) {
-        this.assertAllowed(d.SelectBuilderOperation.SQL_CALC_FOUND_ROWS);
-        return new SelectBuilder(type_util_1.spread(this.data, { sqlCalcFoundRows: sqlCalcFoundRows }), this.extraData);
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { sqlCalcFoundRows: sqlCalcFoundRows }));
     }
     //GROUP BY CLAUSE
     //Replaces
     groupBy(groupByCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.GROUP_BY);
         const tuple = groupByCallback(column_references_operation_1.combineReferences(
         //For GROUP BY, we replace the selectReferences with columnReferences
         this.data.selectReferences, this.data.columnReferences), this);
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            groupByTuple: tuple
-        }), this.extraData);
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { groupByTuple: tuple }));
     }
     ;
     //Appends
     appendGroupBy(groupByCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.GROUP_BY);
         const tuple = groupByCallback(column_references_operation_1.combineReferences(
         //For GROUP BY, we replace the selectReferences with columnReferences
         this.data.selectReferences, this.data.columnReferences), this);
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            groupByTuple: (this.data.groupByTuple == undefined) ?
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { groupByTuple: (this.extraData.groupByTuple == undefined) ?
                 tuple :
-                this.data.groupByTuple.concat(tuple)
-        }), this.extraData);
+                this.extraData.groupByTuple.concat(tuple) }));
     }
     ;
     //REMOVES GROUP BY
     unsetGroupBy() {
-        return new SelectBuilder(type_util_1.spread(this.data, { groupByTuple: undefined }), this.extraData);
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { groupByTuple: undefined }));
     }
     ;
     //HAVING CLAUSE
     having(havingCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.HAVING);
         let condition = havingCallback(column_references_operation_1.combineReferences(this.data.columnReferences, this.data.selectReferences), this);
         return new SelectBuilder(this.data, Object.assign({}, this.extraData, { havingExpr: condition }));
     }
     ;
     //Appends
     andHaving(havingCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.HAVING);
         let condition = havingCallback(type_util_1.spread(this.data.columnReferences, this.data.selectReferences), this);
         return new SelectBuilder(this.data, Object.assign({}, this.extraData, { havingExpr: (this.extraData.havingExpr == undefined) ?
                 condition :
@@ -424,64 +395,52 @@ class SelectBuilder {
     //ORDER BY CLAUSE
     //Replaces
     orderBy(orderByCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.ORDER_BY);
         const tuple = orderByCallback(column_references_operation_1.combineReferences(this.data.columnReferences, this.data.selectReferences), this);
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            orderByTuple: tuple
-        }), this.extraData);
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { orderByTuple: tuple }));
     }
     ;
     //Appends
     appendOrderBy(orderByCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.ORDER_BY);
         const tuple = orderByCallback(column_references_operation_1.combineReferences(this.data.columnReferences, this.data.selectReferences), this);
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            orderByTuple: (this.data.orderByTuple == undefined) ?
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { orderByTuple: (this.extraData.orderByTuple == undefined) ?
                 tuple :
-                this.data.orderByTuple.concat(tuple)
-        }), this.extraData);
+                this.extraData.orderByTuple.concat(tuple) }));
     }
     ;
     //REMOVES ORDER BY
     unsetOrderBy() {
-        return new SelectBuilder(type_util_1.spread(this.data, { orderByTuple: undefined }), this.extraData);
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { orderByTuple: undefined }));
     }
     ;
     //LIMIT CLAUSE
     limit(rowCount) {
-        this.assertAllowed(d.SelectBuilderOperation.LIMIT);
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            limit: (this.data.limit == undefined) ?
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { limit: (this.extraData.limit == undefined) ?
                 {
                     rowCount: rowCount,
                     offset: 0,
                 } :
                 {
                     rowCount: rowCount,
-                    offset: this.data.limit.offset,
-                }
-        }), this.extraData);
+                    offset: this.extraData.limit.offset,
+                } }));
     }
     ;
     //OFFSET CLAUSE
     offset(offset) {
-        this.assertAllowed(d.SelectBuilderOperation.OFFSET);
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            limit: (this.data.limit == undefined) ?
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { limit: (this.extraData.limit == undefined) ?
                 {
-                    rowCount: d.ArbitraryRowCount,
+                    rowCount: exports.ArbitraryRowCount,
                     offset: offset,
                 } :
                 {
-                    rowCount: this.data.limit.rowCount,
+                    rowCount: this.extraData.limit.rowCount,
                     offset: offset,
-                }
-        }), this.extraData);
+                } }));
     }
     ;
     //REMOVES LIMIT
     unsetLimit() {
-        return new SelectBuilder(type_util_1.spread(this.data, { limit: undefined }), this.extraData);
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { limit: undefined }));
     }
     ;
     //WIDEN CLAUSE
@@ -526,64 +485,52 @@ class SelectBuilder {
     //UNION ORDER BY CLAUSE
     //Replaces
     unionOrderBy(orderByCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.UNION_ORDER_BY);
         const tuple = orderByCallback(column_references_operation_1.combineReferences(this.data.columnReferences, this.data.selectReferences), this);
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            unionOrderByTuple: tuple
-        }), this.extraData);
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { unionOrderByTuple: tuple }));
     }
     ;
     //Appends
     appendUnionOrderBy(orderByCallback) {
-        this.assertAllowed(d.SelectBuilderOperation.UNION_ORDER_BY);
         const tuple = orderByCallback(column_references_operation_1.combineReferences(this.data.columnReferences, this.data.selectReferences), this);
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            unionOrderByTuple: (this.data.unionOrderByTuple == undefined) ?
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { unionOrderByTuple: (this.extraData.unionOrderByTuple == undefined) ?
                 tuple :
-                this.data.unionOrderByTuple.concat(tuple)
-        }), this.extraData);
+                this.extraData.unionOrderByTuple.concat(tuple) }));
     }
     ;
     //REMOVES UNION ORDER BY
     unsetUnionOrderBy() {
-        return new SelectBuilder(type_util_1.spread(this.data, { unionOrderByTuple: undefined }), this.extraData);
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { unionOrderByTuple: undefined }));
     }
     ;
     //UNION LIMIT CLAUSE
     unionLimit(rowCount) {
-        this.assertAllowed(d.SelectBuilderOperation.UNION_LIMIT);
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            unionLimit: (this.data.unionLimit == undefined) ?
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { unionLimit: (this.extraData.unionLimit == undefined) ?
                 {
                     rowCount: rowCount,
                     offset: 0,
                 } :
                 {
                     rowCount: rowCount,
-                    offset: this.data.unionLimit.offset,
-                }
-        }), this.extraData);
+                    offset: this.extraData.unionLimit.offset,
+                } }));
     }
     ;
     //UNION OFFSET CLAUSE
     unionOffset(offset) {
-        this.assertAllowed(d.SelectBuilderOperation.UNION_OFFSET);
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            unionLimit: (this.data.unionLimit == undefined) ?
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { unionLimit: (this.extraData.unionLimit == undefined) ?
                 {
-                    rowCount: d.ArbitraryRowCount,
+                    rowCount: exports.ArbitraryRowCount,
                     offset: offset,
                 } :
                 {
-                    rowCount: this.data.unionLimit.rowCount,
+                    rowCount: this.extraData.unionLimit.rowCount,
                     offset: offset,
-                }
-        }), this.extraData);
+                } }));
     }
     ;
     //REMOVES UNION LIMIT
     unsetUnionLimit() {
-        return new SelectBuilder(type_util_1.spread(this.data, { unionLimit: undefined }), this.extraData);
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { unionLimit: undefined }));
     }
     ;
     //AS CLAUSE
@@ -650,8 +597,8 @@ class SelectBuilder {
     }
     querify(sb) {
         const hasUnion = (this.extraData.union != undefined ||
-            this.data.unionOrderByTuple != undefined ||
-            this.data.unionLimit != undefined);
+            this.extraData.unionOrderByTuple != undefined ||
+            this.extraData.unionLimit != undefined);
         if (hasUnion) {
             sb.appendLine("(");
             sb.indent();
@@ -696,9 +643,9 @@ class SelectBuilder {
         }
         this.querifyColumnReferences(sb);
         this.querifyWhere(sb);
-        if (this.data.groupByTuple != undefined) {
+        if (this.extraData.groupByTuple != undefined) {
             sb.appendLine("GROUP BY");
-            const groupByTuple = this.data.groupByTuple;
+            const groupByTuple = this.extraData.groupByTuple;
             sb.scope((sb) => {
                 sb.map(groupByTuple, (sb, e) => {
                     e.querify(sb);
@@ -712,9 +659,9 @@ class SelectBuilder {
                 havingExpr.querify(sb);
             });
         }
-        if (this.data.orderByTuple != undefined) {
+        if (this.extraData.orderByTuple != undefined) {
             sb.appendLine("ORDER BY");
-            const orderByTuple = this.data.orderByTuple;
+            const orderByTuple = this.extraData.orderByTuple;
             sb.scope((sb) => {
                 sb.map(orderByTuple, (sb, e) => {
                     if ((e instanceof column_1.Column) || (e instanceof expr_1.Expr)) {
@@ -728,8 +675,8 @@ class SelectBuilder {
                 }, ",\n");
             });
         }
-        if (this.data.limit != undefined) {
-            const limit = this.data.limit;
+        if (this.extraData.limit != undefined) {
+            const limit = this.extraData.limit;
             sb.appendLine("LIMIT")
                 .scope((sb) => {
                 sb.append(limit.rowCount.toString());
@@ -753,9 +700,9 @@ class SelectBuilder {
                 sb.appendLine(")");
             }, "\n");
         }
-        if (this.data.unionOrderByTuple != undefined) {
+        if (this.extraData.unionOrderByTuple != undefined) {
             sb.appendLine("ORDER BY");
-            const unionOrderByTuple = this.data.unionOrderByTuple;
+            const unionOrderByTuple = this.extraData.unionOrderByTuple;
             sb.scope((sb) => {
                 sb.map(unionOrderByTuple, (sb, e) => {
                     if ((e instanceof column_1.Column) || (e instanceof expr_1.Expr)) {
@@ -769,8 +716,8 @@ class SelectBuilder {
                 }, ",\n");
             });
         }
-        if (this.data.unionLimit != undefined) {
-            const unionLimit = this.data.unionLimit;
+        if (this.extraData.unionLimit != undefined) {
+            const unionLimit = this.extraData.unionLimit;
             sb.appendLine("LIMIT")
                 .scope((sb) => {
                 sb.append(unionLimit.rowCount.toString());
@@ -874,11 +821,11 @@ class SelectBuilder {
         });
     }
     count() {
-        if (this.data.unionLimit != undefined) {
+        if (this.extraData.unionLimit != undefined) {
             return this.unsetUnionLimit()
                 .count();
         }
-        if (this.data.limit != undefined && this.extraData.union == undefined) {
+        if (this.extraData.limit != undefined && this.extraData.union == undefined) {
             return this.unsetLimit()
                 .count();
         }
@@ -962,20 +909,8 @@ function newCreateSelectBuilderDelegate(db) {
     return (table) => {
         return new SelectBuilder({
             allowed: [
-                d.SelectBuilderOperation.JOIN,
                 d.SelectBuilderOperation.NARROW,
-                d.SelectBuilderOperation.WHERE,
                 d.SelectBuilderOperation.SELECT,
-                d.SelectBuilderOperation.DISTINCT,
-                d.SelectBuilderOperation.SQL_CALC_FOUND_ROWS,
-                d.SelectBuilderOperation.GROUP_BY,
-                d.SelectBuilderOperation.HAVING,
-                d.SelectBuilderOperation.ORDER_BY,
-                d.SelectBuilderOperation.LIMIT,
-                d.SelectBuilderOperation.OFFSET,
-                d.SelectBuilderOperation.UNION_ORDER_BY,
-                d.SelectBuilderOperation.UNION_LIMIT,
-                d.SelectBuilderOperation.UNION_OFFSET,
             ],
             columnReferences: table_operation_1.tableToReference(table),
             joins: [type_util_1.check({
@@ -988,11 +923,6 @@ function newCreateSelectBuilderDelegate(db) {
                 })],
             selectReferences: {},
             selectTuple: undefined,
-            groupByTuple: undefined,
-            orderByTuple: undefined,
-            limit: undefined,
-            unionOrderByTuple: undefined,
-            unionLimit: undefined,
             aggregateCallback: undefined,
         }, {
             db: db,

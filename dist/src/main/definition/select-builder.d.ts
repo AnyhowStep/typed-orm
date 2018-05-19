@@ -2,14 +2,24 @@ import * as d from "../declaration";
 import * as sd from "schema-decorator";
 import { Database } from "./Database";
 import { ConnectedDatabase } from "./ConnectedDatabase";
+export declare const ArbitraryRowCount = 999999999;
+export interface LimitData {
+    readonly rowCount: number;
+    readonly offset: number;
+}
 export interface ExtraSelectBuilderData {
     readonly db: Database | ConnectedDatabase;
     readonly narrowExpr?: d.IExpr<any, boolean>;
     readonly whereExpr?: d.IExpr<any, boolean>;
     readonly havingExpr?: d.IExpr<any, boolean>;
     readonly union?: d.ISelectBuilder<any>[];
-    distinct: boolean;
-    sqlCalcFoundRows: boolean;
+    readonly distinct: boolean;
+    readonly sqlCalcFoundRows: boolean;
+    readonly groupByTuple?: d.AnyGroupByTupleElement[];
+    readonly orderByTuple?: d.AnyOrderByTupleElement[];
+    readonly limit?: LimitData;
+    readonly unionOrderByTuple?: d.AnyOrderByTupleElement[];
+    readonly unionLimit?: LimitData;
 }
 export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.ISelectBuilder<DataT> {
     readonly data: DataT;
@@ -37,19 +47,19 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
     private appendSelectTuple;
     select<SelectCallbackT extends d.SelectCallback<d.ISelectBuilder<DataT>>>(selectCallback: SelectCallbackT): any;
     selectAll(): any;
-    distinct(distinct?: boolean): any;
-    sqlCalcFoundRows(sqlCalcFoundRows?: boolean): any;
-    groupBy<GroupByCallbackT extends d.GroupByCallback<d.ISelectBuilder<DataT>>>(groupByCallback: GroupByCallbackT): any;
-    appendGroupBy<GroupByCallbackT extends d.GroupByCallback<d.ISelectBuilder<DataT>>>(groupByCallback: GroupByCallbackT): any;
-    unsetGroupBy(): any;
-    having<HavingCallbackT extends d.HavingCallback<d.ISelectBuilder<DataT>>>(havingCallback: HavingCallbackT): any;
-    andHaving<HavingCallbackT extends d.HavingCallback<d.ISelectBuilder<DataT>>>(havingCallback: HavingCallbackT): any;
-    orderBy<OrderByCallbackT extends d.OrderByCallback<d.ISelectBuilder<DataT>>>(orderByCallback: OrderByCallbackT): any;
-    appendOrderBy<OrderByCallbackT extends d.OrderByCallback<d.ISelectBuilder<DataT>>>(orderByCallback: OrderByCallbackT): any;
-    unsetOrderBy(): any;
-    limit<RowCountT extends number>(rowCount: RowCountT): any;
-    offset<OffsetT extends number>(offset: OffsetT): any;
-    unsetLimit(): any;
+    distinct(distinct?: boolean): SelectBuilder<DataT>;
+    sqlCalcFoundRows(sqlCalcFoundRows?: boolean): SelectBuilder<DataT>;
+    groupBy<GroupByCallbackT extends d.GroupByCallback<d.ISelectBuilder<DataT>>>(groupByCallback: GroupByCallbackT): SelectBuilder<DataT>;
+    appendGroupBy<GroupByCallbackT extends d.GroupByCallback<d.ISelectBuilder<DataT>>>(groupByCallback: GroupByCallbackT): SelectBuilder<DataT>;
+    unsetGroupBy(): SelectBuilder<DataT>;
+    having<HavingCallbackT extends d.HavingCallback<d.ISelectBuilder<DataT>>>(havingCallback: HavingCallbackT): SelectBuilder<DataT>;
+    andHaving<HavingCallbackT extends d.HavingCallback<d.ISelectBuilder<DataT>>>(havingCallback: HavingCallbackT): SelectBuilder<DataT>;
+    orderBy<OrderByCallbackT extends d.OrderByCallback<d.ISelectBuilder<DataT>>>(orderByCallback: OrderByCallbackT): SelectBuilder<DataT>;
+    appendOrderBy<OrderByCallbackT extends d.OrderByCallback<d.ISelectBuilder<DataT>>>(orderByCallback: OrderByCallbackT): SelectBuilder<DataT>;
+    unsetOrderBy(): SelectBuilder<DataT>;
+    limit(rowCount: number): SelectBuilder<DataT>;
+    offset(offset: number): SelectBuilder<DataT>;
+    unsetLimit(): SelectBuilder<DataT>;
     widen<TypeWidenCallbackT extends d.TypeWidenCallback<DataT["selectReferences"]>, WidenT>(typeWidenCallback: TypeWidenCallbackT, assertWidened: sd.AssertFunc<WidenT>): any;
     union<SelectBuilderT extends d.ISelectBuilder<{
         allowed: any;
@@ -57,19 +67,14 @@ export declare class SelectBuilder<DataT extends d.AnySelectBuilderData> impleme
         joins: any;
         selectReferences: any;
         selectTuple: any;
-        groupByTuple: any;
-        orderByTuple: any;
-        limit: any;
-        unionOrderByTuple: any;
-        unionLimit: any;
         aggregateCallback: any;
     }>>(other: SelectBuilderT): any;
-    unionOrderBy<OrderByCallbackT extends d.OrderByCallback<d.ISelectBuilder<DataT>>>(orderByCallback: OrderByCallbackT): any;
-    appendUnionOrderBy<OrderByCallbackT extends d.OrderByCallback<d.ISelectBuilder<DataT>>>(orderByCallback: OrderByCallbackT): any;
-    unsetUnionOrderBy(): any;
-    unionLimit<RowCountT extends number>(rowCount: RowCountT): any;
-    unionOffset<OffsetT extends number>(offset: OffsetT): any;
-    unsetUnionLimit(): any;
+    unionOrderBy<OrderByCallbackT extends d.OrderByCallback<d.ISelectBuilder<DataT>>>(orderByCallback: OrderByCallbackT): SelectBuilder<DataT>;
+    appendUnionOrderBy<OrderByCallbackT extends d.OrderByCallback<d.ISelectBuilder<DataT>>>(orderByCallback: OrderByCallbackT): SelectBuilder<DataT>;
+    unsetUnionOrderBy(): SelectBuilder<DataT>;
+    unionLimit(rowCount: number): SelectBuilder<DataT>;
+    unionOffset(offset: number): SelectBuilder<DataT>;
+    unsetUnionLimit(): SelectBuilder<DataT>;
     as<AliasT extends string>(alias: AliasT): any;
     asExpr<AliasT extends string>(alias: AliasT): any;
     readonly from: d.CreateSubSelectBuilderDelegate<DataT["columnReferences"]>;

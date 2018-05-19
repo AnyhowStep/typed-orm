@@ -78,11 +78,6 @@ export type SelectBuilderValueQuery<TypeT> = ISelectBuilder<{
             )
         }
     ),
-    groupByTuple : any,
-    orderByTuple : any,
-    limit : any,
-    unionOrderByTuple : any,
-    unionLimit : any,
     aggregateCallback : any,
 }>;
 
