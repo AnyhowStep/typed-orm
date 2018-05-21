@@ -161,7 +161,7 @@ export function joinTupleToSelectTuple<
     JoinTupleT extends d.Tuple<d.AnyJoin>
 > (
     joinTuple : JoinTupleT
-) : d.JoinTupleToSelectTuple<JoinTupleT> {
+) : d.JoinsToSelectTuple<JoinTupleT> {
     const result : any[] = [];
     for (let join of joinTuple) {
         result.push(tableToReference(join.table)[join.table.alias]);

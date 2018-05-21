@@ -8,69 +8,112 @@ import {ColumnType} from "./column-operation";
 import {ColumnOfReferences, ReplaceColumnOfReference} from "./column-references-operation";
 
 //TODO Move "FROM" to its own thing, it isn't a JOIN
-export interface Join<
+export interface IJoin<
     JoinTypeT extends "FROM"|"INNER"|"LEFT"|"RIGHT",
+    IndexT extends number,
+    //Needed for update-builder to work, relies on `isMutable` type
     TableT extends AnyAliasedTable,
     ColumnReferencesT extends ColumnReferences,
-    NullableT extends boolean,
+    NullableT extends boolean
 > {
-    joinType : JoinTypeT,
-    table : TableT,
-    columnReferences : ColumnReferencesT,
-    nullable : NullableT,
-    //TODO Consider making these strongly typed?
-    from : JoinTypeT extends "FROM" ?
-        undefined :
-        Tuple<AnyColumn>,
-    to : JoinTypeT extends "FROM" ?
-        undefined :
-        Tuple<AnyColumn>,
+    readonly joinType : JoinTypeT,
+    readonly index : IndexT,
+    readonly table : TableT,
+    readonly columnReferences : ColumnReferencesT,
+    readonly nullable : NullableT,
+
+    //TODO Maybe strongly type? Seems unnecessary
+    readonly from : AnyColumn[],
+    readonly to : AnyColumn[]
 }
-export type AnyJoin = Join<any, any, any, any>;
+export type AnyJoin = IJoin<any, any, any, any, any>;
 
-export type ToNullableJoinTuple<TupleT extends Tuple<AnyJoin>> = (
-    TupleT[TupleKeys<TupleT>] extends AnyJoin ?
-        (
-            {
-                [index in TupleKeys<TupleT>] : (
-                    TupleT[index] extends Join<infer JoinTypeT, infer TableT, infer ColumnReferencesT, boolean> ?
-                        Join<
-                            JoinTypeT,
-                            TableT,
-                            ColumnReferencesT,
-                            true
-                        > :
-                        never
-                )
-            } &
-            { length : TupleLength<TupleT> } &
-            (
-                {
-                    [index in TupleKeys<TupleT>] : (
-                        TupleT[index] extends Join<infer JoinTypeT, infer TableT, infer ColumnReferencesT, boolean> ?
-                            Join<
-                                JoinTypeT,
-                                TableT,
-                                ColumnReferencesT,
-                                true
-                            > :
-                            never
-                    )
-                }[TupleKeys<TupleT>]
+export type JoinReferences = {
+    [tableAlias : string] : AnyJoin
+};
+export type JoinsIndices<JoinsT extends JoinReferences> = (
+    {
+        [tableAlias in Extract<keyof JoinsT, string>] : (
+            JoinsT[tableAlias]["index"]
+        )
+    }[Extract<keyof JoinsT, string>]
+);
+export type JoinAtIndex<JoinsT extends JoinReferences, IndexT extends number> = (
+    {
+        [tableAlias in Extract<keyof JoinsT, string>] : (
+            JoinsT[tableAlias]["index"] extends IndexT ?
+                JoinsT[tableAlias] :
+                never
+        )
+    }[Extract<keyof JoinsT, string>]
+);
+/*
+str = [];
+for (let i=20; i>=0; --i) {
+	str.push(`${i} extends JoinsIndices<JoinsT> ?\n    ${i+1} :`);
+}
+str.join("\n    ")
+*/
+export type JoinsLength<JoinsT extends JoinReferences> = (
+    20 extends JoinsIndices<JoinsT> ?
+    21 :
+    19 extends JoinsIndices<JoinsT> ?
+    20 :
+    18 extends JoinsIndices<JoinsT> ?
+    19 :
+    17 extends JoinsIndices<JoinsT> ?
+    18 :
+    16 extends JoinsIndices<JoinsT> ?
+    17 :
+    15 extends JoinsIndices<JoinsT> ?
+    16 :
+    14 extends JoinsIndices<JoinsT> ?
+    15 :
+    13 extends JoinsIndices<JoinsT> ?
+    14 :
+    12 extends JoinsIndices<JoinsT> ?
+    13 :
+    11 extends JoinsIndices<JoinsT> ?
+    12 :
+    10 extends JoinsIndices<JoinsT> ?
+    11 :
+    9 extends JoinsIndices<JoinsT> ?
+    10 :
+    8 extends JoinsIndices<JoinsT> ?
+    9 :
+    7 extends JoinsIndices<JoinsT> ?
+    8 :
+    6 extends JoinsIndices<JoinsT> ?
+    7 :
+    5 extends JoinsIndices<JoinsT> ?
+    6 :
+    4 extends JoinsIndices<JoinsT> ?
+    5 :
+    3 extends JoinsIndices<JoinsT> ?
+    4 :
+    2 extends JoinsIndices<JoinsT> ?
+    3 :
+    1 extends JoinsIndices<JoinsT> ?
+    2 :
+    0 extends JoinsIndices<JoinsT> ?
+    1 :
+    never
+);
 
-            )[] &
-            {
-                "0" : (
-                    Join<
-                        TupleT[0]["joinType"],
-                        TupleT[0]["table"],
-                        TupleT[0]["columnReferences"],
-                        true
-                    >
-                )
-            }
-        ) :
-        (never)
+export type ToNullableJoins<JoinsT extends JoinReferences> = (
+    {
+        [tableAlias in Extract<keyof JoinsT, string>] : (
+            JoinsT[tableAlias] extends IJoin<infer JoinTypeT, infer IndexT, infer TableT, infer ColumnReferencesT, boolean> ?
+                IJoin<
+                    JoinTypeT,
+                    IndexT,
+                    TableT,
+                    ColumnReferencesT,
+                    true
+                > :
+                never
+        )
+    }
 );
 
 export type JoinFromTupleCallback<
@@ -210,10 +253,11 @@ export type ReplaceColumnOfJoin<
     NameT extends string,
     NewTypeT
 > = (
-    JoinT extends Join<infer JoinTypeT, infer TableT, infer ColumnReferencesT, infer NullableT> ?
+    JoinT extends IJoin<infer JoinTypeT, infer IndexT, infer TableT, infer ColumnReferencesT, infer NullableT> ?
         (
-            Join<
+            IJoin<
                 JoinTypeT,
+                IndexT,
                 TableT,
                 ReplaceColumnOfReference<
                     ColumnReferencesT,
@@ -226,104 +270,32 @@ export type ReplaceColumnOfJoin<
         ) :
         (JoinT)
 );
-export type ReplaceColumnOfJoinTuple<
-    JoinTupleT extends Tuple<AnyJoin>,
+export type ReplaceColumnOfJoins<
+    JoinsT extends JoinReferences,
     TableNameT extends string,
     NameT extends string,
     NewTypeT
 > = (
-    JoinTupleT[TupleKeys<JoinTupleT>] extends AnyJoin ?
-        (
-            {
-                [k in TupleKeys<JoinTupleT>] : (
-                    JoinTupleT[k] extends AnyJoin ?
-                        ReplaceColumnOfJoin<
-                            JoinTupleT[k],
-                            TableNameT,
-                            NameT,
-                            NewTypeT
-                        > :
-                        never
-                )
-            } &
-            { length : TupleLength<JoinTupleT> } &
-            //HACK
-            (AnyJoin[]) &
-            /*ReplaceColumnOfJoin<
-                JoinTupleT[TupleKeys<JoinTupleT>],
+    {
+        [k in Extract<keyof JoinsT, string>] : (
+            ReplaceColumnOfJoin<
+                JoinsT[k],
                 TableNameT,
                 NameT,
                 NewTypeT
-            >[] &*/
-            {
-                "0" : ReplaceColumnOfJoin<
-                    JoinTupleT[0],
-                    TableNameT,
-                    NameT,
-                    NewTypeT
-                >
-            }
-        ) :
-        (never)
+            >
+        )
+    }
 );
 
 export type NullableJoinTableNames<
-    JoinTupleT extends Tuple<AnyJoin>
+    JoinsT extends JoinReferences
 > = (
     {
-        [index in TupleKeys<JoinTupleT>] : (
-            JoinTupleT[index] extends Join<any, infer TableT, any, true> ?
-                TableT["alias"] :
+        [tableAlias in Extract<keyof JoinsT, string>] : (
+            JoinsT[tableAlias] extends IJoin<any, any, any, any, true> ?
+                tableAlias :
                 never
         )
-    }[TupleKeys<JoinTupleT>]
-)
-
-export type ColumnOfJoin<
-    JoinT extends AnyJoin,
-    TableNameT extends string,
-    NameT extends string
-> = (
-    JoinT["table"]["alias"] extends TableNameT ?
-        (
-            //NameT extends Extract<keyof JoinT["columnReferences"][TableNameT], string> ?
-                (
-                    JoinT["columnReferences"][TableNameT][NameT] extends AnyColumn ?
-                        JoinT["columnReferences"][TableNameT][NameT] :
-                        never
-                ) //:
-                //never
-        ) :
-        never
-)
-
-export type ColumnOfJoinTuple<
-    JoinTupleT extends Tuple<AnyJoin>,
-    TableNameT extends string,
-    NameT extends string
-> = (
-    {
-        [index in TupleKeys<JoinTupleT>] : (
-            JoinTupleT[index] extends AnyJoin ?
-                ColumnOfJoin<JoinTupleT[index], TableNameT, NameT> :
-                never
-        )
-    }[TupleKeys<JoinTupleT>]
-)
-
-export type TableOfJoinTuple<
-    JoinTupleT extends Tuple<AnyJoin>,
-    TableNameT extends string
-> = (
-    {
-        [index in TupleKeys<JoinTupleT>] : (
-            JoinTupleT[index] extends AnyJoin ?
-                (
-                    JoinTupleT[index]["table"]["alias"] extends TableNameT ?
-                        JoinTupleT[index]["table"] :
-                        never
-                ) :
-                never
-        )
-    }[TupleKeys<JoinTupleT>]
+    }[Extract<keyof JoinsT, string>]
 )

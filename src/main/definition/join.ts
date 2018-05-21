@@ -4,6 +4,45 @@ import {spread} from "@anyhowstep/type-util";
 import {replaceColumnOfReference} from "./column-references-operation";
 import {Column} from "./column";
 
+export class Join<
+    JoinTypeT extends "FROM"|"INNER"|"LEFT"|"RIGHT",
+    IndexT extends number,
+    //Needed for update-builder to work, relies on `isMutable` type
+    TableT extends d.AnyAliasedTable,
+    ColumnReferencesT extends d.ColumnReferences,
+    NullableT extends boolean
+> implements d.IJoin<
+    JoinTypeT, IndexT, TableT, ColumnReferencesT, NullableT
+> {
+    readonly joinType : JoinTypeT;
+    readonly index : IndexT;
+    readonly table : TableT;
+    readonly columnReferences : ColumnReferencesT;
+    readonly nullable : NullableT;
+
+    readonly from : d.AnyColumn[];
+    readonly to : d.AnyColumn[];
+
+    constructor (
+        joinType : JoinTypeT,
+        index : IndexT,
+        table : TableT,
+        columnReferences : ColumnReferencesT,
+        nullable : NullableT,
+        from : d.AnyColumn[],
+        to : d.AnyColumn[]
+    ) {
+        this.joinType = joinType;
+        this.index = index;
+        this.table = table;
+        this.columnReferences = columnReferences;
+        this.nullable = nullable;
+
+        this.from = from;
+        this.to = to;
+    }
+}
+
 export function getJoinFrom<
     ColumnReferencesT extends d.ColumnReferences,
     JoinFromTupleCallbackT extends d.JoinFromTupleCallback<ColumnReferencesT>
@@ -41,7 +80,7 @@ export function getJoinToUsingFrom<
 
 export function toNullableJoinTuple<
     TupleT extends d.Tuple<d.AnyJoin>
-> (tuple : TupleT) : d.ToNullableJoinTuple<TupleT> {
+> (tuple : TupleT) : d.ToNullableJoins<TupleT> {
     return tuple.map((e) => {
         return {
             joinType : e.joinType,
@@ -87,7 +126,7 @@ export function replaceColumnOfJoinTuple<
 > (
     joinTuple : JoinTupleT,
     newColumn : Column<TableNameT, NameT, NewTypeT>
-) : d.ReplaceColumnOfJoinTuple<
+) : d.ReplaceColumnOfJoins<
     JoinTupleT,
     TableNameT,
     NameT,

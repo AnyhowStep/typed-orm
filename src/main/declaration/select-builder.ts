@@ -1,16 +1,17 @@
 import * as sd from "schema-decorator";
 import {ColumnReferences} from "./column-references";
 import {
-    Join,
-    AnyJoin,
+    IJoin,
     JoinFromTupleCallback,
     JoinFromTupleOfCallback,
     JoinToTupleCallback,
     MatchesJoinFromTuple,
-    ToNullableJoinTuple,
-    ReplaceColumnOfJoinTuple
+    ToNullableJoins,
+    ReplaceColumnOfJoins,
+    JoinReferences,
+    JoinsLength
 } from "./join";
-import {Tuple, TuplePush, TupleConcat} from "./tuple";
+import {Tuple, TupleConcat} from "./tuple";
 import {AliasedTable, AnyAliasedTable} from "./aliased-table";
 import {IColumn, AnyColumn} from "./column";
 import {TableAlias, TableToReference, TableToColumnUnion} from "./table-operation";
@@ -23,7 +24,7 @@ import {
     SelectTupleToReferences,
     AnySelectTupleElement,
     ReplaceColumnOfSelectTuple,
-    JoinTupleToSelectTuple
+    JoinsToSelectTuple
 } from "./select";
 import {GroupByCallback} from "./group-by";
 import {HavingCallback} from "./having";
@@ -127,7 +128,7 @@ export interface AnySelectBuilderData {
     //Modified by WHERE clause
     readonly columnReferences : ColumnReferences,
     //Modified by JOIN clauses
-    readonly joins : Tuple<AnyJoin>,
+    readonly joins : JoinReferences,
 
     readonly selectReferences : ColumnReferences,
     readonly selectTuple : undefined|Tuple<AnySelectTupleElement>,
@@ -172,15 +173,16 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                 TableToReference<ToTableT>
                             ),
                             joins : (
-                                TuplePush<
-                                    DataT["joins"],
-                                    Join<
+                                DataT["joins"] &
+                                {
+                                    [alias in ToTableT["alias"]] : IJoin<
                                         "INNER",
+                                        JoinsLength<DataT["joins"]>,
                                         ToTableT,
                                         TableToReference<ToTableT>,
                                         false
                                     >
-                                >
+                                }
                             ),
                             selectReferences : DataT["selectReferences"],
                             selectTuple : DataT["selectTuple"],
@@ -196,7 +198,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                             ),
                             __selectReferencesColumns : (
                                 DataT["__selectReferencesColumns"]
-                            )
+                            ),
                         }>
                     ) :
                     (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
@@ -206,6 +208,20 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         ToTableT extends AnyAliasedTable,
         FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"]>
     > (
+        this : ISelectBuilder<{
+            hasSelect : false,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
+        }>,
         toTable : ToTableT,
         from : FromTupleT,
         to : JoinToTupleCallback<ToTableT, JoinFromTupleOfCallback<FromTupleT>>
@@ -224,15 +240,16 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                 TableToReference<ToTableT>
                             ),
                             joins : (
-                                TuplePush<
-                                    ToNullableJoinTuple<DataT["joins"]>,
-                                    Join<
+                                ToNullableJoins<DataT["joins"]> &
+                                {
+                                    [tableAlias in ToTableT["alias"]] : IJoin<
                                         "RIGHT",
+                                        JoinsLength<DataT["joins"]>,
                                         ToTableT,
                                         TableToReference<ToTableT>,
                                         false
                                     >
-                                >
+                                }
                             ),
                             selectReferences : DataT["selectReferences"],
                             selectTuple : DataT["selectTuple"],
@@ -248,7 +265,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                             ),
                             __selectReferencesColumns : (
                                 DataT["__selectReferencesColumns"]
-                            )
+                            ),
                         }>
                     ) :
                     (MatchesJoinFromTuple<DataT["columnReferences"], JoinFromTupleOfCallback<FromTupleT>>|void)
@@ -276,15 +293,16 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                 ToNullableColumnReferences<TableToReference<ToTableT>>
                             ),
                             joins : (
-                                TuplePush<
-                                    DataT["joins"],
-                                    Join<
+                                DataT["joins"] &
+                                {
+                                    [tableAlias in ToTableT["alias"]] : IJoin<
                                         "LEFT",
+                                        JoinsLength<DataT["joins"]>,
                                         ToTableT,
                                         TableToReference<ToTableT>,
                                         true
                                     >
-                                >
+                                }
                             ),
                             selectReferences : DataT["selectReferences"],
                             selectTuple : DataT["selectTuple"],
@@ -312,6 +330,20 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
         ToTableT extends AnyAliasedTable,
         FromTupleT extends JoinFromTupleCallback<DataT["columnReferences"]>
     > (
+        this : ISelectBuilder<{
+            hasSelect : false,
+            hasUnion : any,
+            columnReferences : any,
+            joins : any,
+            selectReferences : any,
+            selectTuple : any,
+            //Has no effect on the query
+            aggregateCallback : any,
+
+            __columnReferencesColumns : any,
+            __joinAliases : any,
+            __selectReferencesColumns : any,
+        }>,
         toTable : ToTableT,
         from : FromTupleT
     ) : (
@@ -330,15 +362,16 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                     TableToReference<ToTableT>
                                 ),
                                 joins : (
-                                    TuplePush<
-                                        DataT["joins"],
-                                        Join<
+                                    DataT["joins"] &
+                                    {
+                                        [tableAlias in ToTableT["alias"]] : IJoin<
                                             "INNER",
+                                            JoinsLength<DataT["joins"]>,
                                             ToTableT,
                                             TableToReference<ToTableT>,
                                             false
                                         >
-                                    >
+                                    }
                                 ),
                                 selectReferences : DataT["selectReferences"],
                                 selectTuple : DataT["selectTuple"],
@@ -383,15 +416,16 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                     TableToReference<ToTableT>
                                 ),
                                 joins : (
-                                    TuplePush<
-                                        ToNullableJoinTuple<DataT["joins"]>,
-                                        Join<
+                                    ToNullableJoins<DataT["joins"]> &
+                                    {
+                                        [tableAlias in ToTableT["alias"]] : IJoin<
                                             "RIGHT",
+                                            JoinsLength<DataT["joins"]>,
                                             ToTableT,
                                             TableToReference<ToTableT>,
                                             false
                                         >
-                                    >
+                                    }
                                 ),
                                 selectReferences : DataT["selectReferences"],
                                 selectTuple : DataT["selectTuple"],
@@ -436,15 +470,16 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                                     ToNullableColumnReferences<TableToReference<ToTableT>>
                                 ),
                                 joins : (
-                                    TuplePush<
-                                        DataT["joins"],
-                                        Join<
+                                    DataT["joins"] &
+                                    {
+                                        [tableAlias in ToTableT["alias"]] : IJoin<
                                             "LEFT",
+                                            JoinsLength<DataT["joins"]>,
                                             ToTableT,
                                             TableToReference<ToTableT>,
                                             true
                                         >
-                                    >
+                                    }
                                 ),
                                 selectReferences : DataT["selectReferences"],
                                 selectTuple : DataT["selectTuple"],
@@ -497,7 +532,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     Exclude<TypeT, null|undefined>
                 >,
                 //TODO Narrow here, too
-                joins : ReplaceColumnOfJoinTuple<
+                joins : ReplaceColumnOfJoins<
                     DataT["joins"],
                     TableNameT,
                     NameT,
@@ -571,7 +606,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     null
                 >,
                 //TODO Narrow here, too
-                joins : ReplaceColumnOfJoinTuple<
+                joins : ReplaceColumnOfJoins<
                     DataT["joins"],
                     TableNameT,
                     NameT,
@@ -649,7 +684,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                     ConstT
                 >,
                 //TODO Narrow here, too
-                joins : ReplaceColumnOfJoinTuple<
+                joins : ReplaceColumnOfJoins<
                     DataT["joins"],
                     TableNameT,
                     NameT,
@@ -786,7 +821,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 columnReferences : DataT["columnReferences"],
                 joins : DataT["joins"],
                 selectReferences : DataT["columnReferences"],
-                selectTuple : JoinTupleToSelectTuple<DataT["joins"]>,
+                selectTuple : JoinsToSelectTuple<DataT["joins"]>,
                 aggregateCallback : DataT["aggregateCallback"],
 
                 __columnReferencesColumns : (
@@ -883,7 +918,7 @@ export interface ISelectBuilder<DataT extends AnySelectBuilderData> extends Quer
                 hasUnion : DataT["hasUnion"],
                 columnReferences : DataT["columnReferences"],
                 //TODO Widen here, too
-                joins : ReplaceColumnOfJoinTuple<
+                joins : ReplaceColumnOfJoins<
                     DataT["joins"],
                     TableNameT,
                     NameT,
@@ -1270,7 +1305,9 @@ export type CreateSelectBuilderDelegate = (
             hasSelect : false,
             hasUnion : false,
             columnReferences : TableToReference<TableT>,
-            joins : [Join<"FROM", TableT, TableToReference<TableT>, false>],
+            joins : {
+                [tableAlias in TableT["alias"]] : IJoin<"FROM", 0, TableT, TableToReference<TableT>, false>
+            },
             selectReferences : {},
             selectTuple : undefined,
             aggregateCallback : undefined,
@@ -1300,7 +1337,9 @@ export type CreateSubSelectBuilderDelegate<
                 hasSelect : false,
                 hasUnion : false,
                 columnReferences : TableToReference<TableT> & ColumnReferencesT,
-                joins : [Join<"FROM", TableT, TableToReference<TableT>, false>],
+                joins : {
+                    [tableAlias in TableT["alias"]] : IJoin<"FROM", 0, TableT, TableToReference<TableT>, false>
+                },
                 selectReferences : {},
                 selectTuple : undefined,
                 aggregateCallback : undefined,

@@ -9,8 +9,8 @@ import {
 } from "./column-references-operation";
 import {IColumn, AnyColumn} from "./column";
 import {HasDuplicateColumn, ColumnToReference} from "./column-operation";
-import {AnyJoin} from "./join";
-import {TypeOf} from "./column-collection";
+import {AnyJoin, JoinReferences, JoinsIndices, JoinAtIndex, JoinsLength} from "./join";
+//import {TypeOf} from "./column-collection";
 
 export type SelectTupleElement<ColumnReferencesT extends ColumnReferences, ColumnReferencesColumnsT extends AnyColumn> = (
     (IColumnExpr<
@@ -238,39 +238,39 @@ export type JoinToSelect<JoinT extends AnyJoin> = (
     JoinT["nullable"] extends true ?
         (
             {
-                [name in Extract<keyof JoinT["columnReferences"], string>] : (
-                    JoinT["columnReferences"][name] extends IColumn<infer TableNameT, name, infer TypeT> ?
-                        IColumn<
-                            TableNameT,
-                            name,
-                            TypeT|null
-                        > :
-                        //Final attempt to infer the right type...
-                        IColumn<
-                            JoinT["table"]["alias"],
-                            name,
-                            TypeOf<JoinT["columnReferences"][name]>|null
-                        >
+                [tableAlias in Extract<keyof JoinT["columnReferences"], string>] : (
+                    {
+                        [name in Extract<keyof JoinT["columnReferences"][tableAlias], string>] : (
+                            JoinT["columnReferences"][tableAlias] extends IColumn<
+                                tableAlias,
+                                name,
+                                infer TypeT
+                            > ?
+                                IColumn<
+                                    tableAlias,
+                                    name,
+                                    TypeT|null
+                                > :
+                                never
+                        )
+                    }
                 )
-            }
+            }[Extract<keyof JoinT["columnReferences"], string>]
         ) :
         (
-            JoinT["columnReferences"]
+            JoinT["columnReferences"][keyof JoinT["columnReferences"]]
         )
 );
-export type JoinTupleToSelectTuple<JoinTupleT extends Tuple<AnyJoin>> = (
-    JoinTupleT[TupleKeys<JoinTupleT>] extends AnyJoin ?
-        (
-            {
-                [index in TupleKeys<JoinTupleT>] : (
-                    JoinTupleT[index] extends AnyJoin ?
-                        JoinToSelect<JoinTupleT[index]> :
-                        never
-                )
-            } &
-            { "0" : JoinToSelect<JoinTupleT[0]> } &
-            { length : TupleLength<JoinTupleT> } &
-            JoinToSelect<JoinTupleT[TupleKeys<JoinTupleT>]>[]
-        ) :
-        (never)
+//TODO Implement __selectAllTuple,
+
+
+export type JoinsToSelectTuple<JoinsT extends JoinReferences> = (
+    {
+        [index in JoinsIndices<JoinsT>] : (
+            JoinToSelect<JoinAtIndex<JoinsT, index>>
+        )
+    } &
+    { "0" : JoinToSelect<JoinAtIndex<JoinsT, 0>> } &
+    { length : JoinsLength<JoinsT> } &
+    JoinToSelect<JoinsT[keyof JoinsT]>[]
 );

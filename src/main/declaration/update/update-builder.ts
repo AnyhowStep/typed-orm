@@ -5,9 +5,7 @@ import {ColumnOfReferences, ToPartialColumnReferences} from "../column-reference
 import * as mysql from "typed-mysql";
 import {Querify} from "../querify";
 import {RawExpr, IExpr, SelectBuilderValueQuery} from "../expr";
-import {Tuple} from "../tuple";
-import {AnyJoin, TableOfJoinTuple} from "../join";
-import {ITable} from "../table";
+import {JoinReferences} from "../join";
 
 export interface AnyUpdateBuilderData {
     readonly selectBuilder : AnySelectBuilder;
@@ -21,11 +19,11 @@ export interface AnyUpdateBuilderData {
 }
 
 export type MutableKeys<
-    JoinTupleT extends Tuple<AnyJoin>,
+    JoinsT extends JoinReferences,
     TableNameT extends string
 > = (
-    TableOfJoinTuple<JoinTupleT, TableNameT> extends ITable<any, any, any, infer TableDataT> ?
-        keyof TableDataT["isMutable"] :
+    TableNameT extends keyof JoinsT ?
+        keyof JoinsT[TableNameT]["table"]["data"]["isMutable"] :
         never
 );
 

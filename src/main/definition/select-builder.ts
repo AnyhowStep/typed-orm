@@ -3,7 +3,7 @@ import * as sd from "schema-decorator";
 import {tableToReference} from "./table-operation";
 import * as tuple from "./tuple";
 import {spread, check} from "@anyhowstep/type-util";
-import {getJoinFrom, getJoinTo, toNullableJoinTuple, getJoinToUsingFrom, replaceColumnOfJoinTuple} from "./join";
+import {getJoinFrom, getJoinTo, toNullableJoinTuple, getJoinToUsingFrom, replaceColumnOfJoinTuple, Join} from "./join";
 import {toNullableColumnReferences, replaceColumnOfReference, combineReferences, columnReferencesToSchemaWithJoins} from "./column-references-operation";
 import {and} from "./expr-logical";
 import {isNull, isNotNull, eq} from "./expr-comparison";
@@ -94,14 +94,18 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                     this.data.columnReferences,
                     tableToReference(toTable)
                 ),
-                joins : tuple.push(this.data.joins, {
-                    joinType : "INNER",
-                    table : toTable,
-                    columnReferences : tableToReference(toTable),
-                    nullable : false,
-                    from : fromTuple,
-                    to : toTuple,
-                }),
+                joins : {
+                    ...this.data.joins,
+                    [toTable.alias] : new Join(
+                        "INNER",
+                        joinsLength(this.data.joins),
+                        toTable,
+                        tableToReference(toTable),
+                        false,
+                        fromTuple,
+                        toTuple
+                    )
+                },
             }
         ), this.extraData) as any;
     }
@@ -919,7 +923,7 @@ export class SelectBuilder<DataT extends d.AnySelectBuilderData> implements d.IS
                     this.data.columnReferences,
                     tableToReference(table)
                 ),
-                joins : [check<d.Join<"FROM", TableT, d.TableToReference<TableT>, false>>({
+                joins : [check<d.IJoin<"FROM", TableT, d.TableToReference<TableT>, false>>({
                     joinType : "FROM",
                     table : table,
                     columnReferences : tableToReference(table),
@@ -1386,14 +1390,17 @@ export function newCreateSelectBuilderDelegate (db : Database|ConnectedDatabase)
             hasSelect : false,
             hasUnion : false,
             columnReferences : tableToReference(table),
-            joins : [check<d.Join<"FROM", TableT, d.TableToReference<TableT>, false>>({
-                joinType : "FROM",
-                table : table,
-                columnReferences : tableToReference(table),
-                nullable : false,
-                from : undefined,
-                to : undefined,
-            })],
+            joins : {
+                [table.alias] : new Join(
+                    "FROM",
+                    0,
+                    table,
+                    tableToReference(table),
+                    false,
+                    [],
+                    [],
+                )
+            } as any,
             selectReferences : {},
             selectTuple : undefined,
             aggregateCallback : undefined,
