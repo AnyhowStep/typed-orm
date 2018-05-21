@@ -11,11 +11,8 @@ export type SelectDelegate<
         columnReferences : JoinCollectionUtil.ToConvenientColumnReferences<JoinsT>,
         selectBuilder : SelectBuilderT
     ) => (
-        TupleWiden<
-            Tuple<Select<
-                JoinCollectionUtil.ToColumnReferences<JoinsT>
-            >>,
-            AnySelect
-        >
+        Tuple<Select<
+            JoinCollectionUtil.ToColumnReferences<JoinsT>
+        >>
     )
 );

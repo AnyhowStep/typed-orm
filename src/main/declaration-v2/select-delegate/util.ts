@@ -1,6 +1,8 @@
 import {AnySelectBuilder} from "../select-builder";
 import {SelectDelegate} from "./select-delegate";
 import {JoinCollection, JoinCollectionUtil} from "../join-collection";
+import {TupleWiden} from "../tuple";
+import {AnySelect} from "../select";
 
 export namespace SelectDelegateUtil {
     export function execute<
@@ -12,9 +14,15 @@ export namespace SelectDelegateUtil {
         joins : JoinsT,
         selectDelegate : SelectDelegateT
     ) : (
-        ReturnType<SelectDelegateT>
+        TupleWiden<
+            ReturnType<SelectDelegateT>,
+            AnySelect
+        >
     ) {
-        const result : ReturnType<SelectDelegateT> = selectDelegate(
+        const result : TupleWiden<
+            ReturnType<SelectDelegateT>,
+            AnySelect
+        > = selectDelegate(
             JoinCollectionUtil.toConvenientColumnReferences(joins),
             selectBuilder
         ) as any;
