@@ -71,4 +71,50 @@ export namespace ColumnReferencesUtil {
         }
         return result;
     }
+
+    export type Merge<
+        RefA extends ColumnReferences,
+        RefB extends ColumnReferences
+    > = (
+        {
+            [tableAlias in (keyof RefA)|(keyof RefB)] : (
+                tableAlias extends keyof RefA ?
+                    (
+                        tableAlias extends keyof RefB ?
+                            ColumnCollectionUtil.Merge<RefA[tableAlias], RefB[tableAlias]> :
+                            RefA[tableAlias]
+                    ) :
+                    (
+                        tableAlias extends keyof RefB ?
+                            RefB[tableAlias] :
+                            never
+                    )
+            )
+        }
+    );
+    export function merge<
+        RefA extends ColumnReferences,
+        RefB extends ColumnReferences
+    > (
+        refA : RefA,
+        refB : RefB
+    ) : Merge<RefA, RefB> {
+        const result = {} as any;
+        for (let tableAlias in refA) {
+            if (refB.hasOwnProperty(tableAlias)) {
+                result[tableAlias] = ColumnCollectionUtil.merge(
+                    refA[tableAlias],
+                    refB[tableAlias]
+                );
+            } else {
+                result[tableAlias] = refA[tableAlias];
+            }
+        }
+        for (let tableAlias in refB) {
+            if (!refA.hasOwnProperty(tableAlias)) {
+                result[tableAlias] = refB[tableAlias];
+            }
+        }
+        return result;
+    }
 }

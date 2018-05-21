@@ -7,9 +7,12 @@ import {JoinToDelegate} from "./join-to-delegate";
 import {AnyAliasedTable} from "./aliased-table";
 import {ReplaceValue, ReplaceValue2} from "./obj-util";
 import {spread} from "@anyhowstep/type-util";
-import {Join} from "./join";
+import {Join, AnyJoin} from "./join";
 import {SelectCollection, SelectCollectionUtil} from "./select-collection";
 import {SelectDelegate} from "./select-delegate";
+import {ColumnCollectionUtil} from "./column-collection";
+import {FetchRow} from "./fetch-row";
+import {AggregateDelegate, AggregateDelegateUtil} from "./aggregate-delegate";
 
 export interface SelectBuilderData {
     readonly hasSelect : boolean,
@@ -19,7 +22,7 @@ export interface SelectBuilderData {
 
     readonly selects : undefined|SelectCollection,
 
-    //readonly aggregateCallback : undefined|((row : any) => Promise<any>),
+    readonly aggregateDelegate : undefined|AggregateDelegate<any>,
 }
 
 export class SelectBuilder<DataT extends SelectBuilderData> {
@@ -94,6 +97,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             hasUnion : any,
             joins : any,
             selects : any,
+            aggregateDelegate : any,
         }>,
         toTable : ToTableT,
         fromDelegate : FromDelegateT,
@@ -130,6 +134,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             hasUnion : any,
             joins : any,
             selects : any,
+            aggregateDelegate : any,
         }>,
         toTable : ToTableT,
         fromDelegate : FromDelegateT
@@ -257,6 +262,128 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             }
         )) as any;
     }
+    //Must be called before any other `SELECT` methods
+    //because it'll set the select clause to whatever is at the joins,
+    //We never want to overwrite the select clause, only append
+    selectAll (
+        this : SelectBuilder<{
+            hasSelect : false,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>
+    ) : (
+        SelectBuilder<ReplaceValue2<
+            DataT,
+            "selects",
+            SelectCollectionUtil.FromJoinCollection<DataT["joins"]>,
+            "hasSelect",
+            true
+        >>
+    ) {
+        return new SelectBuilder(spread(
+            this.data,
+            {
+                selects : SelectCollectionUtil.fromJoinCollection(this.data.joins)
+            }
+        )) as any;
+    }
+
+    replaceTable<
+        TableA extends AnyAliasedTable,
+        TableB extends AnyAliasedTable
+    > (
+        tableA : TableA,
+        tableB : TableB
+    ) : (
+        Error extends JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> ?
+            JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> :   
+            SelectBuilder<ReplaceValue<
+                DataT,
+                "joins",
+                JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB>
+            >>
+    ) {
+        const replaced = JoinCollectionUtil.replaceTable(this.data.joins, tableA, tableB);
+        return new SelectBuilder(spread(
+            this.data,
+            {
+                joins : replaced
+            }
+        )) as any;
+    }
+
+    aggregate<
+        AggregateDelegateT extends undefined|AggregateDelegate<
+            FetchRow<
+                DataT["joins"],
+                SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+            >
+        >
+    > (
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
+        aggregateDelegate : AggregateDelegateT
+    ) : (
+        SelectBuilder<ReplaceValue<
+            DataT,
+            "aggregateDelegate",
+            AggregateDelegateT
+        >>
+    ) {
+        return new SelectBuilder(spread(
+            this.data,
+            {
+                aggregateDelegate : aggregateDelegate
+            }
+        )) as any;
+    }
+
+    fetchAll(
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
+    ) : (
+        Promise<AggregateDelegateUtil.AggregatedRow<
+            FetchRow<
+                DataT["joins"],
+                SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+            >,
+            DataT["aggregateDelegate"]
+        >[]>
+    ) {
+        return null as any;
+    }
+    fetchOne(
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
+    ) : (
+        Promise<AggregateDelegateUtil.AggregatedRow<
+            FetchRow<
+                DataT["joins"],
+                SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+            >,
+            DataT["aggregateDelegate"]
+        >>
+        //Promise<SelectCollectionUtil.ToColumnReferences<DataT["selects"]>>
+    ) {
+        return null as any;
+    }
 }
 
 export type CreateSelectBuilderDelegate = (
@@ -272,7 +399,8 @@ export type CreateSelectBuilderDelegate = (
                     false
                 >
             ],
-            selects : undefined
+            selects : undefined,
+            aggregateDelegate : undefined,
         }>
     )
 );
@@ -283,6 +411,13 @@ import {AliasedTable} from "./aliased-table";
 import {TupleKeys} from "./tuple";
 
 declare const from : CreateSelectBuilderDelegate;
+declare const ofApp : AliasedTable<
+    "ofApp",
+    "ofApp",
+    {
+        appId : Column<"app", "appId", number>
+    }
+>;
 declare const app : AliasedTable<
     "app",
     "app",
@@ -311,19 +446,36 @@ declare const user : AliasedTable<
 from(app)
     .select(c => [c])
 
-const s = from(app)
+const a : typeof app extends typeof ofApp ? "yes" : "no";
+
+const s = from(ofApp)
     .rightJoinUsing(appKey, c=>[c.appId])
     .leftJoinUsing(user, c=>[c.appKey.appId])
+    .replaceTable(ofApp, app)
     .select((c) => {
-        return [c.app, c.appKey.appId]
+        return [c.ofApp, c.appKey.appId]
     })
-    .select((c) => {
-        return [c.user.appId];
-    });
+    .aggregate((row) => {
+        return {
+            ...row.ofApp,
+            //...row.appKey,
+            aggregated : true
+        }
+    })
+    .select((_c) => {
+        return [user.columns.appId];
+    })
+    .fetchOne()
+    .then((result) => {
+        result
+    })
+    //.selectAll();
 s.data.joins[0].columns
 s.data.joins[1].columns
 s.data.joins[2].columns
-s.data.selects
+s.data.selects.map((m) => {
+
+})
 const k : TupleKeys<typeof s.data.joins>;
 const k2 : TupleKeys<[1,2,3]>;
     //.join(app, c=>[c.appId], t=>[t.appId]);

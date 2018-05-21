@@ -1,5 +1,5 @@
 import {SelectCollection} from "./select-collection";
-//import {ColumnReferences} from "../column-references";
+import {ColumnReferencesUtil} from "../column-references";
 import {AnySelectBuilder} from "../select-builder";
 import {SelectDelegate, SelectDelegateUtil} from "../select-delegate";
 import {JoinCollection} from "../join-collection";
@@ -192,5 +192,63 @@ export namespace SelectCollectionUtil {
         AnySelect
     >>;
     const x : HasDuplicate<typeof m>*/
+    /*
+    str = [];
+    for (let i=0; i<20; ++i) {
+        str.push(`ToColumnReferencesImpl<SelectsT, "${i}">`);
+    }
+    str.join(` &\n                `);
+    */
+    export type ToColumnReferencesImpl<
+        SelectsT extends SelectCollection,
+        K extends string
+    > = (
+        K extends TupleKeys<SelectsT> ?
+            SelectUtil.ToColumnReferences<SelectsT[K]> :
+            {}
+    )
+    export type ToColumnReferences<
+        SelectsT extends SelectCollection|undefined
+    > = (
+        SelectsT extends SelectCollection ?
+            (
+                ToColumnReferencesImpl<SelectsT, "0"> &
+                ToColumnReferencesImpl<SelectsT, "1"> &
+                ToColumnReferencesImpl<SelectsT, "2"> &
+                ToColumnReferencesImpl<SelectsT, "3"> &
+                ToColumnReferencesImpl<SelectsT, "4"> &
+                ToColumnReferencesImpl<SelectsT, "5"> &
+                ToColumnReferencesImpl<SelectsT, "6"> &
+                ToColumnReferencesImpl<SelectsT, "7"> &
+                ToColumnReferencesImpl<SelectsT, "8"> &
+                ToColumnReferencesImpl<SelectsT, "9"> &
+                ToColumnReferencesImpl<SelectsT, "10"> &
+                ToColumnReferencesImpl<SelectsT, "11"> &
+                ToColumnReferencesImpl<SelectsT, "12"> &
+                ToColumnReferencesImpl<SelectsT, "13"> &
+                ToColumnReferencesImpl<SelectsT, "14"> &
+                ToColumnReferencesImpl<SelectsT, "15"> &
+                ToColumnReferencesImpl<SelectsT, "16"> &
+                ToColumnReferencesImpl<SelectsT, "17"> &
+                ToColumnReferencesImpl<SelectsT, "18"> &
+                ToColumnReferencesImpl<SelectsT, "19">
+            ) :
+            {}
+    );
+    export function toColumnReferences<
+        SelectsT extends SelectCollection|undefined
+    > (selects : SelectsT) : ToColumnReferences<SelectsT> {
+        if (selects == undefined) {
+            return {} as any;
+        }
+        let result = {} as any;
+        for (let s of (selects as any)) {
+            result = ColumnReferencesUtil.merge(
+                result,
+                SelectUtil.toColumnReferences(s)
+            );
+        }
+        return result;
+    }
 }
 

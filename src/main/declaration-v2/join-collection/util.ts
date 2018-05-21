@@ -1,9 +1,10 @@
+import * as sd from "schema-decorator";
 import {JoinCollection} from "./join-collection";
-import {TupleKeys, wPush, TupleWPush} from "../tuple";
+import {TupleKeys, TupleLength, wPush, TupleWPush} from "../tuple";
 import {ColumnCollectionUtil} from "../column-collection";
 import {JoinType, Join, AnyJoin, JoinUtil} from "../join";
-import {AnyColumn, ColumnTupleUtil} from "../column";
-import {AnyAliasedTable} from "../aliased-table";
+import {AnyColumn, ColumnTupleUtil, Column} from "../column";
+import {AnyAliasedTable, AliasedTableUtil} from "../aliased-table";
 import {JoinFromDelegate, JoinFromDelegateUtil} from "../join-from-delegate";
 import {JoinToDelegate, JoinToDelegateUtil} from "../join-to-delegate";
 import * as invalid from "../invalid";
@@ -50,14 +51,47 @@ export namespace JoinCollectionUtil {
     //Types with implementation
     export const push = wPush<AnyJoin>();
 
+    
+    export type NullableTableAlias<
+        JoinsT extends JoinCollection
+    > = (
+        {
+            [index in TupleKeys<JoinsT>] : (
+                JoinsT[index] extends AnyJoin ?
+                    (
+                        true extends JoinsT[index]["nullable"] ?
+                            JoinsT[index]["table"]["alias"] :
+                            never
+                    ) :
+                    never
+            )
+        }[TupleKeys<JoinsT>]
+    )
     //Needs to take the `nullable` status of the join into account...
     export type ToColumnReferences<
         JoinsT extends JoinCollection
     > = (
+        /*JoinsT[TupleKeys<JoinsT>] extends AnyJoin ?
+            (
+                {
+                    [tableAlias in Extract<NullableTableAlias<JoinsT>, string>] : (
+                        ColumnCollectionUtil.ToNullable<FindWithTableAlias<JoinsT, tableAlias>["columns"]>
+                    )
+                } &
+                {
+                    [tableAlias in Exclude<
+                        JoinsT[TupleKeys<JoinsT>]["table"]["alias"],
+                        NullableTableAlias<JoinsT>
+                    >] : (
+                        FindWithTableAlias<JoinsT, tableAlias>["columns"]
+                    )
+                }
+            ) :
+            never*/
         JoinsT[TupleKeys<JoinsT>] extends AnyJoin ?
             {
                 readonly [tableAlias in JoinsT[TupleKeys<JoinsT>]["table"]["alias"]] : (
-                    FindWithTableAlias<JoinsT, tableAlias>["nullable"] extends true ?
+                    true extends FindWithTableAlias<JoinsT, tableAlias>["nullable"] ?
                         ColumnCollectionUtil.ToNullable<FindWithTableAlias<JoinsT, tableAlias>["columns"]> :
                         FindWithTableAlias<JoinsT, tableAlias>["columns"]
                 )
@@ -474,5 +508,148 @@ export namespace JoinCollectionUtil {
                 )
             );
         });
+    }
+
+    export type IsReplaceableBy<
+        JoinsT extends JoinCollection,
+        TableA extends AnyAliasedTable,
+        TableB extends AnyAliasedTable
+    > = (
+        FindWithTableAlias<JoinsT, TableA["alias"]> extends never ?
+            //A's alias does not exist
+            false :
+            (
+                true extends AliasedTableUtil.IsReplaceableBy<TableA, TableB> ?
+                    (
+                        true extends ColumnCollectionUtil.IsReplaceableBy<
+                            FindWithTableAlias<JoinsT, TableA["alias"]>["columns"],
+                            TableB["columns"]
+                        > ?
+                            (true) :
+                            //The column cannot be replaced
+                            (false)
+                    ) :
+                    //'A' cannot be replaced by 'B'
+                    false
+            )
+    )
+    export function isReplaceableBy<
+        JoinsT extends JoinCollection,
+        TableA extends AnyAliasedTable,
+        TableB extends AnyAliasedTable
+    > (
+        joins : JoinsT,
+        tableA : TableA,
+        tableB : TableB
+    ) : (IsReplaceableBy<JoinsT, TableA, TableB>) {
+        const join = joins.find(join => join.table == tableA);
+        if (join == undefined) {
+            return false as any;
+        }
+        if (!AliasedTableUtil.isReplaceableBy(tableA, tableB)) {
+            return false as any;
+        }
+        if (!ColumnCollectionUtil.isReplaceableBy(join.columns, tableB.columns)) {
+            return false as any;
+        }
+        return true as any;
+    };
+
+    export type ReplaceJoinUnsafe<
+        JoinT extends AnyJoin,
+        TableA extends AnyAliasedTable,
+        TableB extends AnyAliasedTable
+    > = (
+        JoinT["table"] extends TableA ?
+            Join<
+                AliasedTableUtil.As<TableB, JoinT["table"]["alias"]>,
+                ColumnCollectionUtil.AndType<
+                    AliasedTableUtil.As<TableB, JoinT["table"]["alias"]>["columns"],
+                    JoinT["columns"]
+                >,
+                JoinT["nullable"]
+            > :
+            //Not the replacement target
+            JoinT
+    );
+    export type ReplaceTableUnsafe<
+        JoinsT extends JoinCollection,
+        TableA extends AnyAliasedTable,
+        TableB extends AnyAliasedTable
+    > = (
+        {
+            [index in TupleKeys<JoinsT>] : (
+                JoinsT[index] extends AnyJoin ?
+                    ReplaceJoinUnsafe<
+                        JoinsT[index],
+                        TableA,
+                        TableB
+                    > :
+                    never
+            )
+        } &
+        {
+            "0" : (
+                ReplaceJoinUnsafe<
+                    JoinsT[0],
+                    TableA,
+                    TableB
+                >
+            ),
+            length : TupleLength<JoinsT>
+        } &
+        AnyJoin[]
+    );
+    export type ReplaceTable<
+        JoinsT extends JoinCollection,
+        TableA extends AnyAliasedTable,
+        TableB extends AnyAliasedTable
+    > = (
+        true extends IsReplaceableBy<JoinsT, TableA, TableB> ?
+            (
+                ReplaceTableUnsafe<JoinsT, TableA, TableB>
+            ) :
+            invalid.E4<
+                "Table", TableA,
+                "is not replaceable by table", TableB
+            >
+    );
+    export function replaceTable<
+        JoinsT extends JoinCollection,
+        TableA extends AnyAliasedTable,
+        TableB extends AnyAliasedTable
+    > (
+        joins : JoinsT,
+        tableA : TableA,
+        tableB : TableB
+    ) : (
+        ReplaceTable<JoinsT, TableA, TableB>
+    ) {
+        assertNonDuplicateTableAlias(joins, tableB.alias);
+
+        if (!AliasedTableUtil.isReplaceableBy(tableA, tableB)) {
+            throw new Error(`Cannot replace ${tableA.alias} with ${tableB.alias}`);
+        }
+        return joins.map((join) => {
+            if (join.table == tableA) {
+                const aliasedB = AliasedTableUtil.as(tableB, tableA.alias);
+                return new Join(
+                    join.joinType,
+                    aliasedB,
+                    ColumnCollectionUtil.andType(
+                        aliasedB.columns,
+                        join.columns
+                    ),
+                    join.nullable,
+                    //With this, we are potentially comparing
+                    //columns of different data types...
+                    //TODO Fix? Might be undesirable?
+                    join.from,
+                    join.to
+                );
+            } else {
+                return join;
+            }
+        }) as any;
     }
 }

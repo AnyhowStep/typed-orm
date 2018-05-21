@@ -151,8 +151,11 @@ export type ColumnReferencesToSchemaWithJoins<
             //Optional tables
             {
                 [table in Exclude<
-                    Extract<Extract<keyof SelectReferencesT, string>,
-                    NullableJoinTableNames<JoinsT>>, "__expr"
+                    Extract<
+                        Extract<keyof SelectReferencesT, string>,
+                        NullableJoinTableNames<JoinsT>
+                    >,
+                    "__expr"
                 >]? : {
                     //Get the columnReferences of JoinTupleT[table]
                     [name in Extract<

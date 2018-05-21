@@ -1,6 +1,6 @@
 import {AnyAliasedTable} from "../aliased-table";
 import {AnyColumn} from "../column";
-import {ColumnCollection} from "../column-collection";
+import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
 
 export enum JoinType {
     FROM  = "FROM",
@@ -27,7 +27,6 @@ export class Join<
         readonly from : AnyColumn[],
         readonly to : AnyColumn[],
     ) {
-
     }
 }
 export type AnyJoin = Join<AnyAliasedTable, ColumnCollection, boolean>;
