@@ -2,10 +2,7 @@
 import {JoinCollection, JoinCollectionUtil} from "../join-collection";
 //import {SelectCollection} from "../select-collection";
 import {ColumnReferences} from "../column-references";
-
-export type IsUnionString<S extends string> = {
-    [str in S] : Exclude<S, str>
-}[S];
+import {IsOneStringLiteral} from "../string-util";
 
 //TODO Find a better name
 export type __ExprFetchRow<SelectReferencesT extends ColumnReferences> = (
@@ -108,8 +105,11 @@ export type FetchRow<
     JoinsT extends JoinCollection,
     SelectReferencesT extends ColumnReferences
 > = (
-    IsUnionString<Extract<keyof SelectReferencesT, string>> extends never ?
+    IsOneStringLiteral<Extract<keyof SelectReferencesT, string>> extends true ?
         SingleTableAliasFetchRow<JoinsT, SelectReferencesT> :
         MultiTableAliasFetchRow<JoinsT, SelectReferencesT>
 );
-export type AnyFetchRow = FetchRow<any, any>;
+export type AnyFetchRow = (
+    SingleTableAliasFetchRow<any, any> |
+    MultiTableAliasFetchRow<any, any>
+);

@@ -13,7 +13,34 @@ import {SelectDelegate} from "./select-delegate";
 import {ColumnCollectionUtil} from "./column-collection";
 import {FetchRow} from "./fetch-row";
 import {AggregateDelegate, AggregateDelegateUtil} from "./aggregate-delegate";
+import {TypeNarrowDelegate} from "./type-narrow-delegate";
+import {Column, AnyColumn} from "./column";
+import * as invalid from "./invalid";
+import {ColumnReferencesUtil, PartialColumnReferences} from "./column-references";
+import {WhereDelegate} from "./where-delegate";
+import {GroupByDelegate} from "./group-by-delegate";
+import {HavingDelegate} from "./having-delegate";
+import {OrderByDelegate} from "./order-by-delegate";
+import {TypeWidenDelegate} from "./type-widen-delegate";
+import * as sd from "schema-decorator";
+import {SelectUtil} from "./select";
+import {FetchValueCheck, FetchValueType} from "./fetch-value";
 
+//TODO Move elsewhere
+export interface RawPaginationArgs {
+    page? : number|null|undefined;
+    itemsPerPage? : number|null|undefined;
+}
+export interface PaginateInfo {
+    itemsFound : number,
+    pagesFound : number,
+    page : number,
+    itemsPerPage : number,
+}
+export interface PaginateResult<T> {
+    info : PaginateInfo,
+    rows : T[],
+}
 export interface SelectBuilderData {
     readonly hasSelect : boolean,
     readonly hasUnion : boolean,
@@ -212,9 +239,19 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             }
         )) as any;
     }
+
+    //Must be called before UNION because it will change the number of
+    //columns expected.
     select<
         SelectDelegateT extends SelectDelegate<SelectBuilder<DataT>, DataT["joins"]>
     > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasUnion : false,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
         selectDelegate : SelectDelegateT
     ) : (
         Error extends SelectCollectionUtil.AppendSelect<
@@ -251,7 +288,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             SelectDelegateT
         >(
             this.data.selects,
-            this,
+            this as any,
             this.data.joins,
             selectDelegate
         );
@@ -264,11 +301,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     }
     //Must be called before any other `SELECT` methods
     //because it'll set the select clause to whatever is at the joins,
-    //We never want to overwrite the select clause, only append
+    //We never want to overwrite the select clause, only append.
+    //Must be called before UNION because it will change the number of
+    //columns expected.
     selectAll (
         this : SelectBuilder<{
             hasSelect : false,
-            hasUnion : any,
+            hasUnion : false,
             joins : any,
             selects : any,
             aggregateDelegate : any,
@@ -380,7 +419,451 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             >,
             DataT["aggregateDelegate"]
         >>
-        //Promise<SelectCollectionUtil.ToColumnReferences<DataT["selects"]>>
+    ) {
+        return null as any;
+    }
+    fetchZeroOrOne(
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
+    ) : (
+        Promise<
+            undefined|
+            AggregateDelegateUtil.AggregatedRow<
+                FetchRow<
+                    DataT["joins"],
+                    SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+                >,
+                DataT["aggregateDelegate"]
+            >
+        >
+    ) {
+        return null as any;
+    }
+
+    //TODO May not always work if GROUP BY, HAVING clauses use a select-expression,
+    //TODO May not work as intended with UNION selects
+    //Maybe just unset UNION LIMIT, or LIMIT
+    count () : Promise<number> {
+        return null as any;
+    }
+
+    exists () : Promise<boolean> {
+        return null as any;
+    }
+
+    //Uses count() internally
+    paginate (
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
+        paginationArgs? : RawPaginationArgs
+    ) : (
+        Promise<PaginateResult<
+            AggregateDelegateUtil.AggregatedRow<
+                FetchRow<
+                    DataT["joins"],
+                    SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+                >,
+                DataT["aggregateDelegate"]
+            >
+        >>
+    ) {
+        return null as any;
+    }
+
+    fetchValue (
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>
+    ) : (
+        FetchValueCheck<DataT, Promise<FetchValueType<DataT>>>
+    ) {
+        return null as any;
+    }
+    fetchValueOrUndefined (
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>
+    ) : (
+        FetchValueCheck<DataT, Promise<undefined|FetchValueType<DataT>>>
+    ) {
+        return null as any;
+    }
+    fetchValueArray (
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>
+    ) : (
+        FetchValueCheck<DataT, Promise<FetchValueType<DataT>[]>>
+    ) {
+        return null as any;
+    }
+
+
+    //Narrowing is only allowed before UNION
+    //because columns of the UNION may require
+    //a data type that could become disallowed by narrowing.
+    //Cannot un-narrow; should not be allowed to un-narrow,
+    //other expressions may rely on the narrowed type
+    whereIsNotNull<
+        TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasUnion : false,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
+        typeNarrowDelegate : TypeNarrowDelegateT
+    ) : (
+        ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
+            SelectBuilder<ReplaceValue2<
+                DataT,
+                "joins",
+                JoinCollectionUtil.ReplaceColumnType<
+                    DataT["joins"],
+                    TableAliasT,
+                    ColumnNameT,
+                    Exclude<
+                        TypeT,
+                        null|undefined
+                    >
+                >,
+                "selects",
+                SelectCollectionUtil.ReplaceSelectType<
+                    DataT["selects"],
+                    TableAliasT,
+                    ColumnNameT,
+                    Exclude<
+                        TypeT,
+                        null|undefined
+                    >
+                >
+            >> :
+            (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
+    ) {
+        return null as any;
+    };
+    whereIsNull<
+        TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasUnion : false,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
+        typeNarrowDelegate : TypeNarrowDelegateT
+    ) : (
+        ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
+            SelectBuilder<ReplaceValue2<
+                DataT,
+                "joins",
+                JoinCollectionUtil.ReplaceColumnType<
+                    DataT["joins"],
+                    TableAliasT,
+                    ColumnNameT,
+                    null
+                >,
+                "selects",
+                SelectCollectionUtil.ReplaceSelectType<
+                    DataT["selects"],
+                    TableAliasT,
+                    ColumnNameT,
+                    null
+                >
+            >> :
+            (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
+    ) {
+        return null as any;
+    };
+    whereIsEqual<
+        TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>,
+        ConstT extends boolean|number|string
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasUnion : false,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
+        typeNarrowDelegate : TypeNarrowDelegateT,
+        value : ConstT
+    ) : (
+        ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
+            SelectBuilder<ReplaceValue2<
+                DataT,
+                "joins",
+                JoinCollectionUtil.ReplaceColumnType<
+                    DataT["joins"],
+                    TableAliasT,
+                    ColumnNameT,
+                    ConstT
+                >,
+                "selects",
+                SelectCollectionUtil.ReplaceSelectType<
+                    DataT["selects"],
+                    TableAliasT,
+                    ColumnNameT,
+                    ConstT
+                >
+            >> :
+            (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
+    ) {
+        return null as any;
+    };
+
+    //WHERE CLAUSE
+    //Replaces but ANDs with NARROW
+    where<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>> (
+        whereDelegate : WhereDelegateT
+    ) : SelectBuilder<DataT> {
+        return null as any;
+    }
+    //Appends
+    andWhere<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>> (
+        whereDelegate : WhereDelegateT
+    ) : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //DISTINCT CLAUSE
+    distinct (distinct? : boolean) : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //SQL_CALC_FOUND_ROWS CLAUSE
+    sqlCalcFoundRows (sqlCalcFoundRows? : boolean) : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //GROUP BY CLAUSE
+    //Replaces
+    groupBy<GroupByDelegateT extends GroupByDelegate<SelectBuilder<DataT>>> (
+        groupByDelegate : GroupByDelegateT
+    ) : SelectBuilder<DataT> {
+        return null as any;
+    }
+    //Appends
+    appendGroupBy<GroupByDelegateT extends GroupByDelegate<SelectBuilder<DataT>>> (
+        groupByDelegate : GroupByDelegateT
+    ) : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //REMOVES GROUP BY
+    unsetGroupBy () : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //HAVING CLAUSE
+    //TECHNICALLY, can only use columns in GROUP BY, or columns in aggregate functions,
+    //But MySQL supports an extension that allows columns from SELECT
+    //As such, this library does not check for valid columns here
+    //As long as it is in columnReferences or selectReferences.
+
+    //Replaces
+    having<HavingDelegateT extends HavingDelegate<SelectBuilder<DataT>>> (
+        havingDelegate : HavingDelegateT
+    ) : SelectBuilder<DataT> {
+        return null as any;
+    }
+    //Appends
+    andHaving<HavingDelegateT extends HavingDelegate<SelectBuilder<DataT>>> (
+        havingDelegateT : HavingDelegateT
+    ) : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //ORDER BY CLAUSE
+    //Replaces
+    orderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
+        orderByDelegate : OrderByDelegateT
+    ) : SelectBuilder<DataT> {
+        return null as any;
+    }
+    //Appends
+    appendOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
+        orderByDelegate : OrderByDelegateT
+    ) : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //REMOVES ORDER BY
+    unsetOrderBy () : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //LIMIT CLAUSE
+    limit (rowCount : number) : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //OFFSET CLAUSE
+    offset (offset : number) : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //REMOVES LIMIT
+    unsetLimit () : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //UNION ORDER BY CLAUSE
+    //Replaces
+    unionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
+        orderByDelegate : OrderByDelegateT
+    ) : SelectBuilder<DataT> {
+        return null as any;
+    }
+    //Appends
+    appendUnionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
+        orderByDelegate : OrderByDelegateT
+    ) : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //UNION REMOVES ORDER BY
+    unsetUnionOrderBy () : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //UNION LIMIT CLAUSE
+    unionLimit (rowCount : number) : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //UNION OFFSET CLAUSE
+    unionOffset (offset : number) : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //UNION REMOVES LIMIT
+    unsetUnionLimit () : SelectBuilder<DataT> {
+        return null as any;
+    }
+
+    //Must be done after select or there will be no columns to widen.
+    //Must be done before `aggregate()` because
+    //it'll make the data type wider than `aggregate()` expects.
+    widen<
+        TypeWidenDelegateT extends TypeWidenDelegate<DataT["selects"]>,
+        WidenT
+    > (
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : undefined,
+        }>,
+        typeWidenDelegate : TypeWidenDelegateT,
+        assertWidened : sd.AssertFunc<WidenT>
+    ) : (
+        ReturnType<TypeWidenDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
+            SelectBuilder<ReplaceValue2<
+                DataT,
+                "joins",
+                JoinCollectionUtil.ReplaceColumnType<
+                    DataT["joins"],
+                    TableAliasT,
+                    ColumnNameT,
+                    WidenT|TypeT
+                >,
+                "selects",
+                SelectCollectionUtil.ReplaceSelectType<
+                    DataT["selects"],
+                    TableAliasT,
+                    ColumnNameT,
+                    WidenT|TypeT
+                >
+            >> :
+            (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeWidenDelegateT>>)
+    ) {
+        return null as any;
+    };
+
+    //UNION CLAUSE
+    union<
+        TargetT extends SelectBuilder<{
+            //Must have columns selected to be a union target
+            hasSelect : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>
+    > (
+        this : SelectBuilder<{
+            //Must have columns to know how many columns,
+            //And what data types are required
+            hasSelect : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : undefined,
+        }>,
+        target : TargetT
+    ) : (
+        TargetT extends SelectBuilder<infer TargetDataT> ?
+            (
+                TargetDataT["selects"] extends SelectCollection ?
+                    (
+                        DataT["selects"] extends SelectCollection ?
+                            (
+                                //Run-time check impossible for now
+                                SelectCollectionUtil.HasCompatibleTypes<
+                                    TargetDataT["selects"],
+                                    DataT["selects"]
+                                > extends true ?
+                                    (
+                                        SelectBuilder<DataT>
+                                    ) :
+                                    invalid.E4<
+                                        "Target SELECT clause",
+                                        SelectCollectionUtil.MapToTypes<TargetDataT["selects"]>,
+                                        "is not compatible with",
+                                        SelectCollectionUtil.MapToTypes<DataT["selects"]>
+                                    >
+                            ) :
+                            invalid.E2<
+                                "Could not find SELECT clause",
+                                DataT["selects"]
+                            >
+                    ) :
+                    invalid.E2<
+                        "Union target does not have a SELECT clause",
+                        TargetDataT["selects"]
+                    >
+            ) :
+            invalid.E2<
+                "Invalid union target, or could not infer TargetDataT",
+                TargetT
+            >
     ) {
         return null as any;
     }
@@ -406,40 +889,43 @@ export type CreateSelectBuilderDelegate = (
 );
 export type AnySelectBuilder = SelectBuilder<any>;
 //////
-import {Column} from "./column";
+//import {Column} from "./column";
 import {AliasedTable} from "./aliased-table";
 import {TupleKeys} from "./tuple";
+import { InsertValueBuilder } from "../definition";
+import {AnySelect} from "./select";
 
 declare const from : CreateSelectBuilderDelegate;
 declare const ofApp : AliasedTable<
     "ofApp",
     "ofApp",
     {
-        appId : Column<"app", "appId", number>
+        readonly appId : Column<"app", "appId", number>
     }
 >;
 declare const app : AliasedTable<
     "app",
     "app",
     {
-        appId : Column<"app", "appId", number>,
-        name : Column<"app", "name", string>,
+        readonly appId : Column<"app", "appId", number>,
+        readonly name : Column<"app", "name", string>,
+        readonly ssoApiKey : Column<"app", "ssoApiKey", string|null>,
     }
 >;
 declare const appKey : AliasedTable<
     "appKey",
     "appKey",
     {
-        appId : Column<"appKey", "appId", number>,
-        key : Column<"appKey", "key", string>
+        readonly appId : Column<"appKey", "appId", number>,
+        readonly key : Column<"appKey", "key", string>
     }
 >;
 declare const user : AliasedTable<
     "user",
     "user",
     {
-        appId : Column<"user", "appId", number>,
-        externalUserId : Column<"user", "externalUserId", string>
+        readonly appId : Column<"user", "appId", number>,
+        readonly externalUserId : Column<"user", "externalUserId", string>
     }
 >;
 
@@ -448,6 +934,15 @@ from(app)
 
 const a : typeof app extends typeof ofApp ? "yes" : "no";
 
+const unionTarget = from(ofApp)
+    .rightJoinUsing(appKey, c=>[c.appId])
+    .leftJoinUsing(user, c=>[c.appKey.appId])
+    .select((c) => {
+        return [c.ofApp, c.appKey.appId]
+    })
+    .select((_c) => {
+        return [user.columns.appId];
+    });
 const s = from(ofApp)
     .rightJoinUsing(appKey, c=>[c.appId])
     .leftJoinUsing(user, c=>[c.appKey.appId])
@@ -455,20 +950,31 @@ const s = from(ofApp)
     .select((c) => {
         return [c.ofApp, c.appKey.appId]
     })
-    .aggregate((row) => {
+    //.whereIsNotNull(c => c.ofApp.ssoApiKey)
+    /*.aggregate((row) => {
         return {
             ...row.ofApp,
             //...row.appKey,
             aggregated : true
         }
-    })
+    })*/
     .select((_c) => {
         return [user.columns.appId];
     })
-    .fetchOne()
+    .union(unionTarget);//*/
+    /*.fetchOne()
     .then((result) => {
         result
-    })
+    })//*/
+    const fr : FetchRow<
+        typeof s["data"]["joins"],
+        SelectCollectionUtil.ToColumnReferences<typeof s["data"]["selects"]>
+    >
+    s.data.joins[1].columns.appId
+    const j2c : JoinCollectionUtil.Columns<typeof s["data"]["joins"]>
+    const j2cr : JoinCollectionUtil.ToColumnReferences<typeof s["data"]["joins"]>
+    const pj2cr : ColumnReferencesUtil.Partial<typeof j2cr> = null as any;
+    const pcr : PartialColumnReferences = pj2cr;
     //.selectAll();
 s.data.joins[0].columns
 s.data.joins[1].columns
@@ -479,3 +985,37 @@ s.data.selects.map((m) => {
 const k : TupleKeys<typeof s.data.joins>;
 const k2 : TupleKeys<[1,2,3]>;
     //.join(app, c=>[c.appId], t=>[t.appId]);
+
+const objW : {a:number, b:number} extends {a:number} ? "y" : "n";
+const type : number|string extends number ? "y" : "n";
+const ut_s_compat : SelectCollectionUtil.HasCompatibleTypes<
+    typeof unionTarget["data"]["selects"],
+    typeof s["data"]["selects"]
+>
+const ut_s_compat_per_sel : {
+    [index in TupleKeys<typeof unionTarget["data"]["selects"]>] : (
+        typeof unionTarget["data"]["selects"][index] extends AnySelect ?
+            (
+                index extends keyof typeof s["data"]["selects"] ?
+                    (
+                        typeof s["data"]["selects"][index] extends AnySelect ?
+                            (
+                                //[
+                                    SelectUtil.HasCompatibleTypes<
+                                        typeof unionTarget["data"]["selects"][index],
+                                        typeof s["data"]["selects"][index]
+                                    >/*,
+                                    SelectUtil.HasOneType<typeof unionTarget["data"]["selects"][index]>,
+                                    SelectUtil.HasOneType<typeof s["data"]["selects"][index]>
+                                ]//*/
+                            ) :
+                            false
+                    ) :
+                    //This shouldn't happen,
+                    //we already checked they have
+                    //the same length
+                    false
+            ) :
+            false
+    )
+}[TupleKeys<typeof unionTarget["data"]["selects"]>];

@@ -1,3 +1,4 @@
+import * as sd from "schema-decorator";
 import {SelectCollection} from "./select-collection";
 import {ColumnReferencesUtil} from "../column-references";
 import {AnySelectBuilder} from "../select-builder";
@@ -12,6 +13,15 @@ import * as invalid from "../invalid";
 import {AnyJoin} from "../join";
 
 export namespace SelectCollectionUtil {
+    export type Columns<SelectsT extends SelectCollection> = (
+        {
+            [index in TupleKeys<SelectsT>] : (
+                SelectsT[index] extends AnySelect ?
+                    SelectUtil.Columns<SelectsT[index]> :
+                    never
+            )
+        }[TupleKeys<SelectsT>]
+    );
     export type MapToColumns<
         SelectsT extends SelectCollection
     > = (
@@ -27,6 +37,65 @@ export namespace SelectCollectionUtil {
             length : TupleLength<SelectsT>
         } &
         AnyColumn[]
+    );
+    export type MapToTypes<
+        SelectsT extends SelectCollection
+    > = (
+        {
+            [index in TupleKeys<SelectsT>] : (
+                SelectsT[index] extends AnySelect ?
+                    SelectUtil.Types<SelectsT[index]> :
+                    never
+            )
+        } &
+        {
+            "0" : SelectUtil.Types<SelectsT[0]>,
+            length : TupleLength<SelectsT>
+        } &
+        any[]
+    );
+    export type HasCompatibleTypes<
+        SelectsA extends SelectCollection,
+        SelectsB extends SelectCollection
+    > = (
+        number extends SelectsA["length"] ?
+        //We want a number-literal,
+        //If SelectsA.length = number, then we can't be sure
+        //of the length of the collection
+        false :
+        number extends SelectsB["length"] ?
+        //We want a number-literal,
+        //If SelectsB.length = number, then we can't be sure
+        //of the length of the collection
+        false :
+        SelectsA["length"] extends SelectsB["length"] ?
+            (
+                {
+                    [index in TupleKeys<SelectsA>] : (
+                        SelectsA[index] extends AnySelect ?
+                            (
+                                index extends keyof SelectsB ?
+                                    (
+                                        SelectsB[index] extends AnySelect ?
+                                            (
+                                                SelectUtil.HasCompatibleTypes<
+                                                    SelectsA[index],
+                                                    SelectsB[index]
+                                                >
+                                            ) :
+                                            false
+                                    ) :
+                                    //This shouldn't happen,
+                                    //we already checked they have
+                                    //the same length
+                                    false
+                            ) :
+                            false
+                    )
+                }[TupleKeys<SelectsA>]
+            ) :
+            //Different lengths
+            false
     );
     export type HasDuplicate<
         SelectsT extends SelectCollection
@@ -250,5 +319,70 @@ export namespace SelectCollectionUtil {
         }
         return result;
     }
+
+    export type ReplaceSelectType<
+        SelectsT extends SelectCollection|undefined,
+        TableAliasT extends string,
+        ColumnNameT extends string,
+        NewTypeT
+    > = (
+        SelectsT extends SelectCollection ?
+            (
+                {
+                    [index in TupleKeys<SelectsT>] : (
+                        //SelectsT[index] extends AnySelect ?
+                            SelectUtil.ReplaceType<
+                                SelectsT[index],
+                                TableAliasT,
+                                ColumnNameT,
+                                NewTypeT
+                            > //:
+                            //never
+                    )
+                } &
+                {
+                    "0" : SelectUtil.ReplaceType<
+                        SelectsT[0],
+                        TableAliasT,
+                        ColumnNameT,
+                        NewTypeT
+                    >,
+                    length : TupleLength<SelectsT>
+                } &
+                AnySelect[]
+            ) :
+            undefined
+    );
+    export function replaceSelectType<
+        SelectsT extends SelectCollection|undefined,
+        TableAliasT extends string,
+        ColumnNameT extends string,
+        NewTypeT
+    > (
+        selects : SelectsT,
+        tableAlias : TableAliasT,
+        columnName : ColumnNameT,
+        newAssertDelegate : sd.AssertDelegate<NewTypeT>
+    ) : (
+        ReplaceSelectType<
+            SelectsT,
+            TableAliasT,
+            ColumnNameT,
+            NewTypeT
+        >
+    ) {
+        if (selects == undefined) {
+            return undefined as any;
+        } else {
+            return selects.map((select) => {
+                return SelectUtil.replaceType(
+                    select,
+                    tableAlias,
+                    columnName,
+                    newAssertDelegate
+                );
+            }) as any;
+        }
+    };
 }
 

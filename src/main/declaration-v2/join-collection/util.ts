@@ -47,6 +47,19 @@ export namespace JoinCollectionUtil {
             )
         }[TupleKeys<JoinsT>]
     );
+    export type NullableColumns<JoinsT extends JoinCollection> = (
+        {
+            [index in TupleKeys<JoinsT>] : (
+                JoinsT[index] extends AnyJoin ?
+                    ColumnCollectionUtil.Columns<
+                        ColumnCollectionUtil.ToNullable<
+                            JoinsT[index]["columns"]
+                        >
+                    > :
+                    never
+            )
+        }[TupleKeys<JoinsT>]
+    );
 
     //Types with implementation
     export const push = wPush<AnyJoin>();
@@ -112,6 +125,8 @@ export namespace JoinCollectionUtil {
         }, {} as any);
     }
 
+    //ColumnReferencesUtil.ToConvenient<> exists,
+    //TODO Maybe remove this one?
     export type ToConvenientColumnReferences<
         JoinsT extends JoinCollection
     > = (
@@ -652,4 +667,63 @@ export namespace JoinCollectionUtil {
             }
         }) as any;
     }
+
+    export type ReplaceColumnType<
+        JoinsT extends JoinCollection,
+        TableAliasT extends string,
+        ColumnNameT extends string,
+        NewTypeT
+    > = (
+        {
+            [index in TupleKeys<JoinsT>] : (
+                JoinsT[index] extends AnyJoin ?
+                    JoinUtil.ReplaceColumnType<
+                        JoinsT[index],
+                        TableAliasT,
+                        ColumnNameT,
+                        NewTypeT
+                    > :
+                    never
+            )
+        } &
+        {
+            "0" : (
+                JoinUtil.ReplaceColumnType<
+                    JoinsT[0],
+                    TableAliasT,
+                    ColumnNameT,
+                    NewTypeT
+                >
+            ),
+            length : TupleLength<JoinsT>
+        } &
+        AnyJoin[]
+    );
+    export function replaceColumnType<
+        JoinsT extends JoinCollection,
+        TableAliasT extends string,
+        ColumnNameT extends string,
+        NewTypeT
+    > (
+        joins : JoinsT,
+        tableAlias : TableAliasT,
+        columnName : ColumnNameT,
+        newAssertDelegate : sd.AssertDelegate<NewTypeT>
+    ) : (
+        ReplaceColumnType<
+            JoinsT,
+            TableAliasT,
+            ColumnNameT,
+            NewTypeT
+        >
+    ) {
+        return joins.map((join) => {
+            return JoinUtil.replaceColumnType(
+                join,
+                tableAlias,
+                columnName,
+                newAssertDelegate
+            );
+        }) as any;
+    };
 }

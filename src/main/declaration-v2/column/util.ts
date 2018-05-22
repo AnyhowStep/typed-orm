@@ -32,7 +32,7 @@ export namespace ColumnUtil {
             ReturnType<ColumnT["assertDelegate"]>
         >
     );
-    export function withTableAlias <
+    export function withTableAlias<
         ColumnT extends AnyColumn,
         NewTableAliasT extends string
     > (column : ColumnT, newTableAlias : NewTableAliasT) : (
@@ -42,6 +42,29 @@ export namespace ColumnUtil {
             newTableAlias,
             column.name,
             column.assertDelegate
+        );
+    }
+
+    export type WithType<
+        ColumnT extends AnyColumn,
+        NewTypeT
+    > = (
+        Column<
+            ColumnT["tableAlias"],
+            ColumnT["name"],
+            NewTypeT
+        >
+    );
+    export function withType<
+        ColumnT extends AnyColumn,
+        NewTypeT
+    > (
+        column : ColumnT, assertDelegate : sd.AssertDelegate<NewTypeT>
+    ) : WithType<ColumnT, NewTypeT> {
+        return new Column(
+            column.tableAlias,
+            column.name,
+            assertDelegate
         );
     }
 }

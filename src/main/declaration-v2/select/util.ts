@@ -1,8 +1,9 @@
+import * as sd from "schema-decorator";
 import {AnySelect} from "./select";
 //import {ColumnReferences, ColumnReferencesUtil} from "../column-references";
 import {AliasedExpr, AnyAliasedExpr, AliasedExprUtil} from "../aliased-expr";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
-import {Column, AnyColumn} from "../column";
+import {Column, AnyColumn, ColumnUtil} from "../column";
 import {AnyJoin, JoinUtil} from "../join";
 
 export namespace SelectUtil {
@@ -18,6 +19,75 @@ export namespace SelectUtil {
         SelectT :
 
         never
+    );
+    //HACK, Should be `extends AnySelect`
+    export type Types<SelectT extends any> = (
+        SelectT extends AnyAliasedExpr ?
+        ReturnType<SelectT["assertDelegate"]> :
+
+        SelectT extends ColumnCollection ?
+        ColumnCollectionUtil.Types<SelectT> :
+
+        SelectT extends AnyColumn ?
+        ReturnType<SelectT["assertDelegate"]> :
+
+        never
+    );
+    export type HasOneType<SelectT extends any> = (
+        SelectT extends AnyAliasedExpr ?
+        true :
+
+        SelectT extends ColumnCollection ?
+        ColumnCollectionUtil.HasOneType<SelectT> :
+
+        SelectT extends AnyColumn ?
+        true :
+
+        false
+    );
+    //HACK, Should be `extends AnySelect`
+    //"Compatible types" does not mean "Same types".
+    //SelectA's type just has to extend SelectB's type
+    export type HasCompatibleTypes<
+        SelectA extends any,
+        SelectB extends any,
+    > = (
+        HasOneType<SelectA> extends true ?
+            (
+                HasOneType<SelectB> extends true ?
+                    (
+                        //Both are multi-type
+                        //We need special logic for multi-type because,
+                        //{a:number, b:number} extends {a:number} is `true`.
+                        //Multi-type selects must have the same keys
+                        keyof SelectA extends keyof SelectB ?
+                            (
+                                keyof SelectB extends keyof SelectA ?
+                                    (
+                                        Types<SelectA> extends Types<SelectB> ?
+                                            true :
+                                            false
+                                    ) :
+                                    false
+                            ) :
+                            false
+                    ) :
+                    //A one-type select is incompatible with
+                    //a multi-type select
+                    false
+            ) :
+            (
+                HasOneType<SelectB> extends true ?
+                    //A one-type select is incompatible with
+                    //a multi-type select
+                    false :
+                    (
+                        //Both are one-type
+                        Types<SelectA> extends Types<SelectB> ?
+                            true :
+                            false
+                    )
+            )
     )
     //HACK, Should be `extends AnySelect`
     export type TableAlias<SelectT extends any> = (
@@ -113,6 +183,84 @@ export namespace SelectUtil {
             return {
                 [firstColumn.tableAlias] : select
             } as any;
+        } else {
+            throw new Error(`Unknown select; ${typeof select}`);
+        }
+    }
+
+    export type ReplaceType<
+        //HACK, should be `AnySelect`
+        SelectT extends any,
+        TableAliasT extends string,
+        ColumnNameT extends string,
+        NewTypeT
+    > = (
+        SelectT extends AliasedExpr<any, TableAliasT, ColumnNameT, any> ?
+        AliasedExprUtil.WithType<SelectT, NewTypeT> :
+        SelectT extends Column<TableAliasT, ColumnNameT, any> ?
+        ColumnUtil.WithType<SelectT, NewTypeT> :
+        SelectT extends ColumnCollection ?
+        ColumnCollectionUtil.ReplaceColumnType<
+            SelectT,
+            TableAliasT,
+            ColumnNameT,
+            NewTypeT
+        > :
+        //Now, we check if it's a valid Select at all
+        SelectT extends AnyAliasedExpr ?
+        SelectT :
+        SelectT extends AnyColumn ?
+        SelectT :
+        //Not even a select
+        never
+    );
+    export function replaceType<
+        SelectT extends AnySelect,
+        TableAliasT extends string,
+        ColumnNameT extends string,
+        NewTypeT
+    > (
+        select : SelectT,
+        tableAlias : TableAliasT,
+        columnName : ColumnNameT,
+        newAssertDelegate : sd.AssertDelegate<NewTypeT>
+    ) : (
+        ReplaceType<
+            SelectT,
+            TableAliasT,
+            ColumnNameT,
+            NewTypeT
+        >
+    ) {
+        if (select instanceof AliasedExpr) {
+            if (select.tableAlias == tableAlias && select.alias == columnName) {
+                return AliasedExprUtil.withType(
+                    select,
+                    newAssertDelegate
+                ) as any;
+            } else {
+                return select as any;
+            }
+        } else if (select instanceof Column) {
+            if (select.tableAlias == tableAlias && select.name == columnName) {
+                return ColumnUtil.withType(
+                    select,
+                    newAssertDelegate
+                ) as any;
+            } else {
+                return select as any;
+            }
+        } else if (select instanceof Object) {
+            return ColumnCollectionUtil.replaceColumnType(
+                //We're taking a risk, here...
+                //It could be any kind of object type
+                //A better way would be to have a ColumnCollection validation method
+                //TODO, such a method
+                select as any,
+                tableAlias,
+                columnName,
+                newAssertDelegate
+            ) as any;
         } else {
             throw new Error(`Unknown select; ${typeof select}`);
         }

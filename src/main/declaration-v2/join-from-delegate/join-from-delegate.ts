@@ -4,6 +4,9 @@ import {AnyColumn} from "../column";
 
 export type JoinFromDelegate<JoinsT extends JoinCollection> = (
     (columnReferences : JoinCollectionUtil.ToConvenientColumnReferences<JoinsT>) => (
-        TupleWiden<Tuple<JoinCollectionUtil.Columns<JoinsT>>, AnyColumn>
+        //We use NullableColumns because when using left/right joins,
+        //the columns can become `null`, and we still want to allow joining
+        //`null` with `int` columns
+        TupleWiden<Tuple<JoinCollectionUtil.NullableColumns<JoinsT>>, AnyColumn>
     )
 );

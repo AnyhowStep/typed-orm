@@ -6,7 +6,7 @@ export type ColumnReferences = {
     }
 };
 export type PartialColumnReferences = {
-    readonly [tableAlias : string] : {
-        readonly [columnName : string] : AnyColumn|undefined
+    readonly [tableAlias in string]? : {
+        readonly [columnName in string]? : (AnyColumn|undefined)
     }|undefined
 };

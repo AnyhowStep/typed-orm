@@ -3,11 +3,32 @@ import {ColumnCollection} from "./column-collection";
 import {Column, AnyColumn, ColumnUtil} from "../column";
 import {Tuple, TupleKeys} from "../tuple";
 import {spread} from "@anyhowstep/type-util";
+import {IsOneStringLiteral} from "../string-util";
 
 export namespace ColumnCollectionUtil {
     //Types only
     export type Columns<ColumnCollectionT extends ColumnCollection> = (
         ColumnCollectionT[keyof ColumnCollectionT]
+    );
+    export type HasOneType<ColumnCollectionT extends ColumnCollection> = (
+        IsOneStringLiteral<Extract<keyof ColumnCollectionT, string>> extends true ?
+            true :
+            false
+    );
+    export type Types<ColumnCollectionT extends ColumnCollection> = (
+        HasOneType<ColumnCollectionT> extends true ?
+            (
+                {
+                    [columnName in Extract<keyof ColumnCollectionT, string>] : (
+                        ReturnType<ColumnCollectionT[columnName]["assertDelegate"]>
+                    )
+                }[Extract<keyof ColumnCollectionT, string>]
+            ) :
+            {
+                [columnName in Extract<keyof ColumnCollectionT, string>] : (
+                    ReturnType<ColumnCollectionT[columnName]["assertDelegate"]>
+                )
+            }
     );
 
     //Types with implementation
@@ -157,13 +178,63 @@ export namespace ColumnCollectionUtil {
         }
         return result;
     };
+    export type ReplaceColumnType<
+        ColumnCollectionT extends ColumnCollection,
+        TableAliasT extends string,
+        ColumnNameT extends string,
+        NewTypeT
+    > = (
+        {
+            readonly [columnName in keyof ColumnCollectionT] : (
+                ColumnCollectionT[columnName] extends Column<TableAliasT, ColumnNameT, any> ?
+                    ColumnUtil.WithType<ColumnCollectionT[columnName], NewTypeT> :
+                    ColumnCollectionT[columnName]
+            )
+        }
+    );
+    export function replaceColumnType<
+        ColumnCollectionT extends ColumnCollection,
+        TableAliasT extends string,
+        ColumnNameT extends string,
+        NewTypeT
+    > (
+        columns : ColumnCollectionT,
+        tableAlias : TableAliasT,
+        columnName : ColumnNameT,
+        assertDelegate : sd.AssertDelegate<NewTypeT>
+    ) : (
+        ReplaceColumnType<
+            ColumnCollectionT,
+            TableAliasT,
+            ColumnNameT,
+            NewTypeT
+        >
+    ) {
+        if (!columns.hasOwnProperty(columnName)) {
+            //No change
+            return columns as any;
+        }
+        const column = columns[columnName];
+        if (column.tableAlias != tableAlias) {
+            //No change
+            return columns as any;
+        }
+        return spread(
+            columns,
+            {
+                [columnName] : ColumnUtil.withType(column, assertDelegate)
+            }
+        ) as any;
+    }
+
+    
 
     export type AndType<
         ColumnCollectionA extends ColumnCollection,
         ColumnCollectionB extends ColumnCollection
     > = (
         {
-            [columnName in keyof ColumnCollectionA] : (
+            readonly [columnName in Extract<keyof ColumnCollectionA, string>] : (
                 columnName extends keyof ColumnCollectionB ?
                     (
                         Column<
@@ -234,4 +305,6 @@ export namespace ColumnCollectionUtil {
             andType(columnsA, columnsB)
         ) as any;
     }
+
+
 }

@@ -1,4 +1,6 @@
+import * as sd from "schema-decorator";
 import {Join, AnyJoin} from "./join";
+import {ColumnCollectionUtil} from "../column-collection";
 
 export namespace JoinUtil {
     export type ToNullable<JoinT extends AnyJoin> = (
@@ -15,5 +17,63 @@ export namespace JoinUtil {
             join.from,
             join.to
         );
+    }
+
+    export type ReplaceColumnType<
+        JoinT extends AnyJoin,
+        TableAliasT extends string,
+        ColumnNameT extends string,
+        NewTypeT
+    > = (
+        JoinT["table"]["alias"] extends TableAliasT ?
+            (
+                Join<
+                    JoinT["table"],
+                    ColumnCollectionUtil.ReplaceColumnType<
+                        JoinT["columns"],
+                        TableAliasT,
+                        ColumnNameT,
+                        NewTypeT
+                    >,
+                    JoinT["nullable"]
+                >
+            ) :
+            JoinT
+    );
+    export function replaceColumnType<
+        JoinT extends AnyJoin,
+        TableAliasT extends string,
+        ColumnNameT extends string,
+        NewTypeT
+    > (
+        join : JoinT,
+        tableAlias : TableAliasT,
+        columnName : ColumnNameT,
+        newAssertDelegate : sd.AssertDelegate<NewTypeT>
+    ) : (
+        ReplaceColumnType<
+            JoinT,
+            TableAliasT,
+            ColumnNameT,
+            NewTypeT
+        >
+    ) {
+        if (join.table.alias == tableAlias) {
+            return new Join(
+                join.joinType,
+                join.table,
+                ColumnCollectionUtil.replaceColumnType(
+                    join.columns,
+                    tableAlias,
+                    columnName,
+                    newAssertDelegate
+                ),
+                join.nullable,
+                join.from,
+                join.to
+            ) as any;
+        } else {
+            return join as any;
+        }
     }
 }

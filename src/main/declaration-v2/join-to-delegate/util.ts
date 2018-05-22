@@ -42,7 +42,10 @@ export namespace JoinToDelegateUtil {
         FromT extends Tuple<AnyColumn>
     > = (
         ColumnCollectionUtil.HasColumns<
-            ToTableT["columns"],
+            //We convert the ToTableT columns to nullable
+            //because we want to allow joining `null` with `int`
+            //columns
+            ColumnCollectionUtil.ToNullable<ToTableT["columns"]>,
             ColumnTupleUtil.WithTableAlias<FromT, ToTableT["alias"]>
         > extends true ?
             ColumnTupleUtil.WithTableAlias<FromT, ToTableT["alias"]> :

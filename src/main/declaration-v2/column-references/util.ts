@@ -1,6 +1,7 @@
 import {Column, AnyColumn} from "../column";
 import {ColumnReferences} from "./column-references";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
+import {IsOneStringLiteral} from "../string-util";
 
 export namespace ColumnReferencesUtil {
     //Types only
@@ -35,8 +36,15 @@ export namespace ColumnReferencesUtil {
 
     export type Partial<RefT extends ColumnReferences> = (
         {
-            [tableAlias in keyof RefT]? : {
-                [columnName in keyof RefT[tableAlias]]? : RefT[tableAlias][columnName]
+            readonly [tableAlias in Extract<keyof RefT, string>]+? : {
+                readonly [columnName in Extract<keyof RefT[tableAlias], string>]+? : (
+                    RefT[tableAlias][columnName] extends AnyColumn ?
+                        //For some reason, adding `undefined` to this type causes it
+                        //to not be assignable to `PartialColumnReferences`
+                        //But the types are still the same
+                        (RefT[tableAlias][columnName]) :
+                        never
+                )
             }
         }
     )
@@ -76,19 +84,32 @@ export namespace ColumnReferencesUtil {
         RefA extends ColumnReferences,
         RefB extends ColumnReferences
     > = (
+        //Keys of A only
         {
-            [tableAlias in (keyof RefA)|(keyof RefB)] : (
-                tableAlias extends keyof RefA ?
+            readonly [tableAlias in Extract<Exclude<keyof RefA, keyof RefB>, string>] : (
+                RefA[tableAlias] extends ColumnCollection ?
+                    RefA[tableAlias] :
+                    never
+            )
+        } &
+        //Keys of B only
+        {
+            readonly [tableAlias in Extract<Exclude<keyof RefB, keyof RefA>, string>] : (
+                RefB[tableAlias] extends ColumnCollection ?
+                    RefB[tableAlias] :
+                    never
+            )
+        } &
+        //Keys of both
+        {
+            readonly [tableAlias in Extract<Extract<keyof RefA, keyof RefB>, string>] : (
+                RefA[tableAlias] extends ColumnCollection ?
                     (
-                        tableAlias extends keyof RefB ?
+                        RefB[tableAlias] extends ColumnCollection ?
                             ColumnCollectionUtil.Merge<RefA[tableAlias], RefB[tableAlias]> :
-                            RefA[tableAlias]
-                    ) :
-                    (
-                        tableAlias extends keyof RefB ?
-                            RefB[tableAlias] :
                             never
-                    )
+                    ) :
+                    never
             )
         }
     );
@@ -116,5 +137,26 @@ export namespace ColumnReferencesUtil {
             }
         }
         return result;
+    }
+
+    export type ToConvenient<RefT extends ColumnReferences> = (
+        IsOneStringLiteral<Extract<keyof RefT, string>> extends true ?
+            //There's only one table alias in RefT, we can make things more
+            //convenient and less verbose; gives us a column collection
+            RefT[Extract<keyof RefT, string>] :
+            //We need to keep the verbosity because
+            //it's possible for different tables to have the same column names
+            //with different data types
+            RefT
+    );
+    export function toConvenient<RefT extends ColumnReferences> (
+        ref : RefT
+    ) : ToConvenient<RefT> {
+        const keys = Object.keys(ref);
+        if (keys.length == 1) {
+            return ref[keys[0]] as any;
+        } else {
+            return ref as any;
+        }
     }
 }
