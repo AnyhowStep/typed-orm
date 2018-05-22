@@ -30,7 +30,17 @@ export namespace ColumnCollectionUtil {
                 )
             }
     );
-
+    export type ExcludeColumnNames<ColumnCollectionT extends ColumnCollection, ExcludeT extends string> = (
+        {
+            readonly [columnName in Exclude<
+                Extract<keyof ColumnCollectionT, string>,
+                ExcludeT
+            >] : (
+                ColumnCollectionT[columnName]
+            )
+        }
+    );
+    
     //Types with implementation
     export type HasColumn<
         ColumnCollectionT extends ColumnCollection,
@@ -70,6 +80,16 @@ export namespace ColumnCollectionUtil {
             column.tableAlias == other.tableAlias &&
             column.name == other.name
         ) as any;
+    }
+    export function assertHasColumn (columnCollection : ColumnCollection, column : AnyColumn) {
+        if (!ColumnCollectionUtil.hasColumn(columnCollection, column)) {
+            throw new Error(`Column ${column.tableAlias}.${column.name} does not exist in column collection`);
+        }
+    }
+    export function assertHasColumns (columnCollection : ColumnCollection, arr : AnyColumn[]) {
+        for (let i of arr) {
+            assertHasColumn(columnCollection, i);
+        }
     }
     export type HasColumns<
         ColumnCollectionT extends ColumnCollection,
@@ -307,4 +327,29 @@ export namespace ColumnCollectionUtil {
     }
 
 
+    export type NullableColumnNames<ColumnCollectionT extends ColumnCollection> = (
+        {
+            [name in Extract<keyof ColumnCollectionT, string>]: (
+                null extends ReturnType<ColumnCollectionT[name]["assertDelegate"]> ?
+                    name :
+                    never
+                );
+        }[Extract<keyof ColumnCollectionT, string>]
+    );
+    export function nullableColumnNames<ColumnCollectionT extends ColumnCollection> (
+        columnCollection : ColumnCollectionT
+    ) : NullableColumnNames<ColumnCollectionT>[] {
+        const result : string[] = [];
+        for (let name in columnCollection) {
+            if (columnCollection.hasOwnProperty(name)) {
+                try {
+                    columnCollection[name].assertDelegate("test-null", null);
+                    result.push(name);
+                } catch (_err) {
+                    //Do nothing
+                }
+            }
+        }
+        return result as any;
+    }
 }
