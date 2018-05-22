@@ -7,7 +7,7 @@ import {JoinToDelegate} from "./join-to-delegate";
 import {AnyAliasedTable} from "./aliased-table";
 import {ReplaceValue, ReplaceValue2} from "./obj-util";
 import {spread} from "@anyhowstep/type-util";
-import {Join, AnyJoin} from "./join";
+import {Join, JoinType} from "./join";
 import {SelectCollection, SelectCollectionUtil} from "./select-collection";
 import {SelectDelegate} from "./select-delegate";
 import {ColumnCollectionUtil} from "./column-collection";
@@ -43,6 +43,7 @@ export interface PaginateResult<T> {
 }
 export interface SelectBuilderData {
     readonly hasSelect : boolean,
+    readonly hasFrom : boolean,
     readonly hasUnion : boolean,
 
     readonly joins : JoinCollection,
@@ -52,6 +53,11 @@ export interface SelectBuilderData {
     readonly aggregateDelegate : undefined|AggregateDelegate<any>,
 }
 
+//TODO A proper table
+export const dummyFromTable : AnyAliasedTable = {
+    shouldHaveFromClause : true
+} as any;
+
 export class SelectBuilder<DataT extends SelectBuilderData> {
     readonly data : DataT;
 
@@ -59,10 +65,85 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         this.data = data;
     }
 
+    assertAfterFrom () {
+        if (!this.data.hasFrom) {
+            throw new Error(`Must be called after FROM clause`);
+        }
+    }
+    assertBeforeSelect () {
+        if (this.data.hasSelect) {
+            throw new Error(`Must be called before SELECT clause`);
+        }
+    }
+    assertAfterSelect () {
+        if (!this.data.hasSelect) {
+            throw new Error(`Must be called after SELECT clause`);
+        }
+    }
+    assertBeforeUnion () {
+        if (this.data.hasUnion) {
+            throw new Error(`Must be called before UNION clause`);
+        }
+    }
+
+    //Must be done before any JOINs, as per MySQL
+    from<ToTableT extends AnyAliasedTable> (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : false,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
+        toTable : ToTableT
+    ) : (
+        SelectBuilder<ReplaceValue2<
+            DataT,
+            "hasFrom",
+            true,
+            "joins",
+            [
+                Join<
+                    ToTableT,
+                    ToTableT["columns"],
+                    false
+                >
+            ]
+        >>
+    ) {
+        if (this.data.hasFrom) {
+            throw new Error(`FROM clause already exists`);
+        }
+        return new SelectBuilder(spread(
+            this.data,
+            {
+                hasFrom : true,
+                joins : [
+                    new Join(
+                        JoinType.FROM,
+                        toTable,
+                        toTable.columns,
+                        false,
+                        [],
+                        []
+                    )
+                ]
+            }
+        )) as any;
+    }
     join<
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<DataT["joins"]>
     > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
         toTable : ToTableT,
         fromDelegate : FromDelegateT,
         toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
@@ -75,6 +156,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                 JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT>
             >>
     ) {
+        this.assertAfterFrom();
         return new SelectBuilder(spread(
             this.data,
             {
@@ -91,6 +173,14 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<DataT["joins"]>
     > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
         toTable : ToTableT,
         fromDelegate : FromDelegateT
     ) : (
@@ -102,6 +192,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                 JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT>
             >>
     ) {
+        this.assertAfterFrom();
         return new SelectBuilder(spread(
             this.data,
             {
@@ -121,6 +212,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     > (
         this : SelectBuilder<{
             hasSelect : false,
+            hasFrom : true,
             hasUnion : any,
             joins : any,
             selects : any,
@@ -138,6 +230,8 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                 JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT>
             >>
     ) {
+        this.assertBeforeSelect();
+        this.assertAfterFrom();
         return new SelectBuilder(spread(
             this.data,
             {
@@ -158,6 +252,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     > (
         this : SelectBuilder<{
             hasSelect : false,
+            hasFrom : true,
             hasUnion : any,
             joins : any,
             selects : any,
@@ -174,6 +269,8 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                 JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT>
             >>
     ) {
+        this.assertBeforeSelect();
+        this.assertAfterFrom();
         return new SelectBuilder(spread(
             this.data,
             {
@@ -189,6 +286,14 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<DataT["joins"]>
     > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
         toTable : ToTableT,
         fromDelegate : FromDelegateT,
         toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
@@ -201,6 +306,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                 JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT>
             >>
     ) {
+        this.assertAfterFrom();
         return new SelectBuilder(spread(
             this.data,
             {
@@ -217,6 +323,14 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<DataT["joins"]>
     > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
         toTable : ToTableT,
         fromDelegate : FromDelegateT
     ) : (
@@ -228,6 +342,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                 JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT>
             >>
     ) {
+        this.assertAfterFrom();
         return new SelectBuilder(spread(
             this.data,
             {
@@ -247,6 +362,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     > (
         this : SelectBuilder<{
             hasSelect : any,
+            hasFrom : any,
             hasUnion : false,
             joins : any,
             selects : any,
@@ -281,6 +397,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                 >>
             )
     ) {
+        this.assertBeforeUnion();
         const selects = SelectCollectionUtil.appendSelect<
             DataT["selects"],
             SelectBuilder<DataT>,
@@ -302,11 +419,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     //Must be called before any other `SELECT` methods
     //because it'll set the select clause to whatever is at the joins,
     //We never want to overwrite the select clause, only append.
-    //Must be called before UNION because it will change the number of
+    //Must be called after `FROM` to have tables to select from.
+    //Must be called before `UNION` because it will change the number of
     //columns expected.
     selectAll (
         this : SelectBuilder<{
             hasSelect : false,
+            hasFrom : true,
             hasUnion : false,
             joins : any,
             selects : any,
@@ -321,6 +440,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             true
         >>
     ) {
+        this.assertBeforeSelect();
+        this.assertAfterFrom();
+        this.assertBeforeUnion();
         return new SelectBuilder(spread(
             this.data,
             {
@@ -329,10 +451,20 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         )) as any;
     }
 
+    //Must be called after `FROM`; makes no sense
+    //to replace tables if there aren't any...
     replaceTable<
         TableA extends AnyAliasedTable,
         TableB extends AnyAliasedTable
     > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
         tableA : TableA,
         tableB : TableB
     ) : (
@@ -344,6 +476,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                 JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB>
             >>
     ) {
+        this.assertAfterFrom();
         const replaced = JoinCollectionUtil.replaceTable(this.data.joins, tableA, tableB);
         return new SelectBuilder(spread(
             this.data,
@@ -353,6 +486,8 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         )) as any;
     }
 
+    //Must be called after `SELECT` or there will be
+    //no columns to aggregate...
     aggregate<
         AggregateDelegateT extends undefined|AggregateDelegate<
             FetchRow<
@@ -363,6 +498,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     > (
         this : SelectBuilder<{
             hasSelect : true,
+            hasFrom : any,
             hasUnion : any,
             joins : any,
             selects : any,
@@ -376,6 +512,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             AggregateDelegateT
         >>
     ) {
+        this.assertAfterSelect();
         return new SelectBuilder(spread(
             this.data,
             {
@@ -387,6 +524,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     fetchAll(
         this : SelectBuilder<{
             hasSelect : true,
+            hasFrom : any,
             hasUnion : any,
             joins : any,
             selects : any,
@@ -401,11 +539,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             DataT["aggregateDelegate"]
         >[]>
     ) {
+        this.assertAfterSelect();
         return null as any;
     }
     fetchOne(
         this : SelectBuilder<{
             hasSelect : true,
+            hasFrom : any,
             hasUnion : any,
             joins : any,
             selects : any,
@@ -420,11 +560,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             DataT["aggregateDelegate"]
         >>
     ) {
+        this.assertAfterSelect();
         return null as any;
     }
     fetchZeroOrOne(
         this : SelectBuilder<{
             hasSelect : true,
+            hasFrom : any,
             hasUnion : any,
             joins : any,
             selects : any,
@@ -442,17 +584,40 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             >
         >
     ) {
+        this.assertAfterSelect();
         return null as any;
     }
 
     //TODO May not always work if GROUP BY, HAVING clauses use a select-expression,
     //TODO May not work as intended with UNION selects
     //Maybe just unset UNION LIMIT, or LIMIT
-    count () : Promise<number> {
+    //Must be called after `FROM` or there will be no tables to count from
+    count (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>
+    ) : Promise<number> {
+        this.assertAfterSelect();
         return null as any;
     }
 
-    exists () : Promise<boolean> {
+    //Must be called after `FROM` or there will be no tables to check existence from
+    exists (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>
+    ) : Promise<boolean> {
+        this.assertAfterSelect();
         return null as any;
     }
 
@@ -460,6 +625,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     paginate (
         this : SelectBuilder<{
             hasSelect : true,
+            hasFrom : any,
             hasUnion : any,
             joins : any,
             selects : any,
@@ -477,12 +643,14 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             >
         >>
     ) {
+        this.assertAfterSelect();
         return null as any;
     }
 
     fetchValue (
         this : SelectBuilder<{
             hasSelect : true,
+            hasFrom : any,
             hasUnion : any,
             joins : any,
             selects : any,
@@ -491,11 +659,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     ) : (
         FetchValueCheck<DataT, Promise<FetchValueType<DataT>>>
     ) {
+        this.assertAfterSelect();
         return null as any;
     }
     fetchValueOrUndefined (
         this : SelectBuilder<{
             hasSelect : true,
+            hasFrom : any,
             hasUnion : any,
             joins : any,
             selects : any,
@@ -504,11 +674,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     ) : (
         FetchValueCheck<DataT, Promise<undefined|FetchValueType<DataT>>>
     ) {
+        this.assertAfterSelect();
         return null as any;
     }
     fetchValueArray (
         this : SelectBuilder<{
             hasSelect : true,
+            hasFrom : any,
             hasUnion : any,
             joins : any,
             selects : any,
@@ -517,6 +689,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     ) : (
         FetchValueCheck<DataT, Promise<FetchValueType<DataT>[]>>
     ) {
+        this.assertAfterSelect();
         return null as any;
     }
 
@@ -525,12 +698,15 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     //because columns of the UNION may require
     //a data type that could become disallowed by narrowing.
     //Cannot un-narrow; should not be allowed to un-narrow,
-    //other expressions may rely on the narrowed type
+    //other expressions may rely on the narrowed type.
+    //Must be called after `FROM` or there will be no columns
+    //to narrow.
     whereIsNotNull<
         TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>
     > (
         this : SelectBuilder<{
             hasSelect : any,
+            hasFrom : true,
             hasUnion : false,
             joins : any,
             selects : any,
@@ -564,6 +740,8 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             >> :
             (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
     ) {
+        this.assertAfterFrom();
+        this.assertBeforeUnion();
         return null as any;
     };
     whereIsNull<
@@ -571,6 +749,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     > (
         this : SelectBuilder<{
             hasSelect : any,
+            hasFrom : true,
             hasUnion : false,
             joins : any,
             selects : any,
@@ -598,6 +777,8 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             >> :
             (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
     ) {
+        this.assertAfterFrom();
+        this.assertBeforeUnion();
         return null as any;
     };
     whereIsEqual<
@@ -606,6 +787,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     > (
         this : SelectBuilder<{
             hasSelect : any,
+            hasFrom : true,
             hasUnion : false,
             joins : any,
             selects : any,
@@ -634,20 +816,41 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             >> :
             (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
     ) {
+        this.assertAfterFrom();
+        this.assertBeforeUnion();
         return null as any;
     };
 
     //WHERE CLAUSE
     //Replaces but ANDs with NARROW
+    //Must be called after `FROM` as per MySQL
     where<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>> (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
         whereDelegate : WhereDelegateT
     ) : SelectBuilder<DataT> {
+        this.assertAfterFrom();
         return null as any;
     }
     //Appends
     andWhere<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>> (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
         whereDelegate : WhereDelegateT
     ) : SelectBuilder<DataT> {
+        this.assertAfterFrom();
         return null as any;
     }
 
@@ -663,15 +866,34 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
 
     //GROUP BY CLAUSE
     //Replaces
+    //Must be called after `FROM` as per MySQL
     groupBy<GroupByDelegateT extends GroupByDelegate<SelectBuilder<DataT>>> (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
         groupByDelegate : GroupByDelegateT
     ) : SelectBuilder<DataT> {
+        this.assertAfterFrom();
         return null as any;
     }
     //Appends
     appendGroupBy<GroupByDelegateT extends GroupByDelegate<SelectBuilder<DataT>>> (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
         groupByDelegate : GroupByDelegateT
     ) : SelectBuilder<DataT> {
+        this.assertAfterFrom();
         return null as any;
     }
 
@@ -687,15 +909,34 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     //As long as it is in columnReferences or selectReferences.
 
     //Replaces
+    //Must be called after `FROM` as per MySQL
     having<HavingDelegateT extends HavingDelegate<SelectBuilder<DataT>>> (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
         havingDelegate : HavingDelegateT
     ) : SelectBuilder<DataT> {
+        this.assertAfterFrom();
         return null as any;
     }
     //Appends
     andHaving<HavingDelegateT extends HavingDelegate<SelectBuilder<DataT>>> (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
         havingDelegateT : HavingDelegateT
     ) : SelectBuilder<DataT> {
+        this.assertAfterFrom();
         return null as any;
     }
 
@@ -776,6 +1017,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     > (
         this : SelectBuilder<{
             hasSelect : true,
+            hasFrom : any,
             hasUnion : any,
             joins : any,
             selects : any,
@@ -804,14 +1046,17 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             >> :
             (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeWidenDelegateT>>)
     ) {
+        this.assertAfterSelect();
         return null as any;
     };
 
     //UNION CLAUSE
+    //Implicitly UNION DISTINCT
     union<
         TargetT extends SelectBuilder<{
             //Must have columns selected to be a union target
             hasSelect : true,
+            hasFrom : any,
             hasUnion : any,
             joins : any,
             selects : any,
@@ -822,12 +1067,15 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             //Must have columns to know how many columns,
             //And what data types are required
             hasSelect : true,
+            hasFrom : any,
             hasUnion : any,
             joins : any,
             selects : any,
             aggregateDelegate : undefined,
         }>,
-        target : TargetT
+        target : TargetT,
+        //Set to `false` to UNION ALL
+        distinct : boolean = true
     ) : (
         TargetT extends SelectBuilder<infer TargetDataT> ?
             (
@@ -865,21 +1113,25 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                 TargetT
             >
     ) {
+        this.assertAfterSelect();
         return null as any;
     }
 }
 
 export type CreateSelectBuilderDelegate = (
-    <TableT extends AnyAliasedTable>(from : TableT) => (
+    () => (
         SelectBuilder<{
             hasSelect : false,
+            hasFrom : false,
             hasUnion : false,
 
+            //This is just a dummy JOIN
+            //It will be replaced when the FROM clause is added
             joins : [
                 Join<
-                    TableT,
-                    TableT["columns"],
-                    false
+                    AnyAliasedTable,
+                    AnyAliasedTable["columns"],
+                    true
                 >
             ],
             selects : undefined,
@@ -895,7 +1147,13 @@ import {TupleKeys} from "./tuple";
 import { InsertValueBuilder } from "../definition";
 import {AnySelect} from "./select";
 
-declare const from : CreateSelectBuilderDelegate;
+declare const query : CreateSelectBuilderDelegate;
+const from = <ToTableT extends AnyAliasedTable>(
+    from : ToTableT
+) => {
+    return query().from(from);
+};
+
 declare const ofApp : AliasedTable<
     "ofApp",
     "ofApp",
