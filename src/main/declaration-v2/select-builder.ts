@@ -22,7 +22,7 @@ import {OrderByDelegate, OrderByDelegateUtil} from "./order-by-delegate";
 import {TypeWidenDelegate, TypeWidenDelegateUtil} from "./type-widen-delegate";
 import * as sd from "schema-decorator";
 import {FetchValueCheck, FetchValueType} from "./fetch-value";
-import {table} from "./table";
+import {table, AnyTable} from "./table";
 import {AnyGroupBy} from "./group-by";
 import {AnyOrderBy} from "./order-by";
 import {Expr} from "./expr";
@@ -34,6 +34,16 @@ import {AliasedExpr} from "./aliased-expr";
 import * as mysql from "typed-mysql";
 import {SubqueryTable} from "./subquery-table";
 import {RawExprUtil} from "./raw-expr";
+import {
+    UpdateBuilder,
+    UpdateAssignmentReferencesDelegate,
+    RawUpdateAssignmentReferences
+} from "./update-builder";
+import {
+    InsertAssignmentCollectionDelegate,
+    RawInsertSelectAssignmentCollection,
+    InsertSelectBuilder
+} from "./insert-select-builder";
 
 //TODO Move elsewhere
 export const ARBITRARY_ROW_COUNT = 999999999;
@@ -1970,6 +1980,63 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             throw new Error(`Invalid SELECT; must select a column or column expression`);
         }
         return RawExprUtil.toExpr(this).as(alias) as any;
+    }
+
+    //Convenience
+    insertInto<TableT extends AnyTable> (
+        table : TableT,
+        delegate : InsertAssignmentCollectionDelegate<TableT, SelectBuilder<DataT>>
+    ) : (
+        InsertSelectBuilder<
+            TableT,
+            SelectBuilder<DataT>,
+            RawInsertSelectAssignmentCollection<TableT, SelectBuilder<DataT>>,
+            "NORMAL"
+        >
+    ) {
+        return new InsertSelectBuilder(
+            table,
+            this,
+            undefined,
+            "NORMAL",
+            this.extraData.db
+        ).set(delegate as any) as any;
+    }
+    set (
+        this : SelectBuilder<{
+            hasSelect : false,
+            hasFrom : true,
+            hasUnion : false,
+
+            joins : any,
+
+            selects : undefined,
+
+            aggregateDelegate : any,
+        }>,
+        delegate : UpdateAssignmentReferencesDelegate<SelectBuilder<DataT>>
+    ) : (
+        UpdateBuilder<
+            SelectBuilder<{
+                hasSelect : false,
+                hasFrom : true,
+                hasUnion : false,
+    
+                joins : DataT["joins"],
+    
+                selects : undefined,
+    
+                aggregateDelegate : any,
+            }>,
+            RawUpdateAssignmentReferences<SelectBuilder<DataT>>
+        >
+    ) {
+        return new UpdateBuilder(
+            this,
+            undefined,
+            false,
+            this.extraData.db
+        ).set(delegate as any) as any;
     }
 }
 

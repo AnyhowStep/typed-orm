@@ -6,9 +6,32 @@ import {SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-buil
 import {Join, JoinType} from "./join";
 import {AnyAliasedTable} from "./aliased-table";;
 import {SelectDelegate} from "./select-delegate";
-import {AnyTable} from "./table";
+import {Table, AnyTable} from "./table";
 import {RawInsertValueRow, InsertValueBuilder} from "./insert-value-builder";
 import {InsertAssignmentCollectionDelegate, InsertSelectBuilder, RawInsertSelectAssignmentCollection} from "./insert-select-builder";
+import {UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate} from "./update-builder";
+import * as sd from "schema-decorator";
+import {WhereDelegate} from "./where-delegate";
+
+export type ConvenientUpdateSelectBuilder<TableT extends AnyTable> = (
+    SelectBuilder<{
+        hasSelect : false,
+        hasFrom : true,
+        hasUnion : false,
+
+        joins : [
+            Join<
+                TableT,
+                TableT["columns"],
+                false
+            >
+        ],
+
+        selects : undefined,
+
+        aggregateDelegate : undefined,
+    }>
+);
 
 export class PooledDatabase extends mysql.PooledDatabase {
     public allocate () {
@@ -110,6 +133,37 @@ export class PooledDatabase extends mysql.PooledDatabase {
             this
         ).set(delegate);
     };
+    update<
+        T extends mysql.QueryValues,
+        ConditionT extends mysql.QueryValues
+    >(
+        assertRow: sd.AssertFunc<T>,
+        assertCondition: sd.AssertFunc<ConditionT>,
+        table: string,
+        row: T,
+        condition: ConditionT
+    ): Promise<mysql.UpdateResult<T, ConditionT>>;
+    update <
+        TableT extends AnyTable
+    > (
+        table : TableT,
+        delegate : UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>,
+        where : WhereDelegate<ConvenientUpdateSelectBuilder<TableT>>
+    ) : (
+        UpdateBuilder<
+            ConvenientUpdateSelectBuilder<TableT>,
+            RawUpdateAssignmentReferences<ConvenientUpdateSelectBuilder<TableT>>
+        >
+    );
+    update (arg0 : any, arg1 : any, arg2 : any, arg3? : any, arg4? : any) : any {
+        if (arg0 instanceof Table) {
+            return this.from(arg0)
+                .where(arg2)
+                .set(arg1);
+        } else {
+            return super.update(arg0, arg1, arg2, arg3, arg4);
+        }
+    }
     /*
         Desired methods,
         //Basic query

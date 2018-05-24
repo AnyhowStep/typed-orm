@@ -37,6 +37,11 @@ export namespace JoinCollectionUtil {
             )
         }[TupleKeys<JoinsT>]
     );
+    export type TableAliases<JoinsT extends JoinCollection> = (
+        JoinsT[TupleKeys<JoinsT>] extends AnyJoin ?
+            JoinsT[TupleKeys<JoinsT>]["table"]["alias"] :
+            never
+    );
 
     export type Columns<JoinsT extends JoinCollection> = (
         {
