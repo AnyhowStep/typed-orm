@@ -1,4 +1,4 @@
-import {AnyTable} from "./table";
+import {AnyTable, TableUtil} from "./table";
 import {Querify} from "./querify";
 import {RawExprNoUsedRef} from "./raw-expr";
 import * as mysql from "typed-mysql";
@@ -7,19 +7,14 @@ import {StringBuilder} from "./StringBuilder";
 import {RawExprUtil} from "./raw-expr";
 import {PooledDatabase} from "./PooledDatabase";
 
-export type RawInsertRow<TableT extends AnyTable> = (
+export type RawInsertValueRow<TableT extends AnyTable> = (
     {
-        [name in Exclude<
-            Extract<keyof TableT["columns"], string>,
-            keyof TableT["data"]["hasDefaultValue"] |
-            keyof TableT["data"]["isGenerated"]
-        >] : RawExprNoUsedRef<ReturnType<TableT["columns"][name]["assertDelegate"]>>
+        [name in TableUtil.RequiredColumnNames<TableT>] : (
+            RawExprNoUsedRef<ReturnType<TableT["columns"][name]["assertDelegate"]>>
+        )
     } &
     {
-        [name in Exclude<
-            Extract<keyof TableT["data"]["hasDefaultValue"], string>,
-            keyof TableT["data"]["isGenerated"]
-        >]? : (
+        [name in TableUtil.OptionalColumnNames<TableT>]? : (
             RawExprNoUsedRef<ReturnType<TableT["columns"][name]["assertDelegate"]>>
         )
     }
@@ -27,7 +22,7 @@ export type RawInsertRow<TableT extends AnyTable> = (
 
 export class InsertValueBuilder<
     TableT extends AnyTable,
-    ValuesT extends undefined|(RawInsertRow<TableT>[]),
+    ValuesT extends undefined|(RawInsertValueRow<TableT>[]),
     InsertModeT extends "IGNORE"|"REPLACE"|"NORMAL"
 > implements Querify {
     public constructor (
@@ -63,32 +58,12 @@ export class InsertValueBuilder<
             this.db
         );
     }
-    private validateRow (row : RawInsertRow<TableT>) {
-        for (let name in row) {
-            if (!this.table.columns.hasOwnProperty(name)) {
-                throw new Error(`Unexpected column ${name}; it does not exist on table ${this.table.alias}`);
-            }
-            if (this.table.data.isGenerated.hasOwnProperty(name)) {
-                throw new Error(`Unexpected column ${name}; it is a generated column on table ${this.table.alias}, you cannot specify a value for it`);
-            }
-            const value = (row as any)[name];
-            if (value === undefined && !this.table.data.hasDefaultValue.hasOwnProperty(name)) {
-                throw new Error(`Expected a value for column ${name} on table ${this.table.alias}; received undefined`);
-            }
-            //If we specify a value, it better match our assertion
-            if (!(value instanceof Object) || (value instanceof Date)) {
-                (row as any)[name] = this.table.columns[name].assertDelegate(name, value) as any;
-            }
-        }
-    }
-    public value (...rows : RawInsertRow<TableT>[]) : InsertValueBuilder<
+    public value (...rows : RawInsertValueRow<TableT>[]) : InsertValueBuilder<
         TableT,
-        RawInsertRow<TableT>[],
+        RawInsertValueRow<TableT>[],
         InsertModeT
     > {
-        for (let row of rows) {
-            this.validateRow(row);
-        }
+        TableUtil.validateInsertRows(this.table, rows);
 
         return new InsertValueBuilder(
             this.table,
@@ -101,7 +76,7 @@ export class InsertValueBuilder<
     }
 
     public execute (
-        this : InsertValueBuilder<TableT, RawInsertRow<TableT>[], any>
+        this : InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], InsertModeT>
     ) : (
         Promise<
             mysql.MysqlInsertResult &
@@ -146,7 +121,8 @@ export class InsertValueBuilder<
 
     querify (sb : StringBuilder) {
         const columnNames = Object.keys(this.table.columns)
-            .filter(name => this.table.columns.hasOwnProperty(name));
+            .filter(name => this.table.columns.hasOwnProperty(name))
+            .filter(name => !this.table.data.isGenerated.hasOwnProperty(name));
 
         if (this.insertMode == "REPLACE") {
             sb.appendLine("REPLACE INTO");
@@ -170,7 +146,7 @@ export class InsertValueBuilder<
         sb.appendLine("VALUES");
         sb.scope((sb) => {
             if (this.values != undefined) {
-                const values = this.values as (RawInsertRow<TableT>[]);
+                const values = this.values as (RawInsertValueRow<TableT>[]);
                 sb.map(values, (sb, values) => {
                     //rows
                     sb.append("(");

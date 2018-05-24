@@ -1,6 +1,6 @@
-import {AliasedTable} from "./aliased-table";
-import {ColumnCollection, ColumnCollectionUtil} from "./column-collection";
-import {RawColumnCollection, RawColumnCollectionUtil} from "./raw-column-collection";
+import {AliasedTable} from "../aliased-table";
+import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
+import {RawColumnCollection, RawColumnCollectionUtil} from "../raw-column-collection";
 import {
     TableData,
     AutoIncrementDelegate,
@@ -8,7 +8,7 @@ import {
     HasDefaultValueDelegate,
     IsMutableDelegate,
     TableDataUtil
-} from "./table-data";
+} from "../table-data";
 
 export class Table<
     AliasT extends string,

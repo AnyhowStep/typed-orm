@@ -1,13 +1,14 @@
 import * as mysql from "typed-mysql";
 import {CreateSelectBuilderDelegate} from "./select-builder";
-import {SelectBuilder, __DUMMY_FROM_TABLE} from "./select-builder";
+import {SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-builder";
 //import {InsertSelectBuilder, InsertValueBuilder} from "./insert";
 //import {UpdateBuilder} from "./update";
 import {Join, JoinType} from "./join";
 import {AnyAliasedTable} from "./aliased-table";;
 import {SelectDelegate} from "./select-delegate";
 import {AnyTable} from "./table";
-import {RawInsertRow, InsertValueBuilder} from "./insert-value-builder";
+import {RawInsertValueRow, InsertValueBuilder} from "./insert-value-builder";
+import {InsertAssignmentCollectionDelegate, InsertSelectBuilder, RawInsertSelectAssignmentCollection} from "./insert-select-builder";
 
 export class PooledDatabase extends mysql.PooledDatabase {
     public allocate () {
@@ -77,15 +78,38 @@ export class PooledDatabase extends mysql.PooledDatabase {
 
     readonly insertValue = <TableT extends AnyTable>(
         table : TableT,
-        value : RawInsertRow<TableT>
-    ) : InsertValueBuilder<TableT, RawInsertRow<TableT>[], "NORMAL"> => {
+        value : RawInsertValueRow<TableT>
+    ) : InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], "NORMAL"> => {
         return new InsertValueBuilder(
             table,
             undefined,
             "NORMAL",
             this
         ).value(value);
-    }
+    };
+    readonly insertSelect = <
+        TableT extends AnyTable,
+        SelectBuilderT extends AnySelectBuilder
+    > (
+        table : TableT,
+        selectBuilder : SelectBuilderT,
+        delegate : InsertAssignmentCollectionDelegate<TableT, SelectBuilderT>
+    ) : (
+        InsertSelectBuilder<
+            TableT,
+            SelectBuilderT,
+            RawInsertSelectAssignmentCollection<TableT, SelectBuilderT>,
+            "NORMAL"
+        >
+    ) => {
+        return new InsertSelectBuilder(
+            table,
+            selectBuilder,
+            undefined,
+            "NORMAL",
+            this
+        ).set(delegate);
+    };
     /*
         Desired methods,
         //Basic query
@@ -110,9 +134,10 @@ export class PooledDatabase extends mysql.PooledDatabase {
                 name : "Name"
             }
         ]).ignore().execute();
-        db.insertInto(
+        db.insertSelect(
             app,
-            db.from(ssoClient),
+            db.from(ssoClient)
+                .selectAll(),
             c => {
                 ssoClientId : c.ssoClientId,
                 name : "Hello, world!"
