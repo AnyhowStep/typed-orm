@@ -1,5 +1,5 @@
 import {AliasedTable, AnyAliasedTable} from "./aliased-table";
-import {AnyColumn} from "../column";
+import {Column, AnyColumn} from "../column";
 import {ColumnCollectionUtil} from "../column-collection";
 
 export namespace AliasedTableUtil {
@@ -63,4 +63,16 @@ export namespace AliasedTableUtil {
             ColumnCollectionUtil.withTableAlias(table.columns, newAlias)
         ) as any;
     }
+
+    export type ToGeneric<TableT extends AnyAliasedTable> = (
+        AliasedTable<
+            any,
+            any,
+            {
+                [columnName in Extract<keyof TableT["columns"], string>] : (
+                    Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
+                )
+            }
+        >
+    );
 }

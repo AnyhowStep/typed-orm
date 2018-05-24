@@ -18,7 +18,9 @@ export namespace ColumnUtil {
             sd.or(
                 sd.nil(),
                 column.assertDelegate
-            )
+            ),
+            column.subTableName,
+            column.isSelectReference
         );
     }
 
@@ -41,7 +43,9 @@ export namespace ColumnUtil {
         return new Column(
             newTableAlias,
             column.name,
-            column.assertDelegate
+            column.assertDelegate,
+            column.subTableName,
+            column.isSelectReference
         );
     }
 
@@ -64,7 +68,9 @@ export namespace ColumnUtil {
         return new Column(
             column.tableAlias,
             column.name,
-            assertDelegate
+            assertDelegate,
+            column.subTableName,
+            column.isSelectReference
         );
     }
 }

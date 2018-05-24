@@ -36,6 +36,7 @@ export namespace AliasedExprUtil {
             aliasedExpr.tableAlias,
             aliasedExpr.alias,
             newAssertDelegate,
+            aliasedExpr.originalQuery
         );
     };
 }

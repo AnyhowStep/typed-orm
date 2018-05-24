@@ -265,7 +265,7 @@ export type TupleWPush<WidenT, TupleT extends Tuple<WidenT>, NextT extends Widen
     TupleWiden<TuplePush<TupleT, NextT>, WidenT>
 );
 
-export function push<TupleT extends Tuple<any>, NextT> (
+export function tuplePush<TupleT extends Tuple<any>, NextT> (
     tuple : TupleT,
     next : NextT
 ) : (
@@ -274,7 +274,7 @@ export function push<TupleT extends Tuple<any>, NextT> (
     return tuple.concat(next) as any;
 }
 
-export function wPush<WidenT> () : (
+export function tupleWPush<WidenT> () : (
     <
         TupleT extends Tuple<WidenT>,
         NextT extends WidenT
@@ -285,7 +285,7 @@ export function wPush<WidenT> () : (
         TupleWPush<WidenT, TupleT, NextT>
     )
 ) {
-    return push as any;
+    return tuplePush as any;
 }
 
 /*
@@ -350,7 +350,7 @@ export type TupleWConcat<
 > = (
     TupleWiden<TupleConcat<T, U>, WidenT>
 );
-export function concat<T extends Tuple<any>, U extends Tuple<any>> (
+export function tupleConcat<T extends Tuple<any>, U extends Tuple<any>> (
     t : T,
     u : U
 ) : (
@@ -359,7 +359,7 @@ export function concat<T extends Tuple<any>, U extends Tuple<any>> (
     return t.concat(u) as any;
 }
 
-export function wConcat<WidenT> () : (
+export function tupleWConcat<WidenT> () : (
     <
         T extends Tuple<WidenT>,
         U extends Tuple<WidenT>
@@ -370,7 +370,7 @@ export function wConcat<WidenT> () : (
         TupleWConcat<WidenT, T, U>
     )
 ) {
-    return concat as any;
+    return tupleConcat as any;
 }
 
 /*

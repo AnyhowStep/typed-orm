@@ -33,7 +33,7 @@ export type OrderBy<
 export type AnyOrderBy = (
     AnyOrderByValue |
     [
-        AnyOrderByValue |
+        AnyOrderByValue,
         boolean
     ]
 )

@@ -1,17 +1,16 @@
 import {AnySelectBuilder} from "../select-builder";
 import {SelectDelegate} from "./select-delegate";
-import {JoinCollection, JoinCollectionUtil} from "../join-collection";
+import {JoinCollectionUtil} from "../join-collection";
 import {TupleWiden} from "../tuple";
 import {AnySelect} from "../select";
+import {ColumnReferencesUtil} from "../column-references";
 
 export namespace SelectDelegateUtil {
     export function execute<
         SelectBuilderT extends AnySelectBuilder,
-        JoinsT extends JoinCollection,
-        SelectDelegateT extends SelectDelegate<SelectBuilderT, JoinsT>
+        SelectDelegateT extends SelectDelegate<SelectBuilderT>
     > (
         selectBuilder : SelectBuilderT,
-        joins : JoinsT,
         selectDelegate : SelectDelegateT
     ) : (
         TupleWiden<
@@ -19,11 +18,12 @@ export namespace SelectDelegateUtil {
             AnySelect
         >
     ) {
+        const columnReferences = JoinCollectionUtil.toColumnReferences(selectBuilder.data.joins);
         const result : TupleWiden<
             ReturnType<SelectDelegateT>,
             AnySelect
         > = selectDelegate(
-            JoinCollectionUtil.toConvenientColumnReferences(joins),
+            ColumnReferencesUtil.toConvenient(columnReferences) as any,
             selectBuilder
         ) as any;
         return result;

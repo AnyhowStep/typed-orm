@@ -4,7 +4,7 @@ import {AnySelect} from "./select";
 import {AliasedExpr, AnyAliasedExpr, AliasedExprUtil} from "../aliased-expr";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
 import {Column, AnyColumn, ColumnUtil} from "../column";
-import {AnyJoin, JoinUtil} from "../join";
+import {AnyJoin} from "../join";
 
 export namespace SelectUtil {
     //HACK, Should be `extends AnySelect`
@@ -56,6 +56,21 @@ export namespace SelectUtil {
             (
                 HasOneType<SelectB> extends true ?
                     (
+                        //Both are one-type
+                        Types<SelectA> extends Types<SelectB> ?
+                            true :
+                            false
+                    ) :
+                    //A one-type select is incompatible with
+                    //a multi-type select
+                    false
+            ) :
+            (
+                HasOneType<SelectB> extends true ?
+                    //A one-type select is incompatible with
+                    //a multi-type select
+                    false :
+                    (
                         //Both are multi-type
                         //We need special logic for multi-type because,
                         //{a:number, b:number} extends {a:number} is `true`.
@@ -71,24 +86,44 @@ export namespace SelectUtil {
                                     false
                             ) :
                             false
-                    ) :
-                    //A one-type select is incompatible with
-                    //a multi-type select
-                    false
-            ) :
-            (
-                HasOneType<SelectB> extends true ?
-                    //A one-type select is incompatible with
-                    //a multi-type select
-                    false :
-                    (
-                        //Both are one-type
-                        Types<SelectA> extends Types<SelectB> ?
-                            true :
-                            false
                     )
             )
     )
+    export function hasOneType (select : AnySelect) {
+        if (select instanceof AliasedExpr) {
+            return true;
+        } else if (select instanceof Column) {
+            return true;
+        } else {
+            return ColumnCollectionUtil.hasOneType(select);
+        }
+    }
+    //We can't perform type compatibility checks during run-time.
+    export function assertHasCompatibleTypes (
+        actual : AnySelect,
+        expected : AnySelect
+    ) {
+        if (hasOneType(actual)) {
+            if (!hasOneType(expected)) {
+                throw new Error(`Expected multi-type; received single-type`);
+            }
+        } else {
+            if (hasOneType(expected)) {
+                throw new Error(`Expected single-type; received multi-type`);
+            } else {
+                const actualKeys = Object.keys(actual).sort();
+                const expectedKeys = Object.keys(expected).sort();
+                if (actualKeys.length != expectedKeys.length) {
+                    throw new Error(`Expected ${expectedKeys.length}; received ${actualKeys.length}`);
+                }
+                for (let i=0; i<actualKeys.length; ++i) {
+                    if (actualKeys[i] != expectedKeys[i]) {
+                        throw new Error(`Expected key ${expectedKeys[i]}; received ${actualKeys[i]}`);
+                    }
+                }
+            }
+        }
+    }
     //HACK, Should be `extends AnySelect`
     export type TableAlias<SelectT extends any> = (
         SelectT extends AnyAliasedExpr ?
@@ -163,14 +198,22 @@ export namespace SelectUtil {
                     [select.alias] : new Column(
                         select.tableAlias,
                         select.alias,
-                        select.assertDelegate
+                        select.assertDelegate,
+                        undefined,
+                        true
                     )
                 }
             } as any;
         } else if (select instanceof Column) {
             return {
                 [select.tableAlias] : {
-                    [select.name] : select
+                    [select.name] : new Column(
+                        select.tableAlias,
+                        select.name,
+                        select.assertDelegate,
+                        undefined,
+                        true
+                    )
                 }
             } as any;
         } else if (select instanceof Object) {
@@ -181,7 +224,17 @@ export namespace SelectUtil {
             }
             const firstColumn = (select as any)[keys[0]];
             return {
-                [firstColumn.tableAlias] : select
+                [firstColumn.tableAlias] : Object.keys(select).reduce((memo, columnName) => {
+                    const column = (select as any)[columnName];
+                    memo[columnName] = new Column(
+                        column.tableAlias,
+                        column.name,
+                        column.assertDelegate,
+                        undefined,
+                        true
+                    );
+                    return memo;
+                }, {} as any)
             } as any;
         } else {
             throw new Error(`Unknown select; ${typeof select}`);
@@ -265,4 +318,59 @@ export namespace SelectUtil {
             throw new Error(`Unknown select; ${typeof select}`);
         }
     }
+
+    export type ToColumnWithNameOnly<SelectT extends AnySelect> = (
+        Column<
+            any,
+            Columns<SelectT>["name"],
+            any
+        >
+    );
+    export function toColumnNames<SelectT extends AnySelect> (
+        select : SelectT
+    ) : string[] {
+        if (select instanceof AliasedExpr) {
+            return [select.alias];
+        } else if (select instanceof Column) {
+            return [select.name];
+        } else if (select instanceof Object) {
+            const keys = Object.keys(select);
+            if (keys.length == 0) {
+                //TODO add this check in appendSelect()
+                throw new Error(`Empty select found`);
+            }
+            return keys;
+        } else {
+            throw new Error(`Unknown select; ${typeof select}`);
+        }
+    }
+    export type ToColumnCollection<TableAliasT extends string, SelectT extends any> = (
+        SelectT extends AnyAliasedExpr ?
+        {
+            readonly [columnName in SelectT["alias"]] : (
+                ColumnUtil.WithTableAlias<
+                    AliasedExprUtil.ToColumn<SelectT>,
+                    TableAliasT
+                >
+            )
+        } :
+
+        SelectT extends ColumnCollection ?
+        ColumnCollectionUtil.WithTableAlias<
+            SelectT,
+            TableAliasT
+        > :
+
+        SelectT extends AnyColumn ?
+        {
+            readonly [columnName in SelectT["name"]] : (
+                ColumnUtil.WithTableAlias<
+                    SelectT,
+                    TableAliasT
+                >
+            )
+        } :
+
+        never
+    );
 }

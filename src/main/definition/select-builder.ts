@@ -1,4 +1,4 @@
-import * as d from "../declaration";
+/*import * as d from "../declaration";
 import * as sd from "schema-decorator";
 import {tableToReference} from "./table-operation";
 import * as tuple from "./tuple";
@@ -1415,3 +1415,4 @@ export function newCreateSelectBuilderDelegate (db : Database|ConnectedDatabase)
         });
     }
 }
+*/

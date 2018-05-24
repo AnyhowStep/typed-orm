@@ -4,27 +4,62 @@ import {
 } from "./join-collection";
 import {JoinFromDelegate} from "./join-from-delegate";
 import {JoinToDelegate} from "./join-to-delegate";
-import {AnyAliasedTable} from "./aliased-table";
+import {AliasedTable, AnyAliasedTable} from "./aliased-table";
 import {ReplaceValue, ReplaceValue2} from "./obj-util";
 import {spread} from "@anyhowstep/type-util";
 import {Join, JoinType} from "./join";
 import {SelectCollection, SelectCollectionUtil} from "./select-collection";
 import {SelectDelegate} from "./select-delegate";
-import {ColumnCollectionUtil} from "./column-collection";
-import {FetchRow} from "./fetch-row";
+import {FetchRow, FetchRowUtil} from "./fetch-row";
 import {AggregateDelegate, AggregateDelegateUtil} from "./aggregate-delegate";
-import {TypeNarrowDelegate} from "./type-narrow-delegate";
+import {TypeNarrowDelegate, TypeNarrowDelegateUtil} from "./type-narrow-delegate";
 import {Column, AnyColumn} from "./column";
 import * as invalid from "./invalid";
-import {ColumnReferencesUtil, PartialColumnReferences} from "./column-references";
-import {WhereDelegate} from "./where-delegate";
-import {GroupByDelegate} from "./group-by-delegate";
-import {HavingDelegate} from "./having-delegate";
-import {OrderByDelegate} from "./order-by-delegate";
-import {TypeWidenDelegate} from "./type-widen-delegate";
+import {WhereDelegate, WhereDelegateUtil} from "./where-delegate";
+import {GroupByDelegate, GroupByDelegateUtil} from "./group-by-delegate";
+import {HavingDelegate, HavingDelegateUtil} from "./having-delegate";
+import {OrderByDelegate, OrderByDelegateUtil} from "./order-by-delegate";
+import {TypeWidenDelegate, TypeWidenDelegateUtil} from "./type-widen-delegate";
 import * as sd from "schema-decorator";
-import {SelectUtil} from "./select";
 import {FetchValueCheck, FetchValueType} from "./fetch-value";
+import {table} from "./table";
+import {AnyGroupBy} from "./group-by";
+import {AnyOrderBy} from "./order-by";
+import {Expr} from "./expr";
+import {PooledDatabase} from "./PooledDatabase";
+import {Querify} from "./querify";
+import {StringBuilder} from "./StringBuilder";
+import * as e from "./expression";
+import {AliasedExpr} from "./aliased-expr";
+import * as mysql from "typed-mysql";
+import {SubqueryTable} from "./subquery-table";
+import {RawExprUtil} from "./raw-expr";
+
+//TODO Move elsewhere
+export const ARBITRARY_ROW_COUNT = 999999999;
+
+export interface LimitData {
+    readonly rowCount : number,
+    readonly offset   : number,
+}
+export interface ExtraSelectBuilderData {
+    readonly db : PooledDatabase;
+    readonly narrowExpr? : Expr<any, boolean>;
+    readonly whereExpr? : Expr<any, boolean>;
+    readonly havingExpr? : Expr<any, boolean>;
+    readonly union? : {
+        target : SelectBuilder<any>,
+        distinct : boolean,
+    }[];
+
+    readonly distinct : boolean,
+    readonly sqlCalcFoundRows : boolean,
+    readonly groupBy? : AnyGroupBy[],
+    readonly orderBy? : AnyOrderBy[],
+    readonly limit? : LimitData,
+    readonly unionOrderBy? : AnyOrderBy[],
+    readonly unionLimit? : LimitData,
+}
 
 //TODO Move elsewhere
 export interface RawPaginationArgs {
@@ -53,16 +88,18 @@ export interface SelectBuilderData {
     readonly aggregateDelegate : undefined|AggregateDelegate<any>,
 }
 
-//TODO A proper table
-export const dummyFromTable : AnyAliasedTable = {
-    shouldHaveFromClause : true
-} as any;
+export const __DUMMY_FROM_TABLE = table(
+    "__DUMMY_FROM_TABLE",
+    {}
+);
 
-export class SelectBuilder<DataT extends SelectBuilderData> {
+export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     readonly data : DataT;
+    readonly extraData : ExtraSelectBuilderData;
 
-    public constructor (data : DataT) {
+    public constructor (data : DataT, extraData : ExtraSelectBuilderData) {
         this.data = data;
+        this.extraData = extraData;
     }
 
     assertAfterFrom () {
@@ -130,7 +167,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                     )
                 ]
             }
-        )) as any;
+        ), this.extraData) as any;
     }
     join<
         ToTableT extends AnyAliasedTable,
@@ -167,7 +204,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                     toDelegate
                 )
             }
-        )) as any;
+        ), this.extraData) as any;
     }
     joinUsing<
         ToTableT extends AnyAliasedTable,
@@ -202,7 +239,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                     fromDelegate as any
                 )
             }
-        )) as any;
+        ), this.extraData) as any;
     }
     //We don't allow right joins after selecting
     //because it'll narrow the data type of selected columns
@@ -242,7 +279,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                     toDelegate
                 )
             }
-        )) as any;
+        ), this.extraData) as any;
     }
     //We don't allow right joins after selecting
     //because it'll narrow the data type of selected columns
@@ -280,7 +317,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                     fromDelegate as any
                 )
             }
-        )) as any;
+        ), this.extraData) as any;
     }
     leftJoin<
         ToTableT extends AnyAliasedTable,
@@ -317,7 +354,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                     toDelegate
                 )
             }
-        )) as any;
+        ), this.extraData) as any;
     }
     leftJoinUsing<
         ToTableT extends AnyAliasedTable,
@@ -352,13 +389,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                     fromDelegate as any
                 )
             }
-        )) as any;
+        ), this.extraData) as any;
     }
 
     //Must be called before UNION because it will change the number of
     //columns expected.
     select<
-        SelectDelegateT extends SelectDelegate<SelectBuilder<DataT>, DataT["joins"]>
+        SelectDelegateT extends SelectDelegate<SelectBuilder<DataT>>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -373,13 +410,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         Error extends SelectCollectionUtil.AppendSelect<
             DataT["selects"],
             SelectBuilder<DataT>,
-            DataT["joins"],
             SelectDelegateT
         > ?
             SelectCollectionUtil.AppendSelect<
                 DataT["selects"],
                 SelectBuilder<DataT>,
-                DataT["joins"],
                 SelectDelegateT
             > :
             (
@@ -389,7 +424,6 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
                     SelectCollectionUtil.AppendSelectUnsafe<
                         DataT["selects"],
                         SelectBuilder<DataT>,
-                        DataT["joins"],
                         SelectDelegateT
                     >,
                     "hasSelect",
@@ -401,20 +435,19 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         const selects = SelectCollectionUtil.appendSelect<
             DataT["selects"],
             SelectBuilder<DataT>,
-            DataT["joins"],
             SelectDelegateT
         >(
             this.data.selects,
             this as any,
-            this.data.joins,
             selectDelegate
         );
         return new SelectBuilder(spread(
             this.data,
             {
+                hasSelect : true,
                 selects : selects
             }
-        )) as any;
+        ), this.extraData) as any;
     }
     //Must be called before any other `SELECT` methods
     //because it'll set the select clause to whatever is at the joins,
@@ -446,9 +479,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         return new SelectBuilder(spread(
             this.data,
             {
+                hasSelect : true,
                 selects : SelectCollectionUtil.fromJoinCollection(this.data.joins)
             }
-        )) as any;
+        ), this.extraData) as any;
     }
 
     //Must be called after `FROM`; makes no sense
@@ -468,13 +502,20 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         tableA : TableA,
         tableB : TableB
     ) : (
-        Error extends JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> ?
-            JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> :   
+        //TODO evaluate if this affects safety in any way
+        TableB extends AliasedTable<any, any, TableA["columns"]> ?
             SelectBuilder<ReplaceValue<
                 DataT,
                 "joins",
                 JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB>
-            >>
+            >> :
+            Error extends JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> ?
+                JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> :   
+                SelectBuilder<ReplaceValue<
+                    DataT,
+                    "joins",
+                    JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB>
+                >>
     ) {
         this.assertAfterFrom();
         const replaced = JoinCollectionUtil.replaceTable(this.data.joins, tableA, tableB);
@@ -483,7 +524,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             {
                 joins : replaced
             }
-        )) as any;
+        ), this.extraData) as any;
     }
 
     //Must be called after `SELECT` or there will be
@@ -518,9 +559,45 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             {
                 aggregateDelegate : aggregateDelegate
             }
-        )) as any;
+        ), this.extraData) as any;
     }
 
+    private rowAssertDelegate : sd.AssertDelegate<any> | undefined = undefined;
+    private getRowAssertDelegate () : sd.AssertDelegate<any> {
+        if (this.rowAssertDelegate == undefined) {
+            this.rowAssertDelegate = FetchRowUtil.assertDelegate(
+                this.data.joins,
+                SelectCollectionUtil.toColumnReferences(this.data.selects)
+            );
+        }
+        return this.rowAssertDelegate;
+    }
+    readonly processRow = (rawRow : any) => {
+        let result = {} as any;
+        for (let mangledName in rawRow) {
+            const names  = mangledName.split("--");
+            const table  = names[0];
+            const column = names[1];
+            if (result[table] == undefined) {
+                result[table] = {};
+            }
+            result[table][column] = rawRow[mangledName];
+        }
+        const tableAliases = Object.keys(result);
+        if (tableAliases.length == 1) {
+            result = result[tableAliases[0]];
+        }
+        result = this.getRowAssertDelegate()("row", result);
+        return result;
+    };
+    readonly aggregateRow = (rawRow : any) => {
+        let result = this.processRow(rawRow);
+        if (this.data.aggregateDelegate == undefined) {
+            return result;
+        } else {
+            return this.data.aggregateDelegate(result);
+        }
+    }
     fetchAll(
         this : SelectBuilder<{
             hasSelect : true,
@@ -540,7 +617,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         >[]>
     ) {
         this.assertAfterSelect();
-        return null as any;
+        
+        return this.extraData.db.selectAllAny(this.getQuery())
+            .then(({rows}) => {
+                return Promise.all(rows.map(this.aggregateRow));
+            });
     }
     fetchOne(
         this : SelectBuilder<{
@@ -561,7 +642,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         >>
     ) {
         this.assertAfterSelect();
-        return null as any;
+        
+        return this.extraData.db.selectOneAny(this.getQuery())
+            .then(({row}) => {
+                return this.aggregateRow(row);
+            });
     }
     fetchZeroOrOne(
         this : SelectBuilder<{
@@ -585,7 +670,14 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         >
     ) {
         this.assertAfterSelect();
-        return null as any;
+        
+        return this.extraData.db.selectZeroOrOneAny(this.getQuery())
+            .then(({row}) => {
+                if (row == undefined) {
+                    return undefined;
+                }
+                return this.aggregateRow(row);
+            });
     }
 
     //TODO May not always work if GROUP BY, HAVING clauses use a select-expression,
@@ -602,8 +694,35 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             aggregateDelegate : any,
         }>
     ) : Promise<number> {
-        this.assertAfterSelect();
-        return null as any;
+        this.assertAfterFrom();
+        
+        if (this.extraData.unionLimit != undefined) {
+            return this.unsetUnionLimit()
+                .count();
+        }
+        if (this.extraData.limit != undefined && this.extraData.union == undefined) {
+            return this.unsetLimit()
+                .count();
+        }
+        //We should now have one of the following,
+        //+ (SELECT ...)
+        //+ (SELECT ... LIMIT) UNION (SELECT ...)
+        //+ (SELECT ...) UNION (SELECT ...)
+        //+ (... FROM ...); If count() is called before select()
+
+        if (this.data.selects == undefined) {
+            //We have not called select() yet
+            return (this.select(() => [e.COUNT_ALL.as("count")]) as any)
+                .fetchValue();
+        } else {
+            //Already called select
+            return this.extraData.db.selectNaturalNumber(`
+                SELECT
+                    COUNT(*) AS count
+                FROM
+                    (${this.getQuery()}) AS tmp
+            `);
+        }
     }
 
     //Must be called after `FROM` or there will be no tables to check existence from
@@ -617,8 +736,23 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             aggregateDelegate : any,
         }>
     ) : Promise<boolean> {
-        this.assertAfterSelect();
-        return null as any;
+        this.assertAfterFrom();
+
+        if (this.data.selects == undefined) {
+            return this.extraData.db.selectBoolean(`
+                SELECT EXISTS (
+                    SELECT
+                        *
+                    ${this.getQuery()}
+                )
+            `);
+        } else {
+            return this.extraData.db.selectBoolean(`
+                SELECT EXISTS (
+                    ${this.getQuery()}
+                )
+            `);
+        }
     }
 
     //Uses count() internally
@@ -631,7 +765,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             selects : any,
             aggregateDelegate : any,
         }>,
-        paginationArgs? : RawPaginationArgs
+        rawPaginationArgs : RawPaginationArgs = {}
     ) : (
         Promise<PaginateResult<
             AggregateDelegateUtil.AggregatedRow<
@@ -644,7 +778,49 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         >>
     ) {
         this.assertAfterSelect();
-        return null as any;
+        
+        const paginationArgs = mysql.toPaginationArgs(
+            rawPaginationArgs,
+            this.extraData.db.getPaginationConfiguration()
+        );
+        return this.count()
+            .then((itemsFound) => {
+                const pagesFound = mysql.calculatePagesFound(
+                    paginationArgs,
+                    itemsFound
+                );
+                if (this.extraData.union == undefined) {
+                    return this
+                        .limit(paginationArgs.itemsPerPage)
+                        .offset(mysql.getPaginationStart(paginationArgs))
+                        .fetchAll()
+                        .then((rows : any[]) => {
+                            return {
+                                info : {
+                                    itemsFound : itemsFound,
+                                    pagesFound : pagesFound,
+                                    ...paginationArgs,
+                                },
+                                rows : rows,
+                            };
+                        });
+                } else {
+                    return this
+                        .unionLimit(paginationArgs.itemsPerPage)
+                        .unionOffset(mysql.getPaginationStart(paginationArgs))
+                        .fetchAll()
+                        .then((rows : any[]) => {
+                            return {
+                                info : {
+                                    itemsFound : itemsFound,
+                                    pagesFound : pagesFound,
+                                    ...paginationArgs,
+                                },
+                                rows : rows,
+                            };
+                        });
+                }
+            }) as any;
     }
 
     fetchValue (
@@ -657,10 +833,18 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             aggregateDelegate : any,
         }>
     ) : (
-        FetchValueCheck<DataT, Promise<FetchValueType<DataT>>>
+        FetchValueCheck<DataT, FetchValueType<DataT>>
     ) {
         this.assertAfterSelect();
-        return null as any;
+
+        return this.extraData.db.selectOneAny(this.getQuery())
+            .then(({row, fields}) => {
+                if (fields.length != 1) {
+                    throw new Error(`Expected one field, received ${fields.length}`);
+                }
+                const result = this.processRow(row);
+                return result[Object.keys(result)[0]];
+            }) as any;
     }
     fetchValueOrUndefined (
         this : SelectBuilder<{
@@ -672,10 +856,21 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             aggregateDelegate : any,
         }>
     ) : (
-        FetchValueCheck<DataT, Promise<undefined|FetchValueType<DataT>>>
+        FetchValueCheck<DataT, undefined|FetchValueType<DataT>>
     ) {
         this.assertAfterSelect();
-        return null as any;
+        
+        return this.extraData.db.selectZeroOrOneAny(this.getQuery())
+            .then(({row, fields}) => {
+                if (fields.length != 1) {
+                    throw new Error(`Expected one field, received ${fields.length}`);
+                }
+                if (row == undefined) {
+                    return undefined;
+                }
+                const result = this.processRow(row);
+                return result[Object.keys(result)[0]];
+            }) as any;
     }
     fetchValueArray (
         this : SelectBuilder<{
@@ -687,13 +882,65 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             aggregateDelegate : any,
         }>
     ) : (
-        FetchValueCheck<DataT, Promise<FetchValueType<DataT>[]>>
+        FetchValueCheck<DataT, FetchValueType<DataT>[]>
     ) {
         this.assertAfterSelect();
-        return null as any;
+        
+        return this.extraData.db.selectAllAny(this.getQuery())
+            .then(({rows, fields}) => {
+                if (fields.length != 1) {
+                    throw new Error(`Expected one field, received ${fields.length}`);
+                }
+                const columnName = fields[0].name.split("--")[1];
+
+                return rows
+                    .map(this.processRow)
+                    .map((row) => row[columnName]);
+            }) as any;
     }
 
+    private narrow (column : AnyColumn, condition : Expr<any, boolean>) {
+        const joins = JoinCollectionUtil.replaceColumnType(
+            this.data.joins,
+            column.tableAlias,
+            column.name,
+            column.assertDelegate
+        );
+        const selects = SelectCollectionUtil.replaceSelectType(
+            this.data.selects,
+            column.tableAlias,
+            column.name,
+            column.assertDelegate
+        );
 
+        let narrowExpr = this.extraData.narrowExpr;
+        if (narrowExpr == undefined) {
+            narrowExpr = condition;
+        } else {
+            narrowExpr = e.and(narrowExpr, condition);
+        }
+        let whereExpr = this.extraData.whereExpr;
+        if (whereExpr == undefined) {
+            whereExpr = condition;
+        } else {
+            whereExpr = e.and(condition, whereExpr);
+        }
+        
+        return new SelectBuilder(
+            spread(
+                this.data,
+                {
+                    joins : joins,
+                    selects : selects,
+                }
+            ),
+            {
+                ...this.extraData,
+                narrowExpr : narrowExpr,
+                whereExpr : whereExpr,
+            }
+        );
+    }
     //Narrowing is only allowed before UNION
     //because columns of the UNION may require
     //a data type that could become disallowed by narrowing.
@@ -742,7 +989,19 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     ) {
         this.assertAfterFrom();
         this.assertBeforeUnion();
-        return null as any;
+
+        const column = TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate as any);
+
+        return this.narrow(
+            new Column(
+                column.tableAlias,
+                column.name,
+                sd.notNullable(column.assertDelegate),
+                column.subTableName,
+                column.isSelectReference
+            ),
+            e.isNotNull(column)
+        ) as any;
     };
     whereIsNull<
         TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>
@@ -779,7 +1038,19 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     ) {
         this.assertAfterFrom();
         this.assertBeforeUnion();
-        return null as any;
+
+        const column = TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate as any);
+
+        return this.narrow(
+            new Column(
+                column.tableAlias,
+                column.name,
+                sd.nil(),
+                column.subTableName,
+                column.isSelectReference
+            ),
+            e.isNull(column)
+        ) as any;
     };
     whereIsEqual<
         TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>,
@@ -818,7 +1089,41 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     ) {
         this.assertAfterFrom();
         this.assertBeforeUnion();
-        return null as any;
+
+        sd.or(
+            sd.boolean(),
+            sd.number(),
+            sd.string()
+        )("value", value);
+
+        const column = TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate as any);
+
+        let assertDelegate : sd.AssertDelegate<ConstT> = sd.oneOf(value);
+        if (value === true) {
+            assertDelegate = ((name : string, mixed : any) : true => {
+                const b = sd.numberToBoolean()(name, mixed);
+                return sd.oneOf(true)(name, b);
+            }) as any;
+        } else if (value === false) {
+            assertDelegate = ((name : string, mixed : any) : false => {
+                const b = sd.numberToBoolean()(name, mixed);
+                return sd.oneOf(false)(name, b);
+            }) as any;
+        }
+
+        return this.narrow(
+            new Column(
+                column.tableAlias,
+                column.name,
+                assertDelegate,
+                column.subTableName,
+                column.isSelectReference
+            ),
+            e.and(
+                e.isNotNull(column),
+                e.eq(column, value) as any
+            )
+        ) as any;
     };
 
     //WHERE CLAUSE
@@ -836,7 +1141,19 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         whereDelegate : WhereDelegateT
     ) : SelectBuilder<DataT> {
         this.assertAfterFrom();
-        return null as any;
+
+        let whereExpr = WhereDelegateUtil.execute(this, whereDelegate as any);
+        if (this.extraData.narrowExpr != undefined) {
+            whereExpr = e.and(this.extraData.narrowExpr, whereExpr);
+        }
+
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                whereExpr : whereExpr,
+            }
+        ) as any;
     }
     //Appends
     andWhere<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>> (
@@ -851,17 +1168,43 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         whereDelegate : WhereDelegateT
     ) : SelectBuilder<DataT> {
         this.assertAfterFrom();
-        return null as any;
+        
+        if (this.extraData.whereExpr == undefined) {
+            return this.where(whereDelegate as any) as any;
+        }
+
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                whereExpr : e.and(
+                    this.extraData.whereExpr,
+                    WhereDelegateUtil.execute(this, whereDelegate as any)
+                ),
+            }
+        ) as any;
     }
 
     //DISTINCT CLAUSE
-    distinct (distinct? : boolean) : SelectBuilder<DataT> {
-        return null as any;
+    distinct (distinct : boolean = true) : SelectBuilder<DataT> {
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                distinct : distinct,
+            }
+        ) as any;
     }
 
     //SQL_CALC_FOUND_ROWS CLAUSE
-    sqlCalcFoundRows (sqlCalcFoundRows? : boolean) : SelectBuilder<DataT> {
-        return null as any;
+    sqlCalcFoundRows (sqlCalcFoundRows : boolean = true) : SelectBuilder<DataT> {
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                sqlCalcFoundRows : sqlCalcFoundRows,
+            }
+        ) as any;
     }
 
     //GROUP BY CLAUSE
@@ -879,7 +1222,15 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         groupByDelegate : GroupByDelegateT
     ) : SelectBuilder<DataT> {
         this.assertAfterFrom();
-        return null as any;
+
+        const groupBy = GroupByDelegateUtil.execute(this, groupByDelegate as any);
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                groupBy : groupBy,
+            }
+        ) as any;
     }
     //Appends
     appendGroupBy<GroupByDelegateT extends GroupByDelegate<SelectBuilder<DataT>>> (
@@ -894,12 +1245,30 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         groupByDelegate : GroupByDelegateT
     ) : SelectBuilder<DataT> {
         this.assertAfterFrom();
-        return null as any;
+        
+        if (this.extraData.groupBy == undefined) {
+            return this.groupBy(groupByDelegate as any) as any;
+        }
+
+        const groupBy = GroupByDelegateUtil.execute(this, groupByDelegate as any);
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                groupBy : this.extraData.groupBy.concat(groupBy),
+            }
+        ) as any;
     }
 
     //REMOVES GROUP BY
     unsetGroupBy () : SelectBuilder<DataT> {
-        return null as any;
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                groupBy : undefined,
+            }
+        ) as any;
     }
 
     //HAVING CLAUSE
@@ -922,7 +1291,14 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
         havingDelegate : HavingDelegateT
     ) : SelectBuilder<DataT> {
         this.assertAfterFrom();
-        return null as any;
+        
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                havingExpr : HavingDelegateUtil.execute(this, havingDelegate as any),
+            }
+        ) as any;
     }
     //Appends
     andHaving<HavingDelegateT extends HavingDelegate<SelectBuilder<DataT>>> (
@@ -934,10 +1310,24 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             selects : any,
             aggregateDelegate : any,
         }>,
-        havingDelegateT : HavingDelegateT
+        havingDelegate : HavingDelegateT
     ) : SelectBuilder<DataT> {
         this.assertAfterFrom();
-        return null as any;
+        
+        if (this.extraData.havingExpr == undefined) {
+            return this.having(havingDelegate as any) as any;
+        }
+
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                havingExpr : e.and(
+                    this.extraData.havingExpr,
+                    HavingDelegateUtil.execute(this, havingDelegate as any)
+                ),
+            }
+        ) as any;
     }
 
     //ORDER BY CLAUSE
@@ -945,33 +1335,98 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     orderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
         orderByDelegate : OrderByDelegateT
     ) : SelectBuilder<DataT> {
-        return null as any;
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                orderBy : OrderByDelegateUtil.execute(this, orderByDelegate as any),
+            }
+        );
     }
     //Appends
     appendOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
         orderByDelegate : OrderByDelegateT
     ) : SelectBuilder<DataT> {
-        return null as any;
+        if (this.extraData.orderBy == undefined) {
+            return this.orderBy(orderByDelegate);
+        }
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                orderBy : this.extraData.orderBy.concat(
+                    OrderByDelegateUtil.execute(this, orderByDelegate as any)
+                ),
+            }
+        );
     }
 
     //REMOVES ORDER BY
     unsetOrderBy () : SelectBuilder<DataT> {
-        return null as any;
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                orderBy : undefined,
+            }
+        ) as any;
     }
 
     //LIMIT CLAUSE
     limit (rowCount : number) : SelectBuilder<DataT> {
-        return null as any;
+        let limit = this.extraData.limit;
+        if (limit == undefined) {
+            limit = {
+                rowCount : rowCount,
+                offset : 0,
+            };
+        } else {
+            limit = {
+                rowCount : rowCount,
+                offset : limit.offset,
+            };
+        }
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                limit : limit,
+            }
+        );
     }
 
     //OFFSET CLAUSE
     offset (offset : number) : SelectBuilder<DataT> {
-        return null as any;
+        let limit = this.extraData.limit;
+        if (limit == undefined) {
+            limit = {
+                rowCount : ARBITRARY_ROW_COUNT,
+                offset : offset,
+            };
+        } else {
+            limit = {
+                rowCount : limit.rowCount,
+                offset : offset,
+            };
+        }
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                limit : limit,
+            }
+        );
     }
 
     //REMOVES LIMIT
     unsetLimit () : SelectBuilder<DataT> {
-        return null as any;
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                limit : undefined,
+            }
+        );
     }
 
     //UNION ORDER BY CLAUSE
@@ -979,33 +1434,98 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
     unionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
         orderByDelegate : OrderByDelegateT
     ) : SelectBuilder<DataT> {
-        return null as any;
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                unionOrderBy : OrderByDelegateUtil.execute(this, orderByDelegate as any),
+            }
+        );
     }
     //Appends
     appendUnionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
         orderByDelegate : OrderByDelegateT
     ) : SelectBuilder<DataT> {
-        return null as any;
+        if (this.extraData.unionOrderBy == undefined) {
+            return this.unionOrderBy(orderByDelegate);
+        }
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                unionOrderBy : this.extraData.unionOrderBy.concat(
+                    OrderByDelegateUtil.execute(this, orderByDelegate as any)
+                ),
+            }
+        );
     }
 
     //UNION REMOVES ORDER BY
     unsetUnionOrderBy () : SelectBuilder<DataT> {
-        return null as any;
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                unionOrderBy : undefined,
+            }
+        ) as any;
     }
 
     //UNION LIMIT CLAUSE
     unionLimit (rowCount : number) : SelectBuilder<DataT> {
-        return null as any;
+        let unionLimit = this.extraData.unionLimit;
+        if (unionLimit == undefined) {
+            unionLimit = {
+                rowCount : rowCount,
+                offset : 0,
+            };
+        } else {
+            unionLimit = {
+                rowCount : rowCount,
+                offset : unionLimit.offset,
+            };
+        }
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                unionLimit : unionLimit,
+            }
+        );
     }
 
     //UNION OFFSET CLAUSE
     unionOffset (offset : number) : SelectBuilder<DataT> {
-        return null as any;
+        let unionLimit = this.extraData.unionLimit;
+        if (unionLimit == undefined) {
+            unionLimit = {
+                rowCount : ARBITRARY_ROW_COUNT,
+                offset : offset,
+            };
+        } else {
+            unionLimit = {
+                rowCount : unionLimit.rowCount,
+                offset : offset,
+            };
+        }
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                unionLimit : unionLimit,
+            }
+        );
     }
 
     //UNION REMOVES LIMIT
     unsetUnionLimit () : SelectBuilder<DataT> {
-        return null as any;
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                unionLimit : undefined,
+            }
+        );
     }
 
     //Must be done after select or there will be no columns to widen.
@@ -1047,7 +1567,33 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeWidenDelegateT>>)
     ) {
         this.assertAfterSelect();
-        return null as any;
+        const widenedColumn = TypeWidenDelegateUtil.execute(
+            this.data.selects,
+            typeWidenDelegate,
+            assertWidened
+        );
+        const joins = JoinCollectionUtil.replaceColumnType(
+            this.data.joins,
+            widenedColumn.tableAlias,
+            widenedColumn.name,
+            widenedColumn.assertDelegate
+        );
+        const selects = SelectCollectionUtil.replaceSelectType(
+            this.data.selects,
+            widenedColumn.tableAlias,
+            widenedColumn.name,
+            widenedColumn.assertDelegate
+        );
+        return new SelectBuilder(
+            spread(
+                this.data,
+                {
+                    joins : joins,
+                    selects : selects,
+                }
+            ),
+            this.extraData
+        ) as any;
     };
 
     //UNION CLAUSE
@@ -1071,7 +1617,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             hasUnion : any,
             joins : any,
             selects : any,
-            aggregateDelegate : undefined,
+            aggregateDelegate : any,
         }>,
         target : TargetT,
         //Set to `false` to UNION ALL
@@ -1114,7 +1660,316 @@ export class SelectBuilder<DataT extends SelectBuilderData> {
             >
     ) {
         this.assertAfterSelect();
-        return null as any;
+        if (target.data.selects == undefined) {
+            throw new Error(`Union target does not have a SELECT clause`);
+        }
+        if (this.data.selects == undefined) {
+            throw new Error(`Could not find SELECT clause`);
+        }
+        SelectCollectionUtil.assertHasCompatibleTypes(
+            target.data.selects,
+            this.data.selects
+        )
+
+        let union = this.extraData.union;
+        if (union == undefined) {
+            union = [];
+        }
+        union = union.concat({
+            target : target,
+            distinct : distinct,
+        });
+        return new SelectBuilder(
+            spread(
+                this.data,
+                {
+                    hasUnion : true,
+                }
+            ),
+            {
+                ...this.extraData,
+                union : union,
+            }
+        ) as any;
+    }
+
+    querifyJoins (sb : StringBuilder) {
+        sb.scope((sb) => {
+            this.data.joins[0].table.querify(sb);
+        });
+        sb.map(
+            this.data.joins.slice(1),
+            (sb, join, index) => {
+                sb.appendLine(`${join.joinType} JOIN`);
+                sb.scope((sb) => {
+                    join.table.querify(sb);
+                });
+                sb.appendLine("ON");
+                sb.scope((sb) => {
+                    if (join.from == undefined || join.to == undefined || join.from.length != join.to.length) {
+                        throw new Error(`Invalid JOIN ${index}, ${join.joinType} JOIN ${join.table.alias}`);
+                    }
+                    const fromArr = join.from;
+                    const toArr = join.to;
+                    sb.map(
+                        fromArr,
+                        (sb, from, index) => {
+                            const to = toArr[index];
+                            from.querify(sb);
+                            sb.append(" = ");
+                            to.querify(sb);
+                        },
+                        " AND\n"
+                    );
+                });
+            }
+        )
+    }
+    querifyWhere (sb : StringBuilder) {
+        if (this.extraData.whereExpr != undefined) {
+            sb.appendLine("WHERE");
+            const whereExpr = this.extraData.whereExpr;
+            sb.scope((sb) => {
+                whereExpr.querify(sb)
+            });
+        }
+    }
+    querify (sb : StringBuilder) {
+        const hasUnionSelect = (
+            this.data.selects != undefined &&
+            (
+                this.extraData.union != undefined ||
+                this.extraData.unionOrderBy != undefined ||
+                this.extraData.unionLimit != undefined
+            )
+        );
+        if (hasUnionSelect) {
+            sb.appendLine("(");
+            sb.indent();
+        }
+        if (this.data.selects != undefined) {
+            sb.append("SELECT");
+            if (this.extraData.distinct) {
+                sb.append(" DISTINCT");
+            }
+            if (this.extraData.sqlCalcFoundRows) {
+                sb.append(" SQL_CALC_FOUND_ROWS");
+            }
+            sb.appendLine();
+
+            const selects = this.data.selects;
+            sb.scope((sb) => {
+                sb.map(selects, (sb, element) => {
+                    if (element instanceof AliasedExpr) {
+                        element.querify(sb);
+                    } else if (element instanceof Column) {
+                        //const str = element.as(element.name).querify();
+                        //return `\t${str}`;
+                        const alias = mysql.escapeId(`${element.tableAlias}--${element.name}`);
+                        element.querify(sb);
+                        sb.append(` AS ${alias}`);
+
+                    } else if (element instanceof Object) {
+                        const names = Object.keys(element).sort();
+                        sb.map(names, (sb, name) => {
+                            const sub = element[name];
+                            const alias = mysql.escapeId(`${sub.tableAlias}--${sub.name}`);
+                            sub.querify(sb);
+                            sb.append(` AS ${alias}`);
+                        }, ",\n");
+                    } else {
+                        throw new Error(`Unknown select (${typeof element})${element}`);
+                    }
+                }, ",\n");
+            });
+        }
+        if (this.data.hasFrom) {
+            sb.appendLine("FROM");
+            this.querifyJoins(sb);
+        }
+        this.querifyWhere(sb);
+        if (this.extraData.groupBy != undefined) {
+            sb.appendLine("GROUP BY");
+            const groupBy = this.extraData.groupBy;
+            sb.scope((sb) => {
+                sb.map(
+                    groupBy,
+                    (sb, e) => {
+                        if (e instanceof Column) {
+                            e.querify(sb);
+                        } else {
+                            sb.map(
+                                Object.keys(e),
+                                (sb, columnName) => {
+                                    e[columnName].querify(sb);
+                                },
+                                ",\n"
+                            );
+                        }
+                        
+                    },
+                    ",\n"
+                );
+            });
+        }
+        if (this.extraData.havingExpr != undefined) {
+            sb.appendLine("HAVING");
+            const havingExpr = this.extraData.havingExpr;
+            sb.scope((sb) => {
+                havingExpr.querify(sb);
+            });
+        }
+        if (this.extraData.orderBy != undefined) {
+            sb.appendLine("ORDER BY");
+            const orderBy = this.extraData.orderBy;
+            sb.scope((sb) => {
+                sb.map(
+                    orderBy,
+                    (sb, e) => {
+                        if ((e instanceof Column) || (e instanceof Expr)) {
+                            e.querify(sb);
+                            sb.append(" ASC");
+                        } else {
+                            e[0].querify(sb);
+                            sb.append(e[1] ? " ASC" : " DESC");
+                        }
+                    },
+                    ",\n"
+                )
+            });
+        }
+        if (this.extraData.limit != undefined) {
+            const limit = this.extraData.limit;
+            sb.appendLine("LIMIT")
+                .scope((sb) => {
+                    sb.append(limit.rowCount.toString());
+                });
+            sb.appendLine("OFFSET")
+                .scope((sb) => {
+                    sb.append(limit.offset.toString());
+                });
+        }
+
+        if (hasUnionSelect) {
+            sb.unindent();
+            sb.appendLine(")");
+        }
+
+        if (this.extraData.union != undefined) {
+            sb.map(
+                this.extraData.union,
+                (sb, u) => {
+                    sb.append("UNION");
+                    if (u.distinct) {
+                        sb.append(" DISTINCT")
+                    } else {
+                        sb.append(" ALL")
+                    }
+                    sb.appendLine();
+                    sb.appendLine("(");
+                    sb.scope((sb) => {
+                        u.target.querify(sb);
+                    });
+                    sb.appendLine(")");
+                },
+                "\n"
+            );
+        }
+        if (this.extraData.unionOrderBy != undefined) {
+            sb.appendLine("ORDER BY");
+            const unionOrderBy = this.extraData.unionOrderBy;
+            sb.scope((sb) => {
+                sb.map(
+                    unionOrderBy,
+                    (sb, e) => {
+                        if ((e instanceof Column) || (e instanceof Expr)) {
+                            e.querify(sb);
+                            sb.append(" ASC");
+                        } else {
+                            e[0].querify(sb);
+                            sb.append(e[1] ? " ASC" : " DESC");
+                        }
+                    },
+                    ",\n"
+                )
+            });
+        }
+        if (this.extraData.unionLimit != undefined) {
+            const unionLimit = this.extraData.unionLimit;
+            sb.appendLine("LIMIT")
+                .scope((sb) => {
+                    sb.append(unionLimit.rowCount.toString());
+                });
+            sb.appendLine("OFFSET")
+                .scope((sb) => {
+                    sb.append(unionLimit.offset.toString());
+                });
+        }
+    }
+    getQuery () {
+        const sb = new StringBuilder();
+        this.querify(sb);
+        return sb.toString();
+    }
+    printQuery () {
+        console.log(this.getQuery());
+        return this;
+    }
+    as<AliasT extends string> (
+        this : SelectBuilder<{
+            //Must have columns to alias as a
+            //subquery
+            hasSelect : true,
+            hasFrom : any,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
+        alias : AliasT
+    ) : (
+        DataT extends { hasSelect : true } ?
+            SubqueryTable<AliasT, DataT> :
+            invalid.E1<"Missing SELECT clause">
+    ) {
+        this.assertAfterSelect();
+
+        return new SubqueryTable(
+            alias,
+            this
+        ) as any;
+    };
+    asExpr<AliasT extends string> (
+        this : SelectBuilder<{
+            //Must have columns to alias as a
+            //subquery
+            hasSelect : true,
+            hasFrom : any,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+        }>,
+        alias : AliasT
+    ) : (
+        AliasedExpr<
+            {},
+            "__expr",
+            AliasT,
+            RawExprUtil.Type<SelectBuilder<DataT>>
+        >
+    ) {
+        this.assertAfterSelect();
+        if (this.data.selects == undefined || this.data.selects.length != 1) {
+            throw new Error(`Must SELECT one column only`);
+        }
+        if (
+            !(this.data.selects[0] instanceof AliasedExpr) &&
+            !(this.data.selects[0] instanceof Column)
+        ) {
+            throw new Error(`Invalid SELECT; must select a column or column expression`);
+        }
+        return RawExprUtil.toExpr(this).as(alias) as any;
     }
 }
 
@@ -1129,8 +1984,8 @@ export type CreateSelectBuilderDelegate = (
             //It will be replaced when the FROM clause is added
             joins : [
                 Join<
-                    AnyAliasedTable,
-                    AnyAliasedTable["columns"],
+                    typeof __DUMMY_FROM_TABLE,
+                    typeof __DUMMY_FROM_TABLE["columns"],
                     true
                 >
             ],
@@ -1140,140 +1995,3 @@ export type CreateSelectBuilderDelegate = (
     )
 );
 export type AnySelectBuilder = SelectBuilder<any>;
-//////
-//import {Column} from "./column";
-import {AliasedTable} from "./aliased-table";
-import {TupleKeys} from "./tuple";
-import { InsertValueBuilder } from "../definition";
-import {AnySelect} from "./select";
-
-declare const query : CreateSelectBuilderDelegate;
-const from = <ToTableT extends AnyAliasedTable>(
-    from : ToTableT
-) => {
-    return query().from(from);
-};
-
-declare const ofApp : AliasedTable<
-    "ofApp",
-    "ofApp",
-    {
-        readonly appId : Column<"app", "appId", number>
-    }
->;
-declare const app : AliasedTable<
-    "app",
-    "app",
-    {
-        readonly appId : Column<"app", "appId", number>,
-        readonly name : Column<"app", "name", string>,
-        readonly ssoApiKey : Column<"app", "ssoApiKey", string|null>,
-    }
->;
-declare const appKey : AliasedTable<
-    "appKey",
-    "appKey",
-    {
-        readonly appId : Column<"appKey", "appId", number>,
-        readonly key : Column<"appKey", "key", string>
-    }
->;
-declare const user : AliasedTable<
-    "user",
-    "user",
-    {
-        readonly appId : Column<"user", "appId", number>,
-        readonly externalUserId : Column<"user", "externalUserId", string>
-    }
->;
-
-from(app)
-    .select(c => [c])
-
-const a : typeof app extends typeof ofApp ? "yes" : "no";
-
-const unionTarget = from(ofApp)
-    .rightJoinUsing(appKey, c=>[c.appId])
-    .leftJoinUsing(user, c=>[c.appKey.appId])
-    .select((c) => {
-        return [c.ofApp, c.appKey.appId]
-    })
-    .select((_c) => {
-        return [user.columns.appId];
-    });
-const s = from(ofApp)
-    .rightJoinUsing(appKey, c=>[c.appId])
-    .leftJoinUsing(user, c=>[c.appKey.appId])
-    .replaceTable(ofApp, app)
-    .select((c) => {
-        return [c.ofApp, c.appKey.appId]
-    })
-    //.whereIsNotNull(c => c.ofApp.ssoApiKey)
-    /*.aggregate((row) => {
-        return {
-            ...row.ofApp,
-            //...row.appKey,
-            aggregated : true
-        }
-    })*/
-    .select((_c) => {
-        return [user.columns.appId];
-    })
-    .union(unionTarget);//*/
-    /*.fetchOne()
-    .then((result) => {
-        result
-    })//*/
-    const fr : FetchRow<
-        typeof s["data"]["joins"],
-        SelectCollectionUtil.ToColumnReferences<typeof s["data"]["selects"]>
-    >
-    s.data.joins[1].columns.appId
-    const j2c : JoinCollectionUtil.Columns<typeof s["data"]["joins"]>
-    const j2cr : JoinCollectionUtil.ToColumnReferences<typeof s["data"]["joins"]>
-    const pj2cr : ColumnReferencesUtil.Partial<typeof j2cr> = null as any;
-    const pcr : PartialColumnReferences = pj2cr;
-    //.selectAll();
-s.data.joins[0].columns
-s.data.joins[1].columns
-s.data.joins[2].columns
-s.data.selects.map((m) => {
-
-})
-const k : TupleKeys<typeof s.data.joins>;
-const k2 : TupleKeys<[1,2,3]>;
-    //.join(app, c=>[c.appId], t=>[t.appId]);
-
-const objW : {a:number, b:number} extends {a:number} ? "y" : "n";
-const type : number|string extends number ? "y" : "n";
-const ut_s_compat : SelectCollectionUtil.HasCompatibleTypes<
-    typeof unionTarget["data"]["selects"],
-    typeof s["data"]["selects"]
->
-const ut_s_compat_per_sel : {
-    [index in TupleKeys<typeof unionTarget["data"]["selects"]>] : (
-        typeof unionTarget["data"]["selects"][index] extends AnySelect ?
-            (
-                index extends keyof typeof s["data"]["selects"] ?
-                    (
-                        typeof s["data"]["selects"][index] extends AnySelect ?
-                            (
-                                //[
-                                    SelectUtil.HasCompatibleTypes<
-                                        typeof unionTarget["data"]["selects"][index],
-                                        typeof s["data"]["selects"][index]
-                                    >/*,
-                                    SelectUtil.HasOneType<typeof unionTarget["data"]["selects"][index]>,
-                                    SelectUtil.HasOneType<typeof s["data"]["selects"][index]>
-                                ]//*/
-                            ) :
-                            false
-                    ) :
-                    //This shouldn't happen,
-                    //we already checked they have
-                    //the same length
-                    false
-            ) :
-            false
-    )
-}[TupleKeys<typeof unionTarget["data"]["selects"]>];

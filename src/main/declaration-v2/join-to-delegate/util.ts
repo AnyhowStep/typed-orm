@@ -1,7 +1,7 @@
 import {AnyAliasedTable, AliasedTableUtil} from "../aliased-table";
 import {Tuple} from "../tuple";
 import {JoinToDelegate, JoinTo} from "./join-to-delegate";
-import {AnyColumn, ColumnTupleUtil} from "../column";
+import {Column, AnyColumn, ColumnTupleUtil} from "../column";
 import {ColumnCollectionUtil} from "../column-collection";
 
 export namespace JoinToDelegateUtil {
@@ -33,9 +33,17 @@ export namespace JoinToDelegateUtil {
     > (toTable : ToTableT, from : FromT) : (
         CreateUsingUnsafe<ToTableT, FromT>
     ) {
-        const to = ColumnTupleUtil.withTableAlias(from, toTable.alias);
+        const to = from.map((f) => {
+            return new Column(
+                toTable.alias,
+                f.name,
+                f.assertDelegate,
+                toTable.columns[f.name].subTableName,
+                toTable.columns[f.name].isSelectReference
+            );
+        });
         AliasedTableUtil.assertHasColumns(toTable, to);
-        return to;
+        return to as any;
     }
     export type CreateUsing<
         ToTableT extends AnyAliasedTable,

@@ -1,9 +1,9 @@
 import * as sd from "schema-decorator";
 import {JoinCollection} from "./join-collection";
-import {TupleKeys, TupleLength, wPush, TupleWPush} from "../tuple";
+import {TupleKeys, TupleLength, tupleWPush, TupleWPush} from "../tuple";
 import {ColumnCollectionUtil} from "../column-collection";
 import {JoinType, Join, AnyJoin, JoinUtil} from "../join";
-import {AnyColumn, ColumnTupleUtil, Column} from "../column";
+import {AnyColumn, ColumnTupleUtil} from "../column";
 import {AnyAliasedTable, AliasedTableUtil} from "../aliased-table";
 import {JoinFromDelegate, JoinFromDelegateUtil} from "../join-from-delegate";
 import {JoinToDelegate, JoinToDelegateUtil} from "../join-to-delegate";
@@ -62,7 +62,7 @@ export namespace JoinCollectionUtil {
     );
 
     //Types with implementation
-    export const push = wPush<AnyJoin>();
+    export const push = tupleWPush<AnyJoin>();
 
     
     export type NullableTableAlias<
@@ -109,7 +109,7 @@ export namespace JoinCollectionUtil {
                         FindWithTableAlias<JoinsT, tableAlias>["columns"]
                 )
             } :
-            never
+            {}
     );
     export function toColumnReferences<JoinsT extends JoinCollection> (
         joins : JoinsT
@@ -122,6 +122,7 @@ export namespace JoinCollectionUtil {
             } else {
                 memo[join.table.alias] = join.columns;
             }
+            return memo;
         }, {} as any);
     }
 

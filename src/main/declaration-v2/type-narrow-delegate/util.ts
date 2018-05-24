@@ -1,4 +1,5 @@
 import {JoinCollection, JoinCollectionUtil} from "../join-collection";
+import {ColumnReferencesUtil} from "../column-references";
 import {TypeNarrowDelegate} from "./type-narrow-delegate";
 
 export namespace TypeNarrowDelegateUtil {
@@ -17,7 +18,9 @@ export namespace TypeNarrowDelegateUtil {
     ) : (
         GetColumn<JoinsT, TypeNarrowDelegateT>
     ) {
-        const result = typeNarrowDelegate(JoinCollectionUtil.toConvenientColumnReferences(joins));
-        return result as any;
+        const ref = JoinCollectionUtil.toColumnReferences(joins);
+        const column = typeNarrowDelegate(ColumnReferencesUtil.toConvenient(ref) as any);
+        ColumnReferencesUtil.assertHasColumn(ref, column as any);
+        return column as any;
     }
 }

@@ -1,6 +1,6 @@
 import {AnyAliasedTable} from "../aliased-table";
 import {AnyColumn} from "../column";
-import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
+import {ColumnCollection} from "../column-collection";
 
 export enum JoinType {
     FROM  = "FROM",

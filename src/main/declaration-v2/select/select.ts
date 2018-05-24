@@ -6,14 +6,23 @@ import {AnyColumn} from "../column";
 export type Select<
     ColumnReferencesT extends ColumnReferences
 > = (
-    (AliasedExpr<
-        ColumnReferencesUtil.Partial<ColumnReferencesT>,
-        "__expr",
-        any,
-        any
-    >)|
-    ColumnReferencesUtil.ColumnCollections<ColumnReferencesT>|
-    ColumnReferencesUtil.Columns<ColumnReferencesT>
+    { __DUMMY_FROM_TABLE : {} } extends ColumnReferencesT ?
+        AliasedExpr<
+            {},
+            "__expr",
+            any,
+            any
+        > :
+        (
+            AliasedExpr<
+                ColumnReferencesUtil.Partial<ColumnReferencesT>,
+                "__expr",
+                any,
+                any
+            >|
+            ColumnReferencesUtil.ColumnCollections<ColumnReferencesT>|
+            ColumnReferencesUtil.Columns<ColumnReferencesT>
+        )
 );
 export type AnySelect = (
     AnyAliasedExpr |

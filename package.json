@@ -17,7 +17,7 @@
     "enum-util": "^1.5.1",
     "schema-decorator": "^1.34.0",
     "type-util": "^0.1.5",
-    "typed-mysql": "^1.13.0"
+    "typed-mysql": "^2.3.0"
   },
   "devDependencies": {
     "@types/node": "^10.0.4",

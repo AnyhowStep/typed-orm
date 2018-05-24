@@ -8,7 +8,7 @@ import {
 import {ReplaceValue, ReplaceValue3, ReplaceValue4} from "../obj-util";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
 import {TupleKeys} from "../tuple";
-import {Column, AnyColumn} from "../column";
+import {AnyColumn} from "../column";
 
 export namespace TableDataUtil {
     export type AutoIncrement<

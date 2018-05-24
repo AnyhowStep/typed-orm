@@ -159,4 +159,39 @@ export namespace ColumnReferencesUtil {
             return ref as any;
         }
     }
+
+    export function hasColumn (ref : ColumnReferences, column : AnyColumn) {
+        if (!ref.hasOwnProperty(column.tableAlias)) {
+            return false;
+        }
+        const columnCollection = ref[column.tableAlias];
+        return ColumnCollectionUtil.hasColumn(columnCollection, column);
+    }
+    export function assertHasColumn (ref : ColumnReferences, column : AnyColumn) {
+        if (!hasColumn(ref, column)) {
+            throw new Error(`Column ${column.tableAlias}.${column.name} does not exist in column references`);
+        }
+    }
+    export function assertHasColumns (ref : ColumnReferences, arr : AnyColumn[]) {
+        for (let i of arr) {
+            assertHasColumn(ref, i);
+        }
+    }
+    export function assertHasColumnReferences (ref : ColumnReferences, targetReferences : ColumnReferences) {
+        for (let tableAlias in targetReferences) {
+            if (!targetReferences.hasOwnProperty(tableAlias)) {
+                continue;
+            }
+            const targetColumns = targetReferences[tableAlias];
+            if (!(targetColumns instanceof Object)) {
+                continue;
+            }
+            for (let columnName in targetColumns) {
+                if (!targetColumns.hasOwnProperty(columnName)) {
+                    continue;
+                }
+                assertHasColumn(ref, targetColumns[columnName]);
+            }
+        }
+    }
 }

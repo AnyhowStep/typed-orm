@@ -1,5 +1,5 @@
-import {IStringBuilder} from "./IStringBuilder";
+import {StringBuilder} from "./StringBuilder";
 
 export interface Querify {
-    querify (sb : IStringBuilder) : void;
+    querify (sb : StringBuilder) : void;
 }

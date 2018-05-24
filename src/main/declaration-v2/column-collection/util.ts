@@ -15,6 +15,9 @@ export namespace ColumnCollectionUtil {
             true :
             false
     );
+    export function hasOneType (columnCollection : ColumnCollection) {
+        return Object.keys(columnCollection).length == 1;
+    }
     export type Types<ColumnCollectionT extends ColumnCollection> = (
         HasOneType<ColumnCollectionT> extends true ?
             (
@@ -297,7 +300,10 @@ export namespace ColumnCollectionUtil {
                     sd.and(
                         columnA.assertDelegate,
                         columnB.assertDelegate
-                    )
+                    ),
+                    //TODO Check if correct
+                    columnA.subTableName,
+                    columnA.isSelectReference
                 );
             }
         }
@@ -351,5 +357,48 @@ export namespace ColumnCollectionUtil {
             }
         }
         return result as any;
+    }
+
+    export function assertDelegate<ColumnCollectionT extends ColumnCollection> (
+        columnCollection : ColumnCollectionT,
+        useColumnNames : string[]
+    ) : (
+        sd.AssertDelegate<{
+            [columnName in Extract<keyof ColumnCollectionT, string>] : (
+                ReturnType<ColumnCollectionT[columnName]["assertDelegate"]>
+            )
+        }>
+    ) {
+        return sd.schema(
+            ...Object.keys(columnCollection)
+                .filter((columnName) => {
+                    return useColumnNames.indexOf(columnName) >= 0;
+                })
+                .map((columnName) => {
+                    const column = columnCollection[columnName];
+                    return sd.field(column.name, column.assertDelegate)
+                })
+        ) as any;
+    }
+    export function allNullAssertDelegate<ColumnCollectionT extends ColumnCollection> (
+        columnCollection : ColumnCollectionT,
+        useColumnNames : string[]
+    ) : (
+        sd.AssertDelegate<{
+            [columnName in Extract<keyof ColumnCollectionT, string>] : (
+                null
+            )
+        }>
+    ) {
+        return sd.schema(
+            ...Object.keys(columnCollection)
+                .filter((columnName) => {
+                    return useColumnNames.indexOf(columnName) >= 0;
+                })
+                .map((columnName) => {
+                    const column = columnCollection[columnName];
+                    return sd.field(column.name, sd.nil())
+                })
+        ) as any;
     }
 }

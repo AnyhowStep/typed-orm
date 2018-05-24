@@ -118,7 +118,23 @@ export class Table<
         );
     }
 
-    //as<NewAliasT extends string> (alias : NewAliasT) : AliasedTable<NewAliasT, NameT, RawColumnCollectionT>;
+    as<NewAliasT extends string> (newAlias : NewAliasT) : (
+        AliasedTable<
+            NewAliasT,
+            NameT,
+            ColumnCollectionUtil.WithTableAlias<
+                ColumnCollectionT,
+                NewAliasT
+            >
+        >
+    ) {
+        return new Table(
+            newAlias,
+            this.name,
+            ColumnCollectionUtil.withTableAlias(this.columns, newAlias),
+            this.data
+        );
+    }
 }
 
 export function table<

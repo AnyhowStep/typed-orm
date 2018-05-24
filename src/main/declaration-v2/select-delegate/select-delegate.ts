@@ -1,20 +1,17 @@
 import {AnySelectBuilder} from "../select-builder";
-import {JoinCollection, JoinCollectionUtil} from "../join-collection";
-import {Tuple, TupleWiden} from "../tuple";
-import {Select, AnySelect} from "../select";
+import {JoinCollectionUtil} from "../join-collection";
+import {Tuple} from "../tuple";
+import {Select} from "../select";
 
-//TODO It looks like we can just pass SelectBuilderT on its own
-//TODO remove JoinsT?
 export type SelectDelegate<
-    SelectBuilderT extends AnySelectBuilder,
-    JoinsT extends JoinCollection
+    SelectBuilderT extends AnySelectBuilder
 > = (
     (
-        columnReferences : JoinCollectionUtil.ToConvenientColumnReferences<JoinsT>,
+        columnReferences : JoinCollectionUtil.ToConvenientColumnReferences<SelectBuilderT["data"]["joins"]>,
         selectBuilder : SelectBuilderT
     ) => (
         Tuple<Select<
-            JoinCollectionUtil.ToColumnReferences<JoinsT>
+            JoinCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["joins"]>
         >>
     )
 );

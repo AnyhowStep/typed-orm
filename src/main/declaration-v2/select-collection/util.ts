@@ -6,7 +6,7 @@ import {SelectDelegate, SelectDelegateUtil} from "../select-delegate";
 import {JoinCollection} from "../join-collection";
 import {AnySelect, SelectUtil} from "../select";
 import {Column, AnyColumn, ColumnTupleUtil} from "../column";
-import {TupleKeys, TupleLength, TupleWConcat, wConcat, TupleWiden} from "../tuple";
+import {TupleKeys, TupleLength, TupleWConcat, tupleWConcat} from "../tuple";
 import {AliasedExpr} from "../aliased-expr";
 //import {ColumnCollection} from "../column-collection";
 import * as invalid from "../invalid";
@@ -97,6 +97,20 @@ export namespace SelectCollectionUtil {
             //Different lengths
             false
     );
+    export function assertHasCompatibleTypes (
+        actual : SelectCollection,
+        expected : SelectCollection
+    ) {
+        if (actual.length != expected.length) {
+            throw new Error(`Expected ${expected.length} selects; received ${actual.length}`);
+        }
+        for (let i=0; i<actual.length; ++i) {
+            SelectUtil.assertHasCompatibleTypes(
+                actual[i],
+                expected[i]
+            );
+        }
+    }
     export type HasDuplicate<
         SelectsT extends SelectCollection
     > = (
@@ -135,13 +149,12 @@ export namespace SelectCollectionUtil {
         }
     };
 
-    export const concat = wConcat<AnySelect>();
+    export const concat = tupleWConcat<AnySelect>();
 
     export type AppendSelectUnsafe<
         SelectsT extends SelectCollection|undefined,
         SelectBuilderT extends AnySelectBuilder,
-        JoinsT extends JoinCollection,
-        SelectDelegateT extends SelectDelegate<SelectBuilderT, JoinsT>
+        SelectDelegateT extends SelectDelegate<SelectBuilderT>
     > = (
         SelectsT extends SelectCollection ?
             (
@@ -159,8 +172,7 @@ export namespace SelectCollectionUtil {
     export type AppendSelect<
         SelectsT extends SelectCollection|undefined,
         SelectBuilderT extends AnySelectBuilder,
-        JoinsT extends JoinCollection,
-        SelectDelegateT extends SelectDelegate<SelectBuilderT, JoinsT>
+        SelectDelegateT extends SelectDelegate<SelectBuilderT>
     > = (
         SelectsT extends SelectCollection ?
             (
@@ -191,25 +203,21 @@ export namespace SelectCollectionUtil {
     export function appendSelect<
         SelectsT extends SelectCollection|undefined,
         SelectBuilderT extends AnySelectBuilder,
-        JoinsT extends JoinCollection,
-        SelectDelegateT extends SelectDelegate<SelectBuilderT, JoinsT>
+        SelectDelegateT extends SelectDelegate<SelectBuilderT>
     >(
         selects : SelectsT,
         selectBuilder : SelectBuilderT,
-        joins : JoinsT,
         selectDelegate : SelectDelegateT
     ) : (
         AppendSelect<
             SelectsT,
             SelectBuilderT,
-            JoinsT,
             SelectDelegateT
         >
     ) {
         if (selects == undefined) {
             const result = SelectDelegateUtil.execute(
                 selectBuilder,
-                joins,
                 selectDelegate
             );
             assertNonDuplicateColumn(result);
@@ -221,7 +229,6 @@ export namespace SelectCollectionUtil {
                 selects as any,
                 SelectDelegateUtil.execute(
                     selectBuilder,
-                    joins,
                     selectDelegate
                 )
             );
@@ -384,5 +391,157 @@ export namespace SelectCollectionUtil {
             }) as any;
         }
     };
+
+    export type MapToColumnsWithNameOnly<SelectsT extends SelectCollection> = (
+        {
+            [index in TupleKeys<SelectsT>] : (
+                SelectsT[index] extends AnySelect ?
+                    SelectUtil.ToColumnWithNameOnly<SelectsT[index]> :
+                    never
+            )
+        } &
+        {
+            "0" : SelectUtil.ToColumnWithNameOnly<SelectsT[0]>,
+            length : TupleLength<SelectsT>
+        } &
+        AnyColumn[]
+    );
+    export function toColumnNames (selects : SelectCollection) : string[] {
+        const result : string[] = [];
+        for (let select of selects) {
+            result.push(...SelectUtil.toColumnNames(select));
+        }
+        return result;
+    }
+    export type HasDuplicateColumnNames<SelectsT extends SelectCollection> = (
+        ColumnTupleUtil.HasDuplicate<MapToColumnsWithNameOnly<SelectsT>>
+    )
+    export function assertNoDuplicateColumnNames (selects : SelectCollection) {
+        const names = toColumnNames(selects);
+        for (let i=0; i<names.length; ++i) {
+            for (let n=i+1; n<names.length; ++n) {
+                if (names[i] == names[n]) {
+                    throw new Error(`Found duplicate column name ${names[i]} in SELECT`);
+                }
+            }
+        }
+    }
+
+    export type ToColumnCollectionImpl<TableAliasT extends string, SelectsT extends SelectCollection, K extends string> = (
+        K extends keyof SelectsT ?
+            (
+                SelectsT[K] extends AnySelect ?
+                SelectUtil.ToColumnCollection<TableAliasT, SelectsT[K]> :
+                {}
+            ) :
+            {}
+    )
+    /*
+    function gen (max) {
+	const base = [];
+	for (let i=0; i<=max; ++i) {
+            base.push(`ToColumnCollectionImpl<TableAliasT, SelectsT, "${i}">`);
+        }
+        return base.join(" &\n    ");
+    }
+
+    gen(50)
+    */
+    export type ToColumnCollection<TableAliasT extends string, SelectsT extends SelectCollection> = (
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "0"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "1"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "2"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "3"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "4"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "5"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "6"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "7"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "8"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "9"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "10"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "11"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "12"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "13"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "14"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "15"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "16"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "17"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "18"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "19"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "20"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "21"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "22"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "23"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "24"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "25"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "26"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "27"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "28"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "29"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "30"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "31"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "32"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "33"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "34"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "35"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "36"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "37"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "38"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "39"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "40"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "41"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "42"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "43"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "44"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "45"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "46"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "47"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "48"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "49"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "50">
+    );
+    export function toColumnCollection<
+        TableAliasT extends string,
+        SelectsT extends SelectCollection
+    > (
+        tableAlias : TableAliasT,
+        selects : SelectsT
+    ) : ToColumnCollection<TableAliasT, SelectsT> {
+        return selects.reduce<any>((memo, element) => {
+            if (element instanceof AliasedExpr) {
+                memo[element.alias] = new Column(
+                    tableAlias,
+                    element.alias,
+                    element.assertDelegate,
+                    element.tableAlias
+                );
+            } else if (element instanceof Column) {
+                memo[element.name] = new Column(
+                    tableAlias,
+                    element.name,
+                    element.assertDelegate,
+                    element.tableAlias,
+                    element.isSelectReference
+                );
+            } else if (element instanceof Object) {
+                Object.keys(element).reduce<any>((memo, columnName) => {
+                    const column = element[columnName];
+                    memo[column.name] = new Column(
+                        tableAlias,
+                        column.name,
+                        column.assertDelegate,
+                        column.tableAlias,
+                        column.isSelectReference
+                    );
+                    return memo;
+                }, memo);
+            } else {
+                throw new Error(`Unknown SELECT, (${typeof element})${element}`);
+            }
+
+            return memo;
+        }, {} as any);
+    }
+
 }
 
