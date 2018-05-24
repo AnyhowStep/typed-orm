@@ -6,6 +6,8 @@ import {SelectBuilder, __DUMMY_FROM_TABLE} from "./select-builder";
 import {Join, JoinType} from "./join";
 import {AnyAliasedTable} from "./aliased-table";;
 import {SelectDelegate} from "./select-delegate";
+import {AnyTable} from "./table";
+import {RawInsertRow, InsertValueBuilder} from "./insert-value-builder";
 
 export class PooledDatabase extends mysql.PooledDatabase {
     public allocate () {
@@ -72,6 +74,18 @@ export class PooledDatabase extends mysql.PooledDatabase {
         return this.query()
             .select(delegate);
     };
+
+    readonly insertValue = <TableT extends AnyTable>(
+        table : TableT,
+        value : RawInsertRow<TableT>
+    ) : InsertValueBuilder<TableT, RawInsertRow<TableT>[], "NORMAL"> => {
+        return new InsertValueBuilder(
+            table,
+            undefined,
+            "NORMAL",
+            this
+        ).value(value);
+    }
     /*
         Desired methods,
         //Basic query

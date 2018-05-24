@@ -137,6 +137,8 @@ export class Table<
     }
 }
 
+export type AnyTable = Table<string, string, ColumnCollection, TableData>;
+
 export function table<
     NameT extends string,
     RawColumnCollectionT extends RawColumnCollection

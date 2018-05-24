@@ -9,7 +9,7 @@ export type OrderByValue<
 > = (
     Expr<
         ColumnReferencesUtil.Partial<ColumnReferencesT>,
-        boolean
+        any
     > |
     ColumnReferencesUtil.Columns<ColumnReferencesT>
 );
