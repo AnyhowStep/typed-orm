@@ -1,3 +1,10 @@
+/*
+Every time you see a return type of `this`, it is an ugly hack.
+It doesn't actually return `this`.
+
+It returns a new instance with the same `DataT` as `this`.
+Required because TypeScript gets confused with generics.
+*/
 import {
     JoinCollection,
     JoinCollectionUtil
@@ -1276,7 +1283,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         whereDelegate : WhereDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         this.assertAfterFrom();
 
         let whereExpr = WhereDelegateUtil.execute(this, whereDelegate as any);
@@ -1306,7 +1313,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         whereDelegate : WhereDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         this.assertAfterFrom();
         
         if (this.extraData.whereExpr == undefined) {
@@ -1326,7 +1333,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
 
     //DISTINCT CLAUSE
-    distinct (distinct : boolean = true) : SelectBuilder<DataT> {
+    distinct (distinct : boolean = true) : this {
         return new SelectBuilder(
             this.data,
             {
@@ -1337,7 +1344,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
 
     //SQL_CALC_FOUND_ROWS CLAUSE
-    sqlCalcFoundRows (sqlCalcFoundRows : boolean = true) : SelectBuilder<DataT> {
+    sqlCalcFoundRows (sqlCalcFoundRows : boolean = true) : this {
         return new SelectBuilder(
             this.data,
             {
@@ -1363,7 +1370,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         groupByDelegate : GroupByDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         this.assertAfterFrom();
 
         const groupBy = GroupByDelegateUtil.execute(this, groupByDelegate as any);
@@ -1389,7 +1396,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         groupByDelegate : GroupByDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         this.assertAfterFrom();
         
         if (this.extraData.groupBy == undefined) {
@@ -1407,7 +1414,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
 
     //REMOVES GROUP BY
-    unsetGroupBy () : SelectBuilder<DataT> {
+    unsetGroupBy () : this {
         return new SelectBuilder(
             this.data,
             {
@@ -1438,7 +1445,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         havingDelegate : HavingDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         this.assertAfterFrom();
         
         return new SelectBuilder(
@@ -1463,7 +1470,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         havingDelegate : HavingDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         this.assertAfterFrom();
         
         if (this.extraData.havingExpr == undefined) {
@@ -1486,19 +1493,19 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Replaces
     orderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
         orderByDelegate : OrderByDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
                 orderBy : OrderByDelegateUtil.execute(this, orderByDelegate as any),
             }
-        );
+        ) as any;
     }
     //Appends
     appendOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
         orderByDelegate : OrderByDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         if (this.extraData.orderBy == undefined) {
             return this.orderBy(orderByDelegate);
         }
@@ -1512,11 +1519,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ...this.extraData,
                 orderBy : this.extraData.orderBy.concat(orderBy),
             }
-        );
+        ) as any;
     }
 
     //REMOVES ORDER BY
-    unsetOrderBy () : SelectBuilder<DataT> {
+    unsetOrderBy () : this {
         return new SelectBuilder(
             this.data,
             {
@@ -1527,7 +1534,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
 
     //LIMIT CLAUSE
-    limit (rowCount : number) : SelectBuilder<DataT> {
+    limit (rowCount : number) : this {
         let limit = this.extraData.limit;
         if (limit == undefined) {
             limit = {
@@ -1546,11 +1553,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ...this.extraData,
                 limit : limit,
             }
-        );
+        ) as any;
     }
 
     //OFFSET CLAUSE
-    offset (offset : number) : SelectBuilder<DataT> {
+    offset (offset : number) : this {
         let limit = this.extraData.limit;
         if (limit == undefined) {
             limit = {
@@ -1569,37 +1576,37 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ...this.extraData,
                 limit : limit,
             }
-        );
+        ) as any;
     }
 
     //REMOVES LIMIT
-    unsetLimit () : SelectBuilder<DataT> {
+    unsetLimit () : this {
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
                 limit : undefined,
             }
-        );
+        ) as any;
     }
 
     //UNION ORDER BY CLAUSE
     //Replaces
     unionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
         orderByDelegate : OrderByDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
                 unionOrderBy : OrderByDelegateUtil.execute(this, orderByDelegate as any),
             }
-        );
+        ) as any;
     }
     //Appends
     appendUnionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
         orderByDelegate : OrderByDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         if (this.extraData.unionOrderBy == undefined) {
             return this.unionOrderBy(orderByDelegate);
         }
@@ -1613,11 +1620,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ...this.extraData,
                 unionOrderBy : this.extraData.unionOrderBy.concat(orderBy),
             }
-        );
+        ) as any;
     }
 
     //UNION REMOVES ORDER BY
-    unsetUnionOrderBy () : SelectBuilder<DataT> {
+    unsetUnionOrderBy () : this {
         return new SelectBuilder(
             this.data,
             {
@@ -1628,7 +1635,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
 
     //UNION LIMIT CLAUSE
-    unionLimit (rowCount : number) : SelectBuilder<DataT> {
+    unionLimit (rowCount : number) : this {
         let unionLimit = this.extraData.unionLimit;
         if (unionLimit == undefined) {
             unionLimit = {
@@ -1647,11 +1654,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ...this.extraData,
                 unionLimit : unionLimit,
             }
-        );
+        ) as any;
     }
 
     //UNION OFFSET CLAUSE
-    unionOffset (offset : number) : SelectBuilder<DataT> {
+    unionOffset (offset : number) : this {
         let unionLimit = this.extraData.unionLimit;
         if (unionLimit == undefined) {
             unionLimit = {
@@ -1670,18 +1677,18 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ...this.extraData,
                 unionLimit : unionLimit,
             }
-        );
+        ) as any;
     }
 
     //UNION REMOVES LIMIT
-    unsetUnionLimit () : SelectBuilder<DataT> {
+    unsetUnionLimit () : this {
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
                 unionLimit : undefined,
             }
-        );
+        ) as any;
     }
 
     //Must be done after select or there will be no columns to widen.

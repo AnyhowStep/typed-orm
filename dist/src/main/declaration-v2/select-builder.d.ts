@@ -338,7 +338,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, whereDelegate: WhereDelegateT): SelectBuilder<DataT>;
+    }>, whereDelegate: WhereDelegateT): this;
     andWhere<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -348,9 +348,9 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, whereDelegate: WhereDelegateT): SelectBuilder<DataT>;
-    distinct(distinct?: boolean): SelectBuilder<DataT>;
-    sqlCalcFoundRows(sqlCalcFoundRows?: boolean): SelectBuilder<DataT>;
+    }>, whereDelegate: WhereDelegateT): this;
+    distinct(distinct?: boolean): this;
+    sqlCalcFoundRows(sqlCalcFoundRows?: boolean): this;
     groupBy<GroupByDelegateT extends GroupByDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -360,7 +360,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, groupByDelegate: GroupByDelegateT): SelectBuilder<DataT>;
+    }>, groupByDelegate: GroupByDelegateT): this;
     appendGroupBy<GroupByDelegateT extends GroupByDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -370,8 +370,8 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, groupByDelegate: GroupByDelegateT): SelectBuilder<DataT>;
-    unsetGroupBy(): SelectBuilder<DataT>;
+    }>, groupByDelegate: GroupByDelegateT): this;
+    unsetGroupBy(): this;
     having<HavingDelegateT extends HavingDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -381,7 +381,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, havingDelegate: HavingDelegateT): SelectBuilder<DataT>;
+    }>, havingDelegate: HavingDelegateT): this;
     andHaving<HavingDelegateT extends HavingDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -391,19 +391,19 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, havingDelegate: HavingDelegateT): SelectBuilder<DataT>;
-    orderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>>(orderByDelegate: OrderByDelegateT): SelectBuilder<DataT>;
-    appendOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>>(orderByDelegate: OrderByDelegateT): SelectBuilder<DataT>;
-    unsetOrderBy(): SelectBuilder<DataT>;
-    limit(rowCount: number): SelectBuilder<DataT>;
-    offset(offset: number): SelectBuilder<DataT>;
-    unsetLimit(): SelectBuilder<DataT>;
-    unionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>>(orderByDelegate: OrderByDelegateT): SelectBuilder<DataT>;
-    appendUnionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>>(orderByDelegate: OrderByDelegateT): SelectBuilder<DataT>;
-    unsetUnionOrderBy(): SelectBuilder<DataT>;
-    unionLimit(rowCount: number): SelectBuilder<DataT>;
-    unionOffset(offset: number): SelectBuilder<DataT>;
-    unsetUnionLimit(): SelectBuilder<DataT>;
+    }>, havingDelegate: HavingDelegateT): this;
+    orderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>>(orderByDelegate: OrderByDelegateT): this;
+    appendOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>>(orderByDelegate: OrderByDelegateT): this;
+    unsetOrderBy(): this;
+    limit(rowCount: number): this;
+    offset(offset: number): this;
+    unsetLimit(): this;
+    unionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>>(orderByDelegate: OrderByDelegateT): this;
+    appendUnionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>>(orderByDelegate: OrderByDelegateT): this;
+    unsetUnionOrderBy(): this;
+    unionLimit(rowCount: number): this;
+    unionOffset(offset: number): this;
+    unsetUnionLimit(): this;
     widen<TypeWidenDelegateT extends TypeWidenDelegate<DataT["selects"]>, WidenT>(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;

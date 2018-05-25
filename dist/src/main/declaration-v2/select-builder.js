@@ -1,5 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/*
+Every time you see a return type of `this`, it is an ugly hack.
+It doesn't actually return `this`.
+
+It returns a new instance with the same `DataT` as `this`.
+Required because TypeScript gets confused with generics.
+*/
 const join_collection_1 = require("./join-collection");
 const type_util_1 = require("@anyhowstep/type-util");
 const join_1 = require("./join");
