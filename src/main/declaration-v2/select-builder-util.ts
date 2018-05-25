@@ -1,7 +1,8 @@
-import {SelectBuilder, __DUMMY_FROM_TABLE} from "./select-builder";
+import {SelectBuilderData, SelectBuilder, __DUMMY_FROM_TABLE} from "./select-builder";
 import {AnyAliasedTable} from "./aliased-table";
 import {Join} from "./join";
 import {ReplaceValue2} from "./obj-util";
+import {SelectCollectionUtil} from "./select-collection";
 
 export namespace SelectBuilderUtil {
     export type CleanData = {
@@ -32,8 +33,8 @@ export namespace SelectBuilderUtil {
             >
         ],
     };
-    export type From<ToTableT extends AnyAliasedTable> = (
-        SelectBuilder<ReplaceValue2<
+    export type FromData<ToTableT extends AnyAliasedTable> = (
+        ReplaceValue2<
             CleanData,
             "hasFrom",
             true,
@@ -45,6 +46,26 @@ export namespace SelectBuilderUtil {
                     false
                 >
             ]
-        >>
+        >
     );
+    export type From<ToTableT extends AnyAliasedTable> = (
+        SelectBuilder<FromData<ToTableT>>
+    );
+    export type SelectAllData<DataT extends SelectBuilderData> = (
+        ReplaceValue2<
+            DataT,
+            "selects",
+            SelectCollectionUtil.FromJoinCollection<DataT["joins"]>,
+            "hasSelect",
+            true
+        >
+    );
+    export type SelectAll<ToTableT extends AnyAliasedTable> = (
+        SelectBuilder<
+            SelectAllData<
+                FromData<ToTableT>
+            >
+        >
+    );
+
 }

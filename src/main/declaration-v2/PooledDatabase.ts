@@ -164,7 +164,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
     > (
         table : TableT,
         where : WhereDelegate<SelectBuilderUtil.From<TableT>>
-    ) : SelectBuilderUtil.From<TableT>;
+    ) : SelectBuilderUtil.SelectAll<TableT>;
     selectAll (arg0 : any, arg1 : any, arg2? : any) : any {
         if (arg0 instanceof AliasedTable) {
             return (this.from(arg0) as any)
