@@ -211,6 +211,16 @@ class PooledDatabase extends mysql.PooledDatabase {
             }));
         });
     }
+    selectAll(arg0, arg1, arg2) {
+        if (arg0 instanceof aliased_table_1.AliasedTable) {
+            return this.from(arg0)
+                .where(arg1)
+                .selectAll();
+        }
+        else {
+            return super.selectAll(arg0, arg1, arg2);
+        }
+    }
     update(arg0, arg1, arg2, arg3, arg4) {
         if (arg0 instanceof table_1.Table) {
             return this.from(arg0)

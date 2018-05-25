@@ -11,6 +11,7 @@ import {UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferences
 import * as sd from "schema-decorator";
 import {WhereDelegate} from "./where-delegate";
 import {DeleteBuilder, DeleteTables} from "./delete-builder";
+import {SelectBuilderUtil} from "./select-builder-util";
 
 import {AliasedTable} from "./aliased-table";;
 import {AliasedExpr} from "./aliased-expr";
@@ -153,6 +154,26 @@ export class PooledDatabase extends mysql.PooledDatabase {
         return this.query()
             .select(delegate);
     };
+    selectAll<T> (
+        assert: sd.AssertFunc<T>,
+        queryStr: string,
+        queryValues?: mysql.QueryValues
+    ) : Promise<mysql.SelectResult<T>>;
+    selectAll<
+        TableT extends AnyAliasedTable
+    > (
+        table : TableT,
+        where : WhereDelegate<SelectBuilderUtil.From<TableT>>
+    ) : SelectBuilderUtil.From<TableT>;
+    selectAll (arg0 : any, arg1 : any, arg2? : any) : any {
+        if (arg0 instanceof AliasedTable) {
+            return (this.from(arg0) as any)
+                .where(arg1)
+                .selectAll();
+        } else {
+            return super.selectAll(arg0, arg1, arg2);
+        }
+    }
 
     readonly insertValue = <TableT extends AnyTable>(
         table : TableT,

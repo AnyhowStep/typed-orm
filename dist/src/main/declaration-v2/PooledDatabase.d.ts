@@ -2,6 +2,7 @@ import * as mysql from "typed-mysql";
 import { CreateSelectBuilderDelegate } from "./select-builder";
 import { SelectBuilder } from "./select-builder";
 import { Join } from "./join";
+import { AnyAliasedTable } from "./aliased-table";
 import { Table, AnyTable } from "./table";
 import { InsertValueBuilder } from "./insert-value-builder";
 import { InsertSelectBuilder } from "./insert-select-builder";
@@ -9,6 +10,7 @@ import { UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReference
 import * as sd from "schema-decorator";
 import { WhereDelegate } from "./where-delegate";
 import { DeleteBuilder, DeleteTables } from "./delete-builder";
+import { SelectBuilderUtil } from "./select-builder-util";
 import { AliasedTable } from "./aliased-table";
 import { AliasedExpr } from "./aliased-expr";
 import { Column } from "./column";
@@ -484,6 +486,8 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             isMutable: {};
         }>, {}, true>];
     }>;
+    selectAll<T>(assert: sd.AssertFunc<T>, queryStr: string, queryValues?: mysql.QueryValues): Promise<mysql.SelectResult<T>>;
+    selectAll<TableT extends AnyAliasedTable>(table: TableT, where: WhereDelegate<SelectBuilderUtil.From<TableT>>): SelectBuilderUtil.From<TableT>;
     readonly insertValue: <TableT extends Table<string, string, {
         readonly [columnName: string]: Column<string, string, any>;
     }, TableData>>(table: TableT, value: { [name in Exclude<Extract<keyof TableT["columns"], string>, keyof TableT["data"]["hasDefaultValue"] | keyof TableT["data"]["isGenerated"]>]: Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
