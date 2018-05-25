@@ -135,6 +135,48 @@ export class Table<
             this.data
         );
     }
+
+    withName<NewNameT extends string> (newName : NewNameT) : (
+        Table<
+            NewNameT,
+            NewNameT,
+            ColumnCollectionUtil.WithTableAlias<
+                ColumnCollectionT,
+                NewNameT
+            >,
+            DataT
+        >
+    ) {
+        return new Table(
+            newName,
+            newName,
+            ColumnCollectionUtil.withTableAlias(this.columns, newName),
+            this.data
+        );
+    }
+    addColumns<RawColumnCollectionT extends RawColumnCollection> (
+        rawColumnCollection : RawColumnCollectionT
+    ) : (
+        Table<
+            AliasT,
+            NameT,
+            ColumnCollectionUtil.Merge<
+                ColumnCollectionT,
+                RawColumnCollectionUtil.ToColumnCollection<AliasT, RawColumnCollectionT>
+            >,
+            DataT
+        >
+    ) {
+        return new Table(
+            this.alias,
+            this.name,
+            ColumnCollectionUtil.merge(
+                this.columns,
+                RawColumnCollectionUtil.toColumnCollection(this.alias, rawColumnCollection)
+            ),
+            this.data
+        );
+    }
 }
 
 export type AnyTable = Table<string, string, ColumnCollection, TableData>;

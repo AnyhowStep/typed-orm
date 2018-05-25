@@ -11,6 +11,8 @@ export declare class Table<AliasT extends string, NameT extends string, ColumnCo
     setIsMutable<IsMutableDelegateT extends IsMutableDelegate<DataT, ColumnCollectionT>>(delegate: IsMutableDelegateT): (Table<AliasT, NameT, ColumnCollectionT, TableDataUtil.IsMutable<DataT, ColumnCollectionT, IsMutableDelegateT>>);
     setImmutable(): (Table<AliasT, NameT, ColumnCollectionT, TableDataUtil.Immutable<DataT>>);
     as<NewAliasT extends string>(newAlias: NewAliasT): (AliasedTable<NewAliasT, NameT, ColumnCollectionUtil.WithTableAlias<ColumnCollectionT, NewAliasT>>);
+    withName<NewNameT extends string>(newName: NewNameT): (Table<NewNameT, NewNameT, ColumnCollectionUtil.WithTableAlias<ColumnCollectionT, NewNameT>, DataT>);
+    addColumns<RawColumnCollectionT extends RawColumnCollection>(rawColumnCollection: RawColumnCollectionT): (Table<AliasT, NameT, ColumnCollectionUtil.Merge<ColumnCollectionT, RawColumnCollectionUtil.ToColumnCollection<AliasT, RawColumnCollectionT>>, DataT>);
 }
 export declare type AnyTable = Table<string, string, ColumnCollection, TableData>;
 export declare function table<NameT extends string, RawColumnCollectionT extends RawColumnCollection>(name: NameT, rawColumnCollection: RawColumnCollectionT): (Table<NameT, NameT, RawColumnCollectionUtil.ToColumnCollection<NameT, RawColumnCollectionT>, {

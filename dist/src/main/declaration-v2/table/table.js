@@ -27,6 +27,12 @@ class Table extends aliased_table_1.AliasedTable {
     as(newAlias) {
         return new Table(newAlias, this.name, column_collection_1.ColumnCollectionUtil.withTableAlias(this.columns, newAlias), this.data);
     }
+    withName(newName) {
+        return new Table(newName, newName, column_collection_1.ColumnCollectionUtil.withTableAlias(this.columns, newName), this.data);
+    }
+    addColumns(rawColumnCollection) {
+        return new Table(this.alias, this.name, column_collection_1.ColumnCollectionUtil.merge(this.columns, raw_column_collection_1.RawColumnCollectionUtil.toColumnCollection(this.alias, rawColumnCollection)), this.data);
+    }
 }
 exports.Table = Table;
 function table(name, rawColumnCollection) {
