@@ -31,6 +31,8 @@ import { RawExprUtil } from "./raw-expr";
 import { UpdateBuilder, UpdateAssignmentReferencesDelegate, RawUpdateAssignmentReferences } from "./update-builder";
 import { InsertAssignmentCollectionDelegate, RawInsertSelectAssignmentCollection, InsertSelectBuilder } from "./insert-select-builder";
 import { DeleteTables, DeleteBuilder, DeleteTablesDelegate } from "./delete-builder";
+import { TupleWConcat } from "./tuple";
+import { AnyJoin } from "./join";
 import { Table } from "./table";
 export declare const ARBITRARY_ROW_COUNT = 999999999;
 export interface LimitData {
@@ -460,7 +462,16 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: any;
         parentJoins: any;
     }>, alias: AliasT): (AliasedExpr<{}, "__expr", AliasT, RawExprUtil.Type<SelectBuilder<DataT>>>);
-    subQuery(): (SelectBuilder<{
+    subQuery(): (DataT["hasParentJoins"] extends true ? SelectBuilder<{
+        hasSelect: false;
+        hasFrom: false;
+        hasUnion: false;
+        joins: [Join<typeof __DUMMY_FROM_TABLE, typeof __DUMMY_FROM_TABLE["columns"], true>];
+        selects: undefined;
+        aggregateDelegate: undefined;
+        hasParentJoins: true;
+        parentJoins: (DataT["hasFrom"] extends true ? TupleWConcat<AnyJoin, DataT["parentJoins"], DataT["joins"]> : DataT["parentJoins"]);
+    }> : SelectBuilder<{
         hasSelect: false;
         hasFrom: false;
         hasUnion: false;

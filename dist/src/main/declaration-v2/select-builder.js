@@ -821,26 +821,52 @@ class SelectBuilder {
         return raw_expr_1.RawExprUtil.toExpr(this).as(alias);
     }
     subQuery() {
-        const childBuilder = new SelectBuilder({
-            hasSelect: false,
-            hasFrom: false,
-            hasUnion: false,
-            //This is just a dummy JOIN
-            //It will be replaced when the FROM clause is added
-            joins: [
-                new join_1.Join(join_1.JoinType.FROM, exports.__DUMMY_FROM_TABLE, exports.__DUMMY_FROM_TABLE.columns, true, [], [])
-            ],
-            selects: undefined,
-            aggregateDelegate: undefined,
-            //Give this builder access to our JOINs
-            hasParentJoins: this.data.hasFrom,
-            parentJoins: this.data.joins,
-        }, {
-            db: this.extraData.db,
-            distinct: false,
-            sqlCalcFoundRows: false,
-        });
-        return childBuilder;
+        if (this.data.hasParentJoins) {
+            const childBuilder = new SelectBuilder({
+                hasSelect: false,
+                hasFrom: false,
+                hasUnion: false,
+                //This is just a dummy JOIN
+                //It will be replaced when the FROM clause is added
+                joins: [
+                    new join_1.Join(join_1.JoinType.FROM, exports.__DUMMY_FROM_TABLE, exports.__DUMMY_FROM_TABLE.columns, true, [], [])
+                ],
+                selects: undefined,
+                aggregateDelegate: undefined,
+                //Give this builder access to our JOINs
+                hasParentJoins: true,
+                parentJoins: (this.data.hasFrom ?
+                    (this.data.parentJoins.concat(this.data.joins)) :
+                    this.data.parentJoins),
+            }, {
+                db: this.extraData.db,
+                distinct: false,
+                sqlCalcFoundRows: false,
+            });
+            return childBuilder;
+        }
+        else {
+            const childBuilder = new SelectBuilder({
+                hasSelect: false,
+                hasFrom: false,
+                hasUnion: false,
+                //This is just a dummy JOIN
+                //It will be replaced when the FROM clause is added
+                joins: [
+                    new join_1.Join(join_1.JoinType.FROM, exports.__DUMMY_FROM_TABLE, exports.__DUMMY_FROM_TABLE.columns, true, [], [])
+                ],
+                selects: undefined,
+                aggregateDelegate: undefined,
+                //Give this builder access to our JOINs
+                hasParentJoins: this.data.hasFrom,
+                parentJoins: this.data.joins,
+            }, {
+                db: this.extraData.db,
+                distinct: false,
+                sqlCalcFoundRows: false,
+            });
+            return childBuilder;
+        }
     }
     //Convenience
     insertInto(table, delegate) {

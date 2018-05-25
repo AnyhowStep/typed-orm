@@ -49,6 +49,8 @@ import {
     DeleteBuilder,
     DeleteTablesDelegate
 } from "./delete-builder";
+import {TupleWConcat} from "./tuple";
+import {AnyJoin} from "./join";
 
 import {Table} from "./table";
 Table;
@@ -2124,31 +2126,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         return RawExprUtil.toExpr(this).as(alias) as any;
     }
 
-    subQuery() : (
-        SelectBuilder<{
-            hasSelect : false,
-            hasFrom : false,
-            hasUnion : false,
-
-            //This is just a dummy JOIN
-            //It will be replaced when the FROM clause is added
-            joins : [
-                Join<
-                    typeof __DUMMY_FROM_TABLE,
-                    typeof __DUMMY_FROM_TABLE["columns"],
-                    true
-                >
-            ],
-            selects : undefined,
-            aggregateDelegate : undefined,
-
-            //Give this builder access to our JOINs
-            hasParentJoins : DataT["hasFrom"],
-            parentJoins : DataT["joins"],
-        }>
-    ) {
-        const childBuilder = new SelectBuilder(
-            {
+    subQuery () : (
+        DataT["hasParentJoins"] extends true ?
+            SelectBuilder<{
                 hasSelect : false,
                 hasFrom : false,
                 hasUnion : false,
@@ -2156,33 +2136,130 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 //This is just a dummy JOIN
                 //It will be replaced when the FROM clause is added
                 joins : [
-                    new Join<
+                    Join<
                         typeof __DUMMY_FROM_TABLE,
                         typeof __DUMMY_FROM_TABLE["columns"],
                         true
-                    >(
-                        JoinType.FROM,
-                        __DUMMY_FROM_TABLE,
-                        __DUMMY_FROM_TABLE.columns,
-                        true,
-                        [],
-                        []
-                    )
+                    >
                 ],
                 selects : undefined,
                 aggregateDelegate : undefined,
 
                 //Give this builder access to our JOINs
-                hasParentJoins : this.data.hasFrom,
-                parentJoins : this.data.joins,
-            },
-            {
-                db : this.extraData.db,
-                distinct : false,
-                sqlCalcFoundRows : false,
-            }
-        );
-        return childBuilder;
+                hasParentJoins : true,
+                parentJoins : (
+                    DataT["hasFrom"] extends true ?
+                        TupleWConcat<
+                            AnyJoin,
+                            DataT["parentJoins"],
+                            DataT["joins"]
+                        > :
+                        DataT["parentJoins"]
+                ),
+            }> :
+            SelectBuilder<{
+                hasSelect : false,
+                hasFrom : false,
+                hasUnion : false,
+
+                //This is just a dummy JOIN
+                //It will be replaced when the FROM clause is added
+                joins : [
+                    Join<
+                        typeof __DUMMY_FROM_TABLE,
+                        typeof __DUMMY_FROM_TABLE["columns"],
+                        true
+                    >
+                ],
+                selects : undefined,
+                aggregateDelegate : undefined,
+
+                //Give this builder access to our JOINs
+                hasParentJoins : DataT["hasFrom"],
+                parentJoins : DataT["joins"],
+            }>
+    ) {
+        if (this.data.hasParentJoins) {
+            const childBuilder = new SelectBuilder(
+                {
+                    hasSelect : false,
+                    hasFrom : false,
+                    hasUnion : false,
+    
+                    //This is just a dummy JOIN
+                    //It will be replaced when the FROM clause is added
+                    joins : [
+                        new Join<
+                            typeof __DUMMY_FROM_TABLE,
+                            typeof __DUMMY_FROM_TABLE["columns"],
+                            true
+                        >(
+                            JoinType.FROM,
+                            __DUMMY_FROM_TABLE,
+                            __DUMMY_FROM_TABLE.columns,
+                            true,
+                            [],
+                            []
+                        )
+                    ],
+                    selects : undefined,
+                    aggregateDelegate : undefined,
+    
+                    //Give this builder access to our JOINs
+                    hasParentJoins : true,
+                    parentJoins : (
+                        this.data.hasFrom ?
+                            (
+                                this.data.parentJoins.concat(this.data.joins)
+                            ) :
+                            this.data.parentJoins
+                    ) as any,
+                },
+                {
+                    db : this.extraData.db,
+                    distinct : false,
+                    sqlCalcFoundRows : false,
+                }
+            );
+            return childBuilder as any;
+        } else {
+            const childBuilder = new SelectBuilder(
+                {
+                    hasSelect : false,
+                    hasFrom : false,
+                    hasUnion : false,
+    
+                    //This is just a dummy JOIN
+                    //It will be replaced when the FROM clause is added
+                    joins : [
+                        new Join<
+                            typeof __DUMMY_FROM_TABLE,
+                            typeof __DUMMY_FROM_TABLE["columns"],
+                            true
+                        >(
+                            JoinType.FROM,
+                            __DUMMY_FROM_TABLE,
+                            __DUMMY_FROM_TABLE.columns,
+                            true,
+                            [],
+                            []
+                        )
+                    ],
+                    selects : undefined,
+                    aggregateDelegate : undefined,
+    
+                    //Give this builder access to our JOINs
+                    hasParentJoins : this.data.hasFrom,
+                    parentJoins : this.data.joins,
+                },
+                {
+                    db : this.extraData.db,
+                    distinct : false,
+                    sqlCalcFoundRows : false,
+                }
+            );
+            return childBuilder as any;
+        }
     }
 
     //Convenience
