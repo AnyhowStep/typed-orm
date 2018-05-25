@@ -78,14 +78,15 @@ export class PooledDatabase extends mysql.PooledDatabase {
             this.getData()
         );
     }
-    public async transaction(callback: (db: PooledDatabase) => Promise<void>) : Promise<void> {
+    public async transaction<ResultT> (callback : (db : PooledDatabase) => Promise<ResultT>) : Promise<ResultT> {
         const allocated = this.allocate();
 
         await allocated.beginTransaction();
-        await callback(allocated)
-            .then(async () => {
+        return callback(allocated)
+            .then(async (result) => {
                 await allocated.commit();
                 allocated.freeConnection();
+                return result;
             })
             .catch(async (err) => {
                 await allocated.rollback();
