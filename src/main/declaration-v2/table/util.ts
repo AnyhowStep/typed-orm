@@ -1,6 +1,7 @@
-import {AnyTable} from "./table";
+import {Table, AnyTable} from "./table";
 import {JoinCollection} from "../join-collection";
 import {Column} from "../column";
+import {TableData} from "../table-data";
 
 export namespace TableUtil {
     export type RequiredColumnNames<
@@ -73,4 +74,17 @@ export namespace TableUtil {
             }
         }
     }
+
+    export type ToGeneric<TableT extends AnyTable> = (
+        Table<
+            any,
+            any,
+            {
+                [columnName in Extract<keyof TableT["columns"], string>] : (
+                    Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
+                )
+            },
+            TableData
+        >
+    );
 }
