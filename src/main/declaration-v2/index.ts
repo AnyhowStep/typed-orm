@@ -30,6 +30,8 @@ export * from "./type-narrow-delegate";
 export * from "./type-widen-delegate";
 export * from "./where-delegate";
 
+export * from "./delete-builder";
+export * from "./field-util";
 export * from "./insert-select-builder";
 export * from "./insert-value-builder";
 export * from "./invalid";
@@ -37,6 +39,7 @@ export * from "./math";
 export * from "./obj-util";
 export * from "./PooledDatabase";
 export * from "./querify";
+export * from "./select-builder-util";
 export * from "./select-builder";
 export * from "./string-util";
 export * from "./StringBuilder";

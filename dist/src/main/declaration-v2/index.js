@@ -30,6 +30,8 @@ __export(require("./table-data"));
 __export(require("./type-narrow-delegate"));
 __export(require("./type-widen-delegate"));
 __export(require("./where-delegate"));
+__export(require("./delete-builder"));
+__export(require("./field-util"));
 __export(require("./insert-select-builder"));
 __export(require("./insert-value-builder"));
 __export(require("./PooledDatabase"));
