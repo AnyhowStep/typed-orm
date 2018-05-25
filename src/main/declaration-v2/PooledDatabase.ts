@@ -1,8 +1,6 @@
 import * as mysql from "typed-mysql";
 import {CreateSelectBuilderDelegate} from "./select-builder";
 import {SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-builder";
-//import {InsertSelectBuilder, InsertValueBuilder} from "./insert";
-//import {UpdateBuilder} from "./update";
 import {Join, JoinType} from "./join";
 import {AnyAliasedTable} from "./aliased-table";;
 import {SelectDelegate} from "./select-delegate";

@@ -71,5 +71,5 @@ export function implies <
     return or(
         not(left),
         right
-    );
+    ) as any;
 }

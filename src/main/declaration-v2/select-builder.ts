@@ -102,8 +102,8 @@ export interface SelectBuilderData {
 
     readonly aggregateDelegate : undefined|AggregateDelegate<any>,
 
-    readonly hasParentJoins : boolean,
-    readonly parentJoins : JoinCollection,
+    //readonly hasParentJoins : boolean,
+    //readonly parentJoins : JoinCollection,
 }
 
 export const __DUMMY_FROM_TABLE = table(
