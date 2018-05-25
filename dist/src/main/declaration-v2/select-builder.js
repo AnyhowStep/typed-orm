@@ -820,7 +820,7 @@ class SelectBuilder {
         }
         return raw_expr_1.RawExprUtil.toExpr(this).as(alias);
     }
-    subQuery(delegate) {
+    subQuery() {
         const childBuilder = new SelectBuilder({
             hasSelect: false,
             hasFrom: false,
@@ -840,9 +840,7 @@ class SelectBuilder {
             distinct: false,
             sqlCalcFoundRows: false,
         });
-        const selectValueBuilder = delegate(childBuilder);
-        const expr = raw_expr_1.RawExprUtil.toExpr(selectValueBuilder);
-        return expr;
+        return childBuilder;
     }
     //Convenience
     insertInto(table, delegate) {
