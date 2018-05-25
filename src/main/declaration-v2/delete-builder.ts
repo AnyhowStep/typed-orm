@@ -29,6 +29,10 @@ export class DeleteBuilder<
         selects : undefined,
 
         aggregateDelegate : any,
+
+        //It makes no sense to delete a subquery
+        hasParentJoins : false,
+        parentJoins : any,
     }>,
     DeleteTablesT extends undefined|DeleteTables<SelectBuilderT>
 > implements Querify {

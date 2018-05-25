@@ -105,6 +105,10 @@ export class UpdateBuilder<
         selects : undefined,
 
         aggregateDelegate : any,
+
+        //It makes no sense to update a subquery
+        hasParentJoins : false,
+        parentJoins : any,
     }>,
     AssignmentRefT extends undefined|RawUpdateAssignmentReferences<SelectBuilderT>
 > implements Querify {

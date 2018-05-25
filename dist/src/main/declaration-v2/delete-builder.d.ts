@@ -14,6 +14,8 @@ export declare class DeleteBuilder<SelectBuilderT extends SelectBuilder<{
     joins: any;
     selects: undefined;
     aggregateDelegate: any;
+    hasParentJoins: false;
+    parentJoins: any;
 }>, DeleteTablesT extends undefined | DeleteTables<SelectBuilderT>> implements Querify {
     readonly selectBuilder: SelectBuilderT;
     readonly deleteTables: DeleteTablesT;

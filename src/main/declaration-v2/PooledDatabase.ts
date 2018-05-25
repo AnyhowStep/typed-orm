@@ -41,6 +41,10 @@ export type ConvenientUpdateSelectBuilder<TableT extends AnyTable> = (
         selects : undefined,
 
         aggregateDelegate : undefined,
+
+        //It makes no sense to update a subquery
+        hasParentJoins : false,
+        parentJoins : any,
     }>
 );
 export type ConvenientDeleteSelectBuilder<TableT extends AnyTable> = (
@@ -60,6 +64,10 @@ export type ConvenientDeleteSelectBuilder<TableT extends AnyTable> = (
         selects : undefined,
 
         aggregateDelegate : undefined,
+
+        //It makes no sense to delete a subquery
+        hasParentJoins : false,
+        parentJoins : any,
     }>
 );
 
@@ -110,6 +118,22 @@ export class PooledDatabase extends mysql.PooledDatabase {
                 ],
                 selects : undefined,
                 aggregateDelegate : undefined,
+
+                hasParentJoins : false,
+                parentJoins : [
+                    new Join<
+                        typeof __DUMMY_FROM_TABLE,
+                        typeof __DUMMY_FROM_TABLE["columns"],
+                        true
+                    >(
+                        JoinType.FROM,
+                        __DUMMY_FROM_TABLE,
+                        __DUMMY_FROM_TABLE.columns,
+                        true,
+                        [],
+                        []
+                    )
+                ],
             },
             {
                 db : this,

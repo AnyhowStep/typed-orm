@@ -14,6 +14,8 @@ export declare type SelectValueBuilder<TypeT> = SelectBuilder<{
         "0": SelectValue<any, TypeT>;
     });
     aggregateDelegate: any;
+    hasParentJoins: any;
+    parentJoins: any;
 }>;
 export declare type AllowedExprConstant = number | string | boolean | Date | null | undefined;
 export declare type RawExpr<TypeT> = ((TypeT extends AllowedExprConstant ? TypeT : never) | Expr<any, TypeT> | Column<any, any, TypeT> | SelectValueBuilder<TypeT>);

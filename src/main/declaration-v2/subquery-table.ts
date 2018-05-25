@@ -14,6 +14,9 @@ export class SubqueryTable<
         joins : any,
         selects : any,
         aggregateDelegate : any,
+
+        hasParentJoins : any,
+        parentJoins : any,
     }
 > extends AliasedTable<
     AliasT,

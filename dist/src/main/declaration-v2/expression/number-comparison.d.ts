@@ -14,6 +14,8 @@ export declare const lt: <LeftT extends number | Column<any, any, number> | Expr
         "0": any;
     };
     aggregateDelegate: any;
+    hasParentJoins: any;
+    parentJoins: any;
 }>, RightT extends number | Column<any, any, number> | Expr<any, number> | SelectBuilder<{
     hasSelect: true;
     hasFrom: any;
@@ -27,6 +29,8 @@ export declare const lt: <LeftT extends number | Column<any, any, number> | Expr
         "0": any;
     };
     aggregateDelegate: any;
+    hasParentJoins: any;
+    parentJoins: any;
 }>>(left: LeftT, right: RightT) => Expr<{ readonly [tableAlias in Extract<Exclude<keyof (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never), keyof (RightT extends SelectBuilder<any> ? {} : RightT extends string | number | boolean | Date | null | undefined ? {} : RightT extends Column<string, string, any> ? { readonly [tableAlias in RightT["tableAlias"]]: { readonly [name in RightT["name"]]: RightT; }; } : RightT extends Expr<any, any> ? RightT["usedReferences"] : never)>, string>]: (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never)[tableAlias] extends {
     readonly [columnName: string]: Column<string, string, any>;
 } ? (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never)[tableAlias] : never; } & { readonly [tableAlias in Extract<Exclude<keyof (RightT extends SelectBuilder<any> ? {} : RightT extends string | number | boolean | Date | null | undefined ? {} : RightT extends Column<string, string, any> ? { readonly [tableAlias in RightT["tableAlias"]]: { readonly [name in RightT["name"]]: RightT; }; } : RightT extends Expr<any, any> ? RightT["usedReferences"] : never), keyof (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never)>, string>]: (RightT extends SelectBuilder<any> ? {} : RightT extends string | number | boolean | Date | null | undefined ? {} : RightT extends Column<string, string, any> ? { readonly [tableAlias in RightT["tableAlias"]]: { readonly [name in RightT["name"]]: RightT; }; } : RightT extends Expr<any, any> ? RightT["usedReferences"] : never)[tableAlias] extends {
@@ -49,6 +53,8 @@ export declare const gt: <LeftT extends number | Column<any, any, number> | Expr
         "0": any;
     };
     aggregateDelegate: any;
+    hasParentJoins: any;
+    parentJoins: any;
 }>, RightT extends number | Column<any, any, number> | Expr<any, number> | SelectBuilder<{
     hasSelect: true;
     hasFrom: any;
@@ -62,6 +68,8 @@ export declare const gt: <LeftT extends number | Column<any, any, number> | Expr
         "0": any;
     };
     aggregateDelegate: any;
+    hasParentJoins: any;
+    parentJoins: any;
 }>>(left: LeftT, right: RightT) => Expr<{ readonly [tableAlias in Extract<Exclude<keyof (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never), keyof (RightT extends SelectBuilder<any> ? {} : RightT extends string | number | boolean | Date | null | undefined ? {} : RightT extends Column<string, string, any> ? { readonly [tableAlias in RightT["tableAlias"]]: { readonly [name in RightT["name"]]: RightT; }; } : RightT extends Expr<any, any> ? RightT["usedReferences"] : never)>, string>]: (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never)[tableAlias] extends {
     readonly [columnName: string]: Column<string, string, any>;
 } ? (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never)[tableAlias] : never; } & { readonly [tableAlias in Extract<Exclude<keyof (RightT extends SelectBuilder<any> ? {} : RightT extends string | number | boolean | Date | null | undefined ? {} : RightT extends Column<string, string, any> ? { readonly [tableAlias in RightT["tableAlias"]]: { readonly [name in RightT["name"]]: RightT; }; } : RightT extends Expr<any, any> ? RightT["usedReferences"] : never), keyof (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never)>, string>]: (RightT extends SelectBuilder<any> ? {} : RightT extends string | number | boolean | Date | null | undefined ? {} : RightT extends Column<string, string, any> ? { readonly [tableAlias in RightT["tableAlias"]]: { readonly [name in RightT["name"]]: RightT; }; } : RightT extends Expr<any, any> ? RightT["usedReferences"] : never)[tableAlias] extends {
@@ -84,6 +92,8 @@ export declare const ltEq: <LeftT extends number | Column<any, any, number> | Ex
         "0": any;
     };
     aggregateDelegate: any;
+    hasParentJoins: any;
+    parentJoins: any;
 }>, RightT extends number | Column<any, any, number> | Expr<any, number> | SelectBuilder<{
     hasSelect: true;
     hasFrom: any;
@@ -97,6 +107,8 @@ export declare const ltEq: <LeftT extends number | Column<any, any, number> | Ex
         "0": any;
     };
     aggregateDelegate: any;
+    hasParentJoins: any;
+    parentJoins: any;
 }>>(left: LeftT, right: RightT) => Expr<{ readonly [tableAlias in Extract<Exclude<keyof (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never), keyof (RightT extends SelectBuilder<any> ? {} : RightT extends string | number | boolean | Date | null | undefined ? {} : RightT extends Column<string, string, any> ? { readonly [tableAlias in RightT["tableAlias"]]: { readonly [name in RightT["name"]]: RightT; }; } : RightT extends Expr<any, any> ? RightT["usedReferences"] : never)>, string>]: (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never)[tableAlias] extends {
     readonly [columnName: string]: Column<string, string, any>;
 } ? (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never)[tableAlias] : never; } & { readonly [tableAlias in Extract<Exclude<keyof (RightT extends SelectBuilder<any> ? {} : RightT extends string | number | boolean | Date | null | undefined ? {} : RightT extends Column<string, string, any> ? { readonly [tableAlias in RightT["tableAlias"]]: { readonly [name in RightT["name"]]: RightT; }; } : RightT extends Expr<any, any> ? RightT["usedReferences"] : never), keyof (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never)>, string>]: (RightT extends SelectBuilder<any> ? {} : RightT extends string | number | boolean | Date | null | undefined ? {} : RightT extends Column<string, string, any> ? { readonly [tableAlias in RightT["tableAlias"]]: { readonly [name in RightT["name"]]: RightT; }; } : RightT extends Expr<any, any> ? RightT["usedReferences"] : never)[tableAlias] extends {
@@ -119,6 +131,8 @@ export declare const gtEq: <LeftT extends number | Column<any, any, number> | Ex
         "0": any;
     };
     aggregateDelegate: any;
+    hasParentJoins: any;
+    parentJoins: any;
 }>, RightT extends number | Column<any, any, number> | Expr<any, number> | SelectBuilder<{
     hasSelect: true;
     hasFrom: any;
@@ -132,6 +146,8 @@ export declare const gtEq: <LeftT extends number | Column<any, any, number> | Ex
         "0": any;
     };
     aggregateDelegate: any;
+    hasParentJoins: any;
+    parentJoins: any;
 }>>(left: LeftT, right: RightT) => Expr<{ readonly [tableAlias in Extract<Exclude<keyof (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never), keyof (RightT extends SelectBuilder<any> ? {} : RightT extends string | number | boolean | Date | null | undefined ? {} : RightT extends Column<string, string, any> ? { readonly [tableAlias in RightT["tableAlias"]]: { readonly [name in RightT["name"]]: RightT; }; } : RightT extends Expr<any, any> ? RightT["usedReferences"] : never)>, string>]: (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never)[tableAlias] extends {
     readonly [columnName: string]: Column<string, string, any>;
 } ? (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never)[tableAlias] : never; } & { readonly [tableAlias in Extract<Exclude<keyof (RightT extends SelectBuilder<any> ? {} : RightT extends string | number | boolean | Date | null | undefined ? {} : RightT extends Column<string, string, any> ? { readonly [tableAlias in RightT["tableAlias"]]: { readonly [name in RightT["name"]]: RightT; }; } : RightT extends Expr<any, any> ? RightT["usedReferences"] : never), keyof (LeftT extends SelectBuilder<any> ? {} : LeftT extends string | number | boolean | Date | null | undefined ? {} : LeftT extends Column<string, string, any> ? { readonly [tableAlias in LeftT["tableAlias"]]: { readonly [name in LeftT["name"]]: LeftT; }; } : LeftT extends Expr<any, any> ? LeftT["usedReferences"] : never)>, string>]: (RightT extends SelectBuilder<any> ? {} : RightT extends string | number | boolean | Date | null | undefined ? {} : RightT extends Column<string, string, any> ? { readonly [tableAlias in RightT["tableAlias"]]: { readonly [name in RightT["name"]]: RightT; }; } : RightT extends Expr<any, any> ? RightT["usedReferences"] : never)[tableAlias] extends {

@@ -105,8 +105,8 @@ export interface SelectBuilderData {
 
     readonly aggregateDelegate : undefined|AggregateDelegate<any>,
 
-    //readonly hasParentJoins : boolean,
-    //readonly parentJoins : JoinCollection,
+    readonly hasParentJoins : boolean,
+    readonly parentJoins : JoinCollection,
 }
 
 export const __DUMMY_FROM_TABLE = table(
@@ -153,6 +153,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         toTable : ToTableT
     ) : (
@@ -201,6 +204,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         toTable : ToTableT,
         fromDelegate : FromDelegateT,
@@ -238,6 +244,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         toTable : ToTableT,
         fromDelegate : FromDelegateT
@@ -275,6 +284,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         toTable : ToTableT,
         fromDelegate : FromDelegateT,
@@ -315,6 +327,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         toTable : ToTableT,
         fromDelegate : FromDelegateT
@@ -351,6 +366,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         toTable : ToTableT,
         fromDelegate : FromDelegateT,
@@ -388,6 +406,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         toTable : ToTableT,
         fromDelegate : FromDelegateT
@@ -425,6 +446,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         selectDelegate : SelectDelegateT
     ) : (
@@ -484,6 +508,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>
     ) : (
         SelectBuilder<ReplaceValue2<
@@ -519,6 +546,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         tableA : TableA,
         tableB : TableB
@@ -565,6 +595,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            //Makes no sense to aggregate a subquery
+            //because you cannot fetch() it
+            hasParentJoins : false,
+            parentJoins : any,
         }>,
         aggregateDelegate : AggregateDelegateT
     ) : (
@@ -627,6 +662,12 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            //Makes no sense to fetch a subquery
+            //because it may require data from
+            //parent joins
+            hasParentJoins : false,
+            parentJoins : any,
         }>,
     ) : (
         Promise<AggregateDelegateUtil.AggregatedRow<
@@ -652,6 +693,12 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            //Makes no sense to fetch a subquery
+            //because it may require data from
+            //parent joins
+            hasParentJoins : false,
+            parentJoins : any,
         }>,
     ) : (
         Promise<AggregateDelegateUtil.AggregatedRow<
@@ -677,6 +724,12 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            //Makes no sense to fetch a subquery
+            //because it may require data from
+            //parent joins
+            hasParentJoins : false,
+            parentJoins : any,
         }>,
     ) : (
         Promise<
@@ -713,6 +766,12 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            //Makes no sense to fetch a subquery
+            //because it may require data from
+            //parent joins
+            hasParentJoins : false,
+            parentJoins : any,
         }>
     ) : Promise<number> {
         this.assertAfterFrom();
@@ -755,6 +814,12 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            //Makes no sense to fetch a subquery
+            //because it may require data from
+            //parent joins
+            hasParentJoins : false,
+            parentJoins : any,
         }>
     ) : Promise<boolean> {
         this.assertAfterFrom();
@@ -785,6 +850,12 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            //Makes no sense to fetch a subquery
+            //because it may require data from
+            //parent joins
+            hasParentJoins : false,
+            parentJoins : any,
         }>,
         rawPaginationArgs : RawPaginationArgs = {}
     ) : (
@@ -852,6 +923,12 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            //Makes no sense to fetch a subquery
+            //because it may require data from
+            //parent joins
+            hasParentJoins : false,
+            parentJoins : any,
         }>
     ) : (
         FetchValueCheck<DataT, FetchValueType<DataT>>
@@ -875,6 +952,12 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            //Makes no sense to fetch a subquery
+            //because it may require data from
+            //parent joins
+            hasParentJoins : false,
+            parentJoins : any,
         }>
     ) : (
         FetchValueCheck<DataT, undefined|FetchValueType<DataT>>
@@ -901,6 +984,12 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            //Makes no sense to fetch a subquery
+            //because it may require data from
+            //parent joins
+            hasParentJoins : false,
+            parentJoins : any,
         }>
     ) : (
         FetchValueCheck<DataT, FetchValueType<DataT>[]>
@@ -979,6 +1068,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         typeNarrowDelegate : TypeNarrowDelegateT
     ) : (
@@ -1034,6 +1126,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         typeNarrowDelegate : TypeNarrowDelegateT
     ) : (
@@ -1084,6 +1179,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         typeNarrowDelegate : TypeNarrowDelegateT,
         value : ConstT
@@ -1158,6 +1256,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         whereDelegate : WhereDelegateT
     ) : SelectBuilder<DataT> {
@@ -1185,6 +1286,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         whereDelegate : WhereDelegateT
     ) : SelectBuilder<DataT> {
@@ -1239,6 +1343,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         groupByDelegate : GroupByDelegateT
     ) : SelectBuilder<DataT> {
@@ -1262,6 +1369,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         groupByDelegate : GroupByDelegateT
     ) : SelectBuilder<DataT> {
@@ -1308,6 +1418,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         havingDelegate : HavingDelegateT
     ) : SelectBuilder<DataT> {
@@ -1330,6 +1443,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         havingDelegate : HavingDelegateT
     ) : SelectBuilder<DataT> {
@@ -1563,6 +1679,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : undefined,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         typeWidenDelegate : TypeWidenDelegateT,
         assertWidened : sd.AssertFunc<WidenT>
@@ -1628,6 +1747,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>
     > (
         this : SelectBuilder<{
@@ -1639,6 +1761,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         target : TargetT,
         //Set to `false` to UNION ALL
@@ -1946,6 +2071,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         alias : AliasT
     ) : (
@@ -1970,6 +2098,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             joins : any,
             selects : any,
             aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
         }>,
         alias : AliasT
     ) : (
@@ -1995,6 +2126,21 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
 
     //Convenience
     insertInto<TableT extends AnyTable> (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : any,
+            hasUnion : any,
+
+            joins : any,
+
+            selects : any,
+
+            aggregateDelegate : any,
+
+            //It makes no sense to insert into a subquery
+            hasParentJoins : false,
+            parentJoins : any,
+        }>,
         table : TableT,
         delegate : InsertAssignmentCollectionDelegate<TableT, SelectBuilder<DataT>>
     ) : (
@@ -2024,6 +2170,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             selects : undefined,
 
             aggregateDelegate : any,
+
+            //It makes no sense to update a subquery
+            hasParentJoins : false,
+            parentJoins : any,
         }>,
         delegate : UpdateAssignmentReferencesDelegate<SelectBuilder<DataT>>
     ) : (
@@ -2038,6 +2188,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 selects : undefined,
     
                 aggregateDelegate : any,
+
+                //It makes no sense to update a subquery
+                hasParentJoins : false,
+                parentJoins : any,
             }>,
             RawUpdateAssignmentReferences<SelectBuilder<DataT>>
         >
@@ -2060,6 +2214,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             selects : undefined,
 
             aggregateDelegate : any,
+
+            //It makes no sense to delete a subquery
+            hasParentJoins : false,
+            parentJoins : any,
         }>,
         delegate? : DeleteTablesDelegate<SelectBuilder<DataT>>
     ) : (
@@ -2074,6 +2232,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 selects : undefined,
     
                 aggregateDelegate : any,
+
+                //It makes no sense to delete a subquery
+                hasParentJoins : false,
+                parentJoins : any,
             }>,
             DeleteTables<SelectBuilder<DataT>>
         >
@@ -2105,6 +2267,17 @@ export type CreateSelectBuilderDelegate = (
             ],
             selects : undefined,
             aggregateDelegate : undefined,
+
+            hasParentJoins : false,
+            //This is just a dummy JOIN
+            //It will be replaced when we have a subquery
+            parentJoins : [
+                Join<
+                    typeof __DUMMY_FROM_TABLE,
+                    typeof __DUMMY_FROM_TABLE["columns"],
+                    true
+                >
+            ],
         }>
     )
 );

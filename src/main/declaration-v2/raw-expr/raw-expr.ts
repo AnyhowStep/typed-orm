@@ -18,6 +18,9 @@ export type SelectValueBuilder<TypeT> = SelectBuilder<{
         }
     ),
     aggregateDelegate : any,
+
+    hasParentJoins : any,
+    parentJoins : any,
 }>;
 
 export type AllowedExprConstant = number|string|boolean|Date|null|undefined;

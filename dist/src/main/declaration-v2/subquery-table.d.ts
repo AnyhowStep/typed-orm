@@ -9,6 +9,8 @@ export declare class SubqueryTable<AliasT extends string, DataT extends {
     joins: any;
     selects: any;
     aggregateDelegate: any;
+    hasParentJoins: any;
+    parentJoins: any;
 }> extends AliasedTable<AliasT, AliasT, SelectCollectionUtil.ToColumnCollection<AliasT, DataT["selects"]>> {
     readonly selectBuilder: SelectBuilder<DataT>;
     constructor(alias: AliasT, selectBuilder: SelectBuilder<DataT>);

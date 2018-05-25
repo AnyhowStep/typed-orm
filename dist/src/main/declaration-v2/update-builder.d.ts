@@ -27,6 +27,8 @@ export declare class UpdateBuilder<SelectBuilderT extends SelectBuilder<{
     joins: any;
     selects: undefined;
     aggregateDelegate: any;
+    hasParentJoins: false;
+    parentJoins: any;
 }>, AssignmentRefT extends undefined | RawUpdateAssignmentReferences<SelectBuilderT>> implements Querify {
     readonly selectBuilder: SelectBuilderT;
     readonly assignmentReferences: AssignmentRefT;

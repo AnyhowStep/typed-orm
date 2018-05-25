@@ -41,6 +41,10 @@ class PooledDatabase extends mysql.PooledDatabase {
                 ],
                 selects: undefined,
                 aggregateDelegate: undefined,
+                hasParentJoins: false,
+                parentJoins: [
+                    new join_1.Join(join_1.JoinType.FROM, select_builder_1.__DUMMY_FROM_TABLE, select_builder_1.__DUMMY_FROM_TABLE.columns, true, [], [])
+                ],
             }, {
                 db: this,
                 distinct: false,
