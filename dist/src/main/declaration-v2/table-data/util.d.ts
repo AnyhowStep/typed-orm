@@ -1,5 +1,5 @@
 import { TableData, AutoIncrementDelegate, IsGeneratedDelegate, HasDefaultValueDelegate, IsMutableDelegate } from "./table-data";
-import { ReplaceValue, ReplaceValue3, ReplaceValue4 } from "../obj-util";
+import { RemoveKey, ReplaceValue, ReplaceValue3, ReplaceValue4 } from "../obj-util";
 import { ColumnCollection } from "../column-collection";
 import { TupleKeys } from "../tuple";
 import { AnyColumn } from "../column";
@@ -12,6 +12,8 @@ export declare namespace TableDataUtil {
         [columnName in Exclude<Extract<keyof DataT["isMutable"], string>, ReturnType<AutoIncrementDelegateT>["name"]>]: true;
     }>);
     function autoIncrement<DataT extends TableData, ColumnCollectionT extends ColumnCollection, AutoIncrementDelegateT extends AutoIncrementDelegate<ColumnCollectionT>>(data: DataT, columnCollection: ColumnCollectionT, delegate: AutoIncrementDelegateT): (AutoIncrement<DataT, ColumnCollectionT, AutoIncrementDelegateT>);
+    type UnsetAutoIncrement<DataT extends TableData> = (DataT["autoIncrement"] extends AnyColumn ? ReplaceValue3<DataT, "autoIncrement", undefined, "isGenerated", RemoveKey<DataT["isGenerated"], DataT["autoIncrement"]["name"]>, "hasDefaultValue", RemoveKey<DataT["hasDefaultValue"], DataT["autoIncrement"]["name"]>> : DataT);
+    function unsetAutoIncrement<DataT extends TableData>(data: DataT): (UnsetAutoIncrement<DataT>);
     type IsGenerated<DataT extends TableData, ColumnCollectionT extends ColumnCollection, IsGeneratedDelegateT extends IsGeneratedDelegate<DataT, ColumnCollectionT>> = (ReturnType<IsGeneratedDelegateT>[TupleKeys<ReturnType<IsGeneratedDelegateT>>] extends AnyColumn ? ReplaceValue3<DataT, "isGenerated", DataT["isGenerated"] & {
         [columnName in ReturnType<IsGeneratedDelegateT>[TupleKeys<ReturnType<IsGeneratedDelegateT>>]["name"]]: true;
     }, "hasDefaultValue", DataT["hasDefaultValue"] & {

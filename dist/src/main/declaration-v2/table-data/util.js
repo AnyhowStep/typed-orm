@@ -13,6 +13,18 @@ var TableDataUtil;
         return Object.assign({}, data, { autoIncrement: column, isGenerated: Object.assign({}, data.isGenerated, { [column.name]: true }), hasDefaultValue: Object.assign({}, data.hasDefaultValue, { [column.name]: true }), isMutable: isMutable });
     }
     TableDataUtil.autoIncrement = autoIncrement;
+    function unsetAutoIncrement(data) {
+        if (data.autoIncrement == undefined) {
+            return data;
+        }
+        const autoIncrement = data.autoIncrement;
+        const isGenerated = Object.assign({}, data.isGenerated);
+        const hasDefaultValue = Object.assign({}, data.hasDefaultValue);
+        delete isGenerated[autoIncrement.name];
+        delete hasDefaultValue[autoIncrement.name];
+        return Object.assign({}, data, { isGenerated: isGenerated, hasDefaultValue: hasDefaultValue });
+    }
+    TableDataUtil.unsetAutoIncrement = unsetAutoIncrement;
     function isGenerated(data, columnCollection, delegate) {
         let columns = columnCollection;
         if (data.autoIncrement != undefined) {

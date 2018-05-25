@@ -1,6 +1,6 @@
 ### `typed-orm`
 
-An experiment in type-safe MySQL query building using TypeScript.
+An experiment in type-safe, and structurally-safe MySQL query building using TypeScript.
 
 ### Tables
 

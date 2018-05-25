@@ -9,6 +9,7 @@ import {
     IsMutableDelegate,
     TableDataUtil
 } from "../table-data";
+import * as fieldUtil from "../field-util";
 
 export class Table<
     AliasT extends string,
@@ -42,6 +43,21 @@ export class Table<
             TableDataUtil.autoIncrement(this.data, this.columns, delegate)
         );
     }
+    /*unsetAutoIncrement () : (
+        Table<
+            AliasT,
+            NameT,
+            ColumnCollectionT,
+            TableDataUtil.UnsetAutoIncrement<DataT>
+        >
+    ) {
+        return new Table(
+            this.alias,
+            this.name,
+            this.columns,
+            TableDataUtil.unsetAutoIncrement(this.data)
+        );
+    }*/
     setIsGenerated<
         IsGeneratedDelegateT extends IsGeneratedDelegate<
             DataT,
@@ -162,17 +178,47 @@ export class Table<
             NameT,
             ColumnCollectionUtil.Merge<
                 ColumnCollectionT,
-                RawColumnCollectionUtil.ToColumnCollection<AliasT, RawColumnCollectionT>
+                RawColumnCollectionUtil.ToColumnCollection<
+                    AliasT,
+                    RawColumnCollectionT
+                >
             >,
             DataT
         >
+    );
+    addColumns<TupleT extends fieldUtil.AnyFieldTuple> (
+        fields : TupleT
+    ) : (
+        Table<
+            AliasT,
+            NameT,
+            ColumnCollectionUtil.Merge<
+                ColumnCollectionT,
+                RawColumnCollectionUtil.ToColumnCollection<
+                    AliasT,
+                    fieldUtil.FieldsToObject<TupleT>
+                >
+            >,
+            DataT
+        >
+    );
+    addColumns (raw : RawColumnCollection|fieldUtil.AnyFieldTuple) : (
+        Table<
+            AliasT,
+            NameT,
+            any,
+            any
+        >
     ) {
+        if (raw instanceof Array) {
+            raw = fieldUtil.fieldsToObject(raw);
+        }
         return new Table(
             this.alias,
             this.name,
             ColumnCollectionUtil.merge(
                 this.columns,
-                RawColumnCollectionUtil.toColumnCollection(this.alias, rawColumnCollection)
+                RawColumnCollectionUtil.toColumnCollection(this.alias, raw)
             ),
             this.data
         );
@@ -205,8 +251,41 @@ export function table<
             }
         }
     >
-) {
-    const columns = RawColumnCollectionUtil.toColumnCollection(name, rawColumnCollection);
+);
+export function table<
+    NameT extends string,
+    TupleT extends fieldUtil.AnyFieldTuple
+> (
+    name : NameT,
+    tuple : TupleT,
+) : (
+    Table<
+        NameT,
+        NameT,
+        RawColumnCollectionUtil.ToColumnCollection<NameT, fieldUtil.FieldsToObject<TupleT>>,
+        {
+            autoIncrement : undefined,
+            isGenerated : {},
+            hasDefaultValue : {
+                [name in RawColumnCollectionUtil.NullableColumnNames<
+                    fieldUtil.FieldsToObject<TupleT>
+                >] : true
+            },
+            isMutable : {
+                [name in Extract<keyof fieldUtil.FieldsToObject<TupleT>, string>] : true
+            }
+        }
+    >
+);
+export function table (
+    name : string,
+    raw : RawColumnCollection|fieldUtil.AnyFieldTuple,
+) : any {
+
+    if (raw instanceof Array) {
+        raw = fieldUtil.fieldsToObject(raw);
+    }
+    const columns = RawColumnCollectionUtil.toColumnCollection(name, raw);
     const hasDefaultValue = {} as any;
     const isMutable = {} as any;
 

@@ -2,6 +2,7 @@ import { AliasedTable } from "../aliased-table";
 import { ColumnCollection, ColumnCollectionUtil } from "../column-collection";
 import { RawColumnCollection, RawColumnCollectionUtil } from "../raw-column-collection";
 import { TableData, AutoIncrementDelegate, IsGeneratedDelegate, HasDefaultValueDelegate, IsMutableDelegate, TableDataUtil } from "../table-data";
+import * as fieldUtil from "../field-util";
 export declare class Table<AliasT extends string, NameT extends string, ColumnCollectionT extends ColumnCollection, DataT extends TableData> extends AliasedTable<AliasT, NameT, ColumnCollectionT> {
     readonly data: DataT;
     constructor(alias: AliasT, name: NameT, columns: ColumnCollectionT, data: DataT);
@@ -13,6 +14,7 @@ export declare class Table<AliasT extends string, NameT extends string, ColumnCo
     as<NewAliasT extends string>(newAlias: NewAliasT): (AliasedTable<NewAliasT, NameT, ColumnCollectionUtil.WithTableAlias<ColumnCollectionT, NewAliasT>>);
     withName<NewNameT extends string>(newName: NewNameT): (Table<NewNameT, NewNameT, ColumnCollectionUtil.WithTableAlias<ColumnCollectionT, NewNameT>, DataT>);
     addColumns<RawColumnCollectionT extends RawColumnCollection>(rawColumnCollection: RawColumnCollectionT): (Table<AliasT, NameT, ColumnCollectionUtil.Merge<ColumnCollectionT, RawColumnCollectionUtil.ToColumnCollection<AliasT, RawColumnCollectionT>>, DataT>);
+    addColumns<TupleT extends fieldUtil.AnyFieldTuple>(fields: TupleT): (Table<AliasT, NameT, ColumnCollectionUtil.Merge<ColumnCollectionT, RawColumnCollectionUtil.ToColumnCollection<AliasT, fieldUtil.FieldsToObject<TupleT>>>, DataT>);
 }
 export declare type AnyTable = Table<string, string, ColumnCollection, TableData>;
 export declare function table<NameT extends string, RawColumnCollectionT extends RawColumnCollection>(name: NameT, rawColumnCollection: RawColumnCollectionT): (Table<NameT, NameT, RawColumnCollectionUtil.ToColumnCollection<NameT, RawColumnCollectionT>, {
@@ -23,5 +25,15 @@ export declare function table<NameT extends string, RawColumnCollectionT extends
     };
     isMutable: {
         [name in Extract<keyof RawColumnCollectionT, string>]: true;
+    };
+}>);
+export declare function table<NameT extends string, TupleT extends fieldUtil.AnyFieldTuple>(name: NameT, tuple: TupleT): (Table<NameT, NameT, RawColumnCollectionUtil.ToColumnCollection<NameT, fieldUtil.FieldsToObject<TupleT>>, {
+    autoIncrement: undefined;
+    isGenerated: {};
+    hasDefaultValue: {
+        [name in RawColumnCollectionUtil.NullableColumnNames<fieldUtil.FieldsToObject<TupleT>>]: true;
+    };
+    isMutable: {
+        [name in Extract<keyof fieldUtil.FieldsToObject<TupleT>, string>]: true;
     };
 }>);

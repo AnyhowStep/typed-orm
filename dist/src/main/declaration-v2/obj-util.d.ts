@@ -1,3 +1,6 @@
+export declare type RemoveKey<T, K extends keyof T> = {
+    [key in Exclude<keyof T, K>]: T[key];
+};
 export declare type ReplaceValue<T, K extends keyof T, V> = {
     [key in keyof T]: (key extends K ? V : T[key]);
 };

@@ -5,7 +5,7 @@ import {
     HasDefaultValueDelegate,
     IsMutableDelegate
 } from "./table-data";
-import {ReplaceValue, ReplaceValue3, ReplaceValue4} from "../obj-util";
+import {RemoveKey, ReplaceValue, ReplaceValue3, ReplaceValue4} from "../obj-util";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
 import {TupleKeys} from "../tuple";
 import {AnyColumn} from "../column";
@@ -70,6 +70,38 @@ export namespace TableDataUtil {
                 [column.name] : true,
             },
             isMutable : isMutable
+        } as any;
+    }
+    export type UnsetAutoIncrement<
+        DataT extends TableData
+    > = (
+        DataT["autoIncrement"] extends AnyColumn ?
+            ReplaceValue3<
+                DataT,
+                "autoIncrement",
+                undefined,
+                "isGenerated",
+                RemoveKey<DataT["isGenerated"], DataT["autoIncrement"]["name"]>,
+                "hasDefaultValue",
+                RemoveKey<DataT["hasDefaultValue"], DataT["autoIncrement"]["name"]>
+            > :
+            DataT
+    );
+    export function unsetAutoIncrement<DataT extends TableData> (data : DataT) : (
+        UnsetAutoIncrement<DataT>
+    ) {
+        if (data.autoIncrement == undefined) {
+            return data as any;
+        }
+        const autoIncrement = data.autoIncrement;
+        const isGenerated = {...data.isGenerated};
+        const hasDefaultValue = {...data.hasDefaultValue};
+        delete isGenerated[autoIncrement.name];
+        delete hasDefaultValue[autoIncrement.name];
+        return {
+            ...(data as any),
+            isGenerated : isGenerated,
+            hasDefaultValue : hasDefaultValue,
         } as any;
     }
     export type IsGenerated<
