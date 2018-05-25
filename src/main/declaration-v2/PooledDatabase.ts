@@ -12,6 +12,8 @@ import * as sd from "schema-decorator";
 import {WhereDelegate} from "./where-delegate";
 import {DeleteBuilder, DeleteTables} from "./delete-builder";
 import {SelectBuilderUtil} from "./select-builder-util";
+import {FetchRow} from "./fetch-row";
+import {SelectCollectionUtil} from "./select-collection";
 
 import {AliasedTable} from "./aliased-table";;
 import {AliasedExpr} from "./aliased-expr";
@@ -173,6 +175,22 @@ export class PooledDatabase extends mysql.PooledDatabase {
         } else {
             return super.selectAll(arg0, arg1, arg2);
         }
+    }
+    //By auto-increment id, actually
+    fetchOneById<TableT extends AnyAliasedTable & { data : { autoIncrement : Column<any, any, number> } }> (
+        table : TableT,
+        id : number
+    ) : (
+        Promise<FetchRow<
+            SelectBuilderUtil.SelectAll<TableT>["data"]["joins"],
+            SelectCollectionUtil.ToColumnReferences<
+                SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]
+            >
+        >>
+    ) {
+        return (this.from(table) as any)
+            .whereIsEqual((c : any) => c[table.data.autoIncrement.name], id)
+            .fetchOne();
     }
 
     readonly insertValue = <TableT extends AnyTable>(

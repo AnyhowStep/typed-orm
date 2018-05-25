@@ -221,6 +221,12 @@ class PooledDatabase extends mysql.PooledDatabase {
             return super.selectAll(arg0, arg1, arg2);
         }
     }
+    //By auto-increment id, actually
+    fetchOneById(table, id) {
+        return this.from(table)
+            .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
+            .fetchOne();
+    }
     update(arg0, arg1, arg2, arg3, arg4) {
         if (arg0 instanceof table_1.Table) {
             return this.from(arg0)
