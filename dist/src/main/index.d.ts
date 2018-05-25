@@ -1,2 +1,1 @@
-export * from "./declaration";
-export * from "./definition";
+export * from "./declaration-v2";

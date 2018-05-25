@@ -1,6 +1,0 @@
-import * as d from "../../declaration";
-import { Expr } from "../expr";
-export declare function coalesce<LeftT extends d.RawExpr<any>, R0 extends d.RawExpr<any>>(left: LeftT, r0: R0): (Expr<d.ExprUsedColumns<LeftT> & d.ExprUsedColumns<R0>, Exclude<d.ExprType<LeftT>, null> | d.ExprType<R0>>);
-export declare function coalesce<LeftT extends d.RawExpr<any>, R0 extends d.RawExpr<any>, R1 extends d.RawExpr<any>>(left: LeftT, r0: R0, r1: R1): (Expr<d.ExprUsedColumns<LeftT> & d.ExprUsedColumns<R0> & d.ExprUsedColumns<R1>, Exclude<d.ExprType<LeftT>, null> | Exclude<d.ExprType<R0>, null> | d.ExprType<R1>>);
-export declare function coalesce<LeftT extends d.RawExpr<any>, R0 extends d.RawExpr<any>, R1 extends d.RawExpr<any>, R2 extends d.RawExpr<any>>(left: LeftT, r0: R0, r1: R1, r2: R2): (Expr<d.ExprUsedColumns<LeftT> & d.ExprUsedColumns<R0> & d.ExprUsedColumns<R1> & d.ExprUsedColumns<R2>, Exclude<d.ExprType<LeftT>, null> | Exclude<d.ExprType<R0>, null> | Exclude<d.ExprType<R1>, null> | d.ExprType<R2>>);
-export declare function coalesce<LeftT extends d.RawExpr<any>, RightT extends d.RawExpr<any>>(left: LeftT, ...rightArr: RightT[]): (Expr<d.ExprUsedColumns<LeftT> & d.ExprUsedColumns<RightT>, Exclude<d.ExprType<LeftT>, null> | d.ExprType<RightT>>);
