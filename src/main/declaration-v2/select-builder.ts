@@ -33,7 +33,7 @@ import * as e from "./expression";
 import {AliasedExpr} from "./aliased-expr";
 import * as mysql from "typed-mysql";
 import {SubqueryTable} from "./subquery-table";
-import {RawExprUtil} from "./raw-expr";
+import {RawExprUtil, SelectValueBuilder} from "./raw-expr";
 import {
     UpdateBuilder,
     UpdateAssignmentReferencesDelegate,
@@ -2096,7 +2096,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             hasFrom : any,
             hasUnion : any,
             joins : any,
-            selects : any,
+            selects : DataT["selects"] & { length : 1 }//SelectCollection & { length : 1 },//any,
             aggregateDelegate : any,
 
             hasParentJoins : any,
@@ -2122,6 +2122,75 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             throw new Error(`Invalid SELECT; must select a column or column expression`);
         }
         return RawExprUtil.toExpr(this).as(alias) as any;
+    }
+
+    subQuery<
+        SubQueryDelegateT extends (
+            (
+                childBuilder : SelectBuilder<{
+                    hasSelect : false,
+                    hasFrom : false,
+                    hasUnion : false,
+        
+                    //This is just a dummy JOIN
+                    //It will be replaced when the FROM clause is added
+                    joins : [
+                        Join<
+                            typeof __DUMMY_FROM_TABLE,
+                            typeof __DUMMY_FROM_TABLE["columns"],
+                            true
+                        >
+                    ],
+                    selects : undefined,
+                    aggregateDelegate : undefined,
+        
+                    //Give this builder access to our JOINs
+                    hasParentJoins : DataT["hasFrom"],
+                    parentJoins : DataT["joins"],
+                }>
+            ) => SelectValueBuilder<any>
+        )
+    > (delegate : SubQueryDelegateT) : (
+        RawExprUtil.ToExpr<ReturnType<SubQueryDelegateT>>
+    ) {
+        const childBuilder = new SelectBuilder(
+            {
+                hasSelect : false,
+                hasFrom : false,
+                hasUnion : false,
+
+                //This is just a dummy JOIN
+                //It will be replaced when the FROM clause is added
+                joins : [
+                    new Join<
+                        typeof __DUMMY_FROM_TABLE,
+                        typeof __DUMMY_FROM_TABLE["columns"],
+                        true
+                    >(
+                        JoinType.FROM,
+                        __DUMMY_FROM_TABLE,
+                        __DUMMY_FROM_TABLE.columns,
+                        true,
+                        [],
+                        []
+                    )
+                ],
+                selects : undefined,
+                aggregateDelegate : undefined,
+
+                //Give this builder access to our JOINs
+                hasParentJoins : this.data.hasFrom,
+                parentJoins : this.data.joins,
+            },
+            {
+                db : this.extraData.db,
+                distinct : false,
+                sqlCalcFoundRows : false,
+            }
+        );
+        const selectValueBuilder = delegate(childBuilder);
+        const expr = RawExprUtil.toExpr(selectValueBuilder);
+        return expr as any;
     }
 
     //Convenience

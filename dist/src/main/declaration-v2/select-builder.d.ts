@@ -27,7 +27,7 @@ import { Querify } from "./querify";
 import { StringBuilder } from "./StringBuilder";
 import { AliasedExpr } from "./aliased-expr";
 import { SubqueryTable } from "./subquery-table";
-import { RawExprUtil } from "./raw-expr";
+import { RawExprUtil, SelectValueBuilder } from "./raw-expr";
 import { UpdateBuilder, UpdateAssignmentReferencesDelegate, RawUpdateAssignmentReferences } from "./update-builder";
 import { InsertAssignmentCollectionDelegate, RawInsertSelectAssignmentCollection, InsertSelectBuilder } from "./insert-select-builder";
 import { DeleteTables, DeleteBuilder, DeleteTablesDelegate } from "./delete-builder";
@@ -453,11 +453,23 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasFrom: any;
         hasUnion: any;
         joins: any;
-        selects: any;
+        selects: DataT["selects"] & {
+            length: 1;
+        };
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
     }>, alias: AliasT): (AliasedExpr<{}, "__expr", AliasT, RawExprUtil.Type<SelectBuilder<DataT>>>);
+    subQuery<SubQueryDelegateT extends ((childBuilder: SelectBuilder<{
+        hasSelect: false;
+        hasFrom: false;
+        hasUnion: false;
+        joins: [Join<typeof __DUMMY_FROM_TABLE, typeof __DUMMY_FROM_TABLE["columns"], true>];
+        selects: undefined;
+        aggregateDelegate: undefined;
+        hasParentJoins: DataT["hasFrom"];
+        parentJoins: DataT["joins"];
+    }>) => SelectValueBuilder<any>)>(delegate: SubQueryDelegateT): (RawExprUtil.ToExpr<ReturnType<SubQueryDelegateT>>);
     insertInto<TableT extends AnyTable>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: any;

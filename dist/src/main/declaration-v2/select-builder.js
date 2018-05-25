@@ -820,6 +820,30 @@ class SelectBuilder {
         }
         return raw_expr_1.RawExprUtil.toExpr(this).as(alias);
     }
+    subQuery(delegate) {
+        const childBuilder = new SelectBuilder({
+            hasSelect: false,
+            hasFrom: false,
+            hasUnion: false,
+            //This is just a dummy JOIN
+            //It will be replaced when the FROM clause is added
+            joins: [
+                new join_1.Join(join_1.JoinType.FROM, exports.__DUMMY_FROM_TABLE, exports.__DUMMY_FROM_TABLE.columns, true, [], [])
+            ],
+            selects: undefined,
+            aggregateDelegate: undefined,
+            //Give this builder access to our JOINs
+            hasParentJoins: this.data.hasFrom,
+            parentJoins: this.data.joins,
+        }, {
+            db: this.extraData.db,
+            distinct: false,
+            sqlCalcFoundRows: false,
+        });
+        const selectValueBuilder = delegate(childBuilder);
+        const expr = raw_expr_1.RawExprUtil.toExpr(selectValueBuilder);
+        return expr;
+    }
     //Convenience
     insertInto(table, delegate) {
         return new insert_select_builder_1.InsertSelectBuilder(table, this, undefined, "NORMAL", this.extraData.db).set(delegate);
