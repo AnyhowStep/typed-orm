@@ -7,7 +7,7 @@ export declare class Table<AliasT extends string, NameT extends string, ColumnCo
     constructor(alias: AliasT, name: NameT, columns: ColumnCollectionT, data: DataT);
     setAutoIncrement<AutoIncrementDelegateT extends AutoIncrementDelegate<ColumnCollectionT>>(delegate: AutoIncrementDelegateT): (Table<AliasT, NameT, ColumnCollectionT, TableDataUtil.AutoIncrement<DataT, ColumnCollectionT, AutoIncrementDelegateT>>);
     setIsGenerated<IsGeneratedDelegateT extends IsGeneratedDelegate<DataT, ColumnCollectionT>>(delegate: IsGeneratedDelegateT): (Table<AliasT, NameT, ColumnCollectionT, TableDataUtil.IsGenerated<DataT, ColumnCollectionT, IsGeneratedDelegateT>>);
-    setHasDefaultGenerated<HasDefaultValueDelegateT extends HasDefaultValueDelegate<DataT, ColumnCollectionT>>(delegate: HasDefaultValueDelegateT): (Table<AliasT, NameT, ColumnCollectionT, TableDataUtil.HasDefaultValue<DataT, ColumnCollectionT, HasDefaultValueDelegateT>>);
+    setHasDefaultValue<HasDefaultValueDelegateT extends HasDefaultValueDelegate<DataT, ColumnCollectionT>>(delegate: HasDefaultValueDelegateT): (Table<AliasT, NameT, ColumnCollectionT, TableDataUtil.HasDefaultValue<DataT, ColumnCollectionT, HasDefaultValueDelegateT>>);
     setIsMutable<IsMutableDelegateT extends IsMutableDelegate<DataT, ColumnCollectionT>>(delegate: IsMutableDelegateT): (Table<AliasT, NameT, ColumnCollectionT, TableDataUtil.IsMutable<DataT, ColumnCollectionT, IsMutableDelegateT>>);
     setImmutable(): (Table<AliasT, NameT, ColumnCollectionT, TableDataUtil.Immutable<DataT>>);
     as<NewAliasT extends string>(newAlias: NewAliasT): (AliasedTable<NewAliasT, NameT, ColumnCollectionUtil.WithTableAlias<ColumnCollectionT, NewAliasT>>);

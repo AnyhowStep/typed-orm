@@ -62,7 +62,7 @@ export class Table<
             TableDataUtil.isGenerated(this.data, this.columns, delegate)
         );
     }
-    setHasDefaultGenerated<
+    setHasDefaultValue<
         HasDefaultValueDelegateT extends HasDefaultValueDelegate<
             DataT,
             ColumnCollectionT

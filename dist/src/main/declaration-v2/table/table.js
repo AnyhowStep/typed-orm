@@ -15,7 +15,7 @@ class Table extends aliased_table_1.AliasedTable {
     setIsGenerated(delegate) {
         return new Table(this.alias, this.name, this.columns, table_data_1.TableDataUtil.isGenerated(this.data, this.columns, delegate));
     }
-    setHasDefaultGenerated(delegate) {
+    setHasDefaultValue(delegate) {
         return new Table(this.alias, this.name, this.columns, table_data_1.TableDataUtil.hasDefaultValue(this.data, this.columns, delegate));
     }
     setIsMutable(delegate) {
