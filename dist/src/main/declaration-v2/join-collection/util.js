@@ -72,57 +72,58 @@ var JoinCollectionUtil;
         }
     }
     JoinCollectionUtil.assertHasColumns = assertHasColumns;
-    function checkedJoin(joins, toTable, resultDelegate) {
-        assertNonDuplicateTableAlias(joins, toTable.alias);
+    function checkedJoin(selectBuilder, toTable, resultDelegate) {
+        assertNonDuplicateTableAlias(selectBuilder.data.parentJoins, toTable.alias);
+        assertNonDuplicateTableAlias(selectBuilder.data.joins, toTable.alias);
         //TODO https://github.com/Microsoft/TypeScript/issues/24277
         return resultDelegate();
     }
-    function checkedJoinUsing(joins, toTable, fromDelegate, resultDelegate) {
-        const from = join_from_delegate_1.JoinFromDelegateUtil.execute(joins, fromDelegate);
+    function checkedJoinUsing(selectBuilder, toTable, fromDelegate, resultDelegate) {
+        const from = join_from_delegate_1.JoinFromDelegateUtil.execute(selectBuilder.data.joins, fromDelegate);
         const to = join_to_delegate_1.JoinToDelegateUtil.createUsing(toTable, from);
-        return checkedJoin(joins, toTable, () => {
+        return checkedJoin(selectBuilder, toTable, () => {
             return resultDelegate(from, to);
         });
     }
-    function innerJoin(joins, toTable, fromDelegate, toDelegate) {
-        return checkedJoin(joins, toTable, () => {
-            const from = join_from_delegate_1.JoinFromDelegateUtil.execute(joins, fromDelegate);
+    function innerJoin(selectBuilder, toTable, fromDelegate, toDelegate) {
+        return checkedJoin(selectBuilder, toTable, () => {
+            const from = join_from_delegate_1.JoinFromDelegateUtil.execute(selectBuilder.data.joins, fromDelegate);
             const to = join_to_delegate_1.JoinToDelegateUtil.execute(toTable, from, toDelegate);
-            return JoinCollectionUtil.push(joins, new join_1.Join(join_1.JoinType.INNER, toTable, toTable.columns, false, from, to));
+            return JoinCollectionUtil.push(selectBuilder.data.joins, new join_1.Join(join_1.JoinType.INNER, toTable, toTable.columns, false, from, to));
         });
     }
     JoinCollectionUtil.innerJoin = innerJoin;
-    function innerJoinUsing(joins, toTable, fromDelegate) {
-        return checkedJoinUsing(joins, toTable, fromDelegate, (from, to) => {
-            return JoinCollectionUtil.push(joins, new join_1.Join(join_1.JoinType.INNER, toTable, toTable.columns, false, from, to));
+    function innerJoinUsing(selectBuilder, toTable, fromDelegate) {
+        return checkedJoinUsing(selectBuilder, toTable, fromDelegate, (from, to) => {
+            return JoinCollectionUtil.push(selectBuilder.data.joins, new join_1.Join(join_1.JoinType.INNER, toTable, toTable.columns, false, from, to));
         });
     }
     JoinCollectionUtil.innerJoinUsing = innerJoinUsing;
-    function rightJoin(joins, toTable, fromDelegate, toDelegate) {
-        return checkedJoin(joins, toTable, () => {
-            const from = join_from_delegate_1.JoinFromDelegateUtil.execute(joins, fromDelegate);
+    function rightJoin(selectBuilder, toTable, fromDelegate, toDelegate) {
+        return checkedJoin(selectBuilder, toTable, () => {
+            const from = join_from_delegate_1.JoinFromDelegateUtil.execute(selectBuilder.data.joins, fromDelegate);
             const to = join_to_delegate_1.JoinToDelegateUtil.execute(toTable, from, toDelegate);
-            return JoinCollectionUtil.push(JoinCollectionUtil.toNullable(joins), new join_1.Join(join_1.JoinType.RIGHT, toTable, toTable.columns, false, from, to));
+            return JoinCollectionUtil.push(JoinCollectionUtil.toNullable(selectBuilder.data.joins), new join_1.Join(join_1.JoinType.RIGHT, toTable, toTable.columns, false, from, to));
         });
     }
     JoinCollectionUtil.rightJoin = rightJoin;
-    function rightJoinUsing(joins, toTable, fromDelegate) {
-        return checkedJoinUsing(joins, toTable, fromDelegate, (from, to) => {
-            return JoinCollectionUtil.push(JoinCollectionUtil.toNullable(joins), new join_1.Join(join_1.JoinType.RIGHT, toTable, toTable.columns, false, from, to));
+    function rightJoinUsing(selectBuilder, toTable, fromDelegate) {
+        return checkedJoinUsing(selectBuilder, toTable, fromDelegate, (from, to) => {
+            return JoinCollectionUtil.push(JoinCollectionUtil.toNullable(selectBuilder.data.joins), new join_1.Join(join_1.JoinType.RIGHT, toTable, toTable.columns, false, from, to));
         });
     }
     JoinCollectionUtil.rightJoinUsing = rightJoinUsing;
-    function leftJoin(joins, toTable, fromDelegate, toDelegate) {
-        return checkedJoin(joins, toTable, () => {
-            const from = join_from_delegate_1.JoinFromDelegateUtil.execute(joins, fromDelegate);
+    function leftJoin(selectBuilder, toTable, fromDelegate, toDelegate) {
+        return checkedJoin(selectBuilder, toTable, () => {
+            const from = join_from_delegate_1.JoinFromDelegateUtil.execute(selectBuilder.data.joins, fromDelegate);
             const to = join_to_delegate_1.JoinToDelegateUtil.execute(toTable, from, toDelegate);
-            return JoinCollectionUtil.push(joins, new join_1.Join(join_1.JoinType.LEFT, toTable, toTable.columns, true, from, to));
+            return JoinCollectionUtil.push(selectBuilder.data.joins, new join_1.Join(join_1.JoinType.LEFT, toTable, toTable.columns, true, from, to));
         });
     }
     JoinCollectionUtil.leftJoin = leftJoin;
-    function leftJoinUsing(joins, toTable, fromDelegate) {
-        return checkedJoinUsing(joins, toTable, fromDelegate, (from, to) => {
-            return JoinCollectionUtil.push(joins, new join_1.Join(join_1.JoinType.LEFT, toTable, toTable.columns, true, from, to));
+    function leftJoinUsing(selectBuilder, toTable, fromDelegate) {
+        return checkedJoinUsing(selectBuilder, toTable, fromDelegate, (from, to) => {
+            return JoinCollectionUtil.push(selectBuilder.data.joins, new join_1.Join(join_1.JoinType.LEFT, toTable, toTable.columns, true, from, to));
         });
     }
     JoinCollectionUtil.leftJoinUsing = leftJoinUsing;

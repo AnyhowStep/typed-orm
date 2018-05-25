@@ -87,6 +87,9 @@ class SelectBuilder {
         if (this.data.hasFrom) {
             throw new Error(`FROM clause already exists`);
         }
+        if (this.data.hasParentJoins) {
+            join_collection_1.JoinCollectionUtil.assertNonDuplicateTableAlias(this.data.parentJoins, toTable.alias);
+        }
         return new SelectBuilder(type_util_1.spread(this.data, {
             hasFrom: true,
             joins: [
@@ -97,13 +100,13 @@ class SelectBuilder {
     join(toTable, fromDelegate, toDelegate) {
         this.assertAfterFrom();
         return new SelectBuilder(type_util_1.spread(this.data, {
-            joins: join_collection_1.JoinCollectionUtil.innerJoin(this.data.joins, toTable, fromDelegate, toDelegate)
+            joins: join_collection_1.JoinCollectionUtil.innerJoin(this, toTable, fromDelegate, toDelegate)
         }), this.extraData);
     }
     joinUsing(toTable, fromDelegate) {
         this.assertAfterFrom();
         return new SelectBuilder(type_util_1.spread(this.data, {
-            joins: join_collection_1.JoinCollectionUtil.innerJoinUsing(this.data.joins, toTable, fromDelegate)
+            joins: join_collection_1.JoinCollectionUtil.innerJoinUsing(this, toTable, fromDelegate)
         }), this.extraData);
     }
     //We don't allow right joins after selecting
@@ -112,7 +115,7 @@ class SelectBuilder {
         this.assertBeforeSelect();
         this.assertAfterFrom();
         return new SelectBuilder(type_util_1.spread(this.data, {
-            joins: join_collection_1.JoinCollectionUtil.rightJoin(this.data.joins, toTable, fromDelegate, toDelegate)
+            joins: join_collection_1.JoinCollectionUtil.rightJoin(this, toTable, fromDelegate, toDelegate)
         }), this.extraData);
     }
     //We don't allow right joins after selecting
@@ -121,19 +124,19 @@ class SelectBuilder {
         this.assertBeforeSelect();
         this.assertAfterFrom();
         return new SelectBuilder(type_util_1.spread(this.data, {
-            joins: join_collection_1.JoinCollectionUtil.rightJoinUsing(this.data.joins, toTable, fromDelegate)
+            joins: join_collection_1.JoinCollectionUtil.rightJoinUsing(this, toTable, fromDelegate)
         }), this.extraData);
     }
     leftJoin(toTable, fromDelegate, toDelegate) {
         this.assertAfterFrom();
         return new SelectBuilder(type_util_1.spread(this.data, {
-            joins: join_collection_1.JoinCollectionUtil.leftJoin(this.data.joins, toTable, fromDelegate, toDelegate)
+            joins: join_collection_1.JoinCollectionUtil.leftJoin(this, toTable, fromDelegate, toDelegate)
         }), this.extraData);
     }
     leftJoinUsing(toTable, fromDelegate) {
         this.assertAfterFrom();
         return new SelectBuilder(type_util_1.spread(this.data, {
-            joins: join_collection_1.JoinCollectionUtil.leftJoinUsing(this.data.joins, toTable, fromDelegate)
+            joins: join_collection_1.JoinCollectionUtil.leftJoinUsing(this, toTable, fromDelegate)
         }), this.extraData);
     }
     //Must be called before UNION because it will change the number of

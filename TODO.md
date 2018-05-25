@@ -1,5 +1,3 @@
-JOINs, alias must be different
-
 whereIsNotNull()
 whereIsNull()
 whereIsEqual()

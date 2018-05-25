@@ -8,6 +8,7 @@ import {AnyAliasedTable, AliasedTableUtil} from "../aliased-table";
 import {JoinFromDelegate, JoinFromDelegateUtil} from "../join-from-delegate";
 import {JoinToDelegate, JoinToDelegateUtil} from "../join-to-delegate";
 import * as invalid from "../invalid";
+import {AnySelectBuilder} from "../select-builder";
 
 import {Column} from "../column";
 import {AliasedTable} from "../aliased-table";
@@ -352,38 +353,48 @@ export namespace JoinCollectionUtil {
     );
 
     export type CheckedJoin<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
         ResultT extends JoinCollection
     > = (
-        FindWithTableAlias<JoinsT, ToTableT["alias"]> extends never ?
-            ResultT :
+        FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    ResultT :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
             invalid.E4<
                 "Alias",
                 ToTableT["alias"],
-                "was already used as join",
-                FindWithTableAlias<JoinsT, ToTableT["alias"]>
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
             >
     );
     function checkedJoin<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
         ResultDelegateT extends () => JoinCollection
     > (
-        joins : JoinsT,
+        selectBuilder : SelectBuilderT,
         toTable : ToTableT,
         resultDelegate : ResultDelegateT
     ) : (
-        CheckedJoin<JoinsT, ToTableT, ReturnType<ResultDelegateT>>
+        CheckedJoin<SelectBuilderT, ToTableT, ReturnType<ResultDelegateT>>
     ) {
-        assertNonDuplicateTableAlias(joins, toTable.alias);
+        assertNonDuplicateTableAlias(selectBuilder.data.parentJoins, toTable.alias);
+        assertNonDuplicateTableAlias(selectBuilder.data.joins, toTable.alias);
         //TODO https://github.com/Microsoft/TypeScript/issues/24277
         return resultDelegate() as any;
     }
     export type CheckedJoinUsing<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<JoinsT>,
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>,
         ResultT extends JoinCollection,
     > = (
         JoinToDelegateUtil.CreateUsing<ToTableT, ReturnType<FromDelegateT>> extends never ?
@@ -396,15 +407,15 @@ export namespace JoinCollectionUtil {
                     ColumnCollectionUtil.Columns<ToTableT["columns"]>
                 >
             > :
-            CheckedJoin<JoinsT, ToTableT, ResultT>
+            CheckedJoin<SelectBuilderT, ToTableT, ResultT>
     );
     function checkedJoinUsing<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<JoinsT>,
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>,
         ResultT extends JoinCollection,
     > (
-        joins : JoinsT,
+        selectBuilder : SelectBuilderT,
         toTable : ToTableT,
         fromDelegate : FromDelegateT,
         resultDelegate : (
@@ -412,75 +423,78 @@ export namespace JoinCollectionUtil {
             to : JoinToDelegateUtil.CreateUsingUnsafe<ToTableT, ReturnType<FromDelegateT>>
         ) => ResultT,
     ) : (
-        CheckedJoinUsing<JoinsT, ToTableT, FromDelegateT, ResultT>
+        CheckedJoinUsing<SelectBuilderT, ToTableT, FromDelegateT, ResultT>
     ) {
-        const from = JoinFromDelegateUtil.execute(joins, fromDelegate);
+        const from = JoinFromDelegateUtil.execute(
+            selectBuilder.data.joins,
+            fromDelegate as any
+        );
         const to : JoinToDelegateUtil.CreateUsing<
             ToTableT,
             ReturnType<FromDelegateT>
-        > = JoinToDelegateUtil.createUsing(toTable, from);
+        > = JoinToDelegateUtil.createUsing(toTable, from) as any;
 
-        return checkedJoin(joins, toTable, () => {
+        return checkedJoin(selectBuilder, toTable, () => {
             return resultDelegate(from, to as any);
         }) as any;
     }
 
     export type InnerJoin<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
     > = (
-        CheckedJoin<JoinsT, ToTableT, InnerJoinUnsafe<JoinsT, ToTableT>>
+        CheckedJoin<SelectBuilderT, ToTableT, InnerJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
     );
     export type InnerJoinUsing<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<JoinsT>
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > = (
-        CheckedJoinUsing<JoinsT, ToTableT, FromDelegateT, InnerJoinUnsafe<JoinsT, ToTableT>>
+        CheckedJoinUsing<SelectBuilderT, ToTableT, FromDelegateT, InnerJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
     );
     export type RightJoin<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
     > = (
-        CheckedJoin<JoinsT, ToTableT, RightJoinUnsafe<JoinsT, ToTableT>>
+        CheckedJoin<SelectBuilderT, ToTableT, RightJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
     );
     export type RightJoinUsing<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<JoinsT>
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > = (
-        CheckedJoinUsing<JoinsT, ToTableT, FromDelegateT, RightJoinUnsafe<JoinsT, ToTableT>>
+        CheckedJoinUsing<SelectBuilderT, ToTableT, FromDelegateT, RightJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
     );
     export type LeftJoin<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
     > = (
-        CheckedJoin<JoinsT, ToTableT, LeftJoinUnsafe<JoinsT, ToTableT>>
+        CheckedJoin<SelectBuilderT, ToTableT, LeftJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
     );
     export type LeftJoinUsing<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<JoinsT>
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > = (
-        CheckedJoinUsing<JoinsT, ToTableT, FromDelegateT, LeftJoinUnsafe<JoinsT, ToTableT>>
+        CheckedJoinUsing<SelectBuilderT, ToTableT, FromDelegateT, LeftJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
     );
     export function innerJoin<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<JoinsT>
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > (
-        joins : JoinsT,
+        selectBuilder : SelectBuilderT,
         toTable : ToTableT,
         fromDelegate : FromDelegateT,
         toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
     ) : (
-        InnerJoin<JoinsT, ToTableT>
+        InnerJoin<SelectBuilderT, ToTableT>
     ) {
-        return checkedJoin(joins, toTable, () => {
-            const from = JoinFromDelegateUtil.execute(joins, fromDelegate);
+        return checkedJoin(selectBuilder, toTable, () => {
+            const from = JoinFromDelegateUtil.execute(selectBuilder.data.joins, fromDelegate as any);
             const to = JoinToDelegateUtil.execute(toTable, from, toDelegate);
             return push(
-                joins,
+                selectBuilder.data.joins,
                 new Join(
                     JoinType.INNER,
                     toTable,
@@ -489,23 +503,23 @@ export namespace JoinCollectionUtil {
                     from,
                     to
                 )
-            );
+            ) as any;
         });
     }
     export function innerJoinUsing<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<JoinsT>
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > (
-        joins : JoinsT,
+        selectBuilder : SelectBuilderT,
         toTable : ToTableT,
         fromDelegate : FromDelegateT
     ) : (
-        InnerJoinUsing<JoinsT, ToTableT, FromDelegateT>
+        InnerJoinUsing<SelectBuilderT, ToTableT, FromDelegateT>
     ) {
-        return checkedJoinUsing(joins, toTable, fromDelegate, (from, to) => {
+        return checkedJoinUsing(selectBuilder, toTable, fromDelegate, (from, to) => {
             return push(
-                joins,
+                selectBuilder.data.joins,
                 new Join(
                     JoinType.INNER,
                     toTable,
@@ -514,27 +528,27 @@ export namespace JoinCollectionUtil {
                     from,
                     to
                 )
-            );
+            ) as any;
         });
     }
 
     export function rightJoin<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<JoinsT>
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > (
-        joins : JoinsT,
+        selectBuilder : SelectBuilderT,
         toTable : ToTableT,
         fromDelegate : FromDelegateT,
         toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
     ) : (
-        RightJoin<JoinsT, ToTableT>
+        RightJoin<SelectBuilderT, ToTableT>
     ) {
-        return checkedJoin(joins, toTable, () => {
-            const from = JoinFromDelegateUtil.execute(joins, fromDelegate);
+        return checkedJoin(selectBuilder, toTable, () => {
+            const from = JoinFromDelegateUtil.execute(selectBuilder.data.joins, fromDelegate as any);
             const to = JoinToDelegateUtil.execute(toTable, from, toDelegate);
             return push(
-                JoinCollectionUtil.toNullable(joins),
+                JoinCollectionUtil.toNullable(selectBuilder.data.joins),
                 new Join(
                     JoinType.RIGHT,
                     toTable,
@@ -543,23 +557,23 @@ export namespace JoinCollectionUtil {
                     from,
                     to
                 )
-            );
+            ) as any;
         });
     }
     export function rightJoinUsing<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<JoinsT>
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > (
-        joins : JoinsT,
+        selectBuilder : SelectBuilderT,
         toTable : ToTableT,
         fromDelegate : FromDelegateT
     ) : (
-        RightJoinUsing<JoinsT, ToTableT, FromDelegateT>
+        RightJoinUsing<SelectBuilderT, ToTableT, FromDelegateT>
     ) {
-        return checkedJoinUsing(joins, toTable, fromDelegate, (from, to) => {
+        return checkedJoinUsing(selectBuilder, toTable, fromDelegate, (from, to) => {
             return push(
-                JoinCollectionUtil.toNullable(joins),
+                JoinCollectionUtil.toNullable(selectBuilder.data.joins),
                 new Join(
                     JoinType.RIGHT,
                     toTable,
@@ -568,27 +582,27 @@ export namespace JoinCollectionUtil {
                     from,
                     to
                 )
-            );
+            ) as any;
         });
     }
 
     export function leftJoin<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<JoinsT>
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > (
-        joins : JoinsT,
+        selectBuilder : SelectBuilderT,
         toTable : ToTableT,
         fromDelegate : FromDelegateT,
         toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
     ) : (
-        LeftJoin<JoinsT, ToTableT>
+        LeftJoin<SelectBuilderT, ToTableT>
     ) {
-        return checkedJoin(joins, toTable, () => {
-            const from = JoinFromDelegateUtil.execute(joins, fromDelegate);
+        return checkedJoin(selectBuilder, toTable, () => {
+            const from = JoinFromDelegateUtil.execute(selectBuilder.data.joins, fromDelegate as any);
             const to = JoinToDelegateUtil.execute(toTable, from, toDelegate);
             return push(
-                joins,
+                selectBuilder.data.joins,
                 new Join(
                     JoinType.LEFT,
                     toTable,
@@ -597,23 +611,23 @@ export namespace JoinCollectionUtil {
                     from,
                     to
                 )
-            );
+            ) as any;
         });
     }
     export function leftJoinUsing<
-        JoinsT extends JoinCollection,
+        SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<JoinsT>
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > (
-        joins : JoinsT,
+        selectBuilder : SelectBuilderT,
         toTable : ToTableT,
         fromDelegate : FromDelegateT
     ) : (
-        LeftJoinUsing<JoinsT, ToTableT, FromDelegateT>
+        LeftJoinUsing<SelectBuilderT, ToTableT, FromDelegateT>
     ) {
-        return checkedJoinUsing(joins, toTable, fromDelegate, (from, to) => {
+        return checkedJoinUsing(selectBuilder, toTable, fromDelegate, (from, to) => {
             return push(
-                joins,
+                selectBuilder.data.joins,
                 new Join(
                     JoinType.LEFT,
                     toTable,
@@ -622,7 +636,7 @@ export namespace JoinCollectionUtil {
                     from,
                     to
                 )
-            );
+            ) as any;
         });
     }
 

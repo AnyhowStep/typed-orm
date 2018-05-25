@@ -211,7 +211,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
     );
     update (arg0 : any, arg1 : any, arg2 : any, arg3? : any, arg4? : any) : any {
         if (arg0 instanceof Table) {
-            return this.from(arg0)
+            return (this.from(arg0) as any)
                 .where(arg2)
                 .set(arg1);
         } else {
@@ -229,7 +229,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
             DeleteTables<ConvenientDeleteSelectBuilder<TableT>>
         >
     ) {
-        return this.from(table)
+        return (this.from(table) as any)
             .where(where)
             .delete(() => [table] as any);
     }

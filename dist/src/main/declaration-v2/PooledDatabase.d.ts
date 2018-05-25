@@ -40,7 +40,12 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     readonly query: CreateSelectBuilderDelegate;
     readonly from: <TableT extends AliasedTable<string, string, {
         readonly [columnName: string]: Column<string, string, any>;
-    }>>(table: TableT) => SelectBuilder<{
+    }>>(table: TableT) => ("__DUMMY_FROM_TABLE" extends TableT["alias"] ? Join<Table<"__DUMMY_FROM_TABLE", "__DUMMY_FROM_TABLE", {}, {
+        autoIncrement: undefined;
+        isGenerated: {};
+        hasDefaultValue: {};
+        isMutable: {};
+    }>, {}, true> : never) extends never ? SelectBuilder<{
         hasSelect: false;
         hasFrom: true;
         hasUnion: false;
@@ -54,7 +59,12 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             hasDefaultValue: {};
             isMutable: {};
         }>, {}, true>];
-    }>;
+    }> : void | Error | ["Alias", TableT["alias"], "was already used as join in parent scope", "__DUMMY_FROM_TABLE" extends TableT["alias"] ? Join<Table<"__DUMMY_FROM_TABLE", "__DUMMY_FROM_TABLE", {}, {
+        autoIncrement: undefined;
+        isGenerated: {};
+        hasDefaultValue: {};
+        isMutable: {};
+    }>, {}, true> : never];
     readonly select: <SelectDelegateT extends (columnReferences: {}, selectBuilder: SelectBuilder<{
         hasSelect: false;
         hasFrom: false;
@@ -476,7 +486,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     }>;
     readonly insertValue: <TableT extends Table<string, string, {
         readonly [columnName: string]: Column<string, string, any>;
-    }, TableData>>(table: TableT, value: { [name in Exclude<Extract<keyof TableT["columns"], string>, keyof TableT["data"]["hasDefaultValue"] | keyof TableT["data"]["isGenerated"]>]: (ReturnType<TableT["columns"][name]["assertDelegate"]> extends string | number | boolean | Date | null | undefined ? ReturnType<TableT["columns"][name]["assertDelegate"]> : never) | Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
+    }, TableData>>(table: TableT, value: { [name in Exclude<Extract<keyof TableT["columns"], string>, keyof TableT["data"]["hasDefaultValue"] | keyof TableT["data"]["isGenerated"]>]: Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
         hasUnion: any;
@@ -491,7 +501,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>; } & { [name in Exclude<Extract<keyof TableT["data"]["hasDefaultValue"], string>, keyof TableT["data"]["isGenerated"]>]?: (ReturnType<TableT["columns"][name]["assertDelegate"]> extends string | number | boolean | Date | null | undefined ? ReturnType<TableT["columns"][name]["assertDelegate"]> : never) | Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
+    }> | (ReturnType<TableT["columns"][name]["assertDelegate"]> extends string | number | boolean | Date | null | undefined ? ReturnType<TableT["columns"][name]["assertDelegate"]> : never); } & { [name in Exclude<Extract<keyof TableT["data"]["hasDefaultValue"], string>, keyof TableT["data"]["isGenerated"]>]?: Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
         hasUnion: any;
@@ -506,7 +516,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }> | undefined; }) => InsertValueBuilder<TableT, ({ [name in Exclude<Extract<keyof TableT["columns"], string>, keyof TableT["data"]["hasDefaultValue"] | keyof TableT["data"]["isGenerated"]>]: (ReturnType<TableT["columns"][name]["assertDelegate"]> extends string | number | boolean | Date | null | undefined ? ReturnType<TableT["columns"][name]["assertDelegate"]> : never) | Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
+    }> | (ReturnType<TableT["columns"][name]["assertDelegate"]> extends string | number | boolean | Date | null | undefined ? ReturnType<TableT["columns"][name]["assertDelegate"]> : never) | undefined; }) => InsertValueBuilder<TableT, ({ [name in Exclude<Extract<keyof TableT["columns"], string>, keyof TableT["data"]["hasDefaultValue"] | keyof TableT["data"]["isGenerated"]>]: Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
         hasUnion: any;
@@ -521,7 +531,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>; } & { [name in Exclude<Extract<keyof TableT["data"]["hasDefaultValue"], string>, keyof TableT["data"]["isGenerated"]>]?: (ReturnType<TableT["columns"][name]["assertDelegate"]> extends string | number | boolean | Date | null | undefined ? ReturnType<TableT["columns"][name]["assertDelegate"]> : never) | Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
+    }> | (ReturnType<TableT["columns"][name]["assertDelegate"]> extends string | number | boolean | Date | null | undefined ? ReturnType<TableT["columns"][name]["assertDelegate"]> : never); } & { [name in Exclude<Extract<keyof TableT["data"]["hasDefaultValue"], string>, keyof TableT["data"]["isGenerated"]>]?: Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
         hasUnion: any;
@@ -536,7 +546,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }> | undefined; })[], "NORMAL">;
+    }> | (ReturnType<TableT["columns"][name]["assertDelegate"]> extends string | number | boolean | Date | null | undefined ? ReturnType<TableT["columns"][name]["assertDelegate"]> : never) | undefined; })[], "NORMAL">;
     readonly insertSelect: <TableT extends Table<string, string, {
         readonly [columnName: string]: Column<string, string, any>;
     }, TableData>, SelectBuilderT extends SelectBuilder<any>>(table: TableT, selectBuilder: SelectBuilderT, delegate: (s: keyof (SelectBuilderT["data"]["selects"] extends (Column<string, string, any> | {

@@ -161,22 +161,35 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         toTable : ToTableT
     ) : (
-        SelectBuilder<ReplaceValue2<
-            DataT,
-            "hasFrom",
-            true,
-            "joins",
-            [
-                Join<
-                    ToTableT,
-                    ToTableT["columns"],
-                    false
-                >
-            ]
-        >>
+        JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]> extends never ?
+            SelectBuilder<ReplaceValue2<
+                DataT,
+                "hasFrom",
+                true,
+                "joins",
+                [
+                    Join<
+                        ToTableT,
+                        ToTableT["columns"],
+                        false
+                    >
+                ]
+            >> :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]>
+            >
     ) {
         if (this.data.hasFrom) {
             throw new Error(`FROM clause already exists`);
+        }
+        if (this.data.hasParentJoins) {
+            JoinCollectionUtil.assertNonDuplicateTableAlias(
+                this.data.parentJoins,
+                toTable.alias
+            );
         }
         return new SelectBuilder(spread(
             this.data,
@@ -214,8 +227,8 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         fromDelegate : FromDelegateT,
         toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
     ) : (
-        Error extends JoinCollectionUtil.InnerJoin<DataT["joins"], ToTableT> ?
-            JoinCollectionUtil.InnerJoin<DataT["joins"], ToTableT> :
+        Error extends JoinCollectionUtil.InnerJoin<SelectBuilder<DataT>, ToTableT> ?
+            JoinCollectionUtil.InnerJoin<SelectBuilder<DataT>, ToTableT> :
             SelectBuilder<ReplaceValue<
                 DataT,
                 "joins",
@@ -227,7 +240,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             this.data,
             {
                 joins : JoinCollectionUtil.innerJoin(
-                    this.data.joins,
+                    this,
                     toTable,
                     fromDelegate as any,
                     toDelegate
@@ -253,8 +266,8 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         toTable : ToTableT,
         fromDelegate : FromDelegateT
     ) : (
-        Error extends JoinCollectionUtil.InnerJoinUsing<DataT["joins"], ToTableT, FromDelegateT> ?
-            JoinCollectionUtil.InnerJoinUsing<DataT["joins"], ToTableT, FromDelegateT> :
+        Error extends JoinCollectionUtil.InnerJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ?
+            JoinCollectionUtil.InnerJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> :
             SelectBuilder<ReplaceValue<
                 DataT,
                 "joins",
@@ -266,7 +279,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             this.data,
             {
                 joins : JoinCollectionUtil.innerJoinUsing(
-                    this.data.joins,
+                    this,
                     toTable,
                     fromDelegate as any
                 )
@@ -294,8 +307,8 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         fromDelegate : FromDelegateT,
         toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
     ) : (
-        Error extends JoinCollectionUtil.RightJoin<DataT["joins"], ToTableT> ?
-            JoinCollectionUtil.RightJoin<DataT["joins"], ToTableT> :
+        Error extends JoinCollectionUtil.RightJoin<SelectBuilder<DataT>, ToTableT> ?
+            JoinCollectionUtil.RightJoin<SelectBuilder<DataT>, ToTableT> :
             SelectBuilder<ReplaceValue<
                 DataT,
                 "joins",
@@ -308,7 +321,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             this.data,
             {
                 joins : JoinCollectionUtil.rightJoin(
-                    this.data.joins,
+                    this,
                     toTable,
                     fromDelegate as any,
                     toDelegate
@@ -336,8 +349,8 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         toTable : ToTableT,
         fromDelegate : FromDelegateT
     ) : (
-        Error extends JoinCollectionUtil.RightJoinUsing<DataT["joins"], ToTableT, FromDelegateT> ?
-            JoinCollectionUtil.RightJoinUsing<DataT["joins"], ToTableT, FromDelegateT> :
+        Error extends JoinCollectionUtil.RightJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ?
+            JoinCollectionUtil.RightJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> :
             SelectBuilder<ReplaceValue<
                 DataT,
                 "joins",
@@ -350,7 +363,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             this.data,
             {
                 joins : JoinCollectionUtil.rightJoinUsing(
-                    this.data.joins,
+                    this,
                     toTable,
                     fromDelegate as any
                 )
@@ -376,8 +389,8 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         fromDelegate : FromDelegateT,
         toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
     ) : (
-        Error extends JoinCollectionUtil.LeftJoin<DataT["joins"], ToTableT> ?
-            JoinCollectionUtil.LeftJoin<DataT["joins"], ToTableT> :
+        Error extends JoinCollectionUtil.LeftJoin<SelectBuilder<DataT>, ToTableT> ?
+            JoinCollectionUtil.LeftJoin<SelectBuilder<DataT>, ToTableT> :
             SelectBuilder<ReplaceValue<
                 DataT,
                 "joins",
@@ -389,7 +402,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             this.data,
             {
                 joins : JoinCollectionUtil.leftJoin(
-                    this.data.joins,
+                    this,
                     toTable,
                     fromDelegate as any,
                     toDelegate
@@ -415,8 +428,8 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         toTable : ToTableT,
         fromDelegate : FromDelegateT
     ) : (
-        Error extends JoinCollectionUtil.LeftJoinUsing<DataT["joins"], ToTableT, FromDelegateT> ?
-            JoinCollectionUtil.LeftJoinUsing<DataT["joins"], ToTableT, FromDelegateT> :
+        Error extends JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ?
+            JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> :
             SelectBuilder<ReplaceValue<
                 DataT,
                 "joins",
@@ -428,7 +441,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             this.data,
             {
                 joins : JoinCollectionUtil.leftJoinUsing(
-                    this.data.joins,
+                    this,
                     toTable,
                     fromDelegate as any
                 )
