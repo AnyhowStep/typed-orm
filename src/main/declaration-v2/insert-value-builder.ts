@@ -76,7 +76,7 @@ export class InsertValueBuilder<
     }
 
     public execute (
-        this : InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], InsertModeT>
+        this : InsertValueBuilder<any, any[], any>
     ) : (
         Promise<
             mysql.MysqlInsertResult &

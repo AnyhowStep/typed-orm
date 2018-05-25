@@ -9,6 +9,10 @@ import { Column } from "./column";
 import { JoinCollectionUtil } from "./join-collection";
 import { StringBuilder } from "./StringBuilder";
 import { PooledDatabase } from "./PooledDatabase";
+export declare type UpdateResult = (mysql.MysqlUpdateResult & {
+    foundRowCount: number;
+    updatedRowCount: number;
+});
 export declare type RawUpdateAssignmentType<TableT extends AnyTable, ColumnNameT extends keyof TableT["columns"]> = (Extract<ReturnType<TableT["columns"][ColumnNameT]["assertDelegate"]>, AllowedExprConstant>);
 export declare type RawUpdateAssignment<TableT extends AnyTable, SelectBuilderT extends AnySelectBuilder, ColumnNameT extends keyof TableT["columns"]> = (RawUpdateAssignmentType<TableT, ColumnNameT> | Extract<ColumnReferencesUtil.Columns<JoinCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["joins"]>>, Column<any, any, RawUpdateAssignmentType<TableT, ColumnNameT>>> | Expr<ColumnReferencesUtil.Partial<JoinCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["joins"]>>, RawUpdateAssignmentType<TableT, ColumnNameT>> | SelectValueBuilder<RawUpdateAssignmentType<TableT, ColumnNameT>>);
 export declare type RawUpdateAssignmentCollection<TableT extends AnyTable, SelectBuilderT extends AnySelectBuilder> = ({
@@ -37,7 +41,7 @@ export declare class UpdateBuilder<SelectBuilderT extends SelectBuilder<{
     constructor(selectBuilder: SelectBuilderT, assignmentReferences: AssignmentRefT, willIgnoreErrors: boolean, db: PooledDatabase);
     ignoreErrors(ignoreErrors?: boolean): UpdateBuilder<SelectBuilderT, AssignmentRefT>;
     set(delegate: UpdateAssignmentReferencesDelegate<SelectBuilderT>): (UpdateBuilder<SelectBuilderT, RawUpdateAssignmentReferences<SelectBuilderT>>);
-    execute(this: UpdateBuilder<SelectBuilderT, RawUpdateAssignmentReferences<SelectBuilderT>>): Promise<mysql.MysqlUpdateResult>;
+    execute(this: UpdateBuilder<SelectBuilderT, RawUpdateAssignmentReferences<SelectBuilderT>>): Promise<UpdateResult>;
     private assignmentArr;
     private getAssignmentArr;
     querify(sb: StringBuilder): void;

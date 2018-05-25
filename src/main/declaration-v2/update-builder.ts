@@ -10,6 +10,15 @@ import {JoinCollectionUtil} from "./join-collection";
 import {StringBuilder} from "./StringBuilder";
 import {PooledDatabase} from "./PooledDatabase";
 
+export type UpdateResult = (
+    mysql.MysqlUpdateResult &
+    {
+        //-1 if we don't know how many found
+        foundRowCount : number,
+        updatedRowCount : number,
+    }
+);
+
 export type RawUpdateAssignmentType<
     TableT extends AnyTable,
     ColumnNameT extends keyof TableT["columns"]
@@ -183,7 +192,7 @@ export class UpdateBuilder<
             SelectBuilderT,
             RawUpdateAssignmentReferences<SelectBuilderT>
         >
-    ) : Promise<mysql.MysqlUpdateResult> {
+    ) : Promise<UpdateResult> {
         if (this.getAssignmentArr().length == 0) {
             return Promise.resolve({
                 fieldCount   : 0,
@@ -194,13 +203,22 @@ export class UpdateBuilder<
                 message      : "SET clause is empty; no updates occurred",
                 protocol41   : false,
                 changedRows  : 0,
+
+                foundRowCount : -1, //-1 because we don't know
+                updatedRowCount : 0,
             });
         }
 
         return this.db.rawUpdate(
             this.getQuery(),
             {}
-        );
+        ).then((result) => {
+            return {
+                ...result,
+                foundRowCount : result.affectedRows,
+                updatedRowCount : result.changedRows,
+            };
+        });
     }
 
     private assignmentArr : {

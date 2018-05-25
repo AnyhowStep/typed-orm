@@ -49,9 +49,13 @@ class UpdateBuilder {
                 message: "SET clause is empty; no updates occurred",
                 protocol41: false,
                 changedRows: 0,
+                foundRowCount: -1,
+                updatedRowCount: 0,
             });
         }
-        return this.db.rawUpdate(this.getQuery(), {});
+        return this.db.rawUpdate(this.getQuery(), {}).then((result) => {
+            return Object.assign({}, result, { foundRowCount: result.affectedRows, updatedRowCount: result.changedRows });
+        });
     }
     getAssignmentArr() {
         if (this.assignmentArr != undefined) {

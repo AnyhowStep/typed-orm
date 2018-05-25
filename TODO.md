@@ -36,3 +36,14 @@ Table-per-hierarchy support,
 + Better README?
 + More examples?
 + Documentation?
+
+-----
+
+Transformer support (or whatever it is to be called)
+
+function transformBuilder (s : SelectBuilder) {
+    return s
+        .joinUsing(table, /*columns*/)
+}
+query.transform(transformBuilder)
+    .orderBy(/*other stuff*/);
