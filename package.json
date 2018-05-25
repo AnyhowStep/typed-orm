@@ -5,7 +5,7 @@
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",
   "scripts": {
-    "test": "ts-node ./src/main/sandbox/select-builder",
+    "test": "ts-node ./src/main/sandbox/select-builder-v2",
     "check": "tsc --noEmit --diagnostics",
     "check2": "node --max-old-space-size=8192 ./node_modules/typescript/lib/tsc.js --noEmit --noErrorTruncation --diagnostics",
     "build": "(rm -r ./dist || true) && tsc -d"

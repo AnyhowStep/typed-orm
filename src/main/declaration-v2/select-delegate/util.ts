@@ -45,6 +45,9 @@ export namespace SelectDelegateUtil {
             ColumnReferencesUtil.toConvenient(columnReferences) as any,
             selectBuilder
         ) as any;
+        //TODO Write assertions, expressions must use column references only
+        //columns must exist in column references
+        //Column collections must exist in column references
         return result;
     }
 }

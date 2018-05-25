@@ -17,6 +17,9 @@ var SelectDelegateUtil;
     function execute(selectBuilder, selectDelegate) {
         const columnReferences = toColumnReferences(selectBuilder);
         const result = selectDelegate(column_references_1.ColumnReferencesUtil.toConvenient(columnReferences), selectBuilder);
+        //TODO Write assertions, expressions must use column references only
+        //columns must exist in column references
+        //Column collections must exist in column references
         return result;
     }
     SelectDelegateUtil.execute = execute;

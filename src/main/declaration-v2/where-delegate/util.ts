@@ -1,5 +1,5 @@
 import {AnySelectBuilder} from "../select-builder";
-import {WhereDelegate} from "./where-delegate";
+import {WhereDelegate, WhereDelegateColumnReferences} from "./where-delegate";
 import {JoinCollectionUtil} from "../join-collection";
 import {ColumnReferencesUtil} from "../column-references";
 
@@ -13,6 +13,26 @@ Column;
 AliasedTable;
 
 export namespace WhereDelegateUtil {
+    export function toColumnReferences<
+        SelectBuilderT extends AnySelectBuilder
+    > (
+        selectBuilder : SelectBuilderT
+    ) : (
+        WhereDelegateColumnReferences<SelectBuilderT>
+    ) {
+        const joinColumnReferences = selectBuilder.data.hasFrom ?
+            JoinCollectionUtil.toColumnReferences(selectBuilder.data.joins) :
+            {};
+        const parentJoinColumnReferences = selectBuilder.data.hasParentJoins ?
+            JoinCollectionUtil.toColumnReferences(selectBuilder.data.parentJoins) :
+            {};
+        
+        return {
+            ...parentJoinColumnReferences,
+            ...joinColumnReferences,
+        } as any;
+    }
+
     export function execute<
         SelectBuilderT extends AnySelectBuilder,
         WhereDelegateT extends WhereDelegate<SelectBuilderT>
@@ -20,7 +40,7 @@ export namespace WhereDelegateUtil {
         selectBuilder : SelectBuilderT,
         delegate : WhereDelegateT
     ) {
-        const columnReferences = JoinCollectionUtil.toColumnReferences(selectBuilder.data.joins);
+        const columnReferences = toColumnReferences(selectBuilder);
         const where = delegate(
             ColumnReferencesUtil.toConvenient(columnReferences) as any,
             selectBuilder
