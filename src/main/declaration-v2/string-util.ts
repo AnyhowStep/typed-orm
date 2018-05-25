@@ -14,7 +14,8 @@ export type IsOneStringLiteral<S extends string> = (
         false
 );
 /*
-export type str = IsOneStringLiteral<string> extends true ? "is-one-string-literal" : "nope";
-export type multi = IsOneStringLiteral<"Multiple"|"String"|"Literals"> extends true ? "is-one-string-literal" : "nope";
-export type one = IsOneStringLiteral<"Only one string literal"> extends true ? "is-one-string-literal" : "nope";
+export type nvr = IsOneStringLiteral<never>;
+export type str = IsOneStringLiteral<string>;
+export type multi = IsOneStringLiteral<"Multiple"|"String"|"Literals">;
+export type one = IsOneStringLiteral<"Only one string literal">;
 */

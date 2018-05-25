@@ -113,7 +113,9 @@ export class InsertSelectBuilder<
         const selectReferences = SelectCollectionUtil.toColumnReferences(
             this.selectBuilder.data.selects
         );
-        const assignments = delegate(ColumnReferencesUtil.toConvenient(selectReferences));
+        const assignments = delegate(
+            ColumnReferencesUtil.toConvenient(selectReferences) as any
+        );
         TableUtil.validateInsertRow(this.table, assignments);
         for (let columnName in assignments) {
             const value = (assignments as any)[columnName];

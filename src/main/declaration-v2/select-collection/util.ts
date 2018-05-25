@@ -181,9 +181,10 @@ export namespace SelectCollectionUtil {
                     SelectsT,
                     ReturnType<SelectDelegateT>
                 >> ?
-                    invalid.E2<
+                    invalid.E3<
                         "Duplicate columns found in SELECT; consider aliasing",
-                        ReturnType<SelectDelegateT>
+                        ReturnType<SelectDelegateT>,
+                        SelectDelegateT
                     > :
                     TupleWConcat<
                         AnySelect,
@@ -193,9 +194,10 @@ export namespace SelectCollectionUtil {
             ) :
             (
                 true extends HasDuplicate<ReturnType<SelectDelegateT>> ?
-                    invalid.E2<
+                    invalid.E3<
                         "Duplicate columns found in SELECT; consider aliasing",
-                        ReturnType<SelectDelegateT>
+                        ReturnType<SelectDelegateT>,
+                        SelectDelegateT
                     > :
                     ReturnType<SelectDelegateT>
             )

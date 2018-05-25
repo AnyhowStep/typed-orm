@@ -1,11 +1,30 @@
 import {AnySelectBuilder} from "../select-builder";
-import {SelectDelegate} from "./select-delegate";
+import {SelectDelegate, SelectDelegateColumnReferences} from "./select-delegate";
 import {JoinCollectionUtil} from "../join-collection";
 import {TupleWiden} from "../tuple";
 import {AnySelect} from "../select";
 import {ColumnReferencesUtil} from "../column-references";
 
 export namespace SelectDelegateUtil {
+    export function toColumnReferences<
+        SelectBuilderT extends AnySelectBuilder
+    > (
+        selectBuilder : SelectBuilderT
+    ) : (
+        SelectDelegateColumnReferences<SelectBuilderT>
+    ) {
+        const joinColumnReferences = selectBuilder.data.hasFrom ?
+            JoinCollectionUtil.toColumnReferences(selectBuilder.data.joins) :
+            {};
+        const parentJoinColumnReferences = selectBuilder.data.hasParentJoins ?
+            JoinCollectionUtil.toColumnReferences(selectBuilder.data.parentJoins) :
+            {};
+        
+        return {
+            ...parentJoinColumnReferences,
+            ...joinColumnReferences,
+        } as any;
+    }
     export function execute<
         SelectBuilderT extends AnySelectBuilder,
         SelectDelegateT extends SelectDelegate<SelectBuilderT>
@@ -18,7 +37,7 @@ export namespace SelectDelegateUtil {
             AnySelect
         >
     ) {
-        const columnReferences = JoinCollectionUtil.toColumnReferences(selectBuilder.data.joins);
+        const columnReferences = toColumnReferences(selectBuilder);
         const result : TupleWiden<
             ReturnType<SelectDelegateT>,
             AnySelect

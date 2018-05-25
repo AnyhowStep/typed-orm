@@ -29,7 +29,7 @@ export declare namespace ColumnReferencesUtil {
         readonly [tableAlias in Extract<Extract<keyof RefA, keyof RefB>, string>]: (RefA[tableAlias] extends ColumnCollection ? (RefB[tableAlias] extends ColumnCollection ? ColumnCollectionUtil.Merge<RefA[tableAlias], RefB[tableAlias]> : never) : never);
     });
     function merge<RefA extends ColumnReferences, RefB extends ColumnReferences>(refA: RefA, refB: RefB): Merge<RefA, RefB>;
-    type ToConvenient<RefT extends ColumnReferences> = (IsOneStringLiteral<Extract<keyof RefT, string>> extends true ? RefT[Extract<keyof RefT, string>] : RefT);
+    type ToConvenient<RefT extends ColumnReferences> = (keyof RefT extends never ? {} : IsOneStringLiteral<Extract<keyof RefT, string>> extends true ? RefT[Extract<keyof RefT, string>] : RefT);
     function toConvenient<RefT extends ColumnReferences>(ref: RefT): ToConvenient<RefT>;
     function hasColumn(ref: ColumnReferences, column: AnyColumn): boolean;
     function assertHasColumn(ref: ColumnReferences, column: AnyColumn): void;

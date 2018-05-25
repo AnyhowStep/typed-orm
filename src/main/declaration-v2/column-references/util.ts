@@ -140,14 +140,16 @@ export namespace ColumnReferencesUtil {
     }
 
     export type ToConvenient<RefT extends ColumnReferences> = (
-        IsOneStringLiteral<Extract<keyof RefT, string>> extends true ?
-            //There's only one table alias in RefT, we can make things more
-            //convenient and less verbose; gives us a column collection
-            RefT[Extract<keyof RefT, string>] :
-            //We need to keep the verbosity because
-            //it's possible for different tables to have the same column names
-            //with different data types
-            RefT
+        keyof RefT extends never ?
+            {} :
+            IsOneStringLiteral<Extract<keyof RefT, string>> extends true ?
+                //There's only one table alias in RefT, we can make things more
+                //convenient and less verbose; gives us a column collection
+                RefT[Extract<keyof RefT, string>] :
+                //We need to keep the verbosity because
+                //it's possible for different tables to have the same column names
+                //with different data types
+                RefT
     );
     export function toConvenient<RefT extends ColumnReferences> (
         ref : RefT
