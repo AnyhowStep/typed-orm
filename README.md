@@ -25,6 +25,22 @@ const user = o.table(
         lastName : sd.string(),
     }
 ).setAutoIncrement(c => c.userId);
+
+const baseTable = o.table(
+    "base",
+    {
+        baseId : sd.naturalNumber()
+    }
+).setAutoIncrement(c => c.baseId);
+
+//Table-per-type inheritance
+const derivedTable = baseTable
+    .withName("derived")
+    .addColumns({
+        value0 : sd.boolean(),
+        value1 : sd.date(),
+    });
+
 ```
 
 ### Database
