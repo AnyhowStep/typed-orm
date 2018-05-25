@@ -4,6 +4,11 @@ import {ColumnReferencesUtil} from "../column-references";
 import {Expr} from "../expr";
 import * as sd from "schema-decorator";
 
+import {SelectBuilder} from "../select-builder";
+import {Column} from "../column";
+SelectBuilder;
+Column;
+
 function booleanBinaryOp (operator : string) {
     function result<
         LeftT extends RawExpr<boolean>,

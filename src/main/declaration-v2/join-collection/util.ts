@@ -9,6 +9,11 @@ import {JoinFromDelegate, JoinFromDelegateUtil} from "../join-from-delegate";
 import {JoinToDelegate, JoinToDelegateUtil} from "../join-to-delegate";
 import * as invalid from "../invalid";
 
+import {Column} from "../column";
+import {AliasedTable} from "../aliased-table";
+Column;
+AliasedTable;
+
 export namespace JoinCollectionUtil {
     //Types only
     export type FindWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string> = (

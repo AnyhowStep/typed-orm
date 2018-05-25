@@ -3,6 +3,11 @@ import {RawExpr, RawExprUtil} from "../raw-expr";
 import {ColumnReferencesUtil} from "../column-references";
 import {Expr} from "../expr";
 
+import {SelectBuilder} from "../select-builder";
+import {Column} from "../column";
+SelectBuilder;
+Column;
+
 function numberComparison (operator : string) {
     function result<
         LeftT extends RawExpr<number>,

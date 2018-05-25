@@ -5,6 +5,11 @@ import * as invalid from "../invalid";
 import {ColumnReferencesUtil} from "../column-references";
 import * as variadicUtil from "./variadic-util";
 
+import {SelectBuilder} from "../select-builder";
+import {Column} from "../column";
+SelectBuilder;
+Column;
+
 export function isNull<
     RawT extends AnyRawExpr
 > (expr : RawT) : Expr<RawExprUtil.UsedReferences<RawT>, boolean> {

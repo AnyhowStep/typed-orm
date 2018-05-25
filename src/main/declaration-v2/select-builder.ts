@@ -50,6 +50,9 @@ import {
     DeleteTablesDelegate
 } from "./delete-builder";
 
+import {Table} from "./table";
+Table;
+
 //TODO Move elsewhere
 export const ARBITRARY_ROW_COUNT = 999999999;
 

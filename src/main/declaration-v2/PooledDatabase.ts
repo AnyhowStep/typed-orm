@@ -12,6 +12,18 @@ import * as sd from "schema-decorator";
 import {WhereDelegate} from "./where-delegate";
 import {DeleteBuilder, DeleteTables} from "./delete-builder";
 
+import {AliasedTable} from "./aliased-table";;
+import {AliasedExpr} from "./aliased-expr";
+import {Column} from "./column";
+import {Expr} from "./expr";
+import {TableData} from "./table-data";
+AliasedTable;
+AliasedExpr;
+Column;
+Expr;
+const __tabledata : TableData|undefined = undefined;
+__tabledata;
+
 export type ConvenientUpdateSelectBuilder<TableT extends AnyTable> = (
     SelectBuilder<{
         hasSelect : false,

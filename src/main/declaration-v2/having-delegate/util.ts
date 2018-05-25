@@ -4,6 +4,17 @@ import {JoinCollectionUtil} from "../join-collection";
 import {SelectCollectionUtil} from "../select-collection";
 import {ColumnReferencesUtil} from "../column-references";
 
+import {Expr} from "../expr";
+import {Join} from "../join";
+import {Column} from "../column";
+import {AliasedExpr} from "../aliased-expr";
+import {AliasedTable} from "../aliased-table";
+Expr;
+Join;
+Column;
+AliasedExpr;
+AliasedTable;
+
 export namespace HavingDelegateUtil {
     export function execute<
         SelectBuilderT extends AnySelectBuilder,

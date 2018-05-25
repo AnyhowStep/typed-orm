@@ -4,6 +4,12 @@ import {Expr} from "../expr";
 import * as variadicUtil from "./variadic-util";
 import {ColumnReferencesUtil} from "../column-references";
 
+import {SelectBuilder} from "../select-builder";
+import {Column} from "../column";
+SelectBuilder;
+Column;
+
+
 export function unsafeTypeCheckBinaryOp (operator : string) {
     function result<
         LeftT extends AnyRawExpr,
