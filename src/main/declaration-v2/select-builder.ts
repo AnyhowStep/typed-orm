@@ -44,6 +44,11 @@ import {
     RawInsertSelectAssignmentCollection,
     InsertSelectBuilder
 } from "./insert-select-builder";
+import {
+    DeleteTables,
+    DeleteBuilder,
+    DeleteTablesDelegate
+} from "./delete-builder";
 
 //TODO Move elsewhere
 export const ARBITRARY_ROW_COUNT = 999999999;
@@ -2037,6 +2042,42 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             false,
             this.extraData.db
         ).set(delegate as any) as any;
+    }
+    delete (
+        this : SelectBuilder<{
+            hasSelect : false,
+            hasFrom : true,
+            hasUnion : false,
+
+            joins : any,
+
+            selects : undefined,
+
+            aggregateDelegate : any,
+        }>,
+        delegate? : DeleteTablesDelegate<SelectBuilder<DataT>>
+    ) : (
+        DeleteBuilder<
+            SelectBuilder<{
+                hasSelect : false,
+                hasFrom : true,
+                hasUnion : false,
+    
+                joins : DataT["joins"],
+    
+                selects : undefined,
+    
+                aggregateDelegate : any,
+            }>,
+            DeleteTables<SelectBuilder<DataT>>
+        >
+    ) {
+        return new DeleteBuilder(
+            this,
+            undefined,
+            false,
+            this.extraData.db
+        ).tables(delegate as any) as any;
     }
 }
 

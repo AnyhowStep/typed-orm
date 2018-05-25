@@ -42,6 +42,96 @@ export namespace JoinCollectionUtil {
             JoinsT[TupleKeys<JoinsT>]["table"]["alias"] :
             never
     );
+    export type Tables<JoinsT extends JoinCollection> = (
+        JoinsT[TupleKeys<JoinsT>] extends AnyJoin ?
+            JoinsT[TupleKeys<JoinsT>]["table"] :
+            never
+    );
+    export type ToTableCollectionImpl<JoinsT extends JoinCollection, K extends string> = (
+        K extends Extract<keyof JoinsT, string> ?
+            (
+                JoinsT[K] extends Join<infer TableT, any, any> ?
+                    {
+                        readonly [tableAlias in TableT["alias"]] : (
+                            TableT
+                        )
+                    } :
+                    {}
+            ) :
+            {}
+    );
+    /*
+    function gen (max) {
+	const base = [];
+	for (let i=0; i<=max; ++i) {
+            base.push(`ToTableCollectionImpl<JoinsT, "${i}">`);
+        }
+        return base.join(" &\n    ");
+    }
+
+    gen(50)
+    */
+    export type ToTableCollection<JoinsT extends JoinCollection> = (
+        ToTableCollectionImpl<JoinsT, "0"> &
+        ToTableCollectionImpl<JoinsT, "1"> &
+        ToTableCollectionImpl<JoinsT, "2"> &
+        ToTableCollectionImpl<JoinsT, "3"> &
+        ToTableCollectionImpl<JoinsT, "4"> &
+        ToTableCollectionImpl<JoinsT, "5"> &
+        ToTableCollectionImpl<JoinsT, "6"> &
+        ToTableCollectionImpl<JoinsT, "7"> &
+        ToTableCollectionImpl<JoinsT, "8"> &
+        ToTableCollectionImpl<JoinsT, "9"> &
+        ToTableCollectionImpl<JoinsT, "10"> &
+        ToTableCollectionImpl<JoinsT, "11"> &
+        ToTableCollectionImpl<JoinsT, "12"> &
+        ToTableCollectionImpl<JoinsT, "13"> &
+        ToTableCollectionImpl<JoinsT, "14"> &
+        ToTableCollectionImpl<JoinsT, "15"> &
+        ToTableCollectionImpl<JoinsT, "16"> &
+        ToTableCollectionImpl<JoinsT, "17"> &
+        ToTableCollectionImpl<JoinsT, "18"> &
+        ToTableCollectionImpl<JoinsT, "19"> &
+        ToTableCollectionImpl<JoinsT, "20"> /*&
+        ToTableCollectionImpl<JoinsT, "21"> &
+        ToTableCollectionImpl<JoinsT, "22"> &
+        ToTableCollectionImpl<JoinsT, "23"> &
+        ToTableCollectionImpl<JoinsT, "24"> &
+        ToTableCollectionImpl<JoinsT, "25"> &
+        ToTableCollectionImpl<JoinsT, "26"> &
+        ToTableCollectionImpl<JoinsT, "27"> &
+        ToTableCollectionImpl<JoinsT, "28"> &
+        ToTableCollectionImpl<JoinsT, "29"> &
+        ToTableCollectionImpl<JoinsT, "30"> &
+        ToTableCollectionImpl<JoinsT, "31"> &
+        ToTableCollectionImpl<JoinsT, "32"> &
+        ToTableCollectionImpl<JoinsT, "33"> &
+        ToTableCollectionImpl<JoinsT, "34"> &
+        ToTableCollectionImpl<JoinsT, "35"> &
+        ToTableCollectionImpl<JoinsT, "36"> &
+        ToTableCollectionImpl<JoinsT, "37"> &
+        ToTableCollectionImpl<JoinsT, "38"> &
+        ToTableCollectionImpl<JoinsT, "39"> &
+        ToTableCollectionImpl<JoinsT, "40"> &
+        ToTableCollectionImpl<JoinsT, "41"> &
+        ToTableCollectionImpl<JoinsT, "42"> &
+        ToTableCollectionImpl<JoinsT, "43"> &
+        ToTableCollectionImpl<JoinsT, "44"> &
+        ToTableCollectionImpl<JoinsT, "45"> &
+        ToTableCollectionImpl<JoinsT, "46"> &
+        ToTableCollectionImpl<JoinsT, "47"> &
+        ToTableCollectionImpl<JoinsT, "48"> &
+        ToTableCollectionImpl<JoinsT, "49"> &
+        ToTableCollectionImpl<JoinsT, "50">*/
+    );
+    export function toTableCollection<JoinsT extends JoinCollection> (
+        joins : JoinsT
+    ) : ToTableCollection<JoinsT> {
+        return joins.reduce((memo, join) => {
+            memo[join.table.alias] = join.table;
+            return memo;
+        }, {} as any);
+    }
 
     export type Columns<JoinsT extends JoinCollection> = (
         {

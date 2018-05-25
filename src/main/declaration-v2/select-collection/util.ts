@@ -431,8 +431,8 @@ export namespace SelectCollectionUtil {
         K extends keyof SelectsT ?
             (
                 SelectsT[K] extends AnySelect ?
-                SelectUtil.ToColumnCollection<TableAliasT, SelectsT[K]> :
-                {}
+                    SelectUtil.ToColumnCollection<TableAliasT, SelectsT[K]> :
+                    {}
             ) :
             {}
     )
@@ -468,7 +468,7 @@ export namespace SelectCollectionUtil {
         ToColumnCollectionImpl<TableAliasT, SelectsT, "17"> &
         ToColumnCollectionImpl<TableAliasT, SelectsT, "18"> &
         ToColumnCollectionImpl<TableAliasT, SelectsT, "19"> &
-        ToColumnCollectionImpl<TableAliasT, SelectsT, "20"> &
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "20"> /*&
         ToColumnCollectionImpl<TableAliasT, SelectsT, "21"> &
         ToColumnCollectionImpl<TableAliasT, SelectsT, "22"> &
         ToColumnCollectionImpl<TableAliasT, SelectsT, "23"> &
@@ -498,7 +498,7 @@ export namespace SelectCollectionUtil {
         ToColumnCollectionImpl<TableAliasT, SelectsT, "47"> &
         ToColumnCollectionImpl<TableAliasT, SelectsT, "48"> &
         ToColumnCollectionImpl<TableAliasT, SelectsT, "49"> &
-        ToColumnCollectionImpl<TableAliasT, SelectsT, "50">
+        ToColumnCollectionImpl<TableAliasT, SelectsT, "50">*/
     );
     export function toColumnCollection<
         TableAliasT extends string,

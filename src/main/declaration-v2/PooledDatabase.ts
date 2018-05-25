@@ -12,8 +12,28 @@ import {InsertAssignmentCollectionDelegate, InsertSelectBuilder, RawInsertSelect
 import {UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate} from "./update-builder";
 import * as sd from "schema-decorator";
 import {WhereDelegate} from "./where-delegate";
+import {DeleteBuilder, DeleteTables} from "./delete-builder";
 
 export type ConvenientUpdateSelectBuilder<TableT extends AnyTable> = (
+    SelectBuilder<{
+        hasSelect : false,
+        hasFrom : true,
+        hasUnion : false,
+
+        joins : [
+            Join<
+                TableT,
+                TableT["columns"],
+                false
+            >
+        ],
+
+        selects : undefined,
+
+        aggregateDelegate : undefined,
+    }>
+);
+export type ConvenientDeleteSelectBuilder<TableT extends AnyTable> = (
     SelectBuilder<{
         hasSelect : false,
         hasFrom : true,
@@ -164,6 +184,21 @@ export class PooledDatabase extends mysql.PooledDatabase {
             return super.update(arg0, arg1, arg2, arg3, arg4);
         }
     }
+    deleteFrom <
+        TableT extends AnyTable
+    > (
+        table : TableT,
+        where : WhereDelegate<ConvenientDeleteSelectBuilder<TableT>>
+    ) : (
+        DeleteBuilder<
+            ConvenientDeleteSelectBuilder<TableT>,
+            DeleteTables<ConvenientDeleteSelectBuilder<TableT>>
+        >
+    ) {
+        return this.from(table)
+            .where(where)
+            .delete(() => [table] as any);
+    }
     /*
         Desired methods,
         //Basic query
@@ -225,14 +260,27 @@ export class PooledDatabase extends mysql.PooledDatabase {
             .ignoreErrors()
             .execute()
         //Basic delete
-        db.deleteFrom(app, c => {
-            return eq(c.appId, 1);
-        }).ignoreErrors()
+        db.deleteFrom(
+            app,
+            c => {
+                return eq(c.appId, 1);
+            }
+        )
+            .ignoreErrors()
+            .execute()
         //Builder delete
         db.query()
-            .from(app)
-            .whereIsEqual(c => c.appId, 1)
-            .delete()
+            .from(ssoClient)
+            .joinUsing(app, c => [c.ssoClientId])
+            .whereIsEqual(c => c.app.appId, 1)
+            .delete(j => [j.ssoClient])
+            .ignoreErrors()
+            .execute()
+        db.query()
+            .from(ssoClient)
+            .joinUsing(app, c => [c.ssoClientId])
+            .whereIsEqual(c => c.app.appId, 1)
+            .delete() //Without arguments, means delete from all tables
             .ignoreErrors()
             .execute()
     */
