@@ -31,7 +31,14 @@ export declare namespace ColumnReferencesUtil {
     function merge<RefA extends ColumnReferences, RefB extends ColumnReferences>(refA: RefA, refB: RefB): Merge<RefA, RefB>;
     type ToConvenient<RefT extends ColumnReferences> = (keyof RefT extends never ? {} : IsOneStringLiteral<Extract<keyof RefT, string>> extends true ? RefT[Extract<keyof RefT, string>] : RefT);
     function toConvenient<RefT extends ColumnReferences>(ref: RefT): ToConvenient<RefT>;
-    function hasColumn(ref: ColumnReferences, column: AnyColumn): boolean;
+    function hasColumn<RefT extends ColumnReferences, ColumnT extends AnyColumn>(ref: RefT, column: ColumnT): ref is (RefT & {
+        readonly [tableAlias in ColumnT["tableAlias"]]: {
+            readonly [columnName in ColumnT["name"]]: ColumnT;
+        };
+    });
+    function hasColumn<CollectionT extends ColumnCollection, ColumnT extends AnyColumn>(collection: CollectionT, column: ColumnT): collection is (CollectionT & {
+        readonly [columnName in ColumnT["name"]]: ColumnT;
+    });
     function assertHasColumn(ref: ColumnReferences, column: AnyColumn): void;
     function assertHasColumns(ref: ColumnReferences, arr: AnyColumn[]): void;
     function assertHasColumnReferences(ref: ColumnReferences, targetReferences: ColumnReferences): void;

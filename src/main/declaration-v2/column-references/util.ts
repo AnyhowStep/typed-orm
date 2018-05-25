@@ -162,9 +162,27 @@ export namespace ColumnReferencesUtil {
         }
     }
 
-    export function hasColumn (ref : ColumnReferences, column : AnyColumn) {
+    export function hasColumn<
+        RefT extends ColumnReferences,
+        ColumnT extends AnyColumn
+    > (ref : RefT, column : ColumnT) : ref is (
+        RefT & {
+            readonly [tableAlias in ColumnT["tableAlias"]] : {
+                readonly [columnName in ColumnT["name"]] : ColumnT
+            }
+        }
+    );
+    export function hasColumn<
+        CollectionT extends ColumnCollection,
+        ColumnT extends AnyColumn
+    > (collection : CollectionT, column : ColumnT) : collection is (
+        CollectionT & {
+            readonly [columnName in ColumnT["name"]] : ColumnT
+        }
+    );
+    export function hasColumn (ref : any, column : AnyColumn) {
         if (!ref.hasOwnProperty(column.tableAlias)) {
-            return false;
+            return ColumnCollectionUtil.hasColumn(ref, column);
         }
         const columnCollection = ref[column.tableAlias];
         return ColumnCollectionUtil.hasColumn(columnCollection, column);

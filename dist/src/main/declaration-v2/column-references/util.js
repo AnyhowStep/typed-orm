@@ -48,7 +48,7 @@ var ColumnReferencesUtil;
     ColumnReferencesUtil.toConvenient = toConvenient;
     function hasColumn(ref, column) {
         if (!ref.hasOwnProperty(column.tableAlias)) {
-            return false;
+            return column_collection_1.ColumnCollectionUtil.hasColumn(ref, column);
         }
         const columnCollection = ref[column.tableAlias];
         return column_collection_1.ColumnCollectionUtil.hasColumn(columnCollection, column);
