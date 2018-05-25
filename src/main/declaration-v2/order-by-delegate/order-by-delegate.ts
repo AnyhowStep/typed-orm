@@ -26,6 +26,6 @@ export type OrderByDelegate<
                     SelectCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["selects"]>
                 >
             >
-        >
+        >|undefined
     )
 )

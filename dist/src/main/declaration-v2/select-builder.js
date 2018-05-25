@@ -477,7 +477,11 @@ class SelectBuilder {
         if (this.extraData.orderBy == undefined) {
             return this.orderBy(orderByDelegate);
         }
-        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { orderBy: this.extraData.orderBy.concat(order_by_delegate_1.OrderByDelegateUtil.execute(this, orderByDelegate)) }));
+        const orderBy = order_by_delegate_1.OrderByDelegateUtil.execute(this, orderByDelegate);
+        if (orderBy == undefined) {
+            return this;
+        }
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { orderBy: this.extraData.orderBy.concat(orderBy) }));
     }
     //REMOVES ORDER BY
     unsetOrderBy() {
@@ -531,7 +535,11 @@ class SelectBuilder {
         if (this.extraData.unionOrderBy == undefined) {
             return this.unionOrderBy(orderByDelegate);
         }
-        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { unionOrderBy: this.extraData.unionOrderBy.concat(order_by_delegate_1.OrderByDelegateUtil.execute(this, orderByDelegate)) }));
+        const orderBy = order_by_delegate_1.OrderByDelegateUtil.execute(this, orderByDelegate);
+        if (orderBy == undefined) {
+            return this;
+        }
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { unionOrderBy: this.extraData.unionOrderBy.concat(orderBy) }));
     }
     //UNION REMOVES ORDER BY
     unsetUnionOrderBy() {

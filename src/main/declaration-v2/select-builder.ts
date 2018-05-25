@@ -1502,13 +1502,15 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         if (this.extraData.orderBy == undefined) {
             return this.orderBy(orderByDelegate);
         }
+        const orderBy = OrderByDelegateUtil.execute(this, orderByDelegate as any);
+        if (orderBy == undefined) {
+            return this;
+        }
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
-                orderBy : this.extraData.orderBy.concat(
-                    OrderByDelegateUtil.execute(this, orderByDelegate as any)
-                ),
+                orderBy : this.extraData.orderBy.concat(orderBy),
             }
         );
     }
@@ -1601,13 +1603,15 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         if (this.extraData.unionOrderBy == undefined) {
             return this.unionOrderBy(orderByDelegate);
         }
+        const orderBy = OrderByDelegateUtil.execute(this, orderByDelegate as any);
+        if (orderBy == undefined) {
+            return this;
+        }
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
-                unionOrderBy : this.extraData.unionOrderBy.concat(
-                    OrderByDelegateUtil.execute(this, orderByDelegate as any)
-                ),
+                unionOrderBy : this.extraData.unionOrderBy.concat(orderBy),
             }
         );
     }

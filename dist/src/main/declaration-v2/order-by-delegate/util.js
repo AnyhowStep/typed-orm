@@ -12,6 +12,9 @@ var OrderByDelegateUtil;
         const selectColumnReferences = select_collection_1.SelectCollectionUtil.toColumnReferences(selectBuilder.data.select);
         const columnReferences = column_references_1.ColumnReferencesUtil.merge(selectColumnReferences, joinColumnReferences);
         const result = orderByDelegate(column_references_1.ColumnReferencesUtil.toConvenient(columnReferences), selectBuilder);
+        if (result == undefined) {
+            return undefined;
+        }
         for (let orderBy of result) {
             const first = (orderBy instanceof Array) ?
                 orderBy[0] :
