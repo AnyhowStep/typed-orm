@@ -2,10 +2,13 @@ import {AnyTable, TableUtil} from "./table";
 import {Querify} from "./querify";
 import {RawExprNoUsedRef} from "./raw-expr";
 import * as mysql from "typed-mysql";
-import {AnyColumn} from "./column";
+import {Column, AnyColumn} from "./column";
 import {StringBuilder} from "./StringBuilder";
 import {RawExprUtil} from "./raw-expr";
 import {PooledDatabase} from "./PooledDatabase";
+import {FetchRow} from "./fetch-row";
+import {SelectBuilderUtil} from "./select-builder-util";
+import {SelectCollectionUtil} from "./select-collection";
 
 export type RawInsertValueRow<TableT extends AnyTable> = (
     {
@@ -76,7 +79,8 @@ export class InsertValueBuilder<
     }
 
     public execute (
-        this : InsertValueBuilder<any, any[], any>
+        this : InsertValueBuilder<any, any[], any>,
+        db? : PooledDatabase
     ) : (
         Promise<
             mysql.MysqlInsertResult &
@@ -99,7 +103,10 @@ export class InsertValueBuilder<
         if (this.values == undefined) {
             throw new Error(`No VALUES to insert`);
         }
-        return this.db.rawInsert(this.getQuery(), {})
+        if (db == undefined) {
+            db = this.db;
+        }
+        return db.rawInsert(this.getQuery(), {})
             .then((result) => {
                 if (this.table.data.autoIncrement == undefined) {
                     return result;
@@ -117,6 +124,26 @@ export class InsertValueBuilder<
                     };
                 }
             }) as any;
+    }
+    public async executeAndFetch (
+        this : InsertValueBuilder<
+            TableT extends AnyTable & { data : { autoIncrement : Column<any, any, number> } } ?
+                any : never,
+            any[],
+            any
+        >
+    ) : (
+        Promise<FetchRow<
+            SelectBuilderUtil.SelectAll<TableT>["data"]["joins"],
+            SelectCollectionUtil.ToColumnReferences<
+                SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]
+            >
+        >>
+    ) {
+        return this.db.transaction(async (db) => {
+            const insertResult = await this.execute(db);
+            return db.fetchOneById(this.table, insertResult.insertId);
+        }) as any;
     }
 
     querify (sb : StringBuilder) {

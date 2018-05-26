@@ -213,9 +213,15 @@ class PooledDatabase extends mysql.PooledDatabase {
     }
     selectAll(arg0, arg1, arg2) {
         if (arg0 instanceof aliased_table_1.AliasedTable) {
-            return this.from(arg0)
-                .where(arg1)
-                .selectAll();
+            if (arg1 == undefined) {
+                return this.from(arg0)
+                    .selectAll();
+            }
+            else {
+                return this.from(arg0)
+                    .where(arg1)
+                    .selectAll();
+            }
         }
         else {
             return super.selectAll(arg0, arg1, arg2);
@@ -225,6 +231,7 @@ class PooledDatabase extends mysql.PooledDatabase {
     fetchOneById(table, id) {
         return this.from(table)
             .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
+            .selectAll()
             .fetchOne();
     }
     update(arg0, arg1, arg2, arg3, arg4) {

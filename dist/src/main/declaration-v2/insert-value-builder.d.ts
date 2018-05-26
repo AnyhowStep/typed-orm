@@ -2,9 +2,12 @@ import { AnyTable, TableUtil } from "./table";
 import { Querify } from "./querify";
 import { RawExprNoUsedRef } from "./raw-expr";
 import * as mysql from "typed-mysql";
-import { AnyColumn } from "./column";
+import { Column, AnyColumn } from "./column";
 import { StringBuilder } from "./StringBuilder";
 import { PooledDatabase } from "./PooledDatabase";
+import { FetchRow } from "./fetch-row";
+import { SelectBuilderUtil } from "./select-builder-util";
+import { SelectCollectionUtil } from "./select-collection";
 export declare type RawInsertValueRow<TableT extends AnyTable> = ({
     [name in TableUtil.RequiredColumnNames<TableT>]: (RawExprNoUsedRef<ReturnType<TableT["columns"][name]["assertDelegate"]>>);
 } & {
@@ -19,9 +22,14 @@ export declare class InsertValueBuilder<TableT extends AnyTable, ValuesT extends
     ignore(): InsertValueBuilder<TableT, ValuesT, "IGNORE">;
     replace(): InsertValueBuilder<TableT, ValuesT, "REPLACE">;
     value(...rows: RawInsertValueRow<TableT>[]): InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], InsertModeT>;
-    execute(this: InsertValueBuilder<any, any[], any>): (Promise<mysql.MysqlInsertResult & (TableT["data"]["autoIncrement"] extends AnyColumn ? {
+    execute(this: InsertValueBuilder<any, any[], any>, db?: PooledDatabase): (Promise<mysql.MysqlInsertResult & (TableT["data"]["autoIncrement"] extends AnyColumn ? {
         [name in TableT["data"]["autoIncrement"]["name"]]: ("IGNORE" extends InsertModeT ? number | undefined : number);
     } : {})>);
+    executeAndFetch(this: InsertValueBuilder<TableT extends AnyTable & {
+        data: {
+            autoIncrement: Column<any, any, number>;
+        };
+    } ? any : never, any[], any>): (Promise<FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>>>);
     querify(sb: StringBuilder): void;
     getQuery(): string;
     printQuery(): this;

@@ -489,7 +489,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         }>, {}, true>];
     }>;
     selectAll<T>(assert: sd.AssertFunc<T>, queryStr: string, queryValues?: mysql.QueryValues): Promise<mysql.SelectResult<T>>;
-    selectAll<TableT extends AnyAliasedTable>(table: TableT, where: WhereDelegate<SelectBuilderUtil.From<TableT>>): SelectBuilderUtil.SelectAll<TableT>;
+    selectAll<TableT extends AnyAliasedTable>(table: TableT, where?: WhereDelegate<SelectBuilderUtil.From<TableT>>): SelectBuilderUtil.SelectAll<TableT>;
     fetchOneById<TableT extends AnyAliasedTable & {
         data: {
             autoIncrement: Column<any, any, number>;

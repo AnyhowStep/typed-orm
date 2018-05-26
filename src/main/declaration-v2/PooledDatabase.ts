@@ -165,13 +165,18 @@ export class PooledDatabase extends mysql.PooledDatabase {
         TableT extends AnyAliasedTable
     > (
         table : TableT,
-        where : WhereDelegate<SelectBuilderUtil.From<TableT>>
+        where? : WhereDelegate<SelectBuilderUtil.From<TableT>>
     ) : SelectBuilderUtil.SelectAll<TableT>;
-    selectAll (arg0 : any, arg1 : any, arg2? : any) : any {
+    selectAll (arg0 : any, arg1? : any, arg2? : any) : any {
         if (arg0 instanceof AliasedTable) {
-            return (this.from(arg0) as any)
-                .where(arg1)
-                .selectAll();
+            if (arg1 == undefined) {
+                return (this.from(arg0) as any)
+                    .selectAll()
+            } else {
+                return (this.from(arg0) as any)
+                    .where(arg1)
+                    .selectAll();
+            }
         } else {
             return super.selectAll(arg0, arg1, arg2);
         }
@@ -190,6 +195,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
     ) {
         return (this.from(table) as any)
             .whereIsEqual((c : any) => c[table.data.autoIncrement.name], id)
+            .selectAll()
             .fetchOne();
     }
 
