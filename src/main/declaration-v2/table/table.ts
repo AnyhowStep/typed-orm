@@ -7,7 +7,8 @@ import {
     IsGeneratedDelegate,
     HasDefaultValueDelegate,
     IsMutableDelegate,
-    TableDataUtil
+    TableDataUtil,
+    //AddUniqueKeyDelegate
 } from "../table-data";
 import * as fieldUtil from "../field-util";
 
@@ -148,7 +149,8 @@ export class Table<
             newAlias,
             this.name,
             ColumnCollectionUtil.withTableAlias(this.columns, newAlias),
-            this.data
+            TableDataUtil.withTableAlias(this.data, newAlias)
+            //this.data
         );
     }
 
@@ -160,14 +162,14 @@ export class Table<
                 ColumnCollectionT,
                 NewNameT
             >,
-            DataT
+            TableDataUtil.WithTableAlias<DataT, NewNameT>
         >
     ) {
         return new Table(
             newName,
             newName,
             ColumnCollectionUtil.withTableAlias(this.columns, newName),
-            this.data
+            TableDataUtil.withTableAlias(this.data, newName)
         );
     }
     addColumns<RawColumnCollectionT extends RawColumnCollection> (
@@ -223,6 +225,33 @@ export class Table<
             this.data
         );
     }
+    //This method causes `tsc` to not terminate if uncommented
+    /*
+    addUniqueKey<
+        AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>
+    > (delegate : AddUniqueKeyDelegateT) : (
+        Table<
+            AliasT,
+            NameT,
+            ColumnCollectionT,
+            TableDataUtil.AddUniqueKey<
+                DataT,
+                ColumnCollectionT,
+                AddUniqueKeyDelegateT
+            >
+        >
+    ) {
+        return new Table(
+            this.alias,
+            this.name,
+            this.columns,
+            TableDataUtil.addUniqueKey(
+                this.data,
+                this.columns,
+                delegate
+            )
+        ) as any;
+    }*/
 }
 
 export type AnyTable = Table<string, string, ColumnCollection, TableData>;
@@ -248,7 +277,8 @@ export function table<
             },
             isMutable : {
                 [name in Extract<keyof RawColumnCollectionT, string>] : true
-            }
+            },
+            uniqueKeys : undefined,
         }
     >
 );
@@ -273,7 +303,8 @@ export function table<
             },
             isMutable : {
                 [name in Extract<keyof fieldUtil.FieldsToObject<TupleT>, string>] : true
-            }
+            },
+            uniqueKeys : undefined,
         }
     >
 );
@@ -306,6 +337,7 @@ export function table (
             isGenerated : {},
             hasDefaultValue : hasDefaultValue,
             isMutable : isMutable,
+            uniqueKeys : undefined,
         }
     );
 }

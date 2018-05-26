@@ -47,4 +47,18 @@ export namespace ColumnTupleUtil {
                 }[TupleKeys<TupleT>]
             )
     );
+    export type MapToColumnNames<TupleT extends Tuple<AnyColumn>> = (
+        {
+            [index in TupleKeys<TupleT>] : (
+                TupleT[index] extends AnyColumn ?
+                    TupleT[index]["name"] :
+                    never
+            )
+        } &
+        {
+            "0" : TupleT[0]["name"],
+            length : TupleLength<TupleT>
+        } &
+        string[]
+    );
 }

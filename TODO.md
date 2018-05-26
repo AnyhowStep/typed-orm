@@ -47,3 +47,9 @@ function transformBuilder (s : SelectBuilder) {
 }
 query.transform(transformBuilder)
     .orderBy(/*other stuff*/);
+
+-----
+
++ Proper Unique Key support, rather than just auto-increment keys
+
+  Enables convenient (if badly named) `fetchByUk()` method

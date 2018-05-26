@@ -36,6 +36,8 @@ export interface TableData {
     isMutable : {
         [name : string] : true;
     };
+
+    uniqueKeys : undefined|(Tuple<Tuple<string>>);
 }
 
 //The `number` requirement is only a compile-time constraint
@@ -98,5 +100,10 @@ export type IsMutableDelegate<DataT extends TableData, ColumnCollectionT extends
                 Extract<keyof DataT["isGenerated"], string>
             >
         >
+    >
+);
+export type AddUniqueKeyDelegate<ColumnCollectionT extends ColumnCollection> = (
+    (columns : ColumnCollectionT) => Tuple<
+        ColumnCollectionUtil.Columns<ColumnCollectionT>
     >
 );

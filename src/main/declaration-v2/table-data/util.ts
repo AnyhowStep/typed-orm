@@ -3,12 +3,13 @@ import {
     AutoIncrementDelegate,
     IsGeneratedDelegate,
     HasDefaultValueDelegate,
-    IsMutableDelegate
+    IsMutableDelegate,
+    AddUniqueKeyDelegate
 } from "./table-data";
 import {RemoveKey, ReplaceValue, ReplaceValue3, ReplaceValue4} from "../obj-util";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
-import {TupleKeys} from "../tuple";
-import {AnyColumn} from "../column";
+import {Tuple, TupleKeys, TupleWPush} from "../tuple";
+import {AnyColumn, ColumnUtil, ColumnTupleUtil} from "../column";
 
 export namespace TableDataUtil {
     export type AutoIncrement<
@@ -301,6 +302,116 @@ export namespace TableDataUtil {
         return {
             ...(data as any),
             isMutable : {},
+        } as any;
+    }
+    export type AddUniqueKey<
+        DataT extends TableData,
+        ColumnCollectionT extends ColumnCollection,
+        AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>
+    > = (
+        ReplaceValue<
+            DataT,
+            "uniqueKeys",
+            DataT["uniqueKeys"] extends Tuple<Tuple<string>> ?
+                (
+                    TupleWPush<
+                        Tuple<string>,
+                        DataT["uniqueKeys"],
+                        ColumnTupleUtil.MapToColumnNames<
+                            ReturnType<AddUniqueKeyDelegateT>
+                        >
+                    >
+                ) :
+                undefined
+        >
+    );
+    export function addUniqueKey<
+        DataT extends TableData,
+        ColumnCollectionT extends ColumnCollection,
+        AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>
+    > (
+        data : DataT,
+        columnCollection : ColumnCollectionT,
+        delegate : AddUniqueKeyDelegateT
+    ) : (
+        AddUniqueKey<
+            DataT,
+            ColumnCollectionT,
+            AddUniqueKeyDelegateT
+        >
+    ) {
+        const uniqueKey = delegate(columnCollection);
+        ColumnCollectionUtil.assertHasColumns(columnCollection, uniqueKey);
+        return {
+            ...(data as any),
+            uniqueKeys : (data.uniqueKeys == undefined) ?
+                undefined :
+                data.uniqueKeys.push(uniqueKey.map(c => c.name) as any)
+        } as any;
+    }
+
+    export type WithTableAlias<DataT extends TableData, TableAliasT extends string> = (
+        ReplaceValue<
+            DataT,
+            "autoIncrement",
+            (
+                DataT["autoIncrement"] extends AnyColumn ?
+                    ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> :
+                    undefined
+            )
+        >
+        /*{
+            autoIncrement : (
+                DataT["autoIncrement"] extends AnyColumn ?
+                    ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> :
+                    undefined
+            ),
+            isGenerated : DataT["isGenerated"],
+            hasDefaultValue : DataT["hasDefaultValue"],
+            isMutable : DataT["isMutable"],
+            uniqueKeys : (
+                DataT["uniqueKeys"] extends Tuple<Tuple<AnyColumn>> ?
+                    UniqueKeysWithTableAlias<DataT["uniqueKeys"], TableAliasT> :
+                    undefined|Tuple<Tuple<AnyColumn>>
+            ),
+        }*/
+        /*
+        {
+            isGenerated : DataT["isGenerated"],
+            hasDefaultValue : DataT["hasDefaultValue"],
+            isMutable : DataT["isMutable"],
+        } &
+        (
+            DataT["autoIncrement"] extends AnyColumn ?
+                {
+                    autoIncrement : ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT>,
+                } :
+                {
+                    autoIncrement : undefined,
+                }
+        ) &
+        (
+            DataT["uniqueKeys"] extends Tuple<Tuple<AnyColumn>> ?
+                {
+                    uniqueKeys : UniqueKeysWithTableAlias<DataT["uniqueKeys"], TableAliasT>,
+                } :
+                {
+                    uniqueKeys : undefined,
+                }
+        )
+        */
+    );
+    export function withTableAlias<
+        DataT extends TableData,
+        TableAliasT extends string
+    > (data : DataT, tableAlias : TableAliasT) : (
+        WithTableAlias<DataT, TableAliasT>
+    ) {
+        return {
+            ...(data as any),
+            autoIncrement : (data.autoIncrement == undefined) ?
+                undefined :
+                ColumnUtil.withTableAlias(data.autoIncrement, tableAlias),
         } as any;
     }
 }
