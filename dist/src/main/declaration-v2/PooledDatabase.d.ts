@@ -4,7 +4,7 @@ import { SelectBuilder } from "./select-builder";
 import { Join } from "./join";
 import { AnyAliasedTable } from "./aliased-table";
 import { Table, AnyTable, TableUtil } from "./table";
-import { InsertValueBuilder } from "./insert-value-builder";
+import { RawInsertValueRow, InsertValueBuilder } from "./insert-value-builder";
 import { InsertSelectBuilder } from "./insert-select-builder";
 import { UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate, UpdateResult } from "./update-builder";
 import * as sd from "schema-decorator";
@@ -5212,6 +5212,11 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         hasParentJoins: any;
         parentJoins: any;
     }> | (ReturnType<TableT["columns"][name]["assertDelegate"]> extends string | number | boolean | Date | null | undefined ? ReturnType<TableT["columns"][name]["assertDelegate"]> : never) | undefined; })[], "NORMAL">;
+    insertValueAndFetch<TableT extends AnyTable & {
+        data: {
+            autoIncrement: Column<any, any, number>;
+        };
+    }>(table: TableT, value: RawInsertValueRow<TableT>): (Promise<FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>>>);
     readonly insertSelect: <TableT extends Table<string, string, {
         readonly [columnName: string]: Column<string, string, any>;
     }, any>, SelectBuilderT extends SelectBuilder<any>>(table: TableT, selectBuilder: SelectBuilderT, delegate: (s: keyof (SelectBuilderT["data"]["selects"] extends (Column<string, string, any> | {

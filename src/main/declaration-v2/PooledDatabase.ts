@@ -221,7 +221,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
             .fetchZeroOrOne();
     }
     //By auto-increment id, actually
-    async fetchOneById<TableT extends AnyAliasedTable & { data : { autoIncrement : Column<any, any, number> } }> (
+    fetchOneById<TableT extends AnyAliasedTable & { data : { autoIncrement : Column<any, any, number> } }> (
         table : TableT,
         id : number
     ) : (
@@ -272,6 +272,22 @@ export class PooledDatabase extends mysql.PooledDatabase {
             this
         ).value(value);
     };
+    async insertValueAndFetch<
+        TableT extends AnyTable & { data : { autoIncrement : Column<any, any, number> } }
+    > (
+        table : TableT,
+        value : RawInsertValueRow<TableT>
+    ) : (
+        Promise<FetchRow<
+            SelectBuilderUtil.SelectAll<TableT>["data"]["joins"],
+            SelectCollectionUtil.ToColumnReferences<
+                SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]
+            >
+        >>
+    ) {
+        return (this.insertValue(table, value) as any)
+            .executeAndFetch();
+    }
     readonly insertSelect = <
         TableT extends AnyTable,
         SelectBuilderT extends AnySelectBuilder
@@ -340,7 +356,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
             row : Object
         }
     */
-    async updateAndFetchZeroOrOneById<
+    updateAndFetchZeroOrOneById<
         TableT extends AnyTable & { data : { autoIncrement : Column<any, any, number> } }
     > (
         table : TableT,
@@ -381,7 +397,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
                 //Should not be possible
                 throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.autoIncrement.name} = ${id}; found ${updateResult.foundRowCount} rows`);
             }
-            
+
             if (updateResult.foundRowCount == 0) {
                 return {
                     ...updateResult,
