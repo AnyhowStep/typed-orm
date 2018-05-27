@@ -10582,6 +10582,16 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     } ? { readonly [tableAlias in SelectBuilderT["data"]["selects"]["19"][keyof SelectBuilderT["data"]["selects"]["19"]]["tableAlias"]]: SelectBuilderT["data"]["selects"]["19"]; } : {} : {}) : {})] : never, Column<any, any, Extract<ReturnType<TableT["columns"][columnName]["assertDelegate"]>, string | number | boolean | Date | null | undefined>>> | undefined; }, "NORMAL">;
     update<T extends mysql.QueryValues, ConditionT extends mysql.QueryValues>(assertRow: sd.AssertFunc<T>, assertCondition: sd.AssertFunc<ConditionT>, table: string, row: T, condition: ConditionT): Promise<mysql.UpdateResult<T, ConditionT>>;
     update<TableT extends AnyTable>(table: TableT, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>, where: WhereDelegate<ConvenientUpdateSelectBuilder<TableT>>): (UpdateBuilder<ConvenientUpdateSelectBuilder<TableT>, RawUpdateAssignmentReferences<ConvenientUpdateSelectBuilder<TableT>>>);
+    existsById<TableT extends AnyTable & {
+        data: {
+            autoIncrement: Column<any, any, number>;
+        };
+    }>(table: TableT, id: number): Promise<boolean>;
+    updateZeroOrOneById<TableT extends AnyTable & {
+        data: {
+            autoIncrement: Column<any, any, number>;
+        };
+    }>(table: TableT, id: number, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<UpdateResult>);
     updateAndFetchZeroOrOneById<TableT extends AnyTable & {
         data: {
             autoIncrement: Column<any, any, number>;

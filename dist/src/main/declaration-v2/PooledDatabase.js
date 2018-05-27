@@ -292,6 +292,45 @@ class PooledDatabase extends mysql.PooledDatabase {
         }
     }
     //Auto-increment id
+    existsById(table, id) {
+        if (table.data.autoIncrement == undefined) {
+            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        }
+        return this.from(table)
+            .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
+            .exists();
+    }
+    //Auto-increment id
+    updateZeroOrOneById(table, id, delegate) {
+        if (table.data.autoIncrement == undefined) {
+            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        }
+        return this.transaction((db) => __awaiter(this, void 0, void 0, function* () {
+            const updateResult = yield db.from(table)
+                .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
+                .set(delegate)
+                .execute();
+            if (updateResult.foundRowCount > 1) {
+                //Should not be possible
+                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.autoIncrement.name} = ${id}; found ${updateResult.foundRowCount} rows`);
+            }
+            if (updateResult.foundRowCount == 0) {
+                return updateResult;
+            }
+            if (updateResult.foundRowCount < 0) {
+                //No update was even attempted, probably an empty SET clause
+                const exists = yield db.existsById(table, id);
+                if (exists) {
+                    return Object.assign({}, updateResult, { affectedRows: 1, foundRowCount: 1 });
+                }
+                else {
+                    return Object.assign({}, updateResult, { affectedRows: 0, foundRowCount: 0 });
+                }
+            }
+            return updateResult;
+        }));
+    }
+    //Auto-increment id
     /*
         If the row does not exist, it returns,
         {

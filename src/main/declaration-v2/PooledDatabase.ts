@@ -343,6 +343,69 @@ export class PooledDatabase extends mysql.PooledDatabase {
         }
     }
     //Auto-increment id
+    existsById<
+        TableT extends AnyTable & { data : { autoIncrement : Column<any, any, number> } }
+    > (
+        table : TableT,
+        id : number
+    ) : Promise<boolean> {
+        if (table.data.autoIncrement == undefined) {
+            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        }
+        return (this.from(table) as any)
+            .whereIsEqual((c : any) => c[table.data.autoIncrement.name], id)
+            .exists();
+    }
+    //Auto-increment id
+    updateZeroOrOneById<
+        TableT extends AnyTable & { data : { autoIncrement : Column<any, any, number> } }
+    > (
+        table : TableT,
+        id : number,
+        delegate : UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>
+    ) : (
+        Promise<UpdateResult>
+    ) {
+        if (table.data.autoIncrement == undefined) {
+            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        }
+        return this.transaction(async (db) => {
+            const updateResult : UpdateResult = await (db.from(table) as any)
+                .whereIsEqual((c : any) => c[table.data.autoIncrement.name], id)
+                .set(delegate)
+                .execute();
+
+            if (updateResult.foundRowCount > 1) {
+                //Should not be possible
+                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.autoIncrement.name} = ${id}; found ${updateResult.foundRowCount} rows`);
+            }
+
+            if (updateResult.foundRowCount == 0) {
+                return updateResult;
+            }
+
+            if (updateResult.foundRowCount < 0) {
+                //No update was even attempted, probably an empty SET clause
+                const exists = await db.existsById(table, id);
+                if (exists) {
+                    return {
+                        ...updateResult,
+                        affectedRows : 1,
+                        foundRowCount : 1,
+                    };
+                } else {
+                    return {
+                        ...updateResult,
+                        affectedRows : 0,
+                        foundRowCount : 0,
+                    };
+                }
+            }
+
+            return updateResult;
+        }) as any;
+    }
+    //Auto-increment id
     /*
         If the row does not exist, it returns,
         {
