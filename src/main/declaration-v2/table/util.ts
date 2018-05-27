@@ -1,7 +1,7 @@
 import {Table, AnyTable} from "./table";
 import {JoinCollection} from "../join-collection";
 import {Column} from "../column";
-import {TableData} from "../table-data";
+import {TableDataUtil} from "../table-data";
 import * as sd from "schema-decorator";
 import {UniqueKeyCollection, UniqueKeyCollectionUtil} from "../unique-key-collection";
 
@@ -86,7 +86,10 @@ export namespace TableUtil {
                     Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
                 )
             },
-            TableData
+            TableDataUtil.WithTableAlias<
+                TableT["data"],
+                any
+            >
         >
     );
 

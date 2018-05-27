@@ -1,7 +1,7 @@
 import { Table, AnyTable } from "./table";
 import { JoinCollection } from "../join-collection";
 import { Column } from "../column";
-import { TableData } from "../table-data";
+import { TableDataUtil } from "../table-data";
 import * as sd from "schema-decorator";
 import { UniqueKeyCollection, UniqueKeyCollectionUtil } from "../unique-key-collection";
 export declare namespace TableUtil {
@@ -13,7 +13,7 @@ export declare namespace TableUtil {
     function validateUpdateAssignmentReferences(joins: JoinCollection, assignmentReferences: any): void;
     type ToGeneric<TableT extends AnyTable> = (Table<any, any, {
         [columnName in Extract<keyof TableT["columns"], string>]: (Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>);
-    }, TableData>);
+    }, TableDataUtil.WithTableAlias<TableT["data"], any>>);
     type UniqueKeys<TableT extends AnyTable> = (TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ? UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeys"], TableT["columns"]> : never);
     function uniqueKeyAssertDelegate<TableT extends AnyTable>(table: TableT): sd.AssertDelegate<UniqueKeys<TableT>>;
 }

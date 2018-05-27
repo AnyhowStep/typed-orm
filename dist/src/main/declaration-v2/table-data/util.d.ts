@@ -48,6 +48,12 @@ export declare namespace TableDataUtil {
     });
     function toUniqueKey<TupleT extends Tuple<AnyColumn>>(tuple: TupleT): ToUniqueKey<TupleT>;
     function addUniqueKey<DataT extends TableData, ColumnCollectionT extends ColumnCollection, AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>>(data: DataT, columnCollection: ColumnCollectionT, delegate: AddUniqueKeyDelegateT): (AddUniqueKey<DataT, ColumnCollectionT, AddUniqueKeyDelegateT>);
-    type WithTableAlias<DataT extends TableData, TableAliasT extends string> = (ReadonlyReplaceValue<DataT, "autoIncrement", (DataT["autoIncrement"] extends AnyColumn ? ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> : undefined)>);
+    type WithTableAlias<DataT extends TableData, TableAliasT extends string> = ({
+        readonly autoIncrement: (DataT["autoIncrement"] extends AnyColumn ? ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> : undefined);
+        readonly isGenerated: DataT["isGenerated"];
+        readonly hasDefaultValue: DataT["hasDefaultValue"];
+        readonly isMutable: DataT["isMutable"];
+        readonly uniqueKeys: DataT["uniqueKeys"];
+    });
     function withTableAlias<DataT extends TableData, TableAliasT extends string>(data: DataT, tableAlias: TableAliasT): (WithTableAlias<DataT, TableAliasT>);
 }

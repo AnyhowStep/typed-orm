@@ -468,7 +468,29 @@ export namespace TableDataUtil {
     }
 
     export type WithTableAlias<DataT extends TableData, TableAliasT extends string> = (
-        ReadonlyReplaceValue<
+        {
+            readonly autoIncrement : (
+                DataT["autoIncrement"] extends AnyColumn ?
+                        ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> :
+                        undefined
+            );
+            readonly isGenerated : DataT["isGenerated"];
+            readonly hasDefaultValue : DataT["hasDefaultValue"];
+            readonly isMutable : DataT["isMutable"];
+            readonly uniqueKeys : DataT["uniqueKeys"];
+        }
+        /*{
+            readonly [key in (keyof DataT)|"autoIncrement"] : (
+                key extends "autoIncrement" ?
+                (
+                    DataT["autoIncrement"] extends AnyColumn ?
+                        ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> :
+                        undefined
+                ) :
+                DataT[key]
+            )
+        }*/
+        /*ReadonlyReplaceValue<
             DataT,
             "autoIncrement",
             (
@@ -476,7 +498,7 @@ export namespace TableDataUtil {
                     ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> :
                     undefined
             )
-        >
+        >*/
         /*{
             autoIncrement : (
                 DataT["autoIncrement"] extends AnyColumn ?
