@@ -14,7 +14,7 @@ var TableDataUtil;
         const uniqueKeys = (data.uniqueKeys == undefined) ?
             [] :
             data.uniqueKeys;
-        return Object.assign({}, data, { autoIncrement: column, isGenerated: Object.assign({}, data.isGenerated, { [column.name]: true }), hasDefaultValue: Object.assign({}, data.hasDefaultValue, { [column.name]: true }), isMutable: isMutable, uniqueKeys: uniqueKeys.concat({
+        return Object.assign({}, data, { autoIncrement: column, isGenerated: Object.assign({}, data.isGenerated, { [column.name]: true }), hasDefaultValue: Object.assign({}, data.hasDefaultValue, { [column.name]: true }), isMutable: isMutable, id: column, uniqueKeys: uniqueKeys.concat({
                 [column.name]: true
             }) });
     }
@@ -82,6 +82,19 @@ var TableDataUtil;
         return Object.assign({}, data, { isMutable: {} });
     }
     TableDataUtil.immutable = immutable;
+    function id(data, columnCollection, delegate) {
+        //Technically, columns shouldn't have any non-`number` types
+        //but I can't check for that during run-time
+        const column = delegate(columnCollection);
+        column_collection_1.ColumnCollectionUtil.assertHasColumn(columnCollection, column);
+        const uniqueKeys = (data.uniqueKeys == undefined) ?
+            [] :
+            data.uniqueKeys;
+        return Object.assign({}, data, { id: column, uniqueKeys: uniqueKeys.concat({
+                [column.name]: true
+            }) });
+    }
+    TableDataUtil.id = id;
     function toUniqueKey(tuple) {
         const result = {};
         for (let i of tuple) {
@@ -101,7 +114,9 @@ var TableDataUtil;
     function withTableAlias(data, tableAlias) {
         return Object.assign({}, data, { autoIncrement: (data.autoIncrement == undefined) ?
                 undefined :
-                column_1.ColumnUtil.withTableAlias(data.autoIncrement, tableAlias) });
+                column_1.ColumnUtil.withTableAlias(data.autoIncrement, tableAlias), id: (data.id == undefined) ?
+                undefined :
+                column_1.ColumnUtil.withTableAlias(data.id, tableAlias) });
     }
     TableDataUtil.withTableAlias = withTableAlias;
 })(TableDataUtil = exports.TableDataUtil || (exports.TableDataUtil = {}));

@@ -9,6 +9,7 @@ import {
     IsMutableDelegate,
     TableDataUtil,
     AddUniqueKeyDelegate,
+    IdDelegate,
 } from "../table-data";
 import * as fieldUtil from "../field-util";
 //import {Column} from "../column";
@@ -32,7 +33,23 @@ export class Table<
 
     setAutoIncrement<
         AutoIncrementDelegateT extends AutoIncrementDelegate<ColumnCollectionT>
-    >(delegate : AutoIncrementDelegateT) : (
+    >(
+        this : Table<
+            any,
+            any,
+            any,
+            {
+                readonly [key in keyof DataT] : (
+                    key extends "autoIncrement" ?
+                    undefined :
+                    key extends "id" ?
+                    undefined :
+                    any
+                )
+            }
+        >,
+        delegate : AutoIncrementDelegateT
+    ) : (
         Table<
             AliasT,
             NameT,
@@ -44,8 +61,8 @@ export class Table<
             this.alias,
             this.name,
             this.columns,
-            TableDataUtil.autoIncrement(this.data, this.columns, delegate)
-        );
+            TableDataUtil.autoIncrement(this.data, this.columns, delegate as any)
+        ) as any;
     }
     /*unsetAutoIncrement () : (
         Table<
@@ -228,6 +245,40 @@ export class Table<
             this.data
         );
     }
+
+    setId<
+        IdDelegateT extends IdDelegate<DataT, ColumnCollectionT>
+    >(
+        this : Table<
+            any,
+            any,
+            any,
+            {
+                readonly [key in keyof DataT] : (
+                    key extends "autoIncrement" ?
+                    undefined :
+                    key extends "id" ?
+                    undefined :
+                    any
+                )
+            }
+        >,
+        delegate : IdDelegateT
+    ) : (
+        Table<
+            AliasT,
+            NameT,
+            ColumnCollectionT,
+            TableDataUtil.Id<DataT, ColumnCollectionT, IdDelegateT>
+        >
+    ) {
+        return new Table(
+            this.alias,
+            this.name,
+            this.columns,
+            TableDataUtil.id(this.data, this.columns, delegate as any)
+        ) as any;
+    }
     //This method causes `tsc` to not terminate if uncommented
     addUniqueKey<
         AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>
@@ -319,6 +370,7 @@ export function table<
             isMutable : {
                 [name in Extract<keyof RawColumnCollectionT, string>] : true
             },
+            id : undefined,
             uniqueKeys : undefined,
         }
     >
@@ -345,6 +397,7 @@ export function table<
             isMutable : {
                 [name in Extract<keyof fieldUtil.FieldsToObject<TupleT>, string>] : true
             },
+            id : undefined,
             uniqueKeys : undefined,
         }
     >
@@ -378,6 +431,7 @@ export function table (
             isGenerated : {},
             hasDefaultValue : hasDefaultValue,
             isMutable : isMutable,
+            id : undefined,
             uniqueKeys : undefined,
         }
     );

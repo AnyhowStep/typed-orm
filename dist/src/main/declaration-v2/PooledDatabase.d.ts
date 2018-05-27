@@ -48,6 +48,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         isGenerated: {};
         hasDefaultValue: {};
         isMutable: {};
+        id: undefined;
         uniqueKeys: undefined;
     }>, {}, true> : never) extends never ? SelectBuilder<{
         hasSelect: false;
@@ -62,6 +63,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             isGenerated: {};
             hasDefaultValue: {};
             isMutable: {};
+            id: undefined;
             uniqueKeys: undefined;
         }>, {}, true>];
     }> : void | Error | ["Alias", TableT["alias"], "was already used as join in parent scope", "__DUMMY_FROM_TABLE" extends TableT["alias"] ? Join<Table<"__DUMMY_FROM_TABLE", "__DUMMY_FROM_TABLE", {}, {
@@ -69,6 +71,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         isGenerated: {};
         hasDefaultValue: {};
         isMutable: {};
+        id: undefined;
         uniqueKeys: undefined;
     }>, {}, true> : never];
     readonly select: <SelectDelegateT extends (columnReferences: {}, selectBuilder: SelectBuilder<{
@@ -80,6 +83,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             isGenerated: {};
             hasDefaultValue: {};
             isMutable: {};
+            id: undefined;
             uniqueKeys: undefined;
         }>, {}, true>];
         selects: undefined;
@@ -90,6 +94,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             isGenerated: {};
             hasDefaultValue: {};
             isMutable: {};
+            id: undefined;
             uniqueKeys: undefined;
         }>, {}, true>];
     }>) => AliasedExpr<{}, "__expr", any, any>[] & {
@@ -481,6 +486,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             isGenerated: {};
             hasDefaultValue: {};
             isMutable: {};
+            id: undefined;
             uniqueKeys: undefined;
         }>, {}, true>];
         selects: ReturnType<SelectDelegateT>;
@@ -491,6 +497,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             isGenerated: {};
             hasDefaultValue: {};
             isMutable: {};
+            id: undefined;
             uniqueKeys: undefined;
         }>, {}, true>];
     }>;

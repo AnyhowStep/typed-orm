@@ -4,7 +4,8 @@ import {
     IsGeneratedDelegate,
     HasDefaultValueDelegate,
     IsMutableDelegate,
-    AddUniqueKeyDelegate
+    AddUniqueKeyDelegate,
+    IdDelegate,
 } from "./table-data";
 import {ReadonlyRemoveKey, ReadonlyReplaceValue, ReadonlyReplaceValue3} from "../obj-util";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
@@ -36,6 +37,8 @@ export namespace TableDataUtil {
                         Extract<keyof DataT["hasDefaultValue"], string>
                     )] : true
                 } :
+                key extends "id" ?
+                ReturnType<AutoIncrementDelegateT> :
                 key extends "uniqueKeys" ?
                 (
                     DataT["uniqueKeys"] extends Tuple<UniqueKey> ?
@@ -58,40 +61,6 @@ export namespace TableDataUtil {
                 DataT[key]
             )
         }
-        /*ReplaceValue4<
-            DataT,
-            "autoIncrement",
-            ReturnType<AutoIncrementDelegateT>,
-            "isGenerated",
-            {
-                [columnName in (
-                    ReturnType<AutoIncrementDelegateT>["name"]|
-                    Extract<keyof DataT["isGenerated"], string>
-                )] : true
-            }
-            /*DataT["isGenerated"] &
-            {
-                [columnName in ReturnType<AutoIncrementDelegateT>["name"]] : true
-            }* /,
-            "hasDefaultValue",
-            {
-                [columnName in (
-                    ReturnType<AutoIncrementDelegateT>["name"]|
-                    Extract<keyof DataT["hasDefaultValue"], string>
-                )] : true
-            }
-            /*DataT["hasDefaultValue"] &
-            {
-                [columnName in ReturnType<AutoIncrementDelegateT>["name"]] : true
-            }* /,
-            "isMutable",
-            {
-                [columnName in Exclude<
-                    Extract<keyof DataT["isMutable"], string>,
-                    ReturnType<AutoIncrementDelegateT>["name"]
-                >] : true
-            }
-        >*/
     );
     export function autoIncrement<
         DataT extends TableData,
@@ -128,6 +97,7 @@ export namespace TableDataUtil {
                 [column.name] : true,
             },
             isMutable : isMutable,
+            id : column,
             uniqueKeys : uniqueKeys.concat({
                 [column.name] : true
             })
@@ -371,6 +341,68 @@ export namespace TableDataUtil {
             isMutable : {},
         } as any;
     }
+
+    export type Id<
+        DataT extends TableData,
+        ColumnCollectionT extends ColumnCollection,
+        IdDelegateT extends IdDelegate<DataT, ColumnCollectionT>
+    > = (
+        {
+            readonly [key in keyof DataT] : (
+                key extends "id" ?
+                ReturnType<IdDelegateT> :
+                key extends "uniqueKeys" ?
+                (
+                    DataT["uniqueKeys"] extends Tuple<UniqueKey> ?
+                        (
+                            TupleWPush<
+                                UniqueKey,
+                                DataT["uniqueKeys"],
+                                {
+                                    [columnName in ReturnType<IdDelegateT>["name"]] : true
+                                }
+                            >
+                        ) :
+                        TupleWiden<
+                            [{
+                                [columnName in ReturnType<IdDelegateT>["name"]] : true
+                            }],
+                            UniqueKey
+                        >
+                ) :
+                DataT[key]
+            )
+        }
+    );
+    export function id<
+        DataT extends TableData,
+        ColumnCollectionT extends ColumnCollection,
+        IdDelegateT extends IdDelegate<DataT, ColumnCollectionT>
+    > (
+        data : DataT,
+        columnCollection : ColumnCollectionT,
+        delegate : IdDelegateT
+    ) : (
+        Id<DataT, ColumnCollectionT, IdDelegateT>
+    ) {
+        //Technically, columns shouldn't have any non-`number` types
+        //but I can't check for that during run-time
+        const column = delegate(columnCollection as any);
+        ColumnCollectionUtil.assertHasColumn(columnCollection, column);
+
+        const uniqueKeys : UniqueKey[] = (data.uniqueKeys == undefined) ?
+            [] :
+            data.uniqueKeys
+
+        return {
+            ...(data as any),
+            id : column,
+            uniqueKeys : uniqueKeys.concat({
+                [column.name] : true
+            })
+        } as any;
+    }
+
     export type ToUniqueKeyImpl<
         TupleT extends Tuple<AnyColumn>,
         K extends string
@@ -477,6 +509,11 @@ export namespace TableDataUtil {
             readonly isGenerated : DataT["isGenerated"];
             readonly hasDefaultValue : DataT["hasDefaultValue"];
             readonly isMutable : DataT["isMutable"];
+            readonly id : (
+                DataT["id"] extends AnyColumn ?
+                        ColumnUtil.WithTableAlias<DataT["id"], TableAliasT> :
+                        undefined
+            );
             readonly uniqueKeys : DataT["uniqueKeys"];
         }
         /*{
@@ -551,6 +588,9 @@ export namespace TableDataUtil {
             autoIncrement : (data.autoIncrement == undefined) ?
                 undefined :
                 ColumnUtil.withTableAlias(data.autoIncrement, tableAlias),
+            id : (data.id == undefined) ?
+                undefined :
+                ColumnUtil.withTableAlias(data.id, tableAlias),
         } as any;
     }
 }

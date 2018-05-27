@@ -85,6 +85,7 @@ export declare const __DUMMY_FROM_TABLE: Table<"__DUMMY_FROM_TABLE", "__DUMMY_FR
     isGenerated: {};
     hasDefaultValue: {};
     isMutable: {};
+    id: undefined;
     uniqueKeys: undefined;
 }>;
 export declare class SelectBuilder<DataT extends SelectBuilderData> implements Querify {

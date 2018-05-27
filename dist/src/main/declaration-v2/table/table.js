@@ -55,6 +55,9 @@ class Table extends aliased_table_1.AliasedTable {
         }
         return new Table(this.alias, this.name, column_collection_1.ColumnCollectionUtil.merge(this.columns, raw_column_collection_1.RawColumnCollectionUtil.toColumnCollection(this.alias, raw)), this.data);
     }
+    setId(delegate) {
+        return new Table(this.alias, this.name, this.columns, table_data_1.TableDataUtil.id(this.data, this.columns, delegate));
+    }
     //This method causes `tsc` to not terminate if uncommented
     addUniqueKey(delegate) {
         return new Table(this.alias, this.name, this.columns, table_data_1.TableDataUtil.addUniqueKey(this.data, this.columns, delegate));
@@ -85,6 +88,7 @@ function table(name, raw) {
         isGenerated: {},
         hasDefaultValue: hasDefaultValue,
         isMutable: isMutable,
+        id: undefined,
         uniqueKeys: undefined,
     });
 }

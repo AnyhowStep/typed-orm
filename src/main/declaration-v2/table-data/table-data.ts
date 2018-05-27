@@ -11,7 +11,7 @@ export interface TableData {
 
     //This cannot be represented correctly with JS' `number` type,
     //which should be an 8-byte floating point,
-    //The precision is 15 siginificant digits, and 
+    //The precision is 15 siginificant digits, and
     //`UNSIGNED BIGINT` can have up to 20 digits...
     //15 digits is still, like, 999,999,999,999,999, though
     readonly autoIncrement : undefined|Column<any, any, number>;
@@ -38,6 +38,8 @@ export interface TableData {
         [name : string] : true;
     };
 
+    //A table can have a PK that is an FK to an auto-increment column in another table
+    readonly id : undefined|Column<any, any, number>;
     readonly uniqueKeys : undefined|(UniqueKeyCollection);
 }
 
@@ -102,6 +104,31 @@ export type IsMutableDelegate<DataT extends TableData, ColumnCollectionT extends
             >
         >
     >
+);
+//The `number` requirement is only a compile-time constraint
+export type IdDelegate<DataT extends TableData, ColumnCollectionT extends ColumnCollection, > = (
+    (
+        columns : (
+            DataT["autoIncrement"] extends AnyColumn ?
+                //We already have an auto-increment column
+                {} :
+                {
+                    [columnName in keyof ColumnCollectionT] : (
+                        ColumnCollectionT[columnName] extends Column<any, any, number> ?
+                            ColumnCollectionT[columnName] :
+                            never
+                    )
+                }
+        )
+    ) => (
+        DataT["autoIncrement"] extends AnyColumn ?
+            //We already have an auto-increment column
+            never :
+            Extract<
+                ColumnCollectionUtil.Columns<ColumnCollectionT>,
+                Column<any, any, number>
+            >
+    )
 );
 export type AddUniqueKeyDelegate<ColumnCollectionT extends ColumnCollection> = (
     (columns : ColumnCollectionT) => Tuple<

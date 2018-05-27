@@ -1,4 +1,4 @@
-import { TableData, AutoIncrementDelegate, IsGeneratedDelegate, HasDefaultValueDelegate, IsMutableDelegate, AddUniqueKeyDelegate } from "./table-data";
+import { TableData, AutoIncrementDelegate, IsGeneratedDelegate, HasDefaultValueDelegate, IsMutableDelegate, AddUniqueKeyDelegate, IdDelegate } from "./table-data";
 import { ReadonlyRemoveKey, ReadonlyReplaceValue, ReadonlyReplaceValue3 } from "../obj-util";
 import { ColumnCollection } from "../column-collection";
 import { Tuple, TupleKeys, TupleWPush, TupleWiden } from "../tuple";
@@ -10,7 +10,7 @@ export declare namespace TableDataUtil {
             readonly [columnName in (ReturnType<AutoIncrementDelegateT>["name"] | Extract<keyof DataT["isGenerated"], string>)]: true;
         } : key extends "hasDefaultValue" ? {
             readonly [columnName in (ReturnType<AutoIncrementDelegateT>["name"] | Extract<keyof DataT["hasDefaultValue"], string>)]: true;
-        } : key extends "uniqueKeys" ? (DataT["uniqueKeys"] extends Tuple<UniqueKey> ? (TupleWPush<UniqueKey, DataT["uniqueKeys"], {
+        } : key extends "id" ? ReturnType<AutoIncrementDelegateT> : key extends "uniqueKeys" ? (DataT["uniqueKeys"] extends Tuple<UniqueKey> ? (TupleWPush<UniqueKey, DataT["uniqueKeys"], {
             [columnName in ReturnType<AutoIncrementDelegateT>["name"]]: true;
         }>) : TupleWiden<[{
             [columnName in ReturnType<AutoIncrementDelegateT>["name"]]: true;
@@ -39,6 +39,14 @@ export declare namespace TableDataUtil {
         readonly [key in keyof DataT]: (key extends "isMutable" ? {} : DataT[key]);
     });
     function immutable<DataT extends TableData>(data: DataT): (Immutable<DataT>);
+    type Id<DataT extends TableData, ColumnCollectionT extends ColumnCollection, IdDelegateT extends IdDelegate<DataT, ColumnCollectionT>> = ({
+        readonly [key in keyof DataT]: (key extends "id" ? ReturnType<IdDelegateT> : key extends "uniqueKeys" ? (DataT["uniqueKeys"] extends Tuple<UniqueKey> ? (TupleWPush<UniqueKey, DataT["uniqueKeys"], {
+            [columnName in ReturnType<IdDelegateT>["name"]]: true;
+        }>) : TupleWiden<[{
+            [columnName in ReturnType<IdDelegateT>["name"]]: true;
+        }], UniqueKey>) : DataT[key]);
+    });
+    function id<DataT extends TableData, ColumnCollectionT extends ColumnCollection, IdDelegateT extends IdDelegate<DataT, ColumnCollectionT>>(data: DataT, columnCollection: ColumnCollectionT, delegate: IdDelegateT): (Id<DataT, ColumnCollectionT, IdDelegateT>);
     type ToUniqueKeyImpl<TupleT extends Tuple<AnyColumn>, K extends string> = (K extends keyof TupleT ? (TupleT[K] extends Column<any, infer NameT, any> ? {
         readonly [name in NameT]: true;
     } : {}) : {});
@@ -53,6 +61,7 @@ export declare namespace TableDataUtil {
         readonly isGenerated: DataT["isGenerated"];
         readonly hasDefaultValue: DataT["hasDefaultValue"];
         readonly isMutable: DataT["isMutable"];
+        readonly id: (DataT["id"] extends AnyColumn ? ColumnUtil.WithTableAlias<DataT["id"], TableAliasT> : undefined);
         readonly uniqueKeys: DataT["uniqueKeys"];
     });
     function withTableAlias<DataT extends TableData, TableAliasT extends string>(data: DataT, tableAlias: TableAliasT): (WithTableAlias<DataT, TableAliasT>);
