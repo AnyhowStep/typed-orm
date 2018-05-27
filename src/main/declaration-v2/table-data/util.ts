@@ -6,7 +6,7 @@ import {
     IsMutableDelegate,
     AddUniqueKeyDelegate
 } from "./table-data";
-import {RemoveKey, ReplaceValue, ReplaceValue3} from "../obj-util";
+import {ReadonlyRemoveKey, ReadonlyReplaceValue, ReadonlyReplaceValue3} from "../obj-util";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
 import {Tuple, TupleKeys, TupleWPush, TupleWiden} from "../tuple";
 import {Column, AnyColumn, ColumnUtil} from "../column";
@@ -19,19 +19,19 @@ export namespace TableDataUtil {
         AutoIncrementDelegateT extends AutoIncrementDelegate<ColumnCollectionT>
     > = (
         {
-            [key in keyof DataT] : (
+            readonly [key in keyof DataT] : (
                 key extends "autoIncrement" ?
                 ReturnType<AutoIncrementDelegateT> :
                 key extends "isGenerated" ?
                 {
-                    [columnName in (
+                    readonly [columnName in (
                         ReturnType<AutoIncrementDelegateT>["name"]|
                         Extract<keyof DataT["isGenerated"], string>
                     )] : true
                 } :
                 key extends "hasDefaultValue" ?
                 {
-                    [columnName in (
+                    readonly [columnName in (
                         ReturnType<AutoIncrementDelegateT>["name"]|
                         Extract<keyof DataT["hasDefaultValue"], string>
                     )] : true
@@ -137,14 +137,14 @@ export namespace TableDataUtil {
         DataT extends TableData
     > = (
         DataT["autoIncrement"] extends AnyColumn ?
-            ReplaceValue3<
+            ReadonlyReplaceValue3<
                 DataT,
                 "autoIncrement",
                 undefined,
                 "isGenerated",
-                RemoveKey<DataT["isGenerated"], DataT["autoIncrement"]["name"]>,
+                ReadonlyRemoveKey<DataT["isGenerated"], DataT["autoIncrement"]["name"]>,
                 "hasDefaultValue",
-                RemoveKey<DataT["hasDefaultValue"], DataT["autoIncrement"]["name"]>
+                ReadonlyRemoveKey<DataT["hasDefaultValue"], DataT["autoIncrement"]["name"]>
             > :
             DataT
     );
@@ -174,25 +174,25 @@ export namespace TableDataUtil {
         >
     > = (
         ReturnType<IsGeneratedDelegateT>[TupleKeys<ReturnType<IsGeneratedDelegateT>>] extends AnyColumn ?
-            ReplaceValue3<
+            ReadonlyReplaceValue3<
                 DataT,
                 "isGenerated",
                 DataT["isGenerated"] &
                 {
-                    [columnName in ReturnType<IsGeneratedDelegateT>[
+                    readonly [columnName in ReturnType<IsGeneratedDelegateT>[
                         TupleKeys<ReturnType<IsGeneratedDelegateT>>
                     ]["name"]] : true
                 },
                 "hasDefaultValue",
                 DataT["hasDefaultValue"] &
                 {
-                    [columnName in ReturnType<IsGeneratedDelegateT>[
+                    readonly [columnName in ReturnType<IsGeneratedDelegateT>[
                         TupleKeys<ReturnType<IsGeneratedDelegateT>>
                     ]["name"]] : true
                 },
                 "isMutable",
                 {
-                    [columnName in Exclude<
+                    readonly  [columnName in Exclude<
                         Extract<keyof DataT["isMutable"], string>,
                         ReturnType<IsGeneratedDelegateT>[
                             TupleKeys<ReturnType<IsGeneratedDelegateT>>
@@ -223,11 +223,11 @@ export namespace TableDataUtil {
         }
         const columnTuple = delegate(columns as any);
         ColumnCollectionUtil.assertHasColumns(columns, columnTuple as any);
-        
+
         const isGenerated = {...data.isGenerated};
         const hasDefaultValue = {...data.hasDefaultValue};
         const isMutable  = {...data.isMutable};
-        
+
         for (let column of columnTuple) {
             isGenerated[column.name] = true;
             hasDefaultValue[column.name] = true;
@@ -250,12 +250,12 @@ export namespace TableDataUtil {
         >
     > = (
         ReturnType<HasDefaultValueDelegateT>[TupleKeys<ReturnType<HasDefaultValueDelegateT>>] extends AnyColumn ?
-            ReplaceValue<
+            ReadonlyReplaceValue<
                 DataT,
                 "hasDefaultValue",
                 DataT["hasDefaultValue"] &
                 {
-                    [columnName in ReturnType<HasDefaultValueDelegateT>[
+                    readonly [columnName in ReturnType<HasDefaultValueDelegateT>[
                         TupleKeys<ReturnType<HasDefaultValueDelegateT>>
                     ]["name"]] : true
                 }
@@ -282,9 +282,9 @@ export namespace TableDataUtil {
         }
         const columnTuple = delegate(columns as any);
         ColumnCollectionUtil.assertHasColumns(columns, columnTuple as any);
-        
+
         const hasDefaultValue = {...data.hasDefaultValue};
-        
+
         for (let column of columnTuple) {
             hasDefaultValue[column.name] = true;
         }
@@ -303,12 +303,12 @@ export namespace TableDataUtil {
         >
     > = (
         ReturnType<IsMutableDelegateT>[TupleKeys<ReturnType<IsMutableDelegateT>>] extends AnyColumn ?
-            ReplaceValue<
+            ReadonlyReplaceValue<
                 DataT,
                 "isMutable",
                 DataT["isMutable"] &
                 {
-                    [columnName in ReturnType<IsMutableDelegateT>[
+                    readonly [columnName in ReturnType<IsMutableDelegateT>[
                         TupleKeys<ReturnType<IsMutableDelegateT>>
                     ]["name"]] : true
                 }
@@ -335,9 +335,9 @@ export namespace TableDataUtil {
         }
         const columnTuple = delegate(columns as any);
         ColumnCollectionUtil.assertHasColumns(columns, columnTuple as any);
-        
+
         const isMutable = {...data.isMutable};
-        
+
         for (let column of columnTuple) {
             isMutable[column.name] = true;
         }
@@ -351,7 +351,7 @@ export namespace TableDataUtil {
         DataT extends TableData
     > = (
         {
-            [key in keyof DataT] : (
+            readonly [key in keyof DataT] : (
                 key extends "isMutable" ?
                 {} :
                 DataT[key]
@@ -379,7 +379,7 @@ export namespace TableDataUtil {
             (
                 TupleT[K] extends Column<any, infer NameT, any> ?
                     {
-                        [name in NameT] : true
+                        readonly [name in NameT] : true
                     } :
                     {}
             ) :
@@ -405,7 +405,7 @@ export namespace TableDataUtil {
         AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>
     > = (
         {
-            [key in keyof DataT] : (
+            readonly [key in keyof DataT] : (
                 key extends "uniqueKeys" ?
                 (
                     DataT["uniqueKeys"] extends Tuple<UniqueKey> ?
@@ -468,7 +468,7 @@ export namespace TableDataUtil {
     }
 
     export type WithTableAlias<DataT extends TableData, TableAliasT extends string> = (
-        ReplaceValue<
+        ReadonlyReplaceValue<
             DataT,
             "autoIncrement",
             (
