@@ -4,7 +4,6 @@ import {Expr} from "../expr";
 import * as sd from "schema-decorator";
 import * as variadicUtil from "./variadic-util";
 
-
 export function coalesce<
     LeftT extends AnyRawExpr,
     R0 extends AnyRawExpr
@@ -87,7 +86,10 @@ export function coalesce<
 
     return new Expr(
         q.used,
-        sd.string(),
+        sd.or(
+            RawExprUtil.assertDelegate(left),
+            ...(rightArr.map(RawExprUtil.assertDelegate) as any)
+        ),
         `COALESCE(${q.leftQuery}, ${q.rightQueries.join(",")})`
     ) as any;
 }

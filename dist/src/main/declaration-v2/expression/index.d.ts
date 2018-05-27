@@ -1,6 +1,7 @@
 export * from "./boolean-expr";
 export * from "./coalesce";
 export * from "./count";
+export * from "./if-null";
 export * from "./logical-connective";
 export * from "./now";
 export * from "./number-comparison";
