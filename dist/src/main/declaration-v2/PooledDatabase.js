@@ -255,10 +255,27 @@ class PooledDatabase extends mysql.PooledDatabase {
     }
     //By auto-increment id, actually
     fetchOneById(table, id) {
-        return this.from(table)
-            .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
-            .selectAll()
-            .fetchOne();
+        return __awaiter(this, void 0, void 0, function* () {
+            if (table.data.autoIncrement == undefined) {
+                throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+            }
+            return this.from(table)
+                .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
+                .selectAll()
+                .fetchOne();
+        });
+    }
+    //By auto-increment id, actually
+    fetchZeroOrOneById(table, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (table.data.autoIncrement == undefined) {
+                throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+            }
+            return this.from(table)
+                .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
+                .selectAll()
+                .fetchZeroOrOne();
+        });
     }
     update(arg0, arg1, arg2, arg3, arg4) {
         if (arg0 instanceof table_1.Table) {
@@ -269,6 +286,63 @@ class PooledDatabase extends mysql.PooledDatabase {
         else {
             return super.update(arg0, arg1, arg2, arg3, arg4);
         }
+    }
+    //Auto-increment id
+    /*
+        If the row does not exist, it returns,
+        {
+            foundRowCount : 0,
+            row : undefined
+        }
+
+        If the row exists but was not updated, it returns,
+        {
+            updatedRowCount : 0
+            row : Object
+        }
+    */
+    updateAndFetchZeroOrOneById(table, id, delegate) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (table.data.autoIncrement == undefined) {
+                throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+            }
+            return this.transaction((db) => __awaiter(this, void 0, void 0, function* () {
+                const updateResult = yield db.from(table)
+                    .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
+                    .set(delegate)
+                    .execute();
+                if (updateResult.foundRowCount > 1) {
+                    //Should not be possible
+                    throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.autoIncrement.name} = ${id}; found ${updateResult.foundRowCount} rows`);
+                }
+                if (updateResult.foundRowCount == 0) {
+                    return {
+                        result: updateResult,
+                        row: undefined,
+                    };
+                }
+                if (updateResult.foundRowCount < 0) {
+                    //No update was even attempted, probably an empty SET clause
+                    const row = yield db.fetchZeroOrOneById(table, id);
+                    if (row == undefined) {
+                        return {
+                            result: Object.assign({}, updateResult, { affectedRows: 0, foundRowCount: 0 }),
+                            row: row,
+                        };
+                    }
+                    else {
+                        return {
+                            result: Object.assign({}, updateResult, { affectedRows: 1, foundRowCount: 1 }),
+                            row: row,
+                        };
+                    }
+                }
+                return {
+                    result: updateResult,
+                    row: yield db.fetchOneById(table, id),
+                };
+            }));
+        });
     }
     deleteFrom(table, where) {
         return this.from(table)

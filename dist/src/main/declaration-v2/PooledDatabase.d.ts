@@ -6,7 +6,7 @@ import { AnyAliasedTable } from "./aliased-table";
 import { Table, AnyTable, TableUtil } from "./table";
 import { InsertValueBuilder } from "./insert-value-builder";
 import { InsertSelectBuilder } from "./insert-select-builder";
-import { UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate } from "./update-builder";
+import { UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate, UpdateResult } from "./update-builder";
 import * as sd from "schema-decorator";
 import { WhereDelegate } from "./where-delegate";
 import { DeleteBuilder, DeleteTables } from "./delete-builder";
@@ -5144,6 +5144,11 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             autoIncrement: Column<any, any, number>;
         };
     }>(table: TableT, id: number): (Promise<FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>>>);
+    fetchZeroOrOneById<TableT extends AnyAliasedTable & {
+        data: {
+            autoIncrement: Column<any, any, number>;
+        };
+    }>(table: TableT, id: number): (Promise<FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>> | undefined>);
     readonly insertValue: <TableT extends Table<string, string, {
         readonly [columnName: string]: Column<string, string, any>;
     }, any>>(table: TableT, value: { [name in Exclude<Extract<keyof TableT["columns"], string>, keyof TableT["data"]["hasDefaultValue"] | keyof TableT["data"]["isGenerated"]>]: Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
@@ -10572,5 +10577,14 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     } ? { readonly [tableAlias in SelectBuilderT["data"]["selects"]["19"][keyof SelectBuilderT["data"]["selects"]["19"]]["tableAlias"]]: SelectBuilderT["data"]["selects"]["19"]; } : {} : {}) : {})] : never, Column<any, any, Extract<ReturnType<TableT["columns"][columnName]["assertDelegate"]>, string | number | boolean | Date | null | undefined>>> | undefined; }, "NORMAL">;
     update<T extends mysql.QueryValues, ConditionT extends mysql.QueryValues>(assertRow: sd.AssertFunc<T>, assertCondition: sd.AssertFunc<ConditionT>, table: string, row: T, condition: ConditionT): Promise<mysql.UpdateResult<T, ConditionT>>;
     update<TableT extends AnyTable>(table: TableT, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>, where: WhereDelegate<ConvenientUpdateSelectBuilder<TableT>>): (UpdateBuilder<ConvenientUpdateSelectBuilder<TableT>, RawUpdateAssignmentReferences<ConvenientUpdateSelectBuilder<TableT>>>);
+    updateAndFetchZeroOrOneById<TableT extends AnyTable & {
+        data: {
+            autoIncrement: Column<any, any, number>;
+        };
+    }>(table: TableT, id: number, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<{
+        result: UpdateResult;
+    } & {
+        row: (FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>> | undefined);
+    }>);
     deleteFrom<TableT extends AnyTable>(table: TableT, where: WhereDelegate<ConvenientDeleteSelectBuilder<TableT>>): (DeleteBuilder<ConvenientDeleteSelectBuilder<TableT>, DeleteTables<ConvenientDeleteSelectBuilder<TableT>>>);
 }

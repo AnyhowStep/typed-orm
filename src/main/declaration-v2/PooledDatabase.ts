@@ -7,7 +7,7 @@ import {SelectDelegate} from "./select-delegate";
 import {Table, AnyTable, TableUtil} from "./table";
 import {RawInsertValueRow, InsertValueBuilder} from "./insert-value-builder";
 import {InsertAssignmentCollectionDelegate, InsertSelectBuilder, RawInsertSelectAssignmentCollection} from "./insert-select-builder";
-import {UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate} from "./update-builder";
+import {UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate, UpdateResult} from "./update-builder";
 import * as sd from "schema-decorator";
 import {WhereDelegate} from "./where-delegate";
 import {DeleteBuilder, DeleteTables} from "./delete-builder";
@@ -221,7 +221,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
             .fetchZeroOrOne();
     }
     //By auto-increment id, actually
-    fetchOneById<TableT extends AnyAliasedTable & { data : { autoIncrement : Column<any, any, number> } }> (
+    async fetchOneById<TableT extends AnyAliasedTable & { data : { autoIncrement : Column<any, any, number> } }> (
         table : TableT,
         id : number
     ) : (
@@ -232,10 +232,33 @@ export class PooledDatabase extends mysql.PooledDatabase {
             >
         >>
     ) {
+        if (table.data.autoIncrement == undefined) {
+            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        }
         return (this.from(table) as any)
             .whereIsEqual((c : any) => c[table.data.autoIncrement.name], id)
             .selectAll()
             .fetchOne();
+    }
+    //By auto-increment id, actually
+    async fetchZeroOrOneById<TableT extends AnyAliasedTable & { data : { autoIncrement : Column<any, any, number> } }> (
+        table : TableT,
+        id : number
+    ) : (
+        Promise<FetchRow<
+            SelectBuilderUtil.SelectAll<TableT>["data"]["joins"],
+            SelectCollectionUtil.ToColumnReferences<
+                SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]
+            >
+        >|undefined>
+    ) {
+        if (table.data.autoIncrement == undefined) {
+            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        }
+        return (this.from(table) as any)
+            .whereIsEqual((c : any) => c[table.data.autoIncrement.name], id)
+            .selectAll()
+            .fetchZeroOrOne();
     }
 
     readonly insertValue = <TableT extends AnyTable>(
@@ -302,6 +325,94 @@ export class PooledDatabase extends mysql.PooledDatabase {
         } else {
             return super.update(arg0, arg1, arg2, arg3, arg4);
         }
+    }
+    //Auto-increment id
+    /*
+        If the row does not exist, it returns,
+        {
+            foundRowCount : 0,
+            row : undefined
+        }
+
+        If the row exists but was not updated, it returns,
+        {
+            updatedRowCount : 0
+            row : Object
+        }
+    */
+    async updateAndFetchZeroOrOneById<
+        TableT extends AnyTable & { data : { autoIncrement : Column<any, any, number> } }
+    > (
+        table : TableT,
+        id : number,
+        delegate : UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>
+    ) : (
+        Promise<
+            {
+                result : UpdateResult
+            } &
+            {
+                row : (
+                    FetchRow<
+                        SelectBuilderUtil.SelectAll<TableT>["data"]["joins"],
+                        SelectCollectionUtil.ToColumnReferences<
+                            SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]
+                        >
+                    >|undefined
+                )
+            }
+        >
+    ) {
+        if (table.data.autoIncrement == undefined) {
+            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        }
+        return this.transaction(async (db) => {
+            const updateResult : UpdateResult = await (db.from(table) as any)
+                .whereIsEqual((c : any) => c[table.data.autoIncrement.name], id)
+                .set(delegate)
+                .execute();
+
+            if (updateResult.foundRowCount > 1) {
+                //Should not be possible
+                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.autoIncrement.name} = ${id}; found ${updateResult.foundRowCount} rows`);
+            }
+            
+            if (updateResult.foundRowCount == 0) {
+                return {
+                    result : updateResult,
+                    row : undefined,
+                };
+            }
+
+            if (updateResult.foundRowCount < 0) {
+                //No update was even attempted, probably an empty SET clause
+                const row = await db.fetchZeroOrOneById(table, id);
+                if (row == undefined) {
+                    return {
+                        result : {
+                            ...updateResult,
+                            affectedRows : 0,
+                            foundRowCount : 0,
+                        },
+                        row : row,
+                    };
+                } else {
+                    return {
+                        result : {
+                            ...updateResult,
+                            affectedRows : 1,
+                            foundRowCount : 1,
+                        },
+                        row : row,
+                    };
+                }
+            }
+
+            return {
+                result : updateResult,
+                row : await db.fetchOneById(table, id),
+            };
+        }) as any;
     }
     deleteFrom <
         TableT extends AnyTable
