@@ -34,7 +34,7 @@ export class InsertValueBuilder<
         readonly insertMode : InsertModeT,
         readonly db : PooledDatabase
     ) {
-        
+
     }
 
     public ignore () : InsertValueBuilder<
@@ -125,6 +125,8 @@ export class InsertValueBuilder<
                 }
             }) as any;
     }
+
+    //Consider allowing just ["data"]["id"] for execute and fetch
     public async executeAndFetch (
         this : InsertValueBuilder<
             TableT extends AnyTable & { data : { autoIncrement : Column<any, any, number> } } ?

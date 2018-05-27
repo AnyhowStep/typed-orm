@@ -71,7 +71,7 @@ export class InsertSelectBuilder<
         readonly insertMode : InsertModeT,
         readonly db : PooledDatabase
     ) {
-        
+
     }
 
     public ignore () : InsertSelectBuilder<
@@ -123,7 +123,7 @@ export class InsertSelectBuilder<
                 ColumnReferencesUtil.assertHasColumn(selectReferences, value);
             }
         }
-        
+
         return new InsertSelectBuilder(
             this.table,
             this.selectBuilder,

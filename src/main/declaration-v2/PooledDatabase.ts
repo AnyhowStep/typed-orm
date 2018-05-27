@@ -220,8 +220,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         return this.selectAllByUniqueKey(table, uniqueKey)
             .fetchZeroOrOne();
     }
-    //By auto-increment id, actually
-    fetchOneById<TableT extends AnyAliasedTable & { data : { autoIncrement : Column<any, any, number> } }> (
+    fetchOneById<TableT extends AnyAliasedTable & { data : { id : Column<any, any, number> } }> (
         table : TableT,
         id : number
     ) : (
@@ -232,16 +231,16 @@ export class PooledDatabase extends mysql.PooledDatabase {
             >
         >>
     ) {
-        if (table.data.autoIncrement == undefined) {
-            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
         }
         return (this.from(table) as any)
-            .whereIsEqual((c : any) => c[table.data.autoIncrement.name], id)
+            .whereIsEqual((c : any) => c[table.data.id.name], id)
             .selectAll()
             .fetchOne();
     }
     //By auto-increment id, actually
-    async fetchZeroOrOneById<TableT extends AnyAliasedTable & { data : { autoIncrement : Column<any, any, number> } }> (
+    async fetchZeroOrOneById<TableT extends AnyAliasedTable & { data : { id : Column<any, any, number> } }> (
         table : TableT,
         id : number
     ) : (
@@ -252,11 +251,11 @@ export class PooledDatabase extends mysql.PooledDatabase {
             >
         >|undefined>
     ) {
-        if (table.data.autoIncrement == undefined) {
-            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
         }
         return (this.from(table) as any)
-            .whereIsEqual((c : any) => c[table.data.autoIncrement.name], id)
+            .whereIsEqual((c : any) => c[table.data.id.name], id)
             .selectAll()
             .fetchZeroOrOne();
     }
@@ -344,21 +343,21 @@ export class PooledDatabase extends mysql.PooledDatabase {
     }
     //Auto-increment id
     existsById<
-        TableT extends AnyTable & { data : { autoIncrement : Column<any, any, number> } }
+        TableT extends AnyTable & { data : { id : Column<any, any, number> } }
     > (
         table : TableT,
         id : number
     ) : Promise<boolean> {
-        if (table.data.autoIncrement == undefined) {
-            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
         }
         return (this.from(table) as any)
-            .whereIsEqual((c : any) => c[table.data.autoIncrement.name], id)
+            .whereIsEqual((c : any) => c[table.data.id.name], id)
             .exists();
     }
     //Auto-increment id
     updateZeroOrOneById<
-        TableT extends AnyTable & { data : { autoIncrement : Column<any, any, number> } }
+        TableT extends AnyTable & { data : { id : Column<any, any, number> } }
     > (
         table : TableT,
         id : number,
@@ -366,18 +365,18 @@ export class PooledDatabase extends mysql.PooledDatabase {
     ) : (
         Promise<UpdateResult>
     ) {
-        if (table.data.autoIncrement == undefined) {
-            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
         }
         return this.transaction(async (db) => {
             const updateResult : UpdateResult = await (db.from(table) as any)
-                .whereIsEqual((c : any) => c[table.data.autoIncrement.name], id)
+                .whereIsEqual((c : any) => c[table.data.id.name], id)
                 .set(delegate)
                 .execute();
 
             if (updateResult.foundRowCount > 1) {
                 //Should not be possible
-                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.autoIncrement.name} = ${id}; found ${updateResult.foundRowCount} rows`);
+                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.id.name} = ${id}; found ${updateResult.foundRowCount} rows`);
             }
 
             if (updateResult.foundRowCount == 0) {
@@ -420,7 +419,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         }
     */
     updateAndFetchZeroOrOneById<
-        TableT extends AnyTable & { data : { autoIncrement : Column<any, any, number> } }
+        TableT extends AnyTable & { data : { id : Column<any, any, number> } }
     > (
         table : TableT,
         id : number,
@@ -447,18 +446,18 @@ export class PooledDatabase extends mysql.PooledDatabase {
             )
         >
     ) {
-        if (table.data.autoIncrement == undefined) {
-            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
         }
         return this.transaction(async (db) => {
             const updateResult : UpdateResult = await (db.from(table) as any)
-                .whereIsEqual((c : any) => c[table.data.autoIncrement.name], id)
+                .whereIsEqual((c : any) => c[table.data.id.name], id)
                 .set(delegate)
                 .execute();
 
             if (updateResult.foundRowCount > 1) {
                 //Should not be possible
-                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.autoIncrement.name} = ${id}; found ${updateResult.foundRowCount} rows`);
+                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.id.name} = ${id}; found ${updateResult.foundRowCount} rows`);
             }
 
             if (updateResult.foundRowCount == 0) {

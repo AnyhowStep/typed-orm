@@ -253,24 +253,23 @@ class PooledDatabase extends mysql.PooledDatabase {
         return this.selectAllByUniqueKey(table, uniqueKey)
             .fetchZeroOrOne();
     }
-    //By auto-increment id, actually
     fetchOneById(table, id) {
-        if (table.data.autoIncrement == undefined) {
-            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
         }
         return this.from(table)
-            .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
+            .whereIsEqual((c) => c[table.data.id.name], id)
             .selectAll()
             .fetchOne();
     }
     //By auto-increment id, actually
     fetchZeroOrOneById(table, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (table.data.autoIncrement == undefined) {
-                throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+            if (table.data.id == undefined) {
+                throw new Error(`Expected ${table.alias} to have an id column`);
             }
             return this.from(table)
-                .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
+                .whereIsEqual((c) => c[table.data.id.name], id)
                 .selectAll()
                 .fetchZeroOrOne();
         });
@@ -293,26 +292,26 @@ class PooledDatabase extends mysql.PooledDatabase {
     }
     //Auto-increment id
     existsById(table, id) {
-        if (table.data.autoIncrement == undefined) {
-            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
         }
         return this.from(table)
-            .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
+            .whereIsEqual((c) => c[table.data.id.name], id)
             .exists();
     }
     //Auto-increment id
     updateZeroOrOneById(table, id, delegate) {
-        if (table.data.autoIncrement == undefined) {
-            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
         }
         return this.transaction((db) => __awaiter(this, void 0, void 0, function* () {
             const updateResult = yield db.from(table)
-                .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
+                .whereIsEqual((c) => c[table.data.id.name], id)
                 .set(delegate)
                 .execute();
             if (updateResult.foundRowCount > 1) {
                 //Should not be possible
-                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.autoIncrement.name} = ${id}; found ${updateResult.foundRowCount} rows`);
+                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.id.name} = ${id}; found ${updateResult.foundRowCount} rows`);
             }
             if (updateResult.foundRowCount == 0) {
                 return updateResult;
@@ -345,17 +344,17 @@ class PooledDatabase extends mysql.PooledDatabase {
         }
     */
     updateAndFetchZeroOrOneById(table, id, delegate) {
-        if (table.data.autoIncrement == undefined) {
-            throw new Error(`Expected ${table.alias} to have an auto-increment column`);
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
         }
         return this.transaction((db) => __awaiter(this, void 0, void 0, function* () {
             const updateResult = yield db.from(table)
-                .whereIsEqual((c) => c[table.data.autoIncrement.name], id)
+                .whereIsEqual((c) => c[table.data.id.name], id)
                 .set(delegate)
                 .execute();
             if (updateResult.foundRowCount > 1) {
                 //Should not be possible
-                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.autoIncrement.name} = ${id}; found ${updateResult.foundRowCount} rows`);
+                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.id.name} = ${id}; found ${updateResult.foundRowCount} rows`);
             }
             if (updateResult.foundRowCount == 0) {
                 return Object.assign({}, updateResult, { row: undefined });

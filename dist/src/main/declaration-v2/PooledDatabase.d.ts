@@ -5148,12 +5148,12 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     } : {})) | undefined>;
     fetchOneById<TableT extends AnyAliasedTable & {
         data: {
-            autoIncrement: Column<any, any, number>;
+            id: Column<any, any, number>;
         };
     }>(table: TableT, id: number): (Promise<FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>>>);
     fetchZeroOrOneById<TableT extends AnyAliasedTable & {
         data: {
-            autoIncrement: Column<any, any, number>;
+            id: Column<any, any, number>;
         };
     }>(table: TableT, id: number): (Promise<FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>> | undefined>);
     readonly insertValue: <TableT extends Table<string, string, {
@@ -10591,17 +10591,17 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     update<TableT extends AnyTable>(table: TableT, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>, where: WhereDelegate<ConvenientUpdateSelectBuilder<TableT>>): (UpdateBuilder<ConvenientUpdateSelectBuilder<TableT>, RawUpdateAssignmentReferences<ConvenientUpdateSelectBuilder<TableT>>>);
     existsById<TableT extends AnyTable & {
         data: {
-            autoIncrement: Column<any, any, number>;
+            id: Column<any, any, number>;
         };
     }>(table: TableT, id: number): Promise<boolean>;
     updateZeroOrOneById<TableT extends AnyTable & {
         data: {
-            autoIncrement: Column<any, any, number>;
+            id: Column<any, any, number>;
         };
     }>(table: TableT, id: number, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<UpdateResult>);
     updateAndFetchZeroOrOneById<TableT extends AnyTable & {
         data: {
-            autoIncrement: Column<any, any, number>;
+            id: Column<any, any, number>;
         };
     }>(table: TableT, id: number, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<UpdateResult & ({
         foundRowCount: 1;
