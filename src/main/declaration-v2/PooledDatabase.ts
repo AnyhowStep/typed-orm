@@ -348,9 +348,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         delegate : UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>
     ) : (
         Promise<
-            {
-                result : UpdateResult
-            } &
+            UpdateResult &
             {
                 row : (
                     FetchRow<
@@ -379,7 +377,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
             
             if (updateResult.foundRowCount == 0) {
                 return {
-                    result : updateResult,
+                    ...updateResult,
                     row : undefined,
                 };
             }
@@ -389,27 +387,23 @@ export class PooledDatabase extends mysql.PooledDatabase {
                 const row = await db.fetchZeroOrOneById(table, id);
                 if (row == undefined) {
                     return {
-                        result : {
-                            ...updateResult,
-                            affectedRows : 0,
-                            foundRowCount : 0,
-                        },
+                        ...updateResult,
+                        affectedRows : 0,
+                        foundRowCount : 0,
                         row : row,
                     };
                 } else {
                     return {
-                        result : {
-                            ...updateResult,
-                            affectedRows : 1,
-                            foundRowCount : 1,
-                        },
+                        ...updateResult,
+                        affectedRows : 1,
+                        foundRowCount : 1,
                         row : row,
                     };
                 }
             }
 
             return {
-                result : updateResult,
+                ...updateResult,
                 row : await db.fetchOneById(table, id),
             };
         }) as any;

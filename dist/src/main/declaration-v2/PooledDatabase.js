@@ -316,31 +316,19 @@ class PooledDatabase extends mysql.PooledDatabase {
                     throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.autoIncrement.name} = ${id}; found ${updateResult.foundRowCount} rows`);
                 }
                 if (updateResult.foundRowCount == 0) {
-                    return {
-                        result: updateResult,
-                        row: undefined,
-                    };
+                    return Object.assign({}, updateResult, { row: undefined });
                 }
                 if (updateResult.foundRowCount < 0) {
                     //No update was even attempted, probably an empty SET clause
                     const row = yield db.fetchZeroOrOneById(table, id);
                     if (row == undefined) {
-                        return {
-                            result: Object.assign({}, updateResult, { affectedRows: 0, foundRowCount: 0 }),
-                            row: row,
-                        };
+                        return Object.assign({}, updateResult, { affectedRows: 0, foundRowCount: 0, row: row });
                     }
                     else {
-                        return {
-                            result: Object.assign({}, updateResult, { affectedRows: 1, foundRowCount: 1 }),
-                            row: row,
-                        };
+                        return Object.assign({}, updateResult, { affectedRows: 1, foundRowCount: 1, row: row });
                     }
                 }
-                return {
-                    result: updateResult,
-                    row: yield db.fetchOneById(table, id),
-                };
+                return Object.assign({}, updateResult, { row: yield db.fetchOneById(table, id) });
             }));
         });
     }
