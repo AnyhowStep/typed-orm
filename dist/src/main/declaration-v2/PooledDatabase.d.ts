@@ -10581,8 +10581,12 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         data: {
             autoIncrement: Column<any, any, number>;
         };
-    }>(table: TableT, id: number, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<UpdateResult & {
-        row: (FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>> | undefined);
-    }>);
+    }>(table: TableT, id: number, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<UpdateResult & ({
+        foundRowCount: 1;
+        row: (FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>>);
+    } | {
+        foundRowCount: 0;
+        row: undefined;
+    })>);
     deleteFrom<TableT extends AnyTable>(table: TableT, where: WhereDelegate<ConvenientDeleteSelectBuilder<TableT>>): (DeleteBuilder<ConvenientDeleteSelectBuilder<TableT>, DeleteTables<ConvenientDeleteSelectBuilder<TableT>>>);
 }

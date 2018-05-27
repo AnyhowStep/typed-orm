@@ -349,16 +349,23 @@ export class PooledDatabase extends mysql.PooledDatabase {
     ) : (
         Promise<
             UpdateResult &
-            {
-                row : (
-                    FetchRow<
-                        SelectBuilderUtil.SelectAll<TableT>["data"]["joins"],
-                        SelectCollectionUtil.ToColumnReferences<
-                            SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]
+            (
+                {
+                    foundRowCount : 1,
+                    row : (
+                        FetchRow<
+                            SelectBuilderUtil.SelectAll<TableT>["data"]["joins"],
+                            SelectCollectionUtil.ToColumnReferences<
+                                SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]
+                            >
                         >
-                    >|undefined
-                )
-            }
+                    )
+                } |
+                {
+                    foundRowCount : 0,
+                    row : undefined
+                }
+            )
         >
     ) {
         if (table.data.autoIncrement == undefined) {
