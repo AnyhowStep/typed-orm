@@ -1,6 +1,7 @@
 import {Column, AnyColumn} from "../column";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
 import {Tuple} from "../tuple";
+import {UniqueKeyCollection} from "../unique-key-collection";
 
 export interface TableData {
     //TODO, Maybe allow string?
@@ -13,11 +14,11 @@ export interface TableData {
     //The precision is 15 siginificant digits, and 
     //`UNSIGNED BIGINT` can have up to 20 digits...
     //15 digits is still, like, 999,999,999,999,999, though
-    autoIncrement : undefined|Column<any, any, number>;
+    readonly autoIncrement : undefined|Column<any, any, number>;
     //If a column is generated, you must specify as such manually.
     //Setting generated column values will not be allowed with INSERT statements.
     //Updating generated column values will also not be allowed with UPDATE statements.
-    isGenerated : {
+    readonly isGenerated : {
         [name : string] : true;
     }
     //If a column is nullable, it has a server default value of `NULL`.
@@ -26,18 +27,18 @@ export interface TableData {
     //you will have to specify as such manually.
     //If a column is a GENERATED column, then it also has a server default value.
     //Columns with server default values are optional with INSERT statements.
-    hasDefaultValue : {
+    readonly hasDefaultValue : {
         [name : string] : true;
     };
     //By default, all non-generated columns of the table are mutable.
     //Calling setMutable() will set only the specified columns as mutable.
     //Calling setImmutable() will make them all immutable.
     //Generated columns cannot be mutable.
-    isMutable : {
+    readonly isMutable : {
         [name : string] : true;
     };
 
-    uniqueKeys : undefined|(Tuple<Tuple<string>>);
+    readonly uniqueKeys : undefined|(UniqueKeyCollection);
 }
 
 //The `number` requirement is only a compile-time constraint

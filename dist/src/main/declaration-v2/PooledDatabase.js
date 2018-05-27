@@ -227,6 +227,32 @@ class PooledDatabase extends mysql.PooledDatabase {
             return super.selectAll(arg0, arg1, arg2);
         }
     }
+    selectAllByUniqueKey(table, uniqueKey) {
+        uniqueKey = table.getUniqueKeyAssertDelegate()(`${table.alias} unique key`, uniqueKey);
+        let result = this.from(table)
+            .selectAll();
+        for (let columnName in uniqueKey) {
+            const value = uniqueKey[columnName];
+            if (value === undefined) {
+                continue;
+            }
+            if (value == null) {
+                result = result.whereIsNull((c) => c[columnName]);
+            }
+            else {
+                result = result.whereIsEqual((c) => c[columnName], value);
+            }
+        }
+        return result;
+    }
+    fetchOneByUniqueKey(table, uniqueKey) {
+        return this.selectAllByUniqueKey(table, uniqueKey)
+            .fetchOne();
+    }
+    fetchZeroOrOneByUniqueKey(table, uniqueKey) {
+        return this.selectAllByUniqueKey(table, uniqueKey)
+            .fetchZeroOrOne();
+    }
     //By auto-increment id, actually
     fetchOneById(table, id) {
         return this.from(table)

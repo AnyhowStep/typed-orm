@@ -8,9 +8,12 @@ import {
     HasDefaultValueDelegate,
     IsMutableDelegate,
     TableDataUtil,
-    //AddUniqueKeyDelegate
+    AddUniqueKeyDelegate,
 } from "../table-data";
 import * as fieldUtil from "../field-util";
+//import {Column} from "../column";
+import * as sd from "schema-decorator";
+import {TableUtil} from "./util";
 
 export class Table<
     AliasT extends string,
@@ -226,7 +229,6 @@ export class Table<
         );
     }
     //This method causes `tsc` to not terminate if uncommented
-    /*
     addUniqueKey<
         AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>
     > (delegate : AddUniqueKeyDelegateT) : (
@@ -249,12 +251,51 @@ export class Table<
                 this.data,
                 this.columns,
                 delegate
-            )
+            ) as any
         ) as any;
-    }*/
+    }
+
+    private uniqueKeyAssertDelegate : sd.AssertDelegate<TableUtil.UniqueKeys<this>>|undefined;
+    getUniqueKeyAssertDelegate () : sd.AssertDelegate<TableUtil.UniqueKeys<this>> {
+        if (this.uniqueKeyAssertDelegate == undefined) {
+            this.uniqueKeyAssertDelegate = TableUtil.uniqueKeyAssertDelegate(this);
+        }
+        return this.uniqueKeyAssertDelegate;
+    }
 }
 
-export type AnyTable = Table<string, string, ColumnCollection, TableData>;
+export type AnyTable = (
+    Table<string, string, ColumnCollection, any>
+    /*Table<string, string, ColumnCollection, TableData>|
+    Table<string, string, ColumnCollection, {
+        [key in keyof TableData] : (
+            key extends "uniqueKeys" ?
+            undefined :
+            TableData[key]
+        )
+    }>|
+    Table<string, string, ColumnCollection, {
+        [key in keyof TableData] : (
+            key extends "uniqueKeys" ?
+            Tuple<Tuple<string>> :
+            TableData[key]
+        )
+    }>
+    Table<string, string, ColumnCollection, {
+        [key in keyof TableData] : (
+            key extends "autoIncrement" ?
+            undefined :
+            TableData[key]
+        )
+    }>|
+    Table<string, string, ColumnCollection, {
+        [key in keyof TableData] : (
+            key extends "autoIncrement" ?
+            Column<any, any, number> :
+            TableData[key]
+        )
+    }>*/
+);
 
 export function table<
     NameT extends string,

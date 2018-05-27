@@ -5,6 +5,7 @@ const column_collection_1 = require("../column-collection");
 const raw_column_collection_1 = require("../raw-column-collection");
 const table_data_1 = require("../table-data");
 const fieldUtil = require("../field-util");
+const util_1 = require("./util");
 class Table extends aliased_table_1.AliasedTable {
     constructor(alias, name, columns, data) {
         super(alias, name, columns);
@@ -41,16 +42,28 @@ class Table extends aliased_table_1.AliasedTable {
         return new Table(this.alias, this.name, this.columns, table_data_1.TableDataUtil.immutable(this.data));
     }
     as(newAlias) {
-        return new Table(newAlias, this.name, column_collection_1.ColumnCollectionUtil.withTableAlias(this.columns, newAlias), this.data);
+        return new Table(newAlias, this.name, column_collection_1.ColumnCollectionUtil.withTableAlias(this.columns, newAlias), table_data_1.TableDataUtil.withTableAlias(this.data, newAlias)
+        //this.data
+        );
     }
     withName(newName) {
-        return new Table(newName, newName, column_collection_1.ColumnCollectionUtil.withTableAlias(this.columns, newName), this.data);
+        return new Table(newName, newName, column_collection_1.ColumnCollectionUtil.withTableAlias(this.columns, newName), table_data_1.TableDataUtil.withTableAlias(this.data, newName));
     }
     addColumns(raw) {
         if (raw instanceof Array) {
             raw = fieldUtil.fieldsToObject(raw);
         }
         return new Table(this.alias, this.name, column_collection_1.ColumnCollectionUtil.merge(this.columns, raw_column_collection_1.RawColumnCollectionUtil.toColumnCollection(this.alias, raw)), this.data);
+    }
+    //This method causes `tsc` to not terminate if uncommented
+    addUniqueKey(delegate) {
+        return new Table(this.alias, this.name, this.columns, table_data_1.TableDataUtil.addUniqueKey(this.data, this.columns, delegate));
+    }
+    getUniqueKeyAssertDelegate() {
+        if (this.uniqueKeyAssertDelegate == undefined) {
+            this.uniqueKeyAssertDelegate = util_1.TableUtil.uniqueKeyAssertDelegate(this);
+        }
+        return this.uniqueKeyAssertDelegate;
     }
 }
 exports.Table = Table;
@@ -72,6 +85,7 @@ function table(name, raw) {
         isGenerated: {},
         hasDefaultValue: hasDefaultValue,
         isMutable: isMutable,
+        uniqueKeys: undefined,
     });
 }
 exports.table = table;

@@ -2,6 +2,8 @@ import {Table, AnyTable} from "./table";
 import {JoinCollection} from "../join-collection";
 import {Column} from "../column";
 import {TableData} from "../table-data";
+import * as sd from "schema-decorator";
+import {UniqueKeyCollection, UniqueKeyCollectionUtil} from "../unique-key-collection";
 
 export namespace TableUtil {
     export type RequiredColumnNames<
@@ -87,4 +89,26 @@ export namespace TableUtil {
             TableData
         >
     );
+
+    export type UniqueKeys<TableT extends AnyTable> = (
+        TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ?
+            UniqueKeyCollectionUtil.WithType<
+                TableT["data"]["uniqueKeys"],
+                TableT["columns"]
+            > :
+            never
+    )
+    export function uniqueKeyAssertDelegate<
+        TableT extends AnyTable
+    > (table : TableT) : sd.AssertDelegate<UniqueKeys<TableT>> {
+        if (table.data.uniqueKeys == undefined) {
+            return ((name : string, _mixed : any) : never => {
+                throw new Error(`${name} is not a unique key of ${table.alias}; the table has no unique keys`);
+            }) as any;
+        }
+        return UniqueKeyCollectionUtil.assertDelegate(
+            table.data.uniqueKeys,
+            table.columns
+        ) as any;
+    }
 }

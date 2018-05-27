@@ -15,4 +15,10 @@ export declare namespace ColumnTupleUtil {
             [other in Exclude<TupleKeys<TupleT>, index>]: (Extract<TupleT[index], TupleT[other]> extends never ? false : true);
         }[Exclude<TupleKeys<TupleT>, index>]);
     }[TupleKeys<TupleT>]));
+    type MapToColumnNames<TupleT extends Tuple<AnyColumn>> = ({
+        [index in TupleKeys<TupleT>]: (TupleT[index] extends AnyColumn ? TupleT[index]["name"] : never);
+    } & {
+        "0": TupleT[0]["name"];
+        length: TupleLength<TupleT>;
+    } & string[]);
 }

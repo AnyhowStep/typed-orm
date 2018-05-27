@@ -3,7 +3,7 @@ import { CreateSelectBuilderDelegate } from "./select-builder";
 import { SelectBuilder } from "./select-builder";
 import { Join } from "./join";
 import { AnyAliasedTable } from "./aliased-table";
-import { Table, AnyTable } from "./table";
+import { Table, AnyTable, TableUtil } from "./table";
 import { InsertValueBuilder } from "./insert-value-builder";
 import { InsertSelectBuilder } from "./insert-select-builder";
 import { UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate } from "./update-builder";
@@ -17,7 +17,6 @@ import { AliasedTable } from "./aliased-table";
 import { AliasedExpr } from "./aliased-expr";
 import { Column } from "./column";
 import { Expr } from "./expr";
-import { TableData } from "./table-data";
 export declare type ConvenientUpdateSelectBuilder<TableT extends AnyTable> = (SelectBuilder<{
     hasSelect: false;
     hasFrom: true;
@@ -49,6 +48,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         isGenerated: {};
         hasDefaultValue: {};
         isMutable: {};
+        uniqueKeys: undefined;
     }>, {}, true> : never) extends never ? SelectBuilder<{
         hasSelect: false;
         hasFrom: true;
@@ -62,12 +62,14 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             isGenerated: {};
             hasDefaultValue: {};
             isMutable: {};
+            uniqueKeys: undefined;
         }>, {}, true>];
     }> : void | Error | ["Alias", TableT["alias"], "was already used as join in parent scope", "__DUMMY_FROM_TABLE" extends TableT["alias"] ? Join<Table<"__DUMMY_FROM_TABLE", "__DUMMY_FROM_TABLE", {}, {
         autoIncrement: undefined;
         isGenerated: {};
         hasDefaultValue: {};
         isMutable: {};
+        uniqueKeys: undefined;
     }>, {}, true> : never];
     readonly select: <SelectDelegateT extends (columnReferences: {}, selectBuilder: SelectBuilder<{
         hasSelect: false;
@@ -78,6 +80,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             isGenerated: {};
             hasDefaultValue: {};
             isMutable: {};
+            uniqueKeys: undefined;
         }>, {}, true>];
         selects: undefined;
         aggregateDelegate: undefined;
@@ -87,6 +90,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             isGenerated: {};
             hasDefaultValue: {};
             isMutable: {};
+            uniqueKeys: undefined;
         }>, {}, true>];
     }>) => AliasedExpr<{}, "__expr", any, any>[] & {
         "0": AliasedExpr<{}, "__expr", any, any>;
@@ -477,6 +481,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             isGenerated: {};
             hasDefaultValue: {};
             isMutable: {};
+            uniqueKeys: undefined;
         }>, {}, true>];
         selects: ReturnType<SelectDelegateT>;
         aggregateDelegate: undefined;
@@ -486,10 +491,4654 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             isGenerated: {};
             hasDefaultValue: {};
             isMutable: {};
+            uniqueKeys: undefined;
         }>, {}, true>];
     }>;
     selectAll<T>(assert: sd.AssertFunc<T>, queryStr: string, queryValues?: mysql.QueryValues): Promise<mysql.SelectResult<T>>;
     selectAll<TableT extends AnyAliasedTable>(table: TableT, where?: WhereDelegate<SelectBuilderUtil.From<TableT>>): SelectBuilderUtil.SelectAll<TableT>;
+    selectAllByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: TableUtil.UniqueKeys<TableT>): (SelectBuilderUtil.SelectAll<TableT>);
+    fetchOneByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: TableUtil.UniqueKeys<TableT>): Promise<(((string extends Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string> ? string : { [str in Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>]: Exclude<Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>, str>; }[Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>]) extends never ? true : false) extends true ? Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string> extends "__expr" ? ("__expr" extends keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) ? {
+        __expr: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"], string>]: ReturnType<(((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"][columnName]["assertDelegate"]>; };
+    } : {})[keyof ("__expr" extends keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) ? {
+        __expr: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"], string>]: ReturnType<(((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"][columnName]["assertDelegate"]>; };
+    } : {})] : { [columnName in keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})[Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>]]: ReturnType<(Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["alias"] extends Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string> ? Join<TableT, TableT["columns"], false> : never : never)["columns"][columnName]["assertDelegate"]>; } : { [tableAlias in Exclude<Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>, "__expr" | (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? never : never)>]: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})[tableAlias], string>]: ReturnType<(Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["alias"] extends tableAlias ? Join<TableT, TableT["columns"], false> : never : never)["columns"][columnName]["assertDelegate"]>; }; } & { [tableAlias in Exclude<Extract<Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>, Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? never : never>, "__expr">]?: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})[tableAlias], string>]: ReturnType<(Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["alias"] extends tableAlias ? Join<TableT, TableT["columns"], false> : never : never)["columns"][columnName]["assertDelegate"]>; } | undefined; } & ("__expr" extends keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) ? {
+        __expr: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"], string>]: ReturnType<(((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"][columnName]["assertDelegate"]>; };
+    } : {})) extends Promise<infer R> ? R : ((string extends Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string> ? string : { [str in Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>]: Exclude<Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>, str>; }[Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>]) extends never ? true : false) extends true ? Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string> extends "__expr" ? ("__expr" extends keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) ? {
+        __expr: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"], string>]: ReturnType<(((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"][columnName]["assertDelegate"]>; };
+    } : {})[keyof ("__expr" extends keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) ? {
+        __expr: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"], string>]: ReturnType<(((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"][columnName]["assertDelegate"]>; };
+    } : {})] : { [columnName in keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})[Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>]]: ReturnType<(Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["alias"] extends Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string> ? Join<TableT, TableT["columns"], false> : never : never)["columns"][columnName]["assertDelegate"]>; } : { [tableAlias in Exclude<Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>, "__expr" | (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? never : never)>]: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})[tableAlias], string>]: ReturnType<(Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["alias"] extends tableAlias ? Join<TableT, TableT["columns"], false> : never : never)["columns"][columnName]["assertDelegate"]>; }; } & { [tableAlias in Exclude<Extract<Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>, Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? never : never>, "__expr">]?: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})[tableAlias], string>]: ReturnType<(Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["alias"] extends tableAlias ? Join<TableT, TableT["columns"], false> : never : never)["columns"][columnName]["assertDelegate"]>; } | undefined; } & ("__expr" extends keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) ? {
+        __expr: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"], string>]: ReturnType<(((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"][columnName]["assertDelegate"]>; };
+    } : {})>;
+    fetchZeroOrOneByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: TableUtil.UniqueKeys<TableT>): Promise<((((string extends Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string> ? string : { [str in Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>]: Exclude<Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>, str>; }[Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>]) extends never ? true : false) extends true ? Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string> extends "__expr" ? ("__expr" extends keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) ? {
+        __expr: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"], string>]: ReturnType<(((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"][columnName]["assertDelegate"]>; };
+    } : {})[keyof ("__expr" extends keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) ? {
+        __expr: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"], string>]: ReturnType<(((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"][columnName]["assertDelegate"]>; };
+    } : {})] : { [columnName in keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})[Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>]]: ReturnType<(Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["alias"] extends Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string> ? Join<TableT, TableT["columns"], false> : never : never)["columns"][columnName]["assertDelegate"]>; } : { [tableAlias in Exclude<Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>, "__expr" | (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? never : never)>]: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})[tableAlias], string>]: ReturnType<(Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["alias"] extends tableAlias ? Join<TableT, TableT["columns"], false> : never : never)["columns"][columnName]["assertDelegate"]>; }; } & { [tableAlias in Exclude<Extract<Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>, Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? never : never>, "__expr">]?: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})[tableAlias], string>]: ReturnType<(Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["alias"] extends tableAlias ? Join<TableT, TableT["columns"], false> : never : never)["columns"][columnName]["assertDelegate"]>; } | undefined; } & ("__expr" extends keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) ? {
+        __expr: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"], string>]: ReturnType<(((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"][columnName]["assertDelegate"]>; };
+    } : {})) extends Promise<infer R> ? R : ((string extends Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string> ? string : { [str in Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>]: Exclude<Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>, str>; }[Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>]) extends never ? true : false) extends true ? Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string> extends "__expr" ? ("__expr" extends keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) ? {
+        __expr: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"], string>]: ReturnType<(((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"][columnName]["assertDelegate"]>; };
+    } : {})[keyof ("__expr" extends keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) ? {
+        __expr: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"], string>]: ReturnType<(((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"][columnName]["assertDelegate"]>; };
+    } : {})] : { [columnName in keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})[Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>]]: ReturnType<(Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["alias"] extends Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string> ? Join<TableT, TableT["columns"], false> : never : never)["columns"][columnName]["assertDelegate"]>; } : { [tableAlias in Exclude<Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>, "__expr" | (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? never : never)>]: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})[tableAlias], string>]: ReturnType<(Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["alias"] extends tableAlias ? Join<TableT, TableT["columns"], false> : never : never)["columns"][columnName]["assertDelegate"]>; }; } & { [tableAlias in Exclude<Extract<Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}), string>, Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? never : never>, "__expr">]?: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})[tableAlias], string>]: ReturnType<(Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["alias"] extends tableAlias ? Join<TableT, TableT["columns"], false> : never : never)["columns"][columnName]["assertDelegate"]>; } | undefined; } & ("__expr" extends keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+        readonly [x: string]: {
+            readonly [x: string]: Column<string, string, any> | undefined;
+        } | undefined;
+    }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+        readonly [columnName: string]: Column<string, string, any>;
+    } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }>, {
+        readonly [columnName: string]: Column<string, string, any>;
+    }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) ? {
+        __expr: { [columnName in Extract<keyof (((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"], string>]: ReturnType<(((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<string, string, any> | undefined;
+            } | undefined;
+        }, string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["alias"]]: Column<tableAlias, columnAlias, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends Column<string, string, any> ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["tableAlias"]]: { readonly [columnName in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["name"]]: Column<tableAlias, columnName, ReturnType<((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])["assertDelegate"]>>; }; } : (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"] extends {
+            readonly [columnName: string]: Column<string, string, any>;
+        } ? { readonly [tableAlias in ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"])[keyof TableT["columns"] | keyof (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never)]["tableAlias"]]: (Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }>, {
+            readonly [columnName: string]: Column<string, string, any>;
+        }, boolean> ? TableT["columns"] : never) & TableT["columns"]; } : {}) & {})["__expr"][columnName]["assertDelegate"]>; };
+    } : {})) | undefined>;
     fetchOneById<TableT extends AnyAliasedTable & {
         data: {
             autoIncrement: Column<any, any, number>;
@@ -497,7 +5146,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     }>(table: TableT, id: number): (Promise<FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>>>);
     readonly insertValue: <TableT extends Table<string, string, {
         readonly [columnName: string]: Column<string, string, any>;
-    }, TableData>>(table: TableT, value: { [name in Exclude<Extract<keyof TableT["columns"], string>, keyof TableT["data"]["hasDefaultValue"] | keyof TableT["data"]["isGenerated"]>]: Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
+    }, any>>(table: TableT, value: { [name in Exclude<Extract<keyof TableT["columns"], string>, keyof TableT["data"]["hasDefaultValue"] | keyof TableT["data"]["isGenerated"]>]: Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
         hasUnion: any;
@@ -560,7 +5209,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     }> | (ReturnType<TableT["columns"][name]["assertDelegate"]> extends string | number | boolean | Date | null | undefined ? ReturnType<TableT["columns"][name]["assertDelegate"]> : never) | undefined; })[], "NORMAL">;
     readonly insertSelect: <TableT extends Table<string, string, {
         readonly [columnName: string]: Column<string, string, any>;
-    }, TableData>, SelectBuilderT extends SelectBuilder<any>>(table: TableT, selectBuilder: SelectBuilderT, delegate: (s: keyof (SelectBuilderT["data"]["selects"] extends (Column<string, string, any> | {
+    }, any>, SelectBuilderT extends SelectBuilder<any>>(table: TableT, selectBuilder: SelectBuilderT, delegate: (s: keyof (SelectBuilderT["data"]["selects"] extends (Column<string, string, any> | {
         readonly [columnName: string]: Column<string, string, any>;
     } | AliasedExpr<{
         readonly [x: string]: {

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const column_1 = require("../column");
+const unique_key_collection_1 = require("../unique-key-collection");
 var TableUtil;
 (function (TableUtil) {
     //TODO Move these elsewhere, they do not belong here
@@ -49,5 +50,14 @@ var TableUtil;
         }
     }
     TableUtil.validateUpdateAssignmentReferences = validateUpdateAssignmentReferences;
+    function uniqueKeyAssertDelegate(table) {
+        if (table.data.uniqueKeys == undefined) {
+            return ((name, _mixed) => {
+                throw new Error(`${name} is not a unique key of ${table.alias}; the table has no unique keys`);
+            });
+        }
+        return unique_key_collection_1.UniqueKeyCollectionUtil.assertDelegate(table.data.uniqueKeys, table.columns);
+    }
+    TableUtil.uniqueKeyAssertDelegate = uniqueKeyAssertDelegate;
 })(TableUtil = exports.TableUtil || (exports.TableUtil = {}));
 //# sourceMappingURL=util.js.map

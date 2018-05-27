@@ -4,7 +4,7 @@ import {SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-buil
 import {Join, JoinType} from "./join";
 import {AnyAliasedTable} from "./aliased-table";;
 import {SelectDelegate} from "./select-delegate";
-import {Table, AnyTable} from "./table";
+import {Table, AnyTable, TableUtil} from "./table";
 import {RawInsertValueRow, InsertValueBuilder} from "./insert-value-builder";
 import {InsertAssignmentCollectionDelegate, InsertSelectBuilder, RawInsertSelectAssignmentCollection} from "./insert-select-builder";
 import {UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate} from "./update-builder";
@@ -180,6 +180,45 @@ export class PooledDatabase extends mysql.PooledDatabase {
         } else {
             return super.selectAll(arg0, arg1, arg2);
         }
+    }
+    selectAllByUniqueKey<TableT extends AnyTable> (
+        table : TableT,
+        uniqueKey : TableUtil.UniqueKeys<TableT>
+    ) : (
+        SelectBuilderUtil.SelectAll<TableT>
+    ) {
+        uniqueKey = table.getUniqueKeyAssertDelegate()(
+            `${table.alias} unique key`,
+            uniqueKey
+        ) as any;
+        let result : any = (this.from(table) as any)
+            .selectAll();
+        for (let columnName in uniqueKey) {
+            const value : any = uniqueKey[columnName]
+            if (value === undefined) {
+                continue;
+            }
+            if (value == null) {
+                result = result.whereIsNull((c : any) => c[columnName]);
+            } else {
+                result = result.whereIsEqual((c : any) => c[columnName], value);
+            }
+        }
+        return result;
+    }
+    fetchOneByUniqueKey<TableT extends AnyTable> (
+        table : TableT,
+        uniqueKey : TableUtil.UniqueKeys<TableT>
+    ) {
+        return this.selectAllByUniqueKey(table, uniqueKey)
+            .fetchOne();
+    }
+    fetchZeroOrOneByUniqueKey<TableT extends AnyTable> (
+        table : TableT,
+        uniqueKey : TableUtil.UniqueKeys<TableT>
+    ) {
+        return this.selectAllByUniqueKey(table, uniqueKey)
+            .fetchZeroOrOne();
     }
     //By auto-increment id, actually
     fetchOneById<TableT extends AnyAliasedTable & { data : { autoIncrement : Column<any, any, number> } }> (

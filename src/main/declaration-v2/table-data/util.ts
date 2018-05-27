@@ -6,10 +6,11 @@ import {
     IsMutableDelegate,
     AddUniqueKeyDelegate
 } from "./table-data";
-import {RemoveKey, ReplaceValue, ReplaceValue3, ReplaceValue4} from "../obj-util";
+import {RemoveKey, ReplaceValue, ReplaceValue3} from "../obj-util";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
-import {Tuple, TupleKeys, TupleWPush} from "../tuple";
-import {AnyColumn, ColumnUtil, ColumnTupleUtil} from "../column";
+import {Tuple, TupleKeys, TupleWPush, TupleWiden} from "../tuple";
+import {Column, AnyColumn, ColumnUtil} from "../column";
+import {UniqueKey} from "../unique-key";
 
 export namespace TableDataUtil {
     export type AutoIncrement<
@@ -17,20 +18,72 @@ export namespace TableDataUtil {
         ColumnCollectionT extends ColumnCollection,
         AutoIncrementDelegateT extends AutoIncrementDelegate<ColumnCollectionT>
     > = (
-        ReplaceValue4<
+        {
+            [key in keyof DataT] : (
+                key extends "autoIncrement" ?
+                ReturnType<AutoIncrementDelegateT> :
+                key extends "isGenerated" ?
+                {
+                    [columnName in (
+                        ReturnType<AutoIncrementDelegateT>["name"]|
+                        Extract<keyof DataT["isGenerated"], string>
+                    )] : true
+                } :
+                key extends "hasDefaultValue" ?
+                {
+                    [columnName in (
+                        ReturnType<AutoIncrementDelegateT>["name"]|
+                        Extract<keyof DataT["hasDefaultValue"], string>
+                    )] : true
+                } :
+                key extends "uniqueKeys" ?
+                (
+                    DataT["uniqueKeys"] extends Tuple<UniqueKey> ?
+                        (
+                            TupleWPush<
+                                UniqueKey,
+                                DataT["uniqueKeys"],
+                                {
+                                    [columnName in ReturnType<AutoIncrementDelegateT>["name"]] : true
+                                }
+                            >
+                        ) :
+                        TupleWiden<
+                            [{
+                                [columnName in ReturnType<AutoIncrementDelegateT>["name"]] : true
+                            }],
+                            UniqueKey
+                        >
+                ) :
+                DataT[key]
+            )
+        }
+        /*ReplaceValue4<
             DataT,
             "autoIncrement",
             ReturnType<AutoIncrementDelegateT>,
             "isGenerated",
-            DataT["isGenerated"] &
+            {
+                [columnName in (
+                    ReturnType<AutoIncrementDelegateT>["name"]|
+                    Extract<keyof DataT["isGenerated"], string>
+                )] : true
+            }
+            /*DataT["isGenerated"] &
             {
                 [columnName in ReturnType<AutoIncrementDelegateT>["name"]] : true
-            },
+            }* /,
             "hasDefaultValue",
-            DataT["hasDefaultValue"] &
+            {
+                [columnName in (
+                    ReturnType<AutoIncrementDelegateT>["name"]|
+                    Extract<keyof DataT["hasDefaultValue"], string>
+                )] : true
+            }
+            /*DataT["hasDefaultValue"] &
             {
                 [columnName in ReturnType<AutoIncrementDelegateT>["name"]] : true
-            },
+            }* /,
             "isMutable",
             {
                 [columnName in Exclude<
@@ -38,7 +91,7 @@ export namespace TableDataUtil {
                     ReturnType<AutoIncrementDelegateT>["name"]
                 >] : true
             }
-        >
+        >*/
     );
     export function autoIncrement<
         DataT extends TableData,
@@ -59,6 +112,10 @@ export namespace TableDataUtil {
         const isMutable  = {...data.isMutable};
         delete isMutable[column.name];
 
+        const uniqueKeys : UniqueKey[] = (data.uniqueKeys == undefined) ?
+            [] :
+            data.uniqueKeys
+
         return {
             ...(data as any),
             autoIncrement : column,
@@ -70,7 +127,10 @@ export namespace TableDataUtil {
                 ...data.hasDefaultValue,
                 [column.name] : true,
             },
-            isMutable : isMutable
+            isMutable : isMutable,
+            uniqueKeys : uniqueKeys.concat({
+                [column.name] : true
+            })
         } as any;
     }
     export type UnsetAutoIncrement<
@@ -290,11 +350,18 @@ export namespace TableDataUtil {
     export type Immutable<
         DataT extends TableData
     > = (
-        ReplaceValue<
+        {
+            [key in keyof DataT] : (
+                key extends "isMutable" ?
+                {} :
+                DataT[key]
+            )
+        }
+        /*ReplaceValue<
             DataT,
             "isMutable",
             {}
-        >
+        >*/
     );
     export function immutable<DataT extends TableData> (data : DataT) : (
         Immutable<DataT>
@@ -304,27 +371,77 @@ export namespace TableDataUtil {
             isMutable : {},
         } as any;
     }
+    export type ToUniqueKeyImpl<
+        TupleT extends Tuple<AnyColumn>,
+        K extends string
+    > = (
+        K extends keyof TupleT ?
+            (
+                TupleT[K] extends Column<any, infer NameT, any> ?
+                    {
+                        [name in NameT] : true
+                    } :
+                    {}
+            ) :
+            {}
+    );
+    export type ToUniqueKey<
+        TupleT extends Tuple<AnyColumn>
+    > = (
+        ToUniqueKeyImpl<TupleT, "0"> &
+        ToUniqueKeyImpl<TupleT, "1"> &
+        ToUniqueKeyImpl<TupleT, "1"> &
+        ToUniqueKeyImpl<TupleT, "3"> &
+        ToUniqueKeyImpl<TupleT, "4"> &
+        ToUniqueKeyImpl<TupleT, "5"> &
+        ToUniqueKeyImpl<TupleT, "6"> &
+        ToUniqueKeyImpl<TupleT, "7"> &
+        ToUniqueKeyImpl<TupleT, "8"> &
+        ToUniqueKeyImpl<TupleT, "9">
+    );
     export type AddUniqueKey<
         DataT extends TableData,
         ColumnCollectionT extends ColumnCollection,
         AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>
     > = (
-        ReplaceValue<
-            DataT,
-            "uniqueKeys",
-            DataT["uniqueKeys"] extends Tuple<Tuple<string>> ?
+        {
+            [key in keyof DataT] : (
+                key extends "uniqueKeys" ?
                 (
-                    TupleWPush<
-                        Tuple<string>,
-                        DataT["uniqueKeys"],
-                        ColumnTupleUtil.MapToColumnNames<
-                            ReturnType<AddUniqueKeyDelegateT>
+                    DataT["uniqueKeys"] extends Tuple<UniqueKey> ?
+                        (
+                            //DataT["uniqueKeys"]
+                            TupleWPush<
+                                UniqueKey,
+                                DataT["uniqueKeys"],
+                                //UniqueKey
+                                ToUniqueKey<
+                                    //Tuple<AnyColumn>
+                                    ReturnType<AddUniqueKeyDelegateT>
+                                >
+                            >
+                        ) :
+                        TupleWiden<
+                            [ToUniqueKey<
+                                //Tuple<AnyColumn>
+                                ReturnType<AddUniqueKeyDelegateT>
+                            >],
+                            UniqueKey
                         >
-                    >
                 ) :
-                undefined
-        >
+                DataT[key]
+            )
+        }
     );
+    export function toUniqueKey<
+        TupleT extends Tuple<AnyColumn>
+    > (tuple : TupleT) : ToUniqueKey<TupleT> {
+        const result = {} as any;
+        for (let i of tuple) {
+            result[i.name] = true;
+        }
+        return result;
+    }
     export function addUniqueKey<
         DataT extends TableData,
         ColumnCollectionT extends ColumnCollection,
@@ -340,13 +457,13 @@ export namespace TableDataUtil {
             AddUniqueKeyDelegateT
         >
     ) {
-        const uniqueKey = delegate(columnCollection);
-        ColumnCollectionUtil.assertHasColumns(columnCollection, uniqueKey);
+        const uniqueKeyTuple = delegate(columnCollection);
+        ColumnCollectionUtil.assertHasColumns(columnCollection, uniqueKeyTuple);
         return {
             ...(data as any),
             uniqueKeys : (data.uniqueKeys == undefined) ?
-                undefined :
-                data.uniqueKeys.push(uniqueKey.map(c => c.name) as any)
+                [toUniqueKey(uniqueKeyTuple)] :
+                data.uniqueKeys.concat(toUniqueKey(uniqueKeyTuple))
         } as any;
     }
 

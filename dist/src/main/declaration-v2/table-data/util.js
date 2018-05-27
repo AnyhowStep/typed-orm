@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const column_collection_1 = require("../column-collection");
+const column_1 = require("../column");
 var TableDataUtil;
 (function (TableDataUtil) {
     function autoIncrement(data, columnCollection, delegate) {
@@ -10,7 +11,12 @@ var TableDataUtil;
         column_collection_1.ColumnCollectionUtil.assertHasColumn(columnCollection, column);
         const isMutable = Object.assign({}, data.isMutable);
         delete isMutable[column.name];
-        return Object.assign({}, data, { autoIncrement: column, isGenerated: Object.assign({}, data.isGenerated, { [column.name]: true }), hasDefaultValue: Object.assign({}, data.hasDefaultValue, { [column.name]: true }), isMutable: isMutable });
+        const uniqueKeys = (data.uniqueKeys == undefined) ?
+            [] :
+            data.uniqueKeys;
+        return Object.assign({}, data, { autoIncrement: column, isGenerated: Object.assign({}, data.isGenerated, { [column.name]: true }), hasDefaultValue: Object.assign({}, data.hasDefaultValue, { [column.name]: true }), isMutable: isMutable, uniqueKeys: uniqueKeys.concat({
+                [column.name]: true
+            }) });
     }
     TableDataUtil.autoIncrement = autoIncrement;
     function unsetAutoIncrement(data) {
@@ -76,5 +82,27 @@ var TableDataUtil;
         return Object.assign({}, data, { isMutable: {} });
     }
     TableDataUtil.immutable = immutable;
+    function toUniqueKey(tuple) {
+        const result = {};
+        for (let i of tuple) {
+            result[i.name] = true;
+        }
+        return result;
+    }
+    TableDataUtil.toUniqueKey = toUniqueKey;
+    function addUniqueKey(data, columnCollection, delegate) {
+        const uniqueKeyTuple = delegate(columnCollection);
+        column_collection_1.ColumnCollectionUtil.assertHasColumns(columnCollection, uniqueKeyTuple);
+        return Object.assign({}, data, { uniqueKeys: (data.uniqueKeys == undefined) ?
+                [toUniqueKey(uniqueKeyTuple)] :
+                data.uniqueKeys.concat(toUniqueKey(uniqueKeyTuple)) });
+    }
+    TableDataUtil.addUniqueKey = addUniqueKey;
+    function withTableAlias(data, tableAlias) {
+        return Object.assign({}, data, { autoIncrement: (data.autoIncrement == undefined) ?
+                undefined :
+                column_1.ColumnUtil.withTableAlias(data.autoIncrement, tableAlias) });
+    }
+    TableDataUtil.withTableAlias = withTableAlias;
 })(TableDataUtil = exports.TableDataUtil || (exports.TableDataUtil = {}));
 //# sourceMappingURL=util.js.map
