@@ -33,6 +33,7 @@ import { InsertAssignmentCollectionDelegate, RawInsertSelectAssignmentCollection
 import { DeleteTables, DeleteBuilder, DeleteTablesDelegate } from "./delete-builder";
 import { TupleWConcat } from "./tuple";
 import { AnyJoin } from "./join";
+import { SelectBuilderUtil } from "./select-builder-util";
 import { Table } from "./table";
 export declare const ARBITRARY_ROW_COUNT = 999999999;
 export interface LimitData {
@@ -105,8 +106,8 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, toTable: ToTableT): (JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]> extends never ? SelectBuilder<ReplaceValue2<DataT, "hasFrom", true, "joins", [Join<ToTableT, ToTableT["columns"], false>]>> : invalid.E4<"Alias", ToTableT["alias"], "was already used as join in parent scope", JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]>>);
-    join<ToTableT extends AnyAliasedTable, FromDelegateT extends JoinFromDelegate<DataT["joins"]>>(this: SelectBuilder<{
+    }>, toTable: ToTableT): (SelectBuilderUtil.From<this, ToTableT>);
+    join<ToTableT extends AnyAliasedTable, FromDelegateT extends JoinFromDelegate<this["data"]["joins"]>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
         hasUnion: any;
@@ -115,7 +116,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, toTable: ToTableT, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>): (Error extends JoinCollectionUtil.InnerJoin<SelectBuilder<DataT>, ToTableT> ? JoinCollectionUtil.InnerJoin<SelectBuilder<DataT>, ToTableT> : SelectBuilder<ReplaceValue<DataT, "joins", JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT>>>);
+    }>, toTable: ToTableT, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>): (SelectBuilderUtil.DoJoin<this, ToTableT>);
     joinUsing<ToTableT extends AnyAliasedTable, FromDelegateT extends JoinFromDelegate<DataT["joins"]>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -185,9 +186,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>): (SelectBuilder<{
-        readonly [key in keyof DataT]: (key extends "selects" ? SelectCollectionUtil.FromJoinCollection<DataT["joins"]> : key extends "hasSelect" ? true : DataT[key]);
-    }>);
+    }>): (SelectBuilderUtil.SelectAll<this>);
     replaceTable<TableA extends AnyAliasedTable, TableB extends AnyAliasedTable>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -235,7 +234,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: false;
         parentJoins: any;
-    }>): (Promise<AggregateDelegateUtil.AggregatedRow<FetchRow<DataT["joins"], SelectCollectionUtil.ToColumnReferences<DataT["selects"]>>, DataT["aggregateDelegate"]>>);
+    }>): (Promise<AggregateDelegateUtil.AggregatedRow<FetchRow<this["data"]["joins"], SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>>, this["data"]["aggregateDelegate"]>>);
     fetchZeroOrOne(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
@@ -245,7 +244,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: false;
         parentJoins: any;
-    }>): (Promise<undefined | AggregateDelegateUtil.AggregatedRow<FetchRow<DataT["joins"], SelectCollectionUtil.ToColumnReferences<DataT["selects"]>>, DataT["aggregateDelegate"]>>);
+    }>): (Promise<undefined | AggregateDelegateUtil.AggregatedRow<FetchRow<this["data"]["joins"], SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>>, this["data"]["aggregateDelegate"]>>);
     count(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -275,7 +274,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: false;
         parentJoins: any;
-    }>, rawPaginationArgs?: RawPaginationArgs): (Promise<PaginateResult<AggregateDelegateUtil.AggregatedRow<FetchRow<DataT["joins"], SelectCollectionUtil.ToColumnReferences<DataT["selects"]>>, DataT["aggregateDelegate"]>>>);
+    }>, rawPaginationArgs?: RawPaginationArgs): (Promise<PaginateResult<AggregateDelegateUtil.AggregatedRow<FetchRow<this["data"]["joins"], SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>>, this["data"]["aggregateDelegate"]>>>);
     fetchValue(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
@@ -285,7 +284,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: false;
         parentJoins: any;
-    }>): (FetchValueCheck<DataT, FetchValueType<DataT>>);
+    }>): (FetchValueCheck<this["data"], FetchValueType<this["data"]>>);
     fetchValueOrUndefined(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
@@ -295,7 +294,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: false;
         parentJoins: any;
-    }>): (FetchValueCheck<DataT, undefined | FetchValueType<DataT>>);
+    }>): (FetchValueCheck<this["data"], undefined | FetchValueType<this["data"]>>);
     fetchValueArray(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
@@ -305,7 +304,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: false;
         parentJoins: any;
-    }>): (FetchValueCheck<DataT, FetchValueType<DataT>[]>);
+    }>): (FetchValueCheck<this["data"], FetchValueType<this["data"]>[]>);
     private narrow;
     whereIsNotNull<TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>>(this: SelectBuilder<{
         hasSelect: any;

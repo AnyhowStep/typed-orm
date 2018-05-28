@@ -51,14 +51,14 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         id: undefined;
         uniqueKeys: undefined;
     }>, {}, true> : never) extends never ? SelectBuilder<{
-        hasSelect: false;
-        hasFrom: true;
-        hasUnion: false;
-        joins: [Join<TableT, TableT["columns"], false>];
-        selects: undefined;
-        aggregateDelegate: undefined;
-        hasParentJoins: false;
-        parentJoins: [Join<Table<"__DUMMY_FROM_TABLE", "__DUMMY_FROM_TABLE", {}, {
+        readonly hasSelect: false;
+        readonly hasFrom: true;
+        readonly hasUnion: false;
+        readonly joins: [Join<TableT, TableT["columns"], false>];
+        readonly selects: undefined;
+        readonly aggregateDelegate: undefined;
+        readonly hasParentJoins: false;
+        readonly parentJoins: [Join<Table<"__DUMMY_FROM_TABLE", "__DUMMY_FROM_TABLE", {}, {
             autoIncrement: undefined;
             isGenerated: {};
             hasDefaultValue: {};

@@ -1,9 +1,12 @@
 import {SelectBuilderData, SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-builder";
 import {AnyAliasedTable} from "./aliased-table";
-import {Join} from "./join";
-import {ReplaceValue2} from "./obj-util";
+import {Join, JoinType} from "./join";
 import {SelectCollectionUtil} from "./select-collection";
 import {spread} from "@anyhowstep/type-util";
+import {JoinCollectionUtil} from "./join-collection";
+import * as invalid from "./invalid";
+import {JoinFromDelegate} from "./join-from-delegate";
+import {JoinToDelegate} from "./join-to-delegate";
 
 export namespace SelectBuilderUtil {
     export type CleanData = {
@@ -35,31 +38,35 @@ export namespace SelectBuilderUtil {
         ],
     };
     export type CleanToFromData<ToTableT extends AnyAliasedTable> = (
-        ReplaceValue2<
-            CleanData,
-            "hasFrom",
-            true,
-            "joins",
-            [
-                Join<
-                    ToTableT,
-                    ToTableT["columns"],
-                    false
-                >
-            ]
-        >
+        {
+            readonly [key in keyof CleanData] : (
+                key extends "hasFrom" ?
+                true :
+                key extends "joins" ?
+                [
+                    Join<
+                        ToTableT,
+                        ToTableT["columns"],
+                        false
+                    >
+                ] :
+                CleanData[key]
+            )
+        }
     );
     export type CleanToFrom<ToTableT extends AnyAliasedTable> = (
         SelectBuilder<CleanToFromData<ToTableT>>
     );
     export type SelectAllData<DataT extends SelectBuilderData> = (
-        ReplaceValue2<
-            DataT,
-            "selects",
-            SelectCollectionUtil.FromJoinCollection<DataT["joins"]>,
-            "hasSelect",
-            true
-        >
+        {
+            readonly [key in keyof DataT] : (
+                key extends "selects" ?
+                SelectCollectionUtil.FromJoinCollection<DataT["joins"]> :
+                key extends "hasSelect" ?
+                true :
+                DataT[key]
+            )
+        }
     );
     export type CleanToSelectAll<ToTableT extends AnyAliasedTable> = (
         SelectBuilder<
@@ -69,9 +76,114 @@ export namespace SelectBuilderUtil {
         >
     );
 
-    export function selectAll<
-        SelectBuilderT extends AnySelectBuilder
-    > (s : SelectBuilderT) : (
+    export type From<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable
+    > = (
+        SelectBuilderT extends SelectBuilder<infer DataT> ?
+            JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]> extends never ?
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "hasFrom" ?
+                    true :
+                    key extends "joins" ?
+                    [
+                        Join<
+                            ToTableT,
+                            ToTableT["columns"],
+                            false
+                        >
+                    ] :
+                    DataT[key]
+                )
+            }> :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]>
+            > :
+            never
+    );
+    export function from<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable
+    > (s : SelectBuilderT, toTable : ToTableT) : (
+        From<SelectBuilderT, ToTableT>
+    ) {
+        if (s.data.hasFrom) {
+            throw new Error(`FROM clause already exists`);
+        }
+        if (s.data.hasParentJoins) {
+            JoinCollectionUtil.assertNonDuplicateTableAlias(
+                s.data.parentJoins,
+                toTable.alias
+            );
+        }
+        return new SelectBuilder(spread(
+            s.data,
+            {
+                hasFrom : true,
+                joins : [
+                    new Join(
+                        JoinType.FROM,
+                        toTable,
+                        toTable.columns,
+                        false,
+                        [],
+                        []
+                    )
+                ]
+            }
+        ), s.extraData) as any;
+    }
+
+    //TODO Rename everything else to DoXxx
+    export type DoJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable
+    > = (
+        SelectBuilderT extends SelectBuilder<infer DataT> ?
+            (
+                Error extends JoinCollectionUtil.InnerJoin<SelectBuilder<DataT>, ToTableT> ?
+                    JoinCollectionUtil.InnerJoin<SelectBuilder<DataT>, ToTableT> :
+                    SelectBuilder<{
+                        readonly [key in keyof DataT] : (
+                            key extends "joins" ?
+                            JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT> :
+                            DataT[key]
+                        )
+                    }>
+            ) :
+            never
+    );
+    export function doJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
+    > (
+        s : SelectBuilderT,
+        toTable : ToTableT,
+        fromDelegate : FromDelegateT,
+        toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
+    ) : (
+        DoJoin<SelectBuilderT, ToTableT>
+    ) {
+        s.assertAfterFrom();
+        return new SelectBuilder(spread(
+            s.data,
+            {
+                joins : JoinCollectionUtil.innerJoin(
+                    s,
+                    toTable,
+                    fromDelegate as any,
+                    toDelegate
+                )
+            }
+        ), s.extraData) as any;
+    }
+
+    export type SelectAll<SelectBuilderT extends AnySelectBuilder> = (
         SelectBuilderT extends SelectBuilder<infer DataT> ?
             SelectBuilder<{
                 readonly [key in keyof DataT] : (
@@ -83,6 +195,11 @@ export namespace SelectBuilderUtil {
                 )
             }> :
             never
+    );
+    export function selectAll<
+        SelectBuilderT extends AnySelectBuilder
+    > (s : SelectBuilderT) : (
+        SelectAll<SelectBuilderT>
     ) {
         s.assertBeforeSelect();
         s.assertAfterFrom();

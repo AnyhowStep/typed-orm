@@ -88,13 +88,14 @@ function fetchLatest<
             )
         )
     )("condition", condition) as any;
-    const x = fetchLatestQuery<TableT>(
-        db, logTable
-    ).where(() => o.RawExprUtil.toEqualityCondition(
-        logTable,
-        condition
-    ));
-    return o.SelectBuilderUtil.selectAll(x);
+    return fetchLatestQuery(db, logTable)
+        .where((_c, s) => o.RawExprUtil.toEqualityCondition(
+            s.data.joins[0].table,
+            condition
+        ))
+        .selectAll()
+        .printQuery()
+        .fetchOne();
 }
 
 tape("json-log-fetch-latest-query", async (t) => {
@@ -104,36 +105,46 @@ tape("json-log-fetch-latest-query", async (t) => {
         data : JSON.stringify({
             time : now,
         })
-    }).execute();
+    }).execute()
+    .catch((err) => {
+        t.error(err);
+        throw new Error(err);
+    });
     await fetchLatestQuery(db, jsonLog)
         .selectAll()
         .fetchOne()
         .then((row) => {
             const data = JSON.parse(row.data);
             t.equal(data.time, now);
+        })
+        .catch((err) => {
+            t.error(err);
+            throw new Error(err);
         });
     t.end();
 });
 tape("user-log-fetch-latest", async (t) => {
     const db = await getDb();
-    const now = (new Date()).toString();
+    try {
     const insertResult = await db.insertValueAndFetch(userLog, {
         userId : 1
+    })
+    .catch((err) => {
+        console.error(err);
+        throw new Error(err);
     });
-    const wat2 = fetchLatestQuery(db, userLog);
-    let wat = await fetchLatest(db, userLog, {
-        userId : 1
-    }).fetchOne()
-    wat = 2;
-    /*.fetchOne().then((row) => {
-        t.equal(row)
-    });*/
-    await fetchLatestQuery(db, jsonLog)
-        .selectAll()
-        .fetchOne()
+    await fetchLatest(db, userLog, { userId : 1 })
         .then((row) => {
-            const data = JSON.parse(row.data);
-            t.equal(data.time, now);
+            t.equal(row.logId, insertResult.logId);
+        })
+        .catch((err) => {
+            console.error(err);
+            throw new Error(err);
         });
+    } catch (err) {
+        console.error(err);
+        throw new Error(err);
+    }
+    db.freeConnection();
     t.end();
 });

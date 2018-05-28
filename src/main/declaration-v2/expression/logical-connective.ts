@@ -110,7 +110,7 @@ export function and<
 
     return booleanExpr(
         q.used,
-        `(\n\t${q.leftQuery} AND\n\t${q.rightQueries.join(" AND\n\t")}\n)`
+        `\n\t${[q.leftQuery, ...q.rightQueries].join(" AND\n\t")}\n`
     ) as any;
 }
 

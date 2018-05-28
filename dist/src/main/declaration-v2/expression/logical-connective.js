@@ -36,7 +36,7 @@ exports.or = booleanBinaryOp("OR");
 exports.xor = booleanBinaryOp("XOR");
 function and(left, ...rightArr) {
     const q = variadicUtil.querifyNonNullable(left, ...rightArr);
-    return boolean_expr_1.booleanExpr(q.used, `(\n\t${q.leftQuery} AND\n\t${q.rightQueries.join(" AND\n\t")}\n)`);
+    return boolean_expr_1.booleanExpr(q.used, `\n\t${[q.leftQuery, ...q.rightQueries].join(" AND\n\t")}\n`);
 }
 exports.and = and;
 function not(raw) {

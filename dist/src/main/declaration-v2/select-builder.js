@@ -92,24 +92,10 @@ class SelectBuilder {
     }
     //Must be done before any JOINs, as per MySQL
     from(toTable) {
-        if (this.data.hasFrom) {
-            throw new Error(`FROM clause already exists`);
-        }
-        if (this.data.hasParentJoins) {
-            join_collection_1.JoinCollectionUtil.assertNonDuplicateTableAlias(this.data.parentJoins, toTable.alias);
-        }
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            hasFrom: true,
-            joins: [
-                new join_1.Join(join_1.JoinType.FROM, toTable, toTable.columns, false, [], [])
-            ]
-        }), this.extraData);
+        return select_builder_util_1.SelectBuilderUtil.from(this, toTable);
     }
     join(toTable, fromDelegate, toDelegate) {
-        this.assertAfterFrom();
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            joins: join_collection_1.JoinCollectionUtil.innerJoin(this, toTable, fromDelegate, toDelegate)
-        }), this.extraData);
+        return select_builder_util_1.SelectBuilderUtil.doJoin(this, toTable, fromDelegate, toDelegate);
     }
     joinUsing(toTable, fromDelegate) {
         this.assertAfterFrom();
@@ -165,16 +151,6 @@ class SelectBuilder {
     //columns expected.
     selectAll() {
         return select_builder_util_1.SelectBuilderUtil.selectAll(this);
-        /*this.assertBeforeSelect();
-        this.assertAfterFrom();
-        this.assertBeforeUnion();
-        return new SelectBuilder(spread(
-            this.data,
-            {
-                hasSelect : true,
-                selects : SelectCollectionUtil.fromJoinCollection(this.data.joins)
-            }
-        ), this.extraData) as any;*/
     }
     //Must be called after `FROM`; makes no sense
     //to replace tables if there aren't any...
