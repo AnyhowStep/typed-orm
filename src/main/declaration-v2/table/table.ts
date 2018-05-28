@@ -62,3 +62,7 @@ export class Table<
 export type AnyTable = (
     Table<string, string, ColumnCollection, any>
 );
+
+export type TableRow<TableT extends AnyTable> = (
+    ColumnCollectionUtil.Type<TableT["columns"]>
+);

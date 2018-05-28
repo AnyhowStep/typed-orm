@@ -11,3 +11,4 @@ export declare class Table<AliasT extends string, NameT extends string, ColumnCo
     getUniqueKeyAssertDelegate(): sd.AssertDelegate<TableUtil.UniqueKeys<this>>;
 }
 export declare type AnyTable = (Table<string, string, ColumnCollection, any>);
+export declare type TableRow<TableT extends AnyTable> = (ColumnCollectionUtil.Type<TableT["columns"]>);

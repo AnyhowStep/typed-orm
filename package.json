@@ -1,6 +1,6 @@
 {
   "name": "typed-orm",
-  "version": "0.5.22",
+  "version": "0.5.23",
   "description": "A strongly typed MySQL ORM",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",
@@ -8,7 +8,7 @@
     "test-sandbox": "ts-node ./src/main/sandbox/select-builder-v2",
     "test-all": "ts-node ./src/test/test-all",
     "test": "ts-node",
-    "check": "tsc --noEmit --diagnostics",
+    "check": "  tsc --noEmit --diagnostics",
     "check2": "node --max-old-space-size=8192 ./node_modules/typescript/lib/tsc.js --noEmit --noErrorTruncation --diagnostics",
     "build": "(rm -r ./dist || true) && tsc -d --diagnostics"
   },
