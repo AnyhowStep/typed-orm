@@ -13,6 +13,11 @@ export declare type RawInsertValueRow<TableT extends AnyTable> = ({
 } & {
     [name in TableUtil.OptionalColumnNames<TableT>]?: (RawExprNoUsedRef<ReturnType<TableT["columns"][name]["assertDelegate"]>>);
 });
+export declare type InsertLiteralRow<TableT extends AnyTable> = ({
+    [name in TableUtil.RequiredColumnNames<TableT>]: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
+} & {
+    [name in TableUtil.OptionalColumnNames<TableT>]?: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
+});
 export declare class InsertValueBuilder<TableT extends AnyTable, ValuesT extends undefined | (RawInsertValueRow<TableT>[]), InsertModeT extends "IGNORE" | "REPLACE" | "NORMAL"> implements Querify {
     readonly table: TableT;
     readonly values: ValuesT;

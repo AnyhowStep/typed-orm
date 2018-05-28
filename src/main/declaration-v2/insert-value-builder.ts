@@ -22,6 +22,18 @@ export type RawInsertValueRow<TableT extends AnyTable> = (
         )
     }
 );
+export type InsertLiteralRow<TableT extends AnyTable> = (
+    {
+        [name in TableUtil.RequiredColumnNames<TableT>] : (
+            ReturnType<TableT["columns"][name]["assertDelegate"]>
+        )
+    } &
+    {
+        [name in TableUtil.OptionalColumnNames<TableT>]? : (
+            ReturnType<TableT["columns"][name]["assertDelegate"]>
+        )
+    }
+);
 
 export class InsertValueBuilder<
     TableT extends AnyTable,
