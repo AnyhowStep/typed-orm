@@ -502,8 +502,8 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         }>, {}, true>];
     }>;
     selectAll<T>(assert: sd.AssertFunc<T>, queryStr: string, queryValues?: mysql.QueryValues): Promise<mysql.SelectResult<T>>;
-    selectAll<TableT extends AnyAliasedTable>(table: TableT, where?: WhereDelegate<SelectBuilderUtil.From<TableT>>): SelectBuilderUtil.SelectAll<TableT>;
-    selectAllByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: TableUtil.UniqueKeys<TableT>): (SelectBuilderUtil.SelectAll<TableT>);
+    selectAll<TableT extends AnyAliasedTable>(table: TableT, where?: WhereDelegate<SelectBuilderUtil.CleanToFrom<TableT>>): SelectBuilderUtil.CleanToSelectAll<TableT>;
+    selectAllByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: TableUtil.UniqueKeys<TableT>): (SelectBuilderUtil.CleanToSelectAll<TableT>);
     fetchOneByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: TableUtil.UniqueKeys<TableT>): Promise<(((string extends Extract<keyof ((Join<TableT, TableT["columns"], false> extends Join<AliasedTable<string, string, {
         readonly [columnName: string]: Column<string, string, any>;
     }>, {
@@ -5150,12 +5150,12 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         data: {
             id: Column<any, any, number>;
         };
-    }>(table: TableT, id: number): (Promise<FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>>>);
+    }>(table: TableT, id: number): (Promise<FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>>>);
     fetchZeroOrOneById<TableT extends AnyAliasedTable & {
         data: {
             id: Column<any, any, number>;
         };
-    }>(table: TableT, id: number): (Promise<FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>> | undefined>);
+    }>(table: TableT, id: number): (Promise<FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>> | undefined>);
     readonly insertValue: <TableT extends Table<string, string, {
         readonly [columnName: string]: Column<string, string, any>;
     }, any>>(table: TableT, value: { [name in Exclude<Extract<keyof TableT["columns"], string>, keyof TableT["data"]["hasDefaultValue"] | keyof TableT["data"]["isGenerated"]>]: Expr<{}, ReturnType<TableT["columns"][name]["assertDelegate"]>> | Column<any, any, ReturnType<TableT["columns"][name]["assertDelegate"]>> | SelectBuilder<{
@@ -5223,7 +5223,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         data: {
             autoIncrement: Column<any, any, number>;
         };
-    }>(table: TableT, value: RawInsertValueRow<TableT>): (Promise<FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>>>);
+    }>(table: TableT, value: RawInsertValueRow<TableT>): (Promise<FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>>>);
     readonly insertSelect: <TableT extends Table<string, string, {
         readonly [columnName: string]: Column<string, string, any>;
     }, any>, SelectBuilderT extends SelectBuilder<any>>(table: TableT, selectBuilder: SelectBuilderT, delegate: (s: keyof (SelectBuilderT["data"]["selects"] extends (Column<string, string, any> | {
@@ -10605,7 +10605,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         };
     }>(table: TableT, id: number, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<UpdateResult & ({
         foundRowCount: 1;
-        row: (FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>>);
+        row: (FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>>);
     } | {
         foundRowCount: 0;
         row: undefined;

@@ -7,6 +7,10 @@ import {SelectBuilder, AnySelectBuilder} from "../select-builder";
 import {AnySelectValue} from "../select-value";
 import {Tuple} from "../tuple";
 import * as sd from "schema-decorator";
+import {AnyAliasedTable} from "../aliased-table";
+import {ColumnCollectionUtil} from "../column-collection";
+import { ColumnReferencesUtil } from "../column-references";
+import * as e from "../expression";
 
 export namespace RawExprUtil {
     export function isAllowedExprConstant (raw : AnyRawExpr) : raw is AllowedExprConstant {
@@ -190,5 +194,51 @@ export namespace RawExprUtil {
         }
 
         throw new Error(`Expected expression to be non-nullable, but it is`);
+    }
+
+    export function toEqualityCondition<
+        TableT extends AnyAliasedTable
+    > (
+        table : TableT,
+        //TODO Force proper typing?
+        //For now, ignores invalid columns
+        condition : /*Partial<ColumnCollectionUtil.Type<TableT["columns"]>> & */{
+            [otherColumnName : string]  : any
+        }
+    ) : (
+        Expr<
+            ColumnReferencesUtil.Partial<
+                ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+            >,
+            boolean
+        >
+    ) {
+        const assertDelegate = ColumnCollectionUtil.partialAssertDelegate(table.columns);
+        condition = assertDelegate(`${table.alias} condition`, condition) as any;
+        const comparisonArr = Object.keys(condition)
+            .filter((columnName) => {
+                //Strict equality because we support checking against `null`
+                return (
+                    (condition as any)[columnName] !== undefined &&
+                    table.columns[columnName] !== undefined
+                );
+            })
+            .map((columnName) => {
+                const column = table.columns[columnName];
+                const value = (condition as any)[columnName];
+                if (value == null) {
+                    return e.isNull(column);
+                } else {
+                    return e.eq(column, value) as any;
+                }
+            });
+        if (comparisonArr.length == 0) {
+            return e.TRUE;
+        } else {
+            return e.and(
+                comparisonArr[0],
+                ...comparisonArr.slice(1)
+            );
+        }
     }
 }

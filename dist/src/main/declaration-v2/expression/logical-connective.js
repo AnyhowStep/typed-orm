@@ -5,6 +5,7 @@ const raw_expr_1 = require("../raw-expr");
 const column_references_1 = require("../column-references");
 const expr_1 = require("../expr");
 const sd = require("schema-decorator");
+const variadicUtil = require("./variadic-util");
 const select_builder_1 = require("../select-builder");
 const column_1 = require("../column");
 select_builder_1.SelectBuilder;
@@ -30,9 +31,14 @@ exports.FALSE = new expr_1.Expr({}, (name, mixed) => {
     const b = sd.numberToBoolean()(name, mixed);
     return sd.oneOf(false)(name, b);
 }, "FALSE");
-exports.and = booleanBinaryOp("AND");
+//export const and = booleanBinaryOp("AND");
 exports.or = booleanBinaryOp("OR");
 exports.xor = booleanBinaryOp("XOR");
+function and(left, ...rightArr) {
+    const q = variadicUtil.querifyNonNullable(left, ...rightArr);
+    return boolean_expr_1.booleanExpr(q.used, `(\n\t${q.leftQuery} AND\n\t${q.rightQueries.join(" AND\n\t")}\n)`);
+}
+exports.and = and;
 function not(raw) {
     return boolean_expr_1.booleanExpr(raw_expr_1.RawExprUtil.usedReferences(raw), `NOT (${raw_expr_1.RawExprUtil.querify(raw)})`);
 }

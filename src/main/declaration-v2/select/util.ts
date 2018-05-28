@@ -134,7 +134,7 @@ export namespace SelectUtil {
 
         SelectT extends AnyColumn ?
         SelectT["tableAlias"] :
-        
+
         never
     );
 
@@ -182,9 +182,7 @@ export namespace SelectUtil {
             }
         } :
         SelectT extends ColumnCollection ?
-        {
-            readonly [tableAlias in SelectT[keyof SelectT]["tableAlias"]] : SelectT
-        } :
+        ColumnCollectionUtil.ToColumnReferences<SelectT> :
         {}
     );
     export function toColumnReferences<SelectT extends AnySelect> (
@@ -217,25 +215,7 @@ export namespace SelectUtil {
                 }
             } as any;
         } else if (select instanceof Object) {
-            const keys = Object.keys(select);
-            if (keys.length == 0) {
-                //TODO add this check in appendSelect()
-                throw new Error(`Empty select found`);
-            }
-            const firstColumn = (select as any)[keys[0]];
-            return {
-                [firstColumn.tableAlias] : Object.keys(select).reduce((memo, columnName) => {
-                    const column = (select as any)[columnName];
-                    memo[columnName] = new Column(
-                        column.tableAlias,
-                        column.name,
-                        column.assertDelegate,
-                        undefined,
-                        true
-                    );
-                    return memo;
-                }, {} as any)
-            } as any;
+            return ColumnCollectionUtil.toColumnReferences(select as any) as any;
         } else {
             throw new Error(`Unknown select; ${typeof select}`);
         }

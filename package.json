@@ -1,11 +1,13 @@
 {
   "name": "typed-orm",
-  "version": "0.5.20",
+  "version": "0.5.21",
   "description": "A strongly typed MySQL ORM",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",
   "scripts": {
-    "test": "ts-node ./src/main/sandbox/select-builder-v2",
+    "test-sandbox": "ts-node ./src/main/sandbox/select-builder-v2",
+    "test-all": "ts-node ./src/test/test-all",
+    "test": "ts-node",
     "check": "tsc --noEmit --diagnostics",
     "check2": "node --max-old-space-size=8192 ./node_modules/typescript/lib/tsc.js --noEmit --noErrorTruncation --diagnostics",
     "build": "(rm -r ./dist || true) && tsc -d --diagnostics"
@@ -24,7 +26,10 @@
     "typed-mysql": "^2.5.0"
   },
   "devDependencies": {
+    "@anyhowstep/typed-env": "^2.1.0",
     "@types/node": "^10.0.4",
+    "@types/tape": "^4.2.32",
+    "tape": "^4.9.0",
     "ts-node": "^6.0.3",
     "typescript": "^2.9.0-dev.20180516"
   }

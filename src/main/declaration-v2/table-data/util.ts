@@ -41,22 +41,24 @@ export namespace TableDataUtil {
                 ReturnType<AutoIncrementDelegateT> :
                 key extends "uniqueKeys" ?
                 (
-                    DataT["uniqueKeys"] extends Tuple<UniqueKey> ?
-                        (
-                            TupleWPush<
-                                UniqueKey,
-                                DataT["uniqueKeys"],
-                                {
+                    DataT["uniqueKeys"] extends never ?
+                        any :
+                        DataT["uniqueKeys"] extends Tuple<UniqueKey> ?
+                            (
+                                TupleWPush<
+                                    UniqueKey,
+                                    DataT["uniqueKeys"],
+                                    {
+                                        [columnName in ReturnType<AutoIncrementDelegateT>["name"]] : true
+                                    }
+                                >
+                            ) :
+                            TupleWiden<
+                                [{
                                     [columnName in ReturnType<AutoIncrementDelegateT>["name"]] : true
-                                }
+                                }],
+                                UniqueKey
                             >
-                        ) :
-                        TupleWiden<
-                            [{
-                                [columnName in ReturnType<AutoIncrementDelegateT>["name"]] : true
-                            }],
-                            UniqueKey
-                        >
                 ) :
                 DataT[key]
             )
@@ -144,32 +146,35 @@ export namespace TableDataUtil {
         >
     > = (
         ReturnType<IsGeneratedDelegateT>[TupleKeys<ReturnType<IsGeneratedDelegateT>>] extends AnyColumn ?
-            ReadonlyReplaceValue3<
-                DataT,
-                "isGenerated",
-                DataT["isGenerated"] &
-                {
-                    readonly [columnName in ReturnType<IsGeneratedDelegateT>[
-                        TupleKeys<ReturnType<IsGeneratedDelegateT>>
-                    ]["name"]] : true
+            {
+                readonly autoIncrement : DataT["autoIncrement"],
+                readonly isGenerated : {
+                    readonly [columnName in (
+                        ReturnType<IsGeneratedDelegateT>[
+                            TupleKeys<ReturnType<IsGeneratedDelegateT>>
+                        ]["name"] |
+                        keyof DataT["isGenerated"]
+                    )] : true
                 },
-                "hasDefaultValue",
-                DataT["hasDefaultValue"] &
-                {
-                    readonly [columnName in ReturnType<IsGeneratedDelegateT>[
-                        TupleKeys<ReturnType<IsGeneratedDelegateT>>
-                    ]["name"]] : true
+                readonly hasDefaultValue : {
+                    readonly [columnName in (
+                        ReturnType<IsGeneratedDelegateT>[
+                            TupleKeys<ReturnType<IsGeneratedDelegateT>>
+                        ]["name"] |
+                        keyof DataT["hasDefaultValue"]
+                    )] : true
                 },
-                "isMutable",
-                {
+                readonly isMutable : {
                     readonly  [columnName in Exclude<
                         Extract<keyof DataT["isMutable"], string>,
                         ReturnType<IsGeneratedDelegateT>[
                             TupleKeys<ReturnType<IsGeneratedDelegateT>>
                         ]["name"]
                     >] : true
-                }
-            > :
+                },
+                readonly id : DataT["id"],
+                readonly uniqueKeys : DataT["uniqueKeys"],
+            } :
             never
     );
     export function isGenerated<
@@ -499,83 +504,49 @@ export namespace TableDataUtil {
         } as any;
     }
 
-    export type WithTableAlias<DataT extends TableData, TableAliasT extends string> = (
+    export type WithTableAliasGeneric<DataT extends TableData, TableAliasT extends string> = (
         {
             readonly autoIncrement : (
                 DataT["autoIncrement"] extends AnyColumn ?
-                        ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> :
-                        undefined
+                ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> :
+                DataT["autoIncrement"] extends undefined ?
+                undefined :
+                DataT["autoIncrement"] extends AnyColumn|undefined ?
+                ColumnUtil.WithTableAlias<Extract<DataT["autoIncrement"], AnyColumn>, TableAliasT>|undefined :
+                undefined
             );
             readonly isGenerated : DataT["isGenerated"];
             readonly hasDefaultValue : DataT["hasDefaultValue"];
             readonly isMutable : DataT["isMutable"];
             readonly id : (
                 DataT["id"] extends AnyColumn ?
-                        ColumnUtil.WithTableAlias<DataT["id"], TableAliasT> :
-                        undefined
+                ColumnUtil.WithTableAlias<DataT["id"], TableAliasT> :
+                DataT["id"] extends undefined ?
+                undefined :
+                DataT["id"] extends AnyColumn|undefined ?
+                ColumnUtil.WithTableAlias<Extract<DataT["id"], AnyColumn>, TableAliasT>|undefined :
+                undefined
             );
             readonly uniqueKeys : DataT["uniqueKeys"];
         }
-        /*{
-            readonly [key in (keyof DataT)|"autoIncrement"] : (
-                key extends "autoIncrement" ?
-                (
-                    DataT["autoIncrement"] extends AnyColumn ?
-                        ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> :
-                        undefined
-                ) :
-                DataT[key]
-            )
-        }*/
-        /*ReadonlyReplaceValue<
-            DataT,
-            "autoIncrement",
-            (
-                DataT["autoIncrement"] extends AnyColumn ?
-                    ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> :
-                    undefined
-            )
-        >*/
-        /*{
-            autoIncrement : (
-                DataT["autoIncrement"] extends AnyColumn ?
-                    ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> :
-                    undefined
-            ),
-            isGenerated : DataT["isGenerated"],
-            hasDefaultValue : DataT["hasDefaultValue"],
-            isMutable : DataT["isMutable"],
-            uniqueKeys : (
-                DataT["uniqueKeys"] extends Tuple<Tuple<AnyColumn>> ?
-                    UniqueKeysWithTableAlias<DataT["uniqueKeys"], TableAliasT> :
-                    undefined|Tuple<Tuple<AnyColumn>>
-            ),
-        }*/
-        /*
+    );
+    export type WithTableAlias<DataT extends TableData, TableAliasT extends string> = (
         {
-            isGenerated : DataT["isGenerated"],
-            hasDefaultValue : DataT["hasDefaultValue"],
-            isMutable : DataT["isMutable"],
-        } &
-        (
-            DataT["autoIncrement"] extends AnyColumn ?
-                {
-                    autoIncrement : ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT>,
-                } :
-                {
-                    autoIncrement : undefined,
-                }
-        ) &
-        (
-            DataT["uniqueKeys"] extends Tuple<Tuple<AnyColumn>> ?
-                {
-                    uniqueKeys : UniqueKeysWithTableAlias<DataT["uniqueKeys"], TableAliasT>,
-                } :
-                {
-                    uniqueKeys : undefined,
-                }
-        )
-        */
+            readonly autoIncrement : (
+                DataT["autoIncrement"] extends AnyColumn ?
+                ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> :
+                undefined
+            );
+            readonly isGenerated : DataT["isGenerated"];
+            readonly hasDefaultValue : DataT["hasDefaultValue"];
+            readonly isMutable : DataT["isMutable"];
+            readonly id : (
+                DataT["id"] extends AnyColumn ?
+                ColumnUtil.WithTableAlias<DataT["id"], TableAliasT> :
+                undefined
+            );
+            readonly uniqueKeys : DataT["uniqueKeys"];
+        }
     );
     export function withTableAlias<
         DataT extends TableData,

@@ -185,7 +185,9 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>): (SelectBuilder<ReplaceValue2<DataT, "selects", SelectCollectionUtil.FromJoinCollection<DataT["joins"]>, "hasSelect", true>>);
+    }>): (SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "selects" ? SelectCollectionUtil.FromJoinCollection<DataT["joins"]> : key extends "hasSelect" ? true : DataT[key]);
+    }>);
     replaceTable<TableA extends AnyAliasedTable, TableB extends AnyAliasedTable>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -195,7 +197,11 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, tableA: TableA, tableB: TableB): (TableB extends AliasedTable<any, any, TableA["columns"]> ? SelectBuilder<ReplaceValue<DataT, "joins", JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB>>> : Error extends JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> ? JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> : SelectBuilder<ReplaceValue<DataT, "joins", JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB>>>);
+    }>, tableA: TableA, tableB: TableB): (TableB extends AliasedTable<any, any, TableA["columns"]> ? SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB> : DataT[key]);
+    }> : Error extends JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> ? JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> : SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB> : DataT[key]);
+    }>);
     aggregate<AggregateDelegateT extends undefined | AggregateDelegate<FetchRow<DataT["joins"], SelectCollectionUtil.ToColumnReferences<DataT["selects"]>>>>(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;

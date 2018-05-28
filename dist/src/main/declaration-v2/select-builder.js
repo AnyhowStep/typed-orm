@@ -31,11 +31,12 @@ const raw_expr_1 = require("./raw-expr");
 const update_builder_1 = require("./update-builder");
 const insert_select_builder_1 = require("./insert-select-builder");
 const delete_builder_1 = require("./delete-builder");
+const select_builder_util_1 = require("./select-builder-util");
 const table_2 = require("./table");
 table_2.Table;
 //TODO Move elsewhere
 exports.ARBITRARY_ROW_COUNT = 999999999;
-exports.__DUMMY_FROM_TABLE = table_1.table("__DUMMY_FROM_TABLE", {});
+exports.__DUMMY_FROM_TABLE = table_1.table("__DUMMY_FROM_TABLE", {}).build();
 class SelectBuilder {
     constructor(data, extraData) {
         this.rowAssertDelegate = undefined;
@@ -163,13 +164,17 @@ class SelectBuilder {
     //Must be called before `UNION` because it will change the number of
     //columns expected.
     selectAll() {
-        this.assertBeforeSelect();
+        return select_builder_util_1.SelectBuilderUtil.selectAll(this);
+        /*this.assertBeforeSelect();
         this.assertAfterFrom();
         this.assertBeforeUnion();
-        return new SelectBuilder(type_util_1.spread(this.data, {
-            hasSelect: true,
-            selects: select_collection_1.SelectCollectionUtil.fromJoinCollection(this.data.joins)
-        }), this.extraData);
+        return new SelectBuilder(spread(
+            this.data,
+            {
+                hasSelect : true,
+                selects : SelectCollectionUtil.fromJoinCollection(this.data.joins)
+            }
+        ), this.extraData) as any;*/
     }
     //Must be called after `FROM`; makes no sense
     //to replace tables if there aren't any...

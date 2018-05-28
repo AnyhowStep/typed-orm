@@ -58,6 +58,7 @@ import {
 } from "./delete-builder";
 import {TupleWConcat} from "./tuple";
 import {AnyJoin} from "./join";
+import {SelectBuilderUtil} from "./select-builder-util";
 
 import {Table} from "./table";
 Table;
@@ -121,7 +122,7 @@ export interface SelectBuilderData {
 export const __DUMMY_FROM_TABLE = table(
     "__DUMMY_FROM_TABLE",
     {}
-);
+).build();
 
 export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     readonly data : DataT;
@@ -535,15 +536,25 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>
     ) : (
-        SelectBuilder<ReplaceValue2<
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "selects" ?
+                SelectCollectionUtil.FromJoinCollection<DataT["joins"]> :
+                key extends "hasSelect" ?
+                true :
+                DataT[key]
+            )
+        }>
+        /*SelectBuilder<ReplaceValue2<
             DataT,
             "selects",
             SelectCollectionUtil.FromJoinCollection<DataT["joins"]>,
             "hasSelect",
             true
-        >>
+        >>*/
     ) {
-        this.assertBeforeSelect();
+        return SelectBuilderUtil.selectAll(this) as any;
+        /*this.assertBeforeSelect();
         this.assertAfterFrom();
         this.assertBeforeUnion();
         return new SelectBuilder(spread(
@@ -552,7 +563,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 hasSelect : true,
                 selects : SelectCollectionUtil.fromJoinCollection(this.data.joins)
             }
-        ), this.extraData) as any;
+        ), this.extraData) as any;*/
     }
 
     //Must be called after `FROM`; makes no sense
@@ -577,18 +588,22 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         //TODO evaluate if this affects safety in any way
         TableB extends AliasedTable<any, any, TableA["columns"]> ?
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB>
-            >> :
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB> :
+                    DataT[key]
+                )
+            }> :
             Error extends JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> ?
-                JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> :   
-                SelectBuilder<ReplaceValue<
-                    DataT,
-                    "joins",
-                    JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB>
-                >>
+                JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> :
+                SelectBuilder<{
+                    readonly [key in keyof DataT] : (
+                        key extends "joins" ?
+                        JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB> :
+                        DataT[key]
+                    )
+                }>
     ) {
         this.assertAfterFrom();
         const replaced = JoinCollectionUtil.replaceTable(this.data.joins, tableA, tableB);
@@ -701,7 +716,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         >[]>
     ) {
         this.assertAfterSelect();
-        
+
         return this.extraData.db.selectAllAny(this.getQuery())
             .then(({rows}) => {
                 return Promise.all(rows.map(this.aggregateRow));
@@ -732,7 +747,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         >>
     ) {
         this.assertAfterSelect();
-        
+
         return this.extraData.db.selectOneAny(this.getQuery())
             .then(({row}) => {
                 return this.aggregateRow(row);
@@ -766,7 +781,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         >
     ) {
         this.assertAfterSelect();
-        
+
         return this.extraData.db.selectZeroOrOneAny(this.getQuery())
             .then(({row}) => {
                 if (row == undefined) {
@@ -797,7 +812,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>
     ) : Promise<number> {
         this.assertAfterFrom();
-        
+
         if (this.extraData.unionLimit != undefined) {
             return this.unsetUnionLimit()
                 .count();
@@ -892,7 +907,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         >>
     ) {
         this.assertAfterSelect();
-        
+
         const paginationArgs = mysql.toPaginationArgs(
             rawPaginationArgs,
             this.extraData.db.getPaginationConfiguration()
@@ -985,7 +1000,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         FetchValueCheck<DataT, undefined|FetchValueType<DataT>>
     ) {
         this.assertAfterSelect();
-        
+
         return this.extraData.db.selectZeroOrOneAny(this.getQuery())
             .then(({row, fields}) => {
                 if (fields.length != 1) {
@@ -1017,7 +1032,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         FetchValueCheck<DataT, FetchValueType<DataT>[]>
     ) {
         this.assertAfterSelect();
-        
+
         return this.extraData.db.selectAllAny(this.getQuery())
             .then(({rows, fields}) => {
                 if (fields.length != 1) {
@@ -1057,7 +1072,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         } else {
             whereExpr = e.and(condition, whereExpr);
         }
-        
+
         return new SelectBuilder(
             spread(
                 this.data,
@@ -1315,7 +1330,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         whereDelegate : WhereDelegateT
     ) : this {
         this.assertAfterFrom();
-        
+
         if (this.extraData.whereExpr == undefined) {
             return this.where(whereDelegate as any) as any;
         }
@@ -1398,7 +1413,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         groupByDelegate : GroupByDelegateT
     ) : this {
         this.assertAfterFrom();
-        
+
         if (this.extraData.groupBy == undefined) {
             return this.groupBy(groupByDelegate as any) as any;
         }
@@ -1447,7 +1462,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         havingDelegate : HavingDelegateT
     ) : this {
         this.assertAfterFrom();
-        
+
         return new SelectBuilder(
             this.data,
             {
@@ -1472,7 +1487,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         havingDelegate : HavingDelegateT
     ) : this {
         this.assertAfterFrom();
-        
+
         if (this.extraData.havingExpr == undefined) {
             return this.having(havingDelegate as any) as any;
         }
@@ -1978,7 +1993,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                                 ",\n"
                             );
                         }
-                        
+
                     },
                     ",\n"
                 );
@@ -2209,7 +2224,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                     hasSelect : false,
                     hasFrom : false,
                     hasUnion : false,
-    
+
                     //This is just a dummy JOIN
                     //It will be replaced when the FROM clause is added
                     joins : [
@@ -2228,7 +2243,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                     ],
                     selects : undefined,
                     aggregateDelegate : undefined,
-    
+
                     //Give this builder access to our JOINs
                     hasParentJoins : true,
                     parentJoins : (
@@ -2252,7 +2267,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                     hasSelect : false,
                     hasFrom : false,
                     hasUnion : false,
-    
+
                     //This is just a dummy JOIN
                     //It will be replaced when the FROM clause is added
                     joins : [
@@ -2271,7 +2286,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                     ],
                     selects : undefined,
                     aggregateDelegate : undefined,
-    
+
                     //Give this builder access to our JOINs
                     hasParentJoins : this.data.hasFrom,
                     parentJoins : this.data.joins,
@@ -2344,11 +2359,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 hasSelect : false,
                 hasFrom : true,
                 hasUnion : false,
-    
+
                 joins : DataT["joins"],
-    
+
                 selects : undefined,
-    
+
                 aggregateDelegate : any,
 
                 //It makes no sense to update a subquery
@@ -2388,11 +2403,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 hasSelect : false,
                 hasFrom : true,
                 hasUnion : false,
-    
+
                 joins : DataT["joins"],
-    
+
                 selects : undefined,
-    
+
                 aggregateDelegate : any,
 
                 //It makes no sense to delete a subquery

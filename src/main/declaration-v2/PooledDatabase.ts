@@ -165,8 +165,8 @@ export class PooledDatabase extends mysql.PooledDatabase {
         TableT extends AnyAliasedTable
     > (
         table : TableT,
-        where? : WhereDelegate<SelectBuilderUtil.From<TableT>>
-    ) : SelectBuilderUtil.SelectAll<TableT>;
+        where? : WhereDelegate<SelectBuilderUtil.CleanToFrom<TableT>>
+    ) : SelectBuilderUtil.CleanToSelectAll<TableT>;
     selectAll (arg0 : any, arg1? : any, arg2? : any) : any {
         if (arg0 instanceof AliasedTable) {
             if (arg1 == undefined) {
@@ -185,7 +185,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         table : TableT,
         uniqueKey : TableUtil.UniqueKeys<TableT>
     ) : (
-        SelectBuilderUtil.SelectAll<TableT>
+        SelectBuilderUtil.CleanToSelectAll<TableT>
     ) {
         uniqueKey = table.getUniqueKeyAssertDelegate()(
             `${table.alias} unique key`,
@@ -225,9 +225,9 @@ export class PooledDatabase extends mysql.PooledDatabase {
         id : number
     ) : (
         Promise<FetchRow<
-            SelectBuilderUtil.SelectAll<TableT>["data"]["joins"],
+            SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"],
             SelectCollectionUtil.ToColumnReferences<
-                SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]
+                SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]
             >
         >>
     ) {
@@ -245,9 +245,9 @@ export class PooledDatabase extends mysql.PooledDatabase {
         id : number
     ) : (
         Promise<FetchRow<
-            SelectBuilderUtil.SelectAll<TableT>["data"]["joins"],
+            SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"],
             SelectCollectionUtil.ToColumnReferences<
-                SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]
+                SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]
             >
         >|undefined>
     ) {
@@ -278,9 +278,9 @@ export class PooledDatabase extends mysql.PooledDatabase {
         value : RawInsertValueRow<TableT>
     ) : (
         Promise<FetchRow<
-            SelectBuilderUtil.SelectAll<TableT>["data"]["joins"],
+            SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"],
             SelectCollectionUtil.ToColumnReferences<
-                SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]
+                SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]
             >
         >>
     ) {
@@ -432,9 +432,9 @@ export class PooledDatabase extends mysql.PooledDatabase {
                     foundRowCount : 1,
                     row : (
                         FetchRow<
-                            SelectBuilderUtil.SelectAll<TableT>["data"]["joins"],
+                            SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"],
                             SelectCollectionUtil.ToColumnReferences<
-                                SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]
+                                SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]
                             >
                         >
                     )

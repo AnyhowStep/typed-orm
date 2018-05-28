@@ -1,8 +1,9 @@
-import {SelectBuilderData, SelectBuilder, __DUMMY_FROM_TABLE} from "./select-builder";
+import {SelectBuilderData, SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-builder";
 import {AnyAliasedTable} from "./aliased-table";
 import {Join} from "./join";
 import {ReplaceValue2} from "./obj-util";
 import {SelectCollectionUtil} from "./select-collection";
+import {spread} from "@anyhowstep/type-util";
 
 export namespace SelectBuilderUtil {
     export type CleanData = {
@@ -33,7 +34,7 @@ export namespace SelectBuilderUtil {
             >
         ],
     };
-    export type FromData<ToTableT extends AnyAliasedTable> = (
+    export type CleanToFromData<ToTableT extends AnyAliasedTable> = (
         ReplaceValue2<
             CleanData,
             "hasFrom",
@@ -48,8 +49,8 @@ export namespace SelectBuilderUtil {
             ]
         >
     );
-    export type From<ToTableT extends AnyAliasedTable> = (
-        SelectBuilder<FromData<ToTableT>>
+    export type CleanToFrom<ToTableT extends AnyAliasedTable> = (
+        SelectBuilder<CleanToFromData<ToTableT>>
     );
     export type SelectAllData<DataT extends SelectBuilderData> = (
         ReplaceValue2<
@@ -60,12 +61,38 @@ export namespace SelectBuilderUtil {
             true
         >
     );
-    export type SelectAll<ToTableT extends AnyAliasedTable> = (
+    export type CleanToSelectAll<ToTableT extends AnyAliasedTable> = (
         SelectBuilder<
             SelectAllData<
-                FromData<ToTableT>
+                CleanToFromData<ToTableT>
             >
         >
     );
 
+    export function selectAll<
+        SelectBuilderT extends AnySelectBuilder
+    > (s : SelectBuilderT) : (
+        SelectBuilderT extends SelectBuilder<infer DataT> ?
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "selects" ?
+                    SelectCollectionUtil.FromJoinCollection<DataT["joins"]> :
+                    key extends "hasSelect" ?
+                    true :
+                    DataT[key]
+                )
+            }> :
+            never
+    ) {
+        s.assertBeforeSelect();
+        s.assertAfterFrom();
+        s.assertBeforeUnion();
+        return new SelectBuilder(spread(
+            s.data,
+            {
+                hasSelect : true,
+                selects : SelectCollectionUtil.fromJoinCollection(s.data.joins)
+            }
+        ), s.extraData) as any;
+    }
 }

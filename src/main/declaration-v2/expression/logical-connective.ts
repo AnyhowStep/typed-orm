@@ -3,6 +3,7 @@ import {RawExpr, RawExprUtil} from "../raw-expr";
 import {ColumnReferencesUtil} from "../column-references";
 import {Expr} from "../expr";
 import * as sd from "schema-decorator";
+import * as variadicUtil from "./variadic-util";
 
 import {SelectBuilder} from "../select-builder";
 import {Column} from "../column";
@@ -24,7 +25,7 @@ function booleanBinaryOp (operator : string) {
     ) {
         RawExprUtil.assertNonNullable(left);
         RawExprUtil.assertNonNullable(right);
-        
+
         return booleanExpr(
             ColumnReferencesUtil.merge(
                 RawExprUtil.usedReferences(left),
@@ -49,9 +50,70 @@ export const FALSE = new Expr({}, (name : string, mixed : any) : false => {
     return sd.oneOf(false)(name, b);
 }, "FALSE");
 
-export const and = booleanBinaryOp("AND");
+//export const and = booleanBinaryOp("AND");
 export const or = booleanBinaryOp("OR");
 export const xor = booleanBinaryOp("XOR");
+
+export function and<
+    LeftT extends RawExpr<boolean>,
+    R0 extends RawExpr<boolean>,
+    R1 extends RawExpr<boolean>
+> (left : LeftT, r0 : R0, r1 : R1) : (
+    Expr<
+        ColumnReferencesUtil.Merge<
+            ColumnReferencesUtil.Merge<
+                RawExprUtil.UsedReferences<LeftT>,
+                RawExprUtil.UsedReferences<R0>
+            >,
+            RawExprUtil.UsedReferences<R1>
+        >,
+        boolean
+    >
+);
+export function and<
+    LeftT extends RawExpr<boolean>,
+    RightT extends RawExpr<boolean>
+> (left : LeftT, right : RightT) : (
+    Expr<
+        ColumnReferencesUtil.Merge<
+            RawExprUtil.UsedReferences<LeftT>,
+            RawExprUtil.UsedReferences<RightT>
+        >,
+        boolean
+    >
+);
+export function and<
+    LeftT extends RawExpr<boolean>,
+    RightT extends RawExpr<boolean>
+> (left : LeftT, ...rightArr : RightT[]) : (
+    Expr<
+        ColumnReferencesUtil.Merge<
+            RawExprUtil.UsedReferences<LeftT>,
+            RawExprUtil.UsedReferences<RightT>
+        >,
+        boolean
+    >
+);
+export function and<
+    LeftT extends RawExpr<boolean>,
+    RightT extends RawExpr<boolean>
+> (left : LeftT, ...rightArr : RightT[]) : (
+    Expr<
+        ColumnReferencesUtil.Merge<
+            RawExprUtil.UsedReferences<LeftT>,
+            RawExprUtil.UsedReferences<RightT>
+        >,
+        boolean
+    >
+) {
+    const q = variadicUtil.querifyNonNullable(left, ...rightArr);
+
+    return booleanExpr(
+        q.used,
+        `(\n\t${q.leftQuery} AND\n\t${q.rightQueries.join(" AND\n\t")}\n)`
+    ) as any;
+}
+
 
 export function not<RawT extends RawExpr<boolean>> (
     raw : RawT

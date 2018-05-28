@@ -29,7 +29,7 @@ export declare class InsertValueBuilder<TableT extends AnyTable, ValuesT extends
         data: {
             autoIncrement: Column<any, any, number>;
         };
-    } ? any : never, any[], any>): (Promise<FetchRow<SelectBuilderUtil.SelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]>>>);
+    } ? any : never, any[], any>): (Promise<FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>>>);
     querify(sb: StringBuilder): void;
     getQuery(): string;
     printQuery(): this;

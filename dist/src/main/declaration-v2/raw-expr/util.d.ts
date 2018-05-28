@@ -5,6 +5,9 @@ import { AnySelectBuilder } from "../select-builder";
 import { AnySelectValue } from "../select-value";
 import { Tuple } from "../tuple";
 import * as sd from "schema-decorator";
+import { AnyAliasedTable } from "../aliased-table";
+import { ColumnCollectionUtil } from "../column-collection";
+import { ColumnReferencesUtil } from "../column-references";
 export declare namespace RawExprUtil {
     function isAllowedExprConstant(raw: AnyRawExpr): raw is AllowedExprConstant;
     function querify(raw: RawExpr<any>): string;
@@ -21,4 +24,7 @@ export declare namespace RawExprUtil {
     type ToExpr<RawExprT extends AnyRawExpr> = (Expr<UsedReferences<RawExprT>, Type<RawExprT>>);
     function toExpr<RawExprT extends AnyRawExpr>(raw: RawExprT): (ToExpr<RawExprT>);
     function assertNonNullable(raw: AnyRawExpr): void;
+    function toEqualityCondition<TableT extends AnyAliasedTable>(table: TableT, condition: {
+        [otherColumnName: string]: any;
+    }): (Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, boolean>);
 }

@@ -69,19 +69,7 @@ var SelectUtil;
             };
         }
         else if (select instanceof Object) {
-            const keys = Object.keys(select);
-            if (keys.length == 0) {
-                //TODO add this check in appendSelect()
-                throw new Error(`Empty select found`);
-            }
-            const firstColumn = select[keys[0]];
-            return {
-                [firstColumn.tableAlias]: Object.keys(select).reduce((memo, columnName) => {
-                    const column = select[columnName];
-                    memo[columnName] = new column_1.Column(column.tableAlias, column.name, column.assertDelegate, undefined, true);
-                    return memo;
-                }, {})
-            };
+            return column_collection_1.ColumnCollectionUtil.toColumnReferences(select);
         }
         else {
             throw new Error(`Unknown select; ${typeof select}`);

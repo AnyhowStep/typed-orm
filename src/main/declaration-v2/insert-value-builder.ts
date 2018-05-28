@@ -136,9 +136,9 @@ export class InsertValueBuilder<
         >
     ) : (
         Promise<FetchRow<
-            SelectBuilderUtil.SelectAll<TableT>["data"]["joins"],
+            SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"],
             SelectCollectionUtil.ToColumnReferences<
-                SelectBuilderUtil.SelectAll<TableT>["data"]["selects"]
+                SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]
             >
         >>
     ) {

@@ -1,6 +1,6 @@
 import { Table, AnyTable } from "./table";
 import { JoinCollection } from "../join-collection";
-import { Column } from "../column";
+import { Column, AnyColumn } from "../column";
 import { TableDataUtil } from "../table-data";
 import * as sd from "schema-decorator";
 import { UniqueKeyCollection, UniqueKeyCollectionUtil } from "../unique-key-collection";
@@ -11,9 +11,18 @@ export declare namespace TableUtil {
     function validateInsertRow(table: AnyTable, row: any): void;
     function validateInsertRows(table: AnyTable, rows: any[]): void;
     function validateUpdateAssignmentReferences(joins: JoinCollection, assignmentReferences: any): void;
-    type ToGeneric<TableT extends AnyTable> = (Table<any, any, {
+    type ToGeneric<TableT extends AnyTable> = (TableT["data"]["id"] extends AnyColumn ? Table<any, any, {
         [columnName in Extract<keyof TableT["columns"], string>]: (Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>);
-    }, TableDataUtil.WithTableAlias<TableT["data"], any>>);
-    type UniqueKeys<TableT extends AnyTable> = (TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ? UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeys"], TableT["columns"]> : never);
+    }, TableDataUtil.WithTableAliasGeneric<TableT["data"], any>> : (Table<any, any, {
+        [columnName in Extract<keyof TableT["columns"], string>]: (Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>);
+    }, {
+        readonly autoIncrement: any;
+        readonly isGenerated: any;
+        readonly hasDefaultValue: any;
+        readonly isMutable: any;
+        readonly id: any;
+        readonly uniqueKeys: any;
+    }>));
+    type UniqueKeys<TableT extends AnyTable> = (TableT["data"]["uniqueKeys"] extends never ? any : TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ? UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeys"], TableT["columns"]> : never);
     function uniqueKeyAssertDelegate<TableT extends AnyTable>(table: TableT): sd.AssertDelegate<UniqueKeys<TableT>>;
 }

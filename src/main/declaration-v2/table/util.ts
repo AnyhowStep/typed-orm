@@ -1,6 +1,6 @@
 import {Table, AnyTable} from "./table";
 import {JoinCollection} from "../join-collection";
-import {Column} from "../column";
+import {Column, AnyColumn} from "../column";
 import {TableDataUtil} from "../table-data";
 import * as sd from "schema-decorator";
 import {UniqueKeyCollection, UniqueKeyCollectionUtil} from "../unique-key-collection";
@@ -78,28 +78,132 @@ export namespace TableUtil {
     }
 
     export type ToGeneric<TableT extends AnyTable> = (
-        Table<
-            any,
-            any,
-            {
-                [columnName in Extract<keyof TableT["columns"], string>] : (
-                    Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
-                )
-            },
-            TableDataUtil.WithTableAlias<
-                TableT["data"],
-                any
-            >
-        >
+        TableT["data"]["id"] extends AnyColumn ?
+            Table<
+                any,
+                any,
+                {
+                    [columnName in Extract<keyof TableT["columns"], string>] : (
+                        Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
+                    )
+                },
+                TableDataUtil.WithTableAliasGeneric<
+                    TableT["data"],
+                    any
+                >
+            >:
+            (
+                /*Table<
+                    any,
+                    any,
+                    {
+                        [columnName in Extract<keyof TableT["columns"], string>] : (
+                            Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
+                        )
+                    },
+                    TableDataUtil.WithTableAliasGeneric<
+                        {
+                            readonly autoIncrement : undefined|Column<any, any, number>,
+                            readonly isGenerated : TableT["data"]["isGenerated"],
+                            readonly hasDefaultValue : TableT["data"]["hasDefaultValue"],
+                            readonly isMutable : TableT["data"]["isMutable"],
+                            readonly id : undefined|Column<any, any, number>,
+                            readonly uniqueKeys : TableT["data"]["uniqueKeys"],
+                        },
+                        any
+                    >
+                >|
+                Table<
+                    any,
+                    any,
+                    {
+                        [columnName in Extract<keyof TableT["columns"], string>] : (
+                            Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
+                        )
+                    },
+                    TableDataUtil.WithTableAliasGeneric<
+                        {
+                            readonly autoIncrement : undefined,
+                            readonly isGenerated : TableT["data"]["isGenerated"],
+                            readonly hasDefaultValue : TableT["data"]["hasDefaultValue"],
+                            readonly isMutable : TableT["data"]["isMutable"],
+                            readonly id : undefined|Column<any, any, number>,
+                            readonly uniqueKeys : TableT["data"]["uniqueKeys"],
+                        },
+                        any
+                    >
+                >|*/
+                Table<
+                    any,
+                    any,
+                    {
+                        [columnName in Extract<keyof TableT["columns"], string>] : (
+                            Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
+                        )
+                    },
+                    //Had to resort to `any` hack
+                    //Too many constraints confusing the type system
+                    {
+                        readonly autoIncrement : any,
+                        readonly isGenerated : any,
+                        readonly hasDefaultValue : any,
+                        readonly isMutable : any,
+                        readonly id : any,
+                        readonly uniqueKeys : any,
+                    }
+                >/*|
+                Table<
+                    any,
+                    any,
+                    {
+                        [columnName in Extract<keyof TableT["columns"], string>] : (
+                            Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
+                        )
+                    },
+                    TableDataUtil.WithTableAliasGeneric<
+                        {
+                            readonly autoIncrement : undefined|Column<any, any, number>,
+                            readonly isGenerated : TableT["data"]["isGenerated"],
+                            readonly hasDefaultValue : TableT["data"]["hasDefaultValue"],
+                            readonly isMutable : TableT["data"]["isMutable"],
+                            readonly id : undefined|Column<any, any, number>,
+                            readonly uniqueKeys : TableT["data"]["uniqueKeys"],
+                        },
+                        any
+                    >
+                >|
+                Table<
+                    any,
+                    any,
+                    {
+                        [columnName in Extract<keyof TableT["columns"], string>] : (
+                            Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
+                        )
+                    },
+                    TableDataUtil.WithTableAliasGeneric<
+                        {
+                            readonly autoIncrement : undefined,
+                            readonly isGenerated : TableT["data"]["isGenerated"],
+                            readonly hasDefaultValue : TableT["data"]["hasDefaultValue"],
+                            readonly isMutable : TableT["data"]["isMutable"],
+                            readonly id : undefined|Column<any, any, number>,
+                            readonly uniqueKeys : TableT["data"]["uniqueKeys"],
+                        },
+                        any
+                    >
+                >*/
+            )
     );
 
     export type UniqueKeys<TableT extends AnyTable> = (
-        TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ?
-            UniqueKeyCollectionUtil.WithType<
-                TableT["data"]["uniqueKeys"],
-                TableT["columns"]
-            > :
-            never
+        TableT["data"]["uniqueKeys"] extends never ?
+            any :
+            TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ?
+                UniqueKeyCollectionUtil.WithType<
+                    TableT["data"]["uniqueKeys"],
+                    TableT["columns"]
+                > :
+                never
     )
     export function uniqueKeyAssertDelegate<
         TableT extends AnyTable

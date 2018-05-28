@@ -6,6 +6,8 @@ const StringBuilder_1 = require("../StringBuilder");
 const expr_1 = require("../expr");
 const select_builder_1 = require("../select-builder");
 const sd = require("schema-decorator");
+const column_collection_1 = require("../column-collection");
+const e = require("../expression");
 var RawExprUtil;
 (function (RawExprUtil) {
     function isAllowedExprConstant(raw) {
@@ -135,5 +137,35 @@ var RawExprUtil;
         throw new Error(`Expected expression to be non-nullable, but it is`);
     }
     RawExprUtil.assertNonNullable = assertNonNullable;
+    function toEqualityCondition(table, 
+    //TODO Force proper typing?
+    //For now, ignores invalid columns
+    condition) {
+        const assertDelegate = column_collection_1.ColumnCollectionUtil.partialAssertDelegate(table.columns);
+        condition = assertDelegate(`${table.alias} condition`, condition);
+        const comparisonArr = Object.keys(condition)
+            .filter((columnName) => {
+            //Strict equality because we support checking against `null`
+            return (condition[columnName] !== undefined &&
+                table.columns[columnName] !== undefined);
+        })
+            .map((columnName) => {
+            const column = table.columns[columnName];
+            const value = condition[columnName];
+            if (value == null) {
+                return e.isNull(column);
+            }
+            else {
+                return e.eq(column, value);
+            }
+        });
+        if (comparisonArr.length == 0) {
+            return e.TRUE;
+        }
+        else {
+            return e.and(comparisonArr[0], ...comparisonArr.slice(1));
+        }
+    }
+    RawExprUtil.toEqualityCondition = toEqualityCondition;
 })(RawExprUtil = exports.RawExprUtil || (exports.RawExprUtil = {}));
 //# sourceMappingURL=util.js.map

@@ -35,6 +35,7 @@ __export(require("./field-util"));
 __export(require("./insert-select-builder"));
 __export(require("./insert-value-builder"));
 __export(require("./PooledDatabase"));
+__export(require("./select-builder-util"));
 __export(require("./select-builder"));
 __export(require("./StringBuilder"));
 __export(require("./subquery-table"));
