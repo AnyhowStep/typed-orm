@@ -6,7 +6,7 @@ import {AnyAliasedTable} from "./aliased-table";;
 import {SelectDelegate} from "./select-delegate";
 import {Table, AnyTable, TableUtil} from "./table";
 import {RawInsertValueRow, InsertValueBuilder} from "./insert-value-builder";
-import {InsertAssignmentCollectionDelegate, InsertSelectBuilder, RawInsertSelectAssignmentCollection} from "./insert-select-builder";
+import {InsertAssignmentCollectionDelegate, InsertSelectBuilder, InsertSelectBuilderConvenientDelegate} from "./insert-select-builder";
 import {UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate, UpdateResult} from "./update-builder";
 import * as sd from "schema-decorator";
 import {WhereDelegate} from "./where-delegate";
@@ -156,13 +156,15 @@ export class PooledDatabase extends mysql.PooledDatabase {
             }
         );
     };
-    readonly from = <TableT extends AnyAliasedTable>(table : TableT) => {
+    from<TableT extends AnyAliasedTable> (table : TableT) {
         return this.query()
             .from(table);
     };
-    readonly select = <SelectDelegateT extends SelectDelegate<ReturnType<CreateSelectBuilderDelegate>>>(
-        delegate : SelectDelegateT
-    ) => {
+    select<
+        SelectDelegateT extends SelectDelegate<ReturnType<CreateSelectBuilderDelegate>>
+    >(delegate : SelectDelegateT) : (
+        SelectBuilderUtil.Select<ReturnType<CreateSelectBuilderDelegate>, SelectDelegateT>
+    ) {
         return this.query()
             .select(delegate);
     };
@@ -219,6 +221,8 @@ export class PooledDatabase extends mysql.PooledDatabase {
     fetchOneByUniqueKey<TableT extends AnyTable> (
         table : TableT,
         uniqueKey : TableUtil.UniqueKeys<TableT>
+    ) : (
+        Promise<SelectBuilderUtil.AggregatedRow<SelectBuilderUtil.CleanToSelectAll<TableT>>>
     ) {
         return this.selectAllByUniqueKey(table, uniqueKey)
             .fetchOne();
@@ -226,6 +230,8 @@ export class PooledDatabase extends mysql.PooledDatabase {
     fetchZeroOrOneByUniqueKey<TableT extends AnyTable> (
         table : TableT,
         uniqueKey : TableUtil.UniqueKeys<TableT>
+    ) : (
+        Promise<undefined|SelectBuilderUtil.AggregatedRow<SelectBuilderUtil.CleanToSelectAll<TableT>>>
     ) {
         return this.selectAllByUniqueKey(table, uniqueKey)
             .fetchZeroOrOne();
@@ -270,10 +276,12 @@ export class PooledDatabase extends mysql.PooledDatabase {
             .fetchZeroOrOne();
     }
 
-    readonly insertValue = <TableT extends AnyTable>(
+    insertValue<TableT extends AnyTable> (
         table : TableT,
         value : RawInsertValueRow<TableT>
-    ) : InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], "NORMAL"> => {
+    ) : (
+        InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], "NORMAL">
+    ) {
         return new InsertValueBuilder(
             table,
             undefined,
@@ -297,20 +305,13 @@ export class PooledDatabase extends mysql.PooledDatabase {
         return (this.insertValue(table, value) as any)
             .executeAndFetch();
     }
-    readonly insertSelect = <
+    readonly insertSelect : InsertSelectBuilderConvenientDelegate = <
         TableT extends AnyTable,
         SelectBuilderT extends AnySelectBuilder
     > (
         table : TableT,
         selectBuilder : SelectBuilderT,
         delegate : InsertAssignmentCollectionDelegate<TableT, SelectBuilderT>
-    ) : (
-        InsertSelectBuilder<
-            TableT,
-            SelectBuilderT,
-            RawInsertSelectAssignmentCollection<TableT, SelectBuilderT>,
-            "NORMAL"
-        >
     ) => {
         return new InsertSelectBuilder(
             table,

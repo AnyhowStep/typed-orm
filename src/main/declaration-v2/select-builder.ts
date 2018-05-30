@@ -400,7 +400,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Must be called before UNION because it will change the number of
     //columns expected.
     select<
-        SelectDelegateT extends SelectDelegate<SelectBuilder<DataT>>
+        SelectDelegateT extends SelectDelegate<this>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -415,29 +415,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         selectDelegate : SelectDelegateT
     ) : (
-        Error extends SelectCollectionUtil.AppendSelect<
-            DataT["selects"],
-            SelectBuilder<DataT>,
-            SelectDelegateT
-        > ?
-            SelectCollectionUtil.AppendSelect<
-                DataT["selects"],
-                SelectBuilder<DataT>,
-                SelectDelegateT
-            > :
-            (
-                SelectBuilder<ReplaceValue2<
-                    DataT,
-                    "selects",
-                    SelectCollectionUtil.AppendSelectUnsafe<
-                        DataT["selects"],
-                        SelectBuilder<DataT>,
-                        SelectDelegateT
-                    >,
-                    "hasSelect",
-                    true
-                >>
-            )
+        SelectBuilderUtil.Select<this, SelectDelegateT>
     ) {
         this.assertBeforeUnion();
         const selects = SelectCollectionUtil.appendSelect<

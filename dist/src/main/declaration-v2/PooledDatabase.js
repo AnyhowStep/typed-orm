@@ -53,17 +53,6 @@ class PooledDatabase extends mysql.PooledDatabase {
                 sqlCalcFoundRows: false,
             });
         };
-        this.from = (table) => {
-            return this.query()
-                .from(table);
-        };
-        this.select = (delegate) => {
-            return this.query()
-                .select(delegate);
-        };
-        this.insertValue = (table, value) => {
-            return new insert_value_builder_1.InsertValueBuilder(table, undefined, "NORMAL", this).value(value);
-        };
         this.insertSelect = (table, selectBuilder, delegate) => {
             return new insert_select_builder_1.InsertSelectBuilder(table, selectBuilder, undefined, "NORMAL", this).set(delegate);
         };
@@ -96,6 +85,16 @@ class PooledDatabase extends mysql.PooledDatabase {
             return this.transaction(callback);
         }
     }
+    from(table) {
+        return this.query()
+            .from(table);
+    }
+    ;
+    select(delegate) {
+        return this.query()
+            .select(delegate);
+    }
+    ;
     selectAll(arg0, arg1, arg2) {
         if (arg0 instanceof aliased_table_1.AliasedTable) {
             if (arg1 == undefined) {
@@ -159,6 +158,10 @@ class PooledDatabase extends mysql.PooledDatabase {
                 .fetchZeroOrOne();
         });
     }
+    insertValue(table, value) {
+        return new insert_value_builder_1.InsertValueBuilder(table, undefined, "NORMAL", this).value(value);
+    }
+    ;
     insertValueAndFetch(table, value) {
         return __awaiter(this, void 0, void 0, function* () {
             return this.insertValue(table, value)

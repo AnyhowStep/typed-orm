@@ -33,3 +33,5 @@ export declare class InsertSelectBuilder<TableT extends AnyTable, SelectBuilderT
     getQuery(): string;
     printQuery(): this;
 }
+export declare type InsertSelectBuilderConvenient<TableT extends AnyTable, SelectBuilderT extends AnySelectBuilder> = (InsertSelectBuilder<TableT, SelectBuilderT, RawInsertSelectAssignmentCollection<TableT, SelectBuilderT>, "NORMAL">);
+export declare type InsertSelectBuilderConvenientDelegate = (<TableT extends AnyTable, SelectBuilderT extends AnySelectBuilder>(table: TableT, selectBuilder: SelectBuilderT, delegate: InsertAssignmentCollectionDelegate<TableT, SelectBuilderT>) => (InsertSelectBuilderConvenient<TableT, SelectBuilderT>));

@@ -11,6 +11,7 @@ import {AggregateDelegateUtil} from "./aggregate-delegate";
 import {FetchRow} from "./fetch-row";
 import {TypeNarrowDelegate} from "./type-narrow-delegate";
 import {Column} from "./column";
+import {SelectDelegate} from "./select-delegate";
 
 export namespace SelectBuilderUtil {
     export type CleanData = {
@@ -187,6 +188,40 @@ export namespace SelectBuilderUtil {
         ), s.extraData) as any;
     }
 
+    export type Select<
+        SelectBuilderT extends AnySelectBuilder,
+        SelectDelegateT extends SelectDelegate<SelectBuilderT>
+    > = (
+        SelectBuilderT extends SelectBuilder<infer DataT> ?
+            (
+                Error extends SelectCollectionUtil.AppendSelect<
+                    SelectBuilderT["data"]["selects"],
+                    SelectBuilderT,
+                    SelectDelegateT
+                > ?
+                    SelectCollectionUtil.AppendSelect<
+                        SelectBuilderT["data"]["selects"],
+                        SelectBuilderT,
+                        SelectDelegateT
+                    > :
+                    (
+                        SelectBuilder<{
+                            readonly [key in keyof DataT] : (
+                                key extends "selects" ?
+                                SelectCollectionUtil.AppendSelectUnsafe<
+                                    SelectBuilderT["data"]["selects"],
+                                    SelectBuilderT,
+                                    SelectDelegateT
+                                > :
+                                key extends "hasSelect" ?
+                                true :
+                                DataT[key]
+                            )
+                        }>
+                    )
+            ) :
+            never
+    );
     export type SelectAll<SelectBuilderT extends AnySelectBuilder> = (
         SelectBuilderT extends SelectBuilder<infer DataT> ?
             SelectBuilder<{

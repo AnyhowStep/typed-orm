@@ -168,7 +168,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: any;
         parentJoins: any;
     }>, toTable: ToTableT, fromDelegate: FromDelegateT): (Error extends JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ? JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> : SelectBuilder<ReplaceValue<DataT, "joins", JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT>>>);
-    select<SelectDelegateT extends SelectDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{
+    select<SelectDelegateT extends SelectDelegate<this>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: any;
         hasUnion: false;
@@ -177,7 +177,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, selectDelegate: SelectDelegateT): (Error extends SelectCollectionUtil.AppendSelect<DataT["selects"], SelectBuilder<DataT>, SelectDelegateT> ? SelectCollectionUtil.AppendSelect<DataT["selects"], SelectBuilder<DataT>, SelectDelegateT> : (SelectBuilder<ReplaceValue2<DataT, "selects", SelectCollectionUtil.AppendSelectUnsafe<DataT["selects"], SelectBuilder<DataT>, SelectDelegateT>, "hasSelect", true>>));
+    }>, selectDelegate: SelectDelegateT): (SelectBuilderUtil.Select<this, SelectDelegateT>);
     selectAll(this: SelectBuilder<{
         hasSelect: false;
         hasFrom: true;

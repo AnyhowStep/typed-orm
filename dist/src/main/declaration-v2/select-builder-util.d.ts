@@ -10,6 +10,7 @@ import { AggregateDelegateUtil } from "./aggregate-delegate";
 import { FetchRow } from "./fetch-row";
 import { TypeNarrowDelegate } from "./type-narrow-delegate";
 import { Column } from "./column";
+import { SelectDelegate } from "./select-delegate";
 export declare namespace SelectBuilderUtil {
     type CleanData = {
         hasSelect: false;
@@ -37,6 +38,9 @@ export declare namespace SelectBuilderUtil {
         readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT> : DataT[key]);
     }>) : never);
     function doJoin<SelectBuilderT extends AnySelectBuilder, ToTableT extends AnyAliasedTable, FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>>(s: SelectBuilderT, toTable: ToTableT, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>): (DoJoin<SelectBuilderT, ToTableT>);
+    type Select<SelectBuilderT extends AnySelectBuilder, SelectDelegateT extends SelectDelegate<SelectBuilderT>> = (SelectBuilderT extends SelectBuilder<infer DataT> ? (Error extends SelectCollectionUtil.AppendSelect<SelectBuilderT["data"]["selects"], SelectBuilderT, SelectDelegateT> ? SelectCollectionUtil.AppendSelect<SelectBuilderT["data"]["selects"], SelectBuilderT, SelectDelegateT> : (SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "selects" ? SelectCollectionUtil.AppendSelectUnsafe<SelectBuilderT["data"]["selects"], SelectBuilderT, SelectDelegateT> : key extends "hasSelect" ? true : DataT[key]);
+    }>)) : never);
     type SelectAll<SelectBuilderT extends AnySelectBuilder> = (SelectBuilderT extends SelectBuilder<infer DataT> ? SelectBuilder<{
         readonly [key in keyof DataT]: (key extends "selects" ? SelectCollectionUtil.FromJoinCollection<DataT["joins"]> : key extends "hasSelect" ? true : DataT[key]);
     }> : never);

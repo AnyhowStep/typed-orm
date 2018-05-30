@@ -154,58 +154,66 @@ export namespace SelectCollectionUtil {
     export type AppendSelectUnsafe<
         SelectsT extends SelectCollection|undefined,
         SelectBuilderT extends AnySelectBuilder,
-        SelectDelegateT extends SelectDelegate<SelectBuilderT>
+        SelectDelegateT
     > = (
-        SelectsT extends SelectCollection ?
+        SelectDelegateT extends SelectDelegate<SelectBuilderT> ?
             (
-                TupleWConcat<
-                    AnySelect,
-                    SelectsT,
-                    ReturnType<SelectDelegateT>
-                >
+                SelectsT extends SelectCollection ?
+                    (
+                        TupleWConcat<
+                            AnySelect,
+                            SelectsT,
+                            ReturnType<SelectDelegateT>
+                        >
+                    ) :
+                    (
+                        ReturnType<SelectDelegateT>
+                    )
             ) :
-            (
-                ReturnType<SelectDelegateT>
-            )
+            never
     )
 
     export type AppendSelect<
         SelectsT extends SelectCollection|undefined,
         SelectBuilderT extends AnySelectBuilder,
-        SelectDelegateT extends SelectDelegate<SelectBuilderT>
+        SelectDelegateT
     > = (
-        SelectsT extends SelectCollection ?
+        SelectDelegateT extends SelectDelegate<SelectBuilderT> ?
             (
-                true extends HasDuplicate<TupleWConcat<
-                    AnySelect,
-                    SelectsT,
-                    ReturnType<SelectDelegateT>
-                >> ?
-                    invalid.E3<
-                        "Duplicate columns found in SELECT; consider aliasing",
-                        ReturnType<SelectDelegateT>,
-                        SelectDelegateT
-                    > :
-                    TupleWConcat<
-                        AnySelect,
-                        SelectsT,
-                        ReturnType<SelectDelegateT>
-                    >
+                SelectsT extends SelectCollection ?
+                    (
+                        true extends HasDuplicate<TupleWConcat<
+                            AnySelect,
+                            SelectsT,
+                            ReturnType<SelectDelegateT>
+                        >> ?
+                            invalid.E3<
+                                "Duplicate columns found in SELECT; consider aliasing",
+                                ReturnType<SelectDelegateT>,
+                                SelectDelegateT
+                            > :
+                            TupleWConcat<
+                                AnySelect,
+                                SelectsT,
+                                ReturnType<SelectDelegateT>
+                            >
+                    ) :
+                    (
+                        true extends HasDuplicate<ReturnType<SelectDelegateT>> ?
+                            invalid.E3<
+                                "Duplicate columns found in SELECT; consider aliasing",
+                                ReturnType<SelectDelegateT>,
+                                SelectDelegateT
+                            > :
+                            ReturnType<SelectDelegateT>
+                    )
             ) :
-            (
-                true extends HasDuplicate<ReturnType<SelectDelegateT>> ?
-                    invalid.E3<
-                        "Duplicate columns found in SELECT; consider aliasing",
-                        ReturnType<SelectDelegateT>,
-                        SelectDelegateT
-                    > :
-                    ReturnType<SelectDelegateT>
-            )
+            never
     );
     export function appendSelect<
         SelectsT extends SelectCollection|undefined,
         SelectBuilderT extends AnySelectBuilder,
-        SelectDelegateT extends SelectDelegate<SelectBuilderT>
+        SelectDelegateT
     >(
         selects : SelectsT,
         selectBuilder : SelectBuilderT,
@@ -220,7 +228,7 @@ export namespace SelectCollectionUtil {
         if (selects == undefined) {
             const result = SelectDelegateUtil.execute(
                 selectBuilder,
-                selectDelegate
+                selectDelegate as any
             );
             assertNonDuplicateColumn(result);
             return result as any;
@@ -231,7 +239,7 @@ export namespace SelectCollectionUtil {
                 selects as any,
                 SelectDelegateUtil.execute(
                     selectBuilder,
-                    selectDelegate
+                    selectDelegate as any
                 )
             );
             assertNonDuplicateColumn(result);
