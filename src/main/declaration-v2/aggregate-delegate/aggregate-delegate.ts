@@ -1,5 +1,5 @@
-import {AnyFetchRow} from "../fetch-row";
+//import {AnyFetchRow} from "../fetch-row";
 
-export type AggregateDelegate<FetchRowT extends AnyFetchRow> = (
+export type AggregateDelegate<FetchRowT> = (
     (row : FetchRowT) => any|Promise<any>
 );

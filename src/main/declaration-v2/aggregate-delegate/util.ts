@@ -1,9 +1,9 @@
 import {AggregateDelegate} from "./aggregate-delegate";
-import {AnyFetchRow} from "../fetch-row";
+//import {AnyFetchRow} from "../fetch-row";
 
 export namespace AggregateDelegateUtil {
     export type Aggregate<
-        FetchRowT extends AnyFetchRow,
+        FetchRowT,
         AggregateDelegateT extends AggregateDelegate<FetchRowT>|undefined
     > = (
         AggregateDelegateT extends AggregateDelegate<FetchRowT> ?
@@ -11,7 +11,7 @@ export namespace AggregateDelegateUtil {
             FetchRowT
     );
     export type AggregatedRow<
-        FetchRowT extends AnyFetchRow,
+        FetchRowT,
         AggregateDelegateT extends AggregateDelegate<FetchRowT>|undefined
     > = (
         Aggregate<FetchRowT, AggregateDelegateT> extends Promise<infer R> ?
@@ -19,7 +19,7 @@ export namespace AggregateDelegateUtil {
             Aggregate<FetchRowT, AggregateDelegateT>
     );
     export function aggregate<
-        FetchRowT extends AnyFetchRow,
+        FetchRowT,
         AggregateDelegateT extends AggregateDelegate<FetchRowT>|undefined
     > (
         fetchRow : FetchRowT,

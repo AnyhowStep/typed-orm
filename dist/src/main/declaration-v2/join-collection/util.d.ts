@@ -45,7 +45,7 @@ export declare namespace JoinCollectionUtil {
         readonly [columnName: string]: Column<string, string, any>;
     }>, {
         readonly [columnName: string]: Column<string, string, any>;
-    }, boolean>>(tuple: TupleT, next: NextT) => { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+    }, boolean>>(tuple: TupleT, next: NextT) => { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
         "19": any;
     } ? "20" : TupleT extends {
         "18": any;
@@ -131,13 +131,13 @@ export declare namespace JoinCollectionUtil {
         } ? 3 : TupleT extends {
             "0": any;
         } ? 2 : never;
-    } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends (infer TypeT)[] & {
+    } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends (infer TypeT)[] & {
         "0": infer TypeT;
     } ? TypeT extends Join<AliasedTable<string, string, {
         readonly [columnName: string]: Column<string, string, any>;
     }>, {
         readonly [columnName: string]: Column<string, string, any>;
-    }, boolean> ? { [index in "0" | Exclude<Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values"> | Exclude<TupleT extends {
+    }, boolean> ? { [index in "0" | Exclude<Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values"> | Exclude<TupleT extends {
         "19": any;
     } ? "20" : TupleT extends {
         "18": any;
@@ -177,7 +177,7 @@ export declare namespace JoinCollectionUtil {
         "1": any;
     } ? "2" : TupleT extends {
         "0": any;
-    } ? "1" : never, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values"> | Exclude<keyof (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]), number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: ({ [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+    } ? "1" : never, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values"> | Exclude<keyof (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]), number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: ({ [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
         "19": any;
     } ? "20" : TupleT extends {
         "18": any;
@@ -263,8 +263,8 @@ export declare namespace JoinCollectionUtil {
         } ? 3 : TupleT extends {
             "0": any;
         } ? 2 : never;
-    } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]))[index]; } & {
-        "0": ({ [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+    } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]))[index]; } & {
+        "0": ({ [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -350,9 +350,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]))[0];
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]))[0];
     } & {
-        length: { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        length: { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -438,9 +438,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
             "20": any;
-        } ? 21 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } ? 21 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -526,97 +526,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
             "19": any;
-        } ? 20 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
-            "19": any;
-        } ? "20" : TupleT extends {
-            "18": any;
-        } ? "19" : TupleT extends {
-            "17": any;
-        } ? "18" : TupleT extends {
-            "16": any;
-        } ? "17" : TupleT extends {
-            "15": any;
-        } ? "16" : TupleT extends {
-            "14": any;
-        } ? "15" : TupleT extends {
-            "13": any;
-        } ? "14" : TupleT extends {
-            "12": any;
-        } ? "13" : TupleT extends {
-            "11": any;
-        } ? "12" : TupleT extends {
-            "10": any;
-        } ? "11" : TupleT extends {
-            "9": any;
-        } ? "10" : TupleT extends {
-            "8": any;
-        } ? "9" : TupleT extends {
-            "7": any;
-        } ? "8" : TupleT extends {
-            "6": any;
-        } ? "7" : TupleT extends {
-            "5": any;
-        } ? "6" : TupleT extends {
-            "4": any;
-        } ? "5" : TupleT extends {
-            "3": any;
-        } ? "4" : TupleT extends {
-            "2": any;
-        } ? "3" : TupleT extends {
-            "1": any;
-        } ? "2" : TupleT extends {
-            "0": any;
-        } ? "1" : never]: NextT; } & {
-            "0": TupleT[0];
-        } & {
-            length: TupleT extends {
-                "20": any;
-            } ? 22 : TupleT extends {
-                "19": any;
-            } ? 21 : TupleT extends {
-                "18": any;
-            } ? 20 : TupleT extends {
-                "17": any;
-            } ? 19 : TupleT extends {
-                "16": any;
-            } ? 18 : TupleT extends {
-                "15": any;
-            } ? 17 : TupleT extends {
-                "14": any;
-            } ? 16 : TupleT extends {
-                "13": any;
-            } ? 15 : TupleT extends {
-                "12": any;
-            } ? 14 : TupleT extends {
-                "11": any;
-            } ? 13 : TupleT extends {
-                "10": any;
-            } ? 12 : TupleT extends {
-                "9": any;
-            } ? 11 : TupleT extends {
-                "8": any;
-            } ? 10 : TupleT extends {
-                "7": any;
-            } ? 9 : TupleT extends {
-                "6": any;
-            } ? 8 : TupleT extends {
-                "5": any;
-            } ? 7 : TupleT extends {
-                "4": any;
-            } ? 6 : TupleT extends {
-                "3": any;
-            } ? 5 : TupleT extends {
-                "2": any;
-            } ? 4 : TupleT extends {
-                "1": any;
-            } ? 3 : TupleT extends {
-                "0": any;
-            } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "18": any;
-        } ? 19 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } ? 20 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -702,9 +614,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "17": any;
-        } ? 18 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "18": any;
+        } ? 19 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -790,9 +702,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "16": any;
-        } ? 17 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "17": any;
+        } ? 18 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -878,9 +790,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "15": any;
-        } ? 16 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "16": any;
+        } ? 17 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -966,9 +878,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "14": any;
-        } ? 15 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "15": any;
+        } ? 16 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -1054,9 +966,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "13": any;
-        } ? 14 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "14": any;
+        } ? 15 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -1142,9 +1054,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "12": any;
-        } ? 13 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "13": any;
+        } ? 14 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -1230,9 +1142,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "11": any;
-        } ? 12 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "12": any;
+        } ? 13 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -1318,9 +1230,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "10": any;
-        } ? 11 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "11": any;
+        } ? 12 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -1406,9 +1318,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "9": any;
-        } ? 10 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "10": any;
+        } ? 11 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -1494,9 +1406,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "8": any;
-        } ? 9 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "9": any;
+        } ? 10 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -1582,9 +1494,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "7": any;
-        } ? 8 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "8": any;
+        } ? 9 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -1670,9 +1582,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "6": any;
-        } ? 7 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "7": any;
+        } ? 8 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -1758,9 +1670,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "5": any;
-        } ? 6 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "6": any;
+        } ? 7 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -1846,9 +1758,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "4": any;
-        } ? 5 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "5": any;
+        } ? 6 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -1934,9 +1846,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "3": any;
-        } ? 4 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "4": any;
+        } ? 5 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -2022,9 +1934,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "2": any;
-        } ? 3 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "3": any;
+        } ? 4 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -2110,9 +2022,9 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
-            "1": any;
-        } ? 2 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "2": any;
+        } ? 3 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
             "19": any;
         } ? "20" : TupleT extends {
             "18": any;
@@ -2198,7 +2110,95 @@ export declare namespace JoinCollectionUtil {
             } ? 3 : TupleT extends {
                 "0": any;
             } ? 2 : never;
-        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "length" | "toString" | "toLocaleString" | "push" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
+            "1": any;
+        } ? 2 : { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index]; } & { [index in TupleT extends {
+            "19": any;
+        } ? "20" : TupleT extends {
+            "18": any;
+        } ? "19" : TupleT extends {
+            "17": any;
+        } ? "18" : TupleT extends {
+            "16": any;
+        } ? "17" : TupleT extends {
+            "15": any;
+        } ? "16" : TupleT extends {
+            "14": any;
+        } ? "15" : TupleT extends {
+            "13": any;
+        } ? "14" : TupleT extends {
+            "12": any;
+        } ? "13" : TupleT extends {
+            "11": any;
+        } ? "12" : TupleT extends {
+            "10": any;
+        } ? "11" : TupleT extends {
+            "9": any;
+        } ? "10" : TupleT extends {
+            "8": any;
+        } ? "9" : TupleT extends {
+            "7": any;
+        } ? "8" : TupleT extends {
+            "6": any;
+        } ? "7" : TupleT extends {
+            "5": any;
+        } ? "6" : TupleT extends {
+            "4": any;
+        } ? "5" : TupleT extends {
+            "3": any;
+        } ? "4" : TupleT extends {
+            "2": any;
+        } ? "3" : TupleT extends {
+            "1": any;
+        } ? "2" : TupleT extends {
+            "0": any;
+        } ? "1" : never]: NextT; } & {
+            "0": TupleT[0];
+        } & {
+            length: TupleT extends {
+                "20": any;
+            } ? 22 : TupleT extends {
+                "19": any;
+            } ? 21 : TupleT extends {
+                "18": any;
+            } ? 20 : TupleT extends {
+                "17": any;
+            } ? 19 : TupleT extends {
+                "16": any;
+            } ? 18 : TupleT extends {
+                "15": any;
+            } ? 17 : TupleT extends {
+                "14": any;
+            } ? 16 : TupleT extends {
+                "13": any;
+            } ? 15 : TupleT extends {
+                "12": any;
+            } ? 14 : TupleT extends {
+                "11": any;
+            } ? 13 : TupleT extends {
+                "10": any;
+            } ? 12 : TupleT extends {
+                "9": any;
+            } ? 11 : TupleT extends {
+                "8": any;
+            } ? 10 : TupleT extends {
+                "7": any;
+            } ? 9 : TupleT extends {
+                "6": any;
+            } ? 8 : TupleT extends {
+                "5": any;
+            } ? 7 : TupleT extends {
+                "4": any;
+            } ? 6 : TupleT extends {
+                "3": any;
+            } ? 5 : TupleT extends {
+                "2": any;
+            } ? 4 : TupleT extends {
+                "1": any;
+            } ? 3 : TupleT extends {
+                "0": any;
+            } ? 2 : never;
+        } & (NextT extends TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">] ? TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">][] : (NextT | TupleT[Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">])[]) extends {
             "0": any;
         } ? 1 : never;
     } & Join<AliasedTable<string, string, {
