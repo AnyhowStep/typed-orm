@@ -37,6 +37,7 @@ export * from "./insert-value-builder";
 export * from "./invalid";
 export * from "./math";
 export * from "./obj-util";
+export * from "./polymorphic-insert-value-and-fetch";
 export * from "./PooledDatabase";
 export * from "./querify";
 export * from "./select-builder-util";
