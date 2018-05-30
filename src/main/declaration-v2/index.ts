@@ -11,6 +11,8 @@ export * from "./fetch-value";
 export * from "./group-by";
 export * from "./group-by-delegate";
 export * from "./having-delegate";
+import * as informationSchema from "./information-schema";
+export {informationSchema};
 export * from "./join";
 export * from "./join-collection";
 export * from "./join-from-delegate";
@@ -29,6 +31,8 @@ export * from "./table-data";
 export * from "./table-parent-collection";
 export * from "./type-narrow-delegate";
 export * from "./type-widen-delegate";
+export * from "./unique-key";
+export * from "./unique-key-collection";
 export * from "./where-delegate";
 
 export * from "./delete-builder";

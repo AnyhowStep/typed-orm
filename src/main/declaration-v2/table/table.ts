@@ -15,6 +15,7 @@ import {
 //import {Column} from "../column";
 import * as sd from "schema-decorator";
 import {TableUtil} from "./util";
+import { UniqueKeyCollectionUtil, UniqueKeyCollection } from "../unique-key-collection";
 
 export class Table<
     AliasT extends string,
@@ -66,4 +67,9 @@ export type AnyTable = (
 
 export type TableRow<TableT extends AnyTable> = (
     ColumnCollectionUtil.Type<TableT["columns"]>
+);
+export type UniqueKeys<TableT extends AnyTable> = (
+    TableT["data"]["uniqueKeyCollection"] extends UniqueKeyCollection ?
+        UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeyCollection"], TableT["columns"]> :
+        never
 );
