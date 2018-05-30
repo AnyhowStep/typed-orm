@@ -51,10 +51,10 @@ export class Table<
         );
     }
 
-    private uniqueKeyAssertDelegate : sd.AssertDelegate<TableUtil.UniqueKeys<this>>|undefined;
-    getUniqueKeyAssertDelegate () : sd.AssertDelegate<TableUtil.UniqueKeys<this>> {
+    private uniqueKeyAssertDelegate : sd.AssertDelegate<UniqueKeys<this>>|undefined;
+    getUniqueKeyAssertDelegate () : sd.AssertDelegate<UniqueKeys<this>> {
         if (this.uniqueKeyAssertDelegate == undefined) {
-            this.uniqueKeyAssertDelegate = TableUtil.uniqueKeyAssertDelegate(this);
+            this.uniqueKeyAssertDelegate = TableUtil.uniqueKeyAssertDelegate(this as any);
         }
         return this.uniqueKeyAssertDelegate;
     }
