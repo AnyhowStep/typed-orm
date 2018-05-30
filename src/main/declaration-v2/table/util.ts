@@ -102,46 +102,6 @@ export namespace TableUtil {
                 >
             >:
             (
-                /*Table<
-                    any,
-                    any,
-                    {
-                        [columnName in Extract<keyof TableT["columns"], string>] : (
-                            Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
-                        )
-                    },
-                    TableDataUtil.WithTableAliasGeneric<
-                        {
-                            readonly autoIncrement : undefined|Column<any, any, number>,
-                            readonly isGenerated : TableT["data"]["isGenerated"],
-                            readonly hasDefaultValue : TableT["data"]["hasDefaultValue"],
-                            readonly isMutable : TableT["data"]["isMutable"],
-                            readonly id : undefined|Column<any, any, number>,
-                            readonly uniqueKeys : TableT["data"]["uniqueKeys"],
-                        },
-                        any
-                    >
-                >|
-                Table<
-                    any,
-                    any,
-                    {
-                        [columnName in Extract<keyof TableT["columns"], string>] : (
-                            Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
-                        )
-                    },
-                    TableDataUtil.WithTableAliasGeneric<
-                        {
-                            readonly autoIncrement : undefined,
-                            readonly isGenerated : TableT["data"]["isGenerated"],
-                            readonly hasDefaultValue : TableT["data"]["hasDefaultValue"],
-                            readonly isMutable : TableT["data"]["isMutable"],
-                            readonly id : undefined|Column<any, any, number>,
-                            readonly uniqueKeys : TableT["data"]["uniqueKeys"],
-                        },
-                        any
-                    >
-                >|*/
                 Table<
                     any,
                     any,
@@ -161,47 +121,7 @@ export namespace TableUtil {
                         readonly uniqueKeys : any,
                         readonly parentTables : any,
                     }
-                >/*|
-                Table<
-                    any,
-                    any,
-                    {
-                        [columnName in Extract<keyof TableT["columns"], string>] : (
-                            Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
-                        )
-                    },
-                    TableDataUtil.WithTableAliasGeneric<
-                        {
-                            readonly autoIncrement : undefined|Column<any, any, number>,
-                            readonly isGenerated : TableT["data"]["isGenerated"],
-                            readonly hasDefaultValue : TableT["data"]["hasDefaultValue"],
-                            readonly isMutable : TableT["data"]["isMutable"],
-                            readonly id : undefined|Column<any, any, number>,
-                            readonly uniqueKeys : TableT["data"]["uniqueKeys"],
-                        },
-                        any
-                    >
-                >|
-                Table<
-                    any,
-                    any,
-                    {
-                        [columnName in Extract<keyof TableT["columns"], string>] : (
-                            Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
-                        )
-                    },
-                    TableDataUtil.WithTableAliasGeneric<
-                        {
-                            readonly autoIncrement : undefined,
-                            readonly isGenerated : TableT["data"]["isGenerated"],
-                            readonly hasDefaultValue : TableT["data"]["hasDefaultValue"],
-                            readonly isMutable : TableT["data"]["isMutable"],
-                            readonly id : undefined|Column<any, any, number>,
-                            readonly uniqueKeys : TableT["data"]["uniqueKeys"],
-                        },
-                        any
-                    >
-                >*/
+                >
             )
     );
 
