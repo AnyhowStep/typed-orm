@@ -224,10 +224,10 @@ export namespace SelectBuilderUtil {
             (
                 AggregateDelegateUtil.AggregatedRow<
                     FetchRow<
-                        DataT["joins"],
-                        SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+                        SelectBuilderT["data"]["joins"],
+                        SelectCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["selects"]>
                     >,
-                    DataT["aggregateDelegate"]
+                    SelectBuilderT["data"]["aggregateDelegate"]
                 >
             ) :
             never

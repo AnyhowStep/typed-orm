@@ -41,7 +41,7 @@ export declare namespace SelectBuilderUtil {
         readonly [key in keyof DataT]: (key extends "selects" ? SelectCollectionUtil.FromJoinCollection<DataT["joins"]> : key extends "hasSelect" ? true : DataT[key]);
     }> : never);
     function selectAll<SelectBuilderT extends AnySelectBuilder>(s: SelectBuilderT): (SelectAll<SelectBuilderT>);
-    type AggregatedRow<SelectBuilderT extends AnySelectBuilder> = (SelectBuilderT extends SelectBuilder<infer DataT> ? (AggregateDelegateUtil.AggregatedRow<FetchRow<DataT["joins"], SelectCollectionUtil.ToColumnReferences<DataT["selects"]>>, DataT["aggregateDelegate"]>) : never);
+    type AggregatedRow<SelectBuilderT extends AnySelectBuilder> = (SelectBuilderT extends SelectBuilder<infer DataT> ? (AggregateDelegateUtil.AggregatedRow<FetchRow<SelectBuilderT["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["selects"]>>, SelectBuilderT["data"]["aggregateDelegate"]>) : never);
     type WhereIsNotNull<SelectBuilderT extends AnySelectBuilder, TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT["data"]["joins"]>> = (SelectBuilderT extends SelectBuilder<infer DataT> ? (ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ? SelectBuilder<{
         readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.ReplaceColumnType<DataT["joins"], TableAliasT, ColumnNameT, Exclude<TypeT, null | undefined>> : key extends "selects" ? SelectCollectionUtil.ReplaceSelectType<DataT["selects"], TableAliasT, ColumnNameT, Exclude<TypeT, null | undefined>> : DataT[key]);
     }> : (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)) : never);

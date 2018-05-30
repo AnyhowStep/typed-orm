@@ -6,7 +6,7 @@ export namespace AggregateDelegateUtil {
         FetchRowT,
         AggregateDelegateT extends AggregateDelegate<FetchRowT>|undefined
     > = (
-        AggregateDelegateT extends AggregateDelegate<FetchRowT> ?
+        AggregateDelegateT extends AggregateDelegate<any> ?
             ReturnType<AggregateDelegateT> :
             FetchRowT
     );
