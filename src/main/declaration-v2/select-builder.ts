@@ -535,8 +535,8 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     aggregate<
         AggregateDelegateT extends undefined|AggregateDelegate<
             FetchRow<
-                DataT["joins"],
-                SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+                this["data"]["joins"],
+                SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>
             >
         >
     > (

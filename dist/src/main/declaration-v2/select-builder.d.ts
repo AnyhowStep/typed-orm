@@ -202,7 +202,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
     }> : Error extends JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> ? JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> : SelectBuilder<{
         readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB> : DataT[key]);
     }>);
-    aggregate<AggregateDelegateT extends undefined | AggregateDelegate<FetchRow<DataT["joins"], SelectCollectionUtil.ToColumnReferences<DataT["selects"]>>>>(this: SelectBuilder<{
+    aggregate<AggregateDelegateT extends undefined | AggregateDelegate<FetchRow<this["data"]["joins"], SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>>>>(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
         hasUnion: any;
