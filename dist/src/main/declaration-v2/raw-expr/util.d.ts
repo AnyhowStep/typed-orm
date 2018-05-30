@@ -8,6 +8,7 @@ import * as sd from "schema-decorator";
 import { AnyAliasedTable } from "../aliased-table";
 import { ColumnCollectionUtil } from "../column-collection";
 import { ColumnReferencesUtil } from "../column-references";
+import { AnyTable, UniqueKeys } from "../table";
 export declare namespace RawExprUtil {
     function isAllowedExprConstant(raw: AnyRawExpr): raw is AllowedExprConstant;
     function querify(raw: RawExpr<any>): string;
@@ -27,4 +28,7 @@ export declare namespace RawExprUtil {
     function toEqualityCondition<TableT extends AnyAliasedTable>(table: TableT, condition: {
         [otherColumnName: string]: any;
     }): (Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, boolean>);
+    function toUniqueKeyEqualityCondition<TableT extends AnyTable, ConditionT extends UniqueKeys<TableT>>(table: TableT, rawCondition: ConditionT): (Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, boolean>);
 }
+export declare const toEqualityCondition: typeof RawExprUtil.toEqualityCondition;
+export declare const toUniqueKeyEqualityCondition: typeof RawExprUtil.toUniqueKeyEqualityCondition;

@@ -167,5 +167,13 @@ var RawExprUtil;
         }
     }
     RawExprUtil.toEqualityCondition = toEqualityCondition;
+    function toUniqueKeyEqualityCondition(table, rawCondition) {
+        const condition = table.getUniqueKeyAssertDelegate()(`${table.alias} condition`, rawCondition);
+        return toEqualityCondition(table, condition);
+    }
+    RawExprUtil.toUniqueKeyEqualityCondition = toUniqueKeyEqualityCondition;
 })(RawExprUtil = exports.RawExprUtil || (exports.RawExprUtil = {}));
+//Convenience exports
+exports.toEqualityCondition = RawExprUtil.toEqualityCondition;
+exports.toUniqueKeyEqualityCondition = RawExprUtil.toUniqueKeyEqualityCondition;
 //# sourceMappingURL=util.js.map

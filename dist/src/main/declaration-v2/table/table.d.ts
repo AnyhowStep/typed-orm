@@ -12,4 +12,4 @@ export declare class Table<AliasT extends string, NameT extends string, ColumnCo
 }
 export declare type AnyTable = (Table<string, string, ColumnCollection, any>);
 export declare type TableRow<TableT extends AnyTable> = (ColumnCollectionUtil.Type<TableT["columns"]>);
-export declare type UniqueKeys<TableT extends AnyTable> = (TableT["data"]["uniqueKeyCollection"] extends UniqueKeyCollection ? UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeyCollection"], TableT["columns"]> : never);
+export declare type UniqueKeys<TableT extends AnyTable> = (TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ? UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeys"], TableT["columns"]> : never);

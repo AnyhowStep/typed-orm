@@ -69,7 +69,7 @@ export type TableRow<TableT extends AnyTable> = (
     ColumnCollectionUtil.Type<TableT["columns"]>
 );
 export type UniqueKeys<TableT extends AnyTable> = (
-    TableT["data"]["uniqueKeyCollection"] extends UniqueKeyCollection ?
-        UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeyCollection"], TableT["columns"]> :
+    TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ?
+        UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeys"], TableT["columns"]> :
         never
 );
