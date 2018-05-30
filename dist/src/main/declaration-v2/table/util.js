@@ -8,10 +8,14 @@ var TableUtil;
     function validateInsertRow(table, row) {
         for (let name in row) {
             if (!table.columns.hasOwnProperty(name)) {
-                throw new Error(`Unexpected column ${name}; it does not exist on table ${table.alias}`);
+                //throw new Error(`Unexpected column ${name}; it does not exist on table ${table.alias}`);
+                //Silently ignore extra columns
+                continue;
             }
             if (table.data.isGenerated.hasOwnProperty(name)) {
-                throw new Error(`Unexpected column ${name}; it is a generated column on table ${table.alias}, you cannot specify a value for it`);
+                //throw new Error(`Unexpected column ${name}; it is a generated column on table ${table.alias}, you cannot specify a value for it`);
+                //Silently ignore extra columns
+                continue;
             }
             const value = row[name];
             if (value === undefined && !table.data.hasDefaultValue.hasOwnProperty(name)) {

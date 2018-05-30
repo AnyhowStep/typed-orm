@@ -88,6 +88,7 @@ export declare const __DUMMY_FROM_TABLE: Table<"__DUMMY_FROM_TABLE", "__DUMMY_FR
     isMutable: {};
     id: undefined;
     uniqueKeys: undefined;
+    parentTables: undefined;
 }>;
 export declare class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     readonly data: DataT;

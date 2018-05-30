@@ -364,9 +364,7 @@ export namespace ColumnCollectionUtil {
         }[Extract<keyof ColumnCollectionT, string>]
     );
     export type ColumnNames<ColumnCollectionT extends ColumnCollection> = (
-        {
-            [name in Extract<keyof ColumnCollectionT, string>]: name
-        }[Extract<keyof ColumnCollectionT, string>]
+        Extract<keyof ColumnCollectionT, string>
     );
     export function nullableColumnNames<ColumnCollectionT extends ColumnCollection> (
         columnCollection : ColumnCollectionT

@@ -7,6 +7,8 @@ export declare class AliasedTable<AliasT extends string, NameT extends string, C
     readonly columns: ColumnCollectionT;
     readonly query: string;
     constructor(alias: AliasT, name: NameT, columns: ColumnCollectionT);
+    private __hackedDatabaseName;
+    setHackedDatabaseName(__hackedDatabaseName: string): this;
     querify(sb: StringBuilder): void;
 }
 export declare type AnyAliasedTable = AliasedTable<string, string, ColumnCollection>;

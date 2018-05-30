@@ -48,9 +48,7 @@ export declare namespace ColumnCollectionUtil {
     type NullableColumnNames<ColumnCollectionT extends ColumnCollection> = ({
         [name in Extract<keyof ColumnCollectionT, string>]: (null extends ReturnType<ColumnCollectionT[name]["assertDelegate"]> ? name : never);
     }[Extract<keyof ColumnCollectionT, string>]);
-    type ColumnNames<ColumnCollectionT extends ColumnCollection> = ({
-        [name in Extract<keyof ColumnCollectionT, string>]: name;
-    }[Extract<keyof ColumnCollectionT, string>]);
+    type ColumnNames<ColumnCollectionT extends ColumnCollection> = (Extract<keyof ColumnCollectionT, string>);
     function nullableColumnNames<ColumnCollectionT extends ColumnCollection>(columnCollection: ColumnCollectionT): NullableColumnNames<ColumnCollectionT>[];
     function columnNames<ColumnCollectionT extends ColumnCollection>(columnCollection: ColumnCollectionT): ColumnNames<ColumnCollectionT>[];
     type Type<ColumnCollectionT extends ColumnCollection> = ({

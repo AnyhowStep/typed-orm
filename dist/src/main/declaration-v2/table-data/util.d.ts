@@ -1,9 +1,12 @@
 import { TableData, AutoIncrementDelegate, IsGeneratedDelegate, HasDefaultValueDelegate, IsMutableDelegate, AddUniqueKeyDelegate, IdDelegate } from "./table-data";
 import { ReadonlyRemoveKey, ReadonlyReplaceValue, ReadonlyReplaceValue3 } from "../obj-util";
 import { ColumnCollection } from "../column-collection";
-import { Tuple, TupleKeys, TupleWPush, TupleWiden } from "../tuple";
+import { Tuple, TupleKeys, TupleWPush, TupleWiden, TupleWConcat } from "../tuple";
 import { Column, AnyColumn, ColumnUtil } from "../column";
 import { UniqueKey } from "../unique-key";
+import { AnyTable } from "../table";
+import { UniqueKeyCollection, UniqueKeyCollectionUtil } from "../unique-key-collection";
+import { TableParentCollection } from "../table-parent-collection";
 export declare namespace TableDataUtil {
     type AutoIncrement<DataT extends TableData, ColumnCollectionT extends ColumnCollection, AutoIncrementDelegateT extends AutoIncrementDelegate<ColumnCollectionT>> = ({
         readonly [key in keyof DataT]: (key extends "autoIncrement" ? ReturnType<AutoIncrementDelegateT> : key extends "isGenerated" ? {
@@ -32,6 +35,7 @@ export declare namespace TableDataUtil {
         };
         readonly id: DataT["id"];
         readonly uniqueKeys: DataT["uniqueKeys"];
+        readonly parentTables: DataT["parentTables"];
     } : never);
     function isGenerated<DataT extends TableData, ColumnCollectionT extends ColumnCollection, IsGeneratedDelegateT extends IsGeneratedDelegate<DataT, ColumnCollectionT>>(data: DataT, columnCollection: ColumnCollectionT, delegate: IsGeneratedDelegateT): (IsGenerated<DataT, ColumnCollectionT, IsGeneratedDelegateT>);
     type HasDefaultValue<DataT extends TableData, ColumnCollectionT extends ColumnCollection, HasDefaultValueDelegateT extends HasDefaultValueDelegate<DataT, ColumnCollectionT>> = (ReturnType<HasDefaultValueDelegateT>[TupleKeys<ReturnType<HasDefaultValueDelegateT>>] extends AnyColumn ? ReadonlyReplaceValue<DataT, "hasDefaultValue", DataT["hasDefaultValue"] & {
@@ -70,6 +74,7 @@ export declare namespace TableDataUtil {
         readonly isMutable: DataT["isMutable"];
         readonly id: (DataT["id"] extends AnyColumn ? ColumnUtil.WithTableAlias<DataT["id"], TableAliasT> : DataT["id"] extends undefined ? undefined : DataT["id"] extends AnyColumn | undefined ? ColumnUtil.WithTableAlias<Extract<DataT["id"], AnyColumn>, TableAliasT> | undefined : undefined);
         readonly uniqueKeys: DataT["uniqueKeys"];
+        readonly parentTables: DataT["parentTables"];
     });
     type WithTableAlias<DataT extends TableData, TableAliasT extends string> = ({
         readonly autoIncrement: (DataT["autoIncrement"] extends AnyColumn ? ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> : undefined);
@@ -78,6 +83,17 @@ export declare namespace TableDataUtil {
         readonly isMutable: DataT["isMutable"];
         readonly id: (DataT["id"] extends AnyColumn ? ColumnUtil.WithTableAlias<DataT["id"], TableAliasT> : undefined);
         readonly uniqueKeys: DataT["uniqueKeys"];
+        readonly parentTables: DataT["parentTables"];
     });
     function withTableAlias<DataT extends TableData, TableAliasT extends string>(data: DataT, tableAlias: TableAliasT): (WithTableAlias<DataT, TableAliasT>);
+    type AddParentTable<DataT extends TableData, ParentT extends AnyTable> = (DataT["uniqueKeys"] extends UniqueKeyCollection ? (ParentT["data"]["uniqueKeys"] extends UniqueKeyCollection ? (UniqueKeyCollectionUtil.CommonUniqueKeys<DataT["uniqueKeys"], ParentT["data"]["uniqueKeys"]> extends never ? never : (DataT["parentTables"] extends TableParentCollection ? (ParentT["data"]["parentTables"] extends TableParentCollection ? ({
+        [key in keyof DataT]: (key extends "parentTables" ? TupleWPush<AnyTable, TupleWConcat<AnyTable, DataT["parentTables"], ParentT["data"]["parentTables"]>, ParentT> : DataT[key]);
+    }) : ({
+        [key in keyof DataT]: (key extends "parentTables" ? TupleWPush<AnyTable, DataT["parentTables"], ParentT> : DataT[key]);
+    })) : (ParentT["data"]["parentTables"] extends TableParentCollection ? ({
+        [key in keyof DataT]: (key extends "parentTables" ? TupleWPush<AnyTable, ParentT["data"]["parentTables"], ParentT> : DataT[key]);
+    }) : ({
+        [key in keyof DataT]: (key extends "parentTables" ? TupleWiden<[ParentT], AnyTable> : DataT[key]);
+    })))) : never) : never);
+    function addParentTable<DataT extends TableData, ParentT extends AnyTable>(data: DataT, parent: ParentT): any;
 }

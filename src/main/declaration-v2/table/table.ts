@@ -59,6 +59,7 @@ export class Table<
     }
 }
 
+//TODO, make this <string, string, ColumnCollection, TableData>
 export type AnyTable = (
     Table<string, string, ColumnCollection, any>
 );

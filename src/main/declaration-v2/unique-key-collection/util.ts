@@ -32,4 +32,25 @@ export namespace UniqueKeyCollectionUtil {
             })
         ) as any;
     }
+
+    export type UniqueKeys<
+        UniqueKeyCollectionT extends UniqueKeyCollection
+    > = (
+        {
+            [index in TupleKeys<UniqueKeyCollectionT>] : (
+                UniqueKeyCollectionT[index] extends UniqueKey ?
+                    UniqueKeyCollectionT[index] :
+                    never
+            )
+        }[TupleKeys<UniqueKeyCollectionT>]
+    );
+    export type CommonUniqueKeys<
+        CollectionA extends UniqueKeyCollection,
+        CollectionB extends UniqueKeyCollection
+    > = (
+        Extract<
+            UniqueKeys<CollectionA>,
+            UniqueKeys<CollectionB>
+        >
+    );
 }

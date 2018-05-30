@@ -14,10 +14,13 @@ import {DeleteBuilder, DeleteTables} from "./delete-builder";
 import {SelectBuilderUtil} from "./select-builder-util";
 import {FetchRow} from "./fetch-row";
 import {SelectCollectionUtil} from "./select-collection";
+import {UniqueKeyCollection} from "./unique-key-collection";
+import * as informationSchema from "./information-schema";
+import {PolymorphicRawInsertValueRow, polymorphicInsertValueAndFetch} from "./polymorphic-insert-value-and-fetch";
 
 import {AliasedTable} from "./aliased-table";;
 import {AliasedExpr} from "./aliased-expr";
-import {Column} from "./column";
+import {Column, AnyColumn} from "./column";
 import {Expr} from "./expr";
 import {TableData} from "./table-data";
 AliasedTable;
@@ -272,7 +275,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         ).value(value);
     };
     async insertValueAndFetch<
-        TableT extends AnyTable & { data : { autoIncrement : Column<any, any, number> } }
+        TableT extends AnyTable & { data : { uniqueKeys : UniqueKeyCollection } }
     > (
         table : TableT,
         value : RawInsertValueRow<TableT>
@@ -633,4 +636,27 @@ export class PooledDatabase extends mysql.PooledDatabase {
             }, this);
         }
     ) as any;*/
+    async getGenerationExpression (column : AnyColumn) : Promise<string>{
+        const connection = await this.getOrAllocateConnection();
+        const db = connection.config.database;
+        if (db == undefined) {
+            throw new Error(`Multi-database support not implemented, please pass database value to connection configuration`);
+        }
+        return this.from(informationSchema.COLUMNS)
+            .select(c => [c.GENERATION_EXPRESSION])
+            .whereIsEqual(c => c.TABLE_SCHEMA, db)
+            .whereIsEqual(c => c.TABLE_NAME, column.tableAlias)
+            .whereIsEqual(c => c.COLUMN_NAME, column.name)
+            .fetchValue();
+    }
+    polymorphicInsertValueAndFetch<TableT extends AnyTable> (
+        table : TableT,
+        row : PolymorphicRawInsertValueRow<TableT>
+    ) {
+        return polymorphicInsertValueAndFetch(
+            this,
+            table,
+            row
+        );
+    }
 }

@@ -27,6 +27,7 @@ __export(require("./select-collection"));
 __export(require("./select-delegate"));
 __export(require("./table"));
 __export(require("./table-data"));
+__export(require("./table-parent-collection"));
 __export(require("./type-narrow-delegate"));
 __export(require("./type-widen-delegate"));
 __export(require("./where-delegate"));

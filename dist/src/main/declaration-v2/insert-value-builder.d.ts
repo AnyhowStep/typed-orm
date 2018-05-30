@@ -2,12 +2,13 @@ import { AnyTable, TableUtil } from "./table";
 import { Querify } from "./querify";
 import { RawExprNoUsedRef } from "./raw-expr";
 import * as mysql from "typed-mysql";
-import { Column, AnyColumn } from "./column";
+import { AnyColumn } from "./column";
 import { StringBuilder } from "./StringBuilder";
 import { PooledDatabase } from "./PooledDatabase";
 import { FetchRow } from "./fetch-row";
 import { SelectBuilderUtil } from "./select-builder-util";
 import { SelectCollectionUtil } from "./select-collection";
+import { UniqueKeyCollection } from "./unique-key-collection";
 export declare type RawInsertValueRow<TableT extends AnyTable> = ({
     [name in TableUtil.RequiredColumnNames<TableT>]: (RawExprNoUsedRef<ReturnType<TableT["columns"][name]["assertDelegate"]>>);
 } & {
@@ -32,7 +33,7 @@ export declare class InsertValueBuilder<TableT extends AnyTable, ValuesT extends
     } : {})>);
     executeAndFetch(this: InsertValueBuilder<TableT extends AnyTable & {
         data: {
-            autoIncrement: Column<any, any, number>;
+            uniqueKey: UniqueKeyCollection;
         };
     } ? any : never, any[], any>): (Promise<FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>>>);
     querify(sb: StringBuilder): void;

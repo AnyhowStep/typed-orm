@@ -119,5 +119,24 @@ var TableDataUtil;
                 column_1.ColumnUtil.withTableAlias(data.id, tableAlias) });
     }
     TableDataUtil.withTableAlias = withTableAlias;
+    function addParentTable(data, parent) {
+        if (data.parentTables == undefined) {
+            if (parent.data.parentTables == undefined) {
+                return Object.assign({}, data, { parentTables: [parent] });
+            }
+            else {
+                return Object.assign({}, data, { parentTables: parent.data.parentTables.concat(parent) });
+            }
+        }
+        else {
+            if (parent.data.parentTables == undefined) {
+                return Object.assign({}, data, { parentTables: data.parentTables.concat(parent) });
+            }
+            else {
+                return Object.assign({}, data, { parentTables: data.parentTables.concat([parent.data.parentTables], parent) });
+            }
+        }
+    }
+    TableDataUtil.addParentTable = addParentTable;
 })(TableDataUtil = exports.TableDataUtil || (exports.TableDataUtil = {}));
 //# sourceMappingURL=util.js.map

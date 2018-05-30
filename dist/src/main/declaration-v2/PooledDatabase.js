@@ -15,6 +15,8 @@ const join_1 = require("./join");
 const table_1 = require("./table");
 const insert_value_builder_1 = require("./insert-value-builder");
 const insert_select_builder_1 = require("./insert-select-builder");
+const informationSchema = require("./information-schema");
+const polymorphic_insert_value_and_fetch_1 = require("./polymorphic-insert-value-and-fetch");
 const aliased_table_1 = require("./aliased-table");
 ;
 const aliased_expr_1 = require("./aliased-expr");
@@ -65,131 +67,6 @@ class PooledDatabase extends mysql.PooledDatabase {
         this.insertSelect = (table, selectBuilder, delegate) => {
             return new insert_select_builder_1.InsertSelectBuilder(table, selectBuilder, undefined, "NORMAL", this).set(delegate);
         };
-        /*
-            Desired methods,
-            //Basic query
-            db.from(app)
-                .select(c => [app.appId])
-            db.query()
-                .from(app)
-                .select(c => [app.appId])
-            db.select(() => [NOW.as("now")])
-            //Basic insert
-            //Optionally takes an array of values
-            db.insertValue(app, {
-                ssoClientId : 1,
-                name : "Name"
-            }).value([
-                {
-                    ssoClientId : 1,
-                    name : "Name"
-                },
-                {
-                    ssoClientId : 1,
-                    name : "Name"
-                }
-            ]).ignore().execute();
-            db.insertSelect(
-                app,
-                db.from(ssoClient)
-                    .selectAll(),
-                c => {
-                    ssoClientId : c.ssoClientId,
-                    name : "Hello, world!"
-                }
-            ).ignore().execute()
-            //Builder insert
-            db.query()
-                .select(() => [NOW.as("now")])
-                .insertInto(app, c => {
-                    return {
-                        createdAt : c.now,
-                        name : "Hi",
-                        ssoClientId : 1,
-                    };
-                }).ignore().execute();
-            //Basic update
-            db.update(app, {
-                name : "Updated Name"
-            }, c => {
-                return eq(c.appId, 1);
-            }).ignoreErrors().execute();
-            //Builder update
-            db.query()
-                .from(app)
-                .whereIsEqual(c => c.appId, 1)
-                .set(c => {
-                    return {
-                        name : "Updated Name"
-                    }
-                })
-                .ignoreErrors()
-                .execute()
-            //Basic delete
-            db.deleteFrom(
-                app,
-                c => {
-                    return eq(c.appId, 1);
-                }
-            )
-                .ignoreErrors()
-                .execute()
-            //Builder delete
-            db.query()
-                .from(ssoClient)
-                .joinUsing(app, c => [c.ssoClientId])
-                .whereIsEqual(c => c.app.appId, 1)
-                .delete(j => [j.ssoClient])
-                .ignoreErrors()
-                .execute()
-            db.query()
-                .from(ssoClient)
-                .joinUsing(app, c => [c.ssoClientId])
-                .whereIsEqual(c => c.app.appId, 1)
-                .delete() //Without arguments, means delete from all tables
-                .ignoreErrors()
-                .execute()
-        */
-        /*readonly insertSelectInto : d.CreateInsertSelectBuilderDelegate = (
-            <
-                TableT extends d.ITable<any, any, any, any>,
-                SelectBuilderT extends d.AnySelectBuilder
-            > (
-                table : TableT,
-                selectBuilder : SelectBuilderT
-            ) => {
-                return new InsertSelectBuilder({
-                    table : table,
-                    selectBuilder : selectBuilder,
-                    ignore : false,
-                    columns : undefined,
-                }, this) as any;
-            }
-        );
-        readonly insertValueInto : d.CreateInsertValueBuilderDelegate = (
-            <TableT extends d.ITable<any, any, any, any>> (table : TableT) => {
-                return new InsertValueBuilder({
-                    table : table,
-                    ignore : false,
-                    values : undefined,
-                }, this);
-            }
-        );
-        //TODO Implement proper transactions?
-        //TODO Remove mysql.Database dependency?
-        readonly updateTable : d.CreateUpdateBuilderDelegate = (
-            <
-                SelectBuilderT extends d.AnySelectBuilder
-            > (
-                selectBuilder : SelectBuilderT
-            ) => {
-                return new UpdateBuilder({
-                    selectBuilder : selectBuilder,
-                    ignoreErrors : false,
-                    assignments : undefined,
-                }, this);
-            }
-        ) as any;*/
     }
     allocate() {
         return new PooledDatabase(this.getPool(), this.getData());
@@ -376,6 +253,149 @@ class PooledDatabase extends mysql.PooledDatabase {
         return this.from(table)
             .where(where)
             .delete(() => [table]);
+    }
+    /*
+        Desired methods,
+        //Basic query
+        db.from(app)
+            .select(c => [app.appId])
+        db.query()
+            .from(app)
+            .select(c => [app.appId])
+        db.select(() => [NOW.as("now")])
+        //Basic insert
+        //Optionally takes an array of values
+        db.insertValue(app, {
+            ssoClientId : 1,
+            name : "Name"
+        }).value([
+            {
+                ssoClientId : 1,
+                name : "Name"
+            },
+            {
+                ssoClientId : 1,
+                name : "Name"
+            }
+        ]).ignore().execute();
+        db.insertSelect(
+            app,
+            db.from(ssoClient)
+                .selectAll(),
+            c => {
+                ssoClientId : c.ssoClientId,
+                name : "Hello, world!"
+            }
+        ).ignore().execute()
+        //Builder insert
+        db.query()
+            .select(() => [NOW.as("now")])
+            .insertInto(app, c => {
+                return {
+                    createdAt : c.now,
+                    name : "Hi",
+                    ssoClientId : 1,
+                };
+            }).ignore().execute();
+        //Basic update
+        db.update(app, {
+            name : "Updated Name"
+        }, c => {
+            return eq(c.appId, 1);
+        }).ignoreErrors().execute();
+        //Builder update
+        db.query()
+            .from(app)
+            .whereIsEqual(c => c.appId, 1)
+            .set(c => {
+                return {
+                    name : "Updated Name"
+                }
+            })
+            .ignoreErrors()
+            .execute()
+        //Basic delete
+        db.deleteFrom(
+            app,
+            c => {
+                return eq(c.appId, 1);
+            }
+        )
+            .ignoreErrors()
+            .execute()
+        //Builder delete
+        db.query()
+            .from(ssoClient)
+            .joinUsing(app, c => [c.ssoClientId])
+            .whereIsEqual(c => c.app.appId, 1)
+            .delete(j => [j.ssoClient])
+            .ignoreErrors()
+            .execute()
+        db.query()
+            .from(ssoClient)
+            .joinUsing(app, c => [c.ssoClientId])
+            .whereIsEqual(c => c.app.appId, 1)
+            .delete() //Without arguments, means delete from all tables
+            .ignoreErrors()
+            .execute()
+    */
+    /*readonly insertSelectInto : d.CreateInsertSelectBuilderDelegate = (
+        <
+            TableT extends d.ITable<any, any, any, any>,
+            SelectBuilderT extends d.AnySelectBuilder
+        > (
+            table : TableT,
+            selectBuilder : SelectBuilderT
+        ) => {
+            return new InsertSelectBuilder({
+                table : table,
+                selectBuilder : selectBuilder,
+                ignore : false,
+                columns : undefined,
+            }, this) as any;
+        }
+    );
+    readonly insertValueInto : d.CreateInsertValueBuilderDelegate = (
+        <TableT extends d.ITable<any, any, any, any>> (table : TableT) => {
+            return new InsertValueBuilder({
+                table : table,
+                ignore : false,
+                values : undefined,
+            }, this);
+        }
+    );
+    //TODO Implement proper transactions?
+    //TODO Remove mysql.Database dependency?
+    readonly updateTable : d.CreateUpdateBuilderDelegate = (
+        <
+            SelectBuilderT extends d.AnySelectBuilder
+        > (
+            selectBuilder : SelectBuilderT
+        ) => {
+            return new UpdateBuilder({
+                selectBuilder : selectBuilder,
+                ignoreErrors : false,
+                assignments : undefined,
+            }, this);
+        }
+    ) as any;*/
+    getGenerationExpression(column) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield this.getOrAllocateConnection();
+            const db = connection.config.database;
+            if (db == undefined) {
+                throw new Error(`Multi-database support not implemented, please pass database value to connection configuration`);
+            }
+            return this.from(informationSchema.COLUMNS)
+                .select(c => [c.GENERATION_EXPRESSION])
+                .whereIsEqual(c => c.TABLE_SCHEMA, db)
+                .whereIsEqual(c => c.TABLE_NAME, column.tableAlias)
+                .whereIsEqual(c => c.COLUMN_NAME, column.name)
+                .fetchValue();
+        });
+    }
+    polymorphicInsertValueAndFetch(table, row) {
+        return polymorphic_insert_value_and_fetch_1.polymorphicInsertValueAndFetch(this, table, row);
     }
 }
 exports.PooledDatabase = PooledDatabase;

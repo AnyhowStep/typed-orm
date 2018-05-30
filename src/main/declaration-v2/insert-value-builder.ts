@@ -2,13 +2,14 @@ import {AnyTable, TableUtil} from "./table";
 import {Querify} from "./querify";
 import {RawExprNoUsedRef} from "./raw-expr";
 import * as mysql from "typed-mysql";
-import {Column, AnyColumn} from "./column";
+import {AnyColumn} from "./column";
 import {StringBuilder} from "./StringBuilder";
 import {RawExprUtil} from "./raw-expr";
 import {PooledDatabase} from "./PooledDatabase";
 import {FetchRow} from "./fetch-row";
 import {SelectBuilderUtil} from "./select-builder-util";
 import {SelectCollectionUtil} from "./select-collection";
+import { UniqueKeyCollection } from "./unique-key-collection";
 
 export type RawInsertValueRow<TableT extends AnyTable> = (
     {
@@ -141,7 +142,7 @@ export class InsertValueBuilder<
     //Consider allowing just ["data"]["id"] for execute and fetch
     public async executeAndFetch (
         this : InsertValueBuilder<
-            TableT extends AnyTable & { data : { autoIncrement : Column<any, any, number> } } ?
+            TableT extends AnyTable & { data : { uniqueKey : UniqueKeyCollection } } ?
                 any : never,
             any[],
             any
@@ -156,7 +157,31 @@ export class InsertValueBuilder<
     ) {
         return this.db.transaction(async (db) => {
             const insertResult = await this.execute(db);
-            return db.fetchOneById(this.table, insertResult.insertId);
+            if (insertResult.insertId > 0) {
+                //Prefer auto-increment id, if possible
+                return db.fetchOneById(this.table, insertResult.insertId);
+            } else {
+                //Get the last inserted row
+                const lastRow = {
+                    ...(this.values[this.values.length-1])
+                };
+                for (let columnName in lastRow) {
+                    const value = lastRow[columnName];
+                    if (
+                        value === undefined ||
+                        (
+                            (value instanceof Object) &&
+                            !(value instanceof Date)
+                        )
+                    ) {
+                        delete lastRow[columnName];
+                    }
+                }
+                //This may not necessarily work...
+                //It is possible the unique key were entirely Expr<> instances,
+                //making fetching by unique key impossible (for now)
+                return db.fetchOneByUniqueKey(this.table, lastRow);
+            }
         }) as any;
     }
 

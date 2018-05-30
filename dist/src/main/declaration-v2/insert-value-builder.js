@@ -60,7 +60,26 @@ class InsertValueBuilder {
         return __awaiter(this, void 0, void 0, function* () {
             return this.db.transaction((db) => __awaiter(this, void 0, void 0, function* () {
                 const insertResult = yield this.execute(db);
-                return db.fetchOneById(this.table, insertResult.insertId);
+                if (insertResult.insertId > 0) {
+                    //Prefer auto-increment id, if possible
+                    return db.fetchOneById(this.table, insertResult.insertId);
+                }
+                else {
+                    //Get the last inserted row
+                    const lastRow = Object.assign({}, (this.values[this.values.length - 1]));
+                    for (let columnName in lastRow) {
+                        const value = lastRow[columnName];
+                        if (value === undefined ||
+                            ((value instanceof Object) &&
+                                !(value instanceof Date))) {
+                            delete lastRow[columnName];
+                        }
+                    }
+                    //This may not necessarily work...
+                    //It is possible the unique key were entirely Expr<> instances,
+                    //making fetching by unique key impossible (for now)
+                    return db.fetchOneByUniqueKey(this.table, lastRow);
+                }
             }));
         });
     }

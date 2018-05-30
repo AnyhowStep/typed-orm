@@ -2,6 +2,7 @@ import {Column, AnyColumn} from "../column";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
 import {Tuple} from "../tuple";
 import {UniqueKeyCollection} from "../unique-key-collection";
+import {AnyTable} from "../table";
 
 export interface TableData {
     //TODO, Maybe allow string?
@@ -41,6 +42,38 @@ export interface TableData {
     //A table can have a PK that is an FK to an auto-increment column in another table
     readonly id : undefined|Column<any, any, number>;
     readonly uniqueKeys : undefined|(UniqueKeyCollection);
+
+    /*
+        A parent table must be instantiated before the child table.
+
+        The parent and child table must share at least one unique key (usually the `id`)
+
+        If there are duplicate column names, it is assumed there
+        is an FK of that column from the child table to the
+        parent table, and that the child's column type is assignable
+        to the parent's column type.
+
+        An example would be "discriminator" columns used in exclusive
+        inheritance. The parent table could have a column, `appKeyType`,
+        which would be `BROWSER|SERVER`. The child table would, then,
+        have a column called `appKeyType` with `SERVER` as the only value.
+
+        We outline some possibilities for duplicate columns,
+
+        Child       | Parent        |
+        generated   | generated     | When inserting, the column value is ignored
+        generated   | has default   | The child column's generated value must be a numeric string
+        generated   | no default    | The child column's generated value must be a numeric string
+
+        has default | generated     | The parent column must a unique key we can use to retrieve after insertion, to get the value
+        has default | has default   | If value is provided, it'll set both to the value, otherwise, it lets the defaults be set
+        has default | no default    | The value must be provided, it'll set both to the value
+
+        no default  | generated     | The parent column must a unique key we can use to retrieve after insertion, to get the value
+        no default  | has default   | The parent column must a unique key we can use to retrieve after insertion, to get the value
+        no default  | no default    | The value must be provided, it'll set both to the value
+    */
+    readonly parentTables : undefined|Tuple<AnyTable>;
 }
 
 //The `number` requirement is only a compile-time constraint

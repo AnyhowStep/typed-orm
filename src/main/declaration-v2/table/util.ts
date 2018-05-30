@@ -30,14 +30,23 @@ export namespace TableUtil {
             keyof TableT["data"]["isMutable"]
         >
     );
+    export type ColumnNames<
+        TableT extends AnyTable
+    > = (
+        Extract<keyof TableT["columns"], string>
+    );
     //TODO Move these elsewhere, they do not belong here
     export function validateInsertRow (table : AnyTable, row : any) {
         for (let name in row) {
             if (!table.columns.hasOwnProperty(name)) {
-                throw new Error(`Unexpected column ${name}; it does not exist on table ${table.alias}`);
+                //throw new Error(`Unexpected column ${name}; it does not exist on table ${table.alias}`);
+                //Silently ignore extra columns
+                continue;
             }
             if (table.data.isGenerated.hasOwnProperty(name)) {
-                throw new Error(`Unexpected column ${name}; it is a generated column on table ${table.alias}, you cannot specify a value for it`);
+                //throw new Error(`Unexpected column ${name}; it is a generated column on table ${table.alias}, you cannot specify a value for it`);
+                //Silently ignore extra columns
+                continue;
             }
             const value = (row as any)[name];
             if (value === undefined && !table.data.hasDefaultValue.hasOwnProperty(name)) {
@@ -150,6 +159,7 @@ export namespace TableUtil {
                         readonly isMutable : any,
                         readonly id : any,
                         readonly uniqueKeys : any,
+                        readonly parentTables : any,
                     }
                 >/*|
                 Table<

@@ -9,9 +9,12 @@ import {
 } from "./table-data";
 import {ReadonlyRemoveKey, ReadonlyReplaceValue, ReadonlyReplaceValue3} from "../obj-util";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
-import {Tuple, TupleKeys, TupleWPush, TupleWiden} from "../tuple";
+import {Tuple, TupleKeys, TupleWPush, TupleWiden, TupleWConcat} from "../tuple";
 import {Column, AnyColumn, ColumnUtil} from "../column";
 import {UniqueKey} from "../unique-key";
+import {AnyTable} from "../table";
+import {UniqueKeyCollection, UniqueKeyCollectionUtil} from "../unique-key-collection";
+import {TableParentCollection} from "../table-parent-collection";
 
 export namespace TableDataUtil {
     export type AutoIncrement<
@@ -174,6 +177,7 @@ export namespace TableDataUtil {
                 },
                 readonly id : DataT["id"],
                 readonly uniqueKeys : DataT["uniqueKeys"],
+                readonly parentTables : DataT["parentTables"],
             } :
             never
     );
@@ -528,6 +532,7 @@ export namespace TableDataUtil {
                 undefined
             );
             readonly uniqueKeys : DataT["uniqueKeys"];
+            readonly parentTables : DataT["parentTables"];
         }
     );
     export type WithTableAlias<DataT extends TableData, TableAliasT extends string> = (
@@ -546,6 +551,7 @@ export namespace TableDataUtil {
                 undefined
             );
             readonly uniqueKeys : DataT["uniqueKeys"];
+            readonly parentTables : DataT["parentTables"];
         }
     );
     export function withTableAlias<
@@ -563,5 +569,131 @@ export namespace TableDataUtil {
                 undefined :
                 ColumnUtil.withTableAlias(data.id, tableAlias),
         } as any;
+    }
+
+    //TODO Move to TableUtil?
+    //TODO Add checks for the following,
+    //+ Must share at least one unique key
+    //+ Duplicate columns must be assignable from child to parent
+    export type AddParentTable<
+        DataT extends TableData,
+        ParentT extends AnyTable
+    > = (
+        DataT["uniqueKeys"] extends UniqueKeyCollection ?
+            (
+                ParentT["data"]["uniqueKeys"] extends UniqueKeyCollection ?
+                    (
+                        UniqueKeyCollectionUtil.CommonUniqueKeys<
+                            DataT["uniqueKeys"],
+                            ParentT["data"]["uniqueKeys"]
+                        > extends never ?
+                            never :
+                            (
+                                DataT["parentTables"] extends TableParentCollection ?
+                                    (
+                                        ParentT["data"]["parentTables"] extends TableParentCollection ?
+                                            (
+                                                {
+                                                    [key in keyof DataT] : (
+                                                        key extends "parentTables" ?
+                                                            TupleWPush<
+                                                                AnyTable,
+                                                                TupleWConcat<
+                                                                    AnyTable,
+                                                                    DataT["parentTables"],
+                                                                    ParentT["data"]["parentTables"]
+                                                                >,
+                                                                ParentT
+                                                            > :
+                                                            DataT[key]
+                                                    )
+                                                }
+                                            ) :
+                                            (
+                                                {
+                                                    [key in keyof DataT] : (
+                                                        key extends "parentTables" ?
+                                                            TupleWPush<
+                                                                AnyTable,
+                                                                DataT["parentTables"],
+                                                                ParentT
+                                                            > :
+                                                            DataT[key]
+                                                    )
+                                                }
+                                            )
+                                    ) :
+                                    (
+                                        ParentT["data"]["parentTables"] extends TableParentCollection ?
+                                            (
+                                                {
+                                                    [key in keyof DataT] : (
+                                                        key extends "parentTables" ?
+                                                            TupleWPush<
+                                                                AnyTable,
+                                                                ParentT["data"]["parentTables"],
+                                                                ParentT
+                                                            > :
+                                                            DataT[key]
+                                                    )
+                                                }
+                                            ) :
+                                            (
+                                                {
+                                                    [key in keyof DataT] : (
+                                                        key extends "parentTables" ?
+                                                        TupleWiden<
+                                                            [ParentT],
+                                                            AnyTable
+                                                        > :
+                                                        DataT[key]
+                                                    )
+                                                }
+                                            )
+                                    )
+                            )
+                    ) :
+                    never
+            ) :
+            never
+    );
+    export function addParentTable<
+        DataT extends TableData,
+        ParentT extends AnyTable
+    > (
+        data : DataT,
+        parent : ParentT
+    ) {
+        if (data.parentTables == undefined) {
+            if (parent.data.parentTables == undefined) {
+                return {
+                    ...(data as any),
+                    parentTables : [parent],
+                };
+            } else {
+                return {
+                    ...(data as any),
+                    parentTables : parent.data.parentTables.concat(parent),
+                };
+            }
+        } else {
+            if (parent.data.parentTables == undefined) {
+                return {
+                    ...(data as any),
+                    parentTables : data.parentTables.concat(
+                        parent
+                    ),
+                };
+            } else {
+                return {
+                    ...(data as any),
+                    parentTables : data.parentTables.concat(
+                        [parent.data.parentTables],
+                        parent
+                    ),
+                };
+            }
+        }
+
     }
 }

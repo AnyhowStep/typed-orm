@@ -23,7 +23,7 @@ Better table inheritance support,
 
 -----
 
-Table-per-hierarchy support,
+Table-per-type support,
 
 + Discriminator column
 + Auto-increment of base type
@@ -53,3 +53,7 @@ query.transform(transformBuilder)
 + Proper Unique Key support, rather than just auto-increment keys
 
   Enables convenient (if badly named) `fetchByUk()` method
+
+-----
+
++ Multi-database support?

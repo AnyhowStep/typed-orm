@@ -2,6 +2,7 @@ import { Column, AnyColumn } from "../column";
 import { ColumnCollection, ColumnCollectionUtil } from "../column-collection";
 import { Tuple } from "../tuple";
 import { UniqueKeyCollection } from "../unique-key-collection";
+import { AnyTable } from "../table";
 export interface TableData {
     readonly autoIncrement: undefined | Column<any, any, number>;
     readonly isGenerated: {
@@ -15,6 +16,7 @@ export interface TableData {
     };
     readonly id: undefined | Column<any, any, number>;
     readonly uniqueKeys: undefined | (UniqueKeyCollection);
+    readonly parentTables: undefined | Tuple<AnyTable>;
 }
 export declare type AutoIncrementDelegate<ColumnCollectionT extends ColumnCollection> = ((columns: {
     [columnName in keyof ColumnCollectionT]: (ColumnCollectionT[columnName] extends Column<any, any, number> ? ColumnCollectionT[columnName] : never);

@@ -22,7 +22,17 @@ export class AliasedTable<
         }
     }
 
+    private __hackedDatabaseName : string|undefined;
+    public setHackedDatabaseName (__hackedDatabaseName : string) : this {
+        this.__hackedDatabaseName = __hackedDatabaseName;
+        return this;
+    }
+
     querify (sb : StringBuilder) {
+        if (this.__hackedDatabaseName != undefined) {
+            sb.append(mysql.escapeId(this.__hackedDatabaseName));
+            sb.append(".");
+        }
         sb.append(this.query);
     }
 }

@@ -15,7 +15,9 @@ const app = o.table(
         name : sd.string(),
         description : sd.nullable(sd.string())
     }
-).setAutoIncrement(c => c.appId);
+)
+    .setAutoIncrement(c => c.appId)
+    .build();
 
 const user = o.table(
     "user",
@@ -24,22 +26,40 @@ const user = o.table(
         firstName : sd.string(),
         lastName : sd.string(),
     }
-).setAutoIncrement(c => c.userId);
+)
+    .setAutoIncrement(c => c.userId)
+    .build();
 
 const baseTable = o.table(
     "base",
     {
         baseId : sd.naturalNumber()
     }
-).setAutoIncrement(c => c.baseId);
+)
+    .setAutoIncrement(c => c.baseId)
+    .build();
 
-//Table-per-type inheritance
-const derivedTable = baseTable
+//Table-per-concrete-class inheritance
+const derivedTable = o.table(baseTable)
     .withName("derived")
     .addColumns({
         value0 : sd.boolean(),
         value1 : sd.date(),
     });
+    .build();
+
+//Table-per-type inheritance
+const derivedTable2 = o.table(
+    "derived2",
+    {
+        baseId : sd.naturalNumber(),
+        value0 : sd.boolean(),
+        value1 : sd.date(),
+    }
+)
+    .setId(c => c.baseId)
+    .addParent(baseTable)
+    .build();
 
 ```
 

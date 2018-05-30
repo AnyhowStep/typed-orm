@@ -60,6 +60,9 @@ class TableBuilder extends aliased_table_1.AliasedTable {
     addUniqueKey(delegate) {
         return new TableBuilder(this.alias, this.name, this.columns, table_data_1.TableDataUtil.addUniqueKey(this.data, this.columns, delegate));
     }
+    addParent(parent) {
+        return new TableBuilder(this.alias, this.name, this.columns, table_data_1.TableDataUtil.addParentTable(this.data, parent));
+    }
     build() {
         return new table_1.Table(this.alias, this.name, this.columns, this.data);
     }
@@ -90,6 +93,7 @@ function table(arg0, arg1) {
         isMutable: isMutable,
         id: undefined,
         uniqueKeys: undefined,
+        parentTables: undefined,
     });
 }
 exports.table = table;

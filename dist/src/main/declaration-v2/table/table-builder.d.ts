@@ -21,6 +21,7 @@ export declare class TableBuilder<AliasT extends string, NameT extends string, C
         readonly [key in keyof DataT]: (key extends "autoIncrement" ? undefined : key extends "id" ? undefined : any);
     }>, delegate: IdDelegateT): (TableBuilder<AliasT, NameT, ColumnCollectionT, TableDataUtil.Id<DataT, ColumnCollectionT, IdDelegateT>>);
     addUniqueKey<AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>>(delegate: AddUniqueKeyDelegateT): (TableBuilder<AliasT, NameT, ColumnCollectionT, TableDataUtil.AddUniqueKey<DataT, ColumnCollectionT, AddUniqueKeyDelegateT>>);
+    addParent<ParentT extends AnyTable>(parent: ParentT): TableBuilder<AliasT, NameT, ColumnCollectionT, TableDataUtil.AddParentTable<DataT, ParentT>>;
     build(): Table<AliasT, NameT, ColumnCollectionT, DataT>;
 }
 export declare function table<NameT extends string, RawColumnCollectionT extends RawColumnCollection>(name: NameT, rawColumnCollection: RawColumnCollectionT): (TableBuilder<NameT, NameT, RawColumnCollectionUtil.ToColumnCollection<NameT, RawColumnCollectionT>, {
@@ -34,6 +35,7 @@ export declare function table<NameT extends string, RawColumnCollectionT extends
     };
     id: undefined;
     uniqueKeys: undefined;
+    parentTables: undefined;
 }>);
 export declare function table<NameT extends string, TupleT extends fieldUtil.AnyFieldTuple>(name: NameT, tuple: TupleT): (TableBuilder<NameT, NameT, RawColumnCollectionUtil.ToColumnCollection<NameT, fieldUtil.FieldsToObject<TupleT>>, {
     autoIncrement: undefined;
@@ -46,5 +48,6 @@ export declare function table<NameT extends string, TupleT extends fieldUtil.Any
     };
     id: undefined;
     uniqueKeys: undefined;
+    parentTables: undefined;
 }>);
 export declare function table<TableT extends AnyTable>(table: TableT): (TableBuilder<TableT["alias"], TableT["name"], TableT["columns"], TableT["data"]>);

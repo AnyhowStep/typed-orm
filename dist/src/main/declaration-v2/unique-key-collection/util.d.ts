@@ -8,4 +8,8 @@ export declare namespace UniqueKeyCollectionUtil {
         [index in TupleKeys<UniqueKeyCollectionT>]: (UniqueKeyCollectionT[index] extends UniqueKey ? UniqueKeyUtil.WithType<UniqueKeyCollectionT[index], ColumnCollectionT> : never);
     }[TupleKeys<UniqueKeyCollectionT>]);
     function assertDelegate<UniqueKeyCollectionT extends UniqueKeyCollection, ColumnCollectionT extends ColumnCollection>(tuple: UniqueKeyCollectionT, columns: ColumnCollectionT): (sd.AssertDelegate<WithType<UniqueKeyCollectionT, ColumnCollectionT>>);
+    type UniqueKeys<UniqueKeyCollectionT extends UniqueKeyCollection> = ({
+        [index in TupleKeys<UniqueKeyCollectionT>]: (UniqueKeyCollectionT[index] extends UniqueKey ? UniqueKeyCollectionT[index] : never);
+    }[TupleKeys<UniqueKeyCollectionT>]);
+    type CommonUniqueKeys<CollectionA extends UniqueKeyCollection, CollectionB extends UniqueKeyCollection> = (Extract<UniqueKeys<CollectionA>, UniqueKeys<CollectionB>>);
 }

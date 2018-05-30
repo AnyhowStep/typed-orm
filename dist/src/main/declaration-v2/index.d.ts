@@ -26,6 +26,7 @@ export * from "./select-delegate";
 export * from "./select-value";
 export * from "./table";
 export * from "./table-data";
+export * from "./table-parent-collection";
 export * from "./type-narrow-delegate";
 export * from "./type-widen-delegate";
 export * from "./where-delegate";

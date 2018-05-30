@@ -288,6 +288,26 @@ export class TableBuilder<
         ) as any;
     }
 
+    addParent<ParentT extends AnyTable> (parent : ParentT) : TableBuilder<
+        AliasT,
+        NameT,
+        ColumnCollectionT,
+        TableDataUtil.AddParentTable<
+            DataT,
+            ParentT
+        >
+    > {
+        return new TableBuilder(
+            this.alias,
+            this.name,
+            this.columns,
+            TableDataUtil.addParentTable(
+                this.data,
+                parent
+            ) as any
+        ) as any;
+    }
+
     build () : Table<AliasT, NameT, ColumnCollectionT, DataT> {
         return new Table(
             this.alias,
@@ -322,6 +342,7 @@ export function table<
             },
             id : undefined,
             uniqueKeys : undefined,
+            parentTables : undefined,
         }
     >
 );
@@ -349,6 +370,7 @@ export function table<
             },
             id : undefined,
             uniqueKeys : undefined,
+            parentTables : undefined,
         }
     >
 );
@@ -406,6 +428,7 @@ export function table (
             isMutable : isMutable,
             id : undefined,
             uniqueKeys : undefined,
+            parentTables : undefined,
         }
     );
 }
