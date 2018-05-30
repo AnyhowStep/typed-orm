@@ -4,7 +4,7 @@ An experiment in type-safe, and structurally-safe MySQL query building using Typ
 
 ### Tables
 
-```
+```ts
 import * as o from "typed-orm";
 import * as sd from "schema-decorator";
 
@@ -65,7 +65,7 @@ const derivedTable2 = o.table(
 
 ### Database
 
-```
+```ts
 import * as o from "typed-orm";
 const db = new o.PooledDatabase({
     host     : "host",
@@ -78,7 +78,7 @@ await db.utcOnly();
 
 ### Select
 
-```
+```ts
 db.from(app)
     .selectAll()
     .fetchAll()
@@ -107,7 +107,7 @@ db.from(app)
 
 ### Insert
 
-```
+```ts
 await db.insertValue(app, {
     name : "new-app",
 })
@@ -117,7 +117,7 @@ await db.insertValue(app, {
 
 ### Update
 
-```
+```ts
 import * as o from "typed-orm";
 await db.update(
     app,
@@ -132,7 +132,7 @@ await db.update(
 
 ### Delete
 
-```
+```ts
 db.deleteFrom(app, c => o.eq(c.appId, 1))
     .execute()
     .then(console.log);
@@ -140,7 +140,7 @@ db.deleteFrom(app, c => o.eq(c.appId, 1))
 
 ### Sub-query Expression
 
-```
+```ts
 await db.select(() => {
     return [
         db.select(() => [

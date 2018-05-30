@@ -58,7 +58,7 @@ class InsertValueBuilder {
     //Consider allowing just ["data"]["id"] for execute and fetch
     executeAndFetch() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.db.transaction((db) => __awaiter(this, void 0, void 0, function* () {
+            return this.db.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
                 const insertResult = yield this.execute(db);
                 if (insertResult.insertId > 0) {
                     //Prefer auto-increment id, if possible

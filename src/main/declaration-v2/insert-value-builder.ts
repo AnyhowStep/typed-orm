@@ -155,7 +155,7 @@ export class InsertValueBuilder<
             >
         >>
     ) {
-        return this.db.transaction(async (db) => {
+        return this.db.transactionIfNotInOne(async (db) => {
             const insertResult = await this.execute(db);
             if (insertResult.insertId > 0) {
                 //Prefer auto-increment id, if possible

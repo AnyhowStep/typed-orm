@@ -35,7 +35,7 @@ function polymorphicInsertValueAndFetch(db, table, row) {
                 console.log(column.tableAlias, column.name);
                 row[g] = sd.stringToNaturalNumber()(g, expression);
             }
-            return db.transaction((db) => __awaiter(this, void 0, void 0, function* () {
+            return db.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
                 //In the event of diamond inheritance,
                 //don't insert multiple rows for the base type
                 const alreadyInserted = new Set();

@@ -42,6 +42,7 @@ export declare type ConvenientDeleteSelectBuilder<TableT extends AnyTable> = (Se
 export declare class PooledDatabase extends mysql.PooledDatabase {
     allocate(): PooledDatabase;
     transaction<ResultT>(callback: (db: PooledDatabase) => Promise<ResultT>): Promise<ResultT>;
+    transactionIfNotInOne<ResultT>(callback: (db: PooledDatabase) => Promise<ResultT>): Promise<ResultT>;
     readonly query: CreateSelectBuilderDelegate;
     readonly from: <TableT extends AliasedTable<string, string, {
         readonly [columnName: string]: Column<string, string, any>;

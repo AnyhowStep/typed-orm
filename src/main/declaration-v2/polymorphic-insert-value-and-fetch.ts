@@ -65,7 +65,7 @@ export async function polymorphicInsertValueAndFetch<
             (row as any)[g] = sd.stringToNaturalNumber()(g, expression);
         }
 
-        return db.transaction(async (db) => {
+        return db.transactionIfNotInOne(async (db) => {
             //In the event of diamond inheritance,
             //don't insert multiple rows for the base type
             const alreadyInserted = new Set<string>();

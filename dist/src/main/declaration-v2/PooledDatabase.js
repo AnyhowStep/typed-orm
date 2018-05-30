@@ -88,6 +88,14 @@ class PooledDatabase extends mysql.PooledDatabase {
             }));
         });
     }
+    transactionIfNotInOne(callback) {
+        if (this.isInTransaction()) {
+            return callback(this);
+        }
+        else {
+            return this.transaction(callback);
+        }
+    }
     selectAll(arg0, arg1, arg2) {
         if (arg0 instanceof aliased_table_1.AliasedTable) {
             if (arg1 == undefined) {

@@ -100,6 +100,13 @@ export class PooledDatabase extends mysql.PooledDatabase {
                 throw err;
             });
     }
+    public transactionIfNotInOne<ResultT> (callback : (db : PooledDatabase) => Promise<ResultT>) : Promise<ResultT> {
+        if (this.isInTransaction()) {
+            return callback(this);
+        } else {
+            return this.transaction(callback);
+        }
+    }
     readonly query : CreateSelectBuilderDelegate = () => {
         return new SelectBuilder(
             {
