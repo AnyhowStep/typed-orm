@@ -307,7 +307,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         parentJoins: any;
     }>): (FetchValueCheck<this["data"], FetchValueType<this["data"]>[]>);
     private narrow;
-    whereIsNotNull<TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>>(this: SelectBuilder<{
+    whereIsNotNull<TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
         hasUnion: false;
@@ -316,8 +316,8 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, typeNarrowDelegate: TypeNarrowDelegateT): (ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ? SelectBuilder<ReplaceValue2<DataT, "joins", JoinCollectionUtil.ReplaceColumnType<DataT["joins"], TableAliasT, ColumnNameT, Exclude<TypeT, null | undefined>>, "selects", SelectCollectionUtil.ReplaceSelectType<DataT["selects"], TableAliasT, ColumnNameT, Exclude<TypeT, null | undefined>>>> : (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>));
-    whereIsNull<TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>>(this: SelectBuilder<{
+    }>, typeNarrowDelegate: TypeNarrowDelegateT): (SelectBuilderUtil.WhereIsNotNull<this, TypeNarrowDelegateT>);
+    whereIsNull<TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
         hasUnion: false;
@@ -326,8 +326,8 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, typeNarrowDelegate: TypeNarrowDelegateT): (ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ? SelectBuilder<ReplaceValue2<DataT, "joins", JoinCollectionUtil.ReplaceColumnType<DataT["joins"], TableAliasT, ColumnNameT, null>, "selects", SelectCollectionUtil.ReplaceSelectType<DataT["selects"], TableAliasT, ColumnNameT, null>>> : (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>));
-    whereIsEqual<TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>, ConstT extends boolean | number | string>(this: SelectBuilder<{
+    }>, typeNarrowDelegate: TypeNarrowDelegateT): (SelectBuilderUtil.WhereIsNull<this, TypeNarrowDelegateT>);
+    whereIsEqual<TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>, ConstT extends boolean | number | string>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
         hasUnion: false;
@@ -336,7 +336,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, typeNarrowDelegate: TypeNarrowDelegateT, value: ConstT): (ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ? SelectBuilder<ReplaceValue2<DataT, "joins", JoinCollectionUtil.ReplaceColumnType<DataT["joins"], TableAliasT, ColumnNameT, ConstT>, "selects", SelectCollectionUtil.ReplaceSelectType<DataT["selects"], TableAliasT, ColumnNameT, ConstT>>> : (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>));
+    }>, typeNarrowDelegate: TypeNarrowDelegateT, value: ConstT): (SelectBuilderUtil.WhereIsEqual<this, TypeNarrowDelegateT, ConstT>);
     where<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;

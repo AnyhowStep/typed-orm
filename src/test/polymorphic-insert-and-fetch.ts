@@ -30,11 +30,26 @@ const browserAppKey = o.table(
 const rcn : o.TableParentCollectionUtil.RequiredColumnNames<typeof browserAppKey>;
 const ocn : o.TableParentCollectionUtil.OptionalColumnNames<typeof browserAppKey>;
 */
+async function aggregationQuery () {
+    const db = await getDb();
+    return db.from(appKey)
+        .joinUsing(browserAppKey, c => [c.appKeyId])
+        .selectAll()
+        .aggregate((row) => {
+            return {
+                ...row.appKey,
+                ...row.browserAppKey,
+            }
+        })
+}
 tape(__filename, async (t) => {
     const db = await getDb();
     await db.polymorphicInsertValueAndFetch(browserAppKey, {
         key : "Created @ " + (new Date()).toString(),
         referer : "some referer"
     }).then(console.log);
+    const x = aggregationQuery().then(q => {
+        return q.fetchOne()
+    })
     t.end();
 });

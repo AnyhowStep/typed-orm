@@ -987,7 +987,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Must be called after `FROM` or there will be no columns
     //to narrow.
     whereIsNotNull<
-        TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>
+        TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -1002,31 +1002,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         typeNarrowDelegate : TypeNarrowDelegateT
     ) : (
-        ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
-            SelectBuilder<ReplaceValue2<
-                DataT,
-                "joins",
-                JoinCollectionUtil.ReplaceColumnType<
-                    DataT["joins"],
-                    TableAliasT,
-                    ColumnNameT,
-                    Exclude<
-                        TypeT,
-                        null|undefined
-                    >
-                >,
-                "selects",
-                SelectCollectionUtil.ReplaceSelectType<
-                    DataT["selects"],
-                    TableAliasT,
-                    ColumnNameT,
-                    Exclude<
-                        TypeT,
-                        null|undefined
-                    >
-                >
-            >> :
-            (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
+        SelectBuilderUtil.WhereIsNotNull<
+            this,
+            TypeNarrowDelegateT
+        >
     ) {
         this.assertAfterFrom();
         this.assertBeforeUnion();
@@ -1045,7 +1024,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         ) as any;
     };
     whereIsNull<
-        TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>
+        TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -1060,25 +1039,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         typeNarrowDelegate : TypeNarrowDelegateT
     ) : (
-        ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
-            SelectBuilder<ReplaceValue2<
-                DataT,
-                "joins",
-                JoinCollectionUtil.ReplaceColumnType<
-                    DataT["joins"],
-                    TableAliasT,
-                    ColumnNameT,
-                    null
-                >,
-                "selects",
-                SelectCollectionUtil.ReplaceSelectType<
-                    DataT["selects"],
-                    TableAliasT,
-                    ColumnNameT,
-                    null
-                >
-            >> :
-            (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
+        SelectBuilderUtil.WhereIsNull<
+            this,
+            TypeNarrowDelegateT
+        >
     ) {
         this.assertAfterFrom();
         this.assertBeforeUnion();
@@ -1097,7 +1061,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         ) as any;
     };
     whereIsEqual<
-        TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>,
+        TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>,
         ConstT extends boolean|number|string
     > (
         this : SelectBuilder<{
@@ -1114,25 +1078,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         typeNarrowDelegate : TypeNarrowDelegateT,
         value : ConstT
     ) : (
-        ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
-            SelectBuilder<ReplaceValue2<
-                DataT,
-                "joins",
-                JoinCollectionUtil.ReplaceColumnType<
-                    DataT["joins"],
-                    TableAliasT,
-                    ColumnNameT,
-                    ConstT
-                >,
-                "selects",
-                SelectCollectionUtil.ReplaceSelectType<
-                    DataT["selects"],
-                    TableAliasT,
-                    ColumnNameT,
-                    ConstT
-                >
-            >> :
-            (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
+        SelectBuilderUtil.WhereIsEqual<
+            this,
+            TypeNarrowDelegateT,
+            ConstT
+        >
     ) {
         this.assertAfterFrom();
         this.assertBeforeUnion();

@@ -9,6 +9,8 @@ import {JoinFromDelegate} from "./join-from-delegate";
 import {JoinToDelegate} from "./join-to-delegate";
 import {AggregateDelegateUtil} from "./aggregate-delegate";
 import {FetchRow} from "./fetch-row";
+import {TypeNarrowDelegate} from "./type-narrow-delegate";
+import {Column} from "./column";
 
 export namespace SelectBuilderUtil {
     export type CleanData = {
@@ -227,6 +229,103 @@ export namespace SelectBuilderUtil {
                     >,
                     DataT["aggregateDelegate"]
                 >
+            ) :
+            never
+    );
+    export type WhereIsNotNull<
+        SelectBuilderT extends AnySelectBuilder,
+        TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT["data"]["joins"]>
+    > = (
+        SelectBuilderT extends SelectBuilder<infer DataT> ?
+            (
+                ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
+                    SelectBuilder<{
+                        readonly [key in keyof DataT] : (
+                            key extends "joins" ?
+                            JoinCollectionUtil.ReplaceColumnType<
+                                DataT["joins"],
+                                TableAliasT,
+                                ColumnNameT,
+                                Exclude<
+                                    TypeT,
+                                    null|undefined
+                                >
+                            > :
+                            key extends "selects" ?
+                            SelectCollectionUtil.ReplaceSelectType<
+                                DataT["selects"],
+                                TableAliasT,
+                                ColumnNameT,
+                                Exclude<
+                                    TypeT,
+                                    null|undefined
+                                >
+                            > :
+                            DataT[key]
+                        )
+                    }> :
+                    (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
+            ) :
+            never
+    );
+    export type WhereIsNull<
+        SelectBuilderT extends AnySelectBuilder,
+        TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT["data"]["joins"]>
+    > = (
+        SelectBuilderT extends SelectBuilder<infer DataT> ?
+            (
+                ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
+                    SelectBuilder<{
+                        readonly [key in keyof DataT] : (
+                            key extends "joins" ?
+                            JoinCollectionUtil.ReplaceColumnType<
+                                DataT["joins"],
+                                TableAliasT,
+                                ColumnNameT,
+                                null
+                            > :
+                            key extends "selects" ?
+                            SelectCollectionUtil.ReplaceSelectType<
+                                DataT["selects"],
+                                TableAliasT,
+                                ColumnNameT,
+                                null
+                            > :
+                            DataT[key]
+                        )
+                    }> :
+                    (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
+            ) :
+            never
+    );
+    export type WhereIsEqual<
+        SelectBuilderT extends AnySelectBuilder,
+        TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT["data"]["joins"]>,
+        ConstT extends boolean|number|string
+    > = (
+        SelectBuilderT extends SelectBuilder<infer DataT> ?
+            (
+                ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
+                    SelectBuilder<{
+                        readonly [key in keyof DataT] : (
+                            key extends "joins" ?
+                            JoinCollectionUtil.ReplaceColumnType<
+                                DataT["joins"],
+                                TableAliasT,
+                                ColumnNameT,
+                                ConstT
+                            > :
+                            key extends "selects" ?
+                            SelectCollectionUtil.ReplaceSelectType<
+                                DataT["selects"],
+                                TableAliasT,
+                                ColumnNameT,
+                                ConstT
+                            > :
+                            DataT[key]
+                        )
+                    }> :
+                    (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
             ) :
             never
     );
