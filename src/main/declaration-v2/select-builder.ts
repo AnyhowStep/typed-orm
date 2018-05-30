@@ -18,7 +18,7 @@ import {Join, JoinType} from "./join";
 import {SelectCollection, SelectCollectionUtil} from "./select-collection";
 import {SelectDelegate} from "./select-delegate";
 import {FetchRow, FetchRowUtil} from "./fetch-row";
-import {AggregateDelegate, AggregateDelegateUtil} from "./aggregate-delegate";
+import {AggregateDelegate} from "./aggregate-delegate";
 import {TypeNarrowDelegate, TypeNarrowDelegateUtil} from "./type-narrow-delegate";
 import {Column, AnyColumn} from "./column";
 import * as invalid from "./invalid";
@@ -622,13 +622,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
     ) : (
-        Promise<AggregateDelegateUtil.AggregatedRow<
-            FetchRow<
-                DataT["joins"],
-                SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
-            >,
-            DataT["aggregateDelegate"]
-        >[]>
+        Promise<SelectBuilderUtil.AggregatedRow<this>[]>
     ) {
         this.assertAfterSelect();
 
@@ -653,13 +647,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
     ) : (
-        Promise<AggregateDelegateUtil.AggregatedRow<
-            FetchRow<
-                this["data"]["joins"],
-                SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>
-            >,
-            this["data"]["aggregateDelegate"]
-        >>
+        Promise<SelectBuilderUtil.AggregatedRow<this>>
     ) {
         this.assertAfterSelect();
 
@@ -686,13 +674,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         Promise<
             undefined|
-            AggregateDelegateUtil.AggregatedRow<
-                FetchRow<
-                this["data"]["joins"],
-                    SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>
-                >,
-                this["data"]["aggregateDelegate"]
-            >
+            SelectBuilderUtil.AggregatedRow<this>
         >
     ) {
         this.assertAfterSelect();
@@ -812,13 +794,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         rawPaginationArgs : RawPaginationArgs = {}
     ) : (
         Promise<PaginateResult<
-            AggregateDelegateUtil.AggregatedRow<
-                FetchRow<
-                this["data"]["joins"],
-                    SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>
-                >,
-                this["data"]["aggregateDelegate"]
-            >
+            SelectBuilderUtil.AggregatedRow<this>
         >>
     ) {
         this.assertAfterSelect();

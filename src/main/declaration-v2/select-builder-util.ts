@@ -7,6 +7,8 @@ import {JoinCollectionUtil} from "./join-collection";
 import * as invalid from "./invalid";
 import {JoinFromDelegate} from "./join-from-delegate";
 import {JoinToDelegate} from "./join-to-delegate";
+import {AggregateDelegateUtil} from "./aggregate-delegate";
+import {FetchRow} from "./fetch-row";
 
 export namespace SelectBuilderUtil {
     export type CleanData = {
@@ -212,4 +214,24 @@ export namespace SelectBuilderUtil {
             }
         ), s.extraData) as any;
     }
+
+    export type AggregatedRow<
+        SelectBuilderT extends AnySelectBuilder
+    > = (
+        SelectBuilderT extends SelectBuilder<infer DataT> ?
+            (
+                AggregateDelegateUtil.AggregatedRow<
+                    FetchRow<
+                        DataT["joins"],
+                        SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+                    >,
+                    DataT["aggregateDelegate"]
+                >
+            ) :
+            never
+    );
 }
+//Convenience
+export type AggregatedRow<SelectBuilderT extends AnySelectBuilder> = (
+    SelectBuilderUtil.AggregatedRow<SelectBuilderT>
+);

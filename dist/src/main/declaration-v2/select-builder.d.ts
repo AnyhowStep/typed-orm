@@ -7,7 +7,7 @@ import { Join } from "./join";
 import { SelectCollection, SelectCollectionUtil } from "./select-collection";
 import { SelectDelegate } from "./select-delegate";
 import { FetchRow } from "./fetch-row";
-import { AggregateDelegate, AggregateDelegateUtil } from "./aggregate-delegate";
+import { AggregateDelegate } from "./aggregate-delegate";
 import { TypeNarrowDelegate } from "./type-narrow-delegate";
 import { Column } from "./column";
 import * as invalid from "./invalid";
@@ -225,7 +225,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: false;
         parentJoins: any;
-    }>): (Promise<AggregateDelegateUtil.AggregatedRow<FetchRow<DataT["joins"], SelectCollectionUtil.ToColumnReferences<DataT["selects"]>>, DataT["aggregateDelegate"]>[]>);
+    }>): (Promise<SelectBuilderUtil.AggregatedRow<this>[]>);
     fetchOne(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
@@ -235,7 +235,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: false;
         parentJoins: any;
-    }>): (Promise<AggregateDelegateUtil.AggregatedRow<FetchRow<this["data"]["joins"], SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>>, this["data"]["aggregateDelegate"]>>);
+    }>): (Promise<SelectBuilderUtil.AggregatedRow<this>>);
     fetchZeroOrOne(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
@@ -245,7 +245,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: false;
         parentJoins: any;
-    }>): (Promise<undefined | AggregateDelegateUtil.AggregatedRow<FetchRow<this["data"]["joins"], SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>>, this["data"]["aggregateDelegate"]>>);
+    }>): (Promise<undefined | SelectBuilderUtil.AggregatedRow<this>>);
     count(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -275,7 +275,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: false;
         parentJoins: any;
-    }>, rawPaginationArgs?: RawPaginationArgs): (Promise<PaginateResult<AggregateDelegateUtil.AggregatedRow<FetchRow<this["data"]["joins"], SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>>, this["data"]["aggregateDelegate"]>>>);
+    }>, rawPaginationArgs?: RawPaginationArgs): (Promise<PaginateResult<SelectBuilderUtil.AggregatedRow<this>>>);
     fetchValue(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;

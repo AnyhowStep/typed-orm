@@ -6,6 +6,8 @@ import { JoinCollectionUtil } from "./join-collection";
 import * as invalid from "./invalid";
 import { JoinFromDelegate } from "./join-from-delegate";
 import { JoinToDelegate } from "./join-to-delegate";
+import { AggregateDelegateUtil } from "./aggregate-delegate";
+import { FetchRow } from "./fetch-row";
 export declare namespace SelectBuilderUtil {
     type CleanData = {
         hasSelect: false;
@@ -37,4 +39,6 @@ export declare namespace SelectBuilderUtil {
         readonly [key in keyof DataT]: (key extends "selects" ? SelectCollectionUtil.FromJoinCollection<DataT["joins"]> : key extends "hasSelect" ? true : DataT[key]);
     }> : never);
     function selectAll<SelectBuilderT extends AnySelectBuilder>(s: SelectBuilderT): (SelectAll<SelectBuilderT>);
+    type AggregatedRow<SelectBuilderT extends AnySelectBuilder> = (SelectBuilderT extends SelectBuilder<infer DataT> ? (AggregateDelegateUtil.AggregatedRow<FetchRow<DataT["joins"], SelectCollectionUtil.ToColumnReferences<DataT["selects"]>>, DataT["aggregateDelegate"]>) : never);
 }
+export declare type AggregatedRow<SelectBuilderT extends AnySelectBuilder> = (SelectBuilderUtil.AggregatedRow<SelectBuilderT>);
