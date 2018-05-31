@@ -12,7 +12,7 @@ const appKey = o.table(
     }
 )
     .setAutoIncrement(c => c.appKeyId)
-    .setImmutable()
+    .setIsMutable(c => [c.key])
     .build();
 const browserAppKey = o.table(
     "browserAppKey",
@@ -25,8 +25,14 @@ const browserAppKey = o.table(
     .setId(c => c.appKeyId)
     .setIsGenerated(c => [c.appKeyTypeId])
     .addParent(appKey)
+    .setIsMutable(c => [c.referer])
     .build();
-
+/*
+const puacd : o.PolymorphicUpdateAssignmentCollectionDelegate<typeof browserAppKey>;
+const prac : o.PolymorphicRawUpdateAssignmentCollection<typeof browserAppKey>;
+const mcn : o.TableParentCollectionUtil.MutableColumnNames<typeof browserAppKey>;
+const im : o.TableParentCollectionUtil.IsMutable<typeof browserAppKey, "referer">
+*/
 tape(__filename, async (t) => {
     const db = await getDb();
     await db.polymorphicUpdateZeroOrOneByUniqueKey(

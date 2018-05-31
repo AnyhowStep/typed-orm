@@ -330,7 +330,7 @@ export namespace TableParentCollectionUtil {
                 (
                     ColumnNameT extends keyof TableT["columns"] ?
                         (
-                            ColumnNameT extends keyof TableT["data"]["hasDefaultValue"] ?
+                            ColumnNameT extends keyof TableT["data"]["isMutable"] ?
                                 true :
                                 false
                         ) :

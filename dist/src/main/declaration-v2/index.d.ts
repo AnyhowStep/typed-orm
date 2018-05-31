@@ -42,6 +42,7 @@ export * from "./invalid";
 export * from "./math";
 export * from "./obj-util";
 export * from "./polymorphic-insert-value-and-fetch";
+export * from "./polymorphic-update-zero-or-one-by-unique-key";
 export * from "./PooledDatabase";
 export * from "./querify";
 export * from "./select-builder-util";

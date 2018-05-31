@@ -4,8 +4,10 @@ const mysql = require("typed-mysql");
 const table_1 = require("./table");
 const raw_expr_1 = require("./raw-expr");
 const column_references_1 = require("./column-references");
+const column_1 = require("./column");
 const join_collection_1 = require("./join-collection");
 const StringBuilder_1 = require("./StringBuilder");
+const table_2 = require("./table");
 class UpdateBuilder {
     constructor(selectBuilder, assignmentReferences, willIgnoreErrors, db) {
         this.selectBuilder = selectBuilder;
@@ -67,18 +69,37 @@ class UpdateBuilder {
         }
         const result = [];
         for (let tableAlias in assignmentReferences) {
-            if (!assignmentReferences.hasOwnProperty(tableAlias) ||
-                assignmentReferences[tableAlias] == undefined) {
+            const assignmentCollection = assignmentReferences[tableAlias];
+            if (assignmentCollection == undefined) {
                 continue;
             }
+            const join = this.selectBuilder.data.joins
+                .find((join) => join.table.alias == tableAlias);
+            if (join == undefined) {
+                //Silently ignore table aliases that don't exist
+                continue;
+            }
+            const table = join.table;
+            if (!(table instanceof table_2.Table)) {
+                throw new Error(`Cannot update ${table.alias}, it must be a Table instance`);
+            }
             for (let columnName in assignmentReferences[tableAlias]) {
-                if (!assignmentReferences[tableAlias].hasOwnProperty(columnName) ||
-                    assignmentReferences[tableAlias][columnName] == undefined) {
+                const assignmentValue = assignmentCollection[columnName];
+                if (!(table.columns[columnName] instanceof column_1.Column)) {
+                    //Silently ignore extra columns
+                    continue;
+                }
+                if (!table.data.isMutable.hasOwnProperty(columnName)) {
+                    //Silently ignore extra columns
+                    continue;
+                }
+                if (assignmentValue === undefined) {
+                    //Ignore `undefined` columns, it just means don't update the column
                     continue;
                 }
                 result.push({
                     column: mysql.escapeId(tableAlias) + "." + mysql.escapeId(columnName),
-                    rawValue: assignmentReferences[tableAlias][columnName],
+                    rawValue: assignmentValue,
                 });
             }
         }

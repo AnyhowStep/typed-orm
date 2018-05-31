@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const table_1 = require("./table");
 const column_1 = require("../column");
 const unique_key_collection_1 = require("../unique-key-collection");
 var TableUtil;
@@ -40,13 +41,27 @@ var TableUtil;
             if (join == undefined) {
                 throw new Error(`Unknown table alias ${tableAlias} in assignment references`);
             }
+            const table = join.table;
+            if (!(table instanceof table_1.Table)) {
+                throw new Error(`Cannot update ${table.alias}, it must be a Table instance`);
+            }
             const assignmentCollection = assignmentReferences[tableAlias];
             for (let columnName in assignmentCollection) {
                 const column = join.columns[columnName];
                 if (!(column instanceof column_1.Column)) {
-                    throw new Error(`Unknown column ${tableAlias}.${columnName} in assignment references`);
+                    //throw new Error(`Unknown column ${tableAlias}.${columnName} in assignment references`);
+                    //Silently ignore extra columns
+                    continue;
+                }
+                if (!table.data.isMutable.hasOwnProperty(columnName)) {
+                    //Silently ignore extra columns
+                    continue;
                 }
                 const assignmentValue = assignmentCollection[columnName];
+                if (assignmentValue === undefined) {
+                    //Ignore `undefined` columns, it just means don't update the column
+                    continue;
+                }
                 if (!(assignmentValue instanceof Object) || (assignmentValue instanceof Date)) {
                     assignmentCollection[columnName] = column.assertDelegate(columnName, assignmentValue);
                 }
