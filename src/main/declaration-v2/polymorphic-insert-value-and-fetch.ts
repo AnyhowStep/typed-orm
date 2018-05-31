@@ -60,8 +60,8 @@ export async function polymorphicInsertValueAndFetch<
                 continue;
             }
             const expression = await db.getGenerationExpression(column);
-            console.log(expression);
-            console.log(column.tableAlias, column.name);
+            //console.log(expression);
+            //console.log(column.tableAlias, column.name);
             (row as any)[g] = sd.stringToNaturalNumber()(g, expression);
         }
 

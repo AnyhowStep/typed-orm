@@ -31,8 +31,8 @@ function polymorphicInsertValueAndFetch(db, table, row) {
                     continue;
                 }
                 const expression = yield db.getGenerationExpression(column);
-                console.log(expression);
-                console.log(column.tableAlias, column.name);
+                //console.log(expression);
+                //console.log(column.tableAlias, column.name);
                 row[g] = sd.stringToNaturalNumber()(g, expression);
             }
             return db.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
