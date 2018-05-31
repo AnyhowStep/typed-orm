@@ -18,6 +18,10 @@ export declare namespace TableParentCollectionUtil {
         [index in TupleKeys<ParentsT>]: (ParentsT[index] extends Table<any, any, infer ColumnsT, infer DataT> ? (ColumnNameT extends keyof ColumnsT ? (ColumnNameT extends keyof DataT["hasDefaultValue"] ? true : false) : true) : false);
     }[TupleKeys<ParentsT>]);
     function inheritedHasDefaultValue(parents: TableParentCollection, columnName: string): boolean;
+    type InheritedIsMutable<ParentsT extends TableParentCollection, ColumnNameT extends string> = ({
+        [index in TupleKeys<ParentsT>]: (ParentsT[index] extends Table<any, any, infer ColumnsT, infer DataT> ? (ColumnNameT extends keyof ColumnsT ? (ColumnNameT extends keyof DataT["isMutable"] ? true : false) : true) : false);
+    }[TupleKeys<ParentsT>]);
+    function inheritedIsMutable(parents: TableParentCollection, columnName: string): boolean;
     type InheritedGeneratedColumnNames<ParentsT extends TableParentCollection> = ({
         [name in InheritedColumnNames<ParentsT>]: (true extends InheritedIsGenerated<ParentsT, name> ? name : never);
     }[InheritedColumnNames<ParentsT>]);
@@ -26,6 +30,10 @@ export declare namespace TableParentCollectionUtil {
         [name in InheritedColumnNames<ParentsT>]: (InheritedHasDefaultValue<ParentsT, name> extends true ? name : never);
     }[InheritedColumnNames<ParentsT>]);
     function setInheritedHasDefaultValueColumnNames(parents: TableParentCollection, names: Set<string>): void;
+    type InheritedMutableColumnNames<ParentsT extends TableParentCollection> = ({
+        [name in InheritedColumnNames<ParentsT>]: (InheritedIsMutable<ParentsT, name> extends true ? name : never);
+    }[InheritedColumnNames<ParentsT>]);
+    function setInheritedMutableColumnNames(parents: TableParentCollection, names: Set<string>): void;
     type ColumnNames<TableT extends AnyTable> = (TableT["data"]["parentTables"] extends TableParentCollection ? (Extract<keyof TableT["columns"], string> | InheritedColumnNames<TableT["data"]["parentTables"]>) : (Extract<keyof TableT["columns"], string>));
     function columnNames(table: AnyTable): Set<string>;
     type IsGenerated<TableT extends AnyTable, ColumnNameT extends string> = (ColumnNameT extends keyof TableT["data"]["isGenerated"] ? true : TableT["data"]["parentTables"] extends TableParentCollection ? InheritedIsGenerated<TableT["data"]["parentTables"], ColumnNameT> : false);
@@ -33,6 +41,8 @@ export declare namespace TableParentCollectionUtil {
     function tryGetGeneratedNonAutoIncrementColumn(table: AnyTable, columnName: string): AnyColumn | undefined;
     type HasDefaultValue<TableT extends AnyTable, ColumnNameT extends string> = (true extends IsGenerated<TableT, ColumnNameT> ? true : TableT["data"]["parentTables"] extends TableParentCollection ? ((ColumnNameT extends keyof TableT["columns"] ? (ColumnNameT extends keyof TableT["data"]["hasDefaultValue"] ? true : false) : true) | InheritedHasDefaultValue<TableT["data"]["parentTables"], ColumnNameT>) : ColumnNameT extends keyof TableT["columns"] ? (ColumnNameT extends keyof TableT["data"]["hasDefaultValue"] ? true : false) : true);
     function hasDefaultValue(table: AnyTable, columnName: string): boolean;
+    type IsMutable<TableT extends AnyTable, ColumnNameT extends string> = (TableT["data"]["parentTables"] extends TableParentCollection ? ((ColumnNameT extends keyof TableT["columns"] ? (ColumnNameT extends keyof TableT["data"]["hasDefaultValue"] ? true : false) : true) | InheritedIsMutable<TableT["data"]["parentTables"], ColumnNameT>) : ColumnNameT extends keyof TableT["columns"] ? (ColumnNameT extends keyof TableT["data"]["isMutable"] ? true : false) : true);
+    function isMutable(table: AnyTable, columnName: string): boolean;
     type GeneratedColumnNames<TableT extends AnyTable> = ({
         [name in ColumnNames<TableT>]: (true extends IsGenerated<TableT, name> ? name : never);
     }[ColumnNames<TableT>]);
@@ -41,6 +51,10 @@ export declare namespace TableParentCollectionUtil {
         [name in ColumnNames<TableT>]: (HasDefaultValue<TableT, name> extends true ? name : never);
     }[ColumnNames<TableT>]);
     function hasDefaultValueColumnNames(table: AnyTable): string[];
+    type MutableColumnNames<TableT extends AnyTable> = ({
+        [name in ColumnNames<TableT>]: (IsMutable<TableT, name> extends true ? name : never);
+    }[ColumnNames<TableT>]);
+    function mutableColumnNames(table: AnyTable): string[];
     type RequiredColumnNames<TableT extends AnyTable> = (Exclude<ColumnNames<TableT>, HasDefaultValueColumnNames<TableT>>);
     function requiredColumnNames(table: AnyTable): string[];
     type OptionalColumnNames<TableT extends AnyTable> = (Exclude<HasDefaultValueColumnNames<TableT>, GeneratedColumnNames<TableT>>);
@@ -53,4 +67,11 @@ export declare namespace TableParentCollectionUtil {
         [name in TableParentCollectionUtil.ColumnNames<TableT>]: (TableParentCollectionUtil.ColumnType<TableT, name>);
     });
     function assertDelegate<TableT extends AnyTable>(table: TableT): sd.AssertDelegate<TableRow<TableT>>;
+    type FindWithTableAlias<ParentsT extends TableParentCollection, TableAliasT extends string> = ({
+        [index in TupleKeys<ParentsT>]: (ParentsT[index] extends AnyTable ? (ParentsT[index]["alias"] extends TableAliasT ? ParentsT[index] : never) : never);
+    }[TupleKeys<ParentsT>]);
+    type ToInheritedColumnReferences<ParentsT extends TableParentCollection> = (ParentsT[TupleKeys<ParentsT>] extends AnyTable ? {
+        readonly [tableAlias in ParentsT[TupleKeys<ParentsT>]["alias"]]: (FindWithTableAlias<ParentsT, tableAlias>["columns"]);
+    } : {});
+    type ToColumnReferences<TableT extends AnyTable> = (ColumnCollectionUtil.ToColumnReferences<TableT["columns"]> & (TableT["data"]["parentTables"] extends TableParentCollection ? ToInheritedColumnReferences<TableT["data"]["parentTables"]> : {}));
 }

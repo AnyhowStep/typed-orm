@@ -94,7 +94,6 @@ function fetchLatest<
             condition
         ))
         .selectAll()
-        .printQuery()
         .fetchOne();
 }
 

@@ -46,6 +46,15 @@ var TableParentCollectionUtil;
         return true;
     }
     TableParentCollectionUtil.inheritedHasDefaultValue = inheritedHasDefaultValue;
+    function inheritedIsMutable(parents, columnName) {
+        for (let p of parents) {
+            if ((p.columns[columnName] instanceof column_1.Column) && p.data.isMutable[columnName] !== true) {
+                return false;
+            }
+        }
+        return true;
+    }
+    TableParentCollectionUtil.inheritedIsMutable = inheritedIsMutable;
     function setInheritedGeneratedColumnNames(parents, names) {
         for (let p of parents) {
             const columnNames = Object.keys(p.columns)
@@ -68,6 +77,17 @@ var TableParentCollectionUtil;
         }
     }
     TableParentCollectionUtil.setInheritedHasDefaultValueColumnNames = setInheritedHasDefaultValueColumnNames;
+    function setInheritedMutableColumnNames(parents, names) {
+        for (let p of parents) {
+            const columnNames = Object.keys(p.columns)
+                .filter(name => p.columns.hasOwnProperty(name))
+                .filter(name => inheritedIsMutable(parents, name));
+            for (let name of columnNames) {
+                names.add(name);
+            }
+        }
+    }
+    TableParentCollectionUtil.setInheritedMutableColumnNames = setInheritedMutableColumnNames;
     function columnNames(table) {
         const result = new Set();
         for (let name of Object.keys(table.columns)) {
@@ -126,6 +146,22 @@ var TableParentCollectionUtil;
         }
     }
     TableParentCollectionUtil.hasDefaultValue = hasDefaultValue;
+    function isMutable(table, columnName) {
+        if ((table.columns[columnName] instanceof column_1.Column) &&
+            table.data.isMutable[columnName] !== true) {
+            return false;
+        }
+        //The current table either doesn't have the column, or it is mutable
+        if (table.data.parentTables == undefined) {
+            //No parents, so we have the final say
+            return true;
+        }
+        else {
+            //The parents must also have it as a default
+            return inheritedIsMutable(table.data.parentTables, columnName);
+        }
+    }
+    TableParentCollectionUtil.isMutable = isMutable;
     function generatedColumnNames(table) {
         return [...columnNames(table)]
             .filter(name => isGenerated(table, name));
@@ -136,6 +172,11 @@ var TableParentCollectionUtil;
             .filter(name => hasDefaultValue(table, name));
     }
     TableParentCollectionUtil.hasDefaultValueColumnNames = hasDefaultValueColumnNames;
+    function mutableColumnNames(table) {
+        return [...columnNames(table)]
+            .filter(name => isMutable(table, name));
+    }
+    TableParentCollectionUtil.mutableColumnNames = mutableColumnNames;
     function requiredColumnNames(table) {
         return [...columnNames(table)]
             .filter(name => !hasDefaultValue(table, name));

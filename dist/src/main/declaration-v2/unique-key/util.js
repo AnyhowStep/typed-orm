@@ -17,5 +17,19 @@ var UniqueKeyUtil;
         return sd.schema(...fields);
     }
     UniqueKeyUtil.assertDelegate = assertDelegate;
+    function isEqual(a, b) {
+        for (let aKey in a) {
+            if (a.hasOwnProperty(aKey) && !b.hasOwnProperty(aKey)) {
+                return false;
+            }
+        }
+        for (let bKey in b) {
+            if (b.hasOwnProperty(bKey) && !a.hasOwnProperty(bKey)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    UniqueKeyUtil.isEqual = isEqual;
 })(UniqueKeyUtil = exports.UniqueKeyUtil || (exports.UniqueKeyUtil = {}));
 //# sourceMappingURL=util.js.map

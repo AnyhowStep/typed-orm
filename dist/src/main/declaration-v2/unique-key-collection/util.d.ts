@@ -12,4 +12,5 @@ export declare namespace UniqueKeyCollectionUtil {
         [index in TupleKeys<UniqueKeyCollectionT>]: (UniqueKeyCollectionT[index] extends UniqueKey ? UniqueKeyCollectionT[index] : never);
     }[TupleKeys<UniqueKeyCollectionT>]);
     type CommonUniqueKeys<CollectionA extends UniqueKeyCollection, CollectionB extends UniqueKeyCollection> = (Extract<UniqueKeys<CollectionA>, UniqueKeys<CollectionB>>);
+    function commonUniqueKeys<CollectionA extends UniqueKeyCollection, CollectionB extends UniqueKeyCollection>(collectionA: CollectionA, collectionB: CollectionB): (CommonUniqueKeys<CollectionA, CollectionB>[]);
 }

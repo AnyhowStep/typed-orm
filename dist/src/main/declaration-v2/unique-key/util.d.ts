@@ -8,4 +8,5 @@ export declare namespace UniqueKeyUtil {
         [columnName in Exclude<Extract<keyof ColumnCollectionT, string>, keyof UniqueKeyT>]?: (ReturnType<ColumnCollectionT[columnName]["assertDelegate"]>);
     });
     function assertDelegate<UniqueKeyT extends UniqueKey, ColumnCollectionT extends ColumnCollection>(uniqueKey: UniqueKey, columns: ColumnCollectionT): (sd.AssertDelegate<WithType<UniqueKeyT, ColumnCollectionT>>);
+    function isEqual(a: UniqueKey, b: UniqueKey): boolean;
 }

@@ -17,6 +17,7 @@ const insert_value_builder_1 = require("./insert-value-builder");
 const insert_select_builder_1 = require("./insert-select-builder");
 const informationSchema = require("./information-schema");
 const polymorphic_insert_value_and_fetch_1 = require("./polymorphic-insert-value-and-fetch");
+const polymorphic_update_zero_or_one_by_unique_key_1 = require("./polymorphic-update-zero-or-one-by-unique-key");
 const aliased_table_1 = require("./aliased-table");
 ;
 const aliased_expr_1 = require("./aliased-expr");
@@ -407,6 +408,9 @@ class PooledDatabase extends mysql.PooledDatabase {
     }
     polymorphicInsertValueAndFetch(table, row) {
         return polymorphic_insert_value_and_fetch_1.polymorphicInsertValueAndFetch(this, table, row);
+    }
+    polymorphicUpdateZeroOrOneByUniqueKey(table, uniqueKey, setDelegate) {
+        return polymorphic_update_zero_or_one_by_unique_key_1.polymorphicUpdateZeroOrOneByUniqueKey(this, table, uniqueKey, setDelegate);
     }
 }
 exports.PooledDatabase = PooledDatabase;

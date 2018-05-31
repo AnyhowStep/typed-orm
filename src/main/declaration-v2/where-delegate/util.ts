@@ -52,7 +52,6 @@ export namespace WhereDelegateUtil {
             ColumnReferencesUtil.toConvenient(columnReferences) as any,
             selectBuilder
         );
-        console.log(columnReferences);
         ColumnReferencesUtil.assertHasColumnReferences(
             columnReferences,
             where.usedReferences as any

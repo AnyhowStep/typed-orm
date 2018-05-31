@@ -4,7 +4,7 @@ import {SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-buil
 import {Join, JoinType} from "./join";
 import {AnyAliasedTable} from "./aliased-table";;
 import {SelectDelegate} from "./select-delegate";
-import {Table, AnyTable, TableUtil} from "./table";
+import {Table, AnyTable, TableUtil, UniqueKeys} from "./table";
 import {RawInsertValueRow, InsertValueBuilder} from "./insert-value-builder";
 import {InsertAssignmentCollectionDelegate, InsertSelectBuilder, InsertSelectBuilderConvenientDelegate} from "./insert-select-builder";
 import {UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate, UpdateResult} from "./update-builder";
@@ -17,6 +17,7 @@ import {SelectCollectionUtil} from "./select-collection";
 import {UniqueKeyCollection} from "./unique-key-collection";
 import * as informationSchema from "./information-schema";
 import {PolymorphicRawInsertValueRow, polymorphicInsertValueAndFetch} from "./polymorphic-insert-value-and-fetch";
+import {PolymorphicUpdateAssignmentCollectionDelegate, polymorphicUpdateZeroOrOneByUniqueKey} from "./polymorphic-update-zero-or-one-by-unique-key";
 
 import {AliasedTable} from "./aliased-table";;
 import {AliasedExpr} from "./aliased-expr";
@@ -665,6 +666,18 @@ export class PooledDatabase extends mysql.PooledDatabase {
             this,
             table,
             row
+        );
+    }
+    polymorphicUpdateZeroOrOneByUniqueKey<TableT extends AnyTable> (
+        table : TableT,
+        uniqueKey : UniqueKeys<TableT>,
+        setDelegate : PolymorphicUpdateAssignmentCollectionDelegate<TableT>
+    ) {
+        return polymorphicUpdateZeroOrOneByUniqueKey(
+            this,
+            table,
+            uniqueKey,
+            setDelegate
         );
     }
 }

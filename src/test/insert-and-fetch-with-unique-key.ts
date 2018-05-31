@@ -18,9 +18,13 @@ const user = o.table(
 
 tape(__filename, async (t) => {
     const db = await getDb();
+    const expectedUserId = "user @ " + (new Date()).toString();
     await db.insertValueAndFetch(user, {
         appId : 1,
-        userId : "user @ " + (new Date()).toString()
-    }).then(console.log);
+        userId : expectedUserId
+    }).then((result) => {
+        t.equals(result.appId, 1);
+        t.equals(result.userId, expectedUserId);
+    });
     t.end();
 });

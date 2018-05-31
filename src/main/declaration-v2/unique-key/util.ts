@@ -44,4 +44,17 @@ export namespace UniqueKeyUtil {
         }
         return sd.schema(...fields) as any;
     }
+    export function isEqual (a : UniqueKey, b : UniqueKey) : boolean {
+        for (let aKey in a) {
+            if (a.hasOwnProperty(aKey) && !b.hasOwnProperty(aKey)) {
+                return false;
+            }
+        }
+        for (let bKey in b) {
+            if (b.hasOwnProperty(bKey) && !a.hasOwnProperty(bKey)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

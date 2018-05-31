@@ -25,7 +25,6 @@ var WhereDelegateUtil;
     function execute(selectBuilder, delegate) {
         const columnReferences = toColumnReferences(selectBuilder);
         const where = delegate(column_references_1.ColumnReferencesUtil.toConvenient(columnReferences), selectBuilder);
-        console.log(columnReferences);
         column_references_1.ColumnReferencesUtil.assertHasColumnReferences(columnReferences, where.usedReferences);
         return where;
     }

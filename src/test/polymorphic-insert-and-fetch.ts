@@ -32,9 +32,14 @@ const ocn : o.TableParentCollectionUtil.OptionalColumnNames<typeof browserAppKey
 */
 tape(__filename, async (t) => {
     const db = await getDb();
+    const expectedKey = "Created Key @ " + (new Date()).toString();
+    const expectedReferer = "Created Referer @ " + (new Date()).toString();
     await db.polymorphicInsertValueAndFetch(browserAppKey, {
-        key : "Created @ " + (new Date()).toString(),
-        referer : "some referer"
-    }).then(console.log);
+        key : expectedKey,
+        referer : expectedReferer
+    }).then((result) => {
+        t.equals(result.key, expectedKey);
+        t.equals(result.referer, expectedReferer);
+    });
     t.end();
 });

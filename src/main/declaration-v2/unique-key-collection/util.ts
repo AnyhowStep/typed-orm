@@ -53,4 +53,28 @@ export namespace UniqueKeyCollectionUtil {
             UniqueKeys<CollectionB>
         >
     );
+
+    export function commonUniqueKeys<
+        CollectionA extends UniqueKeyCollection,
+        CollectionB extends UniqueKeyCollection
+    > (
+        collectionA : CollectionA,
+        collectionB : CollectionB
+    ) : (
+        CommonUniqueKeys<
+            CollectionA,
+            CollectionB
+        >[]
+    ) {
+        const result : UniqueKey[] = [];
+        for (let a of collectionA) {
+            for (let b of collectionB) {
+                if (UniqueKeyUtil.isEqual(a, b)) {
+                    result.push(a);
+                    break;
+                }
+            }
+        }
+        return result as any;
+    }
 }

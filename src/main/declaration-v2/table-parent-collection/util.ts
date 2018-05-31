@@ -68,8 +68,8 @@ export namespace TableParentCollectionUtil {
     }
     //If all parents have a default value, then the column has a default value
     //HasDefaultValue<> extends true ?
-    //  column is required, no default value :
-    //  column has default value
+    //  column has default value :
+    //  column is required, no default value
     export type InheritedHasDefaultValue<
         ParentsT extends TableParentCollection,
         ColumnNameT extends string
@@ -102,6 +102,41 @@ export namespace TableParentCollectionUtil {
         }
         for (let p of parents) {
             if ((p.columns[columnName] instanceof Column) && p.data.hasDefaultValue[columnName] !== true) {
+                return false;
+            }
+        }
+        return true;
+    }
+    //If all parents say the column is mutable, then the column is mutable
+    //IsMutable<> extends true ?
+    //  column is mutable :
+    //  column is not mutable
+    export type InheritedIsMutable<
+        ParentsT extends TableParentCollection,
+        ColumnNameT extends string
+    > = (
+        {
+            [index in TupleKeys<ParentsT>] : (
+                ParentsT[index] extends Table<any, any, infer ColumnsT, infer DataT> ?
+                    (
+                        ColumnNameT extends keyof ColumnsT ?
+                            (
+                                ColumnNameT extends keyof DataT["isMutable"] ?
+                                    true :
+                                    false
+                            ) :
+                            //This parent doesn't even have this column.
+                            //We just mark it as mutable, anyway
+                            true
+                    ) :
+                    //Not a table?
+                    false
+            )
+        }[TupleKeys<ParentsT>]
+    );
+    export function inheritedIsMutable (parents : TableParentCollection, columnName : string) : boolean {
+        for (let p of parents) {
+            if ((p.columns[columnName] instanceof Column) && p.data.isMutable[columnName] !== true) {
                 return false;
             }
         }
@@ -140,6 +175,25 @@ export namespace TableParentCollectionUtil {
             const columnNames = Object.keys(p.columns)
                 .filter(name => p.columns.hasOwnProperty(name))
                 .filter(name => inheritedHasDefaultValue(parents, name));
+            for (let name of columnNames) {
+                names.add(name);
+            }
+        }
+    }
+    export type InheritedMutableColumnNames<ParentsT extends TableParentCollection> = (
+        {
+            [name in InheritedColumnNames<ParentsT>] : (
+                InheritedIsMutable<ParentsT, name> extends true ?
+                    name :
+                    never
+            )
+        }[InheritedColumnNames<ParentsT>]
+    );
+    export function setInheritedMutableColumnNames (parents : TableParentCollection, names : Set<string>) {
+        for (let p of parents) {
+            const columnNames = Object.keys(p.columns)
+                .filter(name => p.columns.hasOwnProperty(name))
+                .filter(name => inheritedIsMutable(parents, name));
             for (let name of columnNames) {
                 names.add(name);
             }
@@ -210,8 +264,8 @@ export namespace TableParentCollectionUtil {
         }
     }
     //HasDefaultValue<> extends true ?
-    //  column is required, no default value :
-    //  column has default value
+    //  column has default value :
+    //  column is required, no default value
     export type HasDefaultValue<
         TableT extends AnyTable,
         ColumnNameT extends string
@@ -264,6 +318,53 @@ export namespace TableParentCollectionUtil {
             return inheritedHasDefaultValue(table.data.parentTables, columnName);
         }
     }
+    //IsMutable<> extends true ?
+    //  column is mutable :
+    //  column is not mutable
+    export type IsMutable<
+        TableT extends AnyTable,
+        ColumnNameT extends string
+    > = (
+        TableT["data"]["parentTables"] extends TableParentCollection ?
+            (
+                (
+                    ColumnNameT extends keyof TableT["columns"] ?
+                        (
+                            ColumnNameT extends keyof TableT["data"]["hasDefaultValue"] ?
+                                true :
+                                false
+                        ) :
+                        //TableT does not have ColumnNameT, we mark it as mutable anyway
+                        true
+                ) |
+                InheritedIsMutable<TableT["data"]["parentTables"], ColumnNameT>
+            ) :
+            ColumnNameT extends keyof TableT["columns"] ?
+                (
+                    ColumnNameT extends keyof TableT["data"]["isMutable"] ?
+                        true :
+                        false
+                ) :
+                //TableT does not have ColumnNameT, we mark it as mutable anyway
+                true
+    );
+    export function isMutable (table : AnyTable, columnName : string) : boolean {
+        if (
+            (table.columns[columnName] instanceof Column) &&
+            table.data.isMutable[columnName] !== true
+        ) {
+            return false;
+        }
+
+        //The current table either doesn't have the column, or it is mutable
+        if (table.data.parentTables == undefined) {
+            //No parents, so we have the final say
+            return true;
+        } else {
+            //The parents must also have it as a default
+            return inheritedIsMutable(table.data.parentTables, columnName);
+        }
+    }
     export type GeneratedColumnNames<TableT extends AnyTable> = (
         {
             [name in ColumnNames<TableT>] : (
@@ -289,6 +390,19 @@ export namespace TableParentCollectionUtil {
     export function hasDefaultValueColumnNames (table : AnyTable) {
         return [...columnNames(table)]
             .filter(name => hasDefaultValue(table, name));
+    }
+    export type MutableColumnNames<TableT extends AnyTable> = (
+        {
+            [name in ColumnNames<TableT>] : (
+                IsMutable<TableT, name> extends true ?
+                    name :
+                    never
+            )
+        }[ColumnNames<TableT>]
+    );
+    export function mutableColumnNames (table : AnyTable) {
+        return [...columnNames(table)]
+            .filter(name => isMutable(table, name));
     }
     export type RequiredColumnNames<TableT extends AnyTable> = (
         Exclude<
@@ -419,4 +533,39 @@ export namespace TableParentCollectionUtil {
         });
         return sd.schema(...fields);
     }
+
+    export type FindWithTableAlias<ParentsT extends TableParentCollection, TableAliasT extends string> = (
+        {
+            [index in TupleKeys<ParentsT>] : (
+                ParentsT[index] extends AnyTable ?
+                    (
+                        ParentsT[index]["alias"] extends TableAliasT ?
+                            ParentsT[index] :
+                            never
+                    ) :
+                    never
+            )
+        }[TupleKeys<ParentsT>]
+    );
+    export type ToInheritedColumnReferences<
+        ParentsT extends TableParentCollection
+    > = (
+        ParentsT[TupleKeys<ParentsT>] extends AnyTable ?
+            {
+                readonly [tableAlias in ParentsT[TupleKeys<ParentsT>]["alias"]] : (
+                    FindWithTableAlias<ParentsT, tableAlias>["columns"]
+                )
+            } :
+            {}
+    );
+    export type ToColumnReferences<
+        TableT extends AnyTable
+    > = (
+        ColumnCollectionUtil.ToColumnReferences<TableT["columns"]> &
+        (
+            TableT["data"]["parentTables"] extends TableParentCollection ?
+                ToInheritedColumnReferences<TableT["data"]["parentTables"]> :
+                {}
+        )
+    );
 }
