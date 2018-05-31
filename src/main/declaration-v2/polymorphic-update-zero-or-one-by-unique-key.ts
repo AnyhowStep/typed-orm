@@ -26,7 +26,12 @@ import {UniqueKeyCollectionUtil} from "./unique-key-collection";
 import {TableData} from "./table-data";
 import {UpdateResult} from "./update-builder";
 
-export type PolymorphicUpdateResult = UpdateResult;
+export type PolymorphicUpdateResult = (
+    UpdateResult &
+    {
+        exists : boolean,
+    }
+);
 
 export type PolymorphicRawUpdateAssignmentType<
     TableT extends AnyTable,
@@ -175,9 +180,11 @@ export async function polymorphicUpdateZeroOrOneByUniqueKey<
                     if (t.columns.hasOwnProperty(columnName)) {
                         if (result[t.alias] == undefined) {
                             result[t.alias] = {};
-                            tablesToUpdate.add(t.alias);
                         }
                         result[t.alias][columnName] = value;
+                        if (value !== undefined) {
+                            tablesToUpdate.add(t.alias);
+                        }
                     }
                 }
             }
@@ -200,19 +207,21 @@ export async function polymorphicUpdateZeroOrOneByUniqueKey<
             if (exists) {
                 return {
                     ...updateResult,
-                    //Just to say that at least it exists
-                    affectedRows : 1,
-                    foundRowCount : 1,
+                    exists : true,
                 };
             } else {
                 return {
                     ...updateResult,
-                    affectedRows : 0,
-                    foundRowCount : 0,
+                    exists : false,
                 };
             }
         }
 
-        return updateResult;
+        return {
+            ...updateResult,
+            exists : (updateResult.foundRowCount > 0) ?
+                true :
+                false
+        };
     });
 }

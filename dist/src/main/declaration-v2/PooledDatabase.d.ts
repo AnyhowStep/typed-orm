@@ -143,5 +143,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     polymorphicUpdateZeroOrOneByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: UniqueKeys<TableT>, setDelegate: PolymorphicUpdateAssignmentCollectionDelegate<TableT>): Promise<mysql.MysqlUpdateResult & {
         foundRowCount: number;
         updatedRowCount: number;
+    } & {
+        exists: boolean;
     }>;
 }

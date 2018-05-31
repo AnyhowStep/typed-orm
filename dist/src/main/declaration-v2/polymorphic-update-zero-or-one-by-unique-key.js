@@ -78,9 +78,11 @@ function polymorphicUpdateZeroOrOneByUniqueKey(db, table, uniqueKey, setDelegate
                         if (t.columns.hasOwnProperty(columnName)) {
                             if (result[t.alias] == undefined) {
                                 result[t.alias] = {};
-                                tablesToUpdate.add(t.alias);
                             }
                             result[t.alias][columnName] = value;
+                            if (value !== undefined) {
+                                tablesToUpdate.add(t.alias);
+                            }
                         }
                     }
                 }
@@ -96,15 +98,15 @@ function polymorphicUpdateZeroOrOneByUniqueKey(db, table, uniqueKey, setDelegate
                 //No update was even attempted, probably an empty SET clause
                 const exists = yield s.exists();
                 if (exists) {
-                    return Object.assign({}, updateResult, { 
-                        //Just to say that at least it exists
-                        affectedRows: 1, foundRowCount: 1 });
+                    return Object.assign({}, updateResult, { exists: true });
                 }
                 else {
-                    return Object.assign({}, updateResult, { affectedRows: 0, foundRowCount: 0 });
+                    return Object.assign({}, updateResult, { exists: false });
                 }
             }
-            return updateResult;
+            return Object.assign({}, updateResult, { exists: (updateResult.foundRowCount > 0) ?
+                    true :
+                    false });
         }));
     });
 }

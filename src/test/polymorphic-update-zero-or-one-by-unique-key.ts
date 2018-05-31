@@ -72,7 +72,48 @@ tape(__filename, async (t) => {
                     c.appKey.appKeyId,
                     " @ ",
                     (new Date()).toString(),
-                    "-1"
+                    "-1a"
+                )
+            }
+        }
+    ).then((result) => {
+        t.equals(result.foundRowCount, 1);
+        t.equals(result.updatedRowCount, 1);
+    });
+    await db.polymorphicUpdateZeroOrOneByUniqueKey(
+        browserAppKey,
+        {
+            appKeyId : 1
+        },
+        (c) => {
+            return {
+                referer : o.concat(
+                    "updated referer of app key ",
+                    c.appKey.appKeyId,
+                    " @ ",
+                    (new Date()).toString(),
+                    "-1b"
+                ),
+                key : undefined,
+            }
+        }
+    ).then((result) => {
+        t.equals(result.foundRowCount, 1);
+        t.equals(result.updatedRowCount, 1);
+    });
+    await db.polymorphicUpdateZeroOrOneByUniqueKey(
+        browserAppKey,
+        {
+            appKeyId : 1
+        },
+        (c) => {
+            return {
+                key : o.concat(
+                    "updated key of app key ",
+                    c.appKey.appKeyId,
+                    " @ ",
+                    (new Date()).toString(),
+                    "-2a"
                 )
             }
         }
@@ -92,8 +133,9 @@ tape(__filename, async (t) => {
                     c.appKey.appKeyId,
                     " @ ",
                     (new Date()).toString(),
-                    "-2"
-                )
+                    "-2b"
+                ),
+                referer : undefined
             }
         }
     ).then((result) => {
@@ -136,7 +178,37 @@ tape(__filename, async (t) => {
         },
         (c) => {
             return {
+                referer : c.browserAppKey.referer,
+                key : undefined
+            }
+        }
+    ).then((result) => {
+        t.equals(result.foundRowCount, 1);
+        t.equals(result.updatedRowCount, 0);
+    });
+    await db.polymorphicUpdateZeroOrOneByUniqueKey(
+        browserAppKey,
+        {
+            appKeyId : 1
+        },
+        (c) => {
+            return {
                 key : c.appKey.key
+            }
+        }
+    ).then((result) => {
+        t.equals(result.foundRowCount, 1);
+        t.equals(result.updatedRowCount, 0);
+    });
+    await db.polymorphicUpdateZeroOrOneByUniqueKey(
+        browserAppKey,
+        {
+            appKeyId : 1
+        },
+        (c) => {
+            return {
+                key : c.appKey.key,
+                referer : undefined
             }
         }
     ).then((result) => {
@@ -152,8 +224,25 @@ tape(__filename, async (t) => {
             return {}
         }
     ).then((result) => {
-        t.equals(result.foundRowCount, 1);
+        t.equals(result.foundRowCount, -1);
         t.equals(result.updatedRowCount, 0);
+        t.equals(result.exists, true);
+    });
+    await db.polymorphicUpdateZeroOrOneByUniqueKey(
+        browserAppKey,
+        {
+            appKeyId : 1
+        },
+        () => {
+            return {
+                key : undefined,
+                referer : undefined
+            }
+        }
+    ).then((result) => {
+        t.equals(result.foundRowCount, -1);
+        t.equals(result.updatedRowCount, 0);
+        t.equals(result.exists, true);
     });
     await db.polymorphicUpdateZeroOrOneByUniqueKey(
         browserAppKey,

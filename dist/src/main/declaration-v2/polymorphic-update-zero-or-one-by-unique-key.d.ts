@@ -6,7 +6,9 @@ import { Column } from "./column";
 import { PooledDatabase } from "./PooledDatabase";
 import { TableParentCollectionUtil } from "./table-parent-collection";
 import { UpdateResult } from "./update-builder";
-export declare type PolymorphicUpdateResult = UpdateResult;
+export declare type PolymorphicUpdateResult = (UpdateResult & {
+    exists: boolean;
+});
 export declare type PolymorphicRawUpdateAssignmentType<TableT extends AnyTable, ColumnNameT extends string> = (Extract<TableParentCollectionUtil.ColumnType<TableT, ColumnNameT>, AllowedExprConstant>);
 export declare type PolymorphicRawUpdateAssignment<TableT extends AnyTable, ColumnNameT extends string> = (PolymorphicRawUpdateAssignmentType<TableT, ColumnNameT> | Extract<ColumnReferencesUtil.Columns<TableParentCollectionUtil.ToColumnReferences<TableT>>, Column<any, any, PolymorphicRawUpdateAssignmentType<TableT, ColumnNameT>>> | Expr<ColumnReferencesUtil.Partial<TableParentCollectionUtil.ToColumnReferences<TableT>>, PolymorphicRawUpdateAssignmentType<TableT, ColumnNameT>> | SelectValueBuilder<PolymorphicRawUpdateAssignmentType<TableT, ColumnNameT>>);
 export declare type PolymorphicRawUpdateAssignmentCollection<TableT extends AnyTable> = ({
