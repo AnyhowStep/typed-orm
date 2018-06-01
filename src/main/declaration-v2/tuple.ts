@@ -88,7 +88,11 @@ export type TupleLength<TupleT extends Tuple<any>> = (
     TupleT extends {"3":any} ? 4 :
     TupleT extends {"2":any} ? 3 :
     TupleT extends {"1":any} ? 2 :
-    TupleT extends {"0":any} ? 1 :
+    TupleT extends {"0":any} ? (
+        TupleT extends { length : 1 } ?
+            1 :
+            number
+    ) :
     never
 );
 

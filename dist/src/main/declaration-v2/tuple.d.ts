@@ -45,7 +45,9 @@ export declare type TupleLength<TupleT extends Tuple<any>> = (TupleT extends {
     "1": any;
 } ? 2 : TupleT extends {
     "0": any;
-} ? 1 : never);
+} ? (TupleT extends {
+    length: 1;
+} ? 1 : number) : never);
 export declare type TupleWiden<TupleT extends Tuple<any>, WidenT> = (TupleT extends Tuple<infer TypeT> ? (TypeT extends WidenT ? ({
     [index in TupleKeys<TupleT>]: TupleT[index];
 } & {
