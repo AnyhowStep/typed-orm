@@ -167,4 +167,17 @@ export namespace TableUtil {
             table.columns
         ) as any;
     }
+    export function minimalUniqueKeyAssertDelegate<
+        TableT extends AnyTable
+    > (table : TableT) : sd.AssertDelegate<UniqueKeys<TableT>> {
+        if (table.data.uniqueKeys == undefined) {
+            return ((name : string, _mixed : any) : never => {
+                throw new Error(`${name} is not a unique key of ${table.alias}; the table has no unique keys`);
+            }) as any;
+        }
+        return UniqueKeyCollectionUtil.minimalAssertDelegate(
+            table.data.uniqueKeys,
+            table.columns
+        ) as any;
+    }
 }

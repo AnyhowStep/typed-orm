@@ -27,4 +27,5 @@ export declare namespace TableUtil {
     }>));
     type UniqueKeys<TableT extends AnyTable> = (TableT["data"]["uniqueKeys"] extends never ? any : TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ? UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeys"], TableT["columns"]> : never);
     function uniqueKeyAssertDelegate<TableT extends AnyTable>(table: TableT): sd.AssertDelegate<UniqueKeys<TableT>>;
+    function minimalUniqueKeyAssertDelegate<TableT extends AnyTable>(table: TableT): sd.AssertDelegate<UniqueKeys<TableT>>;
 }

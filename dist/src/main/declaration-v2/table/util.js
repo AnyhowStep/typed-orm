@@ -84,5 +84,14 @@ var TableUtil;
         return unique_key_collection_1.UniqueKeyCollectionUtil.assertDelegate(table.data.uniqueKeys, table.columns);
     }
     TableUtil.uniqueKeyAssertDelegate = uniqueKeyAssertDelegate;
+    function minimalUniqueKeyAssertDelegate(table) {
+        if (table.data.uniqueKeys == undefined) {
+            return ((name, _mixed) => {
+                throw new Error(`${name} is not a unique key of ${table.alias}; the table has no unique keys`);
+            });
+        }
+        return unique_key_collection_1.UniqueKeyCollectionUtil.minimalAssertDelegate(table.data.uniqueKeys, table.columns);
+    }
+    TableUtil.minimalUniqueKeyAssertDelegate = minimalUniqueKeyAssertDelegate;
 })(TableUtil = exports.TableUtil || (exports.TableUtil = {}));
 //# sourceMappingURL=util.js.map

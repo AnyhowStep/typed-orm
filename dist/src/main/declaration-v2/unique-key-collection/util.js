@@ -10,6 +10,12 @@ var UniqueKeyCollectionUtil;
         }));
     }
     UniqueKeyCollectionUtil.assertDelegate = assertDelegate;
+    function minimalAssertDelegate(tuple, columns) {
+        return sd.or(...tuple.map((uniqueKey) => {
+            return unique_key_1.UniqueKeyUtil.minimalAssertDelegate(uniqueKey, columns);
+        }));
+    }
+    UniqueKeyCollectionUtil.minimalAssertDelegate = minimalAssertDelegate;
     function commonUniqueKeys(collectionA, collectionB) {
         const result = [];
         for (let a of collectionA) {

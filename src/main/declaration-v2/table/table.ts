@@ -58,6 +58,20 @@ export class Table<
         }
         return this.uniqueKeyAssertDelegate;
     }
+    private minimalUniqueKeyAssertDelegate : sd.AssertDelegate<MinimalUniqueKeys<this>>|undefined;
+    getMinimalUniqueKeyAssertDelegate () : sd.AssertDelegate<MinimalUniqueKeys<this>> {
+        if (this.minimalUniqueKeyAssertDelegate == undefined) {
+            this.minimalUniqueKeyAssertDelegate = TableUtil.minimalUniqueKeyAssertDelegate(this as any);
+        }
+        return this.minimalUniqueKeyAssertDelegate;
+    }
+
+    public assertUniqueKey (name : string, mixed : any) : UniqueKeys<this> {
+        return this.getUniqueKeyAssertDelegate()(name, mixed);
+    }
+    public assertMinimalUniqueKey (name : string, mixed : any) : MinimalUniqueKeys<this> {
+        return this.getMinimalUniqueKeyAssertDelegate()(name, mixed);
+    }
 }
 
 //TODO, make this <string, string, ColumnCollection, TableData>
@@ -71,5 +85,10 @@ export type TableRow<TableT extends AnyTable> = (
 export type UniqueKeys<TableT extends AnyTable> = (
     TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ?
         UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeys"], TableT["columns"]> :
+        never
+);
+export type MinimalUniqueKeys<TableT extends AnyTable> = (
+    TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ?
+        UniqueKeyCollectionUtil.MinimalWithType<TableT["data"]["uniqueKeys"], TableT["columns"]> :
         never
 );

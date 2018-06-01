@@ -7,6 +7,10 @@ export declare namespace UniqueKeyUtil {
     } & {
         [columnName in Exclude<Extract<keyof ColumnCollectionT, string>, keyof UniqueKeyT>]?: (ReturnType<ColumnCollectionT[columnName]["assertDelegate"]>);
     });
+    type MinimalWithType<UniqueKeyT extends UniqueKey, ColumnCollectionT extends ColumnCollection> = ({
+        [columnName in Extract<Extract<keyof ColumnCollectionT, string>, keyof UniqueKeyT>]: (ReturnType<ColumnCollectionT[columnName]["assertDelegate"]>);
+    });
     function assertDelegate<UniqueKeyT extends UniqueKey, ColumnCollectionT extends ColumnCollection>(uniqueKey: UniqueKey, columns: ColumnCollectionT): (sd.AssertDelegate<WithType<UniqueKeyT, ColumnCollectionT>>);
+    function minimalAssertDelegate<UniqueKeyT extends UniqueKey, ColumnCollectionT extends ColumnCollection>(uniqueKey: UniqueKey, columns: ColumnCollectionT): (sd.AssertDelegate<MinimalWithType<UniqueKeyT, ColumnCollectionT>>);
     function isEqual(a: UniqueKey, b: UniqueKey): boolean;
 }

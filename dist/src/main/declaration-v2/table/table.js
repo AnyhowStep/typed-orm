@@ -21,6 +21,18 @@ class Table extends aliased_table_1.AliasedTable {
         }
         return this.uniqueKeyAssertDelegate;
     }
+    getMinimalUniqueKeyAssertDelegate() {
+        if (this.minimalUniqueKeyAssertDelegate == undefined) {
+            this.minimalUniqueKeyAssertDelegate = util_1.TableUtil.minimalUniqueKeyAssertDelegate(this);
+        }
+        return this.minimalUniqueKeyAssertDelegate;
+    }
+    assertUniqueKey(name, mixed) {
+        return this.getUniqueKeyAssertDelegate()(name, mixed);
+    }
+    assertMinimalUniqueKey(name, mixed) {
+        return this.getMinimalUniqueKeyAssertDelegate()(name, mixed);
+    }
 }
 exports.Table = Table;
 //# sourceMappingURL=table.js.map

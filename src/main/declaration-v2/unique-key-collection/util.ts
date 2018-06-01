@@ -17,6 +17,18 @@ export namespace UniqueKeyCollectionUtil {
             )
         }[TupleKeys<UniqueKeyCollectionT>]
     );
+    export type MinimalWithType<
+        UniqueKeyCollectionT extends UniqueKeyCollection,
+        ColumnCollectionT extends ColumnCollection
+    > = (
+        {
+            [index in TupleKeys<UniqueKeyCollectionT>] : (
+                UniqueKeyCollectionT[index] extends UniqueKey ?
+                    UniqueKeyUtil.MinimalWithType<UniqueKeyCollectionT[index], ColumnCollectionT> :
+                    never
+            )
+        }[TupleKeys<UniqueKeyCollectionT>]
+    );
     export function assertDelegate<
         UniqueKeyCollectionT extends UniqueKeyCollection,
         ColumnCollectionT extends ColumnCollection
@@ -29,6 +41,21 @@ export namespace UniqueKeyCollectionUtil {
         return sd.or(
             ...tuple.map((uniqueKey) => {
                 return UniqueKeyUtil.assertDelegate(uniqueKey, columns)
+            })
+        ) as any;
+    }
+    export function minimalAssertDelegate<
+        UniqueKeyCollectionT extends UniqueKeyCollection,
+        ColumnCollectionT extends ColumnCollection
+    > (
+        tuple : UniqueKeyCollectionT,
+        columns : ColumnCollectionT
+    ) : (
+        sd.AssertDelegate<MinimalWithType<UniqueKeyCollectionT, ColumnCollectionT>>
+    ) {
+        return sd.or(
+            ...tuple.map((uniqueKey) => {
+                return UniqueKeyUtil.minimalAssertDelegate(uniqueKey, columns)
             })
         ) as any;
     }
