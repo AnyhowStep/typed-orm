@@ -8,6 +8,8 @@ __export(require("./coalesce"));
 __export(require("./count"));
 __export(require("./if-null"));
 __export(require("./logical-connective"));
+__export(require("./max"));
+__export(require("./min"));
 __export(require("./now"));
 __export(require("./number-comparison"));
 __export(require("./rand"));

@@ -3,6 +3,8 @@ export * from "./coalesce";
 export * from "./count";
 export * from "./if-null";
 export * from "./logical-connective";
+export * from "./max";
+export * from "./min";
 export * from "./now";
 export * from "./number-comparison";
 export * from "./rand";
