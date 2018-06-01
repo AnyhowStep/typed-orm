@@ -19,8 +19,14 @@ var TableUtil;
                 continue;
             }
             const value = row[name];
-            if (value === undefined && !table.data.hasDefaultValue.hasOwnProperty(name)) {
-                throw new Error(`Expected a value for column ${name} on table ${table.alias}; received undefined`);
+            if (value === undefined) {
+                if (table.data.hasDefaultValue.hasOwnProperty(name)) {
+                    //Optional column, undefined means we don't want to specify a value
+                    continue;
+                }
+                else {
+                    throw new Error(`Expected a value for column ${name} on table ${table.alias}; received undefined`);
+                }
             }
             //If we specify a value, it better match our assertion
             if (!(value instanceof Object) || (value instanceof Date)) {

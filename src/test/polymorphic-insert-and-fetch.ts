@@ -38,14 +38,27 @@ tape(__filename, async (t) => {
         key : expectedKey,
         referer : expectedReferer
     }).then((result) => {
-        t.equals(result.key, expectedKey);
+        t.equals(result.key, expectedKey, "key 0");
         t.equals(result.referer, expectedReferer);
     });
     await db.polymorphicInsertValueAndFetch(browserAppKey, {
         key : expectedKey + "-1",
         referer : null
     }).then((result) => {
-        t.equals(result.key, expectedKey + "-1");
+        t.equals(result.key, expectedKey + "-1", "key 1");
+        t.equals(result.referer, null);
+    });
+    await db.polymorphicInsertValueAndFetch(browserAppKey, {
+        key : expectedKey + "-2"
+    }).then((result) => {
+        t.equals(result.key, expectedKey + "-2", "key 2");
+        t.equals(result.referer, null);
+    });
+    await db.polymorphicInsertValueAndFetch(browserAppKey, {
+        key : expectedKey + "-3",
+        referer : undefined,
+    }).then((result) => {
+        t.equals(result.key, expectedKey + "-3", "key 3");
         t.equals(result.referer, null);
     });
     t.end();
