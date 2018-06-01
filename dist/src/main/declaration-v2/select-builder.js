@@ -385,7 +385,7 @@ class SelectBuilder {
                 return sd.oneOf(false)(name, b);
             });
         }
-        return this.narrow(new column_1.Column(column.tableAlias, column.name, assertDelegate, column.subTableName, column.isSelectReference), e.and(e.isNotNull(column), e.eq(column, value)));
+        return this.narrow(new column_1.Column(column.tableAlias, column.name, assertDelegate, column.subTableName, column.isSelectReference), e.isNotNullAndEq(column, value));
     }
     ;
     //WHERE CLAUSE

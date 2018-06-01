@@ -4,6 +4,7 @@ import {Expr} from "../expr";
 import * as invalid from "../invalid";
 import {ColumnReferencesUtil} from "../column-references";
 import * as variadicUtil from "./variadic-util";
+import {and} from "./logical-connective";
 
 import {SelectBuilder} from "../select-builder";
 import {Column} from "../column";
@@ -72,6 +73,41 @@ export function typeCheckBinaryOp (operator : string) {
 
 export const eq = typeCheckBinaryOp("=");
 export const notEq = typeCheckBinaryOp("!=");
+
+export function isNotNullAndEq<
+    LeftT extends AnyRawExpr,
+    RightT extends AnyRawExpr
+> (left : LeftT, right : RightT) : (
+    Expr<
+        ColumnReferencesUtil.Merge<
+            RawExprUtil.UsedReferences<LeftT>,
+            RawExprUtil.UsedReferences<RightT>
+        >,
+        boolean
+    >
+) {
+    let result : Expr<any, boolean> = booleanExpr(
+        ColumnReferencesUtil.merge(
+            RawExprUtil.usedReferences(left),
+            RawExprUtil.usedReferences(right)
+        ),
+        `${RawExprUtil.querify(left)} = ${RawExprUtil.querify(right)}`
+    );
+    if (RawExprUtil.isNullable(left)) {
+        result = and(
+            isNotNull(left),
+            result
+        );
+    }
+    if (RawExprUtil.isNullable(right)) {
+        result = and(
+            isNotNull(right),
+            result
+        );
+    }
+
+    return result;
+}
 
 //`in` is a reserved keyword
 export function isIn<

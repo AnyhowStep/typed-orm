@@ -19,7 +19,7 @@ const browserAppKey = o.table(
     {
         appKeyId : sd.naturalNumber(),
         appKeyTypeId : sd.oneOf(1),
-        referer : sd.varChar(256)
+        referer : sd.nullable(sd.varChar(256))
     }
 )
     .setId(c => c.appKeyId)
@@ -40,6 +40,13 @@ tape(__filename, async (t) => {
     }).then((result) => {
         t.equals(result.key, expectedKey);
         t.equals(result.referer, expectedReferer);
+    });
+    await db.polymorphicInsertValueAndFetch(browserAppKey, {
+        key : expectedKey + "-1",
+        referer : null
+    }).then((result) => {
+        t.equals(result.key, expectedKey + "-1");
+        t.equals(result.referer, null);
     });
     t.end();
 });

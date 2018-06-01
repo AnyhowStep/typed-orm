@@ -24,6 +24,7 @@ export declare namespace RawExprUtil {
     function assertDelegate<RawExprT extends AnyRawExpr>(raw: RawExprT): (sd.AssertDelegate<Type<RawExprT>>);
     type ToExpr<RawExprT extends AnyRawExpr> = (Expr<UsedReferences<RawExprT>, Type<RawExprT>>);
     function toExpr<RawExprT extends AnyRawExpr>(raw: RawExprT): (ToExpr<RawExprT>);
+    function isNullable(raw: AnyRawExpr): boolean;
     function assertNonNullable(raw: AnyRawExpr): void;
     function toEqualityCondition<TableT extends AnyAliasedTable>(table: TableT, condition: {
         [otherColumnName: string]: any;

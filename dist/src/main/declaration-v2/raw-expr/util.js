@@ -125,6 +125,18 @@ var RawExprUtil;
         return new expr_1.Expr(usedReferences(raw), assertDelegate(raw), querify(raw));
     }
     RawExprUtil.toExpr = toExpr;
+    function isNullable(raw) {
+        try {
+            assertDelegate(raw)("", null);
+        }
+        catch (_err) {
+            //If we encounter an error, we know this raw expression
+            //is non-nullable
+            return false;
+        }
+        return true;
+    }
+    RawExprUtil.isNullable = isNullable;
     function assertNonNullable(raw) {
         try {
             assertDelegate(raw)("", null);

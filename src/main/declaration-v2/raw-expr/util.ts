@@ -185,6 +185,17 @@ export namespace RawExprUtil {
         );
     }
 
+    export function isNullable (raw : AnyRawExpr) {
+        try {
+            assertDelegate(raw)("", null);
+        } catch (_err) {
+            //If we encounter an error, we know this raw expression
+            //is non-nullable
+            return false;
+        }
+
+        return true;
+    }
     export function assertNonNullable (raw : AnyRawExpr) {
         try {
             assertDelegate(raw)("", null);

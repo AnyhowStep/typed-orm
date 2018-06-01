@@ -1094,10 +1094,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 column.subTableName,
                 column.isSelectReference
             ),
-            e.and(
-                e.isNotNull(column),
-                e.eq(column, value) as any
-            )
+            e.isNotNullAndEq(column, value)
         ) as any;
     };
 

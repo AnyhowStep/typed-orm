@@ -4,6 +4,7 @@ const raw_expr_1 = require("../raw-expr");
 const boolean_expr_1 = require("./boolean-expr");
 const column_references_1 = require("../column-references");
 const variadicUtil = require("./variadic-util");
+const logical_connective_1 = require("./logical-connective");
 const select_builder_1 = require("../select-builder");
 const column_1 = require("../column");
 select_builder_1.SelectBuilder;
@@ -30,6 +31,17 @@ function typeCheckBinaryOp(operator) {
 exports.typeCheckBinaryOp = typeCheckBinaryOp;
 exports.eq = typeCheckBinaryOp("=");
 exports.notEq = typeCheckBinaryOp("!=");
+function isNotNullAndEq(left, right) {
+    let result = boolean_expr_1.booleanExpr(column_references_1.ColumnReferencesUtil.merge(raw_expr_1.RawExprUtil.usedReferences(left), raw_expr_1.RawExprUtil.usedReferences(right)), `${raw_expr_1.RawExprUtil.querify(left)} = ${raw_expr_1.RawExprUtil.querify(right)}`);
+    if (raw_expr_1.RawExprUtil.isNullable(left)) {
+        result = logical_connective_1.and(isNotNull(left), result);
+    }
+    if (raw_expr_1.RawExprUtil.isNullable(right)) {
+        result = logical_connective_1.and(isNotNull(right), result);
+    }
+    return result;
+}
+exports.isNotNullAndEq = isNotNullAndEq;
 //`in` is a reserved keyword
 function isIn(left, ...rightArr) {
     const q = variadicUtil.querifyNonNullable(left, ...rightArr);
