@@ -107,6 +107,11 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             id: Column<any, any, number>;
         };
     }>(table: TableT, id: number): Promise<boolean>;
+    existsByUniqueKey<TableT extends AnyTable & {
+        data: {
+            uniqueKeys: UniqueKeyCollection;
+        };
+    }>(table: TableT, uniqueKey: UniqueKeys<TableT>): Promise<boolean>;
     updateZeroOrOneById<TableT extends AnyTable & {
         data: {
             id: Column<any, any, number>;
@@ -123,6 +128,11 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         foundRowCount: 0;
         row: undefined;
     })>);
+    updateZeroOrOneByUniqueKey<TableT extends AnyTable & {
+        data: {
+            uniqueKeys: UniqueKeyCollection;
+        };
+    }>(table: TableT, uniqueKey: UniqueKeys<TableT>, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<UpdateResult>);
     deleteFrom<TableT extends AnyTable>(table: TableT, where: WhereDelegate<ConvenientDeleteSelectBuilder<TableT>>): (DeleteBuilder<ConvenientDeleteSelectBuilder<TableT>, DeleteTables<ConvenientDeleteSelectBuilder<TableT>>>);
     getGenerationExpression(column: AnyColumn): Promise<string>;
     polymorphicInsertValueAndFetch<TableT extends AnyTable>(table: TableT, row: PolymorphicRawInsertValueRow<TableT>): Promise<{ [name in TableT["data"]["parentTables"] extends Table<string, string, {

@@ -18,6 +18,7 @@ import {UniqueKeyCollection} from "./unique-key-collection";
 import * as informationSchema from "./information-schema";
 import {PolymorphicRawInsertValueRow, polymorphicInsertValueAndFetch} from "./polymorphic-insert-value-and-fetch";
 import {PolymorphicUpdateAssignmentCollectionDelegate, polymorphicUpdateZeroOrOneByUniqueKey} from "./polymorphic-update-zero-or-one-by-unique-key";
+import {RawExprUtil} from "./raw-expr";
 
 import {AliasedTable} from "./aliased-table";;
 import {AliasedExpr} from "./aliased-expr";
@@ -256,7 +257,6 @@ export class PooledDatabase extends mysql.PooledDatabase {
             .selectAll()
             .fetchOne();
     }
-    //By auto-increment id, actually
     async fetchZeroOrOneById<TableT extends AnyAliasedTable & { data : { id : Column<any, any, number> } }> (
         table : TableT,
         id : number
@@ -353,7 +353,6 @@ export class PooledDatabase extends mysql.PooledDatabase {
             return super.update(arg0, arg1, arg2, arg3, arg4);
         }
     }
-    //Auto-increment id
     existsById<
         TableT extends AnyTable & { data : { id : Column<any, any, number> } }
     > (
@@ -367,7 +366,22 @@ export class PooledDatabase extends mysql.PooledDatabase {
             .whereIsEqual((c : any) => c[table.data.id.name], id)
             .exists();
     }
-    //Auto-increment id
+    existsByUniqueKey<
+        TableT extends AnyTable & { data : { uniqueKeys : UniqueKeyCollection } }
+    > (
+        table : TableT,
+        uniqueKey : UniqueKeys<TableT>
+    ) : Promise<boolean> {
+        if (table.data.uniqueKeys == undefined) {
+            throw new Error(`Expected ${table.alias} to have a unique key`);
+        }
+        return (this.from(table) as any)
+            .whereIsEqual(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                table,
+                uniqueKey
+            ))
+            .exists();
+    }
     updateZeroOrOneById<
         TableT extends AnyTable & { data : { id : Column<any, any, number> } }
     > (
@@ -416,7 +430,6 @@ export class PooledDatabase extends mysql.PooledDatabase {
             return updateResult;
         }) as any;
     }
-    //Auto-increment id
     /*
         If the row does not exist, it returns,
         {
@@ -503,6 +516,57 @@ export class PooledDatabase extends mysql.PooledDatabase {
                 ...updateResult,
                 row : await db.fetchOneById(table, id),
             };
+        }) as any;
+    }
+    updateZeroOrOneByUniqueKey<
+        TableT extends AnyTable & { data : { uniqueKeys : UniqueKeyCollection } }
+    > (
+        table : TableT,
+        uniqueKey : UniqueKeys<TableT>,
+        delegate : UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>
+    ) : (
+        Promise<UpdateResult>
+    ) {
+        if (table.data.uniqueKey == undefined) {
+            throw new Error(`Expected ${table.alias} to have a unique key`);
+        }
+        return this.transaction(async (db) => {
+            const updateResult : UpdateResult = await (db.from(table) as any)
+                .whereIsEqual(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                    table,
+                    uniqueKey
+                ))
+                .set(delegate)
+                .execute();
+
+            if (updateResult.foundRowCount > 1) {
+                //Should not be possible
+                throw new Error(`Expected to update one row of ${table.alias}, with unique key ${JSON.stringify(uniqueKey)}; found ${updateResult.foundRowCount} rows`);
+            }
+
+            if (updateResult.foundRowCount == 0) {
+                return updateResult;
+            }
+
+            if (updateResult.foundRowCount < 0) {
+                //No update was even attempted, probably an empty SET clause
+                const exists = await db.existsByUniqueKey(table, uniqueKey);
+                if (exists) {
+                    return {
+                        ...updateResult,
+                        affectedRows : 1,
+                        foundRowCount : 1,
+                    };
+                } else {
+                    return {
+                        ...updateResult,
+                        affectedRows : 0,
+                        foundRowCount : 0,
+                    };
+                }
+            }
+
+            return updateResult;
         }) as any;
     }
     deleteFrom <

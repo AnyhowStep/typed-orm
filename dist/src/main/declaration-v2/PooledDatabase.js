@@ -18,6 +18,7 @@ const insert_select_builder_1 = require("./insert-select-builder");
 const informationSchema = require("./information-schema");
 const polymorphic_insert_value_and_fetch_1 = require("./polymorphic-insert-value-and-fetch");
 const polymorphic_update_zero_or_one_by_unique_key_1 = require("./polymorphic-update-zero-or-one-by-unique-key");
+const raw_expr_1 = require("./raw-expr");
 const aliased_table_1 = require("./aliased-table");
 ;
 const aliased_expr_1 = require("./aliased-expr");
@@ -147,7 +148,6 @@ class PooledDatabase extends mysql.PooledDatabase {
             .selectAll()
             .fetchOne();
     }
-    //By auto-increment id, actually
     fetchZeroOrOneById(table, id) {
         return __awaiter(this, void 0, void 0, function* () {
             if (table.data.id == undefined) {
@@ -179,7 +179,6 @@ class PooledDatabase extends mysql.PooledDatabase {
             return super.update(arg0, arg1, arg2, arg3, arg4);
         }
     }
-    //Auto-increment id
     existsById(table, id) {
         if (table.data.id == undefined) {
             throw new Error(`Expected ${table.alias} to have an id column`);
@@ -188,7 +187,14 @@ class PooledDatabase extends mysql.PooledDatabase {
             .whereIsEqual((c) => c[table.data.id.name], id)
             .exists();
     }
-    //Auto-increment id
+    existsByUniqueKey(table, uniqueKey) {
+        if (table.data.uniqueKeys == undefined) {
+            throw new Error(`Expected ${table.alias} to have a unique key`);
+        }
+        return this.from(table)
+            .whereIsEqual(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
+            .exists();
+    }
     updateZeroOrOneById(table, id, delegate) {
         if (table.data.id == undefined) {
             throw new Error(`Expected ${table.alias} to have an id column`);
@@ -218,7 +224,6 @@ class PooledDatabase extends mysql.PooledDatabase {
             return updateResult;
         }));
     }
-    //Auto-increment id
     /*
         If the row does not exist, it returns,
         {
@@ -259,6 +264,35 @@ class PooledDatabase extends mysql.PooledDatabase {
                 }
             }
             return Object.assign({}, updateResult, { row: yield db.fetchOneById(table, id) });
+        }));
+    }
+    updateZeroOrOneByUniqueKey(table, uniqueKey, delegate) {
+        if (table.data.uniqueKey == undefined) {
+            throw new Error(`Expected ${table.alias} to have a unique key`);
+        }
+        return this.transaction((db) => __awaiter(this, void 0, void 0, function* () {
+            const updateResult = yield db.from(table)
+                .whereIsEqual(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
+                .set(delegate)
+                .execute();
+            if (updateResult.foundRowCount > 1) {
+                //Should not be possible
+                throw new Error(`Expected to update one row of ${table.alias}, with unique key ${JSON.stringify(uniqueKey)}; found ${updateResult.foundRowCount} rows`);
+            }
+            if (updateResult.foundRowCount == 0) {
+                return updateResult;
+            }
+            if (updateResult.foundRowCount < 0) {
+                //No update was even attempted, probably an empty SET clause
+                const exists = yield db.existsByUniqueKey(table, uniqueKey);
+                if (exists) {
+                    return Object.assign({}, updateResult, { affectedRows: 1, foundRowCount: 1 });
+                }
+                else {
+                    return Object.assign({}, updateResult, { affectedRows: 0, foundRowCount: 0 });
+                }
+            }
+            return updateResult;
         }));
     }
     deleteFrom(table, where) {
