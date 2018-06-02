@@ -267,7 +267,7 @@ class PooledDatabase extends mysql.PooledDatabase {
         }));
     }
     updateZeroOrOneByUniqueKey(table, uniqueKey, delegate) {
-        if (table.data.uniqueKey == undefined) {
+        if (table.data.uniqueKeys == undefined) {
             throw new Error(`Expected ${table.alias} to have a unique key`);
         }
         return this.transaction((db) => __awaiter(this, void 0, void 0, function* () {
