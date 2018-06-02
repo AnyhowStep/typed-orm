@@ -87,8 +87,14 @@ export function coalesce<
     return new Expr(
         q.used,
         sd.or(
-            RawExprUtil.assertDelegate(left),
-            ...(rightArr.map(RawExprUtil.assertDelegate) as any)
+            sd.notNullable(RawExprUtil.assertDelegate(left)),
+            ...(rightArr.map((expr, index) => {
+                if (index == rightArr.length-1) {
+                    return sd.notNullable(RawExprUtil.assertDelegate(expr));
+                } else {
+                    return RawExprUtil.assertDelegate(expr);
+                }
+            }) as any)
         ),
         `COALESCE(${q.leftQuery}, ${q.rightQueries.join(",")})`
     ) as any;

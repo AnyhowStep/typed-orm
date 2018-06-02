@@ -2,16 +2,20 @@ import { Expr } from "../expr";
 import { Column } from "../column";
 import { SelectBuilder } from "../select-builder";
 import { Tuple } from "../tuple";
-import { SelectValue, AnySelectValue } from "../select-value";
+import { SelectValue } from "../select-value";
 export declare type SelectValueBuilder<TypeT> = SelectBuilder<{
     hasSelect: true;
     hasFrom: any;
     hasUnion: any;
     joins: any;
-    selects: (Tuple<AnySelectValue> & {
+    selects: (Tuple<any> & {
         length: 1;
     } & {
-        "0": SelectValue<any, TypeT>;
+        "0": SelectValue<{
+            readonly [tableAlias: string]: {
+                readonly [columnName: string]: Column<any, any, TypeT>;
+            };
+        }, TypeT>;
     });
     aggregateDelegate: any;
     hasParentJoins: any;

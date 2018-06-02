@@ -1,6 +1,7 @@
 import { Expr } from "../expr";
 import { SelectBuilder } from "../select-builder";
 import { Column } from "../column";
+import { AliasedExpr } from "../aliased-expr";
 export declare const lt: <LeftT extends number | Column<any, any, number> | Expr<any, number> | SelectBuilder<{
     hasSelect: true;
     hasFrom: any;
@@ -11,7 +12,11 @@ export declare const lt: <LeftT extends number | Column<any, any, number> | Expr
     } & {
         length: 1;
     } & {
-        "0": any;
+        "0": Column<any, any, number> | AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<any, any, number> | undefined;
+            } | undefined;
+        }, "__expr", any, number>;
     };
     aggregateDelegate: any;
     hasParentJoins: any;
@@ -26,7 +31,11 @@ export declare const lt: <LeftT extends number | Column<any, any, number> | Expr
     } & {
         length: 1;
     } & {
-        "0": any;
+        "0": Column<any, any, number> | AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<any, any, number> | undefined;
+            } | undefined;
+        }, "__expr", any, number>;
     };
     aggregateDelegate: any;
     hasParentJoins: any;
@@ -50,7 +59,11 @@ export declare const gt: <LeftT extends number | Column<any, any, number> | Expr
     } & {
         length: 1;
     } & {
-        "0": any;
+        "0": Column<any, any, number> | AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<any, any, number> | undefined;
+            } | undefined;
+        }, "__expr", any, number>;
     };
     aggregateDelegate: any;
     hasParentJoins: any;
@@ -65,7 +78,11 @@ export declare const gt: <LeftT extends number | Column<any, any, number> | Expr
     } & {
         length: 1;
     } & {
-        "0": any;
+        "0": Column<any, any, number> | AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<any, any, number> | undefined;
+            } | undefined;
+        }, "__expr", any, number>;
     };
     aggregateDelegate: any;
     hasParentJoins: any;
@@ -89,7 +106,11 @@ export declare const ltEq: <LeftT extends number | Column<any, any, number> | Ex
     } & {
         length: 1;
     } & {
-        "0": any;
+        "0": Column<any, any, number> | AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<any, any, number> | undefined;
+            } | undefined;
+        }, "__expr", any, number>;
     };
     aggregateDelegate: any;
     hasParentJoins: any;
@@ -104,7 +125,11 @@ export declare const ltEq: <LeftT extends number | Column<any, any, number> | Ex
     } & {
         length: 1;
     } & {
-        "0": any;
+        "0": Column<any, any, number> | AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<any, any, number> | undefined;
+            } | undefined;
+        }, "__expr", any, number>;
     };
     aggregateDelegate: any;
     hasParentJoins: any;
@@ -128,7 +153,11 @@ export declare const gtEq: <LeftT extends number | Column<any, any, number> | Ex
     } & {
         length: 1;
     } & {
-        "0": any;
+        "0": Column<any, any, number> | AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<any, any, number> | undefined;
+            } | undefined;
+        }, "__expr", any, number>;
     };
     aggregateDelegate: any;
     hasParentJoins: any;
@@ -143,7 +172,11 @@ export declare const gtEq: <LeftT extends number | Column<any, any, number> | Ex
     } & {
         length: 1;
     } & {
-        "0": any;
+        "0": Column<any, any, number> | AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<any, any, number> | undefined;
+            } | undefined;
+        }, "__expr", any, number>;
     };
     aggregateDelegate: any;
     hasParentJoins: any;

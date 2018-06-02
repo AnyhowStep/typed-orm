@@ -3,6 +3,7 @@ import { ColumnReferencesUtil } from "../column-references";
 import { Expr } from "../expr";
 import { SelectBuilder } from "../select-builder";
 import { Column } from "../column";
+import { AliasedExpr } from "../aliased-expr";
 export declare const TRUE: Expr<{}, true>;
 export declare const FALSE: Expr<{}, false>;
 export declare const or: <LeftT extends boolean | Expr<any, boolean> | Column<any, any, boolean> | SelectBuilder<{
@@ -15,7 +16,11 @@ export declare const or: <LeftT extends boolean | Expr<any, boolean> | Column<an
     } & {
         length: 1;
     } & {
-        "0": any;
+        "0": Column<any, any, boolean> | AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<any, any, boolean> | undefined;
+            } | undefined;
+        }, "__expr", any, boolean>;
     };
     aggregateDelegate: any;
     hasParentJoins: any;
@@ -30,7 +35,11 @@ export declare const or: <LeftT extends boolean | Expr<any, boolean> | Column<an
     } & {
         length: 1;
     } & {
-        "0": any;
+        "0": Column<any, any, boolean> | AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<any, any, boolean> | undefined;
+            } | undefined;
+        }, "__expr", any, boolean>;
     };
     aggregateDelegate: any;
     hasParentJoins: any;
@@ -54,7 +63,11 @@ export declare const xor: <LeftT extends boolean | Expr<any, boolean> | Column<a
     } & {
         length: 1;
     } & {
-        "0": any;
+        "0": Column<any, any, boolean> | AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<any, any, boolean> | undefined;
+            } | undefined;
+        }, "__expr", any, boolean>;
     };
     aggregateDelegate: any;
     hasParentJoins: any;
@@ -69,7 +82,11 @@ export declare const xor: <LeftT extends boolean | Expr<any, boolean> | Column<a
     } & {
         length: 1;
     } & {
-        "0": any;
+        "0": Column<any, any, boolean> | AliasedExpr<{
+            readonly [x: string]: {
+                readonly [x: string]: Column<any, any, boolean> | undefined;
+            } | undefined;
+        }, "__expr", any, boolean>;
     };
     aggregateDelegate: any;
     hasParentJoins: any;
