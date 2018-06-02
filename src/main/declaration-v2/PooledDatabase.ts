@@ -376,7 +376,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
             throw new Error(`Expected ${table.alias} to have a unique key`);
         }
         return (this.from(table) as any)
-            .whereIsEqual(() => RawExprUtil.toUniqueKeyEqualityCondition(
+            .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
                 table,
                 uniqueKey
             ))
@@ -532,7 +532,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         }
         return this.transaction(async (db) => {
             const updateResult : UpdateResult = await (db.from(table) as any)
-                .whereIsEqual(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
                     table,
                     uniqueKey
                 ))

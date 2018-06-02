@@ -192,7 +192,7 @@ class PooledDatabase extends mysql.PooledDatabase {
             throw new Error(`Expected ${table.alias} to have a unique key`);
         }
         return this.from(table)
-            .whereIsEqual(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
+            .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
             .exists();
     }
     updateZeroOrOneById(table, id, delegate) {
@@ -272,7 +272,7 @@ class PooledDatabase extends mysql.PooledDatabase {
         }
         return this.transaction((db) => __awaiter(this, void 0, void 0, function* () {
             const updateResult = yield db.from(table)
-                .whereIsEqual(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
+                .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
                 .set(delegate)
                 .execute();
             if (updateResult.foundRowCount > 1) {
