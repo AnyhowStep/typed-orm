@@ -199,7 +199,7 @@ class PooledDatabase extends mysql.PooledDatabase {
         if (table.data.id == undefined) {
             throw new Error(`Expected ${table.alias} to have an id column`);
         }
-        return this.transaction((db) => __awaiter(this, void 0, void 0, function* () {
+        return this.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
             const updateResult = yield db.from(table)
                 .whereIsEqual((c) => c[table.data.id.name], id)
                 .set(delegate)
@@ -224,6 +224,35 @@ class PooledDatabase extends mysql.PooledDatabase {
             return updateResult;
         }));
     }
+    updateOneById(table, id, delegate) {
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
+        }
+        return this.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
+            const updateResult = yield db.from(table)
+                .whereIsEqual((c) => c[table.data.id.name], id)
+                .set(delegate)
+                .execute();
+            if (updateResult.foundRowCount > 1) {
+                //Should not be possible
+                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.id.name} = ${id}; found ${updateResult.foundRowCount} rows`);
+            }
+            if (updateResult.foundRowCount == 0) {
+                throw new Error(`Expected to find one row of ${table.alias}, with ${table.data.id.name} = ${id}; found zero`);
+            }
+            if (updateResult.foundRowCount < 0) {
+                //No update was even attempted, probably an empty SET clause
+                const exists = yield db.existsById(table, id);
+                if (exists) {
+                    return Object.assign({}, updateResult, { affectedRows: 1, foundRowCount: 1 });
+                }
+                else {
+                    throw new Error(`Expected to find one row of ${table.alias}, with ${table.data.id.name} = ${id}; found zero`);
+                }
+            }
+            return updateResult;
+        }));
+    }
     /*
         If the row does not exist, it returns,
         {
@@ -241,7 +270,7 @@ class PooledDatabase extends mysql.PooledDatabase {
         if (table.data.id == undefined) {
             throw new Error(`Expected ${table.alias} to have an id column`);
         }
-        return this.transaction((db) => __awaiter(this, void 0, void 0, function* () {
+        return this.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
             const updateResult = yield db.from(table)
                 .whereIsEqual((c) => c[table.data.id.name], id)
                 .set(delegate)
@@ -270,7 +299,7 @@ class PooledDatabase extends mysql.PooledDatabase {
         if (table.data.uniqueKeys == undefined) {
             throw new Error(`Expected ${table.alias} to have a unique key`);
         }
-        return this.transaction((db) => __awaiter(this, void 0, void 0, function* () {
+        return this.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
             const updateResult = yield db.from(table)
                 .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
                 .set(delegate)

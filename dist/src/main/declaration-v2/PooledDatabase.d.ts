@@ -117,6 +117,11 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             id: Column<any, any, number>;
         };
     }>(table: TableT, id: number, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<UpdateResult>);
+    updateOneById<TableT extends AnyTable & {
+        data: {
+            id: Column<any, any, number>;
+        };
+    }>(table: TableT, id: number, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<UpdateResult>);
     updateAndFetchZeroOrOneById<TableT extends AnyTable & {
         data: {
             id: Column<any, any, number>;

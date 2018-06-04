@@ -394,7 +394,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         if (table.data.id == undefined) {
             throw new Error(`Expected ${table.alias} to have an id column`);
         }
-        return this.transaction(async (db) => {
+        return this.transactionIfNotInOne(async (db) => {
             const updateResult : UpdateResult = await (db.from(table) as any)
                 .whereIsEqual((c : any) => c[table.data.id.name], id)
                 .set(delegate)
@@ -424,6 +424,50 @@ export class PooledDatabase extends mysql.PooledDatabase {
                         affectedRows : 0,
                         foundRowCount : 0,
                     };
+                }
+            }
+
+            return updateResult;
+        }) as any;
+    }
+    updateOneById<
+        TableT extends AnyTable & { data : { id : Column<any, any, number> } }
+    > (
+        table : TableT,
+        id : number,
+        delegate : UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>
+    ) : (
+        Promise<UpdateResult>
+    ) {
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
+        }
+        return this.transactionIfNotInOne(async (db) => {
+            const updateResult : UpdateResult = await (db.from(table) as any)
+                .whereIsEqual((c : any) => c[table.data.id.name], id)
+                .set(delegate)
+                .execute();
+
+            if (updateResult.foundRowCount > 1) {
+                //Should not be possible
+                throw new Error(`Expected to update one row of ${table.alias}, with ${table.data.id.name} = ${id}; found ${updateResult.foundRowCount} rows`);
+            }
+
+            if (updateResult.foundRowCount == 0) {
+                throw new Error(`Expected to find one row of ${table.alias}, with ${table.data.id.name} = ${id}; found zero`);
+            }
+
+            if (updateResult.foundRowCount < 0) {
+                //No update was even attempted, probably an empty SET clause
+                const exists = await db.existsById(table, id);
+                if (exists) {
+                    return {
+                        ...updateResult,
+                        affectedRows : 1,
+                        foundRowCount : 1,
+                    };
+                } else {
+                    throw new Error(`Expected to find one row of ${table.alias}, with ${table.data.id.name} = ${id}; found zero`);
                 }
             }
 
@@ -474,7 +518,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         if (table.data.id == undefined) {
             throw new Error(`Expected ${table.alias} to have an id column`);
         }
-        return this.transaction(async (db) => {
+        return this.transactionIfNotInOne(async (db) => {
             const updateResult : UpdateResult = await (db.from(table) as any)
                 .whereIsEqual((c : any) => c[table.data.id.name], id)
                 .set(delegate)
@@ -530,7 +574,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         if (table.data.uniqueKeys == undefined) {
             throw new Error(`Expected ${table.alias} to have a unique key`);
         }
-        return this.transaction(async (db) => {
+        return this.transactionIfNotInOne(async (db) => {
             const updateResult : UpdateResult = await (db.from(table) as any)
                 .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
                     table,
