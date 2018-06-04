@@ -17,6 +17,7 @@ export * from "./join";
 export * from "./join-collection";
 export * from "./join-from-delegate";
 export * from "./join-to-delegate";
+export * from "./log";
 export * from "./order-by";
 export * from "./order-by-delegate";
 export * from "./raw-column";

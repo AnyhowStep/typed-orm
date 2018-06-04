@@ -19,6 +19,7 @@ const informationSchema = require("./information-schema");
 const polymorphic_insert_value_and_fetch_1 = require("./polymorphic-insert-value-and-fetch");
 const polymorphic_update_zero_or_one_by_unique_key_1 = require("./polymorphic-update-zero-or-one-by-unique-key");
 const raw_expr_1 = require("./raw-expr");
+const log_1 = require("./log");
 const aliased_table_1 = require("./aliased-table");
 ;
 const aliased_expr_1 = require("./aliased-expr");
@@ -474,6 +475,18 @@ class PooledDatabase extends mysql.PooledDatabase {
     }
     polymorphicUpdateZeroOrOneByUniqueKey(table, uniqueKey, setDelegate) {
         return polymorphic_update_zero_or_one_by_unique_key_1.polymorphicUpdateZeroOrOneByUniqueKey(this, table, uniqueKey, setDelegate);
+    }
+    fetchLatestOrError(data, entityIdentifier) {
+        return log_1.LogDataUtil.fetchLatestOrError(this, data, entityIdentifier);
+    }
+    fetchLatestOrUndefined(data, entityIdentifier) {
+        return log_1.LogDataUtil.fetchLatestOrUndefined(this, data, entityIdentifier);
+    }
+    fetchLatestOrDefault(data, entityIdentifier) {
+        return log_1.LogDataUtil.fetchLatestOrDefault(this, data, entityIdentifier);
+    }
+    insertIfDifferentAndFetch(data, entityIdentifier, newValues) {
+        return log_1.LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, newValues);
     }
 }
 exports.PooledDatabase = PooledDatabase;

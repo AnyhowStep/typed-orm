@@ -4,7 +4,7 @@ import { SelectBuilder } from "./select-builder";
 import { Join } from "./join";
 import { AnyAliasedTable } from "./aliased-table";
 import { SelectDelegate } from "./select-delegate";
-import { Table, AnyTable, TableUtil, UniqueKeys } from "./table";
+import { Table, AnyTable, TableUtil, UniqueKeys, TableRow } from "./table";
 import { RawInsertValueRow, InsertValueBuilder } from "./insert-value-builder";
 import { InsertSelectBuilderConvenientDelegate } from "./insert-select-builder";
 import { UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate, UpdateResult } from "./update-builder";
@@ -17,6 +17,7 @@ import { SelectCollectionUtil } from "./select-collection";
 import { UniqueKeyCollection } from "./unique-key-collection";
 import { PolymorphicRawInsertValueRow } from "./polymorphic-insert-value-and-fetch";
 import { PolymorphicUpdateAssignmentCollectionDelegate } from "./polymorphic-update-zero-or-one-by-unique-key";
+import { LogData, LogDataUtil } from "./log";
 import { Column, AnyColumn } from "./column";
 export declare type ConvenientUpdateSelectBuilder<TableT extends AnyTable> = (SelectBuilder<{
     hasSelect: false;
@@ -160,5 +161,12 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         updatedRowCount: number;
     } & {
         exists: boolean;
+    }>;
+    fetchLatestOrError<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>): Promise<TableRow<DataT["table"]>>;
+    fetchLatestOrUndefined<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>): Promise<TableRow<DataT["table"]> | undefined>;
+    fetchLatestOrDefault<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>): Promise<TableRow<DataT["table"]>>;
+    insertIfDifferentAndFetch<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>, newValues: LogDataUtil.Trackable<DataT>): Promise<{
+        latest: TableRow<DataT["table"]>;
+        wasInserted: boolean;
     }>;
 }

@@ -4,7 +4,7 @@ import {SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-buil
 import {Join, JoinType} from "./join";
 import {AnyAliasedTable} from "./aliased-table";;
 import {SelectDelegate} from "./select-delegate";
-import {Table, AnyTable, TableUtil, UniqueKeys} from "./table";
+import {Table, AnyTable, TableUtil, UniqueKeys, TableRow} from "./table";
 import {RawInsertValueRow, InsertValueBuilder} from "./insert-value-builder";
 import {InsertAssignmentCollectionDelegate, InsertSelectBuilder, InsertSelectBuilderConvenientDelegate} from "./insert-select-builder";
 import {UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate, UpdateResult} from "./update-builder";
@@ -19,6 +19,7 @@ import * as informationSchema from "./information-schema";
 import {PolymorphicRawInsertValueRow, polymorphicInsertValueAndFetch} from "./polymorphic-insert-value-and-fetch";
 import {PolymorphicUpdateAssignmentCollectionDelegate, polymorphicUpdateZeroOrOneByUniqueKey} from "./polymorphic-update-zero-or-one-by-unique-key";
 import {RawExprUtil} from "./raw-expr";
+import {LogData, LogDataUtil} from "./log";
 
 import {AliasedTable} from "./aliased-table";;
 import {AliasedExpr} from "./aliased-expr";
@@ -787,5 +788,34 @@ export class PooledDatabase extends mysql.PooledDatabase {
             uniqueKey,
             setDelegate
         );
+    }
+
+    fetchLatestOrError<DataT extends LogData> (
+        data : DataT,
+        entityIdentifier : LogDataUtil.EntityIdentifier<DataT>
+    ) : Promise<TableRow<DataT["table"]>> {
+        return LogDataUtil.fetchLatestOrError(this, data, entityIdentifier);
+    }
+    fetchLatestOrUndefined<DataT extends LogData> (
+        data : DataT,
+        entityIdentifier : LogDataUtil.EntityIdentifier<DataT>
+    ) : Promise<TableRow<DataT["table"]>|undefined> {
+        return LogDataUtil.fetchLatestOrUndefined(this, data, entityIdentifier);
+    }
+    fetchLatestOrDefault<DataT extends LogData> (
+        data : DataT,
+        entityIdentifier : LogDataUtil.EntityIdentifier<DataT>
+    ) : Promise<TableRow<DataT["table"]>> {
+        return LogDataUtil.fetchLatestOrDefault(this, data, entityIdentifier);
+    }
+    insertIfDifferentAndFetch<DataT extends LogData> (
+        data : DataT,
+        entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
+        newValues : LogDataUtil.Trackable<DataT>
+    ) : Promise<{
+        latest : TableRow<DataT["table"]>,
+        wasInserted : boolean,
+    }> {
+        return LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, newValues);
     }
 }
