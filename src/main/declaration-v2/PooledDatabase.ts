@@ -20,6 +20,7 @@ import {PolymorphicRawInsertValueRow, polymorphicInsertValueAndFetch} from "./po
 import {PolymorphicUpdateAssignmentCollectionDelegate, polymorphicUpdateZeroOrOneByUniqueKey} from "./polymorphic-update-zero-or-one-by-unique-key";
 import {RawExprUtil} from "./raw-expr";
 import {LogData, LogDataUtil} from "./log";
+import {ColumnCollectionUtil} from "./column-collection";
 
 import {AliasedTable} from "./aliased-table";;
 import {AliasedExpr} from "./aliased-expr";
@@ -276,6 +277,48 @@ export class PooledDatabase extends mysql.PooledDatabase {
             .whereIsEqual((c : any) => c[table.data.id.name], id)
             .selectAll()
             .fetchZeroOrOne();
+    }
+    fetchValueByUniqueKey<
+        TableT extends AnyTable,
+        DelegateT extends (c : TableT["columns"]) => ColumnCollectionUtil.Columns<TableT["columns"]>
+    > (
+        table : TableT,
+        uniqueKey : UniqueKeys<TableT>,
+        columnDelegate : DelegateT
+    ) : (
+        Promise<ReturnType<DelegateT>>
+    ) {
+        const column = columnDelegate(table.columns);
+        ColumnCollectionUtil.assertHasColumn(table.columns, column);
+
+        return (this.from(table) as any)
+            .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                table,
+                uniqueKey
+            ))
+            .select(() => [column])
+            .fetchValue();
+    }
+    fetchValueOrUndefinedByUniqueKey<
+        TableT extends AnyTable,
+        DelegateT extends (c : TableT["columns"]) => ColumnCollectionUtil.Columns<TableT["columns"]>
+    > (
+        table : TableT,
+        uniqueKey : UniqueKeys<TableT>,
+        columnDelegate : DelegateT
+    ) : (
+        Promise<ReturnType<DelegateT>|undefined>
+    ) {
+        const column = columnDelegate(table.columns);
+        ColumnCollectionUtil.assertHasColumn(table.columns, column);
+
+        return (this.from(table) as any)
+            .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                table,
+                uniqueKey
+            ))
+            .select(() => [column])
+            .fetchValueOrUndefined();
     }
 
     insertValue<TableT extends AnyTable> (

@@ -184,8 +184,14 @@ var RawExprUtil;
         return toEqualityCondition(table, condition);
     }
     RawExprUtil.toUniqueKeyEqualityCondition = toUniqueKeyEqualityCondition;
+    function toMinimalUniqueKeyEqualityCondition(table, rawCondition) {
+        const condition = table.getMinimalUniqueKeyAssertDelegate()(`${table.alias} condition`, rawCondition);
+        return toEqualityCondition(table, condition);
+    }
+    RawExprUtil.toMinimalUniqueKeyEqualityCondition = toMinimalUniqueKeyEqualityCondition;
 })(RawExprUtil = exports.RawExprUtil || (exports.RawExprUtil = {}));
 //Convenience exports
 exports.toEqualityCondition = RawExprUtil.toEqualityCondition;
 exports.toUniqueKeyEqualityCondition = RawExprUtil.toUniqueKeyEqualityCondition;
+exports.toMinimalUniqueKeyEqualityCondition = RawExprUtil.toMinimalUniqueKeyEqualityCondition;
 //# sourceMappingURL=util.js.map

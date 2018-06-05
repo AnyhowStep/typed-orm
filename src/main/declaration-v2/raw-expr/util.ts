@@ -11,7 +11,7 @@ import {AnyAliasedTable} from "../aliased-table";
 import {ColumnCollectionUtil} from "../column-collection";
 import { ColumnReferencesUtil } from "../column-references";
 import * as e from "../expression";
-import {AnyTable, UniqueKeys} from "../table";
+import {AnyTable, UniqueKeys, MinimalUniqueKeys} from "../table";
 
 export namespace RawExprUtil {
     export function isAllowedExprConstant (raw : AnyRawExpr) : raw is AllowedExprConstant {
@@ -276,8 +276,32 @@ export namespace RawExprUtil {
             condition
         ) as any;
     }
+    export function toMinimalUniqueKeyEqualityCondition<
+        TableT extends AnyTable,
+        ConditionT extends MinimalUniqueKeys<TableT>
+    > (
+        table : TableT,
+        rawCondition : ConditionT
+    ) : (
+        Expr<
+            ColumnReferencesUtil.Partial<
+                ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+            >,
+            boolean
+        >
+    ) {
+        const condition = table.getMinimalUniqueKeyAssertDelegate()(
+            `${table.alias} condition`,
+            rawCondition
+        );
+        return toEqualityCondition(
+            table,
+            condition
+        ) as any;
+    }
 }
 
 //Convenience exports
 export const toEqualityCondition = RawExprUtil.toEqualityCondition;
 export const toUniqueKeyEqualityCondition = RawExprUtil.toUniqueKeyEqualityCondition;
+export const toMinimalUniqueKeyEqualityCondition = RawExprUtil.toMinimalUniqueKeyEqualityCondition;

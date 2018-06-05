@@ -20,6 +20,7 @@ const polymorphic_insert_value_and_fetch_1 = require("./polymorphic-insert-value
 const polymorphic_update_zero_or_one_by_unique_key_1 = require("./polymorphic-update-zero-or-one-by-unique-key");
 const raw_expr_1 = require("./raw-expr");
 const log_1 = require("./log");
+const column_collection_1 = require("./column-collection");
 const aliased_table_1 = require("./aliased-table");
 ;
 const aliased_expr_1 = require("./aliased-expr");
@@ -159,6 +160,22 @@ class PooledDatabase extends mysql.PooledDatabase {
                 .selectAll()
                 .fetchZeroOrOne();
         });
+    }
+    fetchValueByUniqueKey(table, uniqueKey, columnDelegate) {
+        const column = columnDelegate(table.columns);
+        column_collection_1.ColumnCollectionUtil.assertHasColumn(table.columns, column);
+        return this.from(table)
+            .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
+            .select(() => [column])
+            .fetchValue();
+    }
+    fetchValueOrUndefinedByUniqueKey(table, uniqueKey, columnDelegate) {
+        const column = columnDelegate(table.columns);
+        column_collection_1.ColumnCollectionUtil.assertHasColumn(table.columns, column);
+        return this.from(table)
+            .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
+            .select(() => [column])
+            .fetchValueOrUndefined();
     }
     insertValue(table, value) {
         return new insert_value_builder_1.InsertValueBuilder(table, undefined, "NORMAL", this).value(value);
