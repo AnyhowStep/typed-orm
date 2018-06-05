@@ -27,6 +27,7 @@ export declare type EntityIdentifierDelegate<DataT extends LogBuilderData> = ((c
 export declare type IsTrackableDelegate<DataT extends LogBuilderData> = ((columns: ColumnCollectionUtil.ExcludeColumnNames<DataT["table"]["columns"], Extract<keyof DataT["isTrackable"], string> | Extract<keyof DataT["table"]["data"]["isGenerated"], string>>) => Tuple<ColumnCollectionUtil.Columns<ColumnCollectionUtil.ExcludeColumnNames<DataT["table"]["columns"], Extract<keyof DataT["isTrackable"], string> | Extract<keyof DataT["table"]["data"]["isGenerated"], string>>>>);
 export declare type IsTrackableUnsafeDelegate<DataT extends LogBuilderData> = ((columns: ColumnCollectionUtil.ExcludeColumnNames<DataT["table"]["columns"], Extract<keyof DataT["isTrackable"], string> | Extract<keyof DataT["table"]["data"]["isGenerated"], string>>) => Tuple<AnyColumn>);
 export declare type OrderByLatestDelegate<DataT extends LogBuilderData> = ((columns: DataT["table"]["columns"]) => (Tuple<[ColumnCollectionUtil.Columns<DataT["table"]["columns"]>, boolean]>));
+export declare type OrderByLatestUnsafeDelegate<DataT extends LogBuilderData> = ((columns: DataT["table"]["columns"]) => (Tuple<[AnyColumn, boolean]>));
 export declare class LogBuilder<DataT extends LogBuilderData> {
     readonly data: DataT;
     constructor(data: DataT);
@@ -40,7 +41,7 @@ export declare class LogBuilder<DataT extends LogBuilderData> {
             readonly [columnName in ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>]["name"]]: true;
         } : never) : key extends "defaultRowDelegate" ? undefined : this["data"][key]);
     }>);
-    setIsTrackableUnsafe<DelegateT extends IsTrackableDelegate<this["data"]>>(delegate: DelegateT): (LogBuilder<{
+    setIsTrackableUnsafe<DelegateT extends IsTrackableUnsafeDelegate<this["data"]>>(delegate: DelegateT): (LogBuilder<{
         readonly [key in keyof this["data"]]: (key extends "isTrackable" ? (ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends AnyColumn ? {
             readonly [columnName in ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>]["name"]]: true;
         } : never) : this["data"][key]);
@@ -49,6 +50,15 @@ export declare class LogBuilder<DataT extends LogBuilderData> {
         readonly [key in keyof this["data"]]: (key extends "isTrackable" ? (ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends AnyColumn ? {
             readonly [columnName in ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>]["name"]]: true;
         } : never) : this["data"][key]);
+    }>);
+    setOrderByLatestUnsafe<DelegateT extends OrderByLatestUnsafeDelegate<this["data"]>>(delegate: DelegateT): (LogBuilder<{
+        readonly [key in keyof this["data"]]: (key extends "orderByLatest" ? (ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends [AnyColumn, boolean] ? ({
+            [index in TupleKeys<ReturnType<DelegateT>>]: (ReturnType<DelegateT>[index] extends [AnyColumn, boolean] ? [ReturnType<DelegateT>[index]["0"]["name"], ReturnType<DelegateT>[index]["1"]] : never);
+        } & {
+            length: TupleLength<ReturnType<DelegateT>>;
+        } & {
+            "0": [ReturnType<DelegateT>["0"]["0"]["name"], ReturnType<DelegateT>["0"]["1"]];
+        } & ([string, boolean])[]) : never) : this["data"][key]);
     }>);
     setOrderByLatest<DelegateT extends OrderByLatestDelegate<this["data"]>>(delegate: DelegateT): (LogBuilder<{
         readonly [key in keyof this["data"]]: (key extends "orderByLatest" ? (ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends [AnyColumn, boolean] ? ({

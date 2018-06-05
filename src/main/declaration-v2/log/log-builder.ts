@@ -260,7 +260,14 @@ export type OrderByLatestDelegate<DataT extends LogBuilderData> = (
             [ColumnCollectionUtil.Columns<DataT["table"]["columns"]>, boolean]
         >
     )
-)
+);
+export type OrderByLatestUnsafeDelegate<DataT extends LogBuilderData> = (
+    (columns : DataT["table"]["columns"]) => (
+        Tuple<
+            [AnyColumn, boolean]
+        >
+    )
+);
 
 export class LogBuilder<DataT extends LogBuilderData> {
     readonly data : DataT;
@@ -343,7 +350,7 @@ export class LogBuilder<DataT extends LogBuilderData> {
         }) as any;
     }
     setIsTrackableUnsafe<
-        DelegateT extends IsTrackableDelegate<this["data"]>
+        DelegateT extends IsTrackableUnsafeDelegate<this["data"]>
     > (delegate : DelegateT) : (
         LogBuilder<{
             readonly [key in keyof this["data"]] : (
@@ -398,8 +405,8 @@ export class LogBuilder<DataT extends LogBuilderData> {
     ) {
         return this.setIsTrackableUnsafe(delegate);
     }
-    setOrderByLatest<
-        DelegateT extends OrderByLatestDelegate<this["data"]>
+    setOrderByLatestUnsafe<
+        DelegateT extends OrderByLatestUnsafeDelegate<this["data"]>
     > (delegate : DelegateT) : (
         LogBuilder<{
             readonly [key in keyof this["data"]] : (
@@ -442,6 +449,40 @@ export class LogBuilder<DataT extends LogBuilderData> {
             ...(this.data as any),
             orderByLatest : orderByLatest
         }) as any;
+    }
+    setOrderByLatest<
+        DelegateT extends OrderByLatestDelegate<this["data"]>
+    > (delegate : DelegateT) : (
+        LogBuilder<{
+            readonly [key in keyof this["data"]] : (
+                key extends "orderByLatest" ?
+                (
+                    ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends [AnyColumn, boolean] ?
+                        (
+                            {
+                                [index in TupleKeys<ReturnType<DelegateT>>] : (
+                                    ReturnType<DelegateT>[index] extends [AnyColumn, boolean] ?
+                                        [
+                                            ReturnType<DelegateT>[index]["0"]["name"],
+                                            ReturnType<DelegateT>[index]["1"]
+                                        ] :
+                                        never
+                                )
+                            } &
+                            { length : TupleLength<ReturnType<DelegateT>> } &
+                            { "0" : [
+                                ReturnType<DelegateT>["0"]["0"]["name"],
+                                ReturnType<DelegateT>["0"]["1"]
+                            ] } &
+                            ([string, boolean])[]
+                        ) :
+                        never
+                ) :
+                this["data"][key]
+            )
+        }>
+    ) {
+        return this.setOrderByLatestUnsafe(delegate);
     }
     setDefaultRow(delegate : DefaultRowDelegate<this["data"]>) : (
         LogBuilder<{

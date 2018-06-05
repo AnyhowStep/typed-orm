@@ -49,12 +49,15 @@ class LogBuilder {
     setIsTrackable(delegate) {
         return this.setIsTrackableUnsafe(delegate);
     }
-    setOrderByLatest(delegate) {
+    setOrderByLatestUnsafe(delegate) {
         const columnCollection = this.data.table.columns;
         const result = delegate(columnCollection);
         column_collection_1.ColumnCollectionUtil.assertHasColumns(columnCollection, result.map(i => i[0]));
         const orderByLatest = result.map(i => [i[0].name, i[1]]);
         return new LogBuilder(Object.assign({}, this.data, { orderByLatest: orderByLatest }));
+    }
+    setOrderByLatest(delegate) {
+        return this.setOrderByLatestUnsafe(delegate);
     }
     setDefaultRow(delegate) {
         return new LogBuilder(Object.assign({}, this.data, { defaultRowDelegate: (entityIdentifier, db) => {
