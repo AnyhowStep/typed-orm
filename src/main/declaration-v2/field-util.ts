@@ -1,6 +1,7 @@
 import * as sd from "schema-decorator";
 import {Tuple} from "./tuple";
 import {Column, AnyColumn} from "./column";
+import {RawColumnUtil, AnyRawColumn} from "./raw-column";
 
 export type AnyFieldTuple = Tuple<sd.Field<any, any>|AnyColumn>;
 
@@ -77,3 +78,13 @@ export function fieldsToObject<
     }
     return result;
 }
+
+export type FieldsToType<TupleT extends AnyFieldTuple> = (
+    {
+        [key in Extract<keyof FieldsToObject<TupleT>, string>] : (
+            FieldsToObject<TupleT>[key] extends AnyRawColumn ?
+                RawColumnUtil.TypeOf<FieldsToObject<TupleT>[key]> :
+                never
+        )
+    }
+);
