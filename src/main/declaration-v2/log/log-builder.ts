@@ -1,9 +1,10 @@
 import {AnyTable, TableRow} from "../table";
 import {Tuple, TupleKeys, TupleLength} from "../tuple";
 import {ColumnCollectionUtil} from "../column-collection";
-import {AnyColumn} from "../column";
+import {Column, AnyColumn} from "../column";
 import { PooledDatabase } from "../PooledDatabase";
 import {LogDataUtil} from "./util";
+import {AnyFieldTuple} from "../field-util";
 
 /*
 == Desired Usage ==
@@ -194,21 +195,37 @@ export type AnyDefaultRowDelegate = (
     (entityIdentifier : any, db : PooledDatabase) => any
 );
 
-export type EntityIdentifierDelegate<DataT extends LogBuilderData> = (
-    (columns : ColumnCollectionUtil.ExcludeColumnNames<
+export type EntityIdentifierColumnCollection<
+    DataT extends LogBuilderData
+> = (
+    ColumnCollectionUtil.ExcludeColumnNames<
         DataT["table"]["columns"],
-        //Entity identifier columns are not trackable or generated columns
-        Extract<keyof DataT["isTrackable"], string>|
+        Extract<keyof DataT["isTrackable"], string> |
         Extract<keyof DataT["table"]["data"]["isGenerated"], string>
-    >) => Tuple<
-        ColumnCollectionUtil.Columns<
-            ColumnCollectionUtil.ExcludeColumnNames<
-                DataT["table"]["columns"],
-                Extract<keyof DataT["isTrackable"], string>|
-                Extract<keyof DataT["table"]["data"]["isGenerated"], string>
-            >
-        >
     >
+);
+export function entityIdentifierColumnCollection<
+    DataT extends LogBuilderData
+> (data : DataT) : EntityIdentifierColumnCollection<DataT> {
+    const columnCollection = ColumnCollectionUtil.excludeColumnNames(
+        data.table.columns,
+        Object.keys(data.isTrackable)
+            .concat(Object.keys(data.table.data.isGenerated))
+    );
+    return columnCollection as any;
+}
+export type EntityIdentifierColumns<
+    DataT extends LogBuilderData
+> = (
+    ColumnCollectionUtil.Columns<
+        EntityIdentifierColumnCollection<DataT>
+    >
+);
+
+export type EntityIdentifierDelegate<DataT extends LogBuilderData> = (
+    (columns : EntityIdentifierColumnCollection<DataT>) => (
+        Tuple<EntityIdentifierColumns<DataT>>
+    )
 );
 
 export type IsTrackableDelegate<DataT extends LogBuilderData> = (
@@ -242,6 +259,44 @@ export class LogBuilder<DataT extends LogBuilderData> {
         this.data = data;
     }
 
+    setEntityIdentifierFields<
+        EntityIdentifierFieldsT extends AnyFieldTuple
+    > (fields : EntityIdentifierFieldsT) : (
+        LogBuilder<{
+            readonly [key in keyof this["data"]] : (
+                key extends "entityIdentifier" ?
+                (
+                    EntityIdentifierFieldsT[
+                        TupleKeys<EntityIdentifierFieldsT>
+                    ] extends AnyColumn ?
+                        {
+                            readonly [columnName in EntityIdentifierFieldsT[
+                                TupleKeys<EntityIdentifierFieldsT>
+                            ]["name"]] : true
+                        } :
+                        never
+                ) :
+                key extends "defaultRowDelegate" ?
+                undefined :
+                this["data"][key]
+            )
+        }>
+    ) {
+        const entityIdentifier = fields.reduce<{ [columnName : string] : true }>((memo, field) => {
+            if (this.data.table.columns[field.name] instanceof Column) {
+                memo[field.name] = true;
+            } else {
+                throw new Error(`Table ${this.data.table.alias} does not have column ${field.name}`);
+            }
+            return memo;
+        }, {});
+
+        return new LogBuilder({
+            ...(this.data as any),
+            entityIdentifier : entityIdentifier,
+            defaultRowDelegate : undefined,
+        }) as any;
+    }
     setEntityIdentifier<
         DelegateT extends EntityIdentifierDelegate<this["data"]>
     > (delegate : DelegateT) : (
@@ -261,11 +316,7 @@ export class LogBuilder<DataT extends LogBuilderData> {
             )
         }>
     ) {
-        const columnCollection = ColumnCollectionUtil.excludeColumnNames(
-            this.data.table.columns,
-            Object.keys(this.data.isTrackable)
-                .concat(Object.keys(this.data.table.data.isGenerated))
-        );
+        const columnCollection = entityIdentifierColumnCollection(this.data);
         const result = delegate(columnCollection as any);
         ColumnCollectionUtil.assertHasColumns(
             columnCollection,

@@ -1,14 +1,32 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const column_collection_1 = require("../column-collection");
+const column_1 = require("../column");
 const util_1 = require("./util");
+function entityIdentifierColumnCollection(data) {
+    const columnCollection = column_collection_1.ColumnCollectionUtil.excludeColumnNames(data.table.columns, Object.keys(data.isTrackable)
+        .concat(Object.keys(data.table.data.isGenerated)));
+    return columnCollection;
+}
+exports.entityIdentifierColumnCollection = entityIdentifierColumnCollection;
 class LogBuilder {
     constructor(data) {
         this.data = data;
     }
+    setEntityIdentifierFields(fields) {
+        const entityIdentifier = fields.reduce((memo, field) => {
+            if (this.data.table.columns[field.name] instanceof column_1.Column) {
+                memo[field.name] = true;
+            }
+            else {
+                throw new Error(`Table ${this.data.table.alias} does not have column ${field.name}`);
+            }
+            return memo;
+        }, {});
+        return new LogBuilder(Object.assign({}, this.data, { entityIdentifier: entityIdentifier, defaultRowDelegate: undefined }));
+    }
     setEntityIdentifier(delegate) {
-        const columnCollection = column_collection_1.ColumnCollectionUtil.excludeColumnNames(this.data.table.columns, Object.keys(this.data.isTrackable)
-            .concat(Object.keys(this.data.table.data.isGenerated)));
+        const columnCollection = entityIdentifierColumnCollection(this.data);
         const result = delegate(columnCollection);
         column_collection_1.ColumnCollectionUtil.assertHasColumns(columnCollection, result);
         const entityIdentifier = result.reduce((memo, column) => {

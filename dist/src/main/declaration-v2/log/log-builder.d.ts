@@ -3,6 +3,7 @@ import { Tuple, TupleKeys, TupleLength } from "../tuple";
 import { ColumnCollectionUtil } from "../column-collection";
 import { AnyColumn } from "../column";
 import { PooledDatabase } from "../PooledDatabase";
+import { AnyFieldTuple } from "../field-util";
 export interface LogBuilderData {
     readonly table: AnyTable;
     readonly entityIdentifier: {
@@ -18,12 +19,20 @@ export declare type DefaultRowDelegate<DataT extends LogBuilderData> = ((entityI
     [columnName in Extract<Extract<keyof DataT["table"]["columns"], keyof DataT["entityIdentifier"]>, string>]: (ReturnType<DataT["table"]["columns"][columnName]["assertDelegate"]>);
 }, db: PooledDatabase) => (TableRow<DataT["table"]> | Promise<TableRow<DataT["table"]>>));
 export declare type AnyDefaultRowDelegate = ((entityIdentifier: any, db: PooledDatabase) => any);
-export declare type EntityIdentifierDelegate<DataT extends LogBuilderData> = ((columns: ColumnCollectionUtil.ExcludeColumnNames<DataT["table"]["columns"], Extract<keyof DataT["isTrackable"], string> | Extract<keyof DataT["table"]["data"]["isGenerated"], string>>) => Tuple<ColumnCollectionUtil.Columns<ColumnCollectionUtil.ExcludeColumnNames<DataT["table"]["columns"], Extract<keyof DataT["isTrackable"], string> | Extract<keyof DataT["table"]["data"]["isGenerated"], string>>>>);
+export declare type EntityIdentifierColumnCollection<DataT extends LogBuilderData> = (ColumnCollectionUtil.ExcludeColumnNames<DataT["table"]["columns"], Extract<keyof DataT["isTrackable"], string> | Extract<keyof DataT["table"]["data"]["isGenerated"], string>>);
+export declare function entityIdentifierColumnCollection<DataT extends LogBuilderData>(data: DataT): EntityIdentifierColumnCollection<DataT>;
+export declare type EntityIdentifierColumns<DataT extends LogBuilderData> = (ColumnCollectionUtil.Columns<EntityIdentifierColumnCollection<DataT>>);
+export declare type EntityIdentifierDelegate<DataT extends LogBuilderData> = ((columns: EntityIdentifierColumnCollection<DataT>) => (Tuple<EntityIdentifierColumns<DataT>>));
 export declare type IsTrackableDelegate<DataT extends LogBuilderData> = ((columns: ColumnCollectionUtil.ExcludeColumnNames<DataT["table"]["columns"], Extract<keyof DataT["isTrackable"], string> | Extract<keyof DataT["table"]["data"]["isGenerated"], string>>) => Tuple<ColumnCollectionUtil.Columns<ColumnCollectionUtil.ExcludeColumnNames<DataT["table"]["columns"], Extract<keyof DataT["isTrackable"], string> | Extract<keyof DataT["table"]["data"]["isGenerated"], string>>>>);
 export declare type OrderByLatestDelegate<DataT extends LogBuilderData> = ((columns: DataT["table"]["columns"]) => (Tuple<[ColumnCollectionUtil.Columns<DataT["table"]["columns"]>, boolean]>));
 export declare class LogBuilder<DataT extends LogBuilderData> {
     readonly data: DataT;
     constructor(data: DataT);
+    setEntityIdentifierFields<EntityIdentifierFieldsT extends AnyFieldTuple>(fields: EntityIdentifierFieldsT): (LogBuilder<{
+        readonly [key in keyof this["data"]]: (key extends "entityIdentifier" ? (EntityIdentifierFieldsT[TupleKeys<EntityIdentifierFieldsT>] extends AnyColumn ? {
+            readonly [columnName in EntityIdentifierFieldsT[TupleKeys<EntityIdentifierFieldsT>]["name"]]: true;
+        } : never) : key extends "defaultRowDelegate" ? undefined : this["data"][key]);
+    }>);
     setEntityIdentifier<DelegateT extends EntityIdentifierDelegate<this["data"]>>(delegate: DelegateT): (LogBuilder<{
         readonly [key in keyof this["data"]]: (key extends "entityIdentifier" ? (ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends AnyColumn ? {
             readonly [columnName in ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>]["name"]]: true;
