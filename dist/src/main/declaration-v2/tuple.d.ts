@@ -148,7 +148,15 @@ export declare type TuplePush<TupleT extends Tuple<any>, NextT> = ({
 } & {
     length: TupleNextLength<TupleT>;
 } & (NextT extends TupleT[TupleKeys<TupleT>] ? (TupleT[TupleKeys<TupleT>])[] : (TupleT[TupleKeys<TupleT>] | NextT)[]));
-export declare type TupleWPush<WidenT, TupleT extends Tuple<WidenT>, NextT extends WidenT> = (TupleWiden<TuplePush<TupleT, NextT>, WidenT>);
+export declare type TupleWPush<WidenT, TupleT extends Tuple<WidenT>, NextT extends WidenT> = ({
+    [index in TupleKeys<TupleT>]: (TupleT[index] extends WidenT ? TupleT[index] : never);
+} & {
+    [index in TupleNextKey<TupleT>]: (NextT extends WidenT ? NextT : never);
+} & {
+    "0": (TupleT[0] extends WidenT ? TupleT[0] : never);
+} & {
+    length: TupleNextLength<TupleT>;
+} & (WidenT[]));
 export declare function tuplePush<TupleT extends Tuple<any>, NextT>(tuple: TupleT, next: NextT): (TuplePush<TupleT, NextT>);
 export declare function tupleWPush<WidenT>(): (<TupleT extends Tuple<WidenT>, NextT extends WidenT>(tuple: TupleT, next: NextT) => (TupleWPush<WidenT, TupleT, NextT>));
 export declare type TupleConcat<T extends Tuple<any>, U extends Tuple<any>> = ({
@@ -159,6 +167,13 @@ export declare type TupleConcat<T extends Tuple<any>, U extends Tuple<any>> = ({
     "0": T[0];
     length: Add<T["length"], U["length"]>;
 } & (T[TupleKeys<T>] | U[TupleKeys<U>])[]);
-export declare type TupleWConcat<WidenT, T extends Tuple<WidenT>, U extends Tuple<WidenT>> = (TupleWiden<TupleConcat<T, U>, WidenT>);
+export declare type TupleWConcat<WidenT, T extends Tuple<WidenT>, U extends Tuple<WidenT>> = ({
+    [index in TupleKeys<T>]: (T[index] extends WidenT ? T[index] : never);
+} & {
+    [newIndex in NumberToString<Add<StringToNumber<Extract<TupleKeys<U>, string>>, T["length"]>>]: (U[Subtract<StringToNumber<newIndex>, T["length"]>] extends WidenT ? U[Subtract<StringToNumber<newIndex>, T["length"]>] : never);
+} & {
+    "0": (T[0] extends WidenT ? T[0] : never);
+    length: Add<T["length"], U["length"]>;
+} & (WidenT)[]);
 export declare function tupleConcat<T extends Tuple<any>, U extends Tuple<any>>(t: T, u: U): (TupleConcat<T, U>);
 export declare function tupleWConcat<WidenT>(): (<T extends Tuple<WidenT>, U extends Tuple<WidenT>>(t: T, u: U) => (TupleWConcat<WidenT, T, U>));

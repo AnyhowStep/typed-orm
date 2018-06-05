@@ -266,7 +266,33 @@ export type TuplePush<TupleT extends Tuple<any>, NextT> = (
     )
 );
 export type TupleWPush<WidenT, TupleT extends Tuple<WidenT>, NextT extends WidenT> = (
-    TupleWiden<TuplePush<TupleT, NextT>, WidenT>
+    {
+        [index in TupleKeys<TupleT>] : (
+            TupleT[index] extends WidenT ?
+                TupleT[index] :
+                never
+        )
+    } &
+    {
+        [index in TupleNextKey<TupleT>] : (
+            NextT extends WidenT ?
+                NextT :
+                never
+        )
+    } &
+    {
+        "0" : (
+            TupleT[0] extends WidenT ?
+                TupleT[0] :
+                never
+        ),
+    } &
+    {
+        length : TupleNextLength<TupleT>
+    } &
+    (
+        WidenT[]
+    )
 );
 
 export function tuplePush<TupleT extends Tuple<any>, NextT> (
@@ -352,7 +378,32 @@ export type TupleWConcat<
     T extends Tuple<WidenT>,
     U extends Tuple<WidenT>
 > = (
-    TupleWiden<TupleConcat<T, U>, WidenT>
+    {
+        [index in TupleKeys<T>]: (
+            T[index] extends WidenT ?
+                T[index] :
+                never
+        )
+    } &
+    {
+        [newIndex in NumberToString<Add<
+            StringToNumber<Extract<TupleKeys<U>, string>>,
+            T["length"]
+        >>]: (
+            U[Subtract<StringToNumber<newIndex>, T["length"]>] extends WidenT ?
+                U[Subtract<StringToNumber<newIndex>, T["length"]>] :
+                never
+        )
+    } &
+    {
+        "0" : (
+            T[0] extends WidenT ?
+                T[0] :
+                never
+        ),
+        length: Add<T["length"], U["length"]>;
+    } &
+    (WidenT)[]
 );
 export function tupleConcat<T extends Tuple<any>, U extends Tuple<any>> (
     t : T,
