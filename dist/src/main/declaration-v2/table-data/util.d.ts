@@ -1,5 +1,5 @@
 import { TableData, AutoIncrementDelegate, IsGeneratedDelegate, HasDefaultValueDelegate, IsMutableDelegate, AddUniqueKeyDelegate, IdDelegate } from "./table-data";
-import { ReadonlyRemoveKey, ReadonlyReplaceValue, ReadonlyReplaceValue3 } from "../obj-util";
+import { ReadonlyRemoveKey } from "../obj-util";
 import { ColumnCollection } from "../column-collection";
 import { Tuple, TupleKeys, TupleWPush, TupleWiden, TupleWConcat } from "../tuple";
 import { Column, AnyColumn, ColumnUtil } from "../column";
@@ -20,7 +20,9 @@ export declare namespace TableDataUtil {
         }], UniqueKey>) : DataT[key]);
     });
     function autoIncrement<DataT extends TableData, ColumnCollectionT extends ColumnCollection, AutoIncrementDelegateT extends AutoIncrementDelegate<ColumnCollectionT>>(data: DataT, columnCollection: ColumnCollectionT, delegate: AutoIncrementDelegateT): (AutoIncrement<DataT, ColumnCollectionT, AutoIncrementDelegateT>);
-    type UnsetAutoIncrement<DataT extends TableData> = (DataT["autoIncrement"] extends AnyColumn ? ReadonlyReplaceValue3<DataT, "autoIncrement", undefined, "isGenerated", ReadonlyRemoveKey<DataT["isGenerated"], DataT["autoIncrement"]["name"]>, "hasDefaultValue", ReadonlyRemoveKey<DataT["hasDefaultValue"], DataT["autoIncrement"]["name"]>> : DataT);
+    type UnsetAutoIncrement<DataT extends TableData> = (DataT["autoIncrement"] extends AnyColumn ? {
+        readonly [key in keyof DataT]: (key extends "autoIncrement" ? undefined : key extends "isGenerated" ? ReadonlyRemoveKey<DataT["isGenerated"], DataT["autoIncrement"]["name"]> : key extends "hasDefaultValue" ? ReadonlyRemoveKey<DataT["hasDefaultValue"], DataT["autoIncrement"]["name"]> : DataT[key]);
+    } : DataT);
     function unsetAutoIncrement<DataT extends TableData>(data: DataT): (UnsetAutoIncrement<DataT>);
     type IsGenerated<DataT extends TableData, ColumnCollectionT extends ColumnCollection, IsGeneratedDelegateT extends IsGeneratedDelegate<DataT, ColumnCollectionT>> = (ReturnType<IsGeneratedDelegateT>[TupleKeys<ReturnType<IsGeneratedDelegateT>>] extends AnyColumn ? {
         readonly autoIncrement: DataT["autoIncrement"];
@@ -38,13 +40,17 @@ export declare namespace TableDataUtil {
         readonly parentTables: DataT["parentTables"];
     } : never);
     function isGenerated<DataT extends TableData, ColumnCollectionT extends ColumnCollection, IsGeneratedDelegateT extends IsGeneratedDelegate<DataT, ColumnCollectionT>>(data: DataT, columnCollection: ColumnCollectionT, delegate: IsGeneratedDelegateT): (IsGenerated<DataT, ColumnCollectionT, IsGeneratedDelegateT>);
-    type HasDefaultValue<DataT extends TableData, ColumnCollectionT extends ColumnCollection, HasDefaultValueDelegateT extends HasDefaultValueDelegate<DataT, ColumnCollectionT>> = (ReturnType<HasDefaultValueDelegateT>[TupleKeys<ReturnType<HasDefaultValueDelegateT>>] extends AnyColumn ? ReadonlyReplaceValue<DataT, "hasDefaultValue", DataT["hasDefaultValue"] & {
-        readonly [columnName in ReturnType<HasDefaultValueDelegateT>[TupleKeys<ReturnType<HasDefaultValueDelegateT>>]["name"]]: true;
-    }> : never);
+    type HasDefaultValue<DataT extends TableData, ColumnCollectionT extends ColumnCollection, HasDefaultValueDelegateT extends HasDefaultValueDelegate<DataT, ColumnCollectionT>> = (ReturnType<HasDefaultValueDelegateT>[TupleKeys<ReturnType<HasDefaultValueDelegateT>>] extends AnyColumn ? {
+        readonly [key in keyof DataT]: (key extends "hasDefaultValue" ? DataT["hasDefaultValue"] & {
+            readonly [columnName in ReturnType<HasDefaultValueDelegateT>[TupleKeys<ReturnType<HasDefaultValueDelegateT>>]["name"]]: true;
+        } : DataT[key]);
+    } : never);
     function hasDefaultValue<DataT extends TableData, ColumnCollectionT extends ColumnCollection, HasDefaultValueDelegateT extends HasDefaultValueDelegate<DataT, ColumnCollectionT>>(data: DataT, columnCollection: ColumnCollectionT, delegate: HasDefaultValueDelegateT): (HasDefaultValue<DataT, ColumnCollectionT, HasDefaultValueDelegateT>);
-    type IsMutable<DataT extends TableData, ColumnCollectionT extends ColumnCollection, IsMutableDelegateT extends IsMutableDelegate<DataT, ColumnCollectionT>> = (ReturnType<IsMutableDelegateT>[TupleKeys<ReturnType<IsMutableDelegateT>>] extends AnyColumn ? ReadonlyReplaceValue<DataT, "isMutable", DataT["isMutable"] & {
-        readonly [columnName in ReturnType<IsMutableDelegateT>[TupleKeys<ReturnType<IsMutableDelegateT>>]["name"]]: true;
-    }> : never);
+    type IsMutable<DataT extends TableData, ColumnCollectionT extends ColumnCollection, IsMutableDelegateT extends IsMutableDelegate<DataT, ColumnCollectionT>> = (ReturnType<IsMutableDelegateT>[TupleKeys<ReturnType<IsMutableDelegateT>>] extends AnyColumn ? {
+        readonly [key in keyof DataT]: (key extends "isMutable" ? DataT["isMutable"] & {
+            readonly [columnName in ReturnType<IsMutableDelegateT>[TupleKeys<ReturnType<IsMutableDelegateT>>]["name"]]: true;
+        } : DataT[key]);
+    } : never);
     function isMutable<DataT extends TableData, ColumnCollectionT extends ColumnCollection, IsMutableDelegateT extends IsMutableDelegate<DataT, ColumnCollectionT>>(data: DataT, columnCollection: ColumnCollectionT, delegate: IsMutableDelegateT): (IsMutable<DataT, ColumnCollectionT, IsMutableDelegateT>);
     type Immutable<DataT extends TableData> = ({
         readonly [key in keyof DataT]: (key extends "isMutable" ? {} : DataT[key]);

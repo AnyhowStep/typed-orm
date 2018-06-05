@@ -7,7 +7,7 @@ import {
     AddUniqueKeyDelegate,
     IdDelegate,
 } from "./table-data";
-import {ReadonlyRemoveKey, ReadonlyReplaceValue, ReadonlyReplaceValue3} from "../obj-util";
+import {ReadonlyRemoveKey} from "../obj-util";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
 import {Tuple, TupleKeys, TupleWPush, TupleWiden, TupleWConcat} from "../tuple";
 import {Column, AnyColumn, ColumnUtil} from "../column";
@@ -112,15 +112,17 @@ export namespace TableDataUtil {
         DataT extends TableData
     > = (
         DataT["autoIncrement"] extends AnyColumn ?
-            ReadonlyReplaceValue3<
-                DataT,
-                "autoIncrement",
-                undefined,
-                "isGenerated",
-                ReadonlyRemoveKey<DataT["isGenerated"], DataT["autoIncrement"]["name"]>,
-                "hasDefaultValue",
-                ReadonlyRemoveKey<DataT["hasDefaultValue"], DataT["autoIncrement"]["name"]>
-            > :
+            {
+                readonly [key in keyof DataT] : (
+                    key extends "autoIncrement" ?
+                    undefined :
+                    key extends "isGenerated" ?
+                    ReadonlyRemoveKey<DataT["isGenerated"], DataT["autoIncrement"]["name"]> :
+                    key extends "hasDefaultValue" ?
+                    ReadonlyRemoveKey<DataT["hasDefaultValue"], DataT["autoIncrement"]["name"]> :
+                    DataT[key]
+                )
+            } :
             DataT
     );
     export function unsetAutoIncrement<DataT extends TableData> (data : DataT) : (
@@ -229,16 +231,18 @@ export namespace TableDataUtil {
         >
     > = (
         ReturnType<HasDefaultValueDelegateT>[TupleKeys<ReturnType<HasDefaultValueDelegateT>>] extends AnyColumn ?
-            ReadonlyReplaceValue<
-                DataT,
-                "hasDefaultValue",
-                DataT["hasDefaultValue"] &
-                {
-                    readonly [columnName in ReturnType<HasDefaultValueDelegateT>[
-                        TupleKeys<ReturnType<HasDefaultValueDelegateT>>
-                    ]["name"]] : true
-                }
-            > :
+            {
+                readonly [key in keyof DataT] : (
+                    key extends "hasDefaultValue" ?
+                    DataT["hasDefaultValue"] &
+                    {
+                        readonly [columnName in ReturnType<HasDefaultValueDelegateT>[
+                            TupleKeys<ReturnType<HasDefaultValueDelegateT>>
+                        ]["name"]] : true
+                    } :
+                    DataT[key]
+                )
+            } :
             never
     );
     export function hasDefaultValue<
@@ -282,16 +286,18 @@ export namespace TableDataUtil {
         >
     > = (
         ReturnType<IsMutableDelegateT>[TupleKeys<ReturnType<IsMutableDelegateT>>] extends AnyColumn ?
-            ReadonlyReplaceValue<
-                DataT,
-                "isMutable",
-                DataT["isMutable"] &
-                {
-                    readonly [columnName in ReturnType<IsMutableDelegateT>[
-                        TupleKeys<ReturnType<IsMutableDelegateT>>
-                    ]["name"]] : true
-                }
-            > :
+            {
+                readonly [key in keyof DataT] : (
+                    key extends "isMutable" ?
+                    DataT["isMutable"] &
+                    {
+                        readonly [columnName in ReturnType<IsMutableDelegateT>[
+                            TupleKeys<ReturnType<IsMutableDelegateT>>
+                        ]["name"]] : true
+                    } :
+                    DataT[key]
+                )
+            } :
             never
     );
     export function isMutable<
@@ -336,11 +342,6 @@ export namespace TableDataUtil {
                 DataT[key]
             )
         }
-        /*ReplaceValue<
-            DataT,
-            "isMutable",
-            {}
-        >*/
     );
     export function immutable<DataT extends TableData> (data : DataT) : (
         Immutable<DataT>

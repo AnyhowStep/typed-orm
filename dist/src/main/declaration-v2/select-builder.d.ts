@@ -2,7 +2,6 @@ import { JoinCollection, JoinCollectionUtil } from "./join-collection";
 import { JoinFromDelegate } from "./join-from-delegate";
 import { JoinToDelegate } from "./join-to-delegate";
 import { AliasedTable, AnyAliasedTable } from "./aliased-table";
-import { ReplaceValue, ReplaceValue2 } from "./obj-util";
 import { Join } from "./join";
 import { SelectCollection, SelectCollectionUtil } from "./select-collection";
 import { SelectDelegate } from "./select-delegate";
@@ -127,7 +126,9 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, toTable: ToTableT, fromDelegate: FromDelegateT): (Error extends JoinCollectionUtil.InnerJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ? JoinCollectionUtil.InnerJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> : SelectBuilder<ReplaceValue<DataT, "joins", JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT>>>);
+    }>, toTable: ToTableT, fromDelegate: FromDelegateT): (Error extends JoinCollectionUtil.InnerJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ? JoinCollectionUtil.InnerJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> : SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT> : DataT[key]);
+    }>);
     rightJoin<ToTableT extends AnyAliasedTable, FromDelegateT extends JoinFromDelegate<DataT["joins"]>>(this: SelectBuilder<{
         hasSelect: false;
         hasFrom: true;
@@ -137,7 +138,9 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, toTable: ToTableT, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>): (Error extends JoinCollectionUtil.RightJoin<SelectBuilder<DataT>, ToTableT> ? JoinCollectionUtil.RightJoin<SelectBuilder<DataT>, ToTableT> : SelectBuilder<ReplaceValue<DataT, "joins", JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT>>>);
+    }>, toTable: ToTableT, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>): (Error extends JoinCollectionUtil.RightJoin<SelectBuilder<DataT>, ToTableT> ? JoinCollectionUtil.RightJoin<SelectBuilder<DataT>, ToTableT> : SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT> : DataT[key]);
+    }>);
     rightJoinUsing<ToTableT extends AnyAliasedTable, FromDelegateT extends JoinFromDelegate<DataT["joins"]>>(this: SelectBuilder<{
         hasSelect: false;
         hasFrom: true;
@@ -147,7 +150,9 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, toTable: ToTableT, fromDelegate: FromDelegateT): (Error extends JoinCollectionUtil.RightJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ? JoinCollectionUtil.RightJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> : SelectBuilder<ReplaceValue<DataT, "joins", JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT>>>);
+    }>, toTable: ToTableT, fromDelegate: FromDelegateT): (Error extends JoinCollectionUtil.RightJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ? JoinCollectionUtil.RightJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> : SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT> : DataT[key]);
+    }>);
     leftJoin<ToTableT extends AnyAliasedTable, FromDelegateT extends JoinFromDelegate<DataT["joins"]>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -157,7 +162,9 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, toTable: ToTableT, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>): (Error extends JoinCollectionUtil.LeftJoin<SelectBuilder<DataT>, ToTableT> ? JoinCollectionUtil.LeftJoin<SelectBuilder<DataT>, ToTableT> : SelectBuilder<ReplaceValue<DataT, "joins", JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT>>>);
+    }>, toTable: ToTableT, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>): (Error extends JoinCollectionUtil.LeftJoin<SelectBuilder<DataT>, ToTableT> ? JoinCollectionUtil.LeftJoin<SelectBuilder<DataT>, ToTableT> : SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT> : DataT[key]);
+    }>);
     leftJoinUsing<ToTableT extends AnyAliasedTable, FromDelegateT extends JoinFromDelegate<DataT["joins"]>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -167,7 +174,9 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, toTable: ToTableT, fromDelegate: FromDelegateT): (Error extends JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ? JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> : SelectBuilder<ReplaceValue<DataT, "joins", JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT>>>);
+    }>, toTable: ToTableT, fromDelegate: FromDelegateT): (Error extends JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ? JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> : SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT> : DataT[key]);
+    }>);
     select<SelectDelegateT extends SelectDelegate<this>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: any;
@@ -211,7 +220,9 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: false;
         parentJoins: any;
-    }>, aggregateDelegate: AggregateDelegateT): (SelectBuilder<ReplaceValue<DataT, "aggregateDelegate", AggregateDelegateT>>);
+    }>, aggregateDelegate: AggregateDelegateT): (SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "aggregateDelegate" ? AggregateDelegateT : DataT[key]);
+    }>);
     private rowAssertDelegate;
     private getRowAssertDelegate;
     readonly processRow: (rawRow: any) => any;
@@ -421,7 +432,9 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: undefined;
         hasParentJoins: any;
         parentJoins: any;
-    }>, typeWidenDelegate: TypeWidenDelegateT, assertWidened: sd.AssertFunc<WidenT>): (ReturnType<TypeWidenDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ? SelectBuilder<ReplaceValue2<DataT, "joins", JoinCollectionUtil.ReplaceColumnType<DataT["joins"], TableAliasT, ColumnNameT, WidenT | TypeT>, "selects", SelectCollectionUtil.ReplaceSelectType<DataT["selects"], TableAliasT, ColumnNameT, WidenT | TypeT>>> : (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeWidenDelegateT>>));
+    }>, typeWidenDelegate: TypeWidenDelegateT, assertWidened: sd.AssertFunc<WidenT>): (ReturnType<TypeWidenDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ? SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.ReplaceColumnType<DataT["joins"], TableAliasT, ColumnNameT, WidenT | TypeT> : key extends "selects" ? SelectCollectionUtil.ReplaceSelectType<DataT["selects"], TableAliasT, ColumnNameT, WidenT | TypeT> : DataT[key]);
+    }> : (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeWidenDelegateT>>));
     union<TargetT extends SelectBuilder<{
         hasSelect: true;
         hasFrom: any;

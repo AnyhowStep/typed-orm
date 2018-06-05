@@ -12,7 +12,6 @@ import {
 import {JoinFromDelegate} from "./join-from-delegate";
 import {JoinToDelegate} from "./join-to-delegate";
 import {AliasedTable, AnyAliasedTable} from "./aliased-table";
-import {ReplaceValue, ReplaceValue2} from "./obj-util";
 import {spread} from "@anyhowstep/type-util";
 import {Join, JoinType} from "./join";
 import {SelectCollection, SelectCollectionUtil} from "./select-collection";
@@ -216,11 +215,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         Error extends JoinCollectionUtil.InnerJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ?
             JoinCollectionUtil.InnerJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> :
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT>
-            >>
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT> :
+                    DataT[key]
+                )
+            }>
     ) {
         this.assertAfterFrom();
         return new SelectBuilder(spread(
@@ -257,11 +258,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         Error extends JoinCollectionUtil.RightJoin<SelectBuilder<DataT>, ToTableT> ?
             JoinCollectionUtil.RightJoin<SelectBuilder<DataT>, ToTableT> :
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT>
-            >>
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT> :
+                    DataT[key]
+                )
+            }>
     ) {
         this.assertBeforeSelect();
         this.assertAfterFrom();
@@ -299,11 +302,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         Error extends JoinCollectionUtil.RightJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ?
             JoinCollectionUtil.RightJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> :
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT>
-            >>
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT> :
+                    DataT[key]
+                )
+            }>
     ) {
         this.assertBeforeSelect();
         this.assertAfterFrom();
@@ -339,11 +344,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         Error extends JoinCollectionUtil.LeftJoin<SelectBuilder<DataT>, ToTableT> ?
             JoinCollectionUtil.LeftJoin<SelectBuilder<DataT>, ToTableT> :
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT>
-            >>
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT> :
+                    DataT[key]
+                )
+            }>
     ) {
         this.assertAfterFrom();
         return new SelectBuilder(spread(
@@ -378,11 +385,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         Error extends JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ?
             JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> :
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT>
-            >>
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT> :
+                    DataT[key]
+                )
+            }>
     ) {
         this.assertAfterFrom();
         return new SelectBuilder(spread(
@@ -533,11 +542,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         aggregateDelegate : AggregateDelegateT
     ) : (
-        SelectBuilder<ReplaceValue<
-            DataT,
-            "aggregateDelegate",
-            AggregateDelegateT
-        >>
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "aggregateDelegate" ?
+                AggregateDelegateT :
+                DataT[key]
+            )
+        }>
     ) {
         this.assertAfterSelect();
         return new SelectBuilder(spread(
@@ -1544,23 +1555,25 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         assertWidened : sd.AssertFunc<WidenT>
     ) : (
         ReturnType<TypeWidenDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
-            SelectBuilder<ReplaceValue2<
-                DataT,
-                "joins",
-                JoinCollectionUtil.ReplaceColumnType<
-                    DataT["joins"],
-                    TableAliasT,
-                    ColumnNameT,
-                    WidenT|TypeT
-                >,
-                "selects",
-                SelectCollectionUtil.ReplaceSelectType<
-                    DataT["selects"],
-                    TableAliasT,
-                    ColumnNameT,
-                    WidenT|TypeT
-                >
-            >> :
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.ReplaceColumnType<
+                        DataT["joins"],
+                        TableAliasT,
+                        ColumnNameT,
+                        WidenT|TypeT
+                    > :
+                    key extends "selects" ?
+                    SelectCollectionUtil.ReplaceSelectType<
+                        DataT["selects"],
+                        TableAliasT,
+                        ColumnNameT,
+                        WidenT|TypeT
+                    > :
+                    DataT[key]
+                )
+            }> :
             (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeWidenDelegateT>>)
     ) {
         this.assertAfterSelect();
