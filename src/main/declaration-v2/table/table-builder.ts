@@ -174,22 +174,6 @@ export class TableBuilder<
             TableDataUtil.withTableAlias(this.data, newName)
         );
     }
-    addColumns<RawColumnCollectionT extends RawColumnCollection> (
-        rawColumnCollection : RawColumnCollectionT
-    ) : (
-        TableBuilder<
-            AliasT,
-            NameT,
-            ColumnCollectionUtil.Merge<
-                ColumnCollectionT,
-                RawColumnCollectionUtil.ToColumnCollection<
-                    AliasT,
-                    RawColumnCollectionT
-                >
-            >,
-            DataT
-        >
-    );
     addColumns<TupleT extends fieldUtil.AnyFieldTuple> (
         fields : TupleT
     ) : (
@@ -201,6 +185,22 @@ export class TableBuilder<
                 RawColumnCollectionUtil.ToColumnCollection<
                     AliasT,
                     fieldUtil.FieldsToObject<TupleT>
+                >
+            >,
+            DataT
+        >
+    );
+    addColumns<RawColumnCollectionT extends RawColumnCollection> (
+        rawColumnCollection : RawColumnCollectionT
+    ) : (
+        TableBuilder<
+            AliasT,
+            NameT,
+            ColumnCollectionUtil.Merge<
+                ColumnCollectionT,
+                RawColumnCollectionUtil.ToColumnCollection<
+                    AliasT,
+                    RawColumnCollectionT
                 >
             >,
             DataT

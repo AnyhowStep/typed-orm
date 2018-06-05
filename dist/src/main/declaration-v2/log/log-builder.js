@@ -35,7 +35,7 @@ class LogBuilder {
         }, {});
         return new LogBuilder(Object.assign({}, this.data, { entityIdentifier: entityIdentifier, defaultRowDelegate: undefined }));
     }
-    setIsTrackable(delegate) {
+    setIsTrackableUnsafe(delegate) {
         const columnCollection = column_collection_1.ColumnCollectionUtil.excludeColumnNames(this.data.table.columns, Object.keys(this.data.entityIdentifier)
             .concat(Object.keys(this.data.table.data.isGenerated)));
         const result = delegate(columnCollection);
@@ -45,6 +45,9 @@ class LogBuilder {
             return memo;
         }, {});
         return new LogBuilder(Object.assign({}, this.data, { isTrackable: isTrackable }));
+    }
+    setIsTrackable(delegate) {
+        return this.setIsTrackableUnsafe(delegate);
     }
     setOrderByLatest(delegate) {
         const columnCollection = this.data.table.columns;

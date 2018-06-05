@@ -5,6 +5,7 @@ import {Column, AnyColumn} from "../column";
 import { PooledDatabase } from "../PooledDatabase";
 import {LogDataUtil} from "./util";
 import {AnyFieldTuple} from "../field-util";
+import * as sd from "schema-decorator";
 
 /*
 == Desired Usage ==
@@ -244,6 +245,14 @@ export type IsTrackableDelegate<DataT extends LogBuilderData> = (
         >
     >
 );
+export type IsTrackableUnsafeDelegate<DataT extends LogBuilderData> = (
+    (columns : ColumnCollectionUtil.ExcludeColumnNames<
+        DataT["table"]["columns"],
+        //Trackable columns are cannot be entity identifiers or generated columns
+        Extract<keyof DataT["isTrackable"], string>|
+        Extract<keyof DataT["table"]["data"]["isGenerated"], string>
+    >) => Tuple<AnyColumn>
+);
 
 export type OrderByLatestDelegate<DataT extends LogBuilderData> = (
     (columns : DataT["table"]["columns"]) => (
@@ -268,7 +277,7 @@ export class LogBuilder<DataT extends LogBuilderData> {
                 (
                     EntityIdentifierFieldsT[
                         TupleKeys<EntityIdentifierFieldsT>
-                    ] extends AnyColumn ?
+                    ] extends AnyColumn|sd.Field<any, any> ?
                         {
                             readonly [columnName in EntityIdentifierFieldsT[
                                 TupleKeys<EntityIdentifierFieldsT>
@@ -333,7 +342,7 @@ export class LogBuilder<DataT extends LogBuilderData> {
             defaultRowDelegate : undefined,
         }) as any;
     }
-    setIsTrackable<
+    setIsTrackableUnsafe<
         DelegateT extends IsTrackableDelegate<this["data"]>
     > (delegate : DelegateT) : (
         LogBuilder<{
@@ -369,6 +378,25 @@ export class LogBuilder<DataT extends LogBuilderData> {
             ...(this.data as any),
             isTrackable : isTrackable
         }) as any;
+    }
+    setIsTrackable<
+        DelegateT extends IsTrackableDelegate<this["data"]>
+    > (delegate : DelegateT) : (
+        LogBuilder<{
+            readonly [key in keyof this["data"]] : (
+                key extends "isTrackable" ?
+                (
+                    ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends AnyColumn ?
+                        {
+                            readonly [columnName in ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>]["name"]] : true
+                        } :
+                        never
+                ) :
+                this["data"][key]
+            )
+        }>
+    ) {
+        return this.setIsTrackableUnsafe(delegate);
     }
     setOrderByLatest<
         DelegateT extends OrderByLatestDelegate<this["data"]>

@@ -15,8 +15,8 @@ export declare class TableBuilder<AliasT extends string, NameT extends string, C
     setIsMutable<IsMutableDelegateT extends IsMutableDelegate<DataT, ColumnCollectionT>>(delegate: IsMutableDelegateT): (TableBuilder<AliasT, NameT, ColumnCollectionT, TableDataUtil.IsMutable<DataT, ColumnCollectionT, IsMutableDelegateT>>);
     setImmutable(): (TableBuilder<AliasT, NameT, ColumnCollectionT, TableDataUtil.Immutable<DataT>>);
     withName<NewNameT extends string>(newName: NewNameT): (TableBuilder<NewNameT, NewNameT, ColumnCollectionUtil.WithTableAlias<ColumnCollectionT, NewNameT>, TableDataUtil.WithTableAlias<DataT, NewNameT>>);
-    addColumns<RawColumnCollectionT extends RawColumnCollection>(rawColumnCollection: RawColumnCollectionT): (TableBuilder<AliasT, NameT, ColumnCollectionUtil.Merge<ColumnCollectionT, RawColumnCollectionUtil.ToColumnCollection<AliasT, RawColumnCollectionT>>, DataT>);
     addColumns<TupleT extends fieldUtil.AnyFieldTuple>(fields: TupleT): (TableBuilder<AliasT, NameT, ColumnCollectionUtil.Merge<ColumnCollectionT, RawColumnCollectionUtil.ToColumnCollection<AliasT, fieldUtil.FieldsToObject<TupleT>>>, DataT>);
+    addColumns<RawColumnCollectionT extends RawColumnCollection>(rawColumnCollection: RawColumnCollectionT): (TableBuilder<AliasT, NameT, ColumnCollectionUtil.Merge<ColumnCollectionT, RawColumnCollectionUtil.ToColumnCollection<AliasT, RawColumnCollectionT>>, DataT>);
     setId<IdDelegateT extends IdDelegate<DataT, ColumnCollectionT>>(this: TableBuilder<any, any, any, {
         readonly [key in keyof DataT]: (key extends "autoIncrement" ? undefined : key extends "id" ? undefined : any);
     }>, delegate: IdDelegateT): (TableBuilder<AliasT, NameT, ColumnCollectionT, TableDataUtil.Id<DataT, ColumnCollectionT, IdDelegateT>>);
