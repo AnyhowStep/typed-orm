@@ -286,7 +286,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         uniqueKey : UniqueKeys<TableT>,
         columnDelegate : DelegateT
     ) : (
-        Promise<ReturnType<DelegateT>>
+        Promise<ReturnType<ReturnType<DelegateT>["assertDelegate"]>>
     ) {
         const column = columnDelegate(table.columns);
         ColumnCollectionUtil.assertHasColumn(table.columns, column);
@@ -307,7 +307,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         uniqueKey : UniqueKeys<TableT>,
         columnDelegate : DelegateT
     ) : (
-        Promise<ReturnType<DelegateT>|undefined>
+        Promise<ReturnType<ReturnType<DelegateT>["assertDelegate"]>|undefined>
     ) {
         const column = columnDelegate(table.columns);
         ColumnCollectionUtil.assertHasColumn(table.columns, column);
