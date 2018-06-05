@@ -19,3 +19,4 @@ export declare namespace LogDataUtil {
         wasInserted: boolean;
     }>;
 }
+export declare type Trackable<DataT extends LogData> = LogDataUtil.Trackable<DataT>;

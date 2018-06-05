@@ -181,3 +181,4 @@ export namespace LogDataUtil {
         });
     }
 }
+export type Trackable<DataT extends LogData> = LogDataUtil.Trackable<DataT>;
