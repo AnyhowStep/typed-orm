@@ -66,6 +66,21 @@ class LogBuilder {
             } }));
     }
     build() {
+        if (this.data.orderByLatest == undefined) {
+            throw new Error(`Call setOrderByLatest() before build()`);
+        }
+        if (Object.keys(this.data.entityIdentifier) == undefined) {
+            throw new Error(`Call setEntityIdentifier() before build()`);
+        }
+        return this.data;
+    }
+    buildUnsafe() {
+        if (this.data.orderByLatest == undefined) {
+            throw new Error(`Call setOrderByLatest() before build()`);
+        }
+        if (Object.keys(this.data.entityIdentifier) == undefined) {
+            throw new Error(`Call setEntityIdentifier() before build()`);
+        }
         return this.data;
     }
 }

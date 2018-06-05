@@ -73,6 +73,7 @@ export declare class LogBuilder<DataT extends LogBuilderData> {
         readonly [key in keyof this["data"]]: (key extends "defaultRowDelegate" ? (DefaultRowDelegate<this["data"]>) : this["data"][key]);
     }>);
     build(this: (DataT["orderByLatest"] extends Tuple<any> ? (keyof DataT["entityIdentifier"] extends never ? never : (any)) : never)): (DataT);
+    buildUnsafe(): (DataT["orderByLatest"] extends Tuple<any> ? (keyof DataT["entityIdentifier"] extends never ? never : (DataT)) : never);
 }
 export declare function log<TableT extends AnyTable>(table: TableT): LogBuilder<{
     readonly table: TableT;

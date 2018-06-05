@@ -518,7 +518,32 @@ export class LogBuilder<DataT extends LogBuilderData> {
         //*Should* extend LogData, if it doesn't, hack it till it extends LogData
         DataT
     ) {
+        if (this.data.orderByLatest == undefined) {
+            throw new Error(`Call setOrderByLatest() before build()`);
+        }
+        if (Object.keys(this.data.entityIdentifier) == undefined) {
+            throw new Error(`Call setEntityIdentifier() before build()`);
+        }
         return this.data;
+    }
+    buildUnsafe () : (
+        DataT["orderByLatest"] extends Tuple<any> ?
+        (
+            keyof DataT["entityIdentifier"] extends never ?
+                never :
+                (
+                    DataT
+                )
+        ) :
+        never
+    ) {
+        if (this.data.orderByLatest == undefined) {
+            throw new Error(`Call setOrderByLatest() before build()`);
+        }
+        if (Object.keys(this.data.entityIdentifier) == undefined) {
+            throw new Error(`Call setEntityIdentifier() before build()`);
+        }
+        return this.data as any;
     }
 }
 
