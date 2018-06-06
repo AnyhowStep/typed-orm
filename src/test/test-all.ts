@@ -1,4 +1,5 @@
 import "./insert-and-fetch-with-unique-key";
+import "./insert-ignore";
 import "./log-table";
 import "./log";
 import "./multi-column-join-using";

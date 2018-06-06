@@ -28,7 +28,9 @@ export declare class InsertValueBuilder<TableT extends AnyTable, ValuesT extends
     ignore(): InsertValueBuilder<TableT, ValuesT, "IGNORE">;
     replace(): InsertValueBuilder<TableT, ValuesT, "REPLACE">;
     value(...rows: RawInsertValueRow<TableT>[]): InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], InsertModeT>;
-    execute(this: InsertValueBuilder<any, any[], any>, db?: PooledDatabase): (Promise<mysql.MysqlInsertResult & (TableT["data"]["autoIncrement"] extends AnyColumn ? {
+    execute(this: InsertValueBuilder<any, any[], any>, db?: PooledDatabase): (Promise<mysql.MysqlInsertResult & {
+        insertedRowCount: number;
+    } & (TableT["data"]["autoIncrement"] extends AnyColumn ? {
         [name in TableT["data"]["autoIncrement"]["name"]]: ("IGNORE" extends InsertModeT ? number | undefined : number);
     } : {})>);
     executeAndFetch(this: InsertValueBuilder<TableT extends AnyTable & {

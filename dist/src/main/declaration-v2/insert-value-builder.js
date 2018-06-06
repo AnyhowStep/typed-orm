@@ -41,7 +41,7 @@ class InsertValueBuilder {
         return db.rawInsert(this.getQuery(), {})
             .then((result) => {
             if (this.table.data.autoIncrement == undefined) {
-                return result;
+                return Object.assign({}, result, { insertedRowCount: result.affectedRows });
             }
             else {
                 if (result.insertId == 0) {
@@ -49,7 +49,7 @@ class InsertValueBuilder {
                         throw new Error(`Expected to INSERT a new row, received zero for insertId`);
                     }
                 }
-                return Object.assign({}, result, { [this.table.data.autoIncrement.name]: (result.insertId == 0) ?
+                return Object.assign({}, result, { insertedRowCount: result.affectedRows, [this.table.data.autoIncrement.name]: (result.insertId == 0) ?
                         undefined :
                         result.insertId });
             }

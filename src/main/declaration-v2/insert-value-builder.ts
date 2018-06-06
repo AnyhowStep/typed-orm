@@ -97,6 +97,9 @@ export class InsertValueBuilder<
     ) : (
         Promise<
             mysql.MysqlInsertResult &
+            {
+                insertedRowCount : number,
+            } &
             (
                 TableT["data"]["autoIncrement"] extends AnyColumn ?
                     //The auto-incremented id
@@ -122,7 +125,10 @@ export class InsertValueBuilder<
         return db.rawInsert(this.getQuery(), {})
             .then((result) => {
                 if (this.table.data.autoIncrement == undefined) {
-                    return result;
+                    return {
+                        ...result,
+                        insertedRowCount : result.affectedRows,
+                    };
                 } else {
                     if (result.insertId == 0) {
                         if (this.insertMode != "IGNORE") {
@@ -131,6 +137,7 @@ export class InsertValueBuilder<
                     }
                     return {
                         ...result,
+                        insertedRowCount : result.affectedRows,
                         [this.table.data.autoIncrement.name] : (result.insertId == 0) ?
                             undefined :
                             result.insertId,
