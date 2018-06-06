@@ -34,7 +34,9 @@ class DeleteBuilder {
         }
     }
     execute() {
-        return this.db.rawDelete(this.getQuery(), {});
+        return this.db.rawDelete(this.getQuery(), {}).then((result) => {
+            return Object.assign({}, result, { deletedRowCount: result.affectedRows });
+        });
     }
     getTableAliases() {
         if (this.deleteTables == undefined) {

@@ -4,13 +4,13 @@ import {SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-buil
 import {Join, JoinType} from "./join";
 import {AnyAliasedTable} from "./aliased-table";;
 import {SelectDelegate} from "./select-delegate";
-import {Table, AnyTable, TableUtil, UniqueKeys, TableRow} from "./table";
+import {Table, AnyTable, UniqueKeys, TableRow} from "./table";
 import {RawInsertValueRow, InsertValueBuilder} from "./insert-value-builder";
 import {InsertAssignmentCollectionDelegate, InsertSelectBuilder, InsertSelectBuilderConvenientDelegate} from "./insert-select-builder";
 import {UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate, UpdateResult} from "./update-builder";
 import * as sd from "schema-decorator";
 import {WhereDelegate} from "./where-delegate";
-import {DeleteBuilder, DeleteTables} from "./delete-builder";
+import {DeleteBuilder, DeleteTables, DeleteResult} from "./delete-builder";
 import {SelectBuilderUtil} from "./select-builder-util";
 import {FetchRow} from "./fetch-row";
 import {SelectCollectionUtil} from "./select-collection";
@@ -199,17 +199,21 @@ export class PooledDatabase extends mysql.PooledDatabase {
     }
     selectAllByUniqueKey<TableT extends AnyTable> (
         table : TableT,
-        uniqueKey : TableUtil.UniqueKeys<TableT>
+        uniqueKey : UniqueKeys<TableT>
     ) : (
         SelectBuilderUtil.CleanToSelectAll<TableT>
     ) {
-        uniqueKey = table.getUniqueKeyAssertDelegate()(
+        /*uniqueKey = table.getUniqueKeyAssertDelegate()(
             `${table.alias} unique key`,
             uniqueKey
-        ) as any;
+        ) as any;*/
         let result : any = (this.from(table) as any)
+            .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                table,
+                uniqueKey
+            ))
             .selectAll();
-        for (let columnName in uniqueKey) {
+        /*for (let columnName in uniqueKey) {
             const value : any = uniqueKey[columnName]
             if (value === undefined) {
                 continue;
@@ -219,12 +223,12 @@ export class PooledDatabase extends mysql.PooledDatabase {
             } else {
                 result = result.whereIsEqual((c : any) => c[columnName], value);
             }
-        }
+        }*/
         return result;
     }
     fetchOneByUniqueKey<TableT extends AnyTable> (
         table : TableT,
-        uniqueKey : TableUtil.UniqueKeys<TableT>
+        uniqueKey : UniqueKeys<TableT>
     ) : (
         Promise<SelectBuilderUtil.AggregatedRow<SelectBuilderUtil.CleanToSelectAll<TableT>>>
     ) {
@@ -233,7 +237,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
     }
     fetchZeroOrOneByUniqueKey<TableT extends AnyTable> (
         table : TableT,
-        uniqueKey : TableUtil.UniqueKeys<TableT>
+        uniqueKey : UniqueKeys<TableT>
     ) : (
         Promise<undefined|SelectBuilderUtil.AggregatedRow<SelectBuilderUtil.CleanToSelectAll<TableT>>>
     ) {
@@ -718,6 +722,28 @@ export class PooledDatabase extends mysql.PooledDatabase {
         return (this.from(table) as any)
             .where(where)
             .delete(() => [table] as any);
+    }
+    deleteZeroOrOneByUniqueKey<
+        TableT extends AnyTable & { data : { uniqueKeys : UniqueKeyCollection } }
+    > (
+        table : TableT,
+        uniqueKey : UniqueKeys<TableT>
+    ) : Promise<DeleteResult> {
+        return this.transactionIfNotInOne(async (db) => {
+            const result = await db.deleteFrom(
+                table,
+                () => (RawExprUtil.toUniqueKeyEqualityCondition(
+                    table,
+                    uniqueKey
+                ) as any)
+            ).execute();
+
+            if (result.deletedRowCount > 1) {
+                throw new Error(`Expected to delete zero or one row of ${table.alias}, with unique key ${JSON.stringify(uniqueKey)}; found ${result.deletedRowCount} rows`);
+            }
+
+            return result;
+        });
     }
     /*
         Desired methods,

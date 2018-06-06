@@ -168,7 +168,12 @@ var RawExprUtil;
                 return e.isNull(column);
             }
             else {
-                return e.eq(column, value);
+                if (RawExprUtil.isNullable(column)) {
+                    return e.isNotNullAndEq(column, value);
+                }
+                else {
+                    return e.eq(column, value);
+                }
             }
         });
         if (comparisonArr.length == 0) {

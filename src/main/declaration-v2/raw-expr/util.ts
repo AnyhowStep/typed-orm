@@ -241,7 +241,11 @@ export namespace RawExprUtil {
                 if (value == null) {
                     return e.isNull(column);
                 } else {
-                    return e.eq(column, value) as any;
+                    if (RawExprUtil.isNullable(column)) {
+                        return e.isNotNullAndEq(column, value) as any;
+                    } else {
+                        return e.eq(column, value) as any;
+                    }
                 }
             });
         if (comparisonArr.length == 0) {

@@ -4,13 +4,13 @@ import { SelectBuilder } from "./select-builder";
 import { Join } from "./join";
 import { AnyAliasedTable } from "./aliased-table";
 import { SelectDelegate } from "./select-delegate";
-import { Table, AnyTable, TableUtil, UniqueKeys, TableRow } from "./table";
+import { Table, AnyTable, UniqueKeys, TableRow } from "./table";
 import { RawInsertValueRow, InsertValueBuilder } from "./insert-value-builder";
 import { InsertSelectBuilderConvenientDelegate } from "./insert-select-builder";
 import { UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate, UpdateResult } from "./update-builder";
 import * as sd from "schema-decorator";
 import { WhereDelegate } from "./where-delegate";
-import { DeleteBuilder, DeleteTables } from "./delete-builder";
+import { DeleteBuilder, DeleteTables, DeleteResult } from "./delete-builder";
 import { SelectBuilderUtil } from "./select-builder-util";
 import { FetchRow } from "./fetch-row";
 import { SelectCollectionUtil } from "./select-collection";
@@ -82,9 +82,9 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     select<SelectDelegateT extends SelectDelegate<ReturnType<CreateSelectBuilderDelegate>>>(delegate: SelectDelegateT): (SelectBuilderUtil.Select<ReturnType<CreateSelectBuilderDelegate>, SelectDelegateT>);
     selectAll<T>(assert: sd.AssertFunc<T>, queryStr: string, queryValues?: mysql.QueryValues): Promise<mysql.SelectResult<T>>;
     selectAll<TableT extends AnyAliasedTable>(table: TableT, where?: WhereDelegate<SelectBuilderUtil.CleanToFrom<TableT>>): SelectBuilderUtil.CleanToSelectAll<TableT>;
-    selectAllByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: TableUtil.UniqueKeys<TableT>): (SelectBuilderUtil.CleanToSelectAll<TableT>);
-    fetchOneByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: TableUtil.UniqueKeys<TableT>): (Promise<SelectBuilderUtil.AggregatedRow<SelectBuilderUtil.CleanToSelectAll<TableT>>>);
-    fetchZeroOrOneByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: TableUtil.UniqueKeys<TableT>): (Promise<undefined | SelectBuilderUtil.AggregatedRow<SelectBuilderUtil.CleanToSelectAll<TableT>>>);
+    selectAllByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: UniqueKeys<TableT>): (SelectBuilderUtil.CleanToSelectAll<TableT>);
+    fetchOneByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: UniqueKeys<TableT>): (Promise<SelectBuilderUtil.AggregatedRow<SelectBuilderUtil.CleanToSelectAll<TableT>>>);
+    fetchZeroOrOneByUniqueKey<TableT extends AnyTable>(table: TableT, uniqueKey: UniqueKeys<TableT>): (Promise<undefined | SelectBuilderUtil.AggregatedRow<SelectBuilderUtil.CleanToSelectAll<TableT>>>);
     fetchOneById<TableT extends AnyAliasedTable & {
         data: {
             id: Column<any, any, number>;
@@ -148,6 +148,11 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         };
     }>(table: TableT, uniqueKey: UniqueKeys<TableT>, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<UpdateResult>);
     deleteFrom<TableT extends AnyTable>(table: TableT, where: WhereDelegate<ConvenientDeleteSelectBuilder<TableT>>): (DeleteBuilder<ConvenientDeleteSelectBuilder<TableT>, DeleteTables<ConvenientDeleteSelectBuilder<TableT>>>);
+    deleteZeroOrOneByUniqueKey<TableT extends AnyTable & {
+        data: {
+            uniqueKeys: UniqueKeyCollection;
+        };
+    }>(table: TableT, uniqueKey: UniqueKeys<TableT>): Promise<DeleteResult>;
     getGenerationExpression(column: AnyColumn): Promise<string>;
     polymorphicInsertValueAndFetch<TableT extends AnyTable>(table: TableT, row: PolymorphicRawInsertValueRow<TableT>): Promise<{ [name in TableT["data"]["parentTables"] extends Table<string, string, {
         readonly [columnName: string]: Column<string, string, any>;

@@ -116,21 +116,24 @@ class PooledDatabase extends mysql.PooledDatabase {
         }
     }
     selectAllByUniqueKey(table, uniqueKey) {
-        uniqueKey = table.getUniqueKeyAssertDelegate()(`${table.alias} unique key`, uniqueKey);
+        /*uniqueKey = table.getUniqueKeyAssertDelegate()(
+            `${table.alias} unique key`,
+            uniqueKey
+        ) as any;*/
         let result = this.from(table)
+            .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
             .selectAll();
-        for (let columnName in uniqueKey) {
-            const value = uniqueKey[columnName];
+        /*for (let columnName in uniqueKey) {
+            const value : any = uniqueKey[columnName]
             if (value === undefined) {
                 continue;
             }
             if (value == null) {
-                result = result.whereIsNull((c) => c[columnName]);
+                result = result.whereIsNull((c : any) => c[columnName]);
+            } else {
+                result = result.whereIsEqual((c : any) => c[columnName], value);
             }
-            else {
-                result = result.whereIsEqual((c) => c[columnName], value);
-            }
-        }
+        }*/
         return result;
     }
     fetchOneByUniqueKey(table, uniqueKey) {
@@ -375,6 +378,15 @@ class PooledDatabase extends mysql.PooledDatabase {
         return this.from(table)
             .where(where)
             .delete(() => [table]);
+    }
+    deleteZeroOrOneByUniqueKey(table, uniqueKey) {
+        return this.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
+            const result = yield db.deleteFrom(table, () => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey)).execute();
+            if (result.deletedRowCount > 1) {
+                throw new Error(`Expected to delete zero or one row of ${table.alias}, with unique key ${JSON.stringify(uniqueKey)}; found ${result.deletedRowCount} rows`);
+            }
+            return result;
+        }));
     }
     /*
         Desired methods,
