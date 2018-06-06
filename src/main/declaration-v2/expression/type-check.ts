@@ -5,6 +5,7 @@ import * as invalid from "../invalid";
 import {ColumnReferencesUtil} from "../column-references";
 import * as variadicUtil from "./variadic-util";
 import {and} from "./logical-connective";
+import {FALSE} from "./logical-connective";
 
 import {SelectBuilder} from "../select-builder";
 import {Column} from "../column";
@@ -134,6 +135,9 @@ export function isIn<
                 boolean
             >
 ) {
+    if (rightArr.length == 0) {
+        return FALSE as any;
+    }
     const q = variadicUtil.querifyNonNullable(left, ...rightArr);
 
     return booleanExpr(

@@ -5,6 +5,7 @@ const boolean_expr_1 = require("./boolean-expr");
 const column_references_1 = require("../column-references");
 const variadicUtil = require("./variadic-util");
 const logical_connective_1 = require("./logical-connective");
+const logical_connective_2 = require("./logical-connective");
 const select_builder_1 = require("../select-builder");
 const column_1 = require("../column");
 select_builder_1.SelectBuilder;
@@ -44,6 +45,9 @@ function isNotNullAndEq(left, right) {
 exports.isNotNullAndEq = isNotNullAndEq;
 //`in` is a reserved keyword
 function isIn(left, ...rightArr) {
+    if (rightArr.length == 0) {
+        return logical_connective_2.FALSE;
+    }
     const q = variadicUtil.querifyNonNullable(left, ...rightArr);
     return boolean_expr_1.booleanExpr(q.used, `${q.leftQuery} IN(${q.rightQueries.join(",")})`);
 }

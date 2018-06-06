@@ -4,6 +4,7 @@ const raw_expr_1 = require("../raw-expr");
 const boolean_expr_1 = require("./boolean-expr");
 const variadicUtil = require("./variadic-util");
 const column_references_1 = require("../column-references");
+const logical_connective_1 = require("./logical-connective");
 const select_builder_1 = require("../select-builder");
 const column_1 = require("../column");
 select_builder_1.SelectBuilder;
@@ -21,6 +22,9 @@ exports.unsafeTypeCheckBinaryOp = unsafeTypeCheckBinaryOp;
 exports.unsafeEq = unsafeTypeCheckBinaryOp("=");
 exports.unsafeNotEq = unsafeTypeCheckBinaryOp("!=");
 function unsafeIsIn(left, ...rightArr) {
+    if (rightArr.length == 0) {
+        return logical_connective_1.FALSE;
+    }
     const q = variadicUtil.querifyNullable(left, ...rightArr);
     return boolean_expr_1.nullableBooleanExpr(q.used, `${q.leftQuery} IN(${q.rightQueries.join(",")})`);
 }
