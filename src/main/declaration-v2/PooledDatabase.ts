@@ -657,6 +657,53 @@ export class PooledDatabase extends mysql.PooledDatabase {
             return updateResult;
         }) as any;
     }
+    updateOneByUniqueKey<
+        TableT extends AnyTable & { data : { uniqueKeys : UniqueKeyCollection } }
+    > (
+        table : TableT,
+        uniqueKey : UniqueKeys<TableT>,
+        delegate : UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>
+    ) : (
+        Promise<UpdateResult>
+    ) {
+        if (table.data.uniqueKeys == undefined) {
+            throw new Error(`Expected ${table.alias} to have a unique key`);
+        }
+        return this.transactionIfNotInOne(async (db) => {
+            const updateResult : UpdateResult = await (db.from(table) as any)
+                .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                    table,
+                    uniqueKey
+                ))
+                .set(delegate)
+                .execute();
+
+            if (updateResult.foundRowCount > 1) {
+                //Should not be possible
+                throw new Error(`Expected to update one row of ${table.alias}, with unique key ${JSON.stringify(uniqueKey)}; found ${updateResult.foundRowCount} rows`);
+            }
+
+            if (updateResult.foundRowCount == 0) {
+                throw new Error(`Expected to update one row of ${table.alias}, with unique key ${JSON.stringify(uniqueKey)}; found zero`);
+            }
+
+            if (updateResult.foundRowCount < 0) {
+                //No update was even attempted, probably an empty SET clause
+                const exists = await db.existsByUniqueKey(table, uniqueKey);
+                if (exists) {
+                    return {
+                        ...updateResult,
+                        affectedRows : 1,
+                        foundRowCount : 1,
+                    };
+                } else {
+                    throw new Error(`Expected to update one row of ${table.alias}, with unique key ${JSON.stringify(uniqueKey)}; found zero`);
+                }
+            }
+
+            return updateResult;
+        }) as any;
+    }
     deleteFrom <
         TableT extends AnyTable
     > (

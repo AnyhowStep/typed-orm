@@ -342,6 +342,35 @@ class PooledDatabase extends mysql.PooledDatabase {
             return updateResult;
         }));
     }
+    updateOneByUniqueKey(table, uniqueKey, delegate) {
+        if (table.data.uniqueKeys == undefined) {
+            throw new Error(`Expected ${table.alias} to have a unique key`);
+        }
+        return this.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
+            const updateResult = yield db.from(table)
+                .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
+                .set(delegate)
+                .execute();
+            if (updateResult.foundRowCount > 1) {
+                //Should not be possible
+                throw new Error(`Expected to update one row of ${table.alias}, with unique key ${JSON.stringify(uniqueKey)}; found ${updateResult.foundRowCount} rows`);
+            }
+            if (updateResult.foundRowCount == 0) {
+                throw new Error(`Expected to update one row of ${table.alias}, with unique key ${JSON.stringify(uniqueKey)}; found zero`);
+            }
+            if (updateResult.foundRowCount < 0) {
+                //No update was even attempted, probably an empty SET clause
+                const exists = yield db.existsByUniqueKey(table, uniqueKey);
+                if (exists) {
+                    return Object.assign({}, updateResult, { affectedRows: 1, foundRowCount: 1 });
+                }
+                else {
+                    throw new Error(`Expected to update one row of ${table.alias}, with unique key ${JSON.stringify(uniqueKey)}; found zero`);
+                }
+            }
+            return updateResult;
+        }));
+    }
     deleteFrom(table, where) {
         return this.from(table)
             .where(where)
