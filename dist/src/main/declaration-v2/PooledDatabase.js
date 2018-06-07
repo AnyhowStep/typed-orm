@@ -21,6 +21,7 @@ const polymorphic_update_zero_or_one_by_unique_key_1 = require("./polymorphic-up
 const raw_expr_1 = require("./raw-expr");
 const log_1 = require("./log");
 const column_collection_1 = require("./column-collection");
+const column_references_1 = require("./column-references");
 const aliased_table_1 = require("./aliased-table");
 ;
 const aliased_expr_1 = require("./aliased-expr");
@@ -164,21 +165,57 @@ class PooledDatabase extends mysql.PooledDatabase {
                 .fetchZeroOrOne();
         });
     }
-    fetchValueByUniqueKey(table, uniqueKey, columnDelegate) {
-        const column = columnDelegate(table.columns);
-        column_collection_1.ColumnCollectionUtil.assertHasColumn(table.columns, column);
-        return this.from(table)
-            .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
-            .select(() => [column])
-            .fetchValue();
+    fetchValueByUniqueKey(table, uniqueKey, selectValueDelegate) {
+        const columnOrAliasedExprOrExpr = selectValueDelegate(table.columns);
+        if (columnOrAliasedExprOrExpr instanceof aliased_expr_1.AliasedExpr) {
+            const ref = column_collection_1.ColumnCollectionUtil.toColumnReferences(table.columns);
+            column_references_1.ColumnReferencesUtil.assertHasColumnReferences(ref, columnOrAliasedExprOrExpr.usedReferences);
+        }
+        else if (columnOrAliasedExprOrExpr instanceof column_1.Column) {
+            column_collection_1.ColumnCollectionUtil.assertHasColumn(table.columns, columnOrAliasedExprOrExpr);
+        }
+        else {
+            const ref = column_collection_1.ColumnCollectionUtil.toColumnReferences(table.columns);
+            column_references_1.ColumnReferencesUtil.assertHasColumnReferences(ref, columnOrAliasedExprOrExpr.usedReferences);
+        }
+        if (columnOrAliasedExprOrExpr instanceof expr_1.Expr) {
+            return this.from(table)
+                .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
+                .select(() => [columnOrAliasedExprOrExpr.as("value")])
+                .fetchValue();
+        }
+        else {
+            return this.from(table)
+                .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
+                .select(() => [columnOrAliasedExprOrExpr])
+                .fetchValue();
+        }
     }
-    fetchValueOrUndefinedByUniqueKey(table, uniqueKey, columnDelegate) {
-        const column = columnDelegate(table.columns);
-        column_collection_1.ColumnCollectionUtil.assertHasColumn(table.columns, column);
-        return this.from(table)
-            .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
-            .select(() => [column])
-            .fetchValueOrUndefined();
+    fetchValueOrUndefinedByUniqueKey(table, uniqueKey, selectValueDelegate) {
+        const columnOrAliasedExprOrExpr = selectValueDelegate(table.columns);
+        if (columnOrAliasedExprOrExpr instanceof aliased_expr_1.AliasedExpr) {
+            const ref = column_collection_1.ColumnCollectionUtil.toColumnReferences(table.columns);
+            column_references_1.ColumnReferencesUtil.assertHasColumnReferences(ref, columnOrAliasedExprOrExpr.usedReferences);
+        }
+        else if (columnOrAliasedExprOrExpr instanceof column_1.Column) {
+            column_collection_1.ColumnCollectionUtil.assertHasColumn(table.columns, columnOrAliasedExprOrExpr);
+        }
+        else {
+            const ref = column_collection_1.ColumnCollectionUtil.toColumnReferences(table.columns);
+            column_references_1.ColumnReferencesUtil.assertHasColumnReferences(ref, columnOrAliasedExprOrExpr.usedReferences);
+        }
+        if (columnOrAliasedExprOrExpr instanceof expr_1.Expr) {
+            return this.from(table)
+                .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
+                .select(() => [columnOrAliasedExprOrExpr.as("value")])
+                .fetchValueOrUndefined();
+        }
+        else {
+            return this.from(table)
+                .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
+                .select(() => [columnOrAliasedExprOrExpr])
+                .fetchValueOrUndefined();
+        }
     }
     insertValue(table, value) {
         return new insert_value_builder_1.InsertValueBuilder(table, undefined, "NORMAL", this).value(value);

@@ -21,9 +21,11 @@ import {PolymorphicUpdateAssignmentCollectionDelegate, polymorphicUpdateZeroOrOn
 import {RawExprUtil} from "./raw-expr";
 import {LogData, LogDataUtil} from "./log";
 import {ColumnCollectionUtil} from "./column-collection";
+import {SelectValue} from "./select-value";
+import {ColumnReferencesUtil} from "./column-references";
 
 import {AliasedTable} from "./aliased-table";;
-import {AliasedExpr} from "./aliased-expr";
+import {AliasedExpr, AnyAliasedExpr} from "./aliased-expr";
 import {Column, AnyColumn} from "./column";
 import {Expr} from "./expr";
 import {TableData} from "./table-data";
@@ -160,7 +162,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
             }
         );
     };
-    from<TableT extends AnyAliasedTable> (table : TableT) : (
+    from<TableT extends AnyAliasedTable|AnyTable> (table : TableT) : (
         SelectBuilderUtil.FromUnsafe<
             SelectBuilder<SelectBuilderUtil.CleanData>,
             TableT
@@ -289,45 +291,101 @@ export class PooledDatabase extends mysql.PooledDatabase {
     }
     fetchValueByUniqueKey<
         TableT extends AnyTable,
-        DelegateT extends (c : TableT["columns"]) => ColumnCollectionUtil.Columns<TableT["columns"]>
+        DelegateT extends (c : TableT["columns"]) => SelectValue<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>, any>|Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, any>
     > (
         table : TableT,
         uniqueKey : UniqueKeys<TableT>,
-        columnDelegate : DelegateT
+        selectValueDelegate : DelegateT
     ) : (
-        Promise<ReturnType<ReturnType<DelegateT>["assertDelegate"]>>
+        Promise<
+            ReturnType<DelegateT> extends AnyAliasedExpr ?
+            ReturnType<ReturnType<DelegateT>["assertDelegate"]> :
+            ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>
+        >
     ) {
-        const column = columnDelegate(table.columns);
-        ColumnCollectionUtil.assertHasColumn(table.columns, column);
+        const columnOrAliasedExprOrExpr = selectValueDelegate(table.columns);
+        if (columnOrAliasedExprOrExpr instanceof AliasedExpr) {
+            const ref = ColumnCollectionUtil.toColumnReferences(table.columns);
+            ColumnReferencesUtil.assertHasColumnReferences(
+                ref,
+                columnOrAliasedExprOrExpr.usedReferences as any
+            );
+        } else if (columnOrAliasedExprOrExpr instanceof Column) {
+            ColumnCollectionUtil.assertHasColumn(table.columns, columnOrAliasedExprOrExpr);
+        } else {
+            const ref = ColumnCollectionUtil.toColumnReferences(table.columns);
+            ColumnReferencesUtil.assertHasColumnReferences(
+                ref,
+                columnOrAliasedExprOrExpr.usedReferences as any
+            );
+        }
 
-        return (this.from(table) as any)
+        if (columnOrAliasedExprOrExpr instanceof Expr) {
+            return (this.from(table) as any)
             .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
                 table,
                 uniqueKey
             ))
-            .select(() => [column])
+            .select(() => [columnOrAliasedExprOrExpr.as("value")])
             .fetchValue();
+        } else {
+            return (this.from(table) as any)
+            .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                table,
+                uniqueKey
+            ))
+            .select(() => [columnOrAliasedExprOrExpr])
+            .fetchValue();
+        }
     }
     fetchValueOrUndefinedByUniqueKey<
         TableT extends AnyTable,
-        DelegateT extends (c : TableT["columns"]) => ColumnCollectionUtil.Columns<TableT["columns"]>
+        DelegateT extends (c : TableT["columns"]) => SelectValue<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>, any>|Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, any>
     > (
         table : TableT,
         uniqueKey : UniqueKeys<TableT>,
-        columnDelegate : DelegateT
+        selectValueDelegate : DelegateT
     ) : (
-        Promise<ReturnType<ReturnType<DelegateT>["assertDelegate"]>|undefined>
+        Promise<
+            ReturnType<DelegateT> extends AnyAliasedExpr ?
+            ReturnType<ReturnType<DelegateT>["assertDelegate"]> :
+            ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>
+        >
     ) {
-        const column = columnDelegate(table.columns);
-        ColumnCollectionUtil.assertHasColumn(table.columns, column);
+        const columnOrAliasedExprOrExpr = selectValueDelegate(table.columns);
+        if (columnOrAliasedExprOrExpr instanceof AliasedExpr) {
+            const ref = ColumnCollectionUtil.toColumnReferences(table.columns);
+            ColumnReferencesUtil.assertHasColumnReferences(
+                ref,
+                columnOrAliasedExprOrExpr.usedReferences as any
+            );
+        } else if (columnOrAliasedExprOrExpr instanceof Column) {
+            ColumnCollectionUtil.assertHasColumn(table.columns, columnOrAliasedExprOrExpr);
+        } else {
+            const ref = ColumnCollectionUtil.toColumnReferences(table.columns);
+            ColumnReferencesUtil.assertHasColumnReferences(
+                ref,
+                columnOrAliasedExprOrExpr.usedReferences as any
+            );
+        }
 
-        return (this.from(table) as any)
+        if (columnOrAliasedExprOrExpr instanceof Expr) {
+            return (this.from(table) as any)
             .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
                 table,
                 uniqueKey
             ))
-            .select(() => [column])
+            .select(() => [columnOrAliasedExprOrExpr.as("value")])
             .fetchValueOrUndefined();
+        } else {
+            return (this.from(table) as any)
+            .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                table,
+                uniqueKey
+            ))
+            .select(() => [columnOrAliasedExprOrExpr])
+            .fetchValueOrUndefined();
+        }
     }
 
     insertValue<TableT extends AnyTable> (

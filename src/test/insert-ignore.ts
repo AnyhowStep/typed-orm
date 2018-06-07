@@ -15,9 +15,9 @@ const insertIgnore = o.table(
 
 tape(__filename, async (t) => {
     const db = await getDb();
-    const now = new Date();
+    const someDate = new Date(new Date().getTime() + 20000);
     await db.insertValue(insertIgnore, {
-        createdAt : now
+        createdAt : someDate
     })
         .ignore()
         .execute()
@@ -25,7 +25,7 @@ tape(__filename, async (t) => {
             t.deepEquals(result.insertedRowCount, 1, "Expected one insertion");
         });
     await db.insertValue(insertIgnore, {
-        createdAt : now
+        createdAt : someDate
     })
         .ignore()
         .execute()

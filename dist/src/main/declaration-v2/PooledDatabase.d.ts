@@ -17,9 +17,14 @@ import { SelectCollectionUtil } from "./select-collection";
 import { UniqueKeyCollection } from "./unique-key-collection";
 import { PolymorphicRawInsertValueRow } from "./polymorphic-insert-value-and-fetch";
 import { PolymorphicUpdateAssignmentCollectionDelegate } from "./polymorphic-update-zero-or-one-by-unique-key";
+import { RawExprUtil } from "./raw-expr";
 import { LogData, LogDataUtil } from "./log";
 import { ColumnCollectionUtil } from "./column-collection";
+import { SelectValue } from "./select-value";
+import { ColumnReferencesUtil } from "./column-references";
+import { AnyAliasedExpr } from "./aliased-expr";
 import { Column, AnyColumn } from "./column";
+import { Expr } from "./expr";
 export declare type ConvenientUpdateSelectBuilder<TableT extends AnyTable> = (SelectBuilder<{
     hasSelect: false;
     hasFrom: true;
@@ -45,7 +50,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     transaction<ResultT>(callback: (db: PooledDatabase) => Promise<ResultT>): Promise<ResultT>;
     transactionIfNotInOne<ResultT>(callback: (db: PooledDatabase) => Promise<ResultT>): Promise<ResultT>;
     readonly query: CreateSelectBuilderDelegate;
-    from<TableT extends AnyAliasedTable>(table: TableT): (SelectBuilderUtil.FromUnsafe<SelectBuilder<SelectBuilderUtil.CleanData>, TableT>);
+    from<TableT extends AnyAliasedTable | AnyTable>(table: TableT): (SelectBuilderUtil.FromUnsafe<SelectBuilder<SelectBuilderUtil.CleanData>, TableT>);
     select<SelectDelegateT extends SelectDelegate<ReturnType<CreateSelectBuilderDelegate>>>(delegate: SelectDelegateT): (SelectBuilderUtil.Select<ReturnType<CreateSelectBuilderDelegate>, SelectDelegateT>);
     selectAll<T>(assert: sd.AssertFunc<T>, queryStr: string, queryValues?: mysql.QueryValues): Promise<mysql.SelectResult<T>>;
     selectAll<TableT extends AnyAliasedTable>(table: TableT, where?: WhereDelegate<SelectBuilderUtil.CleanToFrom<TableT>>): SelectBuilderUtil.CleanToSelectAll<TableT>;
@@ -62,8 +67,8 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             id: Column<any, any, number>;
         };
     }>(table: TableT, id: number): (Promise<FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>> | undefined>);
-    fetchValueByUniqueKey<TableT extends AnyTable, DelegateT extends (c: TableT["columns"]) => ColumnCollectionUtil.Columns<TableT["columns"]>>(table: TableT, uniqueKey: UniqueKeys<TableT>, columnDelegate: DelegateT): (Promise<ReturnType<ReturnType<DelegateT>["assertDelegate"]>>);
-    fetchValueOrUndefinedByUniqueKey<TableT extends AnyTable, DelegateT extends (c: TableT["columns"]) => ColumnCollectionUtil.Columns<TableT["columns"]>>(table: TableT, uniqueKey: UniqueKeys<TableT>, columnDelegate: DelegateT): (Promise<ReturnType<ReturnType<DelegateT>["assertDelegate"]> | undefined>);
+    fetchValueByUniqueKey<TableT extends AnyTable, DelegateT extends (c: TableT["columns"]) => SelectValue<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>, any> | Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, any>>(table: TableT, uniqueKey: UniqueKeys<TableT>, selectValueDelegate: DelegateT): (Promise<ReturnType<DelegateT> extends AnyAliasedExpr ? ReturnType<ReturnType<DelegateT>["assertDelegate"]> : ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>>);
+    fetchValueOrUndefinedByUniqueKey<TableT extends AnyTable, DelegateT extends (c: TableT["columns"]) => SelectValue<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>, any> | Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, any>>(table: TableT, uniqueKey: UniqueKeys<TableT>, selectValueDelegate: DelegateT): (Promise<ReturnType<DelegateT> extends AnyAliasedExpr ? ReturnType<ReturnType<DelegateT>["assertDelegate"]> : ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>>);
     insertValue<TableT extends AnyTable>(table: TableT, value: RawInsertValueRow<TableT>): (InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], "NORMAL">);
     insertValueAndFetch<TableT extends AnyTable & {
         data: {
