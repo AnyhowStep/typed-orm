@@ -14,4 +14,4 @@ function timestampAdd(intervalUnit, interval, dateTime) {
     raw_expr_1.RawExprUtil.assertDelegate(dateTime), `TIMESTAMPADD(${intervalUnit}, ${raw_expr_1.RawExprUtil.querify(interval)}, ${raw_expr_1.RawExprUtil.querify(dateTime)})`);
 }
 exports.timestampAdd = timestampAdd;
-//# sourceMappingURL=timestampAdd.js.map
+//# sourceMappingURL=timestamp-add.js.map
