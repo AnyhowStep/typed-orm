@@ -21,7 +21,7 @@ export function timestampAdd<
             RawExprUtil.UsedReferences<IntervalT>,
             RawExprUtil.UsedReferences<DateTimeT>
         >,
-        DateTimeT
+        Date
     >
 ) {
     return new Expr(

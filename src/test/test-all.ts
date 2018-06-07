@@ -6,3 +6,4 @@ import "./log";
 import "./multi-column-join-using";
 import "./polymorphic-insert-and-fetch";
 import "./polymorphic-update-zero-or-one-by-unique-key";
+import "./timestamp-add";
