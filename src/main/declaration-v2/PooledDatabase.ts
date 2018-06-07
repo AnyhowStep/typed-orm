@@ -347,9 +347,12 @@ export class PooledDatabase extends mysql.PooledDatabase {
         selectValueDelegate : DelegateT
     ) : (
         Promise<
-            ReturnType<DelegateT> extends AnyAliasedExpr ?
-            ReturnType<ReturnType<DelegateT>["assertDelegate"]> :
-            ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>
+            undefined|
+            (
+                ReturnType<DelegateT> extends AnyAliasedExpr ?
+                ReturnType<ReturnType<DelegateT>["assertDelegate"]> :
+                ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>
+            )
         >
     ) {
         const columnOrAliasedExprOrExpr = selectValueDelegate(table.columns);
