@@ -21,6 +21,7 @@ export declare class TableBuilder<AliasT extends string, NameT extends string, C
         readonly [key in keyof DataT]: (key extends "autoIncrement" ? undefined : key extends "id" ? undefined : any);
     }>, delegate: IdDelegateT): (TableBuilder<AliasT, NameT, ColumnCollectionT, TableDataUtil.Id<DataT, ColumnCollectionT, IdDelegateT>>);
     addUniqueKey<AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>>(delegate: AddUniqueKeyDelegateT): (TableBuilder<AliasT, NameT, ColumnCollectionT, TableDataUtil.AddUniqueKey<DataT, ColumnCollectionT, AddUniqueKeyDelegateT>>);
+    addUniqueKeyFromFieldsUnsafe<FieldsT extends fieldUtil.AnyFieldTuple>(fields: FieldsT): (TableBuilder<AliasT, NameT, ColumnCollectionT, TableDataUtil.AddUniqueKeyFromFieldsUnsafe<DataT, FieldsT>>);
     addParent<ParentT extends AnyTable>(parent: ParentT): TableBuilder<AliasT, NameT, ColumnCollectionT, TableDataUtil.AddParentTable<DataT, ParentT>>;
     build(): Table<AliasT, NameT, ColumnCollectionT, DataT>;
 }

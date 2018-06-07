@@ -15,6 +15,8 @@ import {UniqueKey} from "../unique-key";
 import {AnyTable} from "../table";
 import {UniqueKeyCollection, UniqueKeyCollectionUtil} from "../unique-key-collection";
 import {TableParentCollection} from "../table-parent-collection";
+import * as fieldUtil from "../field-util";
+import * as sd from "schema-decorator";
 
 export namespace TableDataUtil {
     export type AutoIncrement<
@@ -414,21 +416,25 @@ export namespace TableDataUtil {
     }
 
     export type ToUniqueKeyImpl<
-        TupleT extends Tuple<AnyColumn>,
+        TupleT extends fieldUtil.AnyFieldTuple,
         K extends string
     > = (
         K extends keyof TupleT ?
             (
                 TupleT[K] extends Column<any, infer NameT, any> ?
-                    {
-                        readonly [name in NameT] : true
-                    } :
-                    {}
+                {
+                    readonly [name in NameT] : true
+                } :
+                TupleT[K] extends sd.Field<infer NameT, any> ?
+                {
+                    readonly [name in NameT] : true
+                } :
+                {}
             ) :
             {}
     );
     export type ToUniqueKey<
-        TupleT extends Tuple<AnyColumn>
+        TupleT extends fieldUtil.AnyFieldTuple
     > = (
         ToUniqueKeyImpl<TupleT, "0"> &
         ToUniqueKeyImpl<TupleT, "1"> &
@@ -475,8 +481,37 @@ export namespace TableDataUtil {
             )
         }
     );
+    export type AddUniqueKeyFromFieldsUnsafe<
+        DataT extends TableData,
+        FieldsT extends fieldUtil.AnyFieldTuple
+    > = (
+        {
+            readonly [key in keyof DataT] : (
+                key extends "uniqueKeys" ?
+                (
+                    DataT["uniqueKeys"] extends Tuple<UniqueKey> ?
+                        (
+                            TupleWPush<
+                                UniqueKey,
+                                DataT["uniqueKeys"],
+                                ToUniqueKey<
+                                    FieldsT
+                                >
+                            >
+                        ) :
+                        TupleWiden<
+                            [ToUniqueKey<
+                                    FieldsT
+                            >],
+                            UniqueKey
+                        >
+                ) :
+                DataT[key]
+            )
+        }
+    );
     export function toUniqueKey<
-        TupleT extends Tuple<AnyColumn>
+        TupleT extends fieldUtil.AnyFieldTuple
     > (tuple : TupleT) : ToUniqueKey<TupleT> {
         const result = {} as any;
         for (let i of tuple) {
@@ -506,6 +541,25 @@ export namespace TableDataUtil {
             uniqueKeys : (data.uniqueKeys == undefined) ?
                 [toUniqueKey(uniqueKeyTuple)] :
                 data.uniqueKeys.concat(toUniqueKey(uniqueKeyTuple))
+        } as any;
+    }
+    export function addUniqueKeyFromFieldsUnsafe<
+        DataT extends TableData,
+        FieldsT extends fieldUtil.AnyFieldTuple
+    > (
+        data : DataT,
+        fields : FieldsT
+    ) : (
+        AddUniqueKeyFromFieldsUnsafe<
+            DataT,
+            FieldsT
+        >
+    ) {
+        return {
+            ...(data as any),
+            uniqueKeys : (data.uniqueKeys == undefined) ?
+                [toUniqueKey(fields)] :
+                data.uniqueKeys.concat(toUniqueKey(fields))
         } as any;
     }
 

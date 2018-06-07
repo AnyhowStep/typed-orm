@@ -56,9 +56,11 @@ class TableBuilder extends aliased_table_1.AliasedTable {
     setId(delegate) {
         return new TableBuilder(this.alias, this.name, this.columns, table_data_1.TableDataUtil.id(this.data, this.columns, delegate));
     }
-    //This method causes `tsc` to not terminate if uncommented
     addUniqueKey(delegate) {
         return new TableBuilder(this.alias, this.name, this.columns, table_data_1.TableDataUtil.addUniqueKey(this.data, this.columns, delegate));
+    }
+    addUniqueKeyFromFieldsUnsafe(fields) {
+        return new TableBuilder(this.alias, this.name, this.columns, table_data_1.TableDataUtil.addUniqueKeyFromFieldsUnsafe(this.data, fields));
     }
     addParent(parent) {
         return new TableBuilder(this.alias, this.name, this.columns, table_data_1.TableDataUtil.addParentTable(this.data, parent));

@@ -111,6 +111,12 @@ var TableDataUtil;
                 data.uniqueKeys.concat(toUniqueKey(uniqueKeyTuple)) });
     }
     TableDataUtil.addUniqueKey = addUniqueKey;
+    function addUniqueKeyFromFieldsUnsafe(data, fields) {
+        return Object.assign({}, data, { uniqueKeys: (data.uniqueKeys == undefined) ?
+                [toUniqueKey(fields)] :
+                data.uniqueKeys.concat(toUniqueKey(fields)) });
+    }
+    TableDataUtil.addUniqueKeyFromFieldsUnsafe = addUniqueKeyFromFieldsUnsafe;
     function withTableAlias(data, tableAlias) {
         return Object.assign({}, data, { autoIncrement: (data.autoIncrement == undefined) ?
                 undefined :

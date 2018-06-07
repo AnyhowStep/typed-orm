@@ -7,6 +7,8 @@ import { UniqueKey } from "../unique-key";
 import { AnyTable } from "../table";
 import { UniqueKeyCollection, UniqueKeyCollectionUtil } from "../unique-key-collection";
 import { TableParentCollection } from "../table-parent-collection";
+import * as fieldUtil from "../field-util";
+import * as sd from "schema-decorator";
 export declare namespace TableDataUtil {
     type AutoIncrement<DataT extends TableData, ColumnCollectionT extends ColumnCollection, AutoIncrementDelegateT extends AutoIncrementDelegate<ColumnCollectionT>> = ({
         readonly [key in keyof DataT]: (key extends "autoIncrement" ? ReturnType<AutoIncrementDelegateT> : key extends "isGenerated" ? {
@@ -64,15 +66,21 @@ export declare namespace TableDataUtil {
         }], UniqueKey>) : DataT[key]);
     });
     function id<DataT extends TableData, ColumnCollectionT extends ColumnCollection, IdDelegateT extends IdDelegate<DataT, ColumnCollectionT>>(data: DataT, columnCollection: ColumnCollectionT, delegate: IdDelegateT): (Id<DataT, ColumnCollectionT, IdDelegateT>);
-    type ToUniqueKeyImpl<TupleT extends Tuple<AnyColumn>, K extends string> = (K extends keyof TupleT ? (TupleT[K] extends Column<any, infer NameT, any> ? {
+    type ToUniqueKeyImpl<TupleT extends fieldUtil.AnyFieldTuple, K extends string> = (K extends keyof TupleT ? (TupleT[K] extends Column<any, infer NameT, any> ? {
+        readonly [name in NameT]: true;
+    } : TupleT[K] extends sd.Field<infer NameT, any> ? {
         readonly [name in NameT]: true;
     } : {}) : {});
-    type ToUniqueKey<TupleT extends Tuple<AnyColumn>> = (ToUniqueKeyImpl<TupleT, "0"> & ToUniqueKeyImpl<TupleT, "1"> & ToUniqueKeyImpl<TupleT, "1"> & ToUniqueKeyImpl<TupleT, "3"> & ToUniqueKeyImpl<TupleT, "4"> & ToUniqueKeyImpl<TupleT, "5"> & ToUniqueKeyImpl<TupleT, "6"> & ToUniqueKeyImpl<TupleT, "7"> & ToUniqueKeyImpl<TupleT, "8"> & ToUniqueKeyImpl<TupleT, "9">);
+    type ToUniqueKey<TupleT extends fieldUtil.AnyFieldTuple> = (ToUniqueKeyImpl<TupleT, "0"> & ToUniqueKeyImpl<TupleT, "1"> & ToUniqueKeyImpl<TupleT, "1"> & ToUniqueKeyImpl<TupleT, "3"> & ToUniqueKeyImpl<TupleT, "4"> & ToUniqueKeyImpl<TupleT, "5"> & ToUniqueKeyImpl<TupleT, "6"> & ToUniqueKeyImpl<TupleT, "7"> & ToUniqueKeyImpl<TupleT, "8"> & ToUniqueKeyImpl<TupleT, "9">);
     type AddUniqueKey<DataT extends TableData, ColumnCollectionT extends ColumnCollection, AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>> = ({
         readonly [key in keyof DataT]: (key extends "uniqueKeys" ? (DataT["uniqueKeys"] extends Tuple<UniqueKey> ? (TupleWPush<UniqueKey, DataT["uniqueKeys"], ToUniqueKey<ReturnType<AddUniqueKeyDelegateT>>>) : TupleWiden<[ToUniqueKey<ReturnType<AddUniqueKeyDelegateT>>], UniqueKey>) : DataT[key]);
     });
-    function toUniqueKey<TupleT extends Tuple<AnyColumn>>(tuple: TupleT): ToUniqueKey<TupleT>;
+    type AddUniqueKeyFromFieldsUnsafe<DataT extends TableData, FieldsT extends fieldUtil.AnyFieldTuple> = ({
+        readonly [key in keyof DataT]: (key extends "uniqueKeys" ? (DataT["uniqueKeys"] extends Tuple<UniqueKey> ? (TupleWPush<UniqueKey, DataT["uniqueKeys"], ToUniqueKey<FieldsT>>) : TupleWiden<[ToUniqueKey<FieldsT>], UniqueKey>) : DataT[key]);
+    });
+    function toUniqueKey<TupleT extends fieldUtil.AnyFieldTuple>(tuple: TupleT): ToUniqueKey<TupleT>;
     function addUniqueKey<DataT extends TableData, ColumnCollectionT extends ColumnCollection, AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>>(data: DataT, columnCollection: ColumnCollectionT, delegate: AddUniqueKeyDelegateT): (AddUniqueKey<DataT, ColumnCollectionT, AddUniqueKeyDelegateT>);
+    function addUniqueKeyFromFieldsUnsafe<DataT extends TableData, FieldsT extends fieldUtil.AnyFieldTuple>(data: DataT, fields: FieldsT): (AddUniqueKeyFromFieldsUnsafe<DataT, FieldsT>);
     type WithTableAliasGeneric<DataT extends TableData, TableAliasT extends string> = ({
         readonly autoIncrement: (DataT["autoIncrement"] extends AnyColumn ? ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> : DataT["autoIncrement"] extends undefined ? undefined : DataT["autoIncrement"] extends AnyColumn | undefined ? ColumnUtil.WithTableAlias<Extract<DataT["autoIncrement"], AnyColumn>, TableAliasT> | undefined : undefined);
         readonly isGenerated: DataT["isGenerated"];

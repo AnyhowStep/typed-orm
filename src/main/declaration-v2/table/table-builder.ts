@@ -261,7 +261,6 @@ export class TableBuilder<
             TableDataUtil.id(this.data, this.columns, delegate as any)
         ) as any;
     }
-    //This method causes `tsc` to not terminate if uncommented
     addUniqueKey<
         AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>
     > (delegate : AddUniqueKeyDelegateT) : (
@@ -284,7 +283,30 @@ export class TableBuilder<
                 this.data,
                 this.columns,
                 delegate
-            ) as any
+            )
+        ) as any;
+    }
+    addUniqueKeyFromFieldsUnsafe<
+        FieldsT extends fieldUtil.AnyFieldTuple
+    > (fields : FieldsT) : (
+        TableBuilder<
+            AliasT,
+            NameT,
+            ColumnCollectionT,
+            TableDataUtil.AddUniqueKeyFromFieldsUnsafe<
+                DataT,
+                FieldsT
+            >
+        >
+    ) {
+        return new TableBuilder(
+            this.alias,
+            this.name,
+            this.columns,
+            TableDataUtil.addUniqueKeyFromFieldsUnsafe(
+                this.data,
+                fields
+            )
         ) as any;
     }
 
