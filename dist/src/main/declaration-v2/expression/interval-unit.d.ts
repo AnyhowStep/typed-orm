@@ -1,4 +1,4 @@
-export declare enum Unit {
+export declare enum IntervalUnit {
     MICROSECOND = "MICROSECOND",
     SECOND = "SECOND",
     MINUTE = "MINUTE",
@@ -19,4 +19,15 @@ export declare enum Unit {
     DAY_MINUTE = "DAY_MINUTE",
     DAY_HOUR = "DAY_HOUR",
     YEAR_MONTH = "YEAR_MONTH"
+}
+export declare enum NumericIntervalUnit {
+    MICROSECOND = "MICROSECOND",
+    SECOND = "SECOND",
+    MINUTE = "MINUTE",
+    HOUR = "HOUR",
+    DAY = "DAY",
+    WEEK = "WEEK",
+    MONTH = "MONTH",
+    QUARTER = "QUARTER",
+    YEAR = "YEAR"
 }

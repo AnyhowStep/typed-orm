@@ -1,7 +1,9 @@
 export * from "./boolean-expr";
 export * from "./coalesce";
 export * from "./count";
+export * from "./date-time-comparison";
 export * from "./if-null";
+export * from "./interval-unit";
 export * from "./logical-connective";
 export * from "./max";
 export * from "./min";
@@ -9,6 +11,7 @@ export * from "./now";
 export * from "./number-comparison";
 export * from "./rand";
 export * from "./string";
+export * from "./timestampAdd";
 export * from "./type-check";
 export * from "./unsafe-type-check";
 export * from "./variadic-util";

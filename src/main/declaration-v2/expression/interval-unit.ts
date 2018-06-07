@@ -1,5 +1,5 @@
 //https://dev.mysql.com/doc/refman/5.5/en/date-and-time-functions.html#function_date-add
-export enum Unit {
+export enum IntervalUnit {
     //These units can be represented with numbers
     MICROSECOND = "MICROSECOND",
     SECOND = "SECOND",
@@ -22,4 +22,17 @@ export enum Unit {
     DAY_MINUTE = "DAY_MINUTE",
     DAY_HOUR = "DAY_HOUR",
     YEAR_MONTH = "YEAR_MONTH",
+}
+
+export enum NumericIntervalUnit {
+    //These units can be represented with numbers
+    MICROSECOND = "MICROSECOND",
+    SECOND = "SECOND",
+    MINUTE = "MINUTE",
+    HOUR = "HOUR",
+    DAY = "DAY",
+    WEEK = "WEEK",
+    MONTH = "MONTH",
+    QUARTER = "QUARTER",
+    YEAR = "YEAR",
 }
