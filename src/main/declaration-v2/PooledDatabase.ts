@@ -160,9 +160,14 @@ export class PooledDatabase extends mysql.PooledDatabase {
             }
         );
     };
-    from<TableT extends AnyAliasedTable> (table : TableT) {
+    from<TableT extends AnyAliasedTable> (table : TableT) : (
+        SelectBuilderUtil.FromUnsafe<
+            SelectBuilder<SelectBuilderUtil.CleanData>,
+            TableT
+        >
+    ) {
         return this.query()
-            .from(table);
+            .from(table) as any;
     };
     select<
         SelectDelegateT extends SelectDelegate<ReturnType<CreateSelectBuilderDelegate>>

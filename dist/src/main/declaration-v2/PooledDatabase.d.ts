@@ -45,40 +45,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     transaction<ResultT>(callback: (db: PooledDatabase) => Promise<ResultT>): Promise<ResultT>;
     transactionIfNotInOne<ResultT>(callback: (db: PooledDatabase) => Promise<ResultT>): Promise<ResultT>;
     readonly query: CreateSelectBuilderDelegate;
-    from<TableT extends AnyAliasedTable>(table: TableT): ("__DUMMY_FROM_TABLE" extends TableT["alias"] ? Join<Table<"__DUMMY_FROM_TABLE", "__DUMMY_FROM_TABLE", {}, {
-        autoIncrement: undefined;
-        isGenerated: {};
-        hasDefaultValue: {};
-        isMutable: {};
-        id: undefined;
-        uniqueKeys: undefined;
-        parentTables: undefined;
-    }>, {}, true> : never) extends never ? SelectBuilder<{
-        readonly hasSelect: false;
-        readonly hasFrom: true;
-        readonly hasUnion: false;
-        readonly joins: [Join<TableT, TableT["columns"], false>];
-        readonly selects: undefined;
-        readonly aggregateDelegate: undefined;
-        readonly hasParentJoins: false;
-        readonly parentJoins: [Join<Table<"__DUMMY_FROM_TABLE", "__DUMMY_FROM_TABLE", {}, {
-            autoIncrement: undefined;
-            isGenerated: {};
-            hasDefaultValue: {};
-            isMutable: {};
-            id: undefined;
-            uniqueKeys: undefined;
-            parentTables: undefined;
-        }>, {}, true>];
-    }> : void | Error | ["Alias", TableT["alias"], "was already used as join in parent scope", "__DUMMY_FROM_TABLE" extends TableT["alias"] ? Join<Table<"__DUMMY_FROM_TABLE", "__DUMMY_FROM_TABLE", {}, {
-        autoIncrement: undefined;
-        isGenerated: {};
-        hasDefaultValue: {};
-        isMutable: {};
-        id: undefined;
-        uniqueKeys: undefined;
-        parentTables: undefined;
-    }>, {}, true> : never];
+    from<TableT extends AnyAliasedTable>(table: TableT): (SelectBuilderUtil.FromUnsafe<SelectBuilder<SelectBuilderUtil.CleanData>, TableT>);
     select<SelectDelegateT extends SelectDelegate<ReturnType<CreateSelectBuilderDelegate>>>(delegate: SelectDelegateT): (SelectBuilderUtil.Select<ReturnType<CreateSelectBuilderDelegate>, SelectDelegateT>);
     selectAll<T>(assert: sd.AssertFunc<T>, queryStr: string, queryValues?: mysql.QueryValues): Promise<mysql.SelectResult<T>>;
     selectAll<TableT extends AnyAliasedTable>(table: TableT, where?: WhereDelegate<SelectBuilderUtil.CleanToFrom<TableT>>): SelectBuilderUtil.CleanToSelectAll<TableT>;

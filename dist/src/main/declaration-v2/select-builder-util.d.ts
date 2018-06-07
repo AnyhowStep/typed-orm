@@ -30,9 +30,10 @@ export declare namespace SelectBuilderUtil {
         readonly [key in keyof DataT]: (key extends "selects" ? SelectCollectionUtil.FromJoinCollection<DataT["joins"]> : key extends "hasSelect" ? true : DataT[key]);
     });
     type CleanToSelectAll<ToTableT extends AnyAliasedTable> = (SelectBuilder<SelectAllData<CleanToFromData<ToTableT>>>);
-    type From<SelectBuilderT extends AnySelectBuilder, ToTableT extends AnyAliasedTable> = (SelectBuilderT extends SelectBuilder<infer DataT> ? JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]> extends never ? SelectBuilder<{
+    type FromUnsafe<SelectBuilderT extends AnySelectBuilder, ToTableT extends AnyAliasedTable> = (SelectBuilderT extends SelectBuilder<infer DataT> ? SelectBuilder<{
         readonly [key in keyof DataT]: (key extends "hasFrom" ? true : key extends "joins" ? [Join<ToTableT, ToTableT["columns"], false>] : DataT[key]);
-    }> : invalid.E4<"Alias", ToTableT["alias"], "was already used as join in parent scope", JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]>> : never);
+    }> : never);
+    type From<SelectBuilderT extends AnySelectBuilder, ToTableT extends AnyAliasedTable> = (SelectBuilderT extends SelectBuilder<infer DataT> ? JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]> extends never ? FromUnsafe<SelectBuilderT, ToTableT> : invalid.E4<"Alias", ToTableT["alias"], "was already used as join in parent scope", JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]>> : never);
     function from<SelectBuilderT extends AnySelectBuilder, ToTableT extends AnyAliasedTable>(s: SelectBuilderT, toTable: ToTableT): (From<SelectBuilderT, ToTableT>);
     type DoJoin<SelectBuilderT extends AnySelectBuilder, ToTableT extends AnyAliasedTable> = (SelectBuilderT extends SelectBuilder<infer DataT> ? (Error extends JoinCollectionUtil.InnerJoin<SelectBuilder<DataT>, ToTableT> ? JoinCollectionUtil.InnerJoin<SelectBuilder<DataT>, ToTableT> : SelectBuilder<{
         readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT> : DataT[key]);

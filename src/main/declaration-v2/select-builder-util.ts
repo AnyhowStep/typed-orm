@@ -81,12 +81,11 @@ export namespace SelectBuilderUtil {
         >
     );
 
-    export type From<
+    export type FromUnsafe<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable
     > = (
         SelectBuilderT extends SelectBuilder<infer DataT> ?
-            JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]> extends never ?
             SelectBuilder<{
                 readonly [key in keyof DataT] : (
                     key extends "hasFrom" ?
@@ -102,6 +101,15 @@ export namespace SelectBuilderUtil {
                     DataT[key]
                 )
             }> :
+            never
+    );
+    export type From<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable
+    > = (
+        SelectBuilderT extends SelectBuilder<infer DataT> ?
+            JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]> extends never ?
+            FromUnsafe<SelectBuilderT, ToTableT> :
             invalid.E4<
                 "Alias",
                 ToTableT["alias"],
