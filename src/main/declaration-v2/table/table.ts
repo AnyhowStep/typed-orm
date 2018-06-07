@@ -82,13 +82,16 @@ export type AnyTable = (
 export type TableRow<TableT extends AnyTable> = (
     ColumnCollectionUtil.Type<TableT["columns"]>
 );
-export type UniqueKeys<TableT extends AnyTable> = (
-    TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ?
-        UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeys"], TableT["columns"]> :
-        never
-);
 export type MinimalUniqueKeys<TableT extends AnyTable> = (
     TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ?
         UniqueKeyCollectionUtil.MinimalWithType<TableT["data"]["uniqueKeys"], TableT["columns"]> :
         never
+);
+export type UniqueKeys<TableT extends AnyTable> = (
+    MinimalUniqueKeys<TableT> |
+    (
+        TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ?
+            UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeys"], TableT["columns"]> :
+            never
+    )
 );

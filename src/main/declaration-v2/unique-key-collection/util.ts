@@ -5,18 +5,7 @@ import {TupleKeys} from "../tuple";
 import * as sd from "schema-decorator";
 
 export namespace UniqueKeyCollectionUtil {
-    export type WithType<
-        UniqueKeyCollectionT extends UniqueKeyCollection,
-        ColumnCollectionT extends ColumnCollection
-    > = (
-        {
-            [index in TupleKeys<UniqueKeyCollectionT>] : (
-                UniqueKeyCollectionT[index] extends UniqueKey ?
-                    UniqueKeyUtil.WithType<UniqueKeyCollectionT[index], ColumnCollectionT> :
-                    never
-            )
-        }[TupleKeys<UniqueKeyCollectionT>]
-    );
+    //TODO Maybe merge MinimalWithType<> with WithType<>
     export type MinimalWithType<
         UniqueKeyCollectionT extends UniqueKeyCollection,
         ColumnCollectionT extends ColumnCollection
@@ -25,6 +14,18 @@ export namespace UniqueKeyCollectionUtil {
             [index in TupleKeys<UniqueKeyCollectionT>] : (
                 UniqueKeyCollectionT[index] extends UniqueKey ?
                     UniqueKeyUtil.MinimalWithType<UniqueKeyCollectionT[index], ColumnCollectionT> :
+                    never
+            )
+        }[TupleKeys<UniqueKeyCollectionT>]
+    );
+    export type WithType<
+        UniqueKeyCollectionT extends UniqueKeyCollection,
+        ColumnCollectionT extends ColumnCollection
+    > = (
+        {
+            [index in TupleKeys<UniqueKeyCollectionT>] : (
+                UniqueKeyCollectionT[index] extends UniqueKey ?
+                    UniqueKeyUtil.WithType<UniqueKeyCollectionT[index], ColumnCollectionT> :
                     never
             )
         }[TupleKeys<UniqueKeyCollectionT>]

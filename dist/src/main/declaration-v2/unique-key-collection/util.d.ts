@@ -4,11 +4,11 @@ import { ColumnCollection } from "../column-collection";
 import { TupleKeys } from "../tuple";
 import * as sd from "schema-decorator";
 export declare namespace UniqueKeyCollectionUtil {
-    type WithType<UniqueKeyCollectionT extends UniqueKeyCollection, ColumnCollectionT extends ColumnCollection> = ({
-        [index in TupleKeys<UniqueKeyCollectionT>]: (UniqueKeyCollectionT[index] extends UniqueKey ? UniqueKeyUtil.WithType<UniqueKeyCollectionT[index], ColumnCollectionT> : never);
-    }[TupleKeys<UniqueKeyCollectionT>]);
     type MinimalWithType<UniqueKeyCollectionT extends UniqueKeyCollection, ColumnCollectionT extends ColumnCollection> = ({
         [index in TupleKeys<UniqueKeyCollectionT>]: (UniqueKeyCollectionT[index] extends UniqueKey ? UniqueKeyUtil.MinimalWithType<UniqueKeyCollectionT[index], ColumnCollectionT> : never);
+    }[TupleKeys<UniqueKeyCollectionT>]);
+    type WithType<UniqueKeyCollectionT extends UniqueKeyCollection, ColumnCollectionT extends ColumnCollection> = ({
+        [index in TupleKeys<UniqueKeyCollectionT>]: (UniqueKeyCollectionT[index] extends UniqueKey ? UniqueKeyUtil.WithType<UniqueKeyCollectionT[index], ColumnCollectionT> : never);
     }[TupleKeys<UniqueKeyCollectionT>]);
     function assertDelegate<UniqueKeyCollectionT extends UniqueKeyCollection, ColumnCollectionT extends ColumnCollection>(tuple: UniqueKeyCollectionT, columns: ColumnCollectionT): (sd.AssertDelegate<WithType<UniqueKeyCollectionT, ColumnCollectionT>>);
     function minimalAssertDelegate<UniqueKeyCollectionT extends UniqueKeyCollection, ColumnCollectionT extends ColumnCollection>(tuple: UniqueKeyCollectionT, columns: ColumnCollectionT): (sd.AssertDelegate<MinimalWithType<UniqueKeyCollectionT, ColumnCollectionT>>);
