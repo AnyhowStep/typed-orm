@@ -15,4 +15,4 @@ export declare type PolymorphicRawUpdateAssignmentCollection<TableT extends AnyT
     [columnName in TableParentCollectionUtil.MutableColumnNames<TableT>]?: (PolymorphicRawUpdateAssignment<TableT, columnName>);
 });
 export declare type PolymorphicUpdateAssignmentCollectionDelegate<TableT extends AnyTable> = ((c: ColumnReferencesUtil.ToConvenient<TableParentCollectionUtil.ToColumnReferences<TableT>>) => (PolymorphicRawUpdateAssignmentCollection<TableT>));
-export declare function polymorphicUpdateZeroOrOneByUniqueKey<TableT extends AnyTable>(db: PooledDatabase, table: TableT, uniqueKey: UniqueKeys<TableT>, setDelegate: PolymorphicUpdateAssignmentCollectionDelegate<TableT>): Promise<PolymorphicUpdateResult>;
+export declare function polymorphicUpdateZeroOrOneByUniqueKey<TableT extends AnyTable>(db: PooledDatabase, table: TableT, uniqueKey: UniqueKeys<TableT> & ({} | TableParentCollectionUtil.PartialTableRow<TableT>), setDelegate: PolymorphicUpdateAssignmentCollectionDelegate<TableT>): Promise<PolymorphicUpdateResult>;

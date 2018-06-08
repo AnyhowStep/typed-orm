@@ -66,6 +66,9 @@ export declare namespace TableParentCollectionUtil {
     type TableRow<TableT extends AnyTable> = ({
         [name in TableParentCollectionUtil.ColumnNames<TableT>]: (TableParentCollectionUtil.ColumnType<TableT, name>);
     });
+    type PartialTableRow<TableT extends AnyTable> = ({
+        [name in TableParentCollectionUtil.ColumnNames<TableT>]?: (TableParentCollectionUtil.ColumnType<TableT, name>);
+    });
     function assertDelegate<TableT extends AnyTable>(table: TableT): sd.AssertDelegate<TableRow<TableT>>;
     type FindWithTableAlias<ParentsT extends TableParentCollection, TableAliasT extends string> = ({
         [index in TupleKeys<ParentsT>]: (ParentsT[index] extends AnyTable ? (ParentsT[index]["alias"] extends TableAliasT ? ParentsT[index] : never) : never);

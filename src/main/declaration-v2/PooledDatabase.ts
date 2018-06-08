@@ -23,6 +23,7 @@ import {LogData, LogDataUtil} from "./log";
 import {ColumnCollectionUtil} from "./column-collection";
 import {SelectValue} from "./select-value";
 import {ColumnReferencesUtil} from "./column-references";
+import {TableParentCollectionUtil} from "./table-parent-collection";
 
 import {AliasedTable} from "./aliased-table";;
 import {AliasedExpr, AnyAliasedExpr} from "./aliased-expr";
@@ -961,7 +962,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
     }
     polymorphicUpdateZeroOrOneByUniqueKey<TableT extends AnyTable> (
         table : TableT,
-        uniqueKey : UniqueKeys<TableT>,
+        uniqueKey : UniqueKeys<TableT> & ({} | TableParentCollectionUtil.PartialTableRow<TableT>),
         setDelegate : PolymorphicUpdateAssignmentCollectionDelegate<TableT>
     ) {
         return polymorphicUpdateZeroOrOneByUniqueKey(

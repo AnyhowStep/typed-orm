@@ -92,7 +92,7 @@ export async function polymorphicUpdateZeroOrOneByUniqueKey<
 > (
     db : PooledDatabase,
     table : TableT,
-    uniqueKey : UniqueKeys<TableT>,
+    uniqueKey : UniqueKeys<TableT> & ({} | TableParentCollectionUtil.PartialTableRow<TableT>),
     setDelegate : PolymorphicUpdateAssignmentCollectionDelegate<TableT>
 ) : Promise<PolymorphicUpdateResult> {
     return db.transactionIfNotInOne(async (db) => {
@@ -164,6 +164,27 @@ export async function polymorphicUpdateZeroOrOneByUniqueKey<
             table,
             uniqueKey
         ));
+        if (table.data.parentTables != undefined) {
+            //So we don't check the same table multiple times
+            const alreadyChecked = new Set<string>();
+            alreadyChecked.add(table.alias);
+
+            for (let parent of table.data.parentTables) {
+                if (alreadyChecked.has(parent.alias)) {
+                    continue;
+                }
+                alreadyChecked.add(parent.alias);
+
+                //We already have the unique row.
+                //If columns of the parent tables are supplied,
+                //That just means we want the unique row to satisfy
+                //some conditions, to update.
+                s = s.where(() => RawExprUtil.toEqualityCondition(
+                    parent,
+                    uniqueKey
+                ));
+            }
+        }
 
         const tablesToUpdate = new Set<string>();
 

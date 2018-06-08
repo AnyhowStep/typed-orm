@@ -524,6 +524,13 @@ export namespace TableParentCollectionUtil {
             )
         }
     );
+    export type PartialTableRow<TableT extends AnyTable> = (
+        {
+            [name in TableParentCollectionUtil.ColumnNames<TableT>]? : (
+                TableParentCollectionUtil.ColumnType<TableT, name>
+            )
+        }
+    );
     export function assertDelegate<TableT extends AnyTable> (
         table : TableT
     ) : sd.AssertDelegate<TableRow<TableT>> {
