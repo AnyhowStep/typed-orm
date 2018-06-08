@@ -5,7 +5,6 @@ import { AliasedTable, AnyAliasedTable } from "./aliased-table";
 import { Join } from "./join";
 import { SelectCollection, SelectCollectionUtil } from "./select-collection";
 import { SelectDelegate } from "./select-delegate";
-import { FetchRow } from "./fetch-row";
 import { AggregateDelegate } from "./aggregate-delegate";
 import { TypeNarrowDelegate } from "./type-narrow-delegate";
 import { Column } from "./column";
@@ -55,6 +54,7 @@ export interface ExtraSelectBuilderData {
     readonly limit?: LimitData;
     readonly unionOrderBy?: AnyOrderBy[];
     readonly unionLimit?: LimitData;
+    readonly aggregateDelegates?: AggregateDelegate<any>[];
 }
 export interface RawPaginationArgs {
     page?: number | null | undefined;
@@ -211,7 +211,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
     }> : Error extends JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> ? JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> : SelectBuilder<{
         readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB> : DataT[key]);
     }>);
-    aggregate<AggregateDelegateT extends undefined | AggregateDelegate<FetchRow<this["data"]["joins"], SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>>>>(this: SelectBuilder<{
+    aggregate<AggregateDelegateT extends AggregateDelegate<SelectBuilderUtil.AggregatedRow<this>>>(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
         hasUnion: any;
@@ -222,6 +222,9 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         parentJoins: any;
     }>, aggregateDelegate: AggregateDelegateT): (SelectBuilder<{
         readonly [key in keyof DataT]: (key extends "aggregateDelegate" ? AggregateDelegateT : DataT[key]);
+    }>);
+    unsetAggregate(): (SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "aggregateDelegate" ? undefined : DataT[key]);
     }>);
     private rowAssertDelegate;
     private getRowAssertDelegate;

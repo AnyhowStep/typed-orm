@@ -16,7 +16,7 @@ import {spread} from "@anyhowstep/type-util";
 import {Join, JoinType} from "./join";
 import {SelectCollection, SelectCollectionUtil} from "./select-collection";
 import {SelectDelegate} from "./select-delegate";
-import {FetchRow, FetchRowUtil} from "./fetch-row";
+import {FetchRowUtil} from "./fetch-row";
 import {AggregateDelegate} from "./aggregate-delegate";
 import {TypeNarrowDelegate, TypeNarrowDelegateUtil} from "./type-narrow-delegate";
 import {Column, AnyColumn} from "./column";
@@ -86,6 +86,7 @@ export interface ExtraSelectBuilderData {
     readonly limit? : LimitData,
     readonly unionOrderBy? : AnyOrderBy[],
     readonly unionLimit? : LimitData,
+    readonly aggregateDelegates? : AggregateDelegate<any>[],
 }
 
 //TODO Move elsewhere
@@ -520,11 +521,12 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Must be called after `SELECT` or there will be
     //no columns to aggregate...
     aggregate<
-        AggregateDelegateT extends undefined|AggregateDelegate<
-            FetchRow<
+        AggregateDelegateT extends AggregateDelegate<
+            SelectBuilderUtil.AggregatedRow<this>
+            /*FetchRow<
                 this["data"]["joins"],
                 SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>
-            >
+            >*/
         >
     > (
         this : SelectBuilder<{
@@ -551,12 +553,50 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>
     ) {
         this.assertAfterSelect();
-        return new SelectBuilder(spread(
-            this.data,
-            {
-                aggregateDelegate : aggregateDelegate
-            }
-        ), this.extraData) as any;
+        return new SelectBuilder(
+            spread(
+                this.data,
+                {
+                    aggregateDelegate : aggregateDelegate
+                }
+            ),
+            spread(
+                this.extraData,
+                {
+                    aggregateDelegates : (
+                        (this.extraData.aggregateDelegates == undefined) ?
+                            [aggregateDelegate] :
+                            this.extraData.aggregateDelegates.concat(
+                                aggregateDelegate
+                            )
+                    )
+                }
+            )
+        ) as any;
+    }
+    unsetAggregate () : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "aggregateDelegate" ?
+                undefined :
+                DataT[key]
+            )
+        }>
+    ) {
+        return new SelectBuilder(
+            spread(
+                this.data,
+                {
+                    aggregateDelegate : undefined
+                }
+            ),
+            spread(
+                this.extraData,
+                {
+                    aggregateDelegates : undefined
+                }
+            )
+        ) as any;
     }
 
     private rowAssertDelegate : sd.AssertDelegate<any> | undefined = undefined;
@@ -589,10 +629,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     };
     readonly aggregateRow = (rawRow : any) => {
         let result = this.processRow(rawRow);
-        if (this.data.aggregateDelegate == undefined) {
+        if (this.extraData.aggregateDelegates == undefined) {
             return result;
         } else {
-            return this.data.aggregateDelegate(result);
+            for (let d of this.extraData.aggregateDelegates) {
+                result = d(result);
+            }
+            return result;
         }
     }
     fetchAll(

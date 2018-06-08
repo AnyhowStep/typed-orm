@@ -60,11 +60,14 @@ class SelectBuilder {
         };
         this.aggregateRow = (rawRow) => {
             let result = this.processRow(rawRow);
-            if (this.data.aggregateDelegate == undefined) {
+            if (this.extraData.aggregateDelegates == undefined) {
                 return result;
             }
             else {
-                return this.data.aggregateDelegate(result);
+                for (let d of this.extraData.aggregateDelegates) {
+                    result = d(result);
+                }
+                return result;
             }
         };
         this.data = data;
@@ -167,7 +170,18 @@ class SelectBuilder {
         this.assertAfterSelect();
         return new SelectBuilder(type_util_1.spread(this.data, {
             aggregateDelegate: aggregateDelegate
-        }), this.extraData);
+        }), type_util_1.spread(this.extraData, {
+            aggregateDelegates: ((this.extraData.aggregateDelegates == undefined) ?
+                [aggregateDelegate] :
+                this.extraData.aggregateDelegates.concat(aggregateDelegate))
+        }));
+    }
+    unsetAggregate() {
+        return new SelectBuilder(type_util_1.spread(this.data, {
+            aggregateDelegate: undefined
+        }), type_util_1.spread(this.extraData, {
+            aggregateDelegates: undefined
+        }));
     }
     getRowAssertDelegate() {
         if (this.rowAssertDelegate == undefined) {
