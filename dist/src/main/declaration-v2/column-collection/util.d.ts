@@ -52,7 +52,7 @@ export declare namespace ColumnCollectionUtil {
     function nullableColumnNames<ColumnCollectionT extends ColumnCollection>(columnCollection: ColumnCollectionT): NullableColumnNames<ColumnCollectionT>[];
     function columnNames<ColumnCollectionT extends ColumnCollection>(columnCollection: ColumnCollectionT): ColumnNames<ColumnCollectionT>[];
     type Type<ColumnCollectionT extends ColumnCollection> = ({
-        [columnName in Extract<keyof ColumnCollectionT, string>]: (ReturnType<ColumnCollectionT[columnName]["assertDelegate"]>);
+        [columnName in keyof ColumnCollectionT]: (ColumnCollectionT[columnName] extends AnyColumn ? ReturnType<ColumnCollectionT[columnName]["assertDelegate"]> : never);
     });
     function assertDelegate<ColumnCollectionT extends ColumnCollection>(columnCollection: ColumnCollectionT, useColumnNames?: string[]): (sd.AssertDelegate<Type<ColumnCollectionT>>);
     function partialAssertDelegate<ColumnCollectionT extends ColumnCollection>(columnCollection: ColumnCollectionT, useColumnNames?: string[]): (sd.AssertDelegate<Partial<Type<ColumnCollectionT>>>);

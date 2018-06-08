@@ -395,9 +395,16 @@ export namespace ColumnCollectionUtil {
     }
 
     export type Type<ColumnCollectionT extends ColumnCollection> = (
-        {
+        /*{
             [columnName in Extract<keyof ColumnCollectionT, string>] : (
                 ReturnType<ColumnCollectionT[columnName]["assertDelegate"]>
+            )
+        }*/
+        {
+            [columnName in keyof ColumnCollectionT] : (
+                ColumnCollectionT[columnName] extends AnyColumn ?
+                    ReturnType<ColumnCollectionT[columnName]["assertDelegate"]> :
+                    never
             )
         }
     );
