@@ -65,20 +65,45 @@ class PooledDatabase extends mysql.PooledDatabase {
     allocate() {
         return new PooledDatabase(this.getPool(), this.getData());
     }
-    transaction(callback) {
+    acquire(callback) {
         return __awaiter(this, void 0, void 0, function* () {
             const allocated = this.allocate();
-            yield allocated.beginTransaction();
+            //Temporary because we'll automatically free it
+            allocated.acquiredTemporary = true;
             return callback(allocated)
-                .then((result) => __awaiter(this, void 0, void 0, function* () {
-                yield allocated.commit();
+                .then((result) => {
                 allocated.freeConnection();
+                allocated.acquiredTemporary = false;
                 return result;
-            }))
-                .catch((err) => __awaiter(this, void 0, void 0, function* () {
-                yield allocated.rollback();
+            })
+                .catch((err) => {
                 allocated.freeConnection();
+                allocated.acquiredTemporary = false;
                 throw err;
+            });
+        });
+    }
+    acquireIfNotTemporary(callback) {
+        if (this.isAcquiredTemporary()) {
+            return callback(this);
+        }
+        else {
+            return this.acquire(callback);
+        }
+    }
+    transaction(callback) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.acquire((allocated) => __awaiter(this, void 0, void 0, function* () {
+                yield allocated.beginTransaction();
+                return callback(allocated)
+                    .then((result) => __awaiter(this, void 0, void 0, function* () {
+                    yield allocated.commit();
+                    return result;
+                }))
+                    .catch((err) => __awaiter(this, void 0, void 0, function* () {
+                    yield allocated.rollback();
+                    throw err;
+                }));
             }));
         });
     }

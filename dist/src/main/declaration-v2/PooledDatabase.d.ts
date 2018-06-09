@@ -48,6 +48,8 @@ export declare type ConvenientDeleteSelectBuilder<TableT extends AnyTable> = (Se
 }>);
 export declare class PooledDatabase extends mysql.PooledDatabase {
     allocate(): PooledDatabase;
+    acquire<ResultT>(callback: (db: PooledDatabase) => Promise<ResultT>): Promise<ResultT>;
+    acquireIfNotTemporary<ResultT>(callback: (db: PooledDatabase) => Promise<ResultT>): Promise<ResultT>;
     transaction<ResultT>(callback: (db: PooledDatabase) => Promise<ResultT>): Promise<ResultT>;
     transactionIfNotInOne<ResultT>(callback: (db: PooledDatabase) => Promise<ResultT>): Promise<ResultT>;
     readonly query: CreateSelectBuilderDelegate;
