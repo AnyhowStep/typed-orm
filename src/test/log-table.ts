@@ -125,25 +125,22 @@ tape("json-log-fetch-latest-query", async (t) => {
 tape("user-log-fetch-latest", async (t) => {
     const db = await getDb();
     try {
-    const insertResult = await db.insertValueAndFetch(userLog, {
-        userId : 1
-    })
-    .catch((err) => {
-        console.error(err);
-        throw new Error(err);
-    });
-    await fetchLatest(db, userLog, { userId : 1 })
-        .then((row) => {
-            t.equal(row.logId, insertResult.logId);
-        })
-        .catch((err) => {
+        const insertResult = await db.insertValueAndFetch(userLog, {
+            userId : 1
+        }).catch((err) => {
             console.error(err);
             throw new Error(err);
         });
+        await fetchLatest(db, userLog, { userId : 1 })
+            .then((row) => {
+                t.equal(row.logId, insertResult.logId);
+            }).catch((err) => {
+                console.error(err);
+                throw new Error(err);
+            });
     } catch (err) {
         console.error(err);
         throw new Error(err);
     }
-    db.freeConnection();
     t.end();
 });

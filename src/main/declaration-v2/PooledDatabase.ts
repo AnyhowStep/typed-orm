@@ -91,21 +91,43 @@ export class PooledDatabase extends mysql.PooledDatabase {
             this.getData()
         );
     }
-    public async transaction<ResultT> (callback : (db : PooledDatabase) => Promise<ResultT>) : Promise<ResultT> {
+    public async acquire<ResultT> (callback : (db : PooledDatabase) => Promise<ResultT>) : Promise<ResultT> {
         const allocated = this.allocate();
+        //Temporary because we'll automatically free it
+        allocated.acquiredTemporary = true;
 
-        await allocated.beginTransaction();
         return callback(allocated)
-            .then(async (result) => {
-                await allocated.commit();
+            .then((result) => {
                 allocated.freeConnection();
+                allocated.acquiredTemporary = false;
                 return result;
             })
-            .catch(async (err) => {
-                await allocated.rollback();
+            .catch((err) => {
                 allocated.freeConnection();
+                allocated.acquiredTemporary = false;
                 throw err;
             });
+    }
+    public acquireIfNotTemporary<ResultT> (callback : (db : PooledDatabase) => Promise<ResultT>) : Promise<ResultT> {
+        if (this.isAcquiredTemporary()) {
+            return callback(this);
+        } else {
+            return this.acquire(callback);
+        }
+    }
+    public async transaction<ResultT> (callback : (db : PooledDatabase) => Promise<ResultT>) : Promise<ResultT> {
+        return this.acquire(async (allocated) => {
+            await allocated.beginTransaction();
+            return callback(allocated)
+                .then(async (result) => {
+                    await allocated.commit();
+                    return result;
+                })
+                .catch(async (err) => {
+                    await allocated.rollback();
+                    throw err;
+                });
+        });
     }
     public transactionIfNotInOne<ResultT> (callback : (db : PooledDatabase) => Promise<ResultT>) : Promise<ResultT> {
         if (this.isInTransaction()) {
