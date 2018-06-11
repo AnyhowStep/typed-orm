@@ -229,7 +229,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
     private rowAssertDelegate;
     private getRowAssertDelegate;
     readonly processRow: (rawRow: any) => any;
-    readonly aggregateRow: (rawRow: any) => any;
+    readonly aggregateRow: (rawRow: any) => Promise<any>;
     fetchAll(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;

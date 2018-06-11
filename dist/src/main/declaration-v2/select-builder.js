@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 /*
 Every time you see a return type of `this`, it is an ugly hack.
@@ -58,18 +66,18 @@ class SelectBuilder {
             result = this.getRowAssertDelegate()("row", result);
             return result;
         };
-        this.aggregateRow = (rawRow) => {
+        this.aggregateRow = (rawRow) => __awaiter(this, void 0, void 0, function* () {
             let result = this.processRow(rawRow);
             if (this.extraData.aggregateDelegates == undefined) {
                 return result;
             }
             else {
                 for (let d of this.extraData.aggregateDelegates) {
-                    result = d(result);
+                    result = yield d(result);
                 }
                 return result;
             }
-        };
+        });
         this.data = data;
         this.extraData = extraData;
     }

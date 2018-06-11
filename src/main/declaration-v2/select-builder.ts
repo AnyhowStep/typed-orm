@@ -627,13 +627,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         result = this.getRowAssertDelegate()("row", result);
         return result;
     };
-    readonly aggregateRow = (rawRow : any) => {
+    readonly aggregateRow = async (rawRow : any) => {
         let result = this.processRow(rawRow);
         if (this.extraData.aggregateDelegates == undefined) {
             return result;
         } else {
             for (let d of this.extraData.aggregateDelegates) {
-                result = d(result);
+                result = await d(result);
             }
             return result;
         }
