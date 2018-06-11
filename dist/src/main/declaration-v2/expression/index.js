@@ -7,6 +7,7 @@ __export(require("./boolean-expr"));
 __export(require("./coalesce"));
 __export(require("./count"));
 __export(require("./date-time-comparison"));
+__export(require("./exists"));
 __export(require("./if-null"));
 __export(require("./interval-unit"));
 __export(require("./logical-connective"));

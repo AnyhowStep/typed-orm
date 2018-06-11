@@ -771,6 +771,15 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }
     }
 
+    /*
+        TODO Improve this, technically, `FROM` clause isn't even required,
+        even if that means the query isn't very useful.
+
+        The following are valid, even if nonsensical,
+
+        SELECT EXISTS (SELECT *)    //Returns TRUE
+        SELECT EXISTS (SELECT NULL) //Returns TRUE
+    */
     //Must be called after `FROM` or there will be no tables to check existence from
     exists (
         this : SelectBuilder<{

@@ -2,6 +2,7 @@ export * from "./boolean-expr";
 export * from "./coalesce";
 export * from "./count";
 export * from "./date-time-comparison";
+export * from "./exists";
 export * from "./if-null";
 export * from "./interval-unit";
 export * from "./logical-connective";
