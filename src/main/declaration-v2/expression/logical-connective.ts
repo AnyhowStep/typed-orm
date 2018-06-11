@@ -62,6 +62,18 @@ export const xor = booleanBinaryOp("XOR");
 
 export function and<
     LeftT extends RawExpr<boolean>,
+    RightT extends RawExpr<boolean>
+> (left : LeftT, right : RightT) : (
+    Expr<
+        ColumnReferencesUtil.Merge<
+            RawExprUtil.UsedReferences<LeftT>,
+            RawExprUtil.UsedReferences<RightT>
+        >,
+        boolean
+    >
+);
+export function and<
+    LeftT extends RawExpr<boolean>,
     R0 extends RawExpr<boolean>,
     R1 extends RawExpr<boolean>
 > (left : LeftT, r0 : R0, r1 : R1) : (
@@ -78,12 +90,72 @@ export function and<
 );
 export function and<
     LeftT extends RawExpr<boolean>,
-    RightT extends RawExpr<boolean>
-> (left : LeftT, right : RightT) : (
+    R0 extends RawExpr<boolean>,
+    R1 extends RawExpr<boolean>,
+    R2 extends RawExpr<boolean>
+> (left : LeftT, r0 : R0, r1 : R1, r2 : R2) : (
     Expr<
         ColumnReferencesUtil.Merge<
-            RawExprUtil.UsedReferences<LeftT>,
-            RawExprUtil.UsedReferences<RightT>
+            ColumnReferencesUtil.Merge<
+                ColumnReferencesUtil.Merge<
+                    RawExprUtil.UsedReferences<LeftT>,
+                    RawExprUtil.UsedReferences<R0>
+                >,
+                RawExprUtil.UsedReferences<R1>
+            >,
+            RawExprUtil.UsedReferences<R2>
+        >,
+        boolean
+    >
+);
+export function and<
+    LeftT extends RawExpr<boolean>,
+    R0 extends RawExpr<boolean>,
+    R1 extends RawExpr<boolean>,
+    R2 extends RawExpr<boolean>,
+    R3 extends RawExpr<boolean>
+> (left : LeftT, r0 : R0, r1 : R1, r2 : R2, r3 : R3) : (
+    Expr<
+        ColumnReferencesUtil.Merge<
+            ColumnReferencesUtil.Merge<
+                ColumnReferencesUtil.Merge<
+                    ColumnReferencesUtil.Merge<
+                        RawExprUtil.UsedReferences<LeftT>,
+                        RawExprUtil.UsedReferences<R0>
+                    >,
+                    RawExprUtil.UsedReferences<R1>
+                >,
+                RawExprUtil.UsedReferences<R2>
+            >,
+            RawExprUtil.UsedReferences<R3>
+        >,
+        boolean
+    >
+);
+export function and<
+    LeftT extends RawExpr<boolean>,
+    R0 extends RawExpr<boolean>,
+    R1 extends RawExpr<boolean>,
+    R2 extends RawExpr<boolean>,
+    R3 extends RawExpr<boolean>,
+    R4 extends RawExpr<boolean>
+> (left : LeftT, r0 : R0, r1 : R1, r2 : R2, r3 : R3) : (
+    Expr<
+        ColumnReferencesUtil.Merge<
+            ColumnReferencesUtil.Merge<
+                ColumnReferencesUtil.Merge<
+                    ColumnReferencesUtil.Merge<
+                        ColumnReferencesUtil.Merge<
+                            RawExprUtil.UsedReferences<LeftT>,
+                            RawExprUtil.UsedReferences<R0>
+                        >,
+                        RawExprUtil.UsedReferences<R1>
+                    >,
+                    RawExprUtil.UsedReferences<R2>
+                >,
+                RawExprUtil.UsedReferences<R3>
+            >,
+            RawExprUtil.UsedReferences<R4>
         >,
         boolean
     >
