@@ -8,9 +8,13 @@ import * as variadicUtil from "./variadic-util";
 import {SelectBuilder} from "../select-builder";
 import {Column} from "../column";
 import {AliasedExpr} from "../aliased-expr";
+import {Join} from "../join";
+import {AliasedTable} from "../aliased-table";
 SelectBuilder;
 Column;
 AliasedExpr;
+Join;
+AliasedTable;
 
 function booleanBinaryOp (operator : string) {
     function result<

@@ -8,6 +8,7 @@ const select_builder_1 = require("../select-builder");
 const sd = require("schema-decorator");
 const column_collection_1 = require("../column-collection");
 const e = require("../expression");
+const join_collection_1 = require("../join-collection");
 var RawExprUtil;
 (function (RawExprUtil) {
     function isAllowedExprConstant(raw) {
@@ -81,7 +82,12 @@ var RawExprUtil;
             return raw.usedReferences;
         }
         if (raw instanceof select_builder_1.SelectBuilder) {
-            return {};
+            if (raw.data.hasParentJoins) {
+                return join_collection_1.JoinCollectionUtil.toColumnReferences(raw.data.parentJoins);
+            }
+            else {
+                return {};
+            }
         }
         throw new Error(`Unknown raw expression (${typeof raw})${raw}`);
     }

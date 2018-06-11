@@ -7,9 +7,12 @@ import {FALSE} from "./logical-connective";
 
 import {SelectBuilder} from "../select-builder";
 import {Column} from "../column";
+import {Join} from "../join";
+import {AliasedTable} from "../aliased-table";
 SelectBuilder;
 Column;
-
+Join;
+AliasedTable;
 
 export function unsafeTypeCheckBinaryOp (operator : string) {
     function result<

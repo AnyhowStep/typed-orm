@@ -41,6 +41,28 @@ export type RawExpr<TypeT> = (
 );
 export type AnyRawExpr = RawExpr<any>;
 
+export type SelectValueBuilderNoUsedRef<TypeT> = SelectBuilder<{
+    hasSelect : true,
+    hasFrom : any,
+    hasUnion : any,
+
+    joins : any,
+    selects : (
+        Tuple<any> &
+        { length: 1; } &
+        {
+            "0": SelectValue<{
+                readonly [tableAlias: string]: {
+                    readonly [columnName: string]: Column<any, any, TypeT>;
+                };
+            }, TypeT>;
+        }
+    ),
+    aggregateDelegate : any,
+
+    hasParentJoins : false,
+    parentJoins : any,
+}>;
 export type RawExprNoUsedRef<TypeT> = (
     (
         //TODO `undefined` constant should be mapped to `null`, maybe; unsure
@@ -50,5 +72,5 @@ export type RawExprNoUsedRef<TypeT> = (
     )|
     Expr<{}, TypeT>|
     Column<any, any, TypeT>|
-    SelectValueBuilder<TypeT>
+    SelectValueBuilderNoUsedRef<TypeT>
 );

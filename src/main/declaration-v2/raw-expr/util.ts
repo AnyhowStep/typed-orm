@@ -12,6 +12,7 @@ import {ColumnCollectionUtil} from "../column-collection";
 import { ColumnReferencesUtil } from "../column-references";
 import * as e from "../expression";
 import {AnyTable, UniqueKeys, MinimalUniqueKeys} from "../table";
+import {JoinCollectionUtil} from "../join-collection";
 
 export namespace RawExprUtil {
     export function isAllowedExprConstant (raw : AnyRawExpr) : raw is AllowedExprConstant {
@@ -71,7 +72,13 @@ export namespace RawExprUtil {
 
     export type UsedReferences<RawExprT extends AnyRawExpr> = (
         RawExprT extends AnySelectBuilder ?
-        {} :
+        (
+            true extends RawExprT["data"]["hasParentJoins"] ?
+                JoinCollectionUtil.ToColumnReferences<
+                    RawExprT["data"]["parentJoins"]
+                > :
+                {}
+        ) :
         RawExprT extends AllowedExprConstant ?
         {} :
         RawExprT extends AnyColumn ?
@@ -101,7 +108,13 @@ export namespace RawExprUtil {
             return raw.usedReferences as any;
         }
         if (raw instanceof SelectBuilder) {
-            return {} as any;
+            if (raw.data.hasParentJoins) {
+                return JoinCollectionUtil.toColumnReferences(
+                    raw.data.parentJoins
+                ) as any;
+            } else {
+                return {} as any;
+            }
         }
         throw new Error(`Unknown raw expression (${typeof raw})${raw}`);
     }

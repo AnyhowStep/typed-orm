@@ -6,9 +6,14 @@ import {Expr} from "../expr";
 import {SelectBuilder} from "../select-builder";
 import {Column} from "../column";
 import {AliasedExpr} from "../aliased-expr";
+import {Join} from "../join";
+import {AliasedTable} from "../aliased-table";
 SelectBuilder;
 Column;
 AliasedExpr;
+Join;
+AliasedTable;
+
 
 function dateTimeComparison (operator : string) {
     function result<

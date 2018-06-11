@@ -9,9 +9,13 @@ const variadicUtil = require("./variadic-util");
 const select_builder_1 = require("../select-builder");
 const column_1 = require("../column");
 const aliased_expr_1 = require("../aliased-expr");
+const join_1 = require("../join");
+const aliased_table_1 = require("../aliased-table");
 select_builder_1.SelectBuilder;
 column_1.Column;
 aliased_expr_1.AliasedExpr;
+join_1.Join;
+aliased_table_1.AliasedTable;
 function booleanBinaryOp(operator) {
     function result(left, right) {
         raw_expr_1.RawExprUtil.assertNonNullable(left);

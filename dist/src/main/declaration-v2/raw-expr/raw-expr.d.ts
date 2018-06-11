@@ -24,4 +24,22 @@ export declare type SelectValueBuilder<TypeT> = SelectBuilder<{
 export declare type AllowedExprConstant = number | string | boolean | Date | null | undefined;
 export declare type RawExpr<TypeT> = ((TypeT extends AllowedExprConstant ? TypeT : never) | Expr<any, TypeT> | Column<any, any, TypeT> | SelectValueBuilder<TypeT>);
 export declare type AnyRawExpr = RawExpr<any>;
-export declare type RawExprNoUsedRef<TypeT> = ((TypeT extends AllowedExprConstant ? TypeT : never) | Expr<{}, TypeT> | Column<any, any, TypeT> | SelectValueBuilder<TypeT>);
+export declare type SelectValueBuilderNoUsedRef<TypeT> = SelectBuilder<{
+    hasSelect: true;
+    hasFrom: any;
+    hasUnion: any;
+    joins: any;
+    selects: (Tuple<any> & {
+        length: 1;
+    } & {
+        "0": SelectValue<{
+            readonly [tableAlias: string]: {
+                readonly [columnName: string]: Column<any, any, TypeT>;
+            };
+        }, TypeT>;
+    });
+    aggregateDelegate: any;
+    hasParentJoins: false;
+    parentJoins: any;
+}>;
+export declare type RawExprNoUsedRef<TypeT> = ((TypeT extends AllowedExprConstant ? TypeT : never) | Expr<{}, TypeT> | Column<any, any, TypeT> | SelectValueBuilderNoUsedRef<TypeT>);
