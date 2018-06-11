@@ -215,14 +215,7 @@ export namespace LogDataUtil {
                 if (data.doNotCopyOnTrackableChanged[columnName] === true) {
                     continue;
                 }
-                if (
-                    data.entityIdentifier[columnName] === true ||
-                    data.isTrackable[columnName] === true// ||
-                    //Deprecated, pass the column to doNotCopyOnTrackableChanged
-                    //data.table.data.hasDefaultValue[columnName] !== true
-                ) {
-                    toInsert[columnName] = (curValues as any)[columnName];
-                }
+                toInsert[columnName] = (curValues as any)[columnName];
             }
             //Overwrite with new values
             for (let columnName in trackable) {
