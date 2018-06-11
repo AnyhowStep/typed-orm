@@ -3,8 +3,7 @@ import {LogData} from "./log-data";
 import {PooledDatabase} from "../PooledDatabase";
 import {ColumnCollectionUtil} from "../column-collection";
 import {RawExprUtil} from "../raw-expr";
-import {TableRow} from "../table";
-import {InsertLiteralRow} from "../insert-value-builder";
+import {TableRow, TableUtil} from "../table";
 
 export namespace LogDataUtil {
     export type EntityIdentifier<DataT extends LogData> = (
@@ -51,14 +50,25 @@ export namespace LogDataUtil {
     }
     export type DoNotCopyOnTrackableChanged<DataT extends LogData> = (
         {
-            [columnName in Extract<
-                keyof InsertLiteralRow<DataT["table"]>,
+            [name in Extract<
+                TableUtil.RequiredColumnNames<DataT["table"]>,
                 Extract<
                     keyof DataT["doNotCopyOnTrackableChanged"],
                     string
                 >
             >] : (
-                InsertLiteralRow<DataT["table"]>[columnName]
+                ReturnType<DataT["table"]["columns"][name]["assertDelegate"]>
+            )
+        } &
+        {
+            [name in Extract<
+                TableUtil.OptionalColumnNames<DataT["table"]>,
+                Extract<
+                    keyof DataT["doNotCopyOnTrackableChanged"],
+                    string
+                >
+            >]? : (
+                ReturnType<DataT["table"]["columns"][name]["assertDelegate"]>
             )
         }
     );

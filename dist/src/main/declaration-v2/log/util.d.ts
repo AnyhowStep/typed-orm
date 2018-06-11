@@ -1,8 +1,7 @@
 import * as sd from "schema-decorator";
 import { LogData } from "./log-data";
 import { PooledDatabase } from "../PooledDatabase";
-import { TableRow } from "../table";
-import { InsertLiteralRow } from "../insert-value-builder";
+import { TableRow, TableUtil } from "../table";
 export declare namespace LogDataUtil {
     type EntityIdentifier<DataT extends LogData> = ({
         [columnName in Extract<Extract<keyof DataT["table"]["columns"], keyof DataT["entityIdentifier"]>, string>]: (ReturnType<DataT["table"]["columns"][columnName]["assertDelegate"]>);
@@ -13,7 +12,9 @@ export declare namespace LogDataUtil {
     });
     function trackableAssertDelegate<DataT extends LogData>(data: DataT): sd.AssertDelegate<Trackable<DataT>>;
     type DoNotCopyOnTrackableChanged<DataT extends LogData> = ({
-        [columnName in Extract<keyof InsertLiteralRow<DataT["table"]>, Extract<keyof DataT["doNotCopyOnTrackableChanged"], string>>]: (InsertLiteralRow<DataT["table"]>[columnName]);
+        [name in Extract<TableUtil.RequiredColumnNames<DataT["table"]>, Extract<keyof DataT["doNotCopyOnTrackableChanged"], string>>]: (ReturnType<DataT["table"]["columns"][name]["assertDelegate"]>);
+    } & {
+        [name in Extract<TableUtil.OptionalColumnNames<DataT["table"]>, Extract<keyof DataT["doNotCopyOnTrackableChanged"], string>>]?: (ReturnType<DataT["table"]["columns"][name]["assertDelegate"]>);
     });
     function doNotCopyOnTrackableChangedAssertDelegate<DataT extends LogData>(data: DataT): sd.AssertDelegate<DoNotCopyOnTrackableChanged<DataT>>;
     type InsertIfDifferentRow<DataT extends LogData> = (Trackable<DataT> & DoNotCopyOnTrackableChanged<DataT>);
