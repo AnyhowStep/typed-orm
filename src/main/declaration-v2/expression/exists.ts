@@ -1,4 +1,3 @@
-import {RawExprUtil} from "../raw-expr";
 import {booleanExpr} from "./boolean-expr";
 import {Expr} from "../expr";
 import {JoinCollectionUtil} from "../join-collection";
@@ -24,9 +23,7 @@ export function exists<
         Expr<{}, boolean>
 ) {
     const usedReferences = subQuery.data.hasParentJoins ?
-        RawExprUtil.usedReferences(
-            JoinCollectionUtil.toColumnReferences(subQuery.data.parentJoins)
-        ) :
+        JoinCollectionUtil.toColumnReferences(subQuery.data.parentJoins) :
         {};
     if (subQuery.data.selects == undefined) {
         return booleanExpr(

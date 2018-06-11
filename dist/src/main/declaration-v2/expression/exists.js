@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const raw_expr_1 = require("../raw-expr");
 const boolean_expr_1 = require("./boolean-expr");
 const join_collection_1 = require("../join-collection");
 const select_builder_1 = require("../select-builder");
@@ -13,7 +12,7 @@ column_1.Column;
 //that reference tables/columns that don't exist.
 function exists(subQuery) {
     const usedReferences = subQuery.data.hasParentJoins ?
-        raw_expr_1.RawExprUtil.usedReferences(join_collection_1.JoinCollectionUtil.toColumnReferences(subQuery.data.parentJoins)) :
+        join_collection_1.JoinCollectionUtil.toColumnReferences(subQuery.data.parentJoins) :
         {};
     if (subQuery.data.selects == undefined) {
         return boolean_expr_1.booleanExpr(usedReferences, `
