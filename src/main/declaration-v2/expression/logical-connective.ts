@@ -146,3 +146,17 @@ export function implies <
         right
     ) as any;
 }
+//Internally,
+//expression = condition ?
+//    expression :
+//    not(expression);
+export function negateIfFalse<RawT extends RawExpr<boolean>> (
+    condition : boolean,
+    raw : RawT
+) : Expr<RawExprUtil.UsedReferences<RawT>, boolean> {
+    if (condition) {
+        return RawExprUtil.toExpr(raw);
+    } else {
+        return not(raw);
+    }
+}

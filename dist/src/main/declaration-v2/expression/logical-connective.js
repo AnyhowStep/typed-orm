@@ -53,4 +53,17 @@ function implies(left, right) {
     return exports.or(not(left), right);
 }
 exports.implies = implies;
+//Internally,
+//expression = condition ?
+//    expression :
+//    not(expression);
+function negateIfFalse(condition, raw) {
+    if (condition) {
+        return raw_expr_1.RawExprUtil.toExpr(raw);
+    }
+    else {
+        return not(raw);
+    }
+}
+exports.negateIfFalse = negateIfFalse;
 //# sourceMappingURL=logical-connective.js.map
