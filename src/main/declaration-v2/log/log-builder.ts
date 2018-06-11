@@ -349,6 +349,41 @@ export class LogBuilder<DataT extends LogBuilderData> {
             defaultRowDelegate : undefined,
         }) as any;
     }
+    setIsTrackableFields<
+        TrackableFieldsT extends AnyFieldTuple
+    > (fields : TrackableFieldsT) : (
+        LogBuilder<{
+            readonly [key in keyof this["data"]] : (
+                key extends "isTrackable" ?
+                (
+                    TrackableFieldsT[
+                        TupleKeys<TrackableFieldsT>
+                    ] extends AnyColumn|sd.Field<any, any> ?
+                        {
+                            readonly [columnName in TrackableFieldsT[
+                                TupleKeys<TrackableFieldsT>
+                            ]["name"]] : true
+                        } :
+                        never
+                ) :
+                this["data"][key]
+            )
+        }>
+    ) {
+        const isTrackable = fields.reduce<{ [columnName : string] : true }>((memo, field) => {
+            if (this.data.table.columns[field.name] instanceof Column) {
+                memo[field.name] = true;
+            } else {
+                throw new Error(`Table ${this.data.table.alias} does not have column ${field.name}`);
+            }
+            return memo;
+        }, {});
+
+        return new LogBuilder({
+            ...(this.data as any),
+            isTrackable : isTrackable,
+        }) as any;
+    }
     setIsTrackableUnsafe<
         DelegateT extends IsTrackableUnsafeDelegate<this["data"]>
     > (delegate : DelegateT) : (

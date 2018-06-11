@@ -41,6 +41,11 @@ export declare class LogBuilder<DataT extends LogBuilderData> {
             readonly [columnName in ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>]["name"]]: true;
         } : never) : key extends "defaultRowDelegate" ? undefined : this["data"][key]);
     }>);
+    setIsTrackableFields<TrackableFieldsT extends AnyFieldTuple>(fields: TrackableFieldsT): (LogBuilder<{
+        readonly [key in keyof this["data"]]: (key extends "isTrackable" ? (TrackableFieldsT[TupleKeys<TrackableFieldsT>] extends AnyColumn | sd.Field<any, any> ? {
+            readonly [columnName in TrackableFieldsT[TupleKeys<TrackableFieldsT>]["name"]]: true;
+        } : never) : this["data"][key]);
+    }>);
     setIsTrackableUnsafe<DelegateT extends IsTrackableUnsafeDelegate<this["data"]>>(delegate: DelegateT): (LogBuilder<{
         readonly [key in keyof this["data"]]: (key extends "isTrackable" ? (ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends AnyColumn ? {
             readonly [columnName in ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>]["name"]]: true;

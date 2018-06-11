@@ -35,6 +35,18 @@ class LogBuilder {
         }, {});
         return new LogBuilder(Object.assign({}, this.data, { entityIdentifier: entityIdentifier, defaultRowDelegate: undefined }));
     }
+    setIsTrackableFields(fields) {
+        const isTrackable = fields.reduce((memo, field) => {
+            if (this.data.table.columns[field.name] instanceof column_1.Column) {
+                memo[field.name] = true;
+            }
+            else {
+                throw new Error(`Table ${this.data.table.alias} does not have column ${field.name}`);
+            }
+            return memo;
+        }, {});
+        return new LogBuilder(Object.assign({}, this.data, { isTrackable: isTrackable }));
+    }
     setIsTrackableUnsafe(delegate) {
         const columnCollection = column_collection_1.ColumnCollectionUtil.excludeColumnNames(this.data.table.columns, Object.keys(this.data.entityIdentifier)
             .concat(Object.keys(this.data.table.data.isGenerated)));
