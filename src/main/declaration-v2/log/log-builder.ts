@@ -167,6 +167,17 @@ export interface LogBuilderData {
         readonly [columnName : string] : true
     },
     /*
+        When a trackable field value changes (with `insertIfDifferentAndFetch()`),
+        you may want some other fields to change as well.
+
+        One case might be logging which user made a change to the trackable field.
+
+        data | updatedByUserId
+    */
+    readonly doNotCopyOnTrackableChanged : {
+        [columnName : string] : true
+    },
+    /*
         This will be used to sort the result set, and get the latest row.
         The latest row must be sorted to the top of the result set (the first row).
     */
@@ -202,6 +213,7 @@ export type EntityIdentifierColumnCollection<
     ColumnCollectionUtil.ExcludeColumnNames<
         DataT["table"]["columns"],
         Extract<keyof DataT["isTrackable"], string> |
+        Extract<keyof DataT["doNotCopyOnTrackableChanged"], string> |
         Extract<keyof DataT["table"]["data"]["isGenerated"], string>
     >
 );
@@ -211,6 +223,7 @@ export function entityIdentifierColumnCollection<
     const columnCollection = ColumnCollectionUtil.excludeColumnNames(
         data.table.columns,
         Object.keys(data.isTrackable)
+            .concat(Object.keys(data.doNotCopyOnTrackableChanged))
             .concat(Object.keys(data.table.data.isGenerated))
     );
     return columnCollection as any;
@@ -232,14 +245,15 @@ export type EntityIdentifierDelegate<DataT extends LogBuilderData> = (
 export type IsTrackableDelegate<DataT extends LogBuilderData> = (
     (columns : ColumnCollectionUtil.ExcludeColumnNames<
         DataT["table"]["columns"],
-        //Trackable columns are cannot be entity identifiers or generated columns
-        Extract<keyof DataT["isTrackable"], string>|
+        //Trackable columns cannot be entity identifiers or generated columns
+        Extract<keyof DataT["entityIdentifier"], string>|
+        Extract<keyof DataT["doNotCopyOnTrackableChanged"], string> |
         Extract<keyof DataT["table"]["data"]["isGenerated"], string>
     >) => Tuple<
         ColumnCollectionUtil.Columns<
             ColumnCollectionUtil.ExcludeColumnNames<
                 DataT["table"]["columns"],
-                Extract<keyof DataT["isTrackable"], string>|
+                Extract<keyof DataT["entityIdentifier"], string>|
                 Extract<keyof DataT["table"]["data"]["isGenerated"], string>
             >
         >
@@ -248,7 +262,35 @@ export type IsTrackableDelegate<DataT extends LogBuilderData> = (
 export type IsTrackableUnsafeDelegate<DataT extends LogBuilderData> = (
     (columns : ColumnCollectionUtil.ExcludeColumnNames<
         DataT["table"]["columns"],
-        //Trackable columns are cannot be entity identifiers or generated columns
+        //Trackable columns cannot be entity identifiers or generated columns
+        Extract<keyof DataT["entityIdentifier"], string>|
+        Extract<keyof DataT["doNotCopyOnTrackableChanged"], string> |
+        Extract<keyof DataT["table"]["data"]["isGenerated"], string>
+    >) => Tuple<AnyColumn>
+);
+export type DoNotCopyOnTrackableChangedDelegate<DataT extends LogBuilderData> = (
+    (columns : ColumnCollectionUtil.ExcludeColumnNames<
+        DataT["table"]["columns"],
+
+        Extract<keyof DataT["entityIdentifier"], string>|
+        Extract<keyof DataT["isTrackable"], string>|
+        Extract<keyof DataT["table"]["data"]["isGenerated"], string>
+    >) => Tuple<
+        ColumnCollectionUtil.Columns<
+            ColumnCollectionUtil.ExcludeColumnNames<
+                DataT["table"]["columns"],
+                Extract<keyof DataT["entityIdentifier"], string>|
+                Extract<keyof DataT["isTrackable"], string>|
+                Extract<keyof DataT["table"]["data"]["isGenerated"], string>
+            >
+        >
+    >
+);
+export type DoNotCopyOnTrackableChangedUnsafeDelegate<DataT extends LogBuilderData> = (
+    (columns : ColumnCollectionUtil.ExcludeColumnNames<
+        DataT["table"]["columns"],
+        //Cannot be entity identifiers or generated columns
+        Extract<keyof DataT["entityIdentifier"], string>|
         Extract<keyof DataT["isTrackable"], string>|
         Extract<keyof DataT["table"]["data"]["isGenerated"], string>
     >) => Tuple<AnyColumn>
@@ -404,6 +446,7 @@ export class LogBuilder<DataT extends LogBuilderData> {
         const columnCollection = ColumnCollectionUtil.excludeColumnNames(
             this.data.table.columns,
             Object.keys(this.data.entityIdentifier)
+                .concat(Object.keys(this.data.doNotCopyOnTrackableChanged))
                 .concat(Object.keys(this.data.table.data.isGenerated))
         );
         const result = delegate(columnCollection as any);
@@ -439,6 +482,98 @@ export class LogBuilder<DataT extends LogBuilderData> {
         }>
     ) {
         return this.setIsTrackableUnsafe(delegate);
+    }
+    setDoNotCopyOnTrackableChangedFields<
+        TrackableFieldsT extends AnyFieldTuple
+    > (fields : TrackableFieldsT) : (
+        LogBuilder<{
+            readonly [key in keyof this["data"]] : (
+                key extends "doNotCopyOnTrackableChanged" ?
+                (
+                    TrackableFieldsT[
+                        TupleKeys<TrackableFieldsT>
+                    ] extends AnyColumn|sd.Field<any, any> ?
+                        {
+                            readonly [columnName in TrackableFieldsT[
+                                TupleKeys<TrackableFieldsT>
+                            ]["name"]] : true
+                        } :
+                        never
+                ) :
+                this["data"][key]
+            )
+        }>
+    ) {
+        const doNotCopyOnTrackableChanged = fields.reduce<{ [columnName : string] : true }>((memo, field) => {
+            if (this.data.table.columns[field.name] instanceof Column) {
+                memo[field.name] = true;
+            } else {
+                throw new Error(`Table ${this.data.table.alias} does not have column ${field.name}`);
+            }
+            return memo;
+        }, {});
+
+        return new LogBuilder({
+            ...(this.data as any),
+            doNotCopyOnTrackableChanged : doNotCopyOnTrackableChanged,
+        }) as any;
+    }
+    setDoNotCopyOnTrackableChangedUnsafe<
+        DelegateT extends DoNotCopyOnTrackableChangedUnsafeDelegate<this["data"]>
+    > (delegate : DelegateT) : (
+        LogBuilder<{
+            readonly [key in keyof this["data"]] : (
+                key extends "doNotCopyOnTrackableChanged" ?
+                (
+                    ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends AnyColumn ?
+                        {
+                            readonly [columnName in ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>]["name"]] : true
+                        } :
+                        never
+                ) :
+                this["data"][key]
+            )
+        }>
+    ) {
+        const columnCollection = ColumnCollectionUtil.excludeColumnNames(
+            this.data.table.columns,
+            Object.keys(this.data.entityIdentifier)
+                .concat(Object.keys(this.data.isTrackable))
+                .concat(Object.keys(this.data.table.data.isGenerated))
+        );
+        const result = delegate(columnCollection as any);
+        ColumnCollectionUtil.assertHasColumns(
+            columnCollection,
+            result
+        );
+        const doNotCopyOnTrackableChanged = result.reduce<{ [columnName : string] : true }>((memo, column) => {
+            memo[column.name] = true;
+            return memo;
+        }, {});
+
+        return new LogBuilder({
+            ...(this.data as any),
+            doNotCopyOnTrackableChanged : doNotCopyOnTrackableChanged
+        }) as any;
+    }
+    setDoNotCopyOnTrackableChanged<
+        DelegateT extends DoNotCopyOnTrackableChangedDelegate<this["data"]>
+    > (delegate : DelegateT) : (
+        LogBuilder<{
+            readonly [key in keyof this["data"]] : (
+                key extends "doNotCopyOnTrackableChanged" ?
+                (
+                    ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends AnyColumn ?
+                        {
+                            readonly [columnName in ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>]["name"]] : true
+                        } :
+                        never
+                ) :
+                this["data"][key]
+            )
+        }>
+    ) {
+        return this.setDoNotCopyOnTrackableChangedUnsafe(delegate);
     }
     setOrderByLatestUnsafe<
         DelegateT extends OrderByLatestUnsafeDelegate<this["data"]>
@@ -586,6 +721,7 @@ export function log<TableT extends AnyTable> (table : TableT) : LogBuilder<{
     readonly table : TableT,
     readonly entityIdentifier : {},
     readonly isTrackable : {},
+    readonly doNotCopyOnTrackableChanged : {},
     readonly orderByLatest : undefined,
     readonly defaultRowDelegate : undefined,
 }> {
@@ -593,6 +729,7 @@ export function log<TableT extends AnyTable> (table : TableT) : LogBuilder<{
         table : table,
         entityIdentifier : {},
         isTrackable : {},
+        doNotCopyOnTrackableChanged : {},
         orderByLatest : undefined,
         defaultRowDelegate : undefined,
     });

@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const sd = require("schema-decorator");
 const column_collection_1 = require("../column-collection");
 const raw_expr_1 = require("../raw-expr");
 var LogDataUtil;
@@ -20,6 +21,26 @@ var LogDataUtil;
         return column_collection_1.ColumnCollectionUtil.partialAssertDelegate(data.table.columns, Object.keys(data.isTrackable));
     }
     LogDataUtil.trackableAssertDelegate = trackableAssertDelegate;
+    function doNotCopyOnTrackableChangedAssertDelegate(data) {
+        const columnCollection = column_collection_1.ColumnCollectionUtil.extractColumnNames(data.table.columns, Object.keys(data.doNotCopyOnTrackableChanged));
+        return sd.schema(...Object.keys(columnCollection)
+            .map((columnName) => {
+            const column = columnCollection[columnName];
+            if (data.table.data.hasDefaultValue[columnName] === true) {
+                //Is optional
+                return sd.field(column.name, column.assertDelegate).optional();
+            }
+            else {
+                //Required
+                return sd.field(column.name, column.assertDelegate);
+            }
+        }));
+    }
+    LogDataUtil.doNotCopyOnTrackableChangedAssertDelegate = doNotCopyOnTrackableChangedAssertDelegate;
+    function insertIfDifferentRowAssertDelegate(data) {
+        return sd.intersect(trackableAssertDelegate(data), doNotCopyOnTrackableChangedAssertDelegate(data));
+    }
+    LogDataUtil.insertIfDifferentRowAssertDelegate = insertIfDifferentRowAssertDelegate;
     function fetchLatestOrError(db, data, entityIdentifier) {
         entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
         return db.from(data.table)
@@ -64,18 +85,19 @@ var LogDataUtil;
         });
     }
     LogDataUtil.fetchLatestOrDefault = fetchLatestOrDefault;
-    function insertIfDifferentAndFetch(db, data, entityIdentifier, newValues) {
+    function insertIfDifferentAndFetch(db, data, entityIdentifier, insertIfDifferentRow) {
         return db.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
-            newValues = trackableAssertDelegate(data)(`${data.table.alias} trackable`, newValues);
+            const trackable = trackableAssertDelegate(data)(`${data.table.alias} trackable`, insertIfDifferentRow);
+            const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(`${data.table.alias} do not copy`, insertIfDifferentRow);
             let differenceFound = false;
             const curValues = yield fetchLatestOrDefault(db, data, entityIdentifier);
-            for (let columnName in newValues) {
-                const newValue = newValues[columnName];
-                if (newValue === undefined) {
+            for (let columnName in trackable) {
+                const newTrackableValue = trackable[columnName];
+                if (newTrackableValue === undefined) {
                     continue;
                 }
                 const curValue = curValues[columnName];
-                if (newValue !== curValue) {
+                if (newTrackableValue !== curValue) {
                     differenceFound = true;
                     break;
                 }
@@ -91,15 +113,27 @@ var LogDataUtil;
                 if (data.table.data.isGenerated[columnName] === true) {
                     continue;
                 }
+                if (data.doNotCopyOnTrackableChanged[columnName] === true) {
+                    continue;
+                }
                 if (data.entityIdentifier[columnName] === true ||
-                    data.isTrackable[columnName] === true ||
-                    data.table.data.hasDefaultValue[columnName] !== true) {
+                    data.isTrackable[columnName] === true // ||
+                //Deprecated, pass the column to doNotCopyOnTrackableChanged
+                //data.table.data.hasDefaultValue[columnName] !== true
+                ) {
                     toInsert[columnName] = curValues[columnName];
                 }
             }
             //Overwrite with new values
-            for (let columnName in newValues) {
-                const newValue = newValues[columnName];
+            for (let columnName in trackable) {
+                const newTrackableValue = trackable[columnName];
+                if (newTrackableValue === undefined) {
+                    continue;
+                }
+                toInsert[columnName] = newTrackableValue;
+            }
+            for (let columnName in doNotCopy) {
+                const newValue = doNotCopy[columnName];
                 if (newValue === undefined) {
                     continue;
                 }

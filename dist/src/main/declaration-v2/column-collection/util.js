@@ -23,6 +23,20 @@ var ColumnCollectionUtil;
         return result;
     }
     ColumnCollectionUtil.excludeColumnNames = excludeColumnNames;
+    function extractColumnNames(columnCollection, extract) {
+        const result = {};
+        for (let columnName in columnCollection) {
+            if (!columnCollection.hasOwnProperty(columnName)) {
+                continue;
+            }
+            if (extract.indexOf(columnName) >= 0) {
+                //We want to keep this column
+                result[columnName] = columnCollection[columnName];
+            }
+        }
+        return result;
+    }
+    ColumnCollectionUtil.extractColumnNames = extractColumnNames;
     function hasColumn(columnCollection, other) {
         if (!columnCollection.hasOwnProperty(other.name)) {
             return false;

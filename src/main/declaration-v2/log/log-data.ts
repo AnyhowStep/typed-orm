@@ -10,6 +10,9 @@ export interface LogData {
     readonly isTrackable : {
         [columnName : string] : true
     },
+    readonly doNotCopyOnTrackableChanged : {
+        [columnName : string] : true
+    },
     readonly orderByLatest : Tuple<[string, boolean]>,
     readonly defaultRowDelegate : undefined|AnyDefaultRowDelegate,
 }

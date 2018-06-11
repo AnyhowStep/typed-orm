@@ -5,6 +5,7 @@ const column_1 = require("../column");
 const util_1 = require("./util");
 function entityIdentifierColumnCollection(data) {
     const columnCollection = column_collection_1.ColumnCollectionUtil.excludeColumnNames(data.table.columns, Object.keys(data.isTrackable)
+        .concat(Object.keys(data.doNotCopyOnTrackableChanged))
         .concat(Object.keys(data.table.data.isGenerated)));
     return columnCollection;
 }
@@ -49,6 +50,7 @@ class LogBuilder {
     }
     setIsTrackableUnsafe(delegate) {
         const columnCollection = column_collection_1.ColumnCollectionUtil.excludeColumnNames(this.data.table.columns, Object.keys(this.data.entityIdentifier)
+            .concat(Object.keys(this.data.doNotCopyOnTrackableChanged))
             .concat(Object.keys(this.data.table.data.isGenerated)));
         const result = delegate(columnCollection);
         column_collection_1.ColumnCollectionUtil.assertHasColumns(columnCollection, result);
@@ -60,6 +62,33 @@ class LogBuilder {
     }
     setIsTrackable(delegate) {
         return this.setIsTrackableUnsafe(delegate);
+    }
+    setDoNotCopyOnTrackableChangedFields(fields) {
+        const doNotCopyOnTrackableChanged = fields.reduce((memo, field) => {
+            if (this.data.table.columns[field.name] instanceof column_1.Column) {
+                memo[field.name] = true;
+            }
+            else {
+                throw new Error(`Table ${this.data.table.alias} does not have column ${field.name}`);
+            }
+            return memo;
+        }, {});
+        return new LogBuilder(Object.assign({}, this.data, { doNotCopyOnTrackableChanged: doNotCopyOnTrackableChanged }));
+    }
+    setDoNotCopyOnTrackableChangedUnsafe(delegate) {
+        const columnCollection = column_collection_1.ColumnCollectionUtil.excludeColumnNames(this.data.table.columns, Object.keys(this.data.entityIdentifier)
+            .concat(Object.keys(this.data.isTrackable))
+            .concat(Object.keys(this.data.table.data.isGenerated)));
+        const result = delegate(columnCollection);
+        column_collection_1.ColumnCollectionUtil.assertHasColumns(columnCollection, result);
+        const doNotCopyOnTrackableChanged = result.reduce((memo, column) => {
+            memo[column.name] = true;
+            return memo;
+        }, {});
+        return new LogBuilder(Object.assign({}, this.data, { doNotCopyOnTrackableChanged: doNotCopyOnTrackableChanged }));
+    }
+    setDoNotCopyOnTrackableChanged(delegate) {
+        return this.setDoNotCopyOnTrackableChangedUnsafe(delegate);
     }
     setOrderByLatestUnsafe(delegate) {
         const columnCollection = this.data.table.columns;
@@ -102,6 +131,7 @@ function log(table) {
         table: table,
         entityIdentifier: {},
         isTrackable: {},
+        doNotCopyOnTrackableChanged: {},
         orderByLatest: undefined,
         defaultRowDelegate: undefined,
     });

@@ -64,6 +64,37 @@ export namespace ColumnCollectionUtil {
         }
         return result;
     }
+    export type ExtractColumnNames<ColumnCollectionT extends ColumnCollection, ExtractT extends string> = (
+        {
+            readonly [columnName in Extract<
+                keyof ColumnCollectionT,
+                ExtractT
+            >] : (
+                ColumnCollectionT[columnName] extends AnyColumn ?
+                    ColumnCollectionT[columnName] :
+                    never
+            )
+        }
+    );
+    export function extractColumnNames<
+        ColumnCollectionT extends ColumnCollection,
+        ExtractT extends string
+    > (
+        columnCollection : ColumnCollectionT,
+        extract : ExtractT[]
+    ) : ExtractColumnNames<ColumnCollectionT, ExtractT> {
+        const result = {} as any;
+        for (let columnName in columnCollection) {
+            if (!columnCollection.hasOwnProperty(columnName)) {
+                continue;
+            }
+            if (extract.indexOf(columnName as any) >= 0) {
+                //We want to keep this column
+                result[columnName] = columnCollection[columnName];
+            }
+        }
+        return result;
+    }
 
     //Types with implementation
     export type HasColumn<

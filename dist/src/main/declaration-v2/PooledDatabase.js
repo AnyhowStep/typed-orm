@@ -605,8 +605,8 @@ class PooledDatabase extends mysql.PooledDatabase {
     fetchLatestOrDefault(data, entityIdentifier) {
         return log_1.LogDataUtil.fetchLatestOrDefault(this, data, entityIdentifier);
     }
-    insertIfDifferentAndFetch(data, entityIdentifier, newValues) {
-        return log_1.LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, newValues);
+    insertIfDifferentAndFetch(data, entityIdentifier, insertIfDifferentRow) {
+        return log_1.LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, insertIfDifferentRow);
     }
 }
 exports.PooledDatabase = PooledDatabase;

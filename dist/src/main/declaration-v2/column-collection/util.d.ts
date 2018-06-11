@@ -16,6 +16,10 @@ export declare namespace ColumnCollectionUtil {
         readonly [columnName in Exclude<Extract<keyof ColumnCollectionT, string>, ExcludeT>]: (ColumnCollectionT[columnName] extends AnyColumn ? ColumnCollectionT[columnName] : never);
     });
     function excludeColumnNames<ColumnCollectionT extends ColumnCollection, ExcludeT extends string>(columnCollection: ColumnCollectionT, exclude: ExcludeT[]): ExcludeColumnNames<ColumnCollectionT, ExcludeT>;
+    type ExtractColumnNames<ColumnCollectionT extends ColumnCollection, ExtractT extends string> = ({
+        readonly [columnName in Extract<keyof ColumnCollectionT, ExtractT>]: (ColumnCollectionT[columnName] extends AnyColumn ? ColumnCollectionT[columnName] : never);
+    });
+    function extractColumnNames<ColumnCollectionT extends ColumnCollection, ExtractT extends string>(columnCollection: ColumnCollectionT, extract: ExtractT[]): ExtractColumnNames<ColumnCollectionT, ExtractT>;
     type HasColumn<ColumnCollectionT extends ColumnCollection, ColumnT extends AnyColumn> = (ColumnT["name"] extends keyof ColumnCollectionT ? (ColumnT["tableAlias"] extends ColumnCollectionT[ColumnT["name"]]["tableAlias"] ? (ColumnT["name"] extends ColumnCollectionT[ColumnT["name"]]["name"] ? (ReturnType<ColumnT["assertDelegate"]> extends ReturnType<ColumnCollectionT[ColumnT["name"]]["assertDelegate"]> ? (true) : false) : false) : false) : false);
     function hasColumn<ColumnCollectionT extends ColumnCollection, ColumnT extends AnyColumn>(columnCollection: ColumnCollectionT, other: ColumnT): (HasColumn<ColumnCollectionT, ColumnT>);
     function assertHasColumn(columnCollection: ColumnCollection, column: AnyColumn): void;

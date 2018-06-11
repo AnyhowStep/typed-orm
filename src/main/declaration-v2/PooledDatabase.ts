@@ -1016,11 +1016,11 @@ export class PooledDatabase extends mysql.PooledDatabase {
     insertIfDifferentAndFetch<DataT extends LogData> (
         data : DataT,
         entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
-        newValues : LogDataUtil.Trackable<DataT>
+        insertIfDifferentRow : LogDataUtil.InsertIfDifferentRow<DataT>
     ) : Promise<{
         latest : TableRow<DataT["table"]>,
         wasInserted : boolean,
     }> {
-        return LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, newValues);
+        return LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, insertIfDifferentRow);
     }
 }

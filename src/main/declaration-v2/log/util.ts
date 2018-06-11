@@ -4,6 +4,7 @@ import {PooledDatabase} from "../PooledDatabase";
 import {ColumnCollectionUtil} from "../column-collection";
 import {RawExprUtil} from "../raw-expr";
 import {TableRow} from "../table";
+import {InsertLiteralRow} from "../insert-value-builder";
 
 export namespace LogDataUtil {
     export type EntityIdentifier<DataT extends LogData> = (
@@ -46,6 +47,52 @@ export namespace LogDataUtil {
         return ColumnCollectionUtil.partialAssertDelegate(
             data.table.columns,
             Object.keys(data.isTrackable)
+        ) as any;
+    }
+    export type DoNotCopyOnTrackableChanged<DataT extends LogData> = (
+        {
+            [columnName in Extract<
+                keyof InsertLiteralRow<DataT["table"]>,
+                Extract<
+                    keyof DataT["doNotCopyOnTrackableChanged"],
+                    string
+                >
+            >] : (
+                InsertLiteralRow<DataT["table"]>[columnName]
+            )
+        }
+    );
+    export function doNotCopyOnTrackableChangedAssertDelegate<DataT extends LogData> (
+        data : DataT
+    ) : sd.AssertDelegate<DoNotCopyOnTrackableChanged<DataT>> {
+        const columnCollection = ColumnCollectionUtil.extractColumnNames(
+            data.table.columns,
+            Object.keys(data.doNotCopyOnTrackableChanged)
+        );
+        return sd.schema(
+            ...Object.keys(columnCollection)
+                .map((columnName) => {
+                    const column = columnCollection[columnName];
+                    if (data.table.data.hasDefaultValue[columnName] === true) {
+                        //Is optional
+                        return sd.field(column.name, column.assertDelegate).optional();
+                    } else {
+                        //Required
+                        return sd.field(column.name, column.assertDelegate);
+                    }
+                })
+        ) as any;
+    }
+    export type InsertIfDifferentRow<DataT extends LogData> = (
+        Trackable<DataT> &
+        DoNotCopyOnTrackableChanged<DataT>
+    );
+    export function insertIfDifferentRowAssertDelegate<DataT extends LogData> (
+        data : DataT
+    ) : sd.AssertDelegate<InsertIfDifferentRow<DataT>> {
+        return sd.intersect(
+            trackableAssertDelegate(data),
+            doNotCopyOnTrackableChangedAssertDelegate(data)
         ) as any;
     }
     export function fetchLatestOrError<
@@ -119,24 +166,25 @@ export namespace LogDataUtil {
         db : PooledDatabase,
         data : DataT,
         entityIdentifier : EntityIdentifier<DataT>,
-        newValues : Trackable<DataT>
+        insertIfDifferentRow : InsertIfDifferentRow<DataT>
     ) : Promise<{
         latest : TableRow<DataT["table"]>,
         wasInserted : boolean,
     }> {
         return db.transactionIfNotInOne(async (db) => {
-            newValues = trackableAssertDelegate(data)(`${data.table.alias} trackable`, newValues);
+            const trackable = trackableAssertDelegate(data)(`${data.table.alias} trackable`, insertIfDifferentRow);
+            const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(`${data.table.alias} do not copy`, insertIfDifferentRow);
 
             let differenceFound = false;
             const curValues = await fetchLatestOrDefault(db, data, entityIdentifier);
-            for (let columnName in newValues) {
-                const newValue = (newValues as any)[columnName];
-                if (newValue === undefined) {
+            for (let columnName in trackable) {
+                const newTrackableValue = (trackable as any)[columnName];
+                if (newTrackableValue === undefined) {
                     continue;
                 }
 
                 const curValue = (curValues as any)[columnName];
-                if (newValue !== curValue) {
+                if (newTrackableValue !== curValue) {
                     differenceFound = true;
                     break;
                 }
@@ -154,17 +202,28 @@ export namespace LogDataUtil {
                 if (data.table.data.isGenerated[columnName] === true) {
                     continue;
                 }
+                if (data.doNotCopyOnTrackableChanged[columnName] === true) {
+                    continue;
+                }
                 if (
                     data.entityIdentifier[columnName] === true ||
-                    data.isTrackable[columnName] === true ||
-                    data.table.data.hasDefaultValue[columnName] !== true
+                    data.isTrackable[columnName] === true// ||
+                    //Deprecated, pass the column to doNotCopyOnTrackableChanged
+                    //data.table.data.hasDefaultValue[columnName] !== true
                 ) {
                     toInsert[columnName] = (curValues as any)[columnName];
                 }
             }
             //Overwrite with new values
-            for (let columnName in newValues) {
-                const newValue = (newValues as any)[columnName];
+            for (let columnName in trackable) {
+                const newTrackableValue = (trackable as any)[columnName];
+                if (newTrackableValue === undefined) {
+                    continue;
+                }
+                toInsert[columnName] = newTrackableValue;
+            }
+            for (let columnName in doNotCopy) {
+                const newValue = (doNotCopy as any)[columnName];
                 if (newValue === undefined) {
                     continue;
                 }
