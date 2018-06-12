@@ -9,14 +9,15 @@ for (let i=0; i<=30; ++i) {
 str.join("|")
 */
 export type Tuple<T> = T[] & { "0" : T };
-/*export type TupleKeys<TupleT extends Tuple<any>> = Extract<
+export type TupleKeys<TupleT extends Tuple<any>> = Extract<
     keyof TupleT,
     "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21"|"22"|"23"|"24"|"25"|"26"|"27"|"28"|"29"|"30"
->;*/
+>;
+/*
 export type TupleKeys<TupleT extends Tuple<any>> = Exclude<
     keyof TupleT,
     keyof any[]
->;
+>;*/
 /*export type TupleKeys<TupleT extends Tuple<any>> = Exclude<
     Extract<
         keyof TupleT,

@@ -9,11 +9,17 @@ import { AnyAliasedTable } from "../aliased-table";
 import { ColumnCollectionUtil } from "../column-collection";
 import { ColumnReferencesUtil } from "../column-references";
 import { AnyTable, UniqueKeys, MinimalUniqueKeys } from "../table";
-import { JoinCollectionUtil } from "../join-collection";
+import { JoinCollection, JoinCollectionUtil } from "../join-collection";
 export declare namespace RawExprUtil {
     function isAllowedExprConstant(raw: AnyRawExpr): raw is AllowedExprConstant;
     function querify(raw: RawExpr<any>): string;
-    type UsedReferences<RawExprT extends AnyRawExpr> = (RawExprT extends AnySelectBuilder ? (true extends RawExprT["data"]["hasParentJoins"] ? JoinCollectionUtil.ToColumnReferences<RawExprT["data"]["parentJoins"]> : {}) : RawExprT extends AllowedExprConstant ? {} : RawExprT extends AnyColumn ? {
+    type WithParentJoins = {
+        data: {
+            hasParentJoins: boolean;
+            parentJoins: JoinCollection;
+        };
+    };
+    type UsedReferences<RawExprT extends AnyRawExpr> = (RawExprT extends WithParentJoins ? (true extends RawExprT["data"]["hasParentJoins"] ? JoinCollectionUtil.ToColumnReferences<RawExprT["data"]["parentJoins"]> : {}) : RawExprT extends AllowedExprConstant ? {} : RawExprT extends AnyColumn ? {
         readonly [tableAlias in RawExprT["tableAlias"]]: {
             readonly [name in RawExprT["name"]]: RawExprT;
         };

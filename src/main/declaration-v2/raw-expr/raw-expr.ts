@@ -26,6 +26,36 @@ export type SelectValueBuilder<TypeT> = SelectBuilder<{
     hasParentJoins : any,
     parentJoins : any,
 }>;
+//Ugly hack to get this to work
+export type AnySelectValueBuilder = {
+    data : {
+        hasSelect : true,
+        selects : (
+            Tuple<any> &
+            { length: 1; } &
+            {
+                "0": any;
+            }
+        ),
+    }
+}/*SelectBuilder<{
+    hasSelect : true,
+    hasFrom : any,
+    hasUnion : any,
+
+    joins : any,
+    selects : (
+        Tuple<any> &
+        { length: 1; } &
+        {
+            "0": any;
+        }
+    ),
+    aggregateDelegate : any,
+
+    hasParentJoins : any,
+    parentJoins : any,
+}>;*/
 
 export type AllowedExprConstant = number|string|boolean|Date|null|undefined;
 export type RawExpr<TypeT> = (
@@ -39,7 +69,14 @@ export type RawExpr<TypeT> = (
     Column<any, any, TypeT>|
     SelectValueBuilder<TypeT>
 );
-export type AnyRawExpr = RawExpr<any>;
+export type AnyRawExpr = (
+    (
+        AllowedExprConstant
+    )|
+    Expr<any, any>|
+    Column<any, any, any>|
+    AnySelectValueBuilder
+);
 
 export type SelectValueBuilderNoUsedRef<TypeT> = SelectBuilder<{
     hasSelect : true,

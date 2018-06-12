@@ -10,6 +10,8 @@ const column_1 = require("../column");
 const aliased_table_2 = require("../aliased-table");
 column_1.Column;
 aliased_table_2.AliasedTable;
+const _0 = undefined;
+_0;
 var JoinCollectionUtil;
 (function (JoinCollectionUtil) {
     function toTableCollection(joins) {

@@ -479,13 +479,24 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasFrom: any;
         hasUnion: any;
         joins: any;
-        selects: DataT["selects"] & {
+        selects: any[] & {
             length: 1;
+        } & {
+            "0": any;
         };
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, alias: AliasT): (AliasedExpr<{}, "__expr", AliasT, RawExprUtil.Type<SelectBuilder<DataT>>>);
+    }>, alias: AliasT): (this["data"] extends {
+        hasSelect: true;
+        selects: any[] & {
+            "0": any;
+        } & {
+            length: 1;
+        } & {
+            "0": any;
+        };
+    } ? AliasedExpr<{}, "__expr", AliasT, RawExprUtil.Type<SelectBuilder<this["data"]>>> : never);
     subQuery(): (DataT["hasParentJoins"] extends true ? SelectBuilder<{
         hasSelect: false;
         hasFrom: false;

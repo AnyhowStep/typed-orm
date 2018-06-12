@@ -12,8 +12,12 @@ import {AnySelectBuilder} from "../select-builder";
 
 import {Column} from "../column";
 import {AliasedTable} from "../aliased-table";
+import {ColumnCollection} from "../column-collection";
 Column;
 AliasedTable;
+const _0 : ColumnCollection|undefined = undefined;
+_0;
+
 
 export namespace JoinCollectionUtil {
     //Types only
@@ -165,7 +169,7 @@ export namespace JoinCollectionUtil {
     //Types with implementation
     export const push = tupleWPush<AnyJoin>();
 
-    
+
     export type NullableTableAlias<
         JoinsT extends JoinCollection
     > = (

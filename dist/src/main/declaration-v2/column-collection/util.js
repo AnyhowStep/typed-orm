@@ -115,6 +115,9 @@ var ColumnCollectionUtil;
         const result = {};
         for (let columnName in columnsA) {
             const columnA = columnsA[columnName];
+            if (!(columnA instanceof column_1.Column)) {
+                throw new Error(`${columnName} is not a column`);
+            }
             const columnB = columnsB[columnName];
             if (columnB == undefined) {
                 result[columnName] = columnA;

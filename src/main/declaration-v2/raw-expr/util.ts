@@ -12,7 +12,7 @@ import {ColumnCollectionUtil} from "../column-collection";
 import { ColumnReferencesUtil } from "../column-references";
 import * as e from "../expression";
 import {AnyTable, UniqueKeys, MinimalUniqueKeys} from "../table";
-import {JoinCollectionUtil} from "../join-collection";
+import {JoinCollection, JoinCollectionUtil} from "../join-collection";
 
 export namespace RawExprUtil {
     export function isAllowedExprConstant (raw : AnyRawExpr) : raw is AllowedExprConstant {
@@ -70,8 +70,15 @@ export namespace RawExprUtil {
         throw new Error(`Unknown raw expression (${typeof raw})${raw}`);
     }
 
+    //Hack to make emitted type not confuse `tsc`
+    export type WithParentJoins = {
+        data : {
+            hasParentJoins : boolean,
+            parentJoins : JoinCollection,
+        }
+    };
     export type UsedReferences<RawExprT extends AnyRawExpr> = (
-        RawExprT extends AnySelectBuilder ?
+        RawExprT extends WithParentJoins ?
         (
             true extends RawExprT["data"]["hasParentJoins"] ?
                 JoinCollectionUtil.ToColumnReferences<

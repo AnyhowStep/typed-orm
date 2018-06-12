@@ -14,6 +14,15 @@ AliasedExpr;
 Join;
 AliasedTable;
 
+import {JoinCollectionUtil} from "../join-collection";
+import {ColumnCollection} from "../column-collection";
+import {TupleKeys} from "../tuple";
+JoinCollectionUtil;
+((
+    _0? : ColumnCollection,
+    _1? : TupleKeys<any>
+) => 0)();
+
 function numberComparison (operator : string) {
     function result<
         LeftT extends RawExpr<number>,

@@ -43,12 +43,12 @@ export declare namespace ColumnCollectionUtil {
         readonly [columnName in keyof ColumnCollectionT]: (ColumnCollectionT[columnName] extends Column<TableAliasT, ColumnNameT, any> ? ColumnUtil.WithType<ColumnCollectionT[columnName], NewTypeT> : ColumnCollectionT[columnName]);
     });
     function replaceColumnType<ColumnCollectionT extends ColumnCollection, TableAliasT extends string, ColumnNameT extends string, NewTypeT>(columns: ColumnCollectionT, tableAlias: TableAliasT, columnName: ColumnNameT, assertDelegate: sd.AssertDelegate<NewTypeT>): (ReplaceColumnType<ColumnCollectionT, TableAliasT, ColumnNameT, NewTypeT>);
-    type AndType<ColumnCollectionA extends ColumnCollection, ColumnCollectionB extends ColumnCollection> = ({
-        readonly [columnName in Extract<keyof ColumnCollectionA, string>]: (columnName extends keyof ColumnCollectionB ? (Column<ColumnCollectionA[columnName]["tableAlias"], ColumnCollectionA[columnName]["name"], (ReturnType<ColumnCollectionA[columnName]["assertDelegate"]> & ReturnType<ColumnCollectionB[columnName]["assertDelegate"]>)>) : (ColumnCollectionA[columnName]));
+    type AndType<ColumnCollectionA extends ColumnCollection | {}, ColumnCollectionB extends ColumnCollection> = ({
+        readonly [columnName in Extract<keyof ColumnCollectionA, string>]: (ColumnCollectionA[columnName] extends Column<infer TableAliasT, infer NameT, infer TypeT> ? (columnName extends keyof ColumnCollectionB ? (Column<TableAliasT, NameT, (TypeT & ReturnType<ColumnCollectionB[columnName]["assertDelegate"]>)>) : (ColumnCollectionA[columnName])) : never);
     });
-    function andType<ColumnCollectionA extends ColumnCollection, ColumnCollectionB extends ColumnCollection>(columnsA: ColumnCollectionA, columnsB: ColumnCollectionB): (AndType<ColumnCollectionA, ColumnCollectionB>);
-    type Merge<ColumnCollectionA extends ColumnCollection, ColumnCollectionB extends ColumnCollection> = (AndType<ColumnCollectionA, ColumnCollectionB> & ColumnCollectionB);
-    function merge<ColumnCollectionA extends ColumnCollection, ColumnCollectionB extends ColumnCollection>(columnsA: ColumnCollectionA, columnsB: ColumnCollectionB): Merge<ColumnCollectionA, ColumnCollectionB>;
+    function andType<ColumnCollectionA extends ColumnCollection | {}, ColumnCollectionB extends ColumnCollection>(columnsA: ColumnCollectionA, columnsB: ColumnCollectionB): (AndType<ColumnCollectionA, ColumnCollectionB>);
+    type Merge<ColumnCollectionA extends ColumnCollection | {}, ColumnCollectionB extends ColumnCollection> = (AndType<ColumnCollectionA, ColumnCollectionB> & ColumnCollectionB);
+    function merge<ColumnCollectionA extends ColumnCollection | {}, ColumnCollectionB extends ColumnCollection>(columnsA: ColumnCollectionA, columnsB: ColumnCollectionB): Merge<ColumnCollectionA, ColumnCollectionB>;
     type NullableColumnNames<ColumnCollectionT extends ColumnCollection> = ({
         [name in Extract<keyof ColumnCollectionT, string>]: (null extends ReturnType<ColumnCollectionT[name]["assertDelegate"]> ? name : never);
     }[Extract<keyof ColumnCollectionT, string>]);

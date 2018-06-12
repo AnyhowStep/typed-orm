@@ -1631,7 +1631,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         this.assertAfterSelect();
         const widenedColumn = TypeWidenDelegateUtil.execute(
             this.data.selects,
-            typeWidenDelegate,
+            typeWidenDelegate as any,
             assertWidened
         );
         const joins = JoinCollectionUtil.replaceColumnType(
@@ -2018,7 +2018,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             hasFrom : any,
             hasUnion : any,
             joins : any,
-            selects : DataT["selects"] & { length : 1 }//SelectCollection & { length : 1 },//any,
+            selects : any[] & { length : 1 } & { "0":any }
             aggregateDelegate : any,
 
             hasParentJoins : any,
@@ -2026,12 +2026,17 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         alias : AliasT
     ) : (
-        AliasedExpr<
-            {},
-            "__expr",
-            AliasT,
-            RawExprUtil.Type<SelectBuilder<DataT>>
-        >
+        this["data"] extends {
+            hasSelect: true;
+            selects: any[] & { "0": any; } & { length: 1; } & { "0": any; };
+        } ?
+            AliasedExpr<
+                {},
+                "__expr",
+                AliasT,
+                RawExprUtil.Type<SelectBuilder<this["data"]>>
+            > :
+            never
     ) {
         this.assertAfterSelect();
         if (this.data.selects == undefined || this.data.selects.length != 1) {

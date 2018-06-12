@@ -13,6 +13,9 @@ column_1.Column;
 aliased_expr_1.AliasedExpr;
 join_1.Join;
 aliased_table_1.AliasedTable;
+const join_collection_1 = require("../join-collection");
+join_collection_1.JoinCollectionUtil;
+((_0, _1) => 0)();
 function numberComparison(operator) {
     function result(left, right) {
         raw_expr_1.RawExprUtil.assertNonNullable(left);

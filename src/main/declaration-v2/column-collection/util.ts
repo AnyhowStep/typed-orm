@@ -305,30 +305,34 @@ export namespace ColumnCollectionUtil {
 
 
     export type AndType<
-        ColumnCollectionA extends ColumnCollection,
+        ColumnCollectionA extends ColumnCollection|{},
         ColumnCollectionB extends ColumnCollection
     > = (
         {
             readonly [columnName in Extract<keyof ColumnCollectionA, string>] : (
-                columnName extends keyof ColumnCollectionB ?
+                ColumnCollectionA[columnName] extends Column<infer TableAliasT, infer NameT, infer TypeT> ?
                     (
-                        Column<
-                            ColumnCollectionA[columnName]["tableAlias"],
-                            ColumnCollectionA[columnName]["name"],
+                        columnName extends keyof ColumnCollectionB ?
                             (
-                                ReturnType<ColumnCollectionA[columnName]["assertDelegate"]> &
-                                ReturnType<ColumnCollectionB[columnName]["assertDelegate"]>
+                                Column<
+                                    TableAliasT,
+                                    NameT,
+                                    (
+                                        TypeT &
+                                        ReturnType<ColumnCollectionB[columnName]["assertDelegate"]>
+                                    )
+                                >
+                            ) :
+                            (
+                                ColumnCollectionA[columnName]
                             )
-                        >
                     ) :
-                    (
-                        ColumnCollectionA[columnName]
-                    )
+                    never
             )
         }
     )
     export function andType<
-        ColumnCollectionA extends ColumnCollection,
+        ColumnCollectionA extends ColumnCollection|{},
         ColumnCollectionB extends ColumnCollection
     > (
         columnsA : ColumnCollectionA,
@@ -342,6 +346,9 @@ export namespace ColumnCollectionUtil {
         const result = {} as any;
         for (let columnName in columnsA) {
             const columnA = columnsA[columnName];
+            if (!(columnA instanceof Column)) {
+                throw new Error(`${columnName} is not a column`);
+            }
             const columnB = columnsB[columnName];
             if (columnB == undefined) {
                 result[columnName] = columnA;
@@ -362,7 +369,7 @@ export namespace ColumnCollectionUtil {
         return result;
     }
     export type Merge<
-        ColumnCollectionA extends ColumnCollection,
+        ColumnCollectionA extends ColumnCollection|{},
         ColumnCollectionB extends ColumnCollection
     > = (
         AndType<
@@ -372,7 +379,7 @@ export namespace ColumnCollectionUtil {
         ColumnCollectionB
     );
     export function merge<
-        ColumnCollectionA extends ColumnCollection,
+        ColumnCollectionA extends ColumnCollection|{},
         ColumnCollectionB extends ColumnCollection
     > (
         columnsA : ColumnCollectionA,

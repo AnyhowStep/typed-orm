@@ -9,8 +9,8 @@ import { JoinFromDelegate } from "../join-from-delegate";
 import { JoinToDelegate, JoinToDelegateUtil } from "../join-to-delegate";
 import * as invalid from "../invalid";
 import { AnySelectBuilder } from "../select-builder";
-import { Column } from "../column";
 import { AliasedTable } from "../aliased-table";
+import { ColumnCollection } from "../column-collection";
 export declare namespace JoinCollectionUtil {
     type FindWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string> = ({
         [index in TupleKeys<JoinsT>]: (JoinsT[index] extends AnyJoin ? (JoinsT[index]["table"]["alias"] extends TableAliasT ? JoinsT[index] : never) : never);
@@ -31,25 +31,7 @@ export declare namespace JoinCollectionUtil {
     type NullableColumns<JoinsT extends JoinCollection> = ({
         [index in TupleKeys<JoinsT>]: (JoinsT[index] extends AnyJoin ? ColumnCollectionUtil.Columns<ColumnCollectionUtil.ToNullable<JoinsT[index]["columns"]>> : never);
     }[TupleKeys<JoinsT>]);
-    const push: <TupleT extends Join<AliasedTable<string, string, {
-        readonly [columnName: string]: Column<string, string, any>;
-    }>, {
-        readonly [columnName: string]: Column<string, string, any>;
-    }, boolean>[] & {
-        "0": Join<AliasedTable<string, string, {
-            readonly [columnName: string]: Column<string, string, any>;
-        }>, {
-            readonly [columnName: string]: Column<string, string, any>;
-        }, boolean>;
-    }, NextT extends Join<AliasedTable<string, string, {
-        readonly [columnName: string]: Column<string, string, any>;
-    }>, {
-        readonly [columnName: string]: Column<string, string, any>;
-    }, boolean>>(tuple: TupleT, next: NextT) => { [index in Exclude<keyof TupleT, number | "reverse" | "map" | "filter" | "push" | "length" | "toString" | "toLocaleString" | "pop" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "fill" | "copyWithin" | "entries" | "keys" | "values">]: TupleT[index] extends Join<AliasedTable<string, string, {
-        readonly [columnName: string]: Column<string, string, any>;
-    }>, {
-        readonly [columnName: string]: Column<string, string, any>;
-    }, boolean> ? TupleT[index] : never; } & { [index in TupleT extends {
+    const push: <TupleT extends import("../tuple").Tuple<Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean>>, NextT extends Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean>>(tuple: TupleT, next: NextT) => { [index in Extract<keyof TupleT, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">]: TupleT[index] extends Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean> ? TupleT[index] : never; } & { [index in TupleT extends {
         "19": any;
     } ? "20" : TupleT extends {
         "18": any;
@@ -89,16 +71,8 @@ export declare namespace JoinCollectionUtil {
         "1": any;
     } ? "2" : TupleT extends {
         "0": any;
-    } ? "1" : never]: NextT extends Join<AliasedTable<string, string, {
-        readonly [columnName: string]: Column<string, string, any>;
-    }>, {
-        readonly [columnName: string]: Column<string, string, any>;
-    }, boolean> ? NextT : never; } & {
-        "0": TupleT[0] extends Join<AliasedTable<string, string, {
-            readonly [columnName: string]: Column<string, string, any>;
-        }>, {
-            readonly [columnName: string]: Column<string, string, any>;
-        }, boolean> ? TupleT[0] : never;
+    } ? "1" : never]: NextT extends Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean> ? NextT : never; } & {
+        "0": TupleT[0] extends Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean> ? TupleT[0] : never;
     } & {
         length: TupleT extends {
             "20": any;
@@ -143,11 +117,7 @@ export declare namespace JoinCollectionUtil {
         } ? 3 : TupleT extends {
             "0": any;
         } ? 2 : never;
-    } & Join<AliasedTable<string, string, {
-        readonly [columnName: string]: Column<string, string, any>;
-    }>, {
-        readonly [columnName: string]: Column<string, string, any>;
-    }, boolean>[];
+    } & Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean>[];
     type NullableTableAlias<JoinsT extends JoinCollection> = ({
         [index in TupleKeys<JoinsT>]: (JoinsT[index] extends AnyJoin ? (true extends JoinsT[index]["nullable"] ? JoinsT[index]["table"]["alias"] : never) : never);
     }[TupleKeys<JoinsT>]);

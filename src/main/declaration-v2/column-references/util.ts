@@ -84,6 +84,10 @@ export namespace ColumnReferencesUtil {
         RefA extends ColumnReferences,
         RefB extends ColumnReferences
     > = (
+        RefA & RefB
+    )/*
+    Commenting this out because it causes `tsc` to freak out
+    (
         //Keys of A only
         {
             readonly [tableAlias in Extract<Exclude<keyof RefA, keyof RefB>, string>] : (
@@ -112,9 +116,9 @@ export namespace ColumnReferencesUtil {
                     never
             )
         }
-    );
+    );*/
     export function merge<
-        RefA extends ColumnReferences,
+        RefA extends ColumnReferences|{},
         RefB extends ColumnReferences
     > (
         refA : RefA,
@@ -139,7 +143,7 @@ export namespace ColumnReferencesUtil {
         return result;
     }
 
-    export type ToConvenient<RefT extends ColumnReferences> = (
+    export type ToConvenient<RefT extends ColumnReferences|{}> = (
         keyof RefT extends never ?
             {} :
             IsOneStringLiteral<Extract<keyof RefT, string>> extends true ?
@@ -151,12 +155,12 @@ export namespace ColumnReferencesUtil {
                 //with different data types
                 RefT
     );
-    export function toConvenient<RefT extends ColumnReferences> (
+    export function toConvenient<RefT extends ColumnReferences|{}> (
         ref : RefT
     ) : ToConvenient<RefT> {
         const keys = Object.keys(ref);
         if (keys.length == 1) {
-            return ref[keys[0]] as any;
+            return (ref as any)[keys[0]] as any;
         } else {
             return ref as any;
         }
@@ -187,17 +191,17 @@ export namespace ColumnReferencesUtil {
         const columnCollection = ref[column.tableAlias];
         return ColumnCollectionUtil.hasColumn(columnCollection, column);
     }
-    export function assertHasColumn (ref : ColumnReferences, column : AnyColumn) {
+    export function assertHasColumn (ref : ColumnReferences|{}, column : AnyColumn) {
         if (!hasColumn(ref, column)) {
             throw new Error(`Column ${column.tableAlias}.${column.name} does not exist in column references`);
         }
     }
-    export function assertHasColumns (ref : ColumnReferences, arr : AnyColumn[]) {
+    export function assertHasColumns (ref : ColumnReferences|{}, arr : AnyColumn[]) {
         for (let i of arr) {
             assertHasColumn(ref, i);
         }
     }
-    export function assertHasColumnReferences (ref : ColumnReferences, targetReferences : ColumnReferences) {
+    export function assertHasColumnReferences (ref : ColumnReferences|{}, targetReferences : ColumnReferences) {
         for (let tableAlias in targetReferences) {
             if (!targetReferences.hasOwnProperty(tableAlias)) {
                 continue;
