@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const boolean_expr_1 = require("./boolean-expr");
-const raw_expr_1 = require("../raw-expr");
-const column_references_1 = require("../column-references");
-const expr_1 = require("../expr");
+const boolean_expr_1 = require("../boolean-expr");
+const raw_expr_1 = require("../../raw-expr");
+const column_references_1 = require("../../column-references");
+const expr_1 = require("../../expr");
 const sd = require("schema-decorator");
-const variadicUtil = require("./variadic-util");
-const select_builder_1 = require("../select-builder");
-const column_1 = require("../column");
-const aliased_expr_1 = require("../aliased-expr");
-const join_1 = require("../join");
-const aliased_table_1 = require("../aliased-table");
+const or_1 = require("./or");
+const select_builder_1 = require("../../select-builder");
+const column_1 = require("../../column");
+const aliased_expr_1 = require("../../aliased-expr");
+const join_1 = require("../../join");
+const aliased_table_1 = require("../../aliased-table");
 select_builder_1.SelectBuilder;
 column_1.Column;
 aliased_expr_1.AliasedExpr;
@@ -38,19 +38,14 @@ exports.FALSE = new expr_1.Expr({}, (name, mixed) => {
     return sd.oneOf(false)(name, b);
 }, "FALSE");
 //export const and = booleanBinaryOp("AND");
-exports.or = booleanBinaryOp("OR");
+//export const or = booleanBinaryOp("OR");
 exports.xor = booleanBinaryOp("XOR");
-function and(left, ...rightArr) {
-    const q = variadicUtil.querifyNonNullable(left, ...rightArr);
-    return boolean_expr_1.booleanExpr(q.used, `\n\t${[q.leftQuery, ...q.rightQueries].join(" AND\n\t")}\n`);
-}
-exports.and = and;
 function not(raw) {
     return boolean_expr_1.booleanExpr(raw_expr_1.RawExprUtil.usedReferences(raw), `NOT (${raw_expr_1.RawExprUtil.querify(raw)})`);
 }
 exports.not = not;
 function implies(left, right) {
-    return exports.or(not(left), right);
+    return or_1.or(not(left), right);
 }
 exports.implies = implies;
 //Internally,
