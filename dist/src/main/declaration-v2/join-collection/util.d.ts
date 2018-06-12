@@ -121,9 +121,9 @@ export declare namespace JoinCollectionUtil {
     type NullableTableAlias<JoinsT extends JoinCollection> = ({
         [index in TupleKeys<JoinsT>]: (JoinsT[index] extends AnyJoin ? (true extends JoinsT[index]["nullable"] ? JoinsT[index]["table"]["alias"] : never) : never);
     }[TupleKeys<JoinsT>]);
-    type ToColumnReferences<JoinsT extends JoinCollection> = (JoinsT[TupleKeys<JoinsT>] extends AnyJoin ? {
-        readonly [tableAlias in JoinsT[TupleKeys<JoinsT>]["table"]["alias"]]: (true extends FindWithTableAlias<JoinsT, tableAlias>["nullable"] ? ColumnCollectionUtil.ToNullable<FindWithTableAlias<JoinsT, tableAlias>["columns"]> : FindWithTableAlias<JoinsT, tableAlias>["columns"]);
-    } : {});
+    type ToColumnReferences<JoinsT extends JoinCollection> = (JoinsT[TupleKeys<JoinsT>] extends AnyJoin ? (JoinsT[TupleKeys<JoinsT>]["table"] extends AnyAliasedTable ? {
+        readonly [tableAlias in JoinsT[TupleKeys<JoinsT>]["table"]["alias"]]: (FindWithTableAlias<JoinsT, tableAlias> extends AnyJoin ? (true extends FindWithTableAlias<JoinsT, tableAlias>["nullable"] ? ColumnCollectionUtil.ToNullable<FindWithTableAlias<JoinsT, tableAlias>["columns"]> : FindWithTableAlias<JoinsT, tableAlias>["columns"]) : never);
+    } : {}) : {});
     function toColumnReferences<JoinsT extends JoinCollection>(joins: JoinsT): (ToColumnReferences<JoinsT>);
     type ToConvenientColumnReferences<JoinsT extends JoinCollection> = (JoinsT["length"] extends 1 ? (ToColumnReferences<JoinsT>[keyof ToColumnReferences<JoinsT>]) : ToColumnReferences<JoinsT>);
     function toConvenientColumnReferences<JoinsT extends JoinCollection>(joins: JoinsT): (ToConvenientColumnReferences<JoinsT>);

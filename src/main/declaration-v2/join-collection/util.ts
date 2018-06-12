@@ -207,13 +207,21 @@ export namespace JoinCollectionUtil {
             ) :
             never*/
         JoinsT[TupleKeys<JoinsT>] extends AnyJoin ?
-            {
-                readonly [tableAlias in JoinsT[TupleKeys<JoinsT>]["table"]["alias"]] : (
-                    true extends FindWithTableAlias<JoinsT, tableAlias>["nullable"] ?
-                        ColumnCollectionUtil.ToNullable<FindWithTableAlias<JoinsT, tableAlias>["columns"]> :
-                        FindWithTableAlias<JoinsT, tableAlias>["columns"]
-                )
-            } :
+            (
+                JoinsT[TupleKeys<JoinsT>]["table"] extends AnyAliasedTable ?
+                    {
+                        readonly [tableAlias in JoinsT[TupleKeys<JoinsT>]["table"]["alias"]] : (
+                            FindWithTableAlias<JoinsT, tableAlias> extends AnyJoin ?
+                            (
+                                true extends FindWithTableAlias<JoinsT, tableAlias>["nullable"] ?
+                                    ColumnCollectionUtil.ToNullable<FindWithTableAlias<JoinsT, tableAlias>["columns"]> :
+                                    FindWithTableAlias<JoinsT, tableAlias>["columns"]
+                            ) :
+                            never
+                        )
+                    } :
+                    {}
+            ) :
             {}
     );
     export function toColumnReferences<JoinsT extends JoinCollection> (
