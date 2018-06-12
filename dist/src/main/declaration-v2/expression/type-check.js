@@ -33,7 +33,6 @@ function typeCheckBinaryOp(operator) {
     });
     return result;
 }
-exports.typeCheckBinaryOp = typeCheckBinaryOp;
 exports.eq = typeCheckBinaryOp("=");
 exports.notEq = typeCheckBinaryOp("!=");
 function isNotNullAndEq(left, right) {

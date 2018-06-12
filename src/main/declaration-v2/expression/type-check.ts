@@ -34,7 +34,7 @@ export function isNotNull<
     );
 }
 
-export function typeCheckBinaryOp (operator : string) {
+function typeCheckBinaryOp (operator : string) {
     function result<
         LeftT extends AnyRawExpr,
         RightT extends AnyRawExpr
