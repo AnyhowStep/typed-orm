@@ -14,7 +14,7 @@ Column;
 Join;
 AliasedTable;
 
-export function unsafeTypeCheckBinaryOp (operator : string) {
+function unsafeTypeCheckBinaryOp (operator : string) {
     function result<
         LeftT extends AnyRawExpr,
         RightT extends AnyRawExpr

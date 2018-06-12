@@ -22,7 +22,6 @@ function unsafeTypeCheckBinaryOp(operator) {
     });
     return result;
 }
-exports.unsafeTypeCheckBinaryOp = unsafeTypeCheckBinaryOp;
 exports.unsafeEq = unsafeTypeCheckBinaryOp("=");
 exports.unsafeNotEq = unsafeTypeCheckBinaryOp("!=");
 function unsafeIsIn(left, ...rightArr) {
