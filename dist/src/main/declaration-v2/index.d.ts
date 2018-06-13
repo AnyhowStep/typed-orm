@@ -32,6 +32,7 @@ export * from "./table-data";
 export * from "./table-parent-collection";
 export * from "./type-narrow-delegate";
 export * from "./type-widen-delegate";
+export * from "./union-order-by-delegate";
 export * from "./unique-key";
 export * from "./unique-key-collection";
 export * from "./where-delegate";

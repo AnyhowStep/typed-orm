@@ -14,6 +14,7 @@ import { GroupByDelegate } from "./group-by-delegate";
 import { HavingDelegate } from "./having-delegate";
 import { OrderByDelegate } from "./order-by-delegate";
 import { TypeWidenDelegate } from "./type-widen-delegate";
+import { UnionOrderByDelegate } from "./union-order-by-delegate";
 import * as sd from "schema-decorator";
 import { FetchValueCheck, FetchValueType } from "./fetch-value";
 import { AnyTable } from "./table";
@@ -420,8 +421,8 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
     limit(rowCount: number): this;
     offset(offset: number): this;
     unsetLimit(): this;
-    unionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>>(orderByDelegate: OrderByDelegateT): this;
-    appendUnionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>>(orderByDelegate: OrderByDelegateT): this;
+    unionOrderBy<UnionOrderByDelegateT extends UnionOrderByDelegate<SelectBuilder<DataT>>>(unionOrderByDelegate: UnionOrderByDelegateT): this;
+    appendUnionOrderBy<UnionOrderByDelegateT extends UnionOrderByDelegate<SelectBuilder<DataT>>>(unionOrderByDelegate: UnionOrderByDelegateT): this;
     unsetUnionOrderBy(): this;
     unionLimit(rowCount: number): this;
     unionOffset(offset: number): this;

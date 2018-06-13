@@ -33,6 +33,7 @@ __export(require("./table-data"));
 __export(require("./table-parent-collection"));
 __export(require("./type-narrow-delegate"));
 __export(require("./type-widen-delegate"));
+__export(require("./union-order-by-delegate"));
 __export(require("./unique-key"));
 __export(require("./unique-key-collection"));
 __export(require("./where-delegate"));

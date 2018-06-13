@@ -27,6 +27,7 @@ const group_by_delegate_1 = require("./group-by-delegate");
 const having_delegate_1 = require("./having-delegate");
 const order_by_delegate_1 = require("./order-by-delegate");
 const type_widen_delegate_1 = require("./type-widen-delegate");
+const union_order_by_delegate_1 = require("./union-order-by-delegate");
 const sd = require("schema-decorator");
 const table_1 = require("./table");
 const expr_1 = require("./expr");
@@ -546,15 +547,15 @@ class SelectBuilder {
     }
     //UNION ORDER BY CLAUSE
     //Replaces
-    unionOrderBy(orderByDelegate) {
-        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { unionOrderBy: order_by_delegate_1.OrderByDelegateUtil.execute(this, orderByDelegate) }));
+    unionOrderBy(unionOrderByDelegate) {
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { unionOrderBy: union_order_by_delegate_1.UnionOrderByDelegateUtil.execute(this, unionOrderByDelegate) }));
     }
     //Appends
-    appendUnionOrderBy(orderByDelegate) {
+    appendUnionOrderBy(unionOrderByDelegate) {
         if (this.extraData.unionOrderBy == undefined) {
-            return this.unionOrderBy(orderByDelegate);
+            return this.unionOrderBy(unionOrderByDelegate);
         }
-        const orderBy = order_by_delegate_1.OrderByDelegateUtil.execute(this, orderByDelegate);
+        const orderBy = union_order_by_delegate_1.UnionOrderByDelegateUtil.execute(this, unionOrderByDelegate);
         if (orderBy == undefined) {
             return this;
         }

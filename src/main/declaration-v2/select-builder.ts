@@ -26,6 +26,7 @@ import {GroupByDelegate, GroupByDelegateUtil} from "./group-by-delegate";
 import {HavingDelegate, HavingDelegateUtil} from "./having-delegate";
 import {OrderByDelegate, OrderByDelegateUtil} from "./order-by-delegate";
 import {TypeWidenDelegate, TypeWidenDelegateUtil} from "./type-widen-delegate";
+import {UnionOrderByDelegate, UnionOrderByDelegateUtil} from "./union-order-by-delegate";
 import * as sd from "schema-decorator";
 import {FetchValueCheck, FetchValueType} from "./fetch-value";
 import {table, AnyTable} from "./table";
@@ -1486,25 +1487,25 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
 
     //UNION ORDER BY CLAUSE
     //Replaces
-    unionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
-        orderByDelegate : OrderByDelegateT
+    unionOrderBy<UnionOrderByDelegateT extends UnionOrderByDelegate<SelectBuilder<DataT>>> (
+        unionOrderByDelegate : UnionOrderByDelegateT
     ) : this {
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
-                unionOrderBy : OrderByDelegateUtil.execute(this, orderByDelegate as any),
+                unionOrderBy : UnionOrderByDelegateUtil.execute(this, unionOrderByDelegate as any),
             }
         ) as any;
     }
     //Appends
-    appendUnionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
-        orderByDelegate : OrderByDelegateT
+    appendUnionOrderBy<UnionOrderByDelegateT extends UnionOrderByDelegate<SelectBuilder<DataT>>> (
+        unionOrderByDelegate : UnionOrderByDelegateT
     ) : this {
         if (this.extraData.unionOrderBy == undefined) {
-            return this.unionOrderBy(orderByDelegate);
+            return this.unionOrderBy(unionOrderByDelegate);
         }
-        const orderBy = OrderByDelegateUtil.execute(this, orderByDelegate as any);
+        const orderBy = UnionOrderByDelegateUtil.execute(this, unionOrderByDelegate as any);
         if (orderBy == undefined) {
             return this;
         }
