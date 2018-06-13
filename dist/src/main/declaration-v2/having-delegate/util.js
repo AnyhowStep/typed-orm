@@ -17,7 +17,7 @@ var HavingDelegateUtil;
 (function (HavingDelegateUtil) {
     function execute(selectBuilder, delegate) {
         const joinColumnReferences = join_collection_1.JoinCollectionUtil.toColumnReferences(selectBuilder.data.joins);
-        const selectColumnReferences = select_collection_1.SelectCollectionUtil.toColumnReferences(selectBuilder.data.select);
+        const selectColumnReferences = select_collection_1.SelectCollectionUtil.toColumnReferences(selectBuilder.data.selects);
         const columnReferences = column_references_1.ColumnReferencesUtil.merge(selectColumnReferences, joinColumnReferences);
         const having = delegate(column_references_1.ColumnReferencesUtil.toConvenient(columnReferences), selectBuilder);
         column_references_1.ColumnReferencesUtil.assertHasColumnReferences(columnReferences, having.usedReferences);
