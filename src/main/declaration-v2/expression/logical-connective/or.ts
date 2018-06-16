@@ -94,7 +94,7 @@ export function or<
     R2 extends RawExpr<boolean>,
     R3 extends RawExpr<boolean>,
     R4 extends RawExpr<boolean>
-> (left : LeftT, r0 : R0, r1 : R1, r2 : R2, r3 : R3) : (
+> (left : LeftT, r0 : R0, r1 : R1, r2 : R2, r3 : R3, r4 : R4) : (
     Expr<
         ColumnReferencesUtil.Merge<
             ColumnReferencesUtil.Merge<
@@ -123,7 +123,7 @@ export function or<
     R3 extends RawExpr<boolean>,
     R4 extends RawExpr<boolean>,
     R5 extends RawExpr<boolean>
-> (left : LeftT, r0 : R0, r1 : R1, r2 : R2, r3 : R3) : (
+> (left : LeftT, r0 : R0, r1 : R1, r2 : R2, r3 : R3, r4 : R4, r5 : R5) : (
     Expr<
         ColumnReferencesUtil.Merge<
             ColumnReferencesUtil.Merge<
@@ -156,7 +156,7 @@ export function or<
     R4 extends RawExpr<boolean>,
     R5 extends RawExpr<boolean>,
     R6 extends RawExpr<boolean>
-> (left : LeftT, r0 : R0, r1 : R1, r2 : R2, r3 : R3) : (
+> (left : LeftT, r0 : R0, r1 : R1, r2 : R2, r3 : R3, r4 : R4, r5 : R5, r6 : R6) : (
     Expr<
         ColumnReferencesUtil.Merge<
             ColumnReferencesUtil.Merge<
@@ -193,7 +193,7 @@ export function or<
     R5 extends RawExpr<boolean>,
     R6 extends RawExpr<boolean>,
     R7 extends RawExpr<boolean>
-> (left : LeftT, r0 : R0, r1 : R1, r2 : R2, r3 : R3) : (
+> (left : LeftT, r0 : R0, r1 : R1, r2 : R2, r3 : R3, r4 : R4, r5 : R5, r6 : R6, r7 : R7) : (
     Expr<
         ColumnReferencesUtil.Merge<
             ColumnReferencesUtil.Merge<
