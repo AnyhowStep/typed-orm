@@ -1,3 +1,6 @@
+export * from "./arithmetic-operator";
+export * from "./logical-connective";
+
 export * from "./boolean-expr";
 export * from "./coalesce";
 export * from "./count";
@@ -6,7 +9,6 @@ export * from "./exists";
 export * from "./if-null";
 export * from "./interval-unit";
 export * from "./like";
-export * from "./logical-connective";
 export * from "./max";
 export * from "./min";
 export * from "./now";
