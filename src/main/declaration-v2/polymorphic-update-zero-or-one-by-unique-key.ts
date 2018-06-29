@@ -160,7 +160,7 @@ export async function polymorphicUpdateZeroOrOneByUniqueKey<
                 prv = cur;
             }
         }
-        s = s.where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+        s = s.andWhere(() => RawExprUtil.toUniqueKeyEqualityCondition(
             table,
             uniqueKey
         ));
@@ -179,7 +179,7 @@ export async function polymorphicUpdateZeroOrOneByUniqueKey<
                 //If columns of the parent tables are supplied,
                 //That just means we want the unique row to satisfy
                 //some conditions, to update.
-                s = s.where(() => RawExprUtil.toEqualityCondition(
+                s = s.andWhere(() => RawExprUtil.toEqualityCondition(
                     parent,
                     uniqueKey
                 ));

@@ -352,6 +352,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: any;
         parentJoins: any;
     }>, typeNarrowDelegate: TypeNarrowDelegateT, value: ConstT): (SelectBuilderUtil.WhereIsEqual<this, TypeNarrowDelegateT, ConstT>);
+    unsetWhere(): this;
     where<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;

@@ -1163,8 +1163,19 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     };
 
     //WHERE CLAUSE
-    //Replaces but ANDs with NARROW
+
+    //Unsets the `WHERE` clause but retains the `NARROW` part
+    unsetWhere () : this {
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                whereExpr : this.extraData.narrowExpr,
+            }
+        ) as any;
+    }
     //Must be called after `FROM` as per MySQL
+    //where() and appendWhere() are synonyms
     where<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>> (
         this : SelectBuilder<{
             hasSelect : any,
@@ -1179,22 +1190,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         whereDelegate : WhereDelegateT
     ) : this {
-        this.assertAfterFrom();
-
-        let whereExpr = WhereDelegateUtil.execute(this, whereDelegate as any);
-        if (this.extraData.narrowExpr != undefined) {
-            whereExpr = e.and(this.extraData.narrowExpr, whereExpr);
-        }
-
-        return new SelectBuilder(
-            this.data,
-            {
-                ...this.extraData,
-                whereExpr : whereExpr,
-            }
-        ) as any;
+        return this.andWhere(whereDelegate as any) as any;
     }
-    //Appends
+    //Must be called after `FROM` as per MySQL
+    //where() and appendWhere() are synonyms
     andWhere<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>> (
         this : SelectBuilder<{
             hasSelect : any,
@@ -1211,8 +1210,19 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : this {
         this.assertAfterFrom();
 
+        let whereExpr = WhereDelegateUtil.execute(this, whereDelegate as any);
+
         if (this.extraData.whereExpr == undefined) {
-            return this.where(whereDelegate as any) as any;
+            if (this.extraData.narrowExpr != undefined) {
+                whereExpr = e.and(this.extraData.narrowExpr, whereExpr);
+            }
+            return new SelectBuilder(
+                this.data,
+                {
+                    ...this.extraData,
+                    whereExpr : whereExpr,
+                }
+            ) as any;
         }
 
         return new SelectBuilder(
@@ -1221,7 +1231,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ...this.extraData,
                 whereExpr : e.and(
                     this.extraData.whereExpr,
-                    WhereDelegateUtil.execute(this, whereDelegate as any)
+                    whereExpr
                 ),
             }
         ) as any;

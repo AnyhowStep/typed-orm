@@ -63,7 +63,7 @@ function polymorphicUpdateZeroOrOneByUniqueKey(db, table, uniqueKey, setDelegate
                     prv = cur;
                 }
             }
-            s = s.where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey));
+            s = s.andWhere(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey));
             if (table.data.parentTables != undefined) {
                 //So we don't check the same table multiple times
                 const alreadyChecked = new Set();
@@ -77,7 +77,7 @@ function polymorphicUpdateZeroOrOneByUniqueKey(db, table, uniqueKey, setDelegate
                     //If columns of the parent tables are supplied,
                     //That just means we want the unique row to satisfy
                     //some conditions, to update.
-                    s = s.where(() => raw_expr_1.RawExprUtil.toEqualityCondition(parent, uniqueKey));
+                    s = s.andWhere(() => raw_expr_1.RawExprUtil.toEqualityCondition(parent, uniqueKey));
                 }
             }
             const tablesToUpdate = new Set();

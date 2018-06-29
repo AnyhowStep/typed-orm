@@ -421,23 +421,27 @@ class SelectBuilder {
     }
     ;
     //WHERE CLAUSE
-    //Replaces but ANDs with NARROW
-    //Must be called after `FROM` as per MySQL
-    where(whereDelegate) {
-        this.assertAfterFrom();
-        let whereExpr = where_delegate_1.WhereDelegateUtil.execute(this, whereDelegate);
-        if (this.extraData.narrowExpr != undefined) {
-            whereExpr = e.and(this.extraData.narrowExpr, whereExpr);
-        }
-        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { whereExpr: whereExpr }));
+    //Unsets the `WHERE` clause but retains the `NARROW` part
+    unsetWhere() {
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { whereExpr: this.extraData.narrowExpr }));
     }
-    //Appends
+    //Must be called after `FROM` as per MySQL
+    //where() and appendWhere() are synonyms
+    where(whereDelegate) {
+        return this.andWhere(whereDelegate);
+    }
+    //Must be called after `FROM` as per MySQL
+    //where() and appendWhere() are synonyms
     andWhere(whereDelegate) {
         this.assertAfterFrom();
+        let whereExpr = where_delegate_1.WhereDelegateUtil.execute(this, whereDelegate);
         if (this.extraData.whereExpr == undefined) {
-            return this.where(whereDelegate);
+            if (this.extraData.narrowExpr != undefined) {
+                whereExpr = e.and(this.extraData.narrowExpr, whereExpr);
+            }
+            return new SelectBuilder(this.data, Object.assign({}, this.extraData, { whereExpr: whereExpr }));
         }
-        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { whereExpr: e.and(this.extraData.whereExpr, where_delegate_1.WhereDelegateUtil.execute(this, whereDelegate)) }));
+        return new SelectBuilder(this.data, Object.assign({}, this.extraData, { whereExpr: e.and(this.extraData.whereExpr, whereExpr) }));
     }
     //DISTINCT CLAUSE
     distinct(distinct = true) {

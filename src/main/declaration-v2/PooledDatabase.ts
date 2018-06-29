@@ -345,20 +345,20 @@ export class PooledDatabase extends mysql.PooledDatabase {
 
         if (columnOrAliasedExprOrExpr instanceof Expr) {
             return (this.from(table) as any)
-            .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
-                table,
-                uniqueKey
-            ))
-            .select(() => [columnOrAliasedExprOrExpr.as("value")])
-            .fetchValue();
+                .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                    table,
+                    uniqueKey
+                ))
+                .select(() => [columnOrAliasedExprOrExpr.as("value")])
+                .fetchValue();
         } else {
             return (this.from(table) as any)
-            .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
-                table,
-                uniqueKey
-            ))
-            .select(() => [columnOrAliasedExprOrExpr])
-            .fetchValue();
+                .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                    table,
+                    uniqueKey
+                ))
+                .select(() => [columnOrAliasedExprOrExpr])
+                .fetchValue();
         }
     }
     fetchValueOrUndefinedByUniqueKey<
@@ -397,20 +397,20 @@ export class PooledDatabase extends mysql.PooledDatabase {
 
         if (columnOrAliasedExprOrExpr instanceof Expr) {
             return (this.from(table) as any)
-            .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
-                table,
-                uniqueKey
-            ))
-            .select(() => [columnOrAliasedExprOrExpr.as("value")])
-            .fetchValueOrUndefined();
+                .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                    table,
+                    uniqueKey
+                ))
+                .select(() => [columnOrAliasedExprOrExpr.as("value")])
+                .fetchValueOrUndefined();
         } else {
             return (this.from(table) as any)
-            .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
-                table,
-                uniqueKey
-            ))
-            .select(() => [columnOrAliasedExprOrExpr])
-            .fetchValueOrUndefined();
+                .where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+                    table,
+                    uniqueKey
+                ))
+                .select(() => [columnOrAliasedExprOrExpr])
+                .fetchValueOrUndefined();
         }
     }
 
