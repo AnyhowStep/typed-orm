@@ -1,3 +1,4 @@
+import "./add";
 import "./aggregate-multi-promise";
 import "./aggregate-multi";
 import "./delete-zero-or-one-by-unique-key";
@@ -11,6 +12,7 @@ import "./multi-column-join-using";
 import "./negate-if-false";
 import "./polymorphic-insert-and-fetch";
 import "./polymorphic-update-zero-or-one-by-unique-key";
+import "./sub";
 import "./timestamp-add";
 import "./timestamp-diff";
 import {dbTest} from "./db";
