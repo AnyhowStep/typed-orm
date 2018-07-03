@@ -2198,53 +2198,71 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }
     }
     setParentQuery<ParentT extends SelectBuilder<any>> (
-        this : SelectBuilder<{
-            hasSelect : any,
-            hasFrom : any,
-            hasUnion : any,
-            joins : any,
-            selects : any,
-            aggregateDelegate : any,
-
-            //A query should only have one parent query
-            //TODO Consider if, maybe, there exists a case where we want to have
-            //multiple parent queries?
-            hasParentJoins : false,
-            parentJoins : any,
-        }>,
         parent : ParentT
     ) : (
         true extends (
-            DataT["hasFrom"] extends true ?
-                (
+            (
+                DataT["hasFrom"] extends true ?
                     (
-                        ParentT["data"]["hasParentJoins"] extends true ?
-                            (
-                                JoinCollectionUtil.Duplicates<
-                                    DataT["joins"],
-                                    ParentT["data"]["parentJoins"]
-                                > extends never ?
-                                    false :
-                                    true
-                            ) :
-                            false
-                    ) |
+                        (
+                            ParentT["data"]["hasParentJoins"] extends true ?
+                                (
+                                    JoinCollectionUtil.Duplicates<
+                                        DataT["joins"],
+                                        ParentT["data"]["parentJoins"]
+                                    > extends never ?
+                                        false :
+                                        true
+                                ) :
+                                false
+                        ) |
+                        (
+                            ParentT["data"]["hasFrom"] extends true ?
+                                (
+                                    JoinCollectionUtil.Duplicates<
+                                        DataT["joins"],
+                                        ParentT["data"]["joins"]
+                                    > extends never ?
+                                        false :
+                                        true
+                                ) :
+                                false
+                        )
+                    ) :
+                    false
+            ) |
+            (
+                DataT["hasParentJoins"] extends true ?
                     (
-                        ParentT["data"]["hasFrom"] extends true ?
-                            (
-                                JoinCollectionUtil.Duplicates<
-                                    DataT["joins"],
-                                    ParentT["data"]["joins"]
-                                > extends never ?
-                                    false :
-                                    true
-                            ) :
-                            false
-                    )
-                ) :
-                false
+                        (
+                            ParentT["data"]["hasParentJoins"] extends true ?
+                                (
+                                    JoinCollectionUtil.Duplicates<
+                                        DataT["parentJoins"],
+                                        ParentT["data"]["parentJoins"]
+                                    > extends never ?
+                                        false :
+                                        true
+                                ) :
+                                false
+                        ) |
+                        (
+                            ParentT["data"]["hasFrom"] extends true ?
+                                (
+                                    JoinCollectionUtil.Duplicates<
+                                        DataT["parentJoins"],
+                                        ParentT["data"]["joins"]
+                                    > extends never ?
+                                        false :
+                                        true
+                                ) :
+                                false
+                        )
+                    ) :
+                    false
+            )
         ) ?
-            invalid.E7<
+            invalid.E9<
                 "The parent query has some JOINs, or parent scope that are duplicates of this query's JOINs.",
                 "Parent query's JOINs",
                 ParentT["data"]["hasFrom"] extends true ?
@@ -2257,6 +2275,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 "This query's JOINs",
                 DataT["hasFrom"] extends true ?
                     JoinCollectionUtil.TableAliases<DataT["joins"]> :
+                    never,
+                "This query's parent scope",
+                DataT["hasParentJoins"] extends true ?
+                    JoinCollectionUtil.TableAliases<DataT["parentJoins"]> :
                     never
             > :
             ParentT["data"]["hasParentJoins"] extends true ?
@@ -2321,11 +2343,26 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 );
             }
         }
+        if (this.data.hasParentJoins) {
+            if (parent.data.hasParentJoins) {
+                JoinCollectionUtil.assertNoDuplicates(
+                    this.data.parentJoins,
+                    parent.data.parentJoins
+                );
+            }
+            if (parent.data.hasFrom) {
+                JoinCollectionUtil.assertNoDuplicates(
+                    this.data.parentJoins,
+                    parent.data.joins
+                );
+            }
+        }
+
         if (parent.data.hasParentJoins) {
             if (parent.data.hasFrom) {
                 return new SelectBuilder(
                     {
-                        ...this.data,
+                        ...this.data as any,
                         hasParentJoins : true,
                         parentJoins : parent.data.parentJoins
                             .concat(parent.data.joins) as any,
@@ -2335,7 +2372,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             } else {
                 return new SelectBuilder(
                     {
-                        ...this.data,
+                        ...this.data as any,
                         hasParentJoins : true,
                         parentJoins : parent.data.parentJoins,
                     },
@@ -2346,7 +2383,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             if (parent.data.hasFrom) {
                 return new SelectBuilder(
                     {
-                        ...this.data,
+                        ...this.data as any,
                         hasParentJoins : true,
                         parentJoins : parent.data.joins,
                     },

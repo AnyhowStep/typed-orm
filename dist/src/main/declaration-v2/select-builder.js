@@ -915,6 +915,14 @@ class SelectBuilder {
                 join_collection_1.JoinCollectionUtil.assertNoDuplicates(this.data.joins, parent.data.joins);
             }
         }
+        if (this.data.hasParentJoins) {
+            if (parent.data.hasParentJoins) {
+                join_collection_1.JoinCollectionUtil.assertNoDuplicates(this.data.parentJoins, parent.data.parentJoins);
+            }
+            if (parent.data.hasFrom) {
+                join_collection_1.JoinCollectionUtil.assertNoDuplicates(this.data.parentJoins, parent.data.joins);
+            }
+        }
         if (parent.data.hasParentJoins) {
             if (parent.data.hasFrom) {
                 return new SelectBuilder(Object.assign({}, this.data, { hasParentJoins: true, parentJoins: parent.data.parentJoins
