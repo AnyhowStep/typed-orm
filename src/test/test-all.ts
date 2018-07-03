@@ -4,6 +4,7 @@ import "./aggregate-multi";
 import "./delete-zero-or-one-by-unique-key";
 import "./exists";
 import "./fetch-value-by-unique-key";
+import "./if";
 import "./insert-and-fetch-with-unique-key";
 import "./insert-ignore";
 import "./log-table";

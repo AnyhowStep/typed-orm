@@ -7,6 +7,7 @@ export * from "./count";
 export * from "./date-time-comparison";
 export * from "./exists";
 export * from "./if-null";
+export * from "./if";
 export * from "./interval-unit";
 export * from "./like";
 export * from "./max";

@@ -11,6 +11,7 @@ __export(require("./count"));
 __export(require("./date-time-comparison"));
 __export(require("./exists"));
 __export(require("./if-null"));
+__export(require("./if"));
 __export(require("./interval-unit"));
 __export(require("./like"));
 __export(require("./max"));
