@@ -66,8 +66,20 @@ export type RawExpr<TypeT> = (
             never
     )|
     Expr<any, TypeT>|
-    Column<any, any, TypeT>|
-    SelectValueBuilder<TypeT>
+    Column<any, any, TypeT>
+    //This was allowed before but is not allowed anymore.
+    //In the general case, we cannot guarantee that a SelectBuilder<> of this type
+    //will not return `NULL`.
+    //For example, if a table `payment` has zero rows,
+    //Then, `SELECT amount FROM payment WHERE id = 1` will return
+    //an empty result set, or `NULL` if used inside of an expression.
+    //If you really want to use SELECT statements, use,
+    //
+    //COALESCE(
+    //    (SELECT amount FROM payment WHERE id = 1),
+    //    0 /*or some other default value*/
+    //)
+    //SelectValueBuilder<TypeT>
 );
 export type AnyRawExpr = (
     (
