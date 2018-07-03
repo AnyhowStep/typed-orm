@@ -2197,7 +2197,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             return childBuilder as any;
         }
     }
-    setParentQuery<ParentT extends SelectBuilder<SelectBuilderData>> (
+    setParentQuery<ParentT extends SelectBuilder<any>> (
         this : SelectBuilder<{
             hasSelect : any,
             hasFrom : any,

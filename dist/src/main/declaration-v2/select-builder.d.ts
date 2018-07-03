@@ -518,7 +518,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: DataT["hasFrom"];
         parentJoins: DataT["joins"];
     }>);
-    setParentQuery<ParentT extends SelectBuilder<SelectBuilderData>>(this: SelectBuilder<{
+    setParentQuery<ParentT extends SelectBuilder<any>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: any;
         hasUnion: any;
