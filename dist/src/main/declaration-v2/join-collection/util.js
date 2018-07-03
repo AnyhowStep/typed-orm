@@ -56,6 +56,12 @@ var JoinCollectionUtil;
         });
     }
     JoinCollectionUtil.assertNonDuplicateTableAlias = assertNonDuplicateTableAlias;
+    function assertNoDuplicates(a, b) {
+        b.forEach((join) => {
+            assertNonDuplicateTableAlias(a, join.table.alias);
+        });
+    }
+    JoinCollectionUtil.assertNoDuplicates = assertNoDuplicates;
     function assertHasColumn(joins, column) {
         const join = joins.find((join) => {
             if (join.table.alias != column.tableAlias) {

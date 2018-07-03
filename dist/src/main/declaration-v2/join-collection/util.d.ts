@@ -134,7 +134,9 @@ export declare namespace JoinCollectionUtil {
         "0": JoinUtil.ToNullable<JoinsT[0]>;
     } & AnyJoin[]) : never);
     function toNullable<JoinsT extends JoinCollection>(joins: JoinsT): (ToNullable<JoinsT>);
+    type Duplicates<A extends JoinCollection, B extends JoinCollection> = (FindWithTableAlias<A, Extract<TableAliases<B>, string>>);
     function assertNonDuplicateTableAlias(joins: JoinCollection, tableAlias: string): void;
+    function assertNoDuplicates(a: JoinCollection, b: JoinCollection): void;
     function assertHasColumn(joins: JoinCollection, column: AnyColumn): void;
     function assertHasColumns(joins: JoinCollection, arr: AnyColumn[]): void;
     type InnerJoinUnsafe<JoinsT extends JoinCollection, ToTableT extends AnyAliasedTable> = (TupleWPush<AnyJoin, JoinsT, Join<ToTableT, ToTableT["columns"], false>>);

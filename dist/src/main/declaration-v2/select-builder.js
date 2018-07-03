@@ -903,6 +903,38 @@ class SelectBuilder {
             return childBuilder;
         }
     }
+    setParentQuery(parent) {
+        if (this.data.hasParentJoins) {
+            throw new Error(`This query already has a parent query`);
+        }
+        if (this.data.hasFrom) {
+            if (parent.data.hasParentJoins) {
+                join_collection_1.JoinCollectionUtil.assertNoDuplicates(this.data.joins, parent.data.parentJoins);
+            }
+            if (parent.data.hasFrom) {
+                join_collection_1.JoinCollectionUtil.assertNoDuplicates(this.data.joins, parent.data.joins);
+            }
+        }
+        if (parent.data.hasParentJoins) {
+            if (parent.data.hasFrom) {
+                return new SelectBuilder(Object.assign({}, this.data, { hasParentJoins: true, parentJoins: parent.data.parentJoins
+                        .concat(parent.data.joins) }), this.extraData);
+            }
+            else {
+                return new SelectBuilder(Object.assign({}, this.data, { hasParentJoins: true, parentJoins: parent.data.parentJoins }), this.extraData);
+            }
+        }
+        else {
+            if (parent.data.hasFrom) {
+                return new SelectBuilder(Object.assign({}, this.data, { hasParentJoins: true, parentJoins: parent.data.joins }), this.extraData);
+            }
+            else {
+                //Unchanged, the parent doesn't even have its own JOINS
+                //or a parent scope
+                return this;
+            }
+        }
+    }
     //Convenience
     insertInto(table, delegate) {
         return new insert_select_builder_1.InsertSelectBuilder(table, this, undefined, "NORMAL", this.extraData.db).set(delegate);

@@ -297,11 +297,19 @@ export namespace JoinCollectionUtil {
         return joins.map(JoinUtil.toNullable) as any;
     }
 
+    export type Duplicates<A extends JoinCollection, B extends JoinCollection> = (
+        FindWithTableAlias<A, Extract<TableAliases<B>, string>>
+    );
     export function assertNonDuplicateTableAlias (joins : JoinCollection, tableAlias : string) {
         joins.forEach((join, index) => {
             if (join.table.alias == tableAlias) {
                 throw new Error(`Alias ${tableAlias} was already used as join ${index}`);
             }
+        });
+    }
+    export function assertNoDuplicates (a : JoinCollection, b : JoinCollection) {
+        b.forEach((join) => {
+            assertNonDuplicateTableAlias(a, join.table.alias);
         });
     }
     export function assertHasColumn (joins : JoinCollection, column : AnyColumn) {

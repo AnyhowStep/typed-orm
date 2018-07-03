@@ -2197,6 +2197,168 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             return childBuilder as any;
         }
     }
+    setParentQuery<ParentT extends SelectBuilder<SelectBuilderData>> (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : any,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            //A query should only have one parent query
+            //TODO Consider if, maybe, there exists a case where we want to have
+            //multiple parent queries?
+            hasParentJoins : false,
+            parentJoins : any,
+        }>,
+        parent : ParentT
+    ) : (
+        true extends (
+            DataT["hasFrom"] extends true ?
+                (
+                    (
+                        ParentT["data"]["hasParentJoins"] extends true ?
+                            (
+                                JoinCollectionUtil.Duplicates<
+                                    DataT["joins"],
+                                    ParentT["data"]["parentJoins"]
+                                > extends never ?
+                                    false :
+                                    true
+                            ) :
+                            false
+                    ) |
+                    (
+                        ParentT["data"]["hasFrom"] extends true ?
+                            (
+                                JoinCollectionUtil.Duplicates<
+                                    DataT["joins"],
+                                    ParentT["data"]["joins"]
+                                > extends never ?
+                                    false :
+                                    true
+                            ) :
+                            false
+                    )
+                ) :
+                false
+        ) ?
+            invalid.E7<
+                "The parent query has some JOINs, or parent scope that are duplicates of this query's JOINs.",
+                "Parent query's JOINs",
+                ParentT["data"]["hasFrom"] extends true ?
+                    JoinCollectionUtil.TableAliases<ParentT["data"]["joins"]> :
+                    never,
+                "Parent query's parent scope",
+                ParentT["data"]["hasParentJoins"] extends true ?
+                    JoinCollectionUtil.TableAliases<ParentT["data"]["parentJoins"]> :
+                    never,
+                "This query's JOINs",
+                DataT["hasFrom"] extends true ?
+                    JoinCollectionUtil.TableAliases<DataT["joins"]> :
+                    never
+            > :
+            ParentT["data"]["hasParentJoins"] extends true ?
+                (
+                    ParentT["data"]["hasFrom"] extends true ?
+                        SelectBuilder<{
+                            [key in keyof DataT] : (
+                                key extends "hasParentJoins" ?
+                                true :
+                                key extends "parentJoins" ?
+                                (
+                                    TupleWConcat<
+                                        AnyJoin,
+                                        ParentT["data"]["parentJoins"],
+                                        ParentT["data"]["joins"]
+                                    >
+                                ) :
+                                DataT[key]
+                            )
+                        }> :
+                        SelectBuilder<{
+                            [key in keyof DataT] : (
+                                key extends "hasParentJoins" ?
+                                true :
+                                key extends "parentJoins" ?
+                                ParentT["data"]["parentJoins"] :
+                                DataT[key]
+                            )
+                        }>
+                ) :
+                (
+                    ParentT["data"]["hasFrom"] extends true ?
+                        SelectBuilder<{
+                            [key in keyof DataT] : (
+                                key extends "hasParentJoins" ?
+                                true :
+                                key extends "parentJoins" ?
+                                ParentT["data"]["joins"] :
+                                DataT[key]
+                            )
+                        }> :
+                        //Unchanged, the parent doesn't even have its own JOINS
+                        //or a parent scope
+                        this
+                )
+
+    ) {
+        if (this.data.hasParentJoins) {
+            throw new Error(`This query already has a parent query`);
+        }
+        if (this.data.hasFrom) {
+            if (parent.data.hasParentJoins) {
+                JoinCollectionUtil.assertNoDuplicates(
+                    this.data.joins,
+                    parent.data.parentJoins
+                );
+            }
+            if (parent.data.hasFrom) {
+                JoinCollectionUtil.assertNoDuplicates(
+                    this.data.joins,
+                    parent.data.joins
+                );
+            }
+        }
+        if (parent.data.hasParentJoins) {
+            if (parent.data.hasFrom) {
+                return new SelectBuilder(
+                    {
+                        ...this.data,
+                        hasParentJoins : true,
+                        parentJoins : parent.data.parentJoins
+                            .concat(parent.data.joins) as any,
+                    },
+                    this.extraData
+                ) as any;
+            } else {
+                return new SelectBuilder(
+                    {
+                        ...this.data,
+                        hasParentJoins : true,
+                        parentJoins : parent.data.parentJoins,
+                    },
+                    this.extraData
+                ) as any;
+            }
+        } else {
+            if (parent.data.hasFrom) {
+                return new SelectBuilder(
+                    {
+                        ...this.data,
+                        hasParentJoins : true,
+                        parentJoins : parent.data.joins,
+                    },
+                    this.extraData
+                ) as any;
+            } else {
+                //Unchanged, the parent doesn't even have its own JOINS
+                //or a parent scope
+                return this as any;
+            }
+        }
+    }
 
     //Convenience
     insertInto<TableT extends AnyTable> (

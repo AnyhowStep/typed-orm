@@ -518,6 +518,22 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: DataT["hasFrom"];
         parentJoins: DataT["joins"];
     }>);
+    setParentQuery<ParentT extends SelectBuilder<SelectBuilderData>>(this: SelectBuilder<{
+        hasSelect: any;
+        hasFrom: any;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: false;
+        parentJoins: any;
+    }>, parent: ParentT): (true extends (DataT["hasFrom"] extends true ? ((ParentT["data"]["hasParentJoins"] extends true ? (JoinCollectionUtil.Duplicates<DataT["joins"], ParentT["data"]["parentJoins"]> extends never ? false : true) : false) | (ParentT["data"]["hasFrom"] extends true ? (JoinCollectionUtil.Duplicates<DataT["joins"], ParentT["data"]["joins"]> extends never ? false : true) : false)) : false) ? invalid.E7<"The parent query has some JOINs, or parent scope that are duplicates of this query's JOINs.", "Parent query's JOINs", ParentT["data"]["hasFrom"] extends true ? JoinCollectionUtil.TableAliases<ParentT["data"]["joins"]> : never, "Parent query's parent scope", ParentT["data"]["hasParentJoins"] extends true ? JoinCollectionUtil.TableAliases<ParentT["data"]["parentJoins"]> : never, "This query's JOINs", DataT["hasFrom"] extends true ? JoinCollectionUtil.TableAliases<DataT["joins"]> : never> : ParentT["data"]["hasParentJoins"] extends true ? (ParentT["data"]["hasFrom"] extends true ? SelectBuilder<{
+        [key in keyof DataT]: (key extends "hasParentJoins" ? true : key extends "parentJoins" ? (TupleWConcat<AnyJoin, ParentT["data"]["parentJoins"], ParentT["data"]["joins"]>) : DataT[key]);
+    }> : SelectBuilder<{
+        [key in keyof DataT]: (key extends "hasParentJoins" ? true : key extends "parentJoins" ? ParentT["data"]["parentJoins"] : DataT[key]);
+    }>) : (ParentT["data"]["hasFrom"] extends true ? SelectBuilder<{
+        [key in keyof DataT]: (key extends "hasParentJoins" ? true : key extends "parentJoins" ? ParentT["data"]["joins"] : DataT[key]);
+    }> : this));
     insertInto<TableT extends AnyTable>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: any;
