@@ -31,7 +31,7 @@ export declare namespace SelectCollectionUtil {
     function assertHasCompatibleTypes(actual: SelectCollection, expected: SelectCollection): void;
     type HasDuplicate<SelectsT extends SelectCollection> = (ColumnTupleUtil.HasDuplicate<MapToColumns<SelectsT>>);
     function assertNonDuplicateColumn(selects: SelectCollection): void;
-    const concat: <T extends import("../tuple").Tuple<Column<string, string, any> | import("../column-collection/column-collection").ColumnCollection | AliasedExpr<import("../column-references/column-references").PartialColumnReferences, string, string, any>>, U extends import("../tuple").Tuple<Column<string, string, any> | import("../column-collection/column-collection").ColumnCollection | AliasedExpr<import("../column-references/column-references").PartialColumnReferences, string, string, any>>>(t: T, u: U) => { [index in Extract<keyof T, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">]: T[index] extends Column<string, string, any> | import("../column-collection/column-collection").ColumnCollection | AliasedExpr<import("../column-references/column-references").PartialColumnReferences, string, string, any> ? T[index] : never; } & { [newIndex in ({
+    const concat: <T extends import("main/declaration-v2/tuple").Tuple<Column<string, string, any> | import("main/declaration-v2/column-collection/column-collection").ColumnCollection | AliasedExpr<import("main/declaration-v2/column-references/column-references").PartialColumnReferences, string, string, any>>, U extends import("main/declaration-v2/tuple").Tuple<Column<string, string, any> | import("main/declaration-v2/column-collection/column-collection").ColumnCollection | AliasedExpr<import("main/declaration-v2/column-references/column-references").PartialColumnReferences, string, string, any>>>(t: T, u: U) => { [index in Extract<keyof T, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">]: T[index] extends Column<string, string, any> | import("main/declaration-v2/column-collection/column-collection").ColumnCollection | AliasedExpr<import("main/declaration-v2/column-references/column-references").PartialColumnReferences, string, string, any> ? T[index] : never; } & { [newIndex in ({
         0: "0";
         1: "1";
         2: "2";
@@ -19054,7 +19054,7 @@ export declare namespace SelectCollectionUtil {
         } & {
             [index: string]: never;
         })[newIndex]]]]]]]]]]]]]]]]]]]]]]]]]];
-    }[T["length"]]] extends Column<string, string, any> | import("../column-collection/column-collection").ColumnCollection | AliasedExpr<import("../column-references/column-references").PartialColumnReferences, string, string, any> ? U[{
+    }[T["length"]]] extends Column<string, string, any> | import("main/declaration-v2/column-collection/column-collection").ColumnCollection | AliasedExpr<import("main/declaration-v2/column-references/column-references").PartialColumnReferences, string, string, any> ? U[{
         [index: number]: number;
         0: ({
             "0": 0;
@@ -29067,7 +29067,7 @@ export declare namespace SelectCollectionUtil {
             [index: string]: never;
         })[newIndex]]]]]]]]]]]]]]]]]]]]]]]]]];
     }[T["length"]]] : never; } & {
-        "0": T[0] extends Column<string, string, any> | import("../column-collection/column-collection").ColumnCollection | AliasedExpr<import("../column-references/column-references").PartialColumnReferences, string, string, any> ? T[0] : never;
+        "0": T[0] extends Column<string, string, any> | import("main/declaration-v2/column-collection/column-collection").ColumnCollection | AliasedExpr<import("main/declaration-v2/column-references/column-references").PartialColumnReferences, string, string, any> ? T[0] : never;
         length: {
             [index: number]: number;
             0: T["length"];
@@ -37196,7 +37196,7 @@ export declare namespace SelectCollectionUtil {
                 24: number;
             }[T["length"]]]]]]]]]]]]]]]]]]]]]]]]];
         }[U["length"]];
-    } & (Column<string, string, any> | import("../column-collection/column-collection").ColumnCollection | AliasedExpr<import("../column-references/column-references").PartialColumnReferences, string, string, any>)[];
+    } & (Column<string, string, any> | import("main/declaration-v2/column-collection/column-collection").ColumnCollection | AliasedExpr<import("main/declaration-v2/column-references/column-references").PartialColumnReferences, string, string, any>)[];
     type AppendSelectUnsafe<SelectsT extends SelectCollection | undefined, SelectBuilderT extends AnySelectBuilder, SelectDelegateT> = (SelectDelegateT extends SelectDelegate<SelectBuilderT> ? (SelectsT extends SelectCollection ? (TupleWConcat<AnySelect, SelectsT, ReturnType<SelectDelegateT>>) : (ReturnType<SelectDelegateT>)) : never);
     type AppendSelect<SelectsT extends SelectCollection | undefined, SelectBuilderT extends AnySelectBuilder, SelectDelegateT> = (SelectDelegateT extends SelectDelegate<SelectBuilderT> ? (SelectsT extends SelectCollection ? (true extends HasDuplicate<TupleWConcat<AnySelect, SelectsT, ReturnType<SelectDelegateT>>> ? invalid.E3<"Duplicate columns found in SELECT; consider aliasing", ReturnType<SelectDelegateT>, SelectDelegateT> : TupleWConcat<AnySelect, SelectsT, ReturnType<SelectDelegateT>>) : (true extends HasDuplicate<ReturnType<SelectDelegateT>> ? invalid.E3<"Duplicate columns found in SELECT; consider aliasing", ReturnType<SelectDelegateT>, SelectDelegateT> : ReturnType<SelectDelegateT>)) : never);
     function appendSelect<SelectsT extends SelectCollection | undefined, SelectBuilderT extends AnySelectBuilder, SelectDelegateT>(selects: SelectsT, selectBuilder: SelectBuilderT, selectDelegate: SelectDelegateT): (AppendSelect<SelectsT, SelectBuilderT, SelectDelegateT>);

@@ -31,7 +31,7 @@ export declare namespace JoinCollectionUtil {
     type NullableColumns<JoinsT extends JoinCollection> = ({
         [index in TupleKeys<JoinsT>]: (JoinsT[index] extends AnyJoin ? ColumnCollectionUtil.Columns<ColumnCollectionUtil.ToNullable<JoinsT[index]["columns"]>> : never);
     }[TupleKeys<JoinsT>]);
-    const push: <TupleT extends import("../tuple").Tuple<Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean>>, NextT extends Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean>>(tuple: TupleT, next: NextT) => { [index in Extract<keyof TupleT, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">]: TupleT[index] extends Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean> ? TupleT[index] : never; } & { [index in TupleT extends {
+    const push: <TupleT extends import("main/declaration-v2/tuple").Tuple<Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean>>, NextT extends Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean>>(tuple: TupleT, next: NextT) => { [index in Extract<keyof TupleT, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">]: TupleT[index] extends Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean> ? TupleT[index] : never; } & { [index in TupleT extends {
         "19": any;
     } ? "20" : TupleT extends {
         "18": any;
