@@ -1,6 +1,6 @@
 {
   "name": "typed-orm",
-  "version": "0.7.7",
+  "version": "0.7.8",
   "description": "A strongly typed MySQL ORM",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",
@@ -31,6 +31,6 @@
     "@types/tape": "^4.2.32",
     "tape": "^4.9.0",
     "ts-node": "^6.0.3",
-    "typescript": "^3.0.0-dev.20180705"
+    "typescript": "^2.9.1"
   }
 }
