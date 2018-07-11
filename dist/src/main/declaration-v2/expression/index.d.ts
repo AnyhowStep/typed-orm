@@ -1,4 +1,5 @@
 export * from "./arithmetic-operator";
+export * from "./comparison";
 export * from "./logical-connective";
 export * from "./boolean-expr";
 export * from "./coalesce";

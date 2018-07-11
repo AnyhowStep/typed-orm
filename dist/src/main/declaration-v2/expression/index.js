@@ -4,6 +4,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./arithmetic-operator"));
+__export(require("./comparison"));
 __export(require("./logical-connective"));
 __export(require("./boolean-expr"));
 __export(require("./coalesce"));
