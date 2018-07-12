@@ -2,7 +2,7 @@ import * as sd from "schema-decorator";
 import {SelectCollection} from "./select-collection";
 import {ColumnReferencesUtil} from "../column-references";
 import {AnySelectBuilder} from "../select-builder";
-import {SelectDelegate, SelectDelegateUtil} from "../select-delegate";
+import {SelectDelegate, SelectDelegateUtil, SelectDelegateColumnReferences} from "../select-delegate";
 import {JoinCollection} from "../join-collection";
 import {AnySelect, SelectUtil} from "../select";
 import {Column, AnyColumn, ColumnTupleUtil} from "../column";
@@ -173,6 +173,32 @@ export namespace SelectCollectionUtil {
             never
     )
 
+    export type IsValidSelectDelegate<
+        SelectBuilderT extends AnySelectBuilder,
+        SelectDelegateT
+    > = (
+        SelectDelegateT extends SelectDelegate<SelectBuilderT> ?
+            (
+                {
+                    [index in TupleKeys<ReturnType<SelectDelegateT>>] : (
+                        ReturnType<SelectDelegateT>[index] extends AliasedExpr<
+                            infer UsedReferencesT,
+                            "__expr",
+                            any,
+                            any
+                        > ?
+                            (
+                                SelectDelegateColumnReferences<SelectBuilderT> extends UsedReferencesT ?
+                                    true :
+                                    false
+                            ) :
+                            true
+                    )
+                }[TupleKeys<ReturnType<SelectDelegateT>>]
+            ) :
+            false
+    );
+
     export type AppendSelect<
         SelectsT extends SelectCollection|undefined,
         SelectBuilderT extends AnySelectBuilder,
@@ -180,33 +206,40 @@ export namespace SelectCollectionUtil {
     > = (
         SelectDelegateT extends SelectDelegate<SelectBuilderT> ?
             (
-                SelectsT extends SelectCollection ?
-                    (
-                        true extends HasDuplicate<TupleWConcat<
-                            AnySelect,
-                            SelectsT,
-                            ReturnType<SelectDelegateT>
-                        >> ?
-                            invalid.E3<
-                                "Duplicate columns found in SELECT; consider aliasing",
-                                ReturnType<SelectDelegateT>,
-                                SelectDelegateT
-                            > :
-                            TupleWConcat<
+                false extends IsValidSelectDelegate<SelectBuilderT, SelectDelegateT> ?
+                    invalid.E4<
+                        "Some selected columns in",
+                        ReturnType<SelectDelegateT>,
+                        "do not exist in the column references",
+                        SelectDelegateColumnReferences<SelectBuilderT>
+                    > :
+                    SelectsT extends SelectCollection ?
+                        (
+                            true extends HasDuplicate<TupleWConcat<
                                 AnySelect,
                                 SelectsT,
                                 ReturnType<SelectDelegateT>
-                            >
-                    ) :
-                    (
-                        true extends HasDuplicate<ReturnType<SelectDelegateT>> ?
-                            invalid.E3<
-                                "Duplicate columns found in SELECT; consider aliasing",
-                                ReturnType<SelectDelegateT>,
-                                SelectDelegateT
-                            > :
-                            ReturnType<SelectDelegateT>
-                    )
+                            >> ?
+                                invalid.E3<
+                                    "Duplicate columns found in SELECT; consider aliasing",
+                                    ReturnType<SelectDelegateT>,
+                                    SelectDelegateT
+                                > :
+                                TupleWConcat<
+                                    AnySelect,
+                                    SelectsT,
+                                    ReturnType<SelectDelegateT>
+                                >
+                        ) :
+                        (
+                            true extends HasDuplicate<ReturnType<SelectDelegateT>> ?
+                                invalid.E3<
+                                    "Duplicate columns found in SELECT; consider aliasing",
+                                    ReturnType<SelectDelegateT>,
+                                    SelectDelegateT
+                                > :
+                                ReturnType<SelectDelegateT>
+                        )
             ) :
             never
     );
