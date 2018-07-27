@@ -1,5 +1,5 @@
 import {AnyTable, TableRow} from "../table";
-import {Tuple, TupleKeys, TupleLength} from "../tuple";
+import {Tuple, TupleKeys} from "../tuple";
 import {ColumnCollectionUtil} from "../column-collection";
 import {Column, AnyColumn} from "../column";
 import { PooledDatabase } from "../PooledDatabase";
@@ -181,7 +181,7 @@ export interface LogBuilderData {
         This will be used to sort the result set, and get the latest row.
         The latest row must be sorted to the top of the result set (the first row).
     */
-    readonly orderByLatest : undefined|Tuple<[string, boolean]>,
+    readonly orderByLatest : undefined|Tuple<[AnyColumn, boolean]>,
     /*
 
     */
@@ -581,28 +581,7 @@ export class LogBuilder<DataT extends LogBuilderData> {
         LogBuilder<{
             readonly [key in keyof this["data"]] : (
                 key extends "orderByLatest" ?
-                (
-                    ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends [AnyColumn, boolean] ?
-                        (
-                            {
-                                [index in TupleKeys<ReturnType<DelegateT>>] : (
-                                    ReturnType<DelegateT>[index] extends [AnyColumn, boolean] ?
-                                        [
-                                            ReturnType<DelegateT>[index]["0"]["name"],
-                                            ReturnType<DelegateT>[index]["1"]
-                                        ] :
-                                        never
-                                )
-                            } &
-                            { length : TupleLength<ReturnType<DelegateT>> } &
-                            { "0" : [
-                                ReturnType<DelegateT>["0"]["0"]["name"],
-                                ReturnType<DelegateT>["0"]["1"]
-                            ] } &
-                            ([string, boolean])[]
-                        ) :
-                        never
-                ) :
+                ReturnType<DelegateT> :
                 this["data"][key]
             )
         }>
@@ -613,7 +592,7 @@ export class LogBuilder<DataT extends LogBuilderData> {
             columnCollection,
             result.map(i => i[0])
         );
-        const orderByLatest = result.map(i => [i[0].name, i[1]]);
+        const orderByLatest = result.map(i => [i[0], i[1]]);
 
         return new LogBuilder({
             ...(this.data as any),
@@ -626,28 +605,7 @@ export class LogBuilder<DataT extends LogBuilderData> {
         LogBuilder<{
             readonly [key in keyof this["data"]] : (
                 key extends "orderByLatest" ?
-                (
-                    ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends [AnyColumn, boolean] ?
-                        (
-                            {
-                                [index in TupleKeys<ReturnType<DelegateT>>] : (
-                                    ReturnType<DelegateT>[index] extends [AnyColumn, boolean] ?
-                                        [
-                                            ReturnType<DelegateT>[index]["0"]["name"],
-                                            ReturnType<DelegateT>[index]["1"]
-                                        ] :
-                                        never
-                                )
-                            } &
-                            { length : TupleLength<ReturnType<DelegateT>> } &
-                            { "0" : [
-                                ReturnType<DelegateT>["0"]["0"]["name"],
-                                ReturnType<DelegateT>["0"]["1"]
-                            ] } &
-                            ([string, boolean])[]
-                        ) :
-                        never
-                ) :
+                ReturnType<DelegateT> :
                 this["data"][key]
             )
         }>

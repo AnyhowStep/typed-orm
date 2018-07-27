@@ -1,5 +1,5 @@
 import { AnyTable, TableRow } from "../table";
-import { Tuple, TupleKeys, TupleLength } from "../tuple";
+import { Tuple, TupleKeys } from "../tuple";
 import { ColumnCollectionUtil } from "../column-collection";
 import { AnyColumn } from "../column";
 import { PooledDatabase } from "../PooledDatabase";
@@ -16,7 +16,7 @@ export interface LogBuilderData {
     readonly doNotCopyOnTrackableChanged: {
         [columnName: string]: true;
     };
-    readonly orderByLatest: undefined | Tuple<[string, boolean]>;
+    readonly orderByLatest: undefined | Tuple<[AnyColumn, boolean]>;
     readonly defaultRowDelegate: undefined | AnyDefaultRowDelegate;
 }
 export declare type DefaultRowDelegate<DataT extends LogBuilderData> = ((entityIdentifier: {
@@ -77,22 +77,10 @@ export declare class LogBuilder<DataT extends LogBuilderData> {
         } : never) : this["data"][key]);
     }>);
     setOrderByLatestUnsafe<DelegateT extends OrderByLatestUnsafeDelegate<this["data"]>>(delegate: DelegateT): (LogBuilder<{
-        readonly [key in keyof this["data"]]: (key extends "orderByLatest" ? (ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends [AnyColumn, boolean] ? ({
-            [index in TupleKeys<ReturnType<DelegateT>>]: (ReturnType<DelegateT>[index] extends [AnyColumn, boolean] ? [ReturnType<DelegateT>[index]["0"]["name"], ReturnType<DelegateT>[index]["1"]] : never);
-        } & {
-            length: TupleLength<ReturnType<DelegateT>>;
-        } & {
-            "0": [ReturnType<DelegateT>["0"]["0"]["name"], ReturnType<DelegateT>["0"]["1"]];
-        } & ([string, boolean])[]) : never) : this["data"][key]);
+        readonly [key in keyof this["data"]]: (key extends "orderByLatest" ? ReturnType<DelegateT> : this["data"][key]);
     }>);
     setOrderByLatest<DelegateT extends OrderByLatestDelegate<this["data"]>>(delegate: DelegateT): (LogBuilder<{
-        readonly [key in keyof this["data"]]: (key extends "orderByLatest" ? (ReturnType<DelegateT>[TupleKeys<ReturnType<DelegateT>>] extends [AnyColumn, boolean] ? ({
-            [index in TupleKeys<ReturnType<DelegateT>>]: (ReturnType<DelegateT>[index] extends [AnyColumn, boolean] ? [ReturnType<DelegateT>[index]["0"]["name"], ReturnType<DelegateT>[index]["1"]] : never);
-        } & {
-            length: TupleLength<ReturnType<DelegateT>>;
-        } & {
-            "0": [ReturnType<DelegateT>["0"]["0"]["name"], ReturnType<DelegateT>["0"]["1"]];
-        } & ([string, boolean])[]) : never) : this["data"][key]);
+        readonly [key in keyof this["data"]]: (key extends "orderByLatest" ? ReturnType<DelegateT> : this["data"][key]);
     }>);
     setDefaultRow(delegate: DefaultRowDelegate<this["data"]>): (LogBuilder<{
         readonly [key in keyof this["data"]]: (key extends "defaultRowDelegate" ? (DefaultRowDelegate<this["data"]>) : this["data"][key]);

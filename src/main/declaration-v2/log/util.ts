@@ -40,6 +40,20 @@ export namespace LogDataUtil {
             )
         }
     );
+    //Like Trackable, but all trackable fields are required
+    export type FullOverwriteTrackable<DataT extends LogData> = (
+        {
+            [columnName in Extract<
+                Extract<
+                    keyof DataT["table"]["columns"],
+                    keyof DataT["isTrackable"]
+                >,
+                string
+            >] : (
+                ReturnType<DataT["table"]["columns"][columnName]["assertDelegate"]>
+            )
+        }
+    );
     export function trackableAssertDelegate<DataT extends LogData> (
         data : DataT
     ) : sd.AssertDelegate<Trackable<DataT>> {
@@ -97,6 +111,10 @@ export namespace LogDataUtil {
         Trackable<DataT> &
         DoNotCopyOnTrackableChanged<DataT>
     );
+    export type FullOverwriteInsertIfDifferentRow<DataT extends LogData> = (
+        FullOverwriteTrackable<DataT> &
+        DoNotCopyOnTrackableChanged<DataT>
+    );
     export function insertIfDifferentRowAssertDelegate<DataT extends LogData> (
         data : DataT
     ) : sd.AssertDelegate<InsertIfDifferentRow<DataT>> {
@@ -118,11 +136,8 @@ export namespace LogDataUtil {
                 data.table,
                 entityIdentifier
             ))
-            .orderBy((c : any) => {
-                return data.orderByLatest.map(orderBy => [
-                    c[orderBy[0]],
-                    orderBy[1]
-                ]);
+            .orderBy(() => {
+                return data.orderByLatest;
             })
             .limit(1)
             .selectAll()
@@ -141,11 +156,8 @@ export namespace LogDataUtil {
                 data.table,
                 entityIdentifier
             ))
-            .orderBy((c : any) => {
-                return data.orderByLatest.map(orderBy => [
-                    c[orderBy[0]],
-                    orderBy[1]
-                ]);
+            .orderBy(() => {
+                return data.orderByLatest;
             })
             .limit(1)
             .selectAll()

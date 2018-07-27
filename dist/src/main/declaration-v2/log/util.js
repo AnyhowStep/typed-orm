@@ -45,11 +45,8 @@ var LogDataUtil;
         entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
         return db.from(data.table)
             .where(() => raw_expr_1.RawExprUtil.toEqualityCondition(data.table, entityIdentifier))
-            .orderBy((c) => {
-            return data.orderByLatest.map(orderBy => [
-                c[orderBy[0]],
-                orderBy[1]
-            ]);
+            .orderBy(() => {
+            return data.orderByLatest;
         })
             .limit(1)
             .selectAll()
@@ -60,11 +57,8 @@ var LogDataUtil;
         entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
         return db.from(data.table)
             .where(() => raw_expr_1.RawExprUtil.toEqualityCondition(data.table, entityIdentifier))
-            .orderBy((c) => {
-            return data.orderByLatest.map(orderBy => [
-                c[orderBy[0]],
-                orderBy[1]
-            ]);
+            .orderBy(() => {
+            return data.orderByLatest;
         })
             .limit(1)
             .selectAll()

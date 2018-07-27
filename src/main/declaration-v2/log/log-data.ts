@@ -1,6 +1,7 @@
 import {Tuple} from "../tuple";
 import {AnyTable} from "../table";
 import {AnyDefaultRowDelegate} from "./log-builder";
+import {AnyColumn} from "../column";
 
 export interface LogData {
     readonly table : AnyTable,
@@ -13,6 +14,6 @@ export interface LogData {
     readonly doNotCopyOnTrackableChanged : {
         [columnName : string] : true
     },
-    readonly orderByLatest : Tuple<[string, boolean]>,
+    readonly orderByLatest : Tuple<[AnyColumn, boolean]>,
     readonly defaultRowDelegate : undefined|AnyDefaultRowDelegate,
 }

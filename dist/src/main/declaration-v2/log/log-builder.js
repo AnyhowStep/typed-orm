@@ -94,7 +94,7 @@ class LogBuilder {
         const columnCollection = this.data.table.columns;
         const result = delegate(columnCollection);
         column_collection_1.ColumnCollectionUtil.assertHasColumns(columnCollection, result.map(i => i[0]));
-        const orderByLatest = result.map(i => [i[0].name, i[1]]);
+        const orderByLatest = result.map(i => [i[0], i[1]]);
         return new LogBuilder(Object.assign({}, this.data, { orderByLatest: orderByLatest }));
     }
     setOrderByLatest(delegate) {
