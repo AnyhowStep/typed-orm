@@ -608,6 +608,10 @@ class PooledDatabase extends mysql.PooledDatabase {
     insertIfDifferentAndFetch(data, entityIdentifier, insertIfDifferentRow) {
         return log_1.LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, insertIfDifferentRow);
     }
+    latestValueExpression(data, entity, valueDelegate, defaultValueDelegate) {
+        return log_1.LogDataUtil.latestValueExpression(this, data, entity, valueDelegate, defaultValueDelegate);
+    }
+    ;
 }
 exports.PooledDatabase = PooledDatabase;
 //# sourceMappingURL=PooledDatabase.js.map

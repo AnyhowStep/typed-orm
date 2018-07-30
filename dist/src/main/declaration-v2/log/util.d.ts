@@ -1,7 +1,12 @@
 import * as sd from "schema-decorator";
 import { LogData } from "./log-data";
 import { PooledDatabase } from "../PooledDatabase";
-import { TableRow, TableUtil } from "../table";
+import { ColumnCollectionUtil } from "../column-collection";
+import { RawExprUtil, AllowedExprConstant } from "../raw-expr";
+import { Table, TableRow, TableUtil } from "../table";
+import { Column } from "../column";
+import { Expr } from "../expr";
+import { ColumnReferencesUtil } from "../column-references";
 export declare namespace LogDataUtil {
     type EntityIdentifier<DataT extends LogData> = ({
         [columnName in Extract<Extract<keyof DataT["table"]["columns"], keyof DataT["entityIdentifier"]>, string>]: (ReturnType<DataT["table"]["columns"][columnName]["assertDelegate"]>);
@@ -30,5 +35,14 @@ export declare namespace LogDataUtil {
         latest: TableRow<DataT["table"]>;
         wasInserted: boolean;
     }>;
+    type LatestValueExpressionEntityTable<DataT extends LogData> = (Table<any, any, {
+        [entityKey in keyof DataT["entityIdentifier"]]: (entityKey extends keyof DataT["table"]["columns"] ? Column<any, any, sd.TypeOf<DataT["table"]["columns"][entityKey]["assertDelegate"]>> : never);
+    }, any>);
+    type LatestValueExpressionValueDelegate<DataT extends LogData, EntityT extends LatestValueExpressionEntityTable<DataT>> = ((c: (ColumnCollectionUtil.ToColumnReferences<EntityT["columns"]> & ColumnCollectionUtil.ToColumnReferences<DataT["table"]["columns"]>)) => (ColumnReferencesUtil.Columns<ColumnCollectionUtil.ToColumnReferences<EntityT["columns"]> & ColumnCollectionUtil.ToColumnReferences<DataT["table"]["columns"]>> | Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<EntityT["columns"]> & ColumnCollectionUtil.ToColumnReferences<DataT["table"]["columns"]>>, any> | AllowedExprConstant));
+    type LatestValueExpressionDefaultValueDelegate<DataT extends LogData, EntityT extends LatestValueExpressionEntityTable<DataT>> = ((c: ColumnCollectionUtil.ToColumnReferences<EntityT["columns"]>) => (ColumnReferencesUtil.Columns<ColumnCollectionUtil.ToColumnReferences<EntityT["columns"]>> | Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<EntityT["columns"]>>, any> | AllowedExprConstant));
+    type LatestValueExpression<DataT extends LogData, EntityT extends LatestValueExpressionEntityTable<DataT>, ValueDelegateT extends LatestValueExpressionValueDelegate<DataT, EntityT>, DefaultValueDelegateT extends LatestValueExpressionDefaultValueDelegate<DataT, EntityT>> = (Expr<({
+        [table in Exclude<keyof RawExprUtil.UsedReferences<ReturnType<ValueDelegateT>>, DataT["table"]["alias"]>]: (RawExprUtil.UsedReferences<ReturnType<ValueDelegateT>>[table]);
+    } & RawExprUtil.UsedReferences<ReturnType<DefaultValueDelegateT>>), (RawExprUtil.Type<ReturnType<ValueDelegateT>> | RawExprUtil.Type<ReturnType<DefaultValueDelegateT>>)>);
+    function latestValueExpression<DataT extends LogData, EntityT extends LatestValueExpressionEntityTable<DataT>, ValueDelegateT extends LatestValueExpressionValueDelegate<DataT, EntityT>, DefaultValueDelegateT extends LatestValueExpressionDefaultValueDelegate<DataT, EntityT>>(db: PooledDatabase, data: DataT, entity: EntityT, valueDelegate: ValueDelegateT, defaultValueDelegate: DefaultValueDelegateT): LatestValueExpression<DataT, EntityT, ValueDelegateT, DefaultValueDelegateT>;
 }
 export declare type Trackable<DataT extends LogData> = LogDataUtil.Trackable<DataT>;

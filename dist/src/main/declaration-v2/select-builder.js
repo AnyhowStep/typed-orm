@@ -64,7 +64,24 @@ class SelectBuilder {
             if (tableAliases.length == 1) {
                 result = result[tableAliases[0]];
             }
-            result = this.getRowAssertDelegate()("row", result);
+            if (this.extraData.db.isUtcOnly()) {
+                //We do this because, sometimes, we get dates in string format,
+                //without the timezone part.
+                //Then, when attempting to convert to `Date`, we lose the
+                //timezone information.
+                //This code block attempts to correct for Timezone differences
+                const stringPaths = SelectBuilder.FindStringPaths(result);
+                result = this.getRowAssertDelegate()("row", result);
+                for (let path of stringPaths) {
+                    const date = SelectBuilder.TryGetDateAtPath(result, path);
+                    if (date != undefined) {
+                        date.setUTCHours(date.getUTCHours() - date.getTimezoneOffset() / 60);
+                    }
+                }
+            }
+            else {
+                result = this.getRowAssertDelegate()("row", result);
+            }
             return result;
         };
         this.aggregateRow = (rawRow) => __awaiter(this, void 0, void 0, function* () {
@@ -197,6 +214,47 @@ class SelectBuilder {
             this.rowAssertDelegate = fetch_row_1.FetchRowUtil.assertDelegate(this.data.joins, select_collection_1.SelectCollectionUtil.toColumnReferences(this.data.selects));
         }
         return this.rowAssertDelegate;
+    }
+    static FindStringPaths(obj, path = [], result = []) {
+        if (obj == undefined) {
+            return result;
+        }
+        if (obj instanceof Date) {
+            return result;
+        }
+        if (!(obj instanceof Object)) {
+            return result;
+        }
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                const value = obj[key];
+                if (typeof value == "string") {
+                    result.push(path.concat(key));
+                }
+                else {
+                    SelectBuilder.FindStringPaths(value, path.concat(key), result);
+                }
+            }
+        }
+        return result;
+    }
+    static TryGetDateAtPath(obj, path) {
+        for (let key of path) {
+            if (obj == undefined || !(obj instanceof Object)) {
+                return undefined;
+            }
+            if (!obj.hasOwnProperty(key)) {
+                return undefined;
+            }
+            obj = obj[key];
+        }
+        //`obj` should be the value we are testing
+        if (obj instanceof Date) {
+            return obj;
+        }
+        else {
+            return undefined;
+        }
     }
     fetchAll() {
         this.assertAfterSelect();

@@ -2,8 +2,15 @@ import * as sd from "schema-decorator";
 import {LogData} from "./log-data";
 import {PooledDatabase} from "../PooledDatabase";
 import {ColumnCollectionUtil} from "../column-collection";
-import {RawExprUtil} from "../raw-expr";
-import {TableRow, TableUtil} from "../table";
+import {RawExprUtil, AllowedExprConstant} from "../raw-expr";
+import {Table, TableRow, TableUtil} from "../table";
+import {Column} from "../column";
+//import {SelectValue} from "../select-value";
+import {Expr} from "../expr";
+import {ColumnReferencesUtil} from "../column-references";
+import {coalesce} from "../expression/coalesce";
+import {and} from "../expression/logical-connective/and";
+import {isNotNullAndEq} from "../expression/type-check";
 
 export namespace LogDataUtil {
     export type EntityIdentifier<DataT extends LogData> = (
@@ -253,6 +260,203 @@ export namespace LogDataUtil {
                 wasInserted : true,
             };
         });
+    }
+
+    export type LatestValueExpressionEntityTable<DataT extends LogData> = (
+        Table<
+            any,
+            any,
+            {
+                [entityKey in keyof DataT["entityIdentifier"]] : (
+                    entityKey extends keyof DataT["table"]["columns"] ?
+                    Column<
+                        any,
+                        any,
+                        sd.TypeOf<
+                            DataT["table"]["columns"][entityKey]["assertDelegate"]
+                        >
+                    > :
+                    never
+                )
+            },
+            any
+        >
+    );
+    export type LatestValueExpressionValueDelegate<
+        DataT extends LogData,
+        EntityT extends LatestValueExpressionEntityTable<DataT>
+    > = (
+        (
+            c : (
+                ColumnCollectionUtil.ToColumnReferences<EntityT["columns"]> &
+                ColumnCollectionUtil.ToColumnReferences<DataT["table"]["columns"]>
+            )
+        ) => (
+            ColumnReferencesUtil.Columns<
+                ColumnCollectionUtil.ToColumnReferences<EntityT["columns"]> &
+                ColumnCollectionUtil.ToColumnReferences<DataT["table"]["columns"]>
+            > |
+            Expr<
+                ColumnReferencesUtil.Partial<
+                    ColumnCollectionUtil.ToColumnReferences<EntityT["columns"]> &
+                    ColumnCollectionUtil.ToColumnReferences<DataT["table"]["columns"]>
+                >,
+                any
+            > |
+            AllowedExprConstant
+        )
+    );
+    export type LatestValueExpressionDefaultValueDelegate<
+        DataT extends LogData,
+        EntityT extends LatestValueExpressionEntityTable<DataT>
+    > = (
+        (
+            c : ColumnCollectionUtil.ToColumnReferences<EntityT["columns"]>
+        ) => (
+            ColumnReferencesUtil.Columns<
+                ColumnCollectionUtil.ToColumnReferences<EntityT["columns"]>
+            > |
+            Expr<
+                ColumnReferencesUtil.Partial<
+                    ColumnCollectionUtil.ToColumnReferences<EntityT["columns"]>
+                >,
+                any
+            > |
+            AllowedExprConstant
+        )
+    );
+    export type LatestValueExpression<
+        DataT extends LogData,
+        EntityT extends LatestValueExpressionEntityTable<DataT>,
+        ValueDelegateT extends LatestValueExpressionValueDelegate<
+            DataT,
+            EntityT
+        >,
+        DefaultValueDelegateT extends LatestValueExpressionDefaultValueDelegate<
+            DataT,
+            EntityT
+        >
+    > = (
+        Expr<
+            (
+                {
+                    [table in Exclude<
+                        keyof RawExprUtil.UsedReferences<ReturnType<ValueDelegateT>>,
+                        //The variables used should not include this
+                        //because this table is part of the subquery
+                        /*
+                            SELECT
+                                (
+                                    SELECT
+                                        log.value
+                                    FROM
+                                        log
+                                    WHERE
+                                        log.userId = user.userId
+                                    LIMIT 1
+                                )
+                            FROM
+                                user
+                        */
+                       //While `log.value` is used in the inner query,
+                       //It is not considered "used" by the outer query
+                       //because the `log.value` references `log` of the
+                       //inner query, and not a table ofthe outer query
+                        DataT["table"]["alias"]
+                    >] : (
+                        RawExprUtil.UsedReferences<ReturnType<ValueDelegateT>>[table]
+                    )
+                } &
+                RawExprUtil.UsedReferences<ReturnType<DefaultValueDelegateT>>
+            ),
+            (
+                RawExprUtil.Type<ReturnType<ValueDelegateT>>|
+                RawExprUtil.Type<ReturnType<DefaultValueDelegateT>>
+            )
+        >
+    );
+    export function latestValueExpression<
+        DataT extends LogData,
+        EntityT extends LatestValueExpressionEntityTable<DataT>,
+        ValueDelegateT extends LatestValueExpressionValueDelegate<
+            DataT,
+            EntityT
+        >,
+        DefaultValueDelegateT extends LatestValueExpressionDefaultValueDelegate<
+            DataT,
+            EntityT
+        >
+    > (
+        db : PooledDatabase,
+        data : DataT,
+        entity : EntityT,
+        valueDelegate : ValueDelegateT,
+        defaultValueDelegate : DefaultValueDelegateT
+    ) : LatestValueExpression<
+        DataT,
+        EntityT,
+        ValueDelegateT,
+        DefaultValueDelegateT
+    > {
+        const entityRefs = {
+            [entity.alias] : entity.columns
+        };
+        const refs = {
+            ...{
+                [data.table.alias] : data.table.columns
+            },
+            ...entityRefs,
+        };
+
+        let value = valueDelegate(refs as any);
+        if (value instanceof Expr) {
+            ColumnReferencesUtil.assertHasColumnReferences(
+                refs,
+                value.usedReferences as any
+            );
+        } else if (value instanceof Column) {
+            ColumnReferencesUtil.assertHasColumn(
+                refs,
+                value
+            );
+        } else {
+            value = RawExprUtil.toExpr(value as any)
+            //throw new Error(`Expected value expression to be an Expr or Column`);
+        }
+        let defaultValue = defaultValueDelegate(entityRefs as any);
+        if (defaultValue instanceof Expr) {
+            ColumnReferencesUtil.assertHasColumnReferences(
+                entityRefs,
+                defaultValue.usedReferences as any
+            );
+        } else if (defaultValue instanceof Column) {
+            ColumnReferencesUtil.assertHasColumn(
+                entityRefs,
+                defaultValue
+            );
+        } else {
+            defaultValue = RawExprUtil.toExpr(defaultValue as any);
+            //throw new Error(`Expected defaultValue expression to be an Expr or Column`);
+        }
+        const equalityArr = Object.keys(data.entityIdentifier)
+            .map((columnName) => isNotNullAndEq(
+                entity.columns[columnName],
+                data.table.columns[columnName]
+            ));
+        return coalesce(
+            (db.from(entity)
+                .subQuery()
+                .from(data.table) as any
+            )
+                .where(() => and(
+                    equalityArr[0],
+                    ...equalityArr.slice(1)
+                ))
+                .orderBy(() => data.orderByLatest)
+                .limit(1)
+                .select(() => [value]),
+            defaultValue
+        ) as any;
     }
 }
 export type Trackable<DataT extends LogData> = LogDataUtil.Trackable<DataT>;

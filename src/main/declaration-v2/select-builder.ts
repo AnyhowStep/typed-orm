@@ -610,6 +610,49 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }
         return this.rowAssertDelegate;
     }
+    public static FindStringPaths (obj : any, path : string[] = [], result : string[][] = []) {
+        if (obj == undefined) {
+            return result;
+        }
+        if (obj instanceof Date) {
+            return result;
+        }
+        if (!(obj instanceof Object)) {
+            return result;
+        }
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                const value = obj[key];
+                if (typeof value == "string") {
+                    result.push(path.concat(key));
+                } else {
+                    SelectBuilder.FindStringPaths(
+                        value,
+                        path.concat(key),
+                        result
+                    );
+                }
+            }
+        }
+        return result;
+    }
+    public static TryGetDateAtPath (obj : any, path : string[]) : Date|undefined {
+        for (let key of path) {
+            if (obj == undefined || !(obj instanceof Object)) {
+                return undefined;
+            }
+            if (!obj.hasOwnProperty(key)) {
+                return undefined;
+            }
+            obj = obj[key];
+        }
+        //`obj` should be the value we are testing
+        if (obj instanceof Date) {
+            return obj;
+        } else {
+            return undefined;
+        }
+    }
     readonly processRow = (rawRow : any) => {
         let result = {} as any;
         for (let mangledName in rawRow) {
@@ -625,7 +668,25 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         if (tableAliases.length == 1) {
             result = result[tableAliases[0]];
         }
-        result = this.getRowAssertDelegate()("row", result);
+        if (this.extraData.db.isUtcOnly()) {
+            //We do this because, sometimes, we get dates in string format,
+            //without the timezone part.
+            //Then, when attempting to convert to `Date`, we lose the
+            //timezone information.
+            //This code block attempts to correct for Timezone differences
+            const stringPaths = SelectBuilder.FindStringPaths(
+                result
+            );
+            result = this.getRowAssertDelegate()("row", result);
+            for (let path of stringPaths) {
+                const date = SelectBuilder.TryGetDateAtPath(result, path);
+                if (date != undefined) {
+                    date.setUTCHours(date.getUTCHours()-date.getTimezoneOffset()/60);
+                }
+            }
+        } else {
+            result = this.getRowAssertDelegate()("row", result);
+        }
         return result;
     };
     readonly aggregateRow = async (rawRow : any) => {

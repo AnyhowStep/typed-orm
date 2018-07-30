@@ -229,6 +229,8 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
     }>);
     private rowAssertDelegate;
     private getRowAssertDelegate;
+    static FindStringPaths(obj: any, path?: string[], result?: string[][]): string[][];
+    static TryGetDateAtPath(obj: any, path: string[]): Date | undefined;
     readonly processRow: (rawRow: any) => any;
     readonly aggregateRow: (rawRow: any) => Promise<any>;
     fetchAll(this: SelectBuilder<{

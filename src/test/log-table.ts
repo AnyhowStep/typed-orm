@@ -47,13 +47,9 @@ function fetchLatestQuery<
     if (logTable.data.autoIncrement instanceof o.Column) {
         const autoIncrement = logTable.data.autoIncrement;
         return result.appendOrderBy(c => {
-            if (o.ColumnReferencesUtil.hasColumn(c, autoIncrement)) {
-                return [
-                    [c[autoIncrement.name], false] as any
-                ];
-            } else {
-                return undefined;
-            }
+            return [
+                [(c as any)[autoIncrement.name], false] as any
+            ];
         });
     } else {
         return result;
@@ -124,7 +120,7 @@ tape("json-log-fetch-latest-query", async (t) => {
 });
 tape("user-log-fetch-latest", async (t) => {
     const db = await getDb();
-    try {
+    for (let i=0; i<10; ++i) {
         const insertResult = await db.insertValueAndFetch(userLog, {
             userId : 1
         }).catch((err) => {
@@ -134,13 +130,7 @@ tape("user-log-fetch-latest", async (t) => {
         await fetchLatest(db, userLog, { userId : 1 })
             .then((row) => {
                 t.equal(row.logId, insertResult.logId);
-            }).catch((err) => {
-                console.error(err);
-                throw new Error(err);
             });
-    } catch (err) {
-        console.error(err);
-        throw new Error(err);
     }
     t.end();
 });

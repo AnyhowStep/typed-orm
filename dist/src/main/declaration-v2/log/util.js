@@ -11,6 +11,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 const column_collection_1 = require("../column-collection");
 const raw_expr_1 = require("../raw-expr");
+const column_1 = require("../column");
+//import {SelectValue} from "../select-value";
+const expr_1 = require("../expr");
+const column_references_1 = require("../column-references");
+const coalesce_1 = require("../expression/coalesce");
+const and_1 = require("../expression/logical-connective/and");
+const type_check_1 = require("../expression/type-check");
 var LogDataUtil;
 (function (LogDataUtil) {
     function entityIdentifierAssertDelegate(data) {
@@ -134,5 +141,45 @@ var LogDataUtil;
         }));
     }
     LogDataUtil.insertIfDifferentAndFetch = insertIfDifferentAndFetch;
+    function latestValueExpression(db, data, entity, valueDelegate, defaultValueDelegate) {
+        const entityRefs = {
+            [entity.alias]: entity.columns
+        };
+        const refs = Object.assign({
+            [data.table.alias]: data.table.columns
+        }, entityRefs);
+        let value = valueDelegate(refs);
+        if (value instanceof expr_1.Expr) {
+            column_references_1.ColumnReferencesUtil.assertHasColumnReferences(refs, value.usedReferences);
+        }
+        else if (value instanceof column_1.Column) {
+            column_references_1.ColumnReferencesUtil.assertHasColumn(refs, value);
+        }
+        else {
+            value = raw_expr_1.RawExprUtil.toExpr(value);
+            //throw new Error(`Expected value expression to be an Expr or Column`);
+        }
+        let defaultValue = defaultValueDelegate(entityRefs);
+        if (defaultValue instanceof expr_1.Expr) {
+            column_references_1.ColumnReferencesUtil.assertHasColumnReferences(entityRefs, defaultValue.usedReferences);
+        }
+        else if (defaultValue instanceof column_1.Column) {
+            column_references_1.ColumnReferencesUtil.assertHasColumn(entityRefs, defaultValue);
+        }
+        else {
+            defaultValue = raw_expr_1.RawExprUtil.toExpr(defaultValue);
+            //throw new Error(`Expected defaultValue expression to be an Expr or Column`);
+        }
+        const equalityArr = Object.keys(data.entityIdentifier)
+            .map((columnName) => type_check_1.isNotNullAndEq(entity.columns[columnName], data.table.columns[columnName]));
+        return coalesce_1.coalesce(db.from(entity)
+            .subQuery()
+            .from(data.table)
+            .where(() => and_1.and(equalityArr[0], ...equalityArr.slice(1)))
+            .orderBy(() => data.orderByLatest)
+            .limit(1)
+            .select(() => [value]), defaultValue);
+    }
+    LogDataUtil.latestValueExpression = latestValueExpression;
 })(LogDataUtil = exports.LogDataUtil || (exports.LogDataUtil = {}));
 //# sourceMappingURL=util.js.map

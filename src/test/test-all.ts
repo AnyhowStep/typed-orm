@@ -7,6 +7,7 @@ import "./fetch-value-by-unique-key";
 import "./if";
 import "./insert-and-fetch-with-unique-key";
 import "./insert-ignore";
+import "./latest-value-expression";
 import "./log-table";
 import "./log";
 import "./multi-column-join-using";
