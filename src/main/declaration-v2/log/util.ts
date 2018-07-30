@@ -367,7 +367,15 @@ export namespace LogDataUtil {
                         RawExprUtil.UsedReferences<ReturnType<ValueDelegateT>>[table]
                     )
                 } &
-                RawExprUtil.UsedReferences<ReturnType<DefaultValueDelegateT>>
+                RawExprUtil.UsedReferences<ReturnType<DefaultValueDelegateT>> &
+                //These columns are used in equality checks
+                {
+                    [table in EntityT["alias"]] : {
+                        [columnName in keyof DataT["entityIdentifier"]] : (
+                            EntityT["columns"][columnName]
+                        )
+                    }
+                }
             ),
             (
                 RawExprUtil.Type<ReturnType<ValueDelegateT>>|
