@@ -61,7 +61,8 @@ class InsertSelectBuilder {
         const assignments = this.assignments;
         const columnNames = Object.keys(this.table.columns)
             .filter(name => this.table.columns.hasOwnProperty(name))
-            .filter(name => !this.table.data.isGenerated.hasOwnProperty(name));
+            .filter(name => !this.table.data.isGenerated.hasOwnProperty(name))
+            .filter(name => assignments[name] !== undefined);
         if (this.insertMode == "REPLACE") {
             sb.appendLine("REPLACE INTO");
         }
