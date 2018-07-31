@@ -135,6 +135,12 @@ var JoinCollectionUtil;
         });
     }
     JoinCollectionUtil.leftJoinUsing = leftJoinUsing;
+    function crossJoin(selectBuilder, toTable) {
+        return checkedJoin(selectBuilder, toTable, () => {
+            return JoinCollectionUtil.push(selectBuilder.data.joins, new join_1.Join(join_1.JoinType.CROSS, toTable, toTable.columns, false, [], []));
+        });
+    }
+    JoinCollectionUtil.crossJoin = crossJoin;
     function isReplaceableBy(joins, tableA, tableB) {
         const join = joins.find(join => join.table == tableA);
         if (join == undefined) {

@@ -178,6 +178,18 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
     }>, toTable: ToTableT, fromDelegate: FromDelegateT): (Error extends JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ? JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> : SelectBuilder<{
         readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT> : DataT[key]);
     }>);
+    crossJoin<ToTableT extends AnyAliasedTable>(this: SelectBuilder<{
+        hasSelect: any;
+        hasFrom: true;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: any;
+        parentJoins: any;
+    }>, toTable: ToTableT): (Error extends JoinCollectionUtil.CrossJoin<SelectBuilder<DataT>, ToTableT> ? JoinCollectionUtil.CrossJoin<SelectBuilder<DataT>, ToTableT> : SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.CrossJoinUnsafe<DataT["joins"], ToTableT> : DataT[key]);
+    }>);
     select<SelectDelegateT extends SelectDelegate<this>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: any;

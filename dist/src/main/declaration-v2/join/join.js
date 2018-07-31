@@ -6,6 +6,7 @@ var JoinType;
     JoinType["INNER"] = "INNER";
     JoinType["LEFT"] = "LEFT";
     JoinType["RIGHT"] = "RIGHT";
+    JoinType["CROSS"] = "CROSS";
 })(JoinType = exports.JoinType || (exports.JoinType = {}));
 ;
 class Join {

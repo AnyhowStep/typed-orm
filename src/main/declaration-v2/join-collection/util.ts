@@ -371,6 +371,20 @@ export namespace JoinCollectionUtil {
             >
         >
     );
+    export type CrossJoinUnsafe<
+        JoinsT extends JoinCollection,
+        ToTableT extends AnyAliasedTable
+    > = (
+        TupleWPush<
+            AnyJoin,
+            JoinsT,
+            Join<
+                ToTableT,
+                ToTableT["columns"],
+                false
+            >
+        >
+    );
 
     export type CheckedJoin<
         SelectBuilderT extends AnySelectBuilder,
@@ -497,6 +511,12 @@ export namespace JoinCollectionUtil {
         FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > = (
         CheckedJoinUsing<SelectBuilderT, ToTableT, FromDelegateT, LeftJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );
+    export type CrossJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+    > = (
+        CheckedJoin<SelectBuilderT, ToTableT, CrossJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
     );
     export function innerJoin<
         SelectBuilderT extends AnySelectBuilder,
@@ -655,6 +675,30 @@ export namespace JoinCollectionUtil {
                     true,
                     from,
                     to
+                )
+            ) as any;
+        });
+    }
+
+    export function crossJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable
+    > (
+        selectBuilder : SelectBuilderT,
+        toTable : ToTableT
+    ) : (
+        CrossJoin<SelectBuilderT, ToTableT>
+    ) {
+        return checkedJoin(selectBuilder, toTable, () => {
+            return push(
+                selectBuilder.data.joins,
+                new Join(
+                    JoinType.CROSS,
+                    toTable,
+                    toTable.columns,
+                    false,
+                    [],
+                    []
                 )
             ) as any;
         });

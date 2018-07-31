@@ -407,6 +407,75 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             }
         ), this.extraData) as any;
     }
+    /*
+        Gives the Cartesian product.
+        Example:
+        |      Table A      |
+        | columnA | columnB |
+        | 1       | hello   |
+        | 2       | world   |
+
+        |      Table B      |
+        | columnC | columnD |
+        | qwerty  | 321     |
+        | stuff   | 654     |
+        | yellow  | 987     |
+
+        SELECT
+            *
+        FROM
+            `Table A`
+        CROSS JOIN
+            `Table B`
+
+        Will give you:
+        | columnA | columnB | columnC | columnD |
+        | 1       | hello   | qwerty  | 321     |
+        | 1       | hello   | stuff   | 654     |
+        | 1       | hello   | yellow  | 987     |
+        | 2       | world   | qwerty  | 321     |
+        | 2       | world   | stuff   | 654     |
+        | 2       | world   | yellow  | 987     |
+
+        { a, b } x { 1, 2, 3 } = { (a,1), (a,2), (a,3), (b,1), (b,2), (b,3) }
+    */
+    crossJoin<
+        ToTableT extends AnyAliasedTable
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT
+    ) : (
+        Error extends JoinCollectionUtil.CrossJoin<SelectBuilder<DataT>, ToTableT> ?
+            JoinCollectionUtil.CrossJoin<SelectBuilder<DataT>, ToTableT> :
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.CrossJoinUnsafe<DataT["joins"], ToTableT> :
+                    DataT[key]
+                )
+            }>
+    ) {
+        this.assertAfterFrom();
+        return new SelectBuilder(spread(
+            this.data,
+            {
+                joins : JoinCollectionUtil.crossJoin(
+                    this,
+                    toTable
+                )
+            }
+        ), this.extraData) as any;
+    }
 
     //Must be called before UNION because it will change the number of
     //columns expected.
@@ -1844,6 +1913,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 sb.scope((sb) => {
                     join.table.querify(sb);
                 });
+                if (join.joinType == JoinType.CROSS) {
+                    return;
+                }
+
                 sb.appendLine("ON");
                 sb.scope((sb) => {
                     if (join.from == undefined || join.to == undefined || join.from.length != join.to.length) {

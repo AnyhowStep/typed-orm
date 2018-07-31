@@ -162,6 +162,44 @@ class SelectBuilder {
             joins: join_collection_1.JoinCollectionUtil.leftJoinUsing(this, toTable, fromDelegate)
         }), this.extraData);
     }
+    /*
+        Gives the Cartesian product.
+        Example:
+        |      Table A      |
+        | columnA | columnB |
+        | 1       | hello   |
+        | 2       | world   |
+
+        |      Table B      |
+        | columnC | columnD |
+        | qwerty  | 321     |
+        | stuff   | 654     |
+        | yellow  | 987     |
+
+        SELECT
+            *
+        FROM
+            `Table A`
+        CROSS JOIN
+            `Table B`
+
+        Will give you:
+        | columnA | columnB | columnC | columnD |
+        | 1       | hello   | qwerty  | 321     |
+        | 1       | hello   | stuff   | 654     |
+        | 1       | hello   | yellow  | 987     |
+        | 2       | world   | qwerty  | 321     |
+        | 2       | world   | stuff   | 654     |
+        | 2       | world   | yellow  | 987     |
+
+        { a, b } x { 1, 2, 3 } = { (a,1), (a,2), (a,3), (b,1), (b,2), (b,3) }
+    */
+    crossJoin(toTable) {
+        this.assertAfterFrom();
+        return new SelectBuilder(type_util_1.spread(this.data, {
+            joins: join_collection_1.JoinCollectionUtil.crossJoin(this, toTable)
+        }), this.extraData);
+    }
     //Must be called before UNION because it will change the number of
     //columns expected.
     select(selectDelegate) {
@@ -713,6 +751,9 @@ class SelectBuilder {
             sb.scope((sb) => {
                 join.table.querify(sb);
             });
+            if (join.joinType == join_1.JoinType.CROSS) {
+                return;
+            }
             sb.appendLine("ON");
             sb.scope((sb) => {
                 if (join.from == undefined || join.to == undefined || join.from.length != join.to.length) {

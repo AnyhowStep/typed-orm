@@ -5,7 +5,8 @@ export declare enum JoinType {
     FROM = "FROM",
     INNER = "INNER",
     LEFT = "LEFT",
-    RIGHT = "RIGHT"
+    RIGHT = "RIGHT",
+    CROSS = "CROSS"
 }
 export declare class Join<TableT extends AnyAliasedTable, ColumnCollectionT extends ColumnCollection, NullableT extends boolean> {
     readonly joinType: JoinType;

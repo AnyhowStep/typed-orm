@@ -1,6 +1,7 @@
 import "./add";
 import "./aggregate-multi-promise";
 import "./aggregate-multi";
+import "./cross-join";
 import "./delete-zero-or-one-by-unique-key";
 import "./exists";
 import "./fetch-value-by-unique-key";
