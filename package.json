@@ -30,6 +30,6 @@
     "@types/tape": "^4.2.32",
     "tape": "^4.9.0",
     "ts-node": "^6.0.3",
-    "typescript": "^3.0.0-dev.20180706"
+    "typescript": "^3.0.1"
   }
 }
