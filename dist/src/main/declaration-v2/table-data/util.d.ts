@@ -111,3 +111,4 @@ export declare namespace TableDataUtil {
     })))) : never) : never);
     function addParentTable<DataT extends TableData, ParentT extends AnyTable>(data: DataT, parent: ParentT): any;
 }
+//# sourceMappingURL=util.d.ts.map

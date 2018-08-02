@@ -22,3 +22,4 @@ export declare namespace ColumnTupleUtil {
         length: TupleLength<TupleT>;
     } & string[]);
 }
+//# sourceMappingURL=tuple-util.d.ts.map

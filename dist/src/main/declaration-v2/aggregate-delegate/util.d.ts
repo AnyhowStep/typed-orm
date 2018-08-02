@@ -4,3 +4,4 @@ export declare namespace AggregateDelegateUtil {
     type AggregatedRow<FetchRowT, AggregateDelegateT extends AggregateDelegate<FetchRowT> | undefined> = (Aggregate<FetchRowT, AggregateDelegateT> extends Promise<infer R> ? R : Aggregate<FetchRowT, AggregateDelegateT>);
     function aggregate<FetchRowT, AggregateDelegateT extends AggregateDelegate<FetchRowT> | undefined>(fetchRow: FetchRowT, aggregateDelegate: AggregateDelegateT): (Aggregate<FetchRowT, AggregateDelegateT>);
 }
+//# sourceMappingURL=util.d.ts.map

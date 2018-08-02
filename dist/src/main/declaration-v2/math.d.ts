@@ -180,3 +180,4 @@ export declare type StringToNumber<S extends string> = ({
 } & {
     [index: string]: never;
 })[S];
+//# sourceMappingURL=math.d.ts.map

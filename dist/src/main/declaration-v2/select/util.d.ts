@@ -34,3 +34,4 @@ export declare namespace SelectUtil {
         readonly [columnName in SelectT["name"]]: (ColumnUtil.WithTableAlias<SelectT, TableAliasT>);
     } : never);
 }
+//# sourceMappingURL=util.d.ts.map

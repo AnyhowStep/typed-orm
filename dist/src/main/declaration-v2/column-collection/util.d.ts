@@ -68,3 +68,4 @@ export declare namespace ColumnCollectionUtil {
     });
     function toColumnReferences<ColumnCollectionT extends ColumnCollection>(columnCollection: ColumnCollectionT): any;
 }
+//# sourceMappingURL=util.d.ts.map

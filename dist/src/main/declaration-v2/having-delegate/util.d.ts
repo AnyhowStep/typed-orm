@@ -7,3 +7,4 @@ import { Expr } from "../expr";
 export declare namespace HavingDelegateUtil {
     function execute<SelectBuilderT extends AnySelectBuilder, HavingDelegateT extends HavingDelegate<SelectBuilderT>>(selectBuilder: SelectBuilderT, delegate: HavingDelegateT): (Expr<ColumnReferencesUtil.Partial<ColumnReferencesUtil.Merge<JoinCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["joins"]>, SelectCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["selects"]>>>, boolean>);
 }
+//# sourceMappingURL=util.d.ts.map

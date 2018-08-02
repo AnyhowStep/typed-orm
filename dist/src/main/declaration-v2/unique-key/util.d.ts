@@ -12,3 +12,4 @@ export declare namespace UniqueKeyUtil {
     function minimalAssertDelegate<UniqueKeyT extends UniqueKey, ColumnCollectionT extends ColumnCollection>(uniqueKey: UniqueKey, columns: ColumnCollectionT): (sd.AssertDelegate<MinimalWithType<UniqueKeyT, ColumnCollectionT>>);
     function isEqual(a: UniqueKey, b: UniqueKey): boolean;
 }
+//# sourceMappingURL=util.d.ts.map

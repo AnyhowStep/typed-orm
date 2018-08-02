@@ -20,3 +20,4 @@ export declare type MultiTableAliasFetchRow<JoinsT extends JoinCollection, Selec
 } & __ExprFetchRow<SelectReferencesT>);
 export declare type FetchRow<JoinsT extends JoinCollection, SelectReferencesT extends ColumnReferences> = (IsOneStringLiteral<Extract<keyof SelectReferencesT, string>> extends true ? SingleTableAliasFetchRow<JoinsT, SelectReferencesT> : MultiTableAliasFetchRow<JoinsT, SelectReferencesT>);
 export declare type AnyFetchRow = (SingleTableAliasFetchRow<any, any> | MultiTableAliasFetchRow<any, any>);
+//# sourceMappingURL=fetch-row.d.ts.map

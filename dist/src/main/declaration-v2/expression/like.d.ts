@@ -8,3 +8,4 @@ export declare function likeUnsafe<StrT extends RawExpr<string | null>, PatternT
     escape: (escapeChar: string) => Expr<ColumnReferencesUtil.Merge<RawExprUtil.UsedReferences<StrT>, RawExprUtil.UsedReferences<PatternT>>, null | boolean>;
 });
 export declare function escapeLikePattern(pattern: string, escapeChar?: string): string;
+//# sourceMappingURL=like.d.ts.map

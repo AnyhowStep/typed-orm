@@ -16,3 +16,4 @@ export interface LogData {
     readonly orderByLatest: Tuple<[AnyColumn, boolean]>;
     readonly defaultRowDelegate: undefined | AnyDefaultRowDelegate;
 }
+//# sourceMappingURL=log-data.d.ts.map

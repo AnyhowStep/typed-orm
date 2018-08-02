@@ -53,3 +53,4 @@ export declare type SelectValueBuilderNoUsedRef<TypeT> = SelectBuilder<{
     parentJoins: any;
 }>;
 export declare type RawExprNoUsedRef<TypeT> = ((TypeT extends AllowedExprConstant ? TypeT : never) | Expr<{}, TypeT> | Column<any, any, TypeT> | SelectValueBuilderNoUsedRef<TypeT>);
+//# sourceMappingURL=raw-expr.d.ts.map

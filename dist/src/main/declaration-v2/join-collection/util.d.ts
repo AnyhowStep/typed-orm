@@ -178,3 +178,4 @@ export declare namespace JoinCollectionUtil {
     } & AnyJoin[]);
     function replaceColumnType<JoinsT extends JoinCollection, TableAliasT extends string, ColumnNameT extends string, NewTypeT>(joins: JoinsT, tableAlias: TableAliasT, columnName: ColumnNameT, newAssertDelegate: sd.AssertDelegate<NewTypeT>): (ReplaceColumnType<JoinsT, TableAliasT, ColumnNameT, NewTypeT>);
 }
+//# sourceMappingURL=util.d.ts.map

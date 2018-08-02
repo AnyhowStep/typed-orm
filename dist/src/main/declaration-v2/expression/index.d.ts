@@ -22,3 +22,4 @@ export * from "./timestamp-diff";
 export * from "./type-check";
 export * from "./unsafe-type-check";
 export * from "./variadic-util";
+//# sourceMappingURL=index.d.ts.map

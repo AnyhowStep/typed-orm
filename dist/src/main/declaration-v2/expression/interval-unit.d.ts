@@ -31,3 +31,4 @@ export declare enum NumericIntervalUnit {
     QUARTER = "QUARTER",
     YEAR = "YEAR"
 }
+//# sourceMappingURL=interval-unit.d.ts.map

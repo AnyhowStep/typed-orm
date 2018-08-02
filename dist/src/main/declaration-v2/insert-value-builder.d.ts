@@ -42,3 +42,4 @@ export declare class InsertValueBuilder<TableT extends AnyTable, ValuesT extends
     getQuery(): string;
     printQuery(): this;
 }
+//# sourceMappingURL=insert-value-builder.d.ts.map

@@ -12,3 +12,4 @@ export declare class Column<TableAliasT extends string, NameT extends string, Ty
     querify(sb: StringBuilder): void;
 }
 export declare type AnyColumn = Column<string, string, any>;
+//# sourceMappingURL=column.d.ts.map

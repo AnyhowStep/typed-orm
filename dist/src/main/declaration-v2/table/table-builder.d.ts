@@ -52,3 +52,4 @@ export declare function table<NameT extends string, TupleT extends fieldUtil.Any
     parentTables: undefined;
 }>);
 export declare function table<TableT extends AnyTable>(table: TableT): (TableBuilder<TableT["alias"], TableT["name"], TableT["columns"], TableT["data"]>);
+//# sourceMappingURL=table-builder.d.ts.map

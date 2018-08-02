@@ -58,3 +58,4 @@ export declare namespace SelectBuilderUtil {
     }> : (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)) : never);
 }
 export declare type AggregatedRow<SelectBuilderT extends AnySelectBuilder> = (SelectBuilderUtil.AggregatedRow<SelectBuilderT>);
+//# sourceMappingURL=select-builder-util.d.ts.map

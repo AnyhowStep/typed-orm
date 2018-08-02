@@ -78,3 +78,4 @@ export declare namespace TableParentCollectionUtil {
     } : {});
     type ToColumnReferences<TableT extends AnyTable> = (ColumnCollectionUtil.ToColumnReferences<TableT["columns"]> & (TableT["data"]["parentTables"] extends TableParentCollection ? ToInheritedColumnReferences<TableT["data"]["parentTables"]> : {}));
 }
+//# sourceMappingURL=util.d.ts.map

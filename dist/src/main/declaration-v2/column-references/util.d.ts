@@ -37,3 +37,4 @@ export declare namespace ColumnReferencesUtil {
     function assertHasColumns(ref: ColumnReferences | {}, arr: AnyColumn[]): void;
     function assertHasColumnReferences(ref: ColumnReferences | {}, targetReferences: ColumnReferences): void;
 }
+//# sourceMappingURL=util.d.ts.map

@@ -11,3 +11,4 @@ export declare class StringBuilder {
     map<T>(arr: T[], callback: (sb: this, element: T, index: number) => void, joinStr?: string): this;
     scope(callback: (sb: this) => void): this;
 }
+//# sourceMappingURL=StringBuilder.d.ts.map

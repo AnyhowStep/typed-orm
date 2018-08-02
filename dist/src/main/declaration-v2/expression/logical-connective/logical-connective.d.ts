@@ -10,3 +10,4 @@ export declare const xor: <LeftT extends boolean | Expr<any, boolean> | Column<a
 export declare function not<RawT extends RawExpr<boolean>>(raw: RawT): Expr<RawExprUtil.UsedReferences<RawT>, boolean>;
 export declare function implies<LeftT extends RawExpr<boolean>, RightT extends RawExpr<boolean>>(left: LeftT, right: RightT): (Expr<ColumnReferencesUtil.Merge<RawExprUtil.UsedReferences<LeftT>, RawExprUtil.UsedReferences<RightT>>, boolean>);
 export declare function negateIfFalse<RawT extends RawExpr<boolean>>(condition: boolean, raw: RawT): Expr<RawExprUtil.UsedReferences<RawT>, boolean>;
+//# sourceMappingURL=logical-connective.d.ts.map

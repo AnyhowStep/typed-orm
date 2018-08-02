@@ -3,6 +3,7 @@
         "outDir": "./dist/src/main",
         "sourceMap": true,
         "declaration": true,
+        "declarationMap": true,
         "composite": true,
 
 

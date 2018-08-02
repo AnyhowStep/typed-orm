@@ -28,3 +28,4 @@ export declare type IdDelegate<DataT extends TableData, ColumnCollectionT extend
     [columnName in keyof ColumnCollectionT]: (ColumnCollectionT[columnName] extends Column<any, any, number> ? ColumnCollectionT[columnName] : never);
 })) => (DataT["autoIncrement"] extends AnyColumn ? never : Extract<ColumnCollectionUtil.Columns<ColumnCollectionT>, Column<any, any, number>>));
 export declare type AddUniqueKeyDelegate<ColumnCollectionT extends ColumnCollection> = ((columns: ColumnCollectionT) => Tuple<ColumnCollectionUtil.Columns<ColumnCollectionT>>);
+//# sourceMappingURL=table-data.d.ts.map

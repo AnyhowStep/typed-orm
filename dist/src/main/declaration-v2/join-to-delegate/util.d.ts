@@ -9,3 +9,4 @@ export declare namespace JoinToDelegateUtil {
     type CreateUsing<ToTableT extends AnyAliasedTable, FromT extends Tuple<AnyColumn>> = (ColumnCollectionUtil.HasColumns<ColumnCollectionUtil.ToNullable<ToTableT["columns"]>, ColumnTupleUtil.WithTableAlias<FromT, ToTableT["alias"]>> extends true ? ColumnTupleUtil.WithTableAlias<FromT, ToTableT["alias"]> : never);
     function createUsing<ToTableT extends AnyAliasedTable, FromT extends Tuple<AnyColumn>>(toTable: ToTableT, from: FromT): (CreateUsing<ToTableT, FromT>);
 }
+//# sourceMappingURL=util.d.ts.map

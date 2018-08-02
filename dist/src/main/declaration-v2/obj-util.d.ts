@@ -28,3 +28,4 @@ export declare type ReadonlyReplaceValue3<T, K0 extends keyof T, V0, K1 extends 
 export declare type ReadonlyReplaceValue4<T, K0 extends keyof T, V0, K1 extends keyof T, V1, K2 extends keyof T, V2, K3 extends keyof T, V3> = {
     readonly [key in keyof T]: (key extends K0 ? V0 : key extends K1 ? V1 : key extends K2 ? V2 : key extends K3 ? V3 : T[key]);
 };
+//# sourceMappingURL=obj-util.d.ts.map

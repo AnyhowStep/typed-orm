@@ -29,3 +29,4 @@ export declare namespace TableUtil {
     function uniqueKeyAssertDelegate<TableT extends AnyTable>(table: TableT): sd.AssertDelegate<UniqueKeys<TableT>>;
     function minimalUniqueKeyAssertDelegate<TableT extends AnyTable>(table: TableT): sd.AssertDelegate<UniqueKeys<TableT>>;
 }
+//# sourceMappingURL=util.d.ts.map

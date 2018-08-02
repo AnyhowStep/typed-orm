@@ -11,3 +11,4 @@ export declare type JoinTo<ToTableT extends AnyAliasedTable, FromT extends Tuple
     length: TupleLength<FromT>;
 } & AnyColumn[]) : never);
 export declare type JoinToDelegate<ToTableT extends AnyAliasedTable, FromT extends Tuple<AnyColumn>> = ((t: ToTableT["columns"]) => JoinTo<ToTableT, FromT>);
+//# sourceMappingURL=join-to-delegate.d.ts.map

@@ -145,3 +145,4 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     }>;
     latestValueExpression<DataT extends LogData, EntityT extends LogDataUtil.LatestValueExpressionEntityTable<DataT>, ValueDelegateT extends LogDataUtil.LatestValueExpressionValueDelegate<DataT, EntityT>, DefaultValueDelegateT extends LogDataUtil.LatestValueExpressionDefaultValueDelegate<DataT, EntityT>>(data: DataT, entity: EntityT, valueDelegate: ValueDelegateT, defaultValueDelegate: DefaultValueDelegateT): LogDataUtil.LatestValueExpression<DataT, EntityT, ValueDelegateT, DefaultValueDelegateT>;
 }
+//# sourceMappingURL=PooledDatabase.d.ts.map

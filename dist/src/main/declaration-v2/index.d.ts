@@ -54,3 +54,4 @@ export * from "./StringBuilder";
 export * from "./subquery-table";
 export * from "./tuple";
 export * from "./update-builder";
+//# sourceMappingURL=index.d.ts.map

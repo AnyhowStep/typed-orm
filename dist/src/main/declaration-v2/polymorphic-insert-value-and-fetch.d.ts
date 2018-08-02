@@ -13,3 +13,4 @@ export declare type PolymorphicInsertLiteralRow<TableT extends AnyTable> = ({
     [name in TableParentCollectionUtil.OptionalColumnNames<TableT>]?: (TableParentCollectionUtil.ColumnType<TableT, name>);
 });
 export declare function polymorphicInsertValueAndFetch<TableT extends AnyTable>(db: PooledDatabase, table: TableT, row: PolymorphicRawInsertValueRow<TableT>): Promise<TableParentCollectionUtil.TableRow<TableT>>;
+//# sourceMappingURL=polymorphic-insert-value-and-fetch.d.ts.map

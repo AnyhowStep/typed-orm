@@ -18,3 +18,4 @@ export declare class Join<TableT extends AnyAliasedTable, ColumnCollectionT exte
     constructor(joinType: JoinType, table: TableT, columns: ColumnCollectionT, nullable: NullableT, from: AnyColumn[], to: AnyColumn[]);
 }
 export declare type AnyJoin = Join<AnyAliasedTable, ColumnCollection, boolean>;
+//# sourceMappingURL=join.d.ts.map

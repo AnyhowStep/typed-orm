@@ -13,3 +13,4 @@ export declare class Expr<UsedReferencesT extends PartialColumnReferences, TypeT
     as<AliasT extends string>(alias: AliasT): AliasedExpr<UsedReferencesT, "__expr", AliasT, TypeT>;
 }
 export declare type AnyExpr = Expr<any, any>;
+//# sourceMappingURL=expr.d.ts.map

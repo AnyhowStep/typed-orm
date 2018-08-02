@@ -33,3 +33,4 @@ export declare class DeleteBuilder<SelectBuilderT extends SelectBuilder<{
     getQuery(): string;
     printQuery(): this;
 }
+//# sourceMappingURL=delete-builder.d.ts.map

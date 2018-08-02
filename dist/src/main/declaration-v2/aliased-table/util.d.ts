@@ -13,3 +13,4 @@ export declare namespace AliasedTableUtil {
         [columnName in Extract<keyof TableT["columns"], string>]: (Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>);
     }>);
 }
+//# sourceMappingURL=util.d.ts.map

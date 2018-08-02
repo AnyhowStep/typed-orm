@@ -13,3 +13,4 @@ export declare function fieldsToObject<TupleT extends AnyFieldTuple>(tuple: Tupl
 export declare type FieldsToType<TupleT extends AnyFieldTuple> = ({
     [key in Extract<keyof FieldsToObject<TupleT>, string>]: (FieldsToObject<TupleT>[key] extends AnyRawColumn ? RawColumnUtil.TypeOf<FieldsToObject<TupleT>[key]> : never);
 });
+//# sourceMappingURL=field-util.d.ts.map

@@ -12,3 +12,4 @@ export declare class AliasedTable<AliasT extends string, NameT extends string, C
     querify(sb: StringBuilder): void;
 }
 export declare type AnyAliasedTable = AliasedTable<string, string, ColumnCollection>;
+//# sourceMappingURL=aliased-table.d.ts.map

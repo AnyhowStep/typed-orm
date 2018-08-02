@@ -5,3 +5,4 @@ export declare type OrderByValue<ColumnReferencesT extends ColumnReferences> = (
 export declare type AnyOrderByValue = (AnyExpr | AnyColumn);
 export declare type OrderBy<ColumnReferencesT extends ColumnReferences> = (OrderByValue<ColumnReferencesT> | [OrderByValue<ColumnReferencesT>, boolean]);
 export declare type AnyOrderBy = (AnyOrderByValue | [AnyOrderByValue, boolean]);
+//# sourceMappingURL=order-by.d.ts.map

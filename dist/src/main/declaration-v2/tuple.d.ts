@@ -177,3 +177,4 @@ export declare type TupleWConcat<WidenT, T extends Tuple<WidenT>, U extends Tupl
 } & (WidenT)[]);
 export declare function tupleConcat<T extends Tuple<any>, U extends Tuple<any>>(t: T, u: U): (TupleConcat<T, U>);
 export declare function tupleWConcat<WidenT>(): (<T extends Tuple<WidenT>, U extends Tuple<WidenT>>(t: T, u: U) => (TupleWConcat<WidenT, T, U>));
+//# sourceMappingURL=tuple.d.ts.map

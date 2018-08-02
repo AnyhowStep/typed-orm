@@ -8,3 +8,4 @@ export declare namespace ColumnUtil {
     type WithType<ColumnT extends AnyColumn, NewTypeT> = (Column<ColumnT["tableAlias"], ColumnT["name"], NewTypeT>);
     function withType<ColumnT extends AnyColumn, NewTypeT>(column: ColumnT, assertDelegate: sd.AssertDelegate<NewTypeT>): WithType<ColumnT, NewTypeT>;
 }
+//# sourceMappingURL=util.d.ts.map

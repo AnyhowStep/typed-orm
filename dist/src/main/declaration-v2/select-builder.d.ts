@@ -599,3 +599,4 @@ export declare type CreateSelectBuilderDelegate = (() => (SelectBuilder<{
     parentJoins: [Join<typeof __DUMMY_FROM_TABLE, typeof __DUMMY_FROM_TABLE["columns"], true>];
 }>));
 export declare type AnySelectBuilder = SelectBuilder<any>;
+//# sourceMappingURL=select-builder.d.ts.map

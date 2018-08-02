@@ -96,3 +96,4 @@ export declare function log<TableT extends AnyTable>(table: TableT): LogBuilder<
     readonly orderByLatest: undefined;
     readonly defaultRowDelegate: undefined;
 }>;
+//# sourceMappingURL=log-builder.d.ts.map

@@ -48,3 +48,4 @@ export declare class UpdateBuilder<SelectBuilderT extends SelectBuilder<{
     getQuery(): string;
     printQuery(): this;
 }
+//# sourceMappingURL=update-builder.d.ts.map
