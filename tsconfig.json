@@ -2,6 +2,8 @@
     "compilerOptions": {
         "outDir": "./dist/src/main",
         "sourceMap": true,
+        "declaration": true,
+        "composite": true,
 
 
         "experimentalDecorators": true,
@@ -29,7 +31,8 @@
         "moduleResolution": "node",
         "target": "ES6",
         "jsx": "react",
-        "jsxFactory": "h"
+        "jsxFactory": "h",
+        "rootDir":"./src/main"
     },
     "compileOnSave": false,
 
