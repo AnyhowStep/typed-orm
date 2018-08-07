@@ -2,6 +2,7 @@ import * as sd from "schema-decorator";
 import {Tuple} from "./tuple";
 import {Column, AnyColumn} from "./column";
 import {RawColumnUtil, AnyRawColumn} from "./raw-column";
+import { RawColumnCollection } from "./raw-column-collection";
 
 export type AnyFieldTuple = Tuple<sd.Field<any, any>|AnyColumn>;
 
@@ -12,13 +13,19 @@ export type FieldToObject<
     K extends keyof TupleT ?
         (
             TupleT[K] extends sd.Field<infer NameT, infer TypeT> ?
-            {
-                [name in NameT] : sd.Field<NameT, TypeT>
-            } :
+            Extract<
+                {
+                    [name in NameT] : sd.Field<NameT, TypeT>
+                },
+                RawColumnCollection
+            > :
             TupleT[K] extends Column<any, infer NameT, infer TypeT> ?
-            {
-                [name in NameT] : Column<any, NameT, TypeT>
-            } :
+            Extract<
+                {
+                    [name in NameT] : Column<any, NameT, TypeT>
+                },
+                RawColumnCollection
+            > :
             never
         ) :
         {}

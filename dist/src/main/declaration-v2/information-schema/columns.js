@@ -13,7 +13,7 @@ exports.COLUMNS = table_1.table("COLUMNS", {
     COLUMN_NAME: sd.varChar(64),
     ORDINAL_POSITION: sd.stringToNaturalNumber(),
     COLUMN_DEFAULT: sd.nullable(sd.string()),
-    IS_NULLABLE: sd.or(sd.oneOf("YES", "NO"), sd.varChar(3)),
+    IS_NULLABLE: sd.or(sd.literal("YES", "NO"), sd.varChar(3)),
     DATA_TYPE: sd.varChar(64),
     CHARACTER_MAXIMUM_LENGTH: sd.nullable(sd.stringToNaturalNumber()),
     CHARACTER_OCTET_LENGTH: sd.nullable(sd.stringToNaturalNumber()),

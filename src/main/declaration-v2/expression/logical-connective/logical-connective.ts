@@ -47,14 +47,9 @@ function booleanBinaryOp (operator : string) {
     return result;
 }
 
-export const TRUE = new Expr({}, (name : string, mixed : any) : true => {
-    const b = sd.numberToBoolean()(name, mixed);
-    return sd.oneOf(true)(name, b);
-}, "TRUE");
-export const FALSE = new Expr({}, (name : string, mixed : any) : false => {
-    const b = sd.numberToBoolean()(name, mixed);
-    return sd.oneOf(false)(name, b);
-}, "FALSE");
+export const TRUE = new Expr({}, sd.numberToTrue(), "TRUE");
+
+export const FALSE = new Expr({}, sd.numberToFalse(), "FALSE");
 
 //export const and = booleanBinaryOp("AND");
 //export const or = booleanBinaryOp("OR");

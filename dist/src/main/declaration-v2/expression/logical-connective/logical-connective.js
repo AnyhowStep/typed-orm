@@ -29,14 +29,8 @@ function booleanBinaryOp(operator) {
     });
     return result;
 }
-exports.TRUE = new expr_1.Expr({}, (name, mixed) => {
-    const b = sd.numberToBoolean()(name, mixed);
-    return sd.oneOf(true)(name, b);
-}, "TRUE");
-exports.FALSE = new expr_1.Expr({}, (name, mixed) => {
-    const b = sd.numberToBoolean()(name, mixed);
-    return sd.oneOf(false)(name, b);
-}, "FALSE");
+exports.TRUE = new expr_1.Expr({}, sd.numberToTrue(), "TRUE");
+exports.FALSE = new expr_1.Expr({}, sd.numberToFalse(), "FALSE");
 //export const and = booleanBinaryOp("AND");
 //export const or = booleanBinaryOp("OR");
 exports.xor = booleanBinaryOp("XOR");

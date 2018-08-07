@@ -16,7 +16,7 @@ export const COLUMNS = table(
         ORDINAL_POSITION : sd.stringToNaturalNumber(),
         COLUMN_DEFAULT : sd.nullable(sd.string()),
         IS_NULLABLE : sd.or(
-            sd.oneOf("YES", "NO"),
+            sd.literal("YES", "NO"),
             sd.varChar(3)
         ),
         DATA_TYPE : sd.varChar(64),

@@ -1267,17 +1267,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
 
         const column = TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate as any);
 
-        let assertDelegate : sd.AssertDelegate<ConstT> = sd.oneOf(value);
+        let assertDelegate : sd.AssertDelegate<ConstT> = sd.literal(value);
         if (value === true) {
-            assertDelegate = ((name : string, mixed : any) : true => {
-                const b = sd.numberToBoolean()(name, mixed);
-                return sd.oneOf(true)(name, b);
-            }) as any;
+            assertDelegate = sd.numberToTrue() as any;
         } else if (value === false) {
-            assertDelegate = ((name : string, mixed : any) : false => {
-                const b = sd.numberToBoolean()(name, mixed);
-                return sd.oneOf(false)(name, b);
-            }) as any;
+            assertDelegate = sd.numberToFalse() as any;
         }
 
         return this.narrow(

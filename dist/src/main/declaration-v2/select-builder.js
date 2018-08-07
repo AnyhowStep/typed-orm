@@ -500,18 +500,12 @@ class SelectBuilder {
         this.assertBeforeUnion();
         sd.or(sd.boolean(), sd.number(), sd.string())("value", value);
         const column = type_narrow_delegate_1.TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate);
-        let assertDelegate = sd.oneOf(value);
+        let assertDelegate = sd.literal(value);
         if (value === true) {
-            assertDelegate = ((name, mixed) => {
-                const b = sd.numberToBoolean()(name, mixed);
-                return sd.oneOf(true)(name, b);
-            });
+            assertDelegate = sd.numberToTrue();
         }
         else if (value === false) {
-            assertDelegate = ((name, mixed) => {
-                const b = sd.numberToBoolean()(name, mixed);
-                return sd.oneOf(false)(name, b);
-            });
+            assertDelegate = sd.numberToFalse();
         }
         return this.narrow(new column_1.Column(column.tableAlias, column.name, assertDelegate, column.subTableName, column.isSelectReference), e.isNotNullAndEq(column, value));
     }

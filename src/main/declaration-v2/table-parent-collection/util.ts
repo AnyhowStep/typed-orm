@@ -538,7 +538,7 @@ export namespace TableParentCollectionUtil {
         columnNames(table).forEach((columnName) => {
             fields.push(sd.field(columnName, columnAssertDelegate(table, columnName)));
         });
-        return sd.schema(...fields);
+        return sd.schema(...fields) as any;
     }
 
     export type FindWithTableAlias<ParentsT extends TableParentCollection, TableAliasT extends string> = (

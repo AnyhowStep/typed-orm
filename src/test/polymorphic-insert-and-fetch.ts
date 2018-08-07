@@ -18,7 +18,7 @@ const browserAppKey = o.table(
     "browserAppKey",
     {
         appKeyId : sd.naturalNumber(),
-        appKeyTypeId : sd.oneOf(1),
+        appKeyTypeId : sd.literal(1),
         referer : sd.nullable(sd.varChar(256))
     }
 )
