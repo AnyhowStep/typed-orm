@@ -3,6 +3,7 @@ import {JoinCollection, JoinCollectionUtil} from "../join-collection";
 //import {SelectCollection} from "../select-collection";
 import {ColumnReferences} from "../column-references";
 import {IsOneStringLiteral} from "../string-util";
+import {AnyColumn} from "../column";
 
 //TODO Find a better name
 export type __ExprFetchRow<SelectReferencesT extends ColumnReferences> = (
@@ -14,7 +15,10 @@ export type __ExprFetchRow<SelectReferencesT extends ColumnReferences> = (
                     string
                 >] : (
                     ReturnType<
-                        SelectReferencesT["__expr"][columnName]["assertDelegate"]
+                        Extract<
+                            SelectReferencesT["__expr"][columnName],
+                            AnyColumn
+                        >["assertDelegate"]
                     >
                 )
             }
@@ -33,10 +37,13 @@ export type SingleTableAliasFetchRow<
         {
             [columnName in keyof SelectReferencesT[Extract<keyof SelectReferencesT, string>]] : (
                 ReturnType<
-                    JoinCollectionUtil.FindWithTableAlias<
-                        JoinsT,
-                        Extract<keyof SelectReferencesT, string>
-                    >["columns"][columnName]["assertDelegate"]
+                    Extract<
+                        JoinCollectionUtil.FindWithTableAlias<
+                            JoinsT,
+                            Extract<keyof SelectReferencesT, string>
+                        >["columns"][columnName],
+                        AnyColumn
+                    >["assertDelegate"]
                 >
             )
         }
@@ -65,10 +72,13 @@ export type MultiTableAliasFetchRow<
             >] : (
                 //Get the "real" data type
                 ReturnType<
-                    JoinCollectionUtil.FindWithTableAlias<
-                        JoinsT,
-                        tableAlias
-                    >["columns"][columnName]["assertDelegate"]
+                    Extract<
+                        JoinCollectionUtil.FindWithTableAlias<
+                            JoinsT,
+                            tableAlias
+                        >["columns"][columnName],
+                        AnyColumn
+                    >["assertDelegate"]
                 >
             )
         }
@@ -89,10 +99,13 @@ export type MultiTableAliasFetchRow<
             >] : (
                 //Get the "real" data type
                 ReturnType<
-                    JoinCollectionUtil.FindWithTableAlias<
-                        JoinsT,
-                        tableAlias
-                    >["columns"][columnName]["assertDelegate"]
+                    Extract<
+                        JoinCollectionUtil.FindWithTableAlias<
+                            JoinsT,
+                            tableAlias
+                        >["columns"][columnName],
+                        AnyColumn
+                    >["assertDelegate"]
                 >
             )
         }
