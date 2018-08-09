@@ -84,7 +84,14 @@ export namespace ColumnReferencesUtil {
         RefA extends ColumnReferences,
         RefB extends ColumnReferences
     > = (
-        RefA & RefB
+        Extract<
+            {
+                [k in keyof (RefA & RefB)] : (
+                    (RefA & RefB)[k]
+                )
+            },
+            ColumnReferences
+        >
     )/*
     Commenting this out because it causes `tsc` to freak out
     (

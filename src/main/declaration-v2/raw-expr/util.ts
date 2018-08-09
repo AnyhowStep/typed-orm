@@ -274,7 +274,7 @@ export namespace RawExprUtil {
             return e.and(
                 comparisonArr[0],
                 ...comparisonArr.slice(1)
-            );
+            ) as any;
         }
     }
     export function toUniqueKeyEqualityCondition<

@@ -21,7 +21,9 @@ export declare namespace ColumnReferencesUtil {
         };
     });
     function toNullable<RefT extends ColumnReferences>(columnReferences: RefT): (ToNullable<RefT>);
-    type Merge<RefA extends ColumnReferences, RefB extends ColumnReferences> = (RefA & RefB);
+    type Merge<RefA extends ColumnReferences, RefB extends ColumnReferences> = (Extract<{
+        [k in keyof (RefA & RefB)]: ((RefA & RefB)[k]);
+    }, ColumnReferences>);
     function merge<RefA extends ColumnReferences | {}, RefB extends ColumnReferences>(refA: RefA, refB: RefB): Merge<RefA, RefB>;
     type ToConvenient<RefT extends ColumnReferences | {}> = (keyof RefT extends never ? {} : IsOneStringLiteral<Extract<keyof RefT, string>> extends true ? RefT[Extract<keyof RefT, string>] : RefT);
     function toConvenient<RefT extends ColumnReferences | {}>(ref: RefT): ToConvenient<RefT>;
