@@ -35,7 +35,7 @@ export declare class InsertValueBuilder<TableT extends AnyTable, ValuesT extends
     } : {})>);
     executeAndFetch(this: InsertValueBuilder<TableT extends AnyTable & {
         data: {
-            uniqueKey: UniqueKeyCollection;
+            uniqueKeys: UniqueKeyCollection;
         };
     } ? any : never, any[], any>): (Promise<FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>>>);
     querify(sb: StringBuilder): void;

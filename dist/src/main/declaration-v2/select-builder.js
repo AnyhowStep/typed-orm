@@ -516,7 +516,7 @@ class SelectBuilder {
         return new SelectBuilder(this.data, Object.assign({}, this.extraData, { whereExpr: this.extraData.narrowExpr }));
     }
     //Must be called after `FROM` as per MySQL
-    //where() and appendWhere() are synonyms
+    //where() and andWhere() are synonyms
     where(whereDelegate) {
         return this.andWhere(whereDelegate);
     }

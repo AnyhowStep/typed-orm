@@ -149,7 +149,7 @@ export class InsertValueBuilder<
     //Consider allowing just ["data"]["id"] for execute and fetch
     public async executeAndFetch (
         this : InsertValueBuilder<
-            TableT extends AnyTable & { data : { uniqueKey : UniqueKeyCollection } } ?
+            TableT extends AnyTable & { data : { uniqueKeys : UniqueKeyCollection } } ?
                 any : never,
             any[],
             any
