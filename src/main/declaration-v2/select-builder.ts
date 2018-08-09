@@ -21,7 +21,7 @@ import {AggregateDelegate} from "./aggregate-delegate";
 import {TypeNarrowDelegate, TypeNarrowDelegateUtil} from "./type-narrow-delegate";
 import {Column, AnyColumn} from "./column";
 import * as invalid from "./invalid";
-import {WhereDelegate, WhereDelegateUtil} from "./where-delegate";
+import {WhereDelegate, WhereDelegateUtil, WhereDelegateColumnReferences} from "./where-delegate";
 import {GroupByDelegate, GroupByDelegateUtil} from "./group-by-delegate";
 import {HavingDelegate, HavingDelegateUtil} from "./having-delegate";
 import {OrderByDelegate, OrderByDelegateUtil} from "./order-by-delegate";
@@ -32,7 +32,7 @@ import {FetchValueCheck, FetchValueType} from "./fetch-value";
 import {table, AnyTable} from "./table";
 import {AnyGroupBy} from "./group-by";
 import {AnyOrderBy} from "./order-by";
-import {Expr} from "./expr";
+import {Expr, AnyExpr} from "./expr";
 import {PooledDatabase} from "./PooledDatabase";
 import {Querify} from "./querify";
 import {StringBuilder} from "./StringBuilder";
@@ -1299,7 +1299,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         ) as any;
     }
     //Must be called after `FROM` as per MySQL
-    //where() and appendWhere() are synonyms
+    //where() and andWhere() are synonyms
     where<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>> (
         this : SelectBuilder<{
             hasSelect : any,
@@ -1313,11 +1313,21 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         whereDelegate : WhereDelegateT
-    ) : this {
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        Extract<
+            ReturnType<WhereDelegateT>,
+            AnyExpr
+        >["usedReferences"] ?
+            this :
+            never
+    ) {
         return this.andWhere(whereDelegate as any) as any;
     }
     //Must be called after `FROM` as per MySQL
-    //where() and appendWhere() are synonyms
+    //where() and andWhere() are synonyms
     andWhere<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>> (
         this : SelectBuilder<{
             hasSelect : any,
@@ -1331,7 +1341,17 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         whereDelegate : WhereDelegateT
-    ) : this {
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        Extract<
+            ReturnType<WhereDelegateT>,
+            AnyExpr
+        >["usedReferences"] ?
+            this :
+            never
+    ) {
         this.assertAfterFrom();
 
         let whereExpr = WhereDelegateUtil.execute(this, whereDelegate as any);

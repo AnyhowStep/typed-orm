@@ -9,7 +9,7 @@ import { AggregateDelegate } from "./aggregate-delegate";
 import { TypeNarrowDelegate } from "./type-narrow-delegate";
 import { Column } from "./column";
 import * as invalid from "./invalid";
-import { WhereDelegate } from "./where-delegate";
+import { WhereDelegate, WhereDelegateColumnReferences } from "./where-delegate";
 import { GroupByDelegate } from "./group-by-delegate";
 import { HavingDelegate } from "./having-delegate";
 import { OrderByDelegate } from "./order-by-delegate";
@@ -20,7 +20,7 @@ import { FetchValueCheck, FetchValueType } from "./fetch-value";
 import { AnyTable } from "./table";
 import { AnyGroupBy } from "./group-by";
 import { AnyOrderBy } from "./order-by";
-import { Expr } from "./expr";
+import { Expr, AnyExpr } from "./expr";
 import { PooledDatabase } from "./PooledDatabase";
 import { Querify } from "./querify";
 import { StringBuilder } from "./StringBuilder";
@@ -376,7 +376,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, whereDelegate: WhereDelegateT): this;
+    }>, whereDelegate: WhereDelegateT): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"] ? this : never);
     andWhere<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -386,7 +386,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, whereDelegate: WhereDelegateT): this;
+    }>, whereDelegate: WhereDelegateT): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"] ? this : never);
     distinct(distinct?: boolean): this;
     sqlCalcFoundRows(sqlCalcFoundRows?: boolean): this;
     groupBy<GroupByDelegateT extends GroupByDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{

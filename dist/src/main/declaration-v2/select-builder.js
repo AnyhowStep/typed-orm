@@ -521,7 +521,7 @@ class SelectBuilder {
         return this.andWhere(whereDelegate);
     }
     //Must be called after `FROM` as per MySQL
-    //where() and appendWhere() are synonyms
+    //where() and andWhere() are synonyms
     andWhere(whereDelegate) {
         this.assertAfterFrom();
         let whereExpr = where_delegate_1.WhereDelegateUtil.execute(this, whereDelegate);
