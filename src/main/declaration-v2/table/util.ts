@@ -112,7 +112,16 @@ export namespace TableUtil {
                 any,
                 {
                     [columnName in Extract<keyof TableT["columns"], string>] : (
-                        Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>
+                        Column<
+                            any,
+                            columnName,
+                            ReturnType<
+                                Extract<
+                                    TableT["columns"][columnName],
+                                    AnyColumn
+                                >["assertDelegate"]
+                            >
+                        >
                     )
                 },
                 TableDataUtil.WithTableAliasGeneric<

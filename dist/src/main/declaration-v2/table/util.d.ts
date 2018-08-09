@@ -13,7 +13,7 @@ export declare namespace TableUtil {
     function validateInsertRows(table: AnyTable, rows: any[]): void;
     function validateUpdateAssignmentReferences(joins: JoinCollection, assignmentReferences: any): void;
     type ToGeneric<TableT extends AnyTable> = (TableT["data"]["id"] extends AnyColumn ? Table<any, any, {
-        [columnName in Extract<keyof TableT["columns"], string>]: (Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>);
+        [columnName in Extract<keyof TableT["columns"], string>]: (Column<any, columnName, ReturnType<Extract<TableT["columns"][columnName], AnyColumn>["assertDelegate"]>>);
     }, TableDataUtil.WithTableAliasGeneric<TableT["data"], any>> : (Table<any, any, {
         [columnName in Extract<keyof TableT["columns"], string>]: (Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>);
     }, {
