@@ -376,7 +376,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, whereDelegate: WhereDelegateT): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"] ? this : never);
+    }>, whereDelegate: WhereDelegateT): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"] ? this : invalid.E4<"WHERE expression", Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"], "contains some invalid columns; only the following are allowed:", WhereDelegateColumnReferences<SelectBuilder<DataT>>>);
     andWhere<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
@@ -386,7 +386,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, whereDelegate: WhereDelegateT): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"] ? this : never);
+    }>, whereDelegate: WhereDelegateT): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"] ? this : invalid.E4<"WHERE expression", Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"], "contains some invalid columns; only the following are allowed:", WhereDelegateColumnReferences<SelectBuilder<DataT>>>);
     distinct(distinct?: boolean): this;
     sqlCalcFoundRows(sqlCalcFoundRows?: boolean): this;
     groupBy<GroupByDelegateT extends GroupByDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{

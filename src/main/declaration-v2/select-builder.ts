@@ -1322,7 +1322,17 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             AnyExpr
         >["usedReferences"] ?
             this :
-            never
+            invalid.E4<
+                "WHERE expression",
+                Extract<
+                    ReturnType<WhereDelegateT>,
+                    AnyExpr
+                >["usedReferences"],
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
     ) {
         return this.andWhere(whereDelegate as any) as any;
     }
@@ -1350,7 +1360,17 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             AnyExpr
         >["usedReferences"] ?
             this :
-            never
+            invalid.E4<
+                "WHERE expression",
+                Extract<
+                    ReturnType<WhereDelegateT>,
+                    AnyExpr
+                >["usedReferences"],
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
     ) {
         this.assertAfterFrom();
 
