@@ -21,6 +21,9 @@ export declare namespace ColumnReferencesUtil {
         };
     });
     function toNullable<RefT extends ColumnReferences>(columnReferences: RefT): (ToNullable<RefT>);
+    type MergeIntersected<T extends ColumnReferences> = (Extract<{
+        [k in keyof T]: (T[k]);
+    }, ColumnReferences>);
     type Merge<RefA extends ColumnReferences, RefB extends ColumnReferences> = (Extract<{
         [k in keyof (RefA & RefB)]: ((RefA & RefB)[k]);
     }, ColumnReferences>);

@@ -80,6 +80,19 @@ export namespace ColumnReferencesUtil {
         return result;
     }
 
+    //RefA & RefB & RefC & ...
+    export type MergeIntersected<
+        T extends ColumnReferences
+    > = (
+        Extract<
+            {
+                [k in keyof T] : (
+                    T[k]
+                )
+            },
+            ColumnReferences
+        >
+    )
     export type Merge<
         RefA extends ColumnReferences,
         RefB extends ColumnReferences
