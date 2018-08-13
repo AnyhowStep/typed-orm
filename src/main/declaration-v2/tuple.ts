@@ -269,23 +269,17 @@ export type TuplePush<TupleT extends Tuple<any>, NextT> = (
 export type TupleWPush<WidenT, TupleT extends Tuple<WidenT>, NextT extends WidenT> = (
     {
         [index in TupleKeys<TupleT>] : (
-            TupleT[index] extends WidenT ?
-                TupleT[index] :
-                never
+            Extract<TupleT[index], WidenT>
         )
     } &
     {
         [index in TupleNextKey<TupleT>] : (
-            NextT extends WidenT ?
-                NextT :
-                never
+            Extract<NextT, WidenT>
         )
     } &
     {
         "0" : (
-            TupleT[0] extends WidenT ?
-                TupleT[0] :
-                never
+            Extract<TupleT[0], WidenT>
         ),
     } &
     {
@@ -381,9 +375,7 @@ export type TupleWConcat<
 > = (
     {
         [index in TupleKeys<T>]: (
-            T[index] extends WidenT ?
-                T[index] :
-                never
+            Extract<T[index], WidenT>
         )
     } &
     {
@@ -391,16 +383,12 @@ export type TupleWConcat<
             StringToNumber<Extract<TupleKeys<U>, string>>,
             T["length"]
         >>]: (
-            U[Subtract<StringToNumber<newIndex>, T["length"]>] extends WidenT ?
-                U[Subtract<StringToNumber<newIndex>, T["length"]>] :
-                never
+            Extract<U[Subtract<StringToNumber<newIndex>, T["length"]>], WidenT>
         )
     } &
     {
         "0" : (
-            T[0] extends WidenT ?
-                T[0] :
-                never
+            Extract<T[0], WidenT>
         ),
         length: Add<T["length"], U["length"]>;
     } &
