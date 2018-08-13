@@ -31,7 +31,7 @@ export declare namespace SelectCollectionUtil {
     function assertHasCompatibleTypes(actual: SelectCollection, expected: SelectCollection): void;
     type HasDuplicate<SelectsT extends SelectCollection> = (ColumnTupleUtil.HasDuplicate<MapToColumns<SelectsT>>);
     function assertNonDuplicateColumn(selects: SelectCollection): void;
-    const concat: <T extends import("../tuple").Tuple<Column<string, string, any> | import("../column-collection/column-collection").ColumnCollection | AliasedExpr<import("../column-references/column-references").PartialColumnReferences, string, string, any>>, U extends import("../tuple").Tuple<Column<string, string, any> | import("../column-collection/column-collection").ColumnCollection | AliasedExpr<import("../column-references/column-references").PartialColumnReferences, string, string, any>>>(t: T, u: U) => { [index in Extract<Exclude<keyof T, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof T & string>]: T[index] extends Column<string, string, any> | import("../column-collection/column-collection").ColumnCollection | AliasedExpr<import("../column-references/column-references").PartialColumnReferences, string, string, any> ? T[index] : never; } & { [newIndex in ({
+    const concat: <T extends import("../tuple").Tuple<Column<string, string, any> | import("../column-collection/column-collection").ColumnCollection | AliasedExpr<import("../column-references/column-references").PartialColumnReferences, string, string, any>>, U extends import("../tuple").Tuple<Column<string, string, any> | import("../column-collection/column-collection").ColumnCollection | AliasedExpr<import("../column-references/column-references").PartialColumnReferences, string, string, any>>>(t: T, u: U) => { [index in Extract<keyof T, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">]: T[index] extends Column<string, string, any> | import("../column-collection/column-collection").ColumnCollection | AliasedExpr<import("../column-references/column-references").PartialColumnReferences, string, string, any> ? T[index] : never; } & { [newIndex in ({
         0: "0";
         1: "1";
         2: "2";
@@ -101,7 +101,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>];
         1: {
             [index: number]: number;
             0: 1;
@@ -163,7 +163,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]];
         2: {
             [index: number]: number;
             0: 1;
@@ -252,7 +252,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]];
         3: {
             [index: number]: number;
             0: 1;
@@ -368,7 +368,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]];
         4: {
             [index: number]: number;
             0: 1;
@@ -511,7 +511,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]];
         5: {
             [index: number]: number;
             0: 1;
@@ -681,7 +681,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]];
         6: {
             [index: number]: number;
             0: 1;
@@ -878,7 +878,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]];
         7: {
             [index: number]: number;
             0: 1;
@@ -1102,7 +1102,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]];
         8: {
             [index: number]: number;
             0: 1;
@@ -1353,7 +1353,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]];
         9: {
             [index: number]: number;
             0: 1;
@@ -1631,7 +1631,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]];
         10: {
             [index: number]: number;
             0: 1;
@@ -1936,7 +1936,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]];
         11: {
             [index: number]: number;
             0: 1;
@@ -2268,7 +2268,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]];
         12: {
             [index: number]: number;
             0: 1;
@@ -2627,7 +2627,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]];
         13: {
             [index: number]: number;
             0: 1;
@@ -3013,7 +3013,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]]];
         14: {
             [index: number]: number;
             0: 1;
@@ -3426,7 +3426,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]]]];
         15: {
             [index: number]: number;
             0: 1;
@@ -3866,7 +3866,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]]]]];
         16: {
             [index: number]: number;
             0: 1;
@@ -4333,7 +4333,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]]]]]];
         17: {
             [index: number]: number;
             0: 1;
@@ -4827,7 +4827,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]]]]]]];
         18: {
             [index: number]: number;
             0: 1;
@@ -5348,7 +5348,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]]]]]]]];
         19: {
             [index: number]: number;
             0: 1;
@@ -5896,7 +5896,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]]]]]]]]];
         20: {
             [index: number]: number;
             0: 1;
@@ -6471,7 +6471,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]]]]]]]]]];
         21: {
             [index: number]: number;
             0: 1;
@@ -7073,7 +7073,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]]]]]]]]]]];
         22: {
             [index: number]: number;
             0: 1;
@@ -7702,7 +7702,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]]]]]]]]]]]];
         23: {
             [index: number]: number;
             0: 1;
@@ -8358,7 +8358,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]]]]]]]]]]]]];
         24: {
             [index: number]: number;
             0: 1;
@@ -9041,7 +9041,7 @@ export declare namespace SelectCollectionUtil {
             "30": 30;
         } & {
             [index: string]: never;
-        })[Extract<Extract<Exclude<keyof U, number | "fill" | "filter" | "length" | "reverse" | "map" | "toString" | "toLocaleString" | "pop" | "push" | "concat" | "join" | "shift" | "slice" | "sort" | "splice" | "unshift" | "indexOf" | "lastIndexOf" | "every" | "some" | "forEach" | "reduce" | "reduceRight" | "find" | "findIndex" | "copyWithin" | "entries" | "keys" | "values">, keyof U & string>, string>]]]]]]]]]]]]]]]]]]]]]]]]];
+        })[Extract<Extract<keyof U, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">, string>]]]]]]]]]]]]]]]]]]]]]]]]];
     }[T["length"]]]]: U[{
         [index: number]: number;
         0: ({
