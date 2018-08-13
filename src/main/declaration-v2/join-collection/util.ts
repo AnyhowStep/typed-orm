@@ -482,11 +482,33 @@ export namespace JoinCollectionUtil {
         }) as any;
     }
 
-    export type InnerJoin<
+    /*export type InnerJoin<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
     > = (
         CheckedJoin<SelectBuilderT, ToTableT, InnerJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+    export type InnerJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+    > = (
+        FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    InnerJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
     );
     /*export type InnerJoinUsing<
         SelectBuilderT extends AnySelectBuilder,
@@ -528,37 +550,170 @@ export namespace JoinCollectionUtil {
                 FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
             >
     );
-    export type RightJoin<
+    /*export type RightJoin<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
     > = (
         CheckedJoin<SelectBuilderT, ToTableT, RightJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+
+    export type RightJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+    > = (
+        FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    RightJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
     );
-    export type RightJoinUsing<
+    /*export type RightJoinUsing<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > = (
         CheckedJoinUsing<SelectBuilderT, ToTableT, FromDelegateT, RightJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+    export type RightJoinUsing<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
+    > = (
+        JoinToDelegateUtil.CreateUsing<ToTableT, ReturnType<FromDelegateT>> extends never ?
+            invalid.E4<
+                "Table",
+                ToTableT["alias"],
+                "does not have some columns",
+                Exclude<
+                    ColumnTupleUtil.WithTableAlias<ReturnType<FromDelegateT>, ToTableT["alias"]>[TupleKeys<ReturnType<FromDelegateT>>],
+                    ColumnCollectionUtil.Columns<ToTableT["columns"]>
+                >
+            > :
+            FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    RightJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
     );
-    export type LeftJoin<
+    /*export type LeftJoin<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
     > = (
         CheckedJoin<SelectBuilderT, ToTableT, LeftJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+    export type LeftJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+    > = (
+        FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    LeftJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
     );
-    export type LeftJoinUsing<
+    /*export type LeftJoinUsing<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > = (
         CheckedJoinUsing<SelectBuilderT, ToTableT, FromDelegateT, LeftJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+    export type LeftJoinUsing<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
+    > = (
+        JoinToDelegateUtil.CreateUsing<ToTableT, ReturnType<FromDelegateT>> extends never ?
+            invalid.E4<
+                "Table",
+                ToTableT["alias"],
+                "does not have some columns",
+                Exclude<
+                    ColumnTupleUtil.WithTableAlias<ReturnType<FromDelegateT>, ToTableT["alias"]>[TupleKeys<ReturnType<FromDelegateT>>],
+                    ColumnCollectionUtil.Columns<ToTableT["columns"]>
+                >
+            > :
+            FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    LeftJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
     );
-    export type CrossJoin<
+    /*export type CrossJoin<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
     > = (
         CheckedJoin<SelectBuilderT, ToTableT, CrossJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+    export type CrossJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+    > = (
+        FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    CrossJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
     );
     export function innerJoin<
         SelectBuilderT extends AnySelectBuilder,
