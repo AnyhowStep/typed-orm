@@ -21,7 +21,7 @@ export namespace AliasedTableUtil {
         }
     }
 
-    
+
     export type IsReplaceableBy<
         TableA extends AnyAliasedTable,
         TableB extends AnyAliasedTable
@@ -74,5 +74,12 @@ export namespace AliasedTableUtil {
                 )
             }
         >
+    );
+
+    //Hopefully improve type check performance?
+    export type EraseSubType<TableT extends AnyAliasedTable> = (
+        TableT extends AliasedTable<infer AliasT, infer NameT, infer ColumnCollectionT> ?
+        AliasedTable<AliasT, NameT, ColumnCollectionT> :
+        never
     );
 }

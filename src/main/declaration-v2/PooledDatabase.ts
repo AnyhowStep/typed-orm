@@ -2,7 +2,7 @@ import * as mysql from "typed-mysql";
 import {CreateSelectBuilderDelegate} from "./select-builder";
 import {SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-builder";
 import {Join, JoinType} from "./join";
-import {AnyAliasedTable} from "./aliased-table";;
+import {AnyAliasedTable, AliasedTableUtil} from "./aliased-table";;
 import {SelectDelegate} from "./select-delegate";
 import {Table, AnyTable, UniqueKeys, TableRow} from "./table";
 import {RawInsertValueRow, InsertValueBuilder} from "./insert-value-builder";
@@ -45,7 +45,7 @@ export type ConvenientUpdateSelectBuilder<TableT extends AnyTable> = (
 
         joins : [
             Join<
-                TableT,
+                AliasedTableUtil.EraseSubType<TableT>,
                 TableT["columns"],
                 false
             >
@@ -68,7 +68,7 @@ export type ConvenientDeleteSelectBuilder<TableT extends AnyTable> = (
 
         joins : [
             Join<
-                TableT,
+                AliasedTableUtil.EraseSubType<TableT>,
                 TableT["columns"],
                 false
             >

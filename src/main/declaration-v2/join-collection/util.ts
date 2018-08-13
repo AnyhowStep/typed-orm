@@ -346,7 +346,7 @@ export namespace JoinCollectionUtil {
             AnyJoin,
             JoinsT,
             Join<
-                ToTableT,
+                AliasedTableUtil.EraseSubType<ToTableT>,
                 ToTableT["columns"],
                 false
             >
@@ -360,7 +360,7 @@ export namespace JoinCollectionUtil {
             AnyJoin,
             JoinCollectionUtil.ToNullable<JoinsT>,
             Join<
-                ToTableT,
+                AliasedTableUtil.EraseSubType<ToTableT>,
                 ToTableT["columns"],
                 false
             >
@@ -374,7 +374,7 @@ export namespace JoinCollectionUtil {
             AnyJoin,
             JoinsT,
             Join<
-                ToTableT,
+                AliasedTableUtil.EraseSubType<ToTableT>,
                 ToTableT["columns"],
                 true
             >
@@ -388,7 +388,7 @@ export namespace JoinCollectionUtil {
             AnyJoin,
             JoinsT,
             Join<
-                ToTableT,
+                AliasedTableUtil.EraseSubType<ToTableT>,
                 ToTableT["columns"],
                 false
             >
@@ -763,7 +763,7 @@ export namespace JoinCollectionUtil {
         TableA extends AnyAliasedTable,
         TableB extends AnyAliasedTable
     > = (
-        JoinT["table"] extends TableA ?
+        JoinT["table"] extends AliasedTableUtil.EraseSubType<TableA> ?
             Join<
                 AliasedTableUtil.As<TableB, JoinT["table"]["alias"]>,
                 ColumnCollectionUtil.AndType<

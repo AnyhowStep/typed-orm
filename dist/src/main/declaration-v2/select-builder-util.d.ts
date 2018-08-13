@@ -1,5 +1,5 @@
 import { SelectBuilderData, SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE } from "./select-builder";
-import { AnyAliasedTable } from "./aliased-table";
+import { AnyAliasedTable, AliasedTableUtil } from "./aliased-table";
 import { Join } from "./join";
 import { SelectCollectionUtil } from "./select-collection";
 import { JoinCollectionUtil } from "./join-collection";
@@ -23,7 +23,7 @@ export declare namespace SelectBuilderUtil {
         parentJoins: [Join<typeof __DUMMY_FROM_TABLE, typeof __DUMMY_FROM_TABLE["columns"], true>];
     };
     type CleanToFromData<ToTableT extends AnyAliasedTable> = ({
-        readonly [key in keyof CleanData]: (key extends "hasFrom" ? true : key extends "joins" ? [Join<ToTableT, ToTableT["columns"], false>] : CleanData[key]);
+        readonly [key in keyof CleanData]: (key extends "hasFrom" ? true : key extends "joins" ? [Join<AliasedTableUtil.EraseSubType<ToTableT>, ToTableT["columns"], false>] : CleanData[key]);
     });
     type CleanToFrom<ToTableT extends AnyAliasedTable> = (SelectBuilder<CleanToFromData<ToTableT>>);
     type SelectAllData<DataT extends SelectBuilderData> = ({
@@ -31,7 +31,7 @@ export declare namespace SelectBuilderUtil {
     });
     type CleanToSelectAll<ToTableT extends AnyAliasedTable> = (SelectBuilder<SelectAllData<CleanToFromData<ToTableT>>>);
     type FromUnsafe<SelectBuilderT extends AnySelectBuilder, ToTableT extends AnyAliasedTable> = (SelectBuilderT extends SelectBuilder<infer DataT> ? SelectBuilder<{
-        readonly [key in keyof DataT]: (key extends "hasFrom" ? true : key extends "joins" ? [Join<ToTableT, ToTableT["columns"], false>] : DataT[key]);
+        readonly [key in keyof DataT]: (key extends "hasFrom" ? true : key extends "joins" ? [Join<AliasedTableUtil.EraseSubType<ToTableT>, ToTableT["columns"], false>] : DataT[key]);
     }> : never);
     type From<SelectBuilderT extends AnySelectBuilder, ToTableT extends AnyAliasedTable> = (SelectBuilderT extends SelectBuilder<infer DataT> ? JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]> extends never ? FromUnsafe<SelectBuilderT, ToTableT> : invalid.E4<"Alias", ToTableT["alias"], "was already used as join in parent scope", JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]>> : never);
     function from<SelectBuilderT extends AnySelectBuilder, ToTableT extends AnyAliasedTable>(s: SelectBuilderT, toTable: ToTableT): (From<SelectBuilderT, ToTableT>);

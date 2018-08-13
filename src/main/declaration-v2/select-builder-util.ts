@@ -1,5 +1,5 @@
 import {SelectBuilderData, SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-builder";
-import {AnyAliasedTable} from "./aliased-table";
+import {AnyAliasedTable, AliasedTableUtil} from "./aliased-table";
 import {Join, JoinType} from "./join";
 import {SelectCollectionUtil} from "./select-collection";
 import {spread} from "@anyhowstep/type-util";
@@ -50,7 +50,7 @@ export namespace SelectBuilderUtil {
                 key extends "joins" ?
                 [
                     Join<
-                        ToTableT,
+                        AliasedTableUtil.EraseSubType<ToTableT>,
                         ToTableT["columns"],
                         false
                     >
@@ -93,7 +93,7 @@ export namespace SelectBuilderUtil {
                     key extends "joins" ?
                     [
                         Join<
-                            ToTableT,
+                            AliasedTableUtil.EraseSubType<ToTableT>,
                             ToTableT["columns"],
                             false
                         >
