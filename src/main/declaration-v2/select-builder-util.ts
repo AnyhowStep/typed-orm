@@ -263,17 +263,13 @@ export namespace SelectBuilderUtil {
     export type AggregatedRow<
         SelectBuilderT extends AnySelectBuilder
     > = (
-        SelectBuilderT extends SelectBuilder<infer DataT> ?
-            (
-                AggregateDelegateUtil.AggregatedRow<
-                    FetchRow<
-                        SelectBuilderT["data"]["joins"],
-                        SelectCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["selects"]>
-                    >,
-                    SelectBuilderT["data"]["aggregateDelegate"]
-                >
-            ) :
-            never
+        AggregateDelegateUtil.AggregatedRow<
+            FetchRow<
+                SelectBuilderT["data"]["joins"],
+                SelectCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["selects"]>
+            >,
+            SelectBuilderT["data"]["aggregateDelegate"]
+        >
     );
     export type WhereIsNotNull<
         SelectBuilderT extends AnySelectBuilder,

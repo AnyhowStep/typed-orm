@@ -14,9 +14,13 @@ export namespace AggregateDelegateUtil {
         FetchRowT,
         AggregateDelegateT extends AggregateDelegate<FetchRowT>|undefined
     > = (
-        Aggregate<FetchRowT, AggregateDelegateT> extends Promise<infer R> ?
-            R :
-            Aggregate<FetchRowT, AggregateDelegateT>
+        AggregateDelegateT extends (...args : any[]) => infer R ?
+        (
+            R extends Promise<infer PromiseR> ?
+            PromiseR :
+            R
+        ) :
+        FetchRowT
     );
     export function aggregate<
         FetchRowT,
