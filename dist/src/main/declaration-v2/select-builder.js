@@ -126,11 +126,19 @@ class SelectBuilder {
     join(toTable, fromDelegate, toDelegate) {
         return select_builder_util_1.SelectBuilderUtil.doJoin(this, toTable, fromDelegate, toDelegate);
     }
+    //Unsafe because it does not check for duplicates during compile-time
+    joinUnsafe(toTable, fromDelegate, toDelegate) {
+        return this.join(toTable, fromDelegate, toDelegate);
+    }
     joinUsing(toTable, fromDelegate) {
         this.assertAfterFrom();
         return new SelectBuilder(type_util_1.spread(this.data, {
             joins: join_collection_1.JoinCollectionUtil.innerJoinUsing(this, toTable, fromDelegate)
         }), this.extraData);
+    }
+    //Unsafe because it does not check for duplicates during compile-time
+    joinUsingUnsafe(toTable, fromDelegate) {
+        return this.joinUsing(toTable, fromDelegate);
     }
     //We don't allow right joins after selecting
     //because it'll narrow the data type of selected columns
@@ -141,6 +149,10 @@ class SelectBuilder {
             joins: join_collection_1.JoinCollectionUtil.rightJoin(this, toTable, fromDelegate, toDelegate)
         }), this.extraData);
     }
+    //Unsafe because it does not check for duplicates during compile-time
+    rightJoinUnsafe(toTable, fromDelegate, toDelegate) {
+        return this.rightJoin(toTable, fromDelegate, toDelegate);
+    }
     //We don't allow right joins after selecting
     //because it'll narrow the data type of selected columns
     rightJoinUsing(toTable, fromDelegate) {
@@ -150,17 +162,29 @@ class SelectBuilder {
             joins: join_collection_1.JoinCollectionUtil.rightJoinUsing(this, toTable, fromDelegate)
         }), this.extraData);
     }
+    //Unsafe because it does not check for duplicates during compile-time
+    rightJoinUsingUnsafe(toTable, fromDelegate) {
+        return this.rightJoinUsing(toTable, fromDelegate);
+    }
     leftJoin(toTable, fromDelegate, toDelegate) {
         this.assertAfterFrom();
         return new SelectBuilder(type_util_1.spread(this.data, {
             joins: join_collection_1.JoinCollectionUtil.leftJoin(this, toTable, fromDelegate, toDelegate)
         }), this.extraData);
     }
+    //Unsafe because it does not check for duplicates during compile-time
+    leftJoinUnsafe(toTable, fromDelegate, toDelegate) {
+        return this.leftJoinUnsafe(toTable, fromDelegate, toDelegate);
+    }
     leftJoinUsing(toTable, fromDelegate) {
         this.assertAfterFrom();
         return new SelectBuilder(type_util_1.spread(this.data, {
             joins: join_collection_1.JoinCollectionUtil.leftJoinUsing(this, toTable, fromDelegate)
         }), this.extraData);
+    }
+    //Unsafe because it does not check for duplicates during compile-time
+    leftJoinUsingUnsafe(toTable, fromDelegate) {
+        return this.leftJoinUsing(toTable, fromDelegate);
     }
     /*
         Gives the Cartesian product.
@@ -199,6 +223,10 @@ class SelectBuilder {
         return new SelectBuilder(type_util_1.spread(this.data, {
             joins: join_collection_1.JoinCollectionUtil.crossJoin(this, toTable)
         }), this.extraData);
+    }
+    //Unsafe because it does not check for duplicates during compile-time
+    crossJoinUnsafe(toTable) {
+        return this.crossJoin(toTable);
     }
     //Must be called before UNION because it will change the number of
     //columns expected.

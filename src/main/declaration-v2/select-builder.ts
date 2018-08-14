@@ -197,6 +197,36 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) {
         return SelectBuilderUtil.doJoin(this, toTable, fromDelegate as any, toDelegate) as any;
     }
+    //Unsafe because it does not check for duplicates during compile-time
+    joinUnsafe<
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegate<this["data"]["joins"]>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT,
+        fromDelegate : FromDelegateT,
+        toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.join(toTable, fromDelegate as any, toDelegate) as any;
+    }
     joinUsing<
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<DataT["joins"]>
@@ -236,6 +266,35 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 )
             }
         ), this.extraData) as any;
+    }
+    //Unsafe because it does not check for duplicates during compile-time
+    joinUsingUnsafe<
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegate<DataT["joins"]>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT,
+        fromDelegate : FromDelegateT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.joinUsing(toTable, fromDelegate as any) as any;
     }
     //We don't allow right joins after selecting
     //because it'll narrow the data type of selected columns
@@ -282,6 +341,36 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             }
         ), this.extraData) as any;
     }
+    //Unsafe because it does not check for duplicates during compile-time
+    rightJoinUnsafe<
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegate<DataT["joins"]>
+    > (
+        this : SelectBuilder<{
+            hasSelect : false,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT,
+        fromDelegate : FromDelegateT,
+        toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.rightJoin(toTable, fromDelegate as any, toDelegate) as any;
+    }
     //We don't allow right joins after selecting
     //because it'll narrow the data type of selected columns
     rightJoinUsing<
@@ -325,6 +414,35 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             }
         ), this.extraData) as any;
     }
+    //Unsafe because it does not check for duplicates during compile-time
+    rightJoinUsingUnsafe<
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegate<DataT["joins"]>
+    > (
+        this : SelectBuilder<{
+            hasSelect : false,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT,
+        fromDelegate : FromDelegateT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.rightJoinUsing(toTable, fromDelegate as any) as any;
+    }
     leftJoin<
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<DataT["joins"]>
@@ -367,6 +485,36 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             }
         ), this.extraData) as any;
     }
+    //Unsafe because it does not check for duplicates during compile-time
+    leftJoinUnsafe<
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegate<DataT["joins"]>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT,
+        fromDelegate : FromDelegateT,
+        toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.leftJoinUnsafe(toTable, fromDelegate as any, toDelegate) as any;
+    }
     leftJoinUsing<
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<DataT["joins"]>
@@ -406,6 +554,35 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 )
             }
         ), this.extraData) as any;
+    }
+    //Unsafe because it does not check for duplicates during compile-time
+    leftJoinUsingUnsafe<
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegate<DataT["joins"]>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT,
+        fromDelegate : FromDelegateT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.leftJoinUsing(toTable, fromDelegate as any) as any;
     }
     /*
         Gives the Cartesian product.
@@ -475,6 +652,33 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 )
             }
         ), this.extraData) as any;
+    }
+    //Unsafe because it does not check for duplicates during compile-time
+    crossJoinUnsafe<
+        ToTableT extends AnyAliasedTable
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.CrossJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.crossJoin(toTable) as any;
     }
 
     //Must be called before UNION because it will change the number of
