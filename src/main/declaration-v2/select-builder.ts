@@ -9,7 +9,7 @@ import {
     JoinCollection,
     JoinCollectionUtil
 } from "./join-collection";
-import {JoinFromDelegate} from "./join-from-delegate";
+import {JoinFromDelegate, JoinFromDelegateUnsafe} from "./join-from-delegate";
 import {JoinToDelegate} from "./join-to-delegate";
 import {AliasedTable, AnyAliasedTable} from "./aliased-table";
 import {spread} from "@anyhowstep/type-util";
@@ -200,7 +200,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Unsafe because it does not check for duplicates during compile-time
     joinUnsafe<
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<this["data"]["joins"]>
+        FromDelegateT extends JoinFromDelegateUnsafe<this["data"]["joins"]>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -270,7 +270,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Unsafe because it does not check for duplicates during compile-time
     joinUsingUnsafe<
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<DataT["joins"]>
+        FromDelegateT extends JoinFromDelegateUnsafe<DataT["joins"]>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -344,7 +344,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Unsafe because it does not check for duplicates during compile-time
     rightJoinUnsafe<
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<DataT["joins"]>
+        FromDelegateT extends JoinFromDelegateUnsafe<DataT["joins"]>
     > (
         this : SelectBuilder<{
             hasSelect : false,
@@ -417,7 +417,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Unsafe because it does not check for duplicates during compile-time
     rightJoinUsingUnsafe<
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<DataT["joins"]>
+        FromDelegateT extends JoinFromDelegateUnsafe<DataT["joins"]>
     > (
         this : SelectBuilder<{
             hasSelect : false,
@@ -488,7 +488,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Unsafe because it does not check for duplicates during compile-time
     leftJoinUnsafe<
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<DataT["joins"]>
+        FromDelegateT extends JoinFromDelegateUnsafe<DataT["joins"]>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -558,7 +558,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Unsafe because it does not check for duplicates during compile-time
     leftJoinUsingUnsafe<
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<DataT["joins"]>
+        FromDelegateT extends JoinFromDelegateUnsafe<DataT["joins"]>
     > (
         this : SelectBuilder<{
             hasSelect : any,
