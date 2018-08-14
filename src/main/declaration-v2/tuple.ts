@@ -98,7 +98,8 @@ export type TupleLength<TupleT extends Tuple<any>> = (
 );
 
 export type TupleWiden<TupleT extends Tuple<any>, WidenT> = (
-    TupleT extends Tuple<infer TypeT> ?
+    TupleT & (WidenT[])
+    /*TupleT extends Tuple<infer TypeT> ?
         (
             TypeT extends WidenT ?
                 (
@@ -115,7 +116,7 @@ export type TupleWiden<TupleT extends Tuple<any>, WidenT> = (
                 ) :
                 never
         ) :
-        never
+        never*/
 )
 
 
