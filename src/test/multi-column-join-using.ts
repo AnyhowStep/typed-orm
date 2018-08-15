@@ -98,8 +98,8 @@ tape(__filename, async (t) => {
         });
     await db.from(appSource)
         .declareJoinsUnsafe(
-            [appSourceEnabled, o.JoinType.INNER],
-            [app, o.JoinType.INNER]
+            [o.JoinType.INNER, appSourceEnabled],
+            [o.JoinType.INNER, app]
         )
         .defineJoinsUnsafe([
             c => [
@@ -121,8 +121,8 @@ tape(__filename, async (t) => {
         });
     await db.from(appSource)
         .declareJoinsUnsafe(
-            [appSourceEnabled, o.JoinType.INNER],
-            [app, o.JoinType.LEFT]
+            [o.JoinType.INNER, appSourceEnabled],
+            [o.JoinType.LEFT, app]
         )
         .defineJoinsUnsafe([
             c => [

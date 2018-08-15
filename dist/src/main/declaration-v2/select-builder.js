@@ -1097,9 +1097,9 @@ class SelectBuilder {
     defineJoinsUnsafe(arr) {
         let result = this;
         for (let i = 0; i < arr.length; ++i) {
-            const t = this.data.declaredJoins[i][0];
+            const t = this.data.declaredJoins[i][1];
             const f = arr[i];
-            const type = this.data.declaredJoins[i][1];
+            const type = this.data.declaredJoins[i][0];
             if (type == join_1.JoinType.INNER) {
                 result = result.joinUsing(t, f);
             }

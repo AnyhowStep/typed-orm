@@ -122,7 +122,7 @@ export interface SelectBuilderData {
 
     readonly declaredInnerJoins? : undefined|Tuple<AnyAliasedTable>,
     //Hard to implement RIGHT JOIN
-    readonly declaredJoins? : undefined|Tuple<[AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]>,
+    readonly declaredJoins? : undefined|Tuple<[JoinType.INNER|JoinType.LEFT|JoinType.CROSS, AnyAliasedTable]>,
 }
 
 export const __DUMMY_FROM_TABLE = table(
@@ -3063,7 +3063,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
 
 
-    declareJoinsUnsafe<ArrT extends Tuple<[AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]>> (
+    declareJoinsUnsafe<ArrT extends Tuple<[JoinType.INNER|JoinType.LEFT|JoinType.CROSS, AnyAliasedTable]>> (
         ...arr : ArrT
     ) : (
         SelectBuilder<{
@@ -3088,7 +3088,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Unsafe because a lot of compile-time checks are missing
     defineJoinsUnsafe<
         FromDelegateArrT extends (
-            DataT["declaredJoins"] extends Tuple<[AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]> ?
+            DataT["declaredJoins"] extends Tuple<[JoinType.INNER|JoinType.LEFT|JoinType.CROSS, AnyAliasedTable]> ?
             {
                 [index in TupleKeys<DataT["declaredJoins"]>] : (
                     (
@@ -3103,16 +3103,16 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                                                 Join<
                                                     Extract<
                                                         DataT["declaredJoins"][innerIndex],
-                                                        [AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]
-                                                    >[0],
+                                                        [JoinType.INNER|JoinType.LEFT|JoinType.CROSS, AnyAliasedTable]
+                                                    >[1],
                                                     Extract<
                                                         DataT["declaredJoins"][innerIndex],
-                                                        [AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]
-                                                    >[0]["columns"],
+                                                        [JoinType.INNER|JoinType.LEFT|JoinType.CROSS, AnyAliasedTable]
+                                                    >[1]["columns"],
                                                     Extract<
                                                         DataT["declaredJoins"][innerIndex],
-                                                        [AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]
-                                                    >[1] extends JoinType.LEFT ?
+                                                        [JoinType.INNER|JoinType.LEFT|JoinType.CROSS, AnyAliasedTable]
+                                                    >[0] extends JoinType.LEFT ?
                                                         true :
                                                         false
                                                 >
@@ -3120,9 +3120,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                                         } &
                                         {
                                             "0" : Join<
-                                                DataT["declaredJoins"][0][0],
-                                                DataT["declaredJoins"][0][0]["columns"],
-                                                DataT["declaredJoins"][0][1] extends JoinType.LEFT ?
+                                                DataT["declaredJoins"][0][1],
+                                                DataT["declaredJoins"][0][1]["columns"],
+                                                DataT["declaredJoins"][0][0] extends JoinType.LEFT ?
                                                     true :
                                                     false
                                             >
@@ -3157,7 +3157,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         arr : FromDelegateArrT
     ) : (
-        DataT["declaredJoins"] extends Tuple<[AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]> ?
+        DataT["declaredJoins"] extends Tuple<[JoinType.INNER|JoinType.LEFT|JoinType.CROSS, AnyAliasedTable]> ?
         SelectBuilder<{
             readonly hasSelect : DataT["hasSelect"],
             readonly hasFrom : DataT["hasFrom"],
@@ -3172,16 +3172,16 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                             Join<
                                 Extract<
                                     DataT["declaredJoins"][index],
-                                    [AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]
-                                >[0],
+                                    [JoinType.INNER|JoinType.LEFT|JoinType.CROSS, AnyAliasedTable]
+                                >[1],
                                 Extract<
                                     DataT["declaredJoins"][index],
-                                    [AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]
-                                >[0]["columns"],
+                                    [JoinType.INNER|JoinType.LEFT|JoinType.CROSS, AnyAliasedTable]
+                                >[1]["columns"],
                                 Extract<
                                     DataT["declaredJoins"][index],
-                                    [AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]
-                                >[1] extends JoinType.LEFT ?
+                                    [JoinType.INNER|JoinType.LEFT|JoinType.CROSS, AnyAliasedTable]
+                                >[0] extends JoinType.LEFT ?
                                     true :
                                     false
                             >
@@ -3189,9 +3189,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                     } &
                     {
                         "0" : Join<
-                            DataT["declaredJoins"][0][0],
-                            DataT["declaredJoins"][0][0]["columns"],
-                            DataT["declaredJoins"][0][1] extends JoinType.LEFT ?
+                            DataT["declaredJoins"][0][1],
+                            DataT["declaredJoins"][0][1]["columns"],
+                            DataT["declaredJoins"][0][0] extends JoinType.LEFT ?
                                 true :
                                 false
                         >
@@ -3214,9 +3214,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) {
         let result : any = this;
         for (let i=0; i<arr.length; ++i) {
-            const t = this.data.declaredJoins[i][0];
+            const t = this.data.declaredJoins[i][1];
             const f = (arr as any)[i];
-            const type = this.data.declaredJoins[i][1];
+            const type = this.data.declaredJoins[i][0];
             if (type == JoinType.INNER) {
                 result = result.joinUsing(
                     t,
