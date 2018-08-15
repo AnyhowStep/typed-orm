@@ -238,6 +238,9 @@ class SelectBuilder {
             selects: selects
         }), this.extraData);
     }
+    selectUnsafe(selectDelegate) {
+        return this.select(selectDelegate);
+    }
     //Must be called before any other `SELECT` methods
     //because it'll set the select clause to whatever is at the joins,
     //We never want to overwrite the select clause, only append.

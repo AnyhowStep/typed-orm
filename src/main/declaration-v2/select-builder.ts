@@ -269,8 +269,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
     //Unsafe because it does not check for duplicates during compile-time
     joinUsingUnsafe<
-        ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegateUnsafe<DataT["joins"]>
+        ToTableT extends AnyAliasedTable
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -284,7 +283,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         toTable : ToTableT,
-        fromDelegate : FromDelegateT
+        fromDelegate : JoinFromDelegateUnsafe<DataT["joins"]>
     ) : (
         SelectBuilder<{
             readonly [key in keyof DataT] : (
@@ -416,8 +415,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
     //Unsafe because it does not check for duplicates during compile-time
     rightJoinUsingUnsafe<
-        ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegateUnsafe<DataT["joins"]>
+        ToTableT extends AnyAliasedTable
     > (
         this : SelectBuilder<{
             hasSelect : false,
@@ -431,7 +429,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         toTable : ToTableT,
-        fromDelegate : FromDelegateT
+        fromDelegate : JoinFromDelegateUnsafe<DataT["joins"]>
     ) : (
         SelectBuilder<{
             readonly [key in keyof DataT] : (
@@ -557,8 +555,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
     //Unsafe because it does not check for duplicates during compile-time
     leftJoinUsingUnsafe<
-        ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegateUnsafe<DataT["joins"]>
+        ToTableT extends AnyAliasedTable
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -572,7 +569,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         toTable : ToTableT,
-        fromDelegate : FromDelegateT
+        fromDelegate : JoinFromDelegateUnsafe<DataT["joins"]>
     ) : (
         SelectBuilder<{
             readonly [key in keyof DataT] : (
@@ -718,6 +715,38 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 selects : selects
             }
         ), this.extraData) as any;
+    }
+    selectUnsafe<
+        SelectDelegateT extends SelectDelegate<this>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : any,
+            hasUnion : false,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        selectDelegate : SelectDelegateT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "selects" ?
+                SelectCollectionUtil.AppendSelectUnsafe<
+                    this["data"]["selects"],
+                    this,
+                    SelectDelegateT
+                > :
+                key extends "hasSelect" ?
+                true :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.select(selectDelegate as any) as any;
     }
     //Must be called before any other `SELECT` methods
     //because it'll set the select clause to whatever is at the joins,
