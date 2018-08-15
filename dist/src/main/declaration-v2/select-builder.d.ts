@@ -2,7 +2,7 @@ import { JoinCollection, JoinCollectionUtil } from "./join-collection";
 import { JoinFromDelegate, JoinFromDelegateUnsafe } from "./join-from-delegate";
 import { JoinToDelegate } from "./join-to-delegate";
 import { AliasedTable, AnyAliasedTable } from "./aliased-table";
-import { Join } from "./join";
+import { Join, JoinType } from "./join";
 import { SelectCollection, SelectCollectionUtil } from "./select-collection";
 import { SelectDelegate } from "./select-delegate";
 import { AggregateDelegate } from "./aggregate-delegate";
@@ -82,6 +82,7 @@ export interface SelectBuilderData {
     readonly hasParentJoins: boolean;
     readonly parentJoins: JoinCollection;
     readonly declaredInnerJoins?: undefined | Tuple<AnyAliasedTable>;
+    readonly declaredJoins?: undefined | Tuple<[AnyAliasedTable, JoinType.INNER | JoinType.LEFT | JoinType.CROSS]>;
 }
 export declare const __DUMMY_FROM_TABLE: Table<"__DUMMY_FROM_TABLE", "__DUMMY_FROM_TABLE", {}, {
     autoIncrement: undefined;
@@ -720,6 +721,47 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
             "0": Join<DataT["declaredInnerJoins"][0], DataT["declaredInnerJoins"][0]["columns"], false>;
         } & {
             length: DataT["declaredInnerJoins"]["length"];
+        } & AnyJoin[])>;
+        readonly selects: DataT["selects"];
+        readonly aggregateDelegate: DataT["aggregateDelegate"];
+        readonly hasParentJoins: DataT["hasParentJoins"];
+        readonly parentJoins: DataT["parentJoins"];
+    }> : never);
+    declareJoinsUnsafe<ArrT extends Tuple<[AnyAliasedTable, JoinType.INNER | JoinType.LEFT | JoinType.CROSS]>>(...arr: ArrT): (SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "declaredJoins" ? ArrT : DataT[key]);
+    } & {
+        declaredJoins: ArrT;
+    }>);
+    defineJoinsUnsafe<FromDelegateArrT extends (DataT["declaredJoins"] extends Tuple<[AnyAliasedTable, JoinType.INNER | JoinType.LEFT | JoinType.CROSS]> ? {
+        [index in TupleKeys<DataT["declaredJoins"]>]: ((columnReferences: (JoinCollectionUtil.ToConvenientColumnReferences<TupleWConcat<AnyJoin, DataT["joins"], ({
+            [innerIndex in Extract<TupleKeysUpTo<index>, keyof DataT["declaredJoins"]>]: (Join<Extract<DataT["declaredJoins"][innerIndex], [AnyAliasedTable, JoinType.INNER | JoinType.LEFT | JoinType.CROSS]>[0], Extract<DataT["declaredJoins"][innerIndex], [AnyAliasedTable, JoinType.INNER | JoinType.LEFT | JoinType.CROSS]>[0]["columns"], Extract<DataT["declaredJoins"][innerIndex], [AnyAliasedTable, JoinType.INNER | JoinType.LEFT | JoinType.CROSS]>[1] extends JoinType.LEFT ? true : false>);
+        } & {
+            "0": Join<DataT["declaredJoins"][0][0], DataT["declaredJoins"][0][0]["columns"], DataT["declaredJoins"][0][1] extends JoinType.LEFT ? true : false>;
+        } & {
+            length: StringToNumber<index>;
+        } & AnyJoin[])>>)) => any[]);
+    } & {
+        length: DataT["declaredJoins"]["length"];
+    } : never)>(this: SelectBuilder<{
+        hasSelect: any;
+        hasFrom: true;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: any;
+        parentJoins: any;
+        declaredJoins: any;
+    }>, arr: FromDelegateArrT): (DataT["declaredJoins"] extends Tuple<[AnyAliasedTable, JoinType.INNER | JoinType.LEFT | JoinType.CROSS]> ? SelectBuilder<{
+        readonly hasSelect: DataT["hasSelect"];
+        readonly hasFrom: DataT["hasFrom"];
+        readonly hasUnion: DataT["hasUnion"];
+        readonly joins: TupleWConcat<AnyJoin, DataT["joins"], ({
+            [index in TupleKeys<DataT["declaredJoins"]>]: (Join<Extract<DataT["declaredJoins"][index], [AnyAliasedTable, JoinType.INNER | JoinType.LEFT | JoinType.CROSS]>[0], Extract<DataT["declaredJoins"][index], [AnyAliasedTable, JoinType.INNER | JoinType.LEFT | JoinType.CROSS]>[0]["columns"], Extract<DataT["declaredJoins"][index], [AnyAliasedTable, JoinType.INNER | JoinType.LEFT | JoinType.CROSS]>[1] extends JoinType.LEFT ? true : false>);
+        } & {
+            "0": Join<DataT["declaredJoins"][0][0], DataT["declaredJoins"][0][0]["columns"], DataT["declaredJoins"][0][1] extends JoinType.LEFT ? true : false>;
+        } & {
+            length: DataT["declaredJoins"]["length"];
         } & AnyJoin[])>;
         readonly selects: DataT["selects"];
         readonly aggregateDelegate: DataT["aggregateDelegate"];

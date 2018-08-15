@@ -96,6 +96,54 @@ tape(__filename, async (t) => {
                 t.equal(row.appSourceEnabled.appId, row.app.appId);
             }
         });
+    await db.from(appSource)
+        .declareJoinsUnsafe(
+            [appSourceEnabled, o.JoinType.INNER],
+            [app, o.JoinType.INNER]
+        )
+        .defineJoinsUnsafe([
+            c => [
+                c.appId,
+                c.sourceId
+            ],
+            c => [
+                c.appSourceEnabled.appId
+            ]
+        ])
+        .selectAll()
+        .fetchAll()
+        .then((result) => {
+            for (let row of result) {
+                t.equal(row.appSource.appId, row.appSourceEnabled.appId);
+                t.equal(row.appSource.sourceId, row.appSourceEnabled.sourceId);
+                t.equal(row.appSourceEnabled.appId, row.app.appId);
+            }
+        });
+    await db.from(appSource)
+        .declareJoinsUnsafe(
+            [appSourceEnabled, o.JoinType.INNER],
+            [app, o.JoinType.LEFT]
+        )
+        .defineJoinsUnsafe([
+            c => [
+                c.appId,
+                c.sourceId
+            ],
+            c => [
+                c.appSourceEnabled.appId
+            ]
+        ])
+        .selectAll()
+        .fetchAll()
+        .then((result) => {
+            for (let row of result) {
+                t.equal(row.appSource.appId, row.appSourceEnabled.appId);
+                t.equal(row.appSource.sourceId, row.appSourceEnabled.sourceId);
+                if (row.app != undefined) {
+                    t.equal(row.appSourceEnabled.appId, row.app.appId);
+                }
+            }
+        });
 
     t.end();
 });

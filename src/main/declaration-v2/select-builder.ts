@@ -121,6 +121,8 @@ export interface SelectBuilderData {
     readonly parentJoins : JoinCollection,
 
     readonly declaredInnerJoins? : undefined|Tuple<AnyAliasedTable>,
+    //Hard to implement RIGHT JOIN
+    readonly declaredJoins? : undefined|Tuple<[AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]>,
 }
 
 export const __DUMMY_FROM_TABLE = table(
@@ -3056,6 +3058,182 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 t,
                 f
             );
+        }
+        return result as any;
+    }
+
+
+    declareJoinsUnsafe<ArrT extends Tuple<[AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]>> (
+        ...arr : ArrT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "declaredJoins" ?
+                ArrT :
+                DataT[key]
+            )
+        } & {
+            declaredJoins : ArrT
+        }>
+    ) {
+        return new SelectBuilder(
+            {
+                ...(this.data as any),
+                declaredJoins : arr,
+            },
+            this.extraData
+        ) as any;
+    }
+
+    //Unsafe because a lot of compile-time checks are missing
+    defineJoinsUnsafe<
+        FromDelegateArrT extends (
+            DataT["declaredJoins"] extends Tuple<[AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]> ?
+            {
+                [index in TupleKeys<DataT["declaredJoins"]>] : (
+                    (
+                        columnReferences : (
+                            JoinCollectionUtil.ToConvenientColumnReferences<
+                                TupleWConcat<
+                                    AnyJoin,
+                                    DataT["joins"],
+                                    (
+                                        {
+                                            [innerIndex in Extract<TupleKeysUpTo<index>, keyof DataT["declaredJoins"]>] : (
+                                                Join<
+                                                    Extract<
+                                                        DataT["declaredJoins"][innerIndex],
+                                                        [AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]
+                                                    >[0],
+                                                    Extract<
+                                                        DataT["declaredJoins"][innerIndex],
+                                                        [AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]
+                                                    >[0]["columns"],
+                                                    Extract<
+                                                        DataT["declaredJoins"][innerIndex],
+                                                        [AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]
+                                                    >[1] extends JoinType.LEFT ?
+                                                        true :
+                                                        false
+                                                >
+                                            )
+                                        } &
+                                        {
+                                            "0" : Join<
+                                                DataT["declaredJoins"][0][0],
+                                                DataT["declaredJoins"][0][0]["columns"],
+                                                DataT["declaredJoins"][0][1] extends JoinType.LEFT ?
+                                                    true :
+                                                    false
+                                            >
+                                        } &
+                                        {
+                                            length : StringToNumber<index>
+                                        } &
+                                        AnyJoin[]
+                                    )
+                                >
+                            >
+                        )
+                    ) => any[]
+                )
+            } & {
+                length : DataT["declaredJoins"]["length"]
+            } :
+            never
+        )
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+            declaredJoins : any
+        }>,
+        arr : FromDelegateArrT
+    ) : (
+        DataT["declaredJoins"] extends Tuple<[AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]> ?
+        SelectBuilder<{
+            readonly hasSelect : DataT["hasSelect"],
+            readonly hasFrom : DataT["hasFrom"],
+            readonly hasUnion : DataT["hasUnion"],
+
+            readonly joins : TupleWConcat<
+                AnyJoin,
+                DataT["joins"],
+                (
+                    {
+                        [index in TupleKeys<DataT["declaredJoins"]>] : (
+                            Join<
+                                Extract<
+                                    DataT["declaredJoins"][index],
+                                    [AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]
+                                >[0],
+                                Extract<
+                                    DataT["declaredJoins"][index],
+                                    [AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]
+                                >[0]["columns"],
+                                Extract<
+                                    DataT["declaredJoins"][index],
+                                    [AnyAliasedTable, JoinType.INNER|JoinType.LEFT|JoinType.CROSS]
+                                >[1] extends JoinType.LEFT ?
+                                    true :
+                                    false
+                            >
+                        )
+                    } &
+                    {
+                        "0" : Join<
+                            DataT["declaredJoins"][0][0],
+                            DataT["declaredJoins"][0][0]["columns"],
+                            DataT["declaredJoins"][0][1] extends JoinType.LEFT ?
+                                true :
+                                false
+                        >
+                    } &
+                    {
+                        length : DataT["declaredJoins"]["length"]
+                    } &
+                    AnyJoin[]
+                )
+            >,
+
+            readonly selects : DataT["selects"],
+
+            readonly aggregateDelegate : DataT["aggregateDelegate"],
+
+            readonly hasParentJoins : DataT["hasParentJoins"],
+            readonly parentJoins : DataT["parentJoins"],
+        }> :
+        never
+    ) {
+        let result : any = this;
+        for (let i=0; i<arr.length; ++i) {
+            const t = this.data.declaredJoins[i][0];
+            const f = (arr as any)[i];
+            const type = this.data.declaredJoins[i][1];
+            if (type == JoinType.INNER) {
+                result = result.joinUsing(
+                    t,
+                    f
+                );
+            } else if (type == JoinType.LEFT) {
+                result = result.leftJoinUsing(
+                    t,
+                    f
+                );
+            } else if (type == JoinType.CROSS) {
+                result = result.crossJoin(
+                    t
+                );
+            } else {
+                throw new Error(`Unknown JoinType ${type}`);
+            }
         }
         return result as any;
     }
