@@ -56,11 +56,12 @@ import {
     DeleteBuilder,
     DeleteTablesDelegate
 } from "./delete-builder";
-import {TupleWConcat} from "./tuple";
+import {TupleWConcat, Tuple, TupleKeys, TupleKeysUpTo} from "./tuple";
 import {AnyJoin} from "./join";
 import {SelectBuilderUtil} from "./select-builder-util";
 
 import {Table} from "./table";
+import { StringToNumber } from "./math";
 Table;
 
 //TODO Move elsewhere
@@ -118,6 +119,8 @@ export interface SelectBuilderData {
 
     readonly hasParentJoins : boolean,
     readonly parentJoins : JoinCollection,
+
+    readonly declaredInnerJoins? : undefined|Tuple<AnyAliasedTable>,
 }
 
 export const __DUMMY_FROM_TABLE = table(
@@ -2920,6 +2923,141 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             false,
             this.extraData.db
         ).tables(delegate as any) as any;
+    }
+
+    declareInnerJoinsUnsafe<TablesT extends Tuple<AnyAliasedTable>> (
+        ...tables : TablesT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "declaredInnerJoins" ?
+                TablesT :
+                DataT[key]
+            )
+        } & {
+            declaredInnerJoins : TablesT
+        }>
+    ) {
+        return new SelectBuilder(
+            {
+                ...(this.data as any),
+                declaredInnerJoins : tables,
+            },
+            this.extraData
+        ) as any;
+    }
+
+    //Unsafe because a lot of compile-time checks are missing
+    defineInnerJoinsUnsafe<
+        FromDelegateArrT extends (
+            DataT["declaredInnerJoins"] extends Tuple<AnyAliasedTable> ?
+            {
+                [index in TupleKeys<DataT["declaredInnerJoins"]>] : (
+                    (
+                        columnReferences : (
+                            JoinCollectionUtil.ToConvenientColumnReferences<
+                                TupleWConcat<
+                                    AnyJoin,
+                                    DataT["joins"],
+                                    (
+                                        {
+                                            [innerIndex in Extract<TupleKeysUpTo<index>, keyof DataT["declaredInnerJoins"]>] : (
+                                                Join<
+                                                    Extract<DataT["declaredInnerJoins"][innerIndex], AnyAliasedTable>,
+                                                    Extract<DataT["declaredInnerJoins"][innerIndex], AnyAliasedTable>["columns"],
+                                                    false
+                                                >
+                                            )
+                                        } &
+                                        {
+                                            "0" : Join<
+                                                DataT["declaredInnerJoins"][0],
+                                                DataT["declaredInnerJoins"][0]["columns"],
+                                                false
+                                            >
+                                        } &
+                                        {
+                                            length : StringToNumber<index>
+                                        } &
+                                        AnyJoin[]
+                                    )
+                                >
+                            >
+                        )
+                    ) => any[]
+                )
+            } & {
+                length : DataT["declaredInnerJoins"]["length"]
+            } :
+            never
+        )
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+            declaredInnerJoins : any
+        }>,
+        arr : FromDelegateArrT
+    ) : (
+        DataT["declaredInnerJoins"] extends Tuple<AnyAliasedTable> ?
+        SelectBuilder<{
+            readonly hasSelect : DataT["hasSelect"],
+            readonly hasFrom : DataT["hasFrom"],
+            readonly hasUnion : DataT["hasUnion"],
+
+            readonly joins : TupleWConcat<
+                AnyJoin,
+                DataT["joins"],
+                (
+                    {
+                        [index in TupleKeys<DataT["declaredInnerJoins"]>] : (
+                            Join<
+                                Extract<DataT["declaredInnerJoins"][index], AnyAliasedTable>,
+                                Extract<DataT["declaredInnerJoins"][index], AnyAliasedTable>["columns"],
+                                false
+                            >
+                        )
+                    } &
+                    {
+                        "0" : Join<
+                            DataT["declaredInnerJoins"][0],
+                            DataT["declaredInnerJoins"][0]["columns"],
+                            false
+                        >
+                    } &
+                    {
+                        length : DataT["declaredInnerJoins"]["length"]
+                    } &
+                    AnyJoin[]
+                )
+            >,
+
+            readonly selects : DataT["selects"],
+
+            readonly aggregateDelegate : DataT["aggregateDelegate"],
+
+            readonly hasParentJoins : DataT["hasParentJoins"],
+            readonly parentJoins : DataT["parentJoins"],
+        }> :
+        never
+    ) {
+        let result : any = this;
+        for (let i=0; i<arr.length; ++i) {
+            const t = this.data.declaredInnerJoins[i];
+            const f = (arr as any)[i];
+            result = result.joinUsing(
+                t,
+                f
+            );
+        }
+        return result as any;
     }
 }
 

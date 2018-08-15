@@ -30,10 +30,11 @@ import { RawExprUtil } from "./raw-expr";
 import { UpdateBuilder, UpdateAssignmentReferencesDelegate, RawUpdateAssignmentReferences } from "./update-builder";
 import { InsertAssignmentCollectionDelegate, RawInsertSelectAssignmentCollection, InsertSelectBuilder } from "./insert-select-builder";
 import { DeleteTables, DeleteBuilder, DeleteTablesDelegate } from "./delete-builder";
-import { TupleWConcat } from "./tuple";
+import { TupleWConcat, Tuple, TupleKeys, TupleKeysUpTo } from "./tuple";
 import { AnyJoin } from "./join";
 import { SelectBuilderUtil } from "./select-builder-util";
 import { Table } from "./table";
+import { StringToNumber } from "./math";
 export declare const ARBITRARY_ROW_COUNT = 999999999;
 export interface LimitData {
     readonly rowCount: number;
@@ -80,6 +81,7 @@ export interface SelectBuilderData {
     readonly aggregateDelegate: undefined | AggregateDelegate<any>;
     readonly hasParentJoins: boolean;
     readonly parentJoins: JoinCollection;
+    readonly declaredInnerJoins?: undefined | Tuple<AnyAliasedTable>;
 }
 export declare const __DUMMY_FROM_TABLE: Table<"__DUMMY_FROM_TABLE", "__DUMMY_FROM_TABLE", {}, {
     autoIncrement: undefined;
@@ -683,6 +685,47 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: false;
         parentJoins: any;
     }>, DeleteTables<SelectBuilder<DataT>>>);
+    declareInnerJoinsUnsafe<TablesT extends Tuple<AnyAliasedTable>>(...tables: TablesT): (SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "declaredInnerJoins" ? TablesT : DataT[key]);
+    } & {
+        declaredInnerJoins: TablesT;
+    }>);
+    defineInnerJoinsUnsafe<FromDelegateArrT extends (DataT["declaredInnerJoins"] extends Tuple<AnyAliasedTable> ? {
+        [index in TupleKeys<DataT["declaredInnerJoins"]>]: ((columnReferences: (JoinCollectionUtil.ToConvenientColumnReferences<TupleWConcat<AnyJoin, DataT["joins"], ({
+            [innerIndex in Extract<TupleKeysUpTo<index>, keyof DataT["declaredInnerJoins"]>]: (Join<Extract<DataT["declaredInnerJoins"][innerIndex], AnyAliasedTable>, Extract<DataT["declaredInnerJoins"][innerIndex], AnyAliasedTable>["columns"], false>);
+        } & {
+            "0": Join<DataT["declaredInnerJoins"][0], DataT["declaredInnerJoins"][0]["columns"], false>;
+        } & {
+            length: StringToNumber<index>;
+        } & AnyJoin[])>>)) => any[]);
+    } & {
+        length: DataT["declaredInnerJoins"]["length"];
+    } : never)>(this: SelectBuilder<{
+        hasSelect: any;
+        hasFrom: true;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: any;
+        parentJoins: any;
+        declaredInnerJoins: any;
+    }>, arr: FromDelegateArrT): (DataT["declaredInnerJoins"] extends Tuple<AnyAliasedTable> ? SelectBuilder<{
+        readonly hasSelect: DataT["hasSelect"];
+        readonly hasFrom: DataT["hasFrom"];
+        readonly hasUnion: DataT["hasUnion"];
+        readonly joins: TupleWConcat<AnyJoin, DataT["joins"], ({
+            [index in TupleKeys<DataT["declaredInnerJoins"]>]: (Join<Extract<DataT["declaredInnerJoins"][index], AnyAliasedTable>, Extract<DataT["declaredInnerJoins"][index], AnyAliasedTable>["columns"], false>);
+        } & {
+            "0": Join<DataT["declaredInnerJoins"][0], DataT["declaredInnerJoins"][0]["columns"], false>;
+        } & {
+            length: DataT["declaredInnerJoins"]["length"];
+        } & AnyJoin[])>;
+        readonly selects: DataT["selects"];
+        readonly aggregateDelegate: DataT["aggregateDelegate"];
+        readonly hasParentJoins: DataT["hasParentJoins"];
+        readonly parentJoins: DataT["parentJoins"];
+    }> : never);
 }
 export declare type CreateSelectBuilderDelegate = (() => (SelectBuilder<{
     hasSelect: false;

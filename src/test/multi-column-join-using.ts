@@ -21,6 +21,14 @@ const appSourceEnabled = o.table(
     }
 ).build();
 
+const app = o.table(
+    "app",
+    {
+        appId : sd.naturalNumber(),
+        name : sd.string(),
+    }
+).build();
+
 tape(__filename, async (t) => {
     const db = await getDb();
 
@@ -38,6 +46,54 @@ tape(__filename, async (t) => {
             for (let row of result) {
                 t.equal(row.appSource.appId, row.appSourceEnabled.appId);
                 t.equal(row.appSource.sourceId, row.appSourceEnabled.sourceId);
+            }
+        });
+    await db.from(appSource)
+        .declareInnerJoinsUnsafe(
+            appSourceEnabled,
+            app
+        )
+        .defineInnerJoinsUnsafe([
+            c => [
+                c.appId,
+                c.sourceId
+            ],
+            c => [
+                c.appSourceEnabled.appId
+            ]
+        ])
+        .selectAll()
+        .fetchAll()
+        .then((result) => {
+            for (let row of result) {
+                t.equal(row.appSource.appId, row.appSourceEnabled.appId);
+                t.equal(row.appSource.sourceId, row.appSourceEnabled.sourceId);
+                t.equal(row.appSourceEnabled.appId, row.app.appId);
+            }
+        });
+    await db.from(appSource)
+        .joinUsing(
+            appSourceEnabled,
+            c => [
+                c.appId,
+                c.sourceId
+            ]
+        )
+        .declareInnerJoinsUnsafe(
+            app
+        )
+        .defineInnerJoinsUnsafe([
+            c => [
+                c.appSourceEnabled.appId
+            ]
+        ])
+        .selectAll()
+        .fetchAll()
+        .then((result) => {
+            for (let row of result) {
+                t.equal(row.appSource.appId, row.appSourceEnabled.appId);
+                t.equal(row.appSource.sourceId, row.appSourceEnabled.sourceId);
+                t.equal(row.appSourceEnabled.appId, row.app.appId);
             }
         });
 

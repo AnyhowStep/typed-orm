@@ -1077,6 +1077,19 @@ class SelectBuilder {
     delete(delegate) {
         return new delete_builder_1.DeleteBuilder(this, undefined, false, this.extraData.db).tables(delegate);
     }
+    declareInnerJoinsUnsafe(...tables) {
+        return new SelectBuilder(Object.assign({}, this.data, { declaredInnerJoins: tables }), this.extraData);
+    }
+    //Unsafe because a lot of compile-time checks are missing
+    defineInnerJoinsUnsafe(arr) {
+        let result = this;
+        for (let i = 0; i < arr.length; ++i) {
+            const t = this.data.declaredInnerJoins[i];
+            const f = arr[i];
+            result = result.joinUsing(t, f);
+        }
+        return result;
+    }
 }
 exports.SelectBuilder = SelectBuilder;
 //# sourceMappingURL=select-builder.js.map

@@ -1055,8 +1055,8 @@ export class PooledDatabase extends mysql.PooledDatabase {
         );
     };
 
-    createSubQuery<JoinsT extends Tuple<AnyAliasedTable>> (...joins : JoinsT) : (
-        JoinsT["length"] extends 0 ?
+    createSubQuery<TablesT extends Tuple<AnyAliasedTable>> (...tables : TablesT) : (
+        TablesT["length"] extends 0 ?
         ReturnType<CreateSelectBuilderDelegate> :
         SelectBuilder<{
             hasSelect : false,
@@ -1080,34 +1080,34 @@ export class PooledDatabase extends mysql.PooledDatabase {
             //It will be replaced when we have a subquery
             parentJoins : (
                 {
-                    [index in TupleKeys<JoinsT>] : (
+                    [index in TupleKeys<TablesT>] : (
                         Join<
-                            Extract<JoinsT[index], AnyAliasedTable>,
-                            Extract<JoinsT[index], AnyAliasedTable>["columns"],
+                            Extract<TablesT[index], AnyAliasedTable>,
+                            Extract<TablesT[index], AnyAliasedTable>["columns"],
                             false
                         >
                     )
                 } &
                 {
                     "0" : Join<
-                        JoinsT[0],
-                        JoinsT[0]["columns"],
+                        TablesT[0],
+                        TablesT[0]["columns"],
                         false
                     >
                 } &
                 {
-                    length : JoinsT["length"]
+                    length : TablesT["length"]
                 } &
                 AnyJoin[]
             ),
         }>
     ) {
-        if (joins.length == 0) {
+        if (tables.length == 0) {
             return this.query() as any;
         }
         let result : any = this;
-        for (let j of joins) {
-            result = result.from(j).subQuery();
+        for (let t of tables) {
+            result = result.from(t).subQuery();
         }
         return result;
     }

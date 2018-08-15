@@ -145,7 +145,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         wasInserted: boolean;
     }>;
     latestValueExpression<DataT extends LogData, EntityT extends LogDataUtil.LatestValueExpressionEntityTable<DataT>, ValueDelegateT extends LogDataUtil.LatestValueExpressionValueDelegate<DataT, EntityT>, DefaultValueDelegateT extends LogDataUtil.LatestValueExpressionDefaultValueDelegate<DataT, EntityT>>(data: DataT, entity: EntityT, valueDelegate: ValueDelegateT, defaultValueDelegate: DefaultValueDelegateT): LogDataUtil.LatestValueExpression<DataT, EntityT, ValueDelegateT, DefaultValueDelegateT>;
-    createSubQuery<JoinsT extends Tuple<AnyAliasedTable>>(...joins: JoinsT): (JoinsT["length"] extends 0 ? ReturnType<CreateSelectBuilderDelegate> : SelectBuilder<{
+    createSubQuery<TablesT extends Tuple<AnyAliasedTable>>(...tables: TablesT): (TablesT["length"] extends 0 ? ReturnType<CreateSelectBuilderDelegate> : SelectBuilder<{
         hasSelect: false;
         hasFrom: false;
         hasUnion: false;
@@ -154,11 +154,11 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         aggregateDelegate: undefined;
         hasParentJoins: true;
         parentJoins: ({
-            [index in TupleKeys<JoinsT>]: (Join<Extract<JoinsT[index], AnyAliasedTable>, Extract<JoinsT[index], AnyAliasedTable>["columns"], false>);
+            [index in TupleKeys<TablesT>]: (Join<Extract<TablesT[index], AnyAliasedTable>, Extract<TablesT[index], AnyAliasedTable>["columns"], false>);
         } & {
-            "0": Join<JoinsT[0], JoinsT[0]["columns"], false>;
+            "0": Join<TablesT[0], TablesT[0]["columns"], false>;
         } & {
-            length: JoinsT["length"];
+            length: TablesT["length"];
         } & AnyJoin[]);
     }>);
 }
