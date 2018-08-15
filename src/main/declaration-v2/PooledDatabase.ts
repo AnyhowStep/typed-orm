@@ -1,7 +1,7 @@
 import * as mysql from "typed-mysql";
 import {CreateSelectBuilderDelegate} from "./select-builder";
 import {SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-builder";
-import {Join, JoinType} from "./join";
+import {Join, JoinType, AnyJoin} from "./join";
 import {AnyAliasedTable, AliasedTableUtil} from "./aliased-table";;
 import {SelectDelegate} from "./select-delegate";
 import {Table, AnyTable, UniqueKeys, TableRow} from "./table";
@@ -24,6 +24,7 @@ import {ColumnCollectionUtil} from "./column-collection";
 import {SelectValue} from "./select-value";
 import {ColumnReferencesUtil} from "./column-references";
 import {TableParentCollectionUtil} from "./table-parent-collection";
+import {Tuple, TupleKeys} from "./tuple";
 
 import {AliasedTable} from "./aliased-table";;
 import {AliasedExpr, AnyAliasedExpr} from "./aliased-expr";
@@ -1053,4 +1054,61 @@ export class PooledDatabase extends mysql.PooledDatabase {
             defaultValueDelegate
         );
     };
+
+    createSubQuery<JoinsT extends Tuple<AnyAliasedTable>> (...joins : JoinsT) : (
+        JoinsT["length"] extends 0 ?
+        ReturnType<CreateSelectBuilderDelegate> :
+        SelectBuilder<{
+            hasSelect : false,
+            hasFrom : false,
+            hasUnion : false,
+
+            //This is just a dummy JOIN
+            //It will be replaced when the FROM clause is added
+            joins : [
+                Join<
+                    typeof __DUMMY_FROM_TABLE,
+                    typeof __DUMMY_FROM_TABLE["columns"],
+                    true
+                >
+            ],
+            selects : undefined,
+            aggregateDelegate : undefined,
+
+            hasParentJoins : true,
+            //This is just a dummy JOIN
+            //It will be replaced when we have a subquery
+            parentJoins : (
+                {
+                    [index in TupleKeys<JoinsT>] : (
+                        Join<
+                            Extract<JoinsT[index], AnyAliasedTable>,
+                            Extract<JoinsT[index], AnyAliasedTable>["columns"],
+                            false
+                        >
+                    )
+                } &
+                {
+                    "0" : Join<
+                        JoinsT[0],
+                        JoinsT[0]["columns"],
+                        false
+                    >
+                } &
+                {
+                    length : JoinsT["length"]
+                } &
+                AnyJoin[]
+            ),
+        }>
+    ) {
+        if (joins.length == 0) {
+            return this.query() as any;
+        }
+        let result : any = this;
+        for (let j of joins) {
+            result = result.from(j).subQuery();
+        }
+        return result;
+    }
 }

@@ -612,6 +612,16 @@ class PooledDatabase extends mysql.PooledDatabase {
         return log_1.LogDataUtil.latestValueExpression(this, data, entity, valueDelegate, defaultValueDelegate);
     }
     ;
+    createSubQuery(...joins) {
+        if (joins.length == 0) {
+            return this.query();
+        }
+        let result = this;
+        for (let j of joins) {
+            result = result.from(j).subQuery();
+        }
+        return result;
+    }
 }
 exports.PooledDatabase = PooledDatabase;
 //# sourceMappingURL=PooledDatabase.js.map
