@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { JoinCollection, JoinCollectionUtil } from "./join-collection";
 import { JoinFromDelegate, JoinFromDelegateUnsafe } from "./join-from-delegate";
 import { JoinToDelegate } from "./join-to-delegate";
@@ -434,6 +435,16 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: false;
         parentJoins: any;
     }>): (FetchValueCheck<this["data"], FetchValueType<this["data"]>[]>);
+    cursor(this: SelectBuilder<{
+        hasSelect: true;
+        hasFrom: any;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: false;
+        parentJoins: any;
+    }>): AsyncIterableIterator<SelectBuilderUtil.AggregatedRow<this>>;
     private narrow;
     whereIsNotNull<TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>>(this: SelectBuilder<{
         hasSelect: any;

@@ -483,6 +483,79 @@ class SelectBuilder {
                 .map((row) => row[columnName]);
         });
     }
+    cursor() {
+        //In case Symbol.asyncIterator is not defined
+        Symbol.asyncIterator = (Symbol.asyncIterator == undefined) ?
+            Symbol.for("Symbol.asyncIterator") :
+            Symbol.asyncIterator;
+        let rowIndex = 0;
+        let paginateResultCache = undefined;
+        const getOrFetchPaginated = () => __awaiter(this, void 0, void 0, function* () {
+            if (paginateResultCache == undefined) {
+                rowIndex = 0;
+                paginateResultCache = (yield this.paginate({ page: 0 }));
+            }
+            return paginateResultCache;
+        });
+        const tryFetchNextPage = () => __awaiter(this, void 0, void 0, function* () {
+            const paginated = yield getOrFetchPaginated();
+            const nextPage = paginated.info.page + 1;
+            if (nextPage < paginated.info.pagesFound) {
+                rowIndex = 0;
+                paginateResultCache = (yield this.paginate({ page: nextPage }));
+                return paginateResultCache;
+            }
+            else {
+                return undefined;
+            }
+        });
+        const tryGetNextItem = () => __awaiter(this, void 0, void 0, function* () {
+            const paginated = yield getOrFetchPaginated();
+            if (rowIndex < paginated.rows.length) {
+                const value = paginated.rows[rowIndex];
+                ++rowIndex;
+                return value;
+            }
+            else {
+                return undefined;
+            }
+        });
+        return {
+            next: () => __awaiter(this, void 0, void 0, function* () {
+                //Try and get the next item of the current page
+                const value = yield tryGetNextItem();
+                if (value !== undefined) {
+                    return {
+                        done: false,
+                        value: value,
+                    };
+                }
+                //If we're here, we passed the end of the current page
+                {
+                    //Load the next page
+                    yield tryFetchNextPage();
+                    //Try to get the next item
+                    const value = yield tryGetNextItem();
+                    if (value !== undefined) {
+                        return {
+                            done: false,
+                            value: value,
+                        };
+                    }
+                    else {
+                        //We passed the end of the last page
+                        return {
+                            done: true,
+                            value: undefined,
+                        };
+                    }
+                }
+            }),
+            [Symbol.asyncIterator]() {
+                return this;
+            }
+        };
+    }
     narrow(column, condition) {
         const joins = join_collection_1.JoinCollectionUtil.replaceColumnType(this.data.joins, column.tableAlias, column.name, column.assertDelegate);
         const selects = select_collection_1.SelectCollectionUtil.replaceSelectType(this.data.selects, column.tableAlias, column.name, column.assertDelegate);

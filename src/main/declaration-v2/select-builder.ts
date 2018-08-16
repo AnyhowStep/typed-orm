@@ -1346,6 +1346,97 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                     .map((row) => row[columnName]);
             }) as any;
     }
+    cursor (
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasFrom : any,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            //Makes no sense to fetch a subquery
+            //because it may require data from
+            //parent joins
+            hasParentJoins : false,
+            parentJoins : any,
+        }>
+    ) : AsyncIterableIterator<SelectBuilderUtil.AggregatedRow<this>> {
+        //In case Symbol.asyncIterator is not defined
+        (<any>Symbol).asyncIterator = (Symbol.asyncIterator == undefined) ?
+            Symbol.for("Symbol.asyncIterator") :
+            Symbol.asyncIterator;
+
+        let rowIndex = 0;
+        let paginateResultCache : (
+            PaginateResult<SelectBuilderUtil.AggregatedRow<this>>|
+            undefined
+        ) = undefined;
+
+        const getOrFetchPaginated = async () : Promise<PaginateResult<SelectBuilderUtil.AggregatedRow<this>>> => {
+            if (paginateResultCache == undefined) {
+                rowIndex = 0;
+                paginateResultCache = (await this.paginate({ page : 0 })) as PaginateResult<SelectBuilderUtil.AggregatedRow<this>>;
+            }
+            return paginateResultCache;
+        };
+        const tryFetchNextPage = async () : Promise<PaginateResult<SelectBuilderUtil.AggregatedRow<this>>|undefined> => {
+            const paginated = await getOrFetchPaginated();
+            const nextPage = paginated.info.page+1;
+            if (nextPage < paginated.info.pagesFound) {
+                rowIndex = 0;
+                paginateResultCache = (await this.paginate({ page : nextPage })) as PaginateResult<SelectBuilderUtil.AggregatedRow<this>>;
+                return paginateResultCache;
+            } else {
+                return undefined;
+            }
+        };
+        const tryGetNextItem = async () : Promise<SelectBuilderUtil.AggregatedRow<this>|undefined> => {
+            const paginated = await getOrFetchPaginated();
+            if (rowIndex < paginated.rows.length) {
+                const value = paginated.rows[rowIndex];
+                ++rowIndex;
+                return value;
+            } else {
+                return undefined;
+            }
+        };
+        return {
+            next : async () : Promise<IteratorResult<SelectBuilderUtil.AggregatedRow<this>>> => {
+                //Try and get the next item of the current page
+                const value = await tryGetNextItem();
+                if (value !== undefined) {
+                    return {
+                        done : false,
+                        value : value,
+                    };
+                }
+
+                //If we're here, we passed the end of the current page
+                {
+                    //Load the next page
+                    await tryFetchNextPage();
+                    //Try to get the next item
+                    const value = await tryGetNextItem();
+                    if (value !== undefined) {
+                        return {
+                            done : false,
+                            value : value,
+                        };
+                    } else {
+                        //We passed the end of the last page
+                        return {
+                            done : true,
+                            value : undefined as any,
+                        };
+                    }
+                }
+            },
+            [Symbol.asyncIterator]() {
+                return this
+            }
+        };
+    }
 
     private narrow (column : AnyColumn, condition : Expr<any, boolean>) {
         const joins = JoinCollectionUtil.replaceColumnType(
