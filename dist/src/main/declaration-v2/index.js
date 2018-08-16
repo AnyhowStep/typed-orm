@@ -21,6 +21,7 @@ __export(require("./join-collection"));
 __export(require("./join-from-delegate"));
 __export(require("./join-to-delegate"));
 __export(require("./log"));
+__export(require("./order-by"));
 __export(require("./order-by-delegate"));
 __export(require("./raw-column"));
 __export(require("./raw-column-collection"));

@@ -2,6 +2,9 @@ import {ColumnReferences, ColumnReferencesUtil} from "../column-references";
 import {Expr, AnyExpr} from "../expr";
 import {AnyColumn} from "../column";
 
+export const ASCENDING : true = true;
+export const DESCENDING : false = false;
+
 //TODO If working with OrderBy and OrderByValue gets too unwieldly,
 //Refactor into separate files
 export type OrderByValue<
