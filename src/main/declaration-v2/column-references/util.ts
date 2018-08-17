@@ -14,14 +14,15 @@ export namespace ColumnReferencesUtil {
     export type Columns<RefT extends ColumnReferences> = (
         //ColumnReferencesData_ColumnsImpl<DataT>
         //HACK-y
-        ColumnsImpl<RefT> extends AnyColumn ?
+        /*ColumnsImpl<RefT> extends AnyColumn ?
         (
             ColumnsImpl<RefT>
-            /*AnyColumn extends ColumnOfReferencesImpl<ColumnReferencesT> ?
-                ColumnOfReferencesImpl<ColumnReferencesT> :
-                never*/
         ) :
-        never
+        never*/
+        Extract<
+            ColumnsImpl<RefT>,
+            AnyColumn
+        >
     );
 
     export type ColumnCollections<RefT extends ColumnReferences> = (

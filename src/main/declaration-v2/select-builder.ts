@@ -56,10 +56,12 @@ import {
     DeleteBuilder,
     DeleteTablesDelegate
 } from "./delete-builder";
-import {TupleWConcat, Tuple, TupleKeys, TupleKeysUpTo} from "./tuple";
+import {TupleWConcat, Tuple, TupleKeys, TupleKeysUpTo, TupleLength} from "./tuple";
 import {AnyJoin} from "./join";
 import {SelectBuilderUtil} from "./select-builder-util";
-
+import {JoinDeclarationUtil, JoinDeclarationUsage} from "./join-declaration";
+import {ColumnReferencesUtil} from "./column-references";
+import {ColumnCollectionUtil} from "./column-collection";
 import {Table} from "./table";
 import { StringToNumber } from "./math";
 Table;
@@ -3321,6 +3323,213 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             } else if (type == JoinType.CROSS) {
                 result = result.crossJoin(
                     t
+                );
+            } else {
+                throw new Error(`Unknown JoinType ${type}`);
+            }
+        }
+        return result as any;
+    }
+
+    useJoins<
+        JoinDeclarationArr extends Tuple<JoinDeclarationUsage>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        ...arr : JoinDeclarationArr
+    ) : (
+        //Prevent duplicate tableAlias in JoinDeclarationArr,
+        true extends JoinDeclarationUtil.HasDuplicateTableAlias<JoinDeclarationArr> ?
+        invalid.E2<
+            "Duplicate tableAlias found in given join declarations",
+            JoinDeclarationUtil.DuplicateTableAlias<JoinDeclarationArr>
+        > :
+        //Prevent duplicate tableAlias.
+        JoinCollectionUtil.Duplicates<
+            DataT["joins"],
+            {
+                [index in TupleKeys<JoinDeclarationArr>] : (
+                    Join<
+                        JoinDeclarationUtil.ToTableOf<Extract<
+                            JoinDeclarationArr[index],
+                            JoinDeclarationUsage
+                        >>,
+                        JoinDeclarationUtil.ToTableOf<Extract<
+                            JoinDeclarationArr[index],
+                            JoinDeclarationUsage
+                        >>["columns"],
+                        //Dummy value
+                        false
+                    >
+                )
+            } &
+            {
+                "0" : Join<
+                    JoinDeclarationUtil.ToTableOf<JoinDeclarationArr["0"]>,
+                    JoinDeclarationUtil.ToTableOf<JoinDeclarationArr["0"]>["columns"],
+                    //Dummy value
+                    false
+                >,
+                length : TupleLength<JoinDeclarationArr>
+            } &
+            AnyJoin[]
+        > extends never ?
+        (
+            //Ensure fromTable exists
+            {
+                [index in TupleKeys<JoinDeclarationArr>] : (
+                    JoinDeclarationUtil.FromColumnsOf<Extract<
+                        JoinDeclarationArr[index],
+                        JoinDeclarationUsage
+                    >>[number] extends
+                    (
+                        ColumnReferencesUtil.Columns<
+                            JoinCollectionUtil.ToColumnReferences<DataT["joins"]>
+                        >|
+                        {
+                            [innerIndex in Extract<TupleKeysUpTo<index>, keyof JoinDeclarationArr>] : (
+                                ColumnCollectionUtil.Columns<
+                                    JoinDeclarationUtil.ToTableOf<Extract<
+                                        JoinDeclarationArr[innerIndex],
+                                        JoinDeclarationUsage
+                                    >>["columns"]
+                                >
+                            )
+                        }[Extract<TupleKeysUpTo<index>, keyof JoinDeclarationArr>]
+                    ) ?
+                        true :
+                        //Using a fromColumn that does not exist
+                        false
+                )
+            }[TupleKeys<JoinDeclarationArr>] extends true ?
+                SelectBuilder<{
+                    readonly hasSelect : DataT["hasSelect"],
+                    readonly hasFrom : DataT["hasFrom"],
+                    readonly hasUnion : DataT["hasUnion"],
+
+                    readonly joins : TupleWConcat<
+                        AnyJoin,
+                        DataT["joins"],
+                        (
+                            {
+                                [index in TupleKeys<JoinDeclarationArr>] : (
+                                    Join<
+                                        JoinDeclarationUtil.ToTableOf<Extract<
+                                            JoinDeclarationArr[index],
+                                            JoinDeclarationUsage
+                                        >>,
+                                        JoinDeclarationUtil.ToTableOf<Extract<
+                                            JoinDeclarationArr[index],
+                                            JoinDeclarationUsage
+                                        >>["columns"],
+                                        JoinDeclarationUtil.JoinTypeOf<Extract<
+                                            JoinDeclarationArr[index],
+                                            JoinDeclarationUsage
+                                        >> extends JoinType.LEFT ?
+                                            true :
+                                            false
+                                    >
+                                )
+                            } &
+                            {
+                                "0" : Join<
+                                    JoinDeclarationUtil.ToTableOf<Extract<
+                                        JoinDeclarationArr[0],
+                                        JoinDeclarationUsage
+                                    >>,
+                                    JoinDeclarationUtil.ToTableOf<Extract<
+                                        JoinDeclarationArr[0],
+                                        JoinDeclarationUsage
+                                    >>["columns"],
+                                    JoinDeclarationUtil.JoinTypeOf<Extract<
+                                        JoinDeclarationArr[0],
+                                        JoinDeclarationUsage
+                                    >> extends JoinType.LEFT ?
+                                        true :
+                                        false
+                                >
+                            } &
+                            {
+                                length : JoinDeclarationArr["length"]
+                            } &
+                            AnyJoin[]
+                        )
+                    >,
+
+                    readonly selects : DataT["selects"],
+
+                    readonly aggregateDelegate : DataT["aggregateDelegate"],
+
+                    readonly hasParentJoins : DataT["hasParentJoins"],
+                    readonly parentJoins : DataT["parentJoins"],
+                }> :
+                invalid.E1<
+                    "Attempting to join from a table/column that does not exist"
+                >
+        ) :
+        invalid.E2<
+            "Duplicate tableAlias found in given join declarations",
+            JoinCollectionUtil.Duplicates<
+                DataT["joins"],
+                {
+                    [index in TupleKeys<JoinDeclarationArr>] : (
+                        Join<
+                            JoinDeclarationUtil.ToTableOf<Extract<
+                                JoinDeclarationArr[index],
+                                JoinDeclarationUsage
+                            >>,
+                            JoinDeclarationUtil.ToTableOf<Extract<
+                                JoinDeclarationArr[index],
+                                JoinDeclarationUsage
+                            >>["columns"],
+                            //Dummy value
+                            false
+                        >
+                    )
+                } &
+                {
+                    "0" : Join<
+                        JoinDeclarationUtil.ToTableOf<JoinDeclarationArr["0"]>,
+                        JoinDeclarationUtil.ToTableOf<JoinDeclarationArr["0"]>["columns"],
+                        //Dummy value
+                        false
+                    >,
+                    length : TupleLength<JoinDeclarationArr>
+                } &
+                AnyJoin[]
+            >
+        >
+    ) {
+        let result : any = this;
+        for (let i=0; i<arr.length; ++i) {
+            const toTable = JoinDeclarationUtil.toTableOf(arr[i]);
+            const fromD   = () => JoinDeclarationUtil.fromColumnsOf(arr[i]);
+            const toD     = () => JoinDeclarationUtil.toColumnsOf(arr[i]);
+            const type    = JoinDeclarationUtil.joinTypeOf(arr[i]);
+            if (type == JoinType.INNER) {
+                result = result.join(
+                    toTable,
+                    fromD,
+                    toD
+                );
+            } else if (type == JoinType.LEFT) {
+                result = result.leftJoin(
+                    toTable,
+                    fromD,
+                    toD
+                );
+            } else if (type == JoinType.CROSS) {
+                result = result.crossJoin(
+                    toTable
                 );
             } else {
                 throw new Error(`Unknown JoinType ${type}`);

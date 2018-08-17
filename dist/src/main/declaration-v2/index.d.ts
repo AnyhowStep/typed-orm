@@ -15,6 +15,7 @@ import * as informationSchema from "./information-schema";
 export { informationSchema };
 export * from "./join";
 export * from "./join-collection";
+export * from "./join-declaration";
 export * from "./join-from-delegate";
 export * from "./join-to-delegate";
 export * from "./log";

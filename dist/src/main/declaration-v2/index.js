@@ -18,6 +18,7 @@ const informationSchema = require("./information-schema");
 exports.informationSchema = informationSchema;
 __export(require("./join"));
 __export(require("./join-collection"));
+__export(require("./join-declaration"));
 __export(require("./join-from-delegate"));
 __export(require("./join-to-delegate"));
 __export(require("./log"));

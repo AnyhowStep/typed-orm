@@ -31,9 +31,12 @@ import { RawExprUtil } from "./raw-expr";
 import { UpdateBuilder, UpdateAssignmentReferencesDelegate, RawUpdateAssignmentReferences } from "./update-builder";
 import { InsertAssignmentCollectionDelegate, RawInsertSelectAssignmentCollection, InsertSelectBuilder } from "./insert-select-builder";
 import { DeleteTables, DeleteBuilder, DeleteTablesDelegate } from "./delete-builder";
-import { TupleWConcat, Tuple, TupleKeys, TupleKeysUpTo } from "./tuple";
+import { TupleWConcat, Tuple, TupleKeys, TupleKeysUpTo, TupleLength } from "./tuple";
 import { AnyJoin } from "./join";
 import { SelectBuilderUtil } from "./select-builder-util";
+import { JoinDeclarationUtil, JoinDeclarationUsage } from "./join-declaration";
+import { ColumnReferencesUtil } from "./column-references";
+import { ColumnCollectionUtil } from "./column-collection";
 import { Table } from "./table";
 import { StringToNumber } from "./math";
 export declare const ARBITRARY_ROW_COUNT = 999999999;
@@ -779,6 +782,45 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         readonly hasParentJoins: DataT["hasParentJoins"];
         readonly parentJoins: DataT["parentJoins"];
     }> : never);
+    useJoins<JoinDeclarationArr extends Tuple<JoinDeclarationUsage>>(this: SelectBuilder<{
+        hasSelect: any;
+        hasFrom: true;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: any;
+        parentJoins: any;
+    }>, ...arr: JoinDeclarationArr): (true extends JoinDeclarationUtil.HasDuplicateTableAlias<JoinDeclarationArr> ? invalid.E2<"Duplicate tableAlias found in given join declarations", JoinDeclarationUtil.DuplicateTableAlias<JoinDeclarationArr>> : JoinCollectionUtil.Duplicates<DataT["joins"], {
+        [index in TupleKeys<JoinDeclarationArr>]: (Join<JoinDeclarationUtil.ToTableOf<Extract<JoinDeclarationArr[index], JoinDeclarationUsage>>, JoinDeclarationUtil.ToTableOf<Extract<JoinDeclarationArr[index], JoinDeclarationUsage>>["columns"], false>);
+    } & {
+        "0": Join<JoinDeclarationUtil.ToTableOf<JoinDeclarationArr["0"]>, JoinDeclarationUtil.ToTableOf<JoinDeclarationArr["0"]>["columns"], false>;
+        length: TupleLength<JoinDeclarationArr>;
+    } & AnyJoin[]> extends never ? ({
+        [index in TupleKeys<JoinDeclarationArr>]: (JoinDeclarationUtil.FromColumnsOf<Extract<JoinDeclarationArr[index], JoinDeclarationUsage>>[number] extends (ColumnReferencesUtil.Columns<JoinCollectionUtil.ToColumnReferences<DataT["joins"]>> | {
+            [innerIndex in Extract<TupleKeysUpTo<index>, keyof JoinDeclarationArr>]: (ColumnCollectionUtil.Columns<JoinDeclarationUtil.ToTableOf<Extract<JoinDeclarationArr[innerIndex], JoinDeclarationUsage>>["columns"]>);
+        }[Extract<TupleKeysUpTo<index>, keyof JoinDeclarationArr>]) ? true : false);
+    }[TupleKeys<JoinDeclarationArr>] extends true ? SelectBuilder<{
+        readonly hasSelect: DataT["hasSelect"];
+        readonly hasFrom: DataT["hasFrom"];
+        readonly hasUnion: DataT["hasUnion"];
+        readonly joins: TupleWConcat<AnyJoin, DataT["joins"], ({
+            [index in TupleKeys<JoinDeclarationArr>]: (Join<JoinDeclarationUtil.ToTableOf<Extract<JoinDeclarationArr[index], JoinDeclarationUsage>>, JoinDeclarationUtil.ToTableOf<Extract<JoinDeclarationArr[index], JoinDeclarationUsage>>["columns"], JoinDeclarationUtil.JoinTypeOf<Extract<JoinDeclarationArr[index], JoinDeclarationUsage>> extends JoinType.LEFT ? true : false>);
+        } & {
+            "0": Join<JoinDeclarationUtil.ToTableOf<Extract<JoinDeclarationArr[0], JoinDeclarationUsage>>, JoinDeclarationUtil.ToTableOf<Extract<JoinDeclarationArr[0], JoinDeclarationUsage>>["columns"], JoinDeclarationUtil.JoinTypeOf<Extract<JoinDeclarationArr[0], JoinDeclarationUsage>> extends JoinType.LEFT ? true : false>;
+        } & {
+            length: JoinDeclarationArr["length"];
+        } & AnyJoin[])>;
+        readonly selects: DataT["selects"];
+        readonly aggregateDelegate: DataT["aggregateDelegate"];
+        readonly hasParentJoins: DataT["hasParentJoins"];
+        readonly parentJoins: DataT["parentJoins"];
+    }> : invalid.E1<"Attempting to join from a table/column that does not exist">) : invalid.E2<"Duplicate tableAlias found in given join declarations", JoinCollectionUtil.Duplicates<DataT["joins"], {
+        [index in TupleKeys<JoinDeclarationArr>]: (Join<JoinDeclarationUtil.ToTableOf<Extract<JoinDeclarationArr[index], JoinDeclarationUsage>>, JoinDeclarationUtil.ToTableOf<Extract<JoinDeclarationArr[index], JoinDeclarationUsage>>["columns"], false>);
+    } & {
+        "0": Join<JoinDeclarationUtil.ToTableOf<JoinDeclarationArr["0"]>, JoinDeclarationUtil.ToTableOf<JoinDeclarationArr["0"]>["columns"], false>;
+        length: TupleLength<JoinDeclarationArr>;
+    } & AnyJoin[]>>);
 }
 export declare type CreateSelectBuilderDelegate = (() => (SelectBuilder<{
     hasSelect: false;

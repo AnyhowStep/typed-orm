@@ -6,7 +6,7 @@ export declare namespace ColumnReferencesUtil {
     type ColumnsImpl<RefT extends ColumnReferences> = ({
         [tableAlias in keyof RefT]: ColumnCollectionUtil.Columns<RefT[tableAlias]>;
     }[keyof RefT]);
-    type Columns<RefT extends ColumnReferences> = (ColumnsImpl<RefT> extends AnyColumn ? (ColumnsImpl<RefT>) : never);
+    type Columns<RefT extends ColumnReferences> = (Extract<ColumnsImpl<RefT>, AnyColumn>);
     type ColumnCollections<RefT extends ColumnReferences> = ({
         [tableAlias in keyof RefT]: (RefT[tableAlias] extends ColumnCollection ? RefT[tableAlias] : never);
     }[keyof RefT]);

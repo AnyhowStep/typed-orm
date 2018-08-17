@@ -41,6 +41,7 @@ const update_builder_1 = require("./update-builder");
 const insert_select_builder_1 = require("./insert-select-builder");
 const delete_builder_1 = require("./delete-builder");
 const select_builder_util_1 = require("./select-builder-util");
+const join_declaration_1 = require("./join-declaration");
 const table_2 = require("./table");
 table_2.Table;
 //TODO Move elsewhere
@@ -1181,6 +1182,28 @@ class SelectBuilder {
             }
             else if (type == join_1.JoinType.CROSS) {
                 result = result.crossJoin(t);
+            }
+            else {
+                throw new Error(`Unknown JoinType ${type}`);
+            }
+        }
+        return result;
+    }
+    useJoins(...arr) {
+        let result = this;
+        for (let i = 0; i < arr.length; ++i) {
+            const toTable = join_declaration_1.JoinDeclarationUtil.toTableOf(arr[i]);
+            const fromD = () => join_declaration_1.JoinDeclarationUtil.fromColumnsOf(arr[i]);
+            const toD = () => join_declaration_1.JoinDeclarationUtil.toColumnsOf(arr[i]);
+            const type = join_declaration_1.JoinDeclarationUtil.joinTypeOf(arr[i]);
+            if (type == join_1.JoinType.INNER) {
+                result = result.join(toTable, fromD, toD);
+            }
+            else if (type == join_1.JoinType.LEFT) {
+                result = result.leftJoin(toTable, fromD, toD);
+            }
+            else if (type == join_1.JoinType.CROSS) {
+                result = result.crossJoin(toTable);
             }
             else {
                 throw new Error(`Unknown JoinType ${type}`);
