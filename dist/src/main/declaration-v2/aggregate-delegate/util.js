@@ -3,14 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //import {AnyFetchRow} from "../fetch-row";
 var AggregateDelegateUtil;
 (function (AggregateDelegateUtil) {
-    function aggregate(fetchRow, aggregateDelegate) {
-        if (aggregateDelegate == undefined) {
-            return fetchRow;
-        }
-        else {
-            return aggregateDelegate(fetchRow);
-        }
+    function isAggregateDelegate(mixed) {
+        return mixed.length < 2;
     }
-    AggregateDelegateUtil.aggregate = aggregate;
+    AggregateDelegateUtil.isAggregateDelegate = isAggregateDelegate;
 })(AggregateDelegateUtil = exports.AggregateDelegateUtil || (exports.AggregateDelegateUtil = {}));
 //# sourceMappingURL=util.js.map

@@ -1,18 +1,10 @@
-import {AggregateDelegate} from "./aggregate-delegate";
+import {AggregateDelegate, AggregateDelegatePeekOriginal} from "./aggregate-delegate";
 //import {AnyFetchRow} from "../fetch-row";
 
 export namespace AggregateDelegateUtil {
-    export type Aggregate<
-        FetchRowT,
-        AggregateDelegateT extends AggregateDelegate<FetchRowT>|undefined
-    > = (
-        AggregateDelegateT extends AggregateDelegate<any> ?
-            ReturnType<AggregateDelegateT> :
-            FetchRowT
-    );
     export type AggregatedRow<
         FetchRowT,
-        AggregateDelegateT extends AggregateDelegate<FetchRowT>|undefined
+        AggregateDelegateT extends AggregateDelegate<FetchRowT>|AggregateDelegatePeekOriginal<FetchRowT, any>|undefined
     > = (
         AggregateDelegateT extends (...args : any[]) => infer R ?
         (
@@ -22,19 +14,10 @@ export namespace AggregateDelegateUtil {
         ) :
         FetchRowT
     );
-    export function aggregate<
-        FetchRowT,
-        AggregateDelegateT extends AggregateDelegate<FetchRowT>|undefined
-    > (
-        fetchRow : FetchRowT,
-        aggregateDelegate : AggregateDelegateT
-    ) : (
-        Aggregate<FetchRowT, AggregateDelegateT>
-    ) {
-        if (aggregateDelegate == undefined) {
-            return fetchRow as any;
-        } else {
-            return aggregateDelegate(fetchRow);
-        }
+
+    export function isAggregateDelegate<
+        T extends AggregateDelegate<any>|AggregateDelegatePeekOriginal<any, any>
+    > (mixed : T) : mixed is Extract<T, AggregateDelegate<any>> {
+        return mixed.length < 2;
     }
 }

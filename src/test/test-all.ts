@@ -1,4 +1,5 @@
 import "./add";
+import "./aggregate-multi-promise-peek-original";
 import "./aggregate-multi-promise";
 import "./aggregate-multi";
 import "./cross-join";

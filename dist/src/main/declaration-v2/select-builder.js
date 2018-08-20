@@ -20,6 +20,7 @@ const type_util_1 = require("@anyhowstep/type-util");
 const join_1 = require("./join");
 const select_collection_1 = require("./select-collection");
 const fetch_row_1 = require("./fetch-row");
+const aggregate_delegate_1 = require("./aggregate-delegate");
 const type_narrow_delegate_1 = require("./type-narrow-delegate");
 const column_1 = require("./column");
 const where_delegate_1 = require("./where-delegate");
@@ -91,8 +92,14 @@ class SelectBuilder {
                 return result;
             }
             else {
+                const originalRow = result;
                 for (let d of this.extraData.aggregateDelegates) {
-                    result = yield d(result);
+                    if (aggregate_delegate_1.AggregateDelegateUtil.isAggregateDelegate(d)) {
+                        result = yield d(result);
+                    }
+                    else {
+                        result = yield d(result, originalRow);
+                    }
                 }
                 return result;
             }
@@ -260,8 +267,6 @@ class SelectBuilder {
             joins: replaced
         }), this.extraData);
     }
-    //Must be called after `SELECT` or there will be
-    //no columns to aggregate...
     aggregate(aggregateDelegate) {
         this.assertAfterSelect();
         return new SelectBuilder(type_util_1.spread(this.data, {

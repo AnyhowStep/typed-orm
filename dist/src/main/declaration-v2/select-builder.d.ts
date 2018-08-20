@@ -6,7 +6,8 @@ import { AliasedTable, AnyAliasedTable } from "./aliased-table";
 import { Join, JoinType } from "./join";
 import { SelectCollection, SelectCollectionUtil } from "./select-collection";
 import { SelectDelegate } from "./select-delegate";
-import { AggregateDelegate } from "./aggregate-delegate";
+import { FetchRow } from "./fetch-row";
+import { AggregateDelegate, AggregateDelegatePeekOriginal } from "./aggregate-delegate";
 import { TypeNarrowDelegate } from "./type-narrow-delegate";
 import { Column } from "./column";
 import * as invalid from "./invalid";
@@ -60,7 +61,7 @@ export interface ExtraSelectBuilderData {
     readonly limit?: LimitData;
     readonly unionOrderBy?: AnyOrderBy[];
     readonly unionLimit?: LimitData;
-    readonly aggregateDelegates?: AggregateDelegate<any>[];
+    readonly aggregateDelegates?: (AggregateDelegate<any> | AggregateDelegatePeekOriginal<any, any>)[];
 }
 export interface RawPaginationArgs {
     page?: number | null | undefined;
@@ -82,7 +83,7 @@ export interface SelectBuilderData {
     readonly hasUnion: boolean;
     readonly joins: JoinCollection;
     readonly selects: undefined | SelectCollection;
-    readonly aggregateDelegate: undefined | AggregateDelegate<any>;
+    readonly aggregateDelegate: undefined | AggregateDelegate<any> | AggregateDelegatePeekOriginal<any, any>;
     readonly hasParentJoins: boolean;
     readonly parentJoins: JoinCollection;
     readonly declaredInnerJoins?: undefined | Tuple<AnyAliasedTable>;
@@ -327,7 +328,19 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
     }> : Error extends JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> ? JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> : SelectBuilder<{
         readonly [key in keyof DataT]: (key extends "joins" ? JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB> : DataT[key]);
     }>);
-    aggregate<AggregateDelegateT extends AggregateDelegate<SelectBuilderUtil.AggregatedRow<this>>>(this: SelectBuilder<{
+    aggregate<AggregateDelegateT extends (AggregateDelegatePeekOriginal<SelectBuilderUtil.AggregatedRow<this>, FetchRow<DataT["joins"], SelectCollectionUtil.ToColumnReferences<DataT["selects"]>>>)>(this: SelectBuilder<{
+        hasSelect: true;
+        hasFrom: any;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: false;
+        parentJoins: any;
+    }>, aggregateDelegate: AggregateDelegateT): (SelectBuilder<{
+        readonly [key in keyof DataT]: (key extends "aggregateDelegate" ? AggregateDelegateT : DataT[key]);
+    }>);
+    aggregate<AggregateDelegateT extends (AggregateDelegate<SelectBuilderUtil.AggregatedRow<this>>)>(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;
         hasUnion: any;

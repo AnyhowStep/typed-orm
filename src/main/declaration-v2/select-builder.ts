@@ -16,8 +16,8 @@ import {spread} from "@anyhowstep/type-util";
 import {Join, JoinType} from "./join";
 import {SelectCollection, SelectCollectionUtil} from "./select-collection";
 import {SelectDelegate} from "./select-delegate";
-import {FetchRowUtil} from "./fetch-row";
-import {AggregateDelegate} from "./aggregate-delegate";
+import {FetchRow, FetchRowUtil} from "./fetch-row";
+import {AggregateDelegate, AggregateDelegatePeekOriginal, AggregateDelegateUtil} from "./aggregate-delegate";
 import {TypeNarrowDelegate, TypeNarrowDelegateUtil} from "./type-narrow-delegate";
 import {Column, AnyColumn} from "./column";
 import * as invalid from "./invalid";
@@ -90,7 +90,7 @@ export interface ExtraSelectBuilderData {
     readonly limit? : LimitData,
     readonly unionOrderBy? : AnyOrderBy[],
     readonly unionLimit? : LimitData,
-    readonly aggregateDelegates? : AggregateDelegate<any>[],
+    readonly aggregateDelegates? : (AggregateDelegate<any>|AggregateDelegatePeekOriginal<any, any>)[],
 }
 
 //TODO Move elsewhere
@@ -117,7 +117,7 @@ export interface SelectBuilderData {
 
     readonly selects : undefined|SelectCollection,
 
-    readonly aggregateDelegate : undefined|AggregateDelegate<any>,
+    readonly aggregateDelegate : undefined|AggregateDelegate<any>|AggregateDelegatePeekOriginal<any, any>,
 
     readonly hasParentJoins : boolean,
     readonly parentJoins : JoinCollection,
@@ -831,13 +831,82 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Must be called after `SELECT` or there will be
     //no columns to aggregate...
     aggregate<
-        AggregateDelegateT extends AggregateDelegate<
-            SelectBuilderUtil.AggregatedRow<this>
-            /*FetchRow<
-                this["data"]["joins"],
-                SelectCollectionUtil.ToColumnReferences<this["data"]["selects"]>
-            >*/
-        >
+        AggregateDelegateT extends (
+            AggregateDelegatePeekOriginal<
+                SelectBuilderUtil.AggregatedRow<this>,
+                FetchRow<
+                    DataT["joins"],
+                    SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+                >
+            >
+        )
+    > (
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasFrom : any,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            //Makes no sense to aggregate a subquery
+            //because you cannot fetch() it
+            hasParentJoins : false,
+            parentJoins : any,
+        }>,
+        aggregateDelegate : AggregateDelegateT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "aggregateDelegate" ?
+                AggregateDelegateT :
+                DataT[key]
+            )
+        }>
+    );
+    aggregate<
+        AggregateDelegateT extends (
+            AggregateDelegate<
+                SelectBuilderUtil.AggregatedRow<this>
+            >
+        )
+    > (
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasFrom : any,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            //Makes no sense to aggregate a subquery
+            //because you cannot fetch() it
+            hasParentJoins : false,
+            parentJoins : any,
+        }>,
+        aggregateDelegate : AggregateDelegateT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "aggregateDelegate" ?
+                AggregateDelegateT :
+                DataT[key]
+            )
+        }>
+    );
+    aggregate<
+        AggregateDelegateT extends (
+            AggregateDelegate<
+                SelectBuilderUtil.AggregatedRow<this>
+            >|
+            AggregateDelegatePeekOriginal<
+                SelectBuilderUtil.AggregatedRow<this>,
+                FetchRow<
+                    DataT["joins"],
+                    SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+                >
+            >
+        )
     > (
         this : SelectBuilder<{
             hasSelect : true,
@@ -1003,8 +1072,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         if (this.extraData.aggregateDelegates == undefined) {
             return result;
         } else {
+            const originalRow = result;
             for (let d of this.extraData.aggregateDelegates) {
-                result = await d(result);
+                if (AggregateDelegateUtil.isAggregateDelegate(d)) {
+                    result = await d(result);
+                } else {
+                    result = await d(result, originalRow);
+                }
             }
             return result;
         }
