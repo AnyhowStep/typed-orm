@@ -43,4 +43,12 @@ function joinUsing(fromTable, toTable, fromDelegate) {
     return new JoinDeclaration(fromTable, toTable, fromColumns, toColumns, join_1.JoinType.INNER);
 }
 exports.joinUsing = joinUsing;
+function leftJoinUsing(fromTable, toTable, fromDelegate) {
+    const fromColumns = fromDelegate(fromTable.columns);
+    aliased_table_1.AliasedTableUtil.assertHasColumns(fromTable, fromColumns);
+    const toColumns = join_to_delegate_1.JoinToDelegateUtil.createUsing(toTable, fromColumns);
+    aliased_table_1.AliasedTableUtil.assertHasColumns(toTable, toColumns);
+    return new JoinDeclaration(fromTable, toTable, fromColumns, toColumns, join_1.JoinType.LEFT);
+}
+exports.leftJoinUsing = leftJoinUsing;
 //# sourceMappingURL=join-declaration.js.map

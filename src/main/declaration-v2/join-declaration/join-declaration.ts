@@ -203,3 +203,46 @@ export function joinUsing<
         JoinType.INNER
     ) as any;
 }
+
+export function leftJoinUsing<
+    FromTableT extends AnyAliasedTable,
+    ToTableT extends AnyAliasedTable,
+    JoinFromD extends JoinDeclarationFromDelegate<FromTableT>
+> (
+    fromTable : FromTableT,
+    toTable : ToTableT,
+    fromDelegate : JoinFromD
+) : (
+    ColumnCollectionUtil.HasColumns<
+        //We convert the ToTableT columns to nullable
+        //because we want to allow joining `null` with `int`
+        //columns
+        ColumnCollectionUtil.ToNullable<ToTableT["columns"]>,
+        ColumnTupleUtil.WithTableAlias<ReturnType<JoinFromD>, ToTableT["alias"]>
+    > extends true ?
+        JoinDeclaration<
+            FromTableT,
+            ToTableT,
+            ReturnType<JoinFromD>,
+            ColumnTupleUtil.WithTableAlias<ReturnType<JoinFromD>, ToTableT["alias"]>,
+            JoinType.LEFT
+        > :
+        never
+) {
+    const fromColumns = fromDelegate(fromTable.columns);
+    AliasedTableUtil.assertHasColumns(fromTable, fromColumns);
+
+    const toColumns = JoinToDelegateUtil.createUsing(
+        toTable,
+        fromColumns
+    );
+    AliasedTableUtil.assertHasColumns(toTable, toColumns);
+
+    return new JoinDeclaration(
+        fromTable,
+        toTable,
+        fromColumns,
+        toColumns,
+        JoinType.LEFT
+    ) as any;
+}
