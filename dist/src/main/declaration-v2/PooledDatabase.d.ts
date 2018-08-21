@@ -73,6 +73,16 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     }>(table: TableT, id: number): (Promise<FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>> | undefined>);
     fetchValueByUniqueKey<TableT extends AnyTable, DelegateT extends (c: TableT["columns"]) => SelectValue<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>, any> | Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, any>>(table: TableT, uniqueKey: UniqueKeys<TableT>, selectValueDelegate: DelegateT): (Promise<ReturnType<DelegateT> extends AnyAliasedExpr ? ReturnType<ReturnType<DelegateT>["assertDelegate"]> : ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>>);
     fetchValueOrUndefinedByUniqueKey<TableT extends AnyTable, DelegateT extends (c: TableT["columns"]) => SelectValue<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>, any> | Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, any>>(table: TableT, uniqueKey: UniqueKeys<TableT>, selectValueDelegate: DelegateT): (Promise<undefined | (ReturnType<DelegateT> extends AnyAliasedExpr ? ReturnType<ReturnType<DelegateT>["assertDelegate"]> : ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>)>);
+    fetchValueById<TableT extends AnyAliasedTable & {
+        data: {
+            id: Column<any, any, number>;
+        };
+    }, DelegateT extends (c: TableT["columns"]) => SelectValue<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>, any> | Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, any>>(table: TableT, id: number, selectValueDelegate: DelegateT): (Promise<ReturnType<DelegateT> extends AnyAliasedExpr ? ReturnType<ReturnType<DelegateT>["assertDelegate"]> : ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>>);
+    fetchValueOrUndefinedById<TableT extends AnyAliasedTable & {
+        data: {
+            id: Column<any, any, number>;
+        };
+    }, DelegateT extends (c: TableT["columns"]) => SelectValue<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>, any> | Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, any>>(table: TableT, id: number, selectValueDelegate: DelegateT): (Promise<undefined | (ReturnType<DelegateT> extends AnyAliasedExpr ? ReturnType<ReturnType<DelegateT>["assertDelegate"]> : ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>)>);
     insertValue<TableT extends AnyTable>(table: TableT, value: RawInsertValueRow<TableT>): (InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], "NORMAL">);
     insertValueAndFetch<TableT extends AnyTable & {
         data: {

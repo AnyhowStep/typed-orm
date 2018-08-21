@@ -414,6 +414,101 @@ export class PooledDatabase extends mysql.PooledDatabase {
                 .fetchValueOrUndefined();
         }
     }
+    fetchValueById<
+        TableT extends AnyAliasedTable & { data : { id : Column<any, any, number> } },
+        DelegateT extends (c : TableT["columns"]) => SelectValue<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>, any>|Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, any>
+    > (
+        table : TableT,
+        id : number,
+        selectValueDelegate : DelegateT
+    ) : (
+        Promise<
+            ReturnType<DelegateT> extends AnyAliasedExpr ?
+            ReturnType<ReturnType<DelegateT>["assertDelegate"]> :
+            ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>
+        >
+    ) {
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
+        }
+        const columnOrAliasedExprOrExpr = selectValueDelegate(table.columns);
+        if (columnOrAliasedExprOrExpr instanceof AliasedExpr) {
+            const ref = ColumnCollectionUtil.toColumnReferences(table.columns);
+            ColumnReferencesUtil.assertHasColumnReferences(
+                ref,
+                columnOrAliasedExprOrExpr.usedReferences as any
+            );
+        } else if (columnOrAliasedExprOrExpr instanceof Column) {
+            ColumnCollectionUtil.assertHasColumn(table.columns, columnOrAliasedExprOrExpr);
+        } else {
+            const ref = ColumnCollectionUtil.toColumnReferences(table.columns);
+            ColumnReferencesUtil.assertHasColumnReferences(
+                ref,
+                columnOrAliasedExprOrExpr.usedReferences as any
+            );
+        }
+
+        if (columnOrAliasedExprOrExpr instanceof Expr) {
+            return (this.from(table) as any)
+                .whereIsEqual((c : any) => c[table.data.id.name], id)
+                .select(() => [columnOrAliasedExprOrExpr.as("value")])
+                .fetchValue();
+        } else {
+            return (this.from(table) as any)
+                .whereIsEqual((c : any) => c[table.data.id.name], id)
+                .select(() => [columnOrAliasedExprOrExpr])
+                .fetchValue();
+        }
+    }
+    fetchValueOrUndefinedById<
+        TableT extends AnyAliasedTable & { data : { id : Column<any, any, number> } },
+        DelegateT extends (c : TableT["columns"]) => SelectValue<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>, any>|Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, any>
+    > (
+        table : TableT,
+        id : number,
+        selectValueDelegate : DelegateT
+    ) : (
+        Promise<
+            undefined|
+            (
+                ReturnType<DelegateT> extends AnyAliasedExpr ?
+                ReturnType<ReturnType<DelegateT>["assertDelegate"]> :
+                ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>
+            )
+        >
+    ) {
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
+        }
+        const columnOrAliasedExprOrExpr = selectValueDelegate(table.columns);
+        if (columnOrAliasedExprOrExpr instanceof AliasedExpr) {
+            const ref = ColumnCollectionUtil.toColumnReferences(table.columns);
+            ColumnReferencesUtil.assertHasColumnReferences(
+                ref,
+                columnOrAliasedExprOrExpr.usedReferences as any
+            );
+        } else if (columnOrAliasedExprOrExpr instanceof Column) {
+            ColumnCollectionUtil.assertHasColumn(table.columns, columnOrAliasedExprOrExpr);
+        } else {
+            const ref = ColumnCollectionUtil.toColumnReferences(table.columns);
+            ColumnReferencesUtil.assertHasColumnReferences(
+                ref,
+                columnOrAliasedExprOrExpr.usedReferences as any
+            );
+        }
+
+        if (columnOrAliasedExprOrExpr instanceof Expr) {
+            return (this.from(table) as any)
+                .whereIsEqual((c : any) => c[table.data.id.name], id)
+                .select(() => [columnOrAliasedExprOrExpr.as("value")])
+                .fetchValueOrUndefined();
+        } else {
+            return (this.from(table) as any)
+                .whereIsEqual((c : any) => c[table.data.id.name], id)
+                .select(() => [columnOrAliasedExprOrExpr])
+                .fetchValueOrUndefined();
+        }
+    }
 
     insertValue<TableT extends AnyTable> (
         table : TableT,

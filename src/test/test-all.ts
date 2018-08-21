@@ -6,6 +6,7 @@ import "./cross-join";
 import "./cursor";
 import "./delete-zero-or-one-by-unique-key";
 import "./exists";
+import "./fetch-value-by-id";
 import "./fetch-value-by-unique-key";
 import "./if";
 import "./insert-and-fetch-with-unique-key";

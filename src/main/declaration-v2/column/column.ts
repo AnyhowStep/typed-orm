@@ -49,11 +49,32 @@ export class Column<
     querify (sb : StringBuilder) {
         sb.append(this.fullName);
     }
-    /*as<AliasT extends string>(alias : AliasT) : IColumnExpr<
-        ColumnToReference<IColumn<TableNameT, NameT, TypeT>>,
+
+    /*as<AliasT extends string>(alias : AliasT) : AliasedExpr<
+        {
+            [tableAlias in TableAliasT] : {
+                [columnName in NameT] : Column<
+                    TableAliasT,
+                    NameT,
+                    TypeT
+                >
+            }
+        },
         "__expr",
         AliasT,
         TypeT
-    >;*/
+    > {
+        return new AliasedExpr(
+            {
+                [this.tableAlias] : {
+                    [this.name] : this
+                }
+            },
+            "__expr",
+            alias,
+            this.assertDelegate,
+            this.fullName
+        ) as any;
+    }*/
 }
 export type AnyColumn = Column<string, string, any>;

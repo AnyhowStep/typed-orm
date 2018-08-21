@@ -242,6 +242,64 @@ class PooledDatabase extends mysql.PooledDatabase {
                 .fetchValueOrUndefined();
         }
     }
+    fetchValueById(table, id, selectValueDelegate) {
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
+        }
+        const columnOrAliasedExprOrExpr = selectValueDelegate(table.columns);
+        if (columnOrAliasedExprOrExpr instanceof aliased_expr_1.AliasedExpr) {
+            const ref = column_collection_1.ColumnCollectionUtil.toColumnReferences(table.columns);
+            column_references_1.ColumnReferencesUtil.assertHasColumnReferences(ref, columnOrAliasedExprOrExpr.usedReferences);
+        }
+        else if (columnOrAliasedExprOrExpr instanceof column_1.Column) {
+            column_collection_1.ColumnCollectionUtil.assertHasColumn(table.columns, columnOrAliasedExprOrExpr);
+        }
+        else {
+            const ref = column_collection_1.ColumnCollectionUtil.toColumnReferences(table.columns);
+            column_references_1.ColumnReferencesUtil.assertHasColumnReferences(ref, columnOrAliasedExprOrExpr.usedReferences);
+        }
+        if (columnOrAliasedExprOrExpr instanceof expr_1.Expr) {
+            return this.from(table)
+                .whereIsEqual((c) => c[table.data.id.name], id)
+                .select(() => [columnOrAliasedExprOrExpr.as("value")])
+                .fetchValue();
+        }
+        else {
+            return this.from(table)
+                .whereIsEqual((c) => c[table.data.id.name], id)
+                .select(() => [columnOrAliasedExprOrExpr])
+                .fetchValue();
+        }
+    }
+    fetchValueOrUndefinedById(table, id, selectValueDelegate) {
+        if (table.data.id == undefined) {
+            throw new Error(`Expected ${table.alias} to have an id column`);
+        }
+        const columnOrAliasedExprOrExpr = selectValueDelegate(table.columns);
+        if (columnOrAliasedExprOrExpr instanceof aliased_expr_1.AliasedExpr) {
+            const ref = column_collection_1.ColumnCollectionUtil.toColumnReferences(table.columns);
+            column_references_1.ColumnReferencesUtil.assertHasColumnReferences(ref, columnOrAliasedExprOrExpr.usedReferences);
+        }
+        else if (columnOrAliasedExprOrExpr instanceof column_1.Column) {
+            column_collection_1.ColumnCollectionUtil.assertHasColumn(table.columns, columnOrAliasedExprOrExpr);
+        }
+        else {
+            const ref = column_collection_1.ColumnCollectionUtil.toColumnReferences(table.columns);
+            column_references_1.ColumnReferencesUtil.assertHasColumnReferences(ref, columnOrAliasedExprOrExpr.usedReferences);
+        }
+        if (columnOrAliasedExprOrExpr instanceof expr_1.Expr) {
+            return this.from(table)
+                .whereIsEqual((c) => c[table.data.id.name], id)
+                .select(() => [columnOrAliasedExprOrExpr.as("value")])
+                .fetchValueOrUndefined();
+        }
+        else {
+            return this.from(table)
+                .whereIsEqual((c) => c[table.data.id.name], id)
+                .select(() => [columnOrAliasedExprOrExpr])
+                .fetchValueOrUndefined();
+        }
+    }
     insertValue(table, value) {
         return new insert_value_builder_1.InsertValueBuilder(table, undefined, "NORMAL", this).value(value);
     }
