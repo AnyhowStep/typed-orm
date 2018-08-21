@@ -11,6 +11,7 @@ import {ColumnReferencesUtil} from "../column-references";
 import {coalesce} from "../expression/coalesce";
 import {and} from "../expression/logical-connective/and";
 import {isNotNullAndEq} from "../expression/type-check";
+import {SelectBuilderUtil} from "../select-builder-util";
 
 export namespace LogDataUtil {
     export type EntityIdentifier<DataT extends LogData> = (
@@ -129,6 +130,24 @@ export namespace LogDataUtil {
             trackableAssertDelegate(data),
             doNotCopyOnTrackableChangedAssertDelegate(data)
         ) as any;
+    }
+    export function fetchLatestQuery<
+        DataT extends LogData
+    > (
+        db : PooledDatabase,
+        data : DataT,
+        entityIdentifier : EntityIdentifier<DataT>
+    ) : SelectBuilderUtil.CleanToFrom<DataT["table"]> {
+        entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
+        return (db.from(data.table) as any)
+            .where(() => RawExprUtil.toEqualityCondition(
+                data.table,
+                entityIdentifier
+            ))
+            .orderBy(() => {
+                return data.orderByLatest;
+            })
+            .limit(1);
     }
     export function fetchLatestOrError<
         DataT extends LogData

@@ -596,6 +596,9 @@ class PooledDatabase extends mysql.PooledDatabase {
     polymorphicUpdateZeroOrOneByUniqueKey(table, uniqueKey, setDelegate) {
         return polymorphic_update_zero_or_one_by_unique_key_1.polymorphicUpdateZeroOrOneByUniqueKey(this, table, uniqueKey, setDelegate);
     }
+    fetchLatestQuery(data, entityIdentifier) {
+        return log_1.LogDataUtil.fetchLatestQuery(this, data, entityIdentifier);
+    }
     fetchLatestOrError(data, entityIdentifier) {
         return log_1.LogDataUtil.fetchLatestOrError(this, data, entityIdentifier);
     }

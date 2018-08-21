@@ -996,6 +996,12 @@ export class PooledDatabase extends mysql.PooledDatabase {
         );
     }
 
+    fetchLatestQuery<DataT extends LogData> (
+        data : DataT,
+        entityIdentifier : LogDataUtil.EntityIdentifier<DataT>
+    ) : SelectBuilderUtil.CleanToFrom<DataT["table"]> {
+        return LogDataUtil.fetchLatestQuery(this, data, entityIdentifier);
+    }
     fetchLatestOrError<DataT extends LogData> (
         data : DataT,
         entityIdentifier : LogDataUtil.EntityIdentifier<DataT>

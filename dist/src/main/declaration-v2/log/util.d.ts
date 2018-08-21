@@ -7,6 +7,7 @@ import { Table, TableRow, TableUtil } from "../table";
 import { Column } from "../column";
 import { Expr } from "../expr";
 import { ColumnReferencesUtil } from "../column-references";
+import { SelectBuilderUtil } from "../select-builder-util";
 export declare namespace LogDataUtil {
     type EntityIdentifier<DataT extends LogData> = ({
         [columnName in Extract<Extract<keyof DataT["table"]["columns"], keyof DataT["entityIdentifier"]>, string>]: (ReturnType<DataT["table"]["columns"][columnName]["assertDelegate"]>);
@@ -28,6 +29,7 @@ export declare namespace LogDataUtil {
     type InsertIfDifferentRow<DataT extends LogData> = (Trackable<DataT> & DoNotCopyOnTrackableChanged<DataT>);
     type FullOverwriteInsertIfDifferentRow<DataT extends LogData> = (FullOverwriteTrackable<DataT> & DoNotCopyOnTrackableChanged<DataT>);
     function insertIfDifferentRowAssertDelegate<DataT extends LogData>(data: DataT): sd.AssertDelegate<InsertIfDifferentRow<DataT>>;
+    function fetchLatestQuery<DataT extends LogData>(db: PooledDatabase, data: DataT, entityIdentifier: EntityIdentifier<DataT>): SelectBuilderUtil.CleanToFrom<DataT["table"]>;
     function fetchLatestOrError<DataT extends LogData>(db: PooledDatabase, data: DataT, entityIdentifier: EntityIdentifier<DataT>): Promise<TableRow<DataT["table"]>>;
     function fetchLatestOrUndefined<DataT extends LogData>(db: PooledDatabase, data: DataT, entityIdentifier: EntityIdentifier<DataT>): Promise<TableRow<DataT["table"]> | undefined>;
     function fetchLatestOrDefault<DataT extends LogData>(db: PooledDatabase, data: DataT, entityIdentifier: EntityIdentifier<DataT>): Promise<TableRow<DataT["table"]>>;

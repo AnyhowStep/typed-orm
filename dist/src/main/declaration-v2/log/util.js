@@ -48,6 +48,16 @@ var LogDataUtil;
         return sd.intersect(trackableAssertDelegate(data), doNotCopyOnTrackableChangedAssertDelegate(data));
     }
     LogDataUtil.insertIfDifferentRowAssertDelegate = insertIfDifferentRowAssertDelegate;
+    function fetchLatestQuery(db, data, entityIdentifier) {
+        entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
+        return db.from(data.table)
+            .where(() => raw_expr_1.RawExprUtil.toEqualityCondition(data.table, entityIdentifier))
+            .orderBy(() => {
+            return data.orderByLatest;
+        })
+            .limit(1);
+    }
+    LogDataUtil.fetchLatestQuery = fetchLatestQuery;
     function fetchLatestOrError(db, data, entityIdentifier) {
         entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
         return db.from(data.table)

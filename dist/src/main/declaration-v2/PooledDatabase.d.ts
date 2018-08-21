@@ -137,6 +137,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     } & {
         exists: boolean;
     }>;
+    fetchLatestQuery<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>): SelectBuilderUtil.CleanToFrom<DataT["table"]>;
     fetchLatestOrError<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>): Promise<TableRow<DataT["table"]>>;
     fetchLatestOrUndefined<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>): Promise<TableRow<DataT["table"]> | undefined>;
     fetchLatestOrDefault<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>): Promise<TableRow<DataT["table"]>>;
