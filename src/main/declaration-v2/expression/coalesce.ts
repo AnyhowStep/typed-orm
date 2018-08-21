@@ -90,9 +90,9 @@ export function coalesce<
             sd.notNullable(RawExprUtil.assertDelegate(left)),
             ...(rightArr.map((expr, index) => {
                 if (index == rightArr.length-1) {
-                    return sd.notNullable(RawExprUtil.assertDelegate(expr));
-                } else {
                     return RawExprUtil.assertDelegate(expr);
+                } else {
+                    return sd.notNullable(RawExprUtil.assertDelegate(expr));
                 }
             }) as any)
         ),
