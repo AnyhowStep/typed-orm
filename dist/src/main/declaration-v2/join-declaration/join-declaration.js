@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const aliased_table_1 = require("../aliased-table");
 const join_to_delegate_1 = require("../join-to-delegate");
 const join_1 = require("../join");
+const expression_1 = require("../expression");
 class JoinDeclaration {
     constructor(fromTable, toTable, fromColumns, toColumns, defaultJoinType) {
         this.fromTable = fromTable;
@@ -21,6 +22,17 @@ class JoinDeclaration {
     }
     reverse() {
         return new JoinDeclaration(this.toTable, this.fromTable, this.toColumns, this.fromColumns, this.defaultJoinType);
+    }
+    toEqualityExpression() {
+        if (this.fromColumns.length == 0) {
+            return expression_1.FALSE;
+        }
+        const first = expression_1.isNotNullAndEq(this.fromColumns[0], this.toColumns[0]);
+        const others = [];
+        for (let i = 1; i < this.fromColumns.length; ++i) {
+            others.push(expression_1.isNotNullAndEq(this.fromColumns[i], this.toColumns[i]));
+        }
+        return expression_1.and(first, ...others);
     }
 }
 exports.JoinDeclaration = JoinDeclaration;

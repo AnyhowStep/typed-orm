@@ -2,8 +2,10 @@ import {AnyAliasedTable, AliasedTableUtil} from "../aliased-table";
 import {ColumnCollectionUtil} from "../column-collection";
 import {Tuple} from "../tuple";
 import {JoinToDelegate, JoinToDelegateUtil, JoinTo} from "../join-to-delegate";
-import {AnyColumn, ColumnTupleUtil} from "../column";
+import {ColumnTupleUtil} from "../column";
 import {JoinType} from "../join";
+import {Expr} from "../expr";
+import {isNotNullAndEq, and, FALSE} from "../expression";
 
 export type JoinDeclarationFromDelegate<
     FromTableT extends AnyAliasedTable
@@ -78,13 +80,37 @@ export class JoinDeclaration<
             this.defaultJoinType
         );
     }
+
+    toEqualityExpression () : Expr<
+        (
+            ColumnTupleUtil.ToColumnReferences<JoinFromT> &
+            ColumnTupleUtil.ToColumnReferences<JoinToT>
+        ),
+        boolean
+    > {
+        if (this.fromColumns.length == 0) {
+            return FALSE as any;
+        }
+        const first = isNotNullAndEq(
+            this.fromColumns[0],
+            this.toColumns[0]
+        );
+        const others : Expr<any, boolean>[] = [];
+        for (let i=1; i<this.fromColumns.length; ++i) {
+            others.push(isNotNullAndEq(
+                this.fromColumns[i],
+                this.toColumns[i]
+            ));
+        }
+        return and(first, ...others);
+    }
 }
 
 export type AnyJoinDeclaration = JoinDeclaration<
     AnyAliasedTable,
     AnyAliasedTable,
-    Tuple<AnyColumn>,
-    Tuple<AnyColumn>,
+    any,
+    any,
     JoinType.INNER|JoinType.LEFT
 >;
 

@@ -1,5 +1,5 @@
 import { Tuple, TupleKeys, TupleLength } from "../tuple";
-import { AnyColumn } from "./column";
+import { AnyColumn, Column } from "./column";
 import { ColumnUtil } from "./util";
 export declare namespace ColumnTupleUtil {
     type WithTableAlias<TupleT extends Tuple<AnyColumn>, NewTableAliasT extends string> = ({
@@ -21,5 +21,16 @@ export declare namespace ColumnTupleUtil {
         "0": TupleT[0]["name"];
         length: TupleLength<TupleT>;
     } & string[]);
+    type FindColumnsWithTableAlias<TupleT extends Tuple<AnyColumn>, TableAliasT extends string> = ({
+        [index in TupleKeys<TupleT>]: (Extract<TupleT[index], Column<TableAliasT, any, any>>);
+    }[TupleKeys<TupleT>]);
+    type FindColumn<TupleT extends Tuple<AnyColumn>, TableAliasT extends string, NameT extends string> = ({
+        [index in TupleKeys<TupleT>]: (Extract<TupleT[index], Column<TableAliasT, NameT, any>>);
+    }[TupleKeys<TupleT>]);
+    type ToColumnReferences<TupleT extends Tuple<AnyColumn>> = {
+        [tableAlias in Extract<TupleT[TupleKeys<TupleT>], AnyColumn>["tableAlias"]]: {
+            [columnName in FindColumnsWithTableAlias<TupleT, tableAlias>["name"]]: (FindColumn<TupleT, tableAlias, columnName>);
+        };
+    };
 }
 //# sourceMappingURL=tuple-util.d.ts.map

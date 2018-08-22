@@ -97,6 +97,20 @@ tape(__filename, async (t) => {
 
     await db.from(appSource)
         .useJoins(
+            [o.JoinType.CROSS, appSourceEnabled]
+        )
+        .where(() => appSourceHasAppSourceEnabled.toEqualityExpression())
+        .selectAll()
+        .fetchAll()
+        .then((result) => {
+            for (let row of result) {
+                t.equal(row.appSource.appId, row.appSourceEnabled.appId);
+                t.equal(row.appSource.sourceId, row.appSourceEnabled.sourceId);
+            }
+        });
+
+    await db.from(appSource)
+        .useJoins(
             appSourceHasAppSourceEnabled
         )
         .selectAll()

@@ -2,8 +2,9 @@ import { AnyAliasedTable } from "../aliased-table";
 import { ColumnCollectionUtil } from "../column-collection";
 import { Tuple } from "../tuple";
 import { JoinToDelegate, JoinTo } from "../join-to-delegate";
-import { AnyColumn, ColumnTupleUtil } from "../column";
+import { ColumnTupleUtil } from "../column";
 import { JoinType } from "../join";
+import { Expr } from "../expr";
 export declare type JoinDeclarationFromDelegate<FromTableT extends AnyAliasedTable> = ((columns: FromTableT["columns"]) => (Tuple<ColumnCollectionUtil.Columns<FromTableT["columns"]>>));
 export declare class JoinDeclaration<FromTableT extends AnyAliasedTable, ToTableT extends AnyAliasedTable, JoinFromT extends Tuple<ColumnCollectionUtil.Columns<FromTableT["columns"]>>, JoinToT extends Tuple<ColumnCollectionUtil.Columns<ToTableT["columns"]>>, DefaultJoinTypeT extends JoinType.INNER | JoinType.LEFT> {
     readonly fromTable: FromTableT;
@@ -14,8 +15,9 @@ export declare class JoinDeclaration<FromTableT extends AnyAliasedTable, ToTable
     constructor(fromTable: FromTableT, toTable: ToTableT, fromColumns: JoinFromT, toColumns: JoinToT, defaultJoinType: DefaultJoinTypeT);
     setDefaultJoinType<NewDefaultJoinTypeT extends JoinType.INNER | JoinType.LEFT>(newDefaultJoinType: NewDefaultJoinTypeT): (JoinDeclaration<FromTableT, ToTableT, JoinFromT, JoinToT, NewDefaultJoinTypeT>);
     reverse(): (JoinDeclaration<ToTableT, FromTableT, JoinToT, JoinFromT, DefaultJoinTypeT>);
+    toEqualityExpression(): Expr<(ColumnTupleUtil.ToColumnReferences<JoinFromT> & ColumnTupleUtil.ToColumnReferences<JoinToT>), boolean>;
 }
-export declare type AnyJoinDeclaration = JoinDeclaration<AnyAliasedTable, AnyAliasedTable, Tuple<AnyColumn>, Tuple<AnyColumn>, JoinType.INNER | JoinType.LEFT>;
+export declare type AnyJoinDeclaration = JoinDeclaration<AnyAliasedTable, AnyAliasedTable, any, any, JoinType.INNER | JoinType.LEFT>;
 export declare type ImplicitJoinDeclarationUsage = AnyJoinDeclaration;
 export declare type InnerOrLeftJoinDeclarationUsage = [JoinType.INNER | JoinType.LEFT, AnyJoinDeclaration];
 export declare type CrossJoinDeclarationUsage = [JoinType.CROSS, AnyAliasedTable];
