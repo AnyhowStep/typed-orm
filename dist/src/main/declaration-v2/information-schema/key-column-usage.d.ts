@@ -47,5 +47,6 @@ export declare const KEY_COLUMN_USAGE: Table<"KEY_COLUMN_USAGE", "KEY_COLUMN_USA
     readonly id: undefined;
     readonly uniqueKeys: undefined;
     readonly parentTables: undefined;
+    readonly noInsert: false;
 }>;
 //# sourceMappingURL=key-column-usage.d.ts.map

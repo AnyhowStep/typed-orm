@@ -32,6 +32,9 @@ class InsertValueBuilder {
             this.values.concat(rows), this.insertMode, this.db);
     }
     execute(db) {
+        if (this.table.data.noInsert) {
+            throw new Error(`INSERT not allowed on ${this.table.name}`);
+        }
         if (this.values == undefined) {
             throw new Error(`No VALUES to insert`);
         }
@@ -58,6 +61,9 @@ class InsertValueBuilder {
     //Consider allowing just ["data"]["id"] for execute and fetch
     executeAndFetch() {
         return __awaiter(this, void 0, void 0, function* () {
+            if (this.table.data.noInsert) {
+                throw new Error(`INSERT not allowed on ${this.table.name}`);
+            }
             return this.db.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
                 const insertResult = yield this.execute(db);
                 if (insertResult.insertId > 0) {

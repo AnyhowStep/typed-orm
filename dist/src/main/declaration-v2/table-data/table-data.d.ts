@@ -17,6 +17,7 @@ export interface TableData {
     readonly id: undefined | Column<any, any, number>;
     readonly uniqueKeys: undefined | (UniqueKeyCollection);
     readonly parentTables: undefined | Tuple<AnyTable>;
+    readonly noInsert: boolean;
 }
 export declare type AutoIncrementDelegate<ColumnCollectionT extends ColumnCollection> = ((columns: {
     [columnName in keyof ColumnCollectionT]: (ColumnCollectionT[columnName] extends Column<any, any, number> ? ColumnCollectionT[columnName] : never);

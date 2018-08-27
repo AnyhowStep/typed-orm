@@ -78,6 +78,9 @@ export class Table<
 export type AnyTable = (
     Table<string, string, ColumnCollection, any>
 );
+export type AnyTableAllowInsert = (
+    Table<string, string, ColumnCollection, TableData & { noInsert : false }>
+);
 
 export type TableRow<TableT extends AnyTable> = (
     ColumnCollectionUtil.Type<TableT["columns"]>

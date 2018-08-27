@@ -1,4 +1,4 @@
-import {AnyTable, TableUtil} from "./table";
+import {AnyTable, AnyTableAllowInsert, TableUtil} from "./table";
 import {Querify} from "./querify";
 import * as mysql from "typed-mysql";
 import {Column, AnyColumn} from "./column";
@@ -59,7 +59,7 @@ export type InsertAssignmentCollectionDelegate<
 )
 
 export class InsertSelectBuilder<
-    TableT extends AnyTable,
+    TableT extends AnyTableAllowInsert,
     SelectBuilderT extends AnySelectBuilder,
     AssignmentsT extends undefined|(RawInsertSelectAssignmentCollection<TableT, SelectBuilderT>),
     InsertModeT extends "IGNORE"|"REPLACE"|"NORMAL"
@@ -159,6 +159,9 @@ export class InsertSelectBuilder<
             )
         >
     ) {
+        if (this.table.data.noInsert) {
+            throw new Error(`INSERT not allowed on ${this.table.name}`);
+        }
         if (this.assignments == undefined) {
             throw new Error(`No VALUES to insert`);
         }
@@ -252,7 +255,7 @@ export type InsertSelectBuilderConvenient<
 );
 export type InsertSelectBuilderConvenientDelegate = (
     <
-        TableT extends AnyTable,
+        TableT extends AnyTableAllowInsert,
         SelectBuilderT extends AnySelectBuilder
     > (
         table : TableT,

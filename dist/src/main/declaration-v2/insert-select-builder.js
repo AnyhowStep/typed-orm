@@ -34,6 +34,9 @@ class InsertSelectBuilder {
         return new InsertSelectBuilder(this.table, this.selectBuilder, assignments, this.insertMode, this.db);
     }
     execute() {
+        if (this.table.data.noInsert) {
+            throw new Error(`INSERT not allowed on ${this.table.name}`);
+        }
         if (this.assignments == undefined) {
             throw new Error(`No VALUES to insert`);
         }

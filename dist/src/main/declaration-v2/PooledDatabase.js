@@ -743,7 +743,7 @@ class PooledDatabase extends mysql.PooledDatabase {
                         continue;
                     }
                     if (actualColumn.COLUMN_DEFAULT == undefined) {
-                        error(`INSERTs to ${declaredTable.name} will fail as ${actualColumn.COLUMN_NAME} has no default value`);
+                        error(`INSERTs to ${declaredTable.name} will fail as ${actualColumn.COLUMN_NAME} has no default value; and declared table does not have the column`);
                     }
                 }
                 else {

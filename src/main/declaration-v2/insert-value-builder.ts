@@ -1,4 +1,4 @@
-import {AnyTable, TableUtil} from "./table";
+import {AnyTable, AnyTableAllowInsert, TableUtil} from "./table";
 import {Querify} from "./querify";
 import {RawExprNoUsedRef} from "./raw-expr";
 import * as mysql from "typed-mysql";
@@ -37,7 +37,7 @@ export type InsertLiteralRow<TableT extends AnyTable> = (
 );
 
 export class InsertValueBuilder<
-    TableT extends AnyTable,
+    TableT extends AnyTableAllowInsert,
     ValuesT extends undefined|(RawInsertValueRow<TableT>[]),
     InsertModeT extends "IGNORE"|"REPLACE"|"NORMAL"
 > implements Querify {
@@ -116,6 +116,9 @@ export class InsertValueBuilder<
             )
         >
     ) {
+        if (this.table.data.noInsert) {
+            throw new Error(`INSERT not allowed on ${this.table.name}`);
+        }
         if (this.values == undefined) {
             throw new Error(`No VALUES to insert`);
         }
@@ -162,6 +165,9 @@ export class InsertValueBuilder<
             >
         >>
     ) {
+        if (this.table.data.noInsert) {
+            throw new Error(`INSERT not allowed on ${this.table.name}`);
+        }
         return this.db.transactionIfNotInOne(async (db) => {
             const insertResult = await this.execute(db);
             if (insertResult.insertId > 0) {

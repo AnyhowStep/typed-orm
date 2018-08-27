@@ -59,5 +59,6 @@ export declare const STATISTICS: Table<"STATISTICS", "STATISTICS", {
     readonly id: undefined;
     readonly uniqueKeys: undefined;
     readonly parentTables: undefined;
+    readonly noInsert: false;
 }>;
 //# sourceMappingURL=statistics.d.ts.map

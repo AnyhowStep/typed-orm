@@ -64,5 +64,6 @@ export declare const COLUMNS: Table<"COLUMNS", "COLUMNS", {
     readonly id: undefined;
     readonly uniqueKeys: undefined;
     readonly parentTables: undefined;
+    readonly noInsert: false;
 }>;
 //# sourceMappingURL=columns.d.ts.map

@@ -4,7 +4,7 @@ import { SelectBuilder, __DUMMY_FROM_TABLE } from "./select-builder";
 import { Join, AnyJoin } from "./join";
 import { AnyAliasedTable, AliasedTableUtil } from "./aliased-table";
 import { SelectDelegate } from "./select-delegate";
-import { Table, AnyTable, UniqueKeys, TableRow } from "./table";
+import { Table, AnyTable, AnyTableAllowInsert, UniqueKeys, TableRow } from "./table";
 import { RawInsertValueRow, InsertValueBuilder } from "./insert-value-builder";
 import { InsertSelectBuilderConvenientDelegate } from "./insert-select-builder";
 import { UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate, UpdateResult } from "./update-builder";
@@ -84,8 +84,8 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             id: Column<any, any, number>;
         };
     }, DelegateT extends (c: TableT["columns"]) => SelectValue<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>, any> | Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, any>>(table: TableT, id: number, selectValueDelegate: DelegateT): (Promise<undefined | (ReturnType<DelegateT> extends AnyAliasedExpr ? ReturnType<ReturnType<DelegateT>["assertDelegate"]> : ReturnType<RawExprUtil.ToExpr<ReturnType<DelegateT>>["assertDelegate"]>)>);
-    insertValue<TableT extends AnyTable>(table: TableT, value: RawInsertValueRow<TableT>): (InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], "NORMAL">);
-    insertValueAndFetch<TableT extends AnyTable & {
+    insertValue<TableT extends AnyTableAllowInsert>(table: TableT, value: RawInsertValueRow<TableT>): (InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], "NORMAL">);
+    insertValueAndFetch<TableT extends AnyTableAllowInsert & {
         data: {
             uniqueKeys: UniqueKeyCollection;
         };

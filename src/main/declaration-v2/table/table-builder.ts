@@ -330,6 +330,24 @@ export class TableBuilder<
         ) as any;
     }
 
+    noInsert () : TableBuilder<
+        AliasT,
+        NameT,
+        ColumnCollectionT,
+        TableDataUtil.NoInsert<
+            DataT
+        >
+    > {
+        return new TableBuilder(
+            this.alias,
+            this.name,
+            this.columns,
+            TableDataUtil.noInsert(
+                this.data
+            )
+        );
+    }
+
     build () : Table<AliasT, NameT, ColumnCollectionT, DataT> {
         return new Table(
             this.alias,
@@ -365,6 +383,7 @@ export function table<
             id : undefined,
             uniqueKeys : undefined,
             parentTables : undefined,
+            noInsert : false,
         }
     >
 );
@@ -393,6 +412,7 @@ export function table<
             id : undefined,
             uniqueKeys : undefined,
             parentTables : undefined,
+            noInsert : false,
         }
     >
 );
@@ -451,6 +471,7 @@ export function table (
             id : undefined,
             uniqueKeys : undefined,
             parentTables : undefined,
+            noInsert : false,
         }
     );
 }

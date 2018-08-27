@@ -74,5 +74,6 @@ export declare const TABLES: Table<"TABLES", "TABLES", {
     readonly id: undefined;
     readonly uniqueKeys: undefined;
     readonly parentTables: undefined;
+    readonly noInsert: false;
 }>;
 //# sourceMappingURL=tables.d.ts.map

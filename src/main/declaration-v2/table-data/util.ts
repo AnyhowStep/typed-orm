@@ -182,6 +182,7 @@ export namespace TableDataUtil {
                 readonly id : DataT["id"],
                 readonly uniqueKeys : DataT["uniqueKeys"],
                 readonly parentTables : DataT["parentTables"],
+                readonly noInsert : DataT["noInsert"],
             } :
             never
     );
@@ -588,6 +589,7 @@ export namespace TableDataUtil {
             );
             readonly uniqueKeys : DataT["uniqueKeys"];
             readonly parentTables : DataT["parentTables"];
+            readonly noInsert : DataT["noInsert"];
         }
     );
     export type WithTableAlias<DataT extends TableData, TableAliasT extends string> = (
@@ -607,6 +609,7 @@ export namespace TableDataUtil {
             );
             readonly uniqueKeys : DataT["uniqueKeys"];
             readonly parentTables : DataT["parentTables"];
+            readonly noInsert : DataT["noInsert"];
         }
     );
     export function withTableAlias<
@@ -749,6 +752,25 @@ export namespace TableDataUtil {
                 };
             }
         }
+    }
 
+    export type NoInsert<
+        DataT extends TableData
+    > = (
+        {
+            readonly [key in keyof DataT] : (
+                key extends "noInsert" ?
+                true :
+                DataT[key]
+            )
+        }
+    );
+    export function noInsert<DataT extends TableData> (data : DataT) : (
+        NoInsert<DataT>
+    ) {
+        return {
+            ...(data as any),
+            noInsert : true,
+        };
     }
 }

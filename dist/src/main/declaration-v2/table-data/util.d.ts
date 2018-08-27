@@ -40,6 +40,7 @@ export declare namespace TableDataUtil {
         readonly id: DataT["id"];
         readonly uniqueKeys: DataT["uniqueKeys"];
         readonly parentTables: DataT["parentTables"];
+        readonly noInsert: DataT["noInsert"];
     } : never);
     function isGenerated<DataT extends TableData, ColumnCollectionT extends ColumnCollection, IsGeneratedDelegateT extends IsGeneratedDelegate<DataT, ColumnCollectionT>>(data: DataT, columnCollection: ColumnCollectionT, delegate: IsGeneratedDelegateT): (IsGenerated<DataT, ColumnCollectionT, IsGeneratedDelegateT>);
     type HasDefaultValue<DataT extends TableData, ColumnCollectionT extends ColumnCollection, HasDefaultValueDelegateT extends HasDefaultValueDelegate<DataT, ColumnCollectionT>> = (ReturnType<HasDefaultValueDelegateT>[TupleKeys<ReturnType<HasDefaultValueDelegateT>>] extends AnyColumn ? {
@@ -89,6 +90,7 @@ export declare namespace TableDataUtil {
         readonly id: (DataT["id"] extends AnyColumn ? ColumnUtil.WithTableAlias<DataT["id"], TableAliasT> : DataT["id"] extends undefined ? undefined : DataT["id"] extends AnyColumn | undefined ? ColumnUtil.WithTableAlias<Extract<DataT["id"], AnyColumn>, TableAliasT> | undefined : undefined);
         readonly uniqueKeys: DataT["uniqueKeys"];
         readonly parentTables: DataT["parentTables"];
+        readonly noInsert: DataT["noInsert"];
     });
     type WithTableAlias<DataT extends TableData, TableAliasT extends string> = ({
         readonly autoIncrement: (DataT["autoIncrement"] extends AnyColumn ? ColumnUtil.WithTableAlias<DataT["autoIncrement"], TableAliasT> : undefined);
@@ -98,6 +100,7 @@ export declare namespace TableDataUtil {
         readonly id: (DataT["id"] extends AnyColumn ? ColumnUtil.WithTableAlias<DataT["id"], TableAliasT> : undefined);
         readonly uniqueKeys: DataT["uniqueKeys"];
         readonly parentTables: DataT["parentTables"];
+        readonly noInsert: DataT["noInsert"];
     });
     function withTableAlias<DataT extends TableData, TableAliasT extends string>(data: DataT, tableAlias: TableAliasT): (WithTableAlias<DataT, TableAliasT>);
     type AddParentTable<DataT extends TableData, ParentT extends AnyTable> = (DataT["uniqueKeys"] extends UniqueKeyCollection ? (ParentT["data"]["uniqueKeys"] extends UniqueKeyCollection ? (UniqueKeyCollectionUtil.CommonUniqueKeys<DataT["uniqueKeys"], ParentT["data"]["uniqueKeys"]> extends never ? never : (DataT["parentTables"] extends TableParentCollection ? (ParentT["data"]["parentTables"] extends TableParentCollection ? ({
@@ -110,5 +113,9 @@ export declare namespace TableDataUtil {
         [key in keyof DataT]: (key extends "parentTables" ? TupleWiden<[ParentT], AnyTable> : DataT[key]);
     })))) : never) : never);
     function addParentTable<DataT extends TableData, ParentT extends AnyTable>(data: DataT, parent: ParentT): any;
+    type NoInsert<DataT extends TableData> = ({
+        readonly [key in keyof DataT]: (key extends "noInsert" ? true : DataT[key]);
+    });
+    function noInsert<DataT extends TableData>(data: DataT): (NoInsert<DataT>);
 }
 //# sourceMappingURL=util.d.ts.map

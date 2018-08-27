@@ -144,5 +144,9 @@ var TableDataUtil;
         }
     }
     TableDataUtil.addParentTable = addParentTable;
+    function noInsert(data) {
+        return Object.assign({}, data, { noInsert: true });
+    }
+    TableDataUtil.noInsert = noInsert;
 })(TableDataUtil = exports.TableDataUtil || (exports.TableDataUtil = {}));
 //# sourceMappingURL=util.js.map

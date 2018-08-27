@@ -1,4 +1,4 @@
-import { AnyTable, TableUtil } from "./table";
+import { AnyTable, AnyTableAllowInsert, TableUtil } from "./table";
 import { Querify } from "./querify";
 import { RawExprNoUsedRef } from "./raw-expr";
 import * as mysql from "typed-mysql";
@@ -19,7 +19,7 @@ export declare type InsertLiteralRow<TableT extends AnyTable> = ({
 } & {
     [name in TableUtil.OptionalColumnNames<TableT>]?: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
 });
-export declare class InsertValueBuilder<TableT extends AnyTable, ValuesT extends undefined | (RawInsertValueRow<TableT>[]), InsertModeT extends "IGNORE" | "REPLACE" | "NORMAL"> implements Querify {
+export declare class InsertValueBuilder<TableT extends AnyTableAllowInsert, ValuesT extends undefined | (RawInsertValueRow<TableT>[]), InsertModeT extends "IGNORE" | "REPLACE" | "NORMAL"> implements Querify {
     readonly table: TableT;
     readonly values: ValuesT;
     readonly insertMode: InsertModeT;

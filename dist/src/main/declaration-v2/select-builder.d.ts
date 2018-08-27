@@ -19,7 +19,7 @@ import { TypeWidenDelegate } from "./type-widen-delegate";
 import { UnionOrderByDelegate } from "./union-order-by-delegate";
 import * as sd from "schema-decorator";
 import { FetchValueCheck, FetchValueType } from "./fetch-value";
-import { AnyTable } from "./table";
+import { AnyTableAllowInsert } from "./table";
 import { AnyGroupBy } from "./group-by";
 import { AnyOrderBy } from "./order-by";
 import { Expr, AnyExpr } from "./expr";
@@ -97,6 +97,7 @@ export declare const __DUMMY_FROM_TABLE: Table<"__DUMMY_FROM_TABLE", "__DUMMY_FR
     id: undefined;
     uniqueKeys: undefined;
     parentTables: undefined;
+    noInsert: false;
 }>;
 export declare class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     readonly data: DataT;
@@ -665,7 +666,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
     }>) : (ParentT["data"]["hasFrom"] extends true ? SelectBuilder<{
         [key in keyof DataT]: (key extends "hasParentJoins" ? true : key extends "parentJoins" ? ParentT["data"]["joins"] : DataT[key]);
     }> : this));
-    insertInto<TableT extends AnyTable>(this: SelectBuilder<{
+    insertInto<TableT extends AnyTableAllowInsert>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: any;
         hasUnion: any;

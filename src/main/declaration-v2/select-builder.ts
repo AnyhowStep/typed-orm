@@ -29,7 +29,7 @@ import {TypeWidenDelegate, TypeWidenDelegateUtil} from "./type-widen-delegate";
 import {UnionOrderByDelegate, UnionOrderByDelegateUtil} from "./union-order-by-delegate";
 import * as sd from "schema-decorator";
 import {FetchValueCheck, FetchValueType} from "./fetch-value";
-import {table, AnyTable} from "./table";
+import {table, AnyTableAllowInsert} from "./table";
 import {AnyGroupBy} from "./group-by";
 import {AnyOrderBy} from "./order-by";
 import {Expr, AnyExpr} from "./expr";
@@ -2971,7 +2971,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
 
     //Convenience
-    insertInto<TableT extends AnyTable> (
+    insertInto<TableT extends AnyTableAllowInsert> (
         this : SelectBuilder<{
             hasSelect : any,
             hasFrom : any,

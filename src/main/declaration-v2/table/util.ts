@@ -148,6 +148,7 @@ export namespace TableUtil {
                         readonly id : any,
                         readonly uniqueKeys : any,
                         readonly parentTables : any,
+                        readonly noInsert : any,
                     }
                 >
             )

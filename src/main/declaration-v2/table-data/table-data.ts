@@ -74,6 +74,8 @@ export interface TableData {
         no default  | no default    | The value must be provided, it'll set both to the value
     */
     readonly parentTables : undefined|Tuple<AnyTable>;
+    //Defaults to `false`
+    readonly noInsert : boolean;
 }
 
 //The `number` requirement is only a compile-time constraint

@@ -4,7 +4,7 @@ import {SelectBuilder, AnySelectBuilder, __DUMMY_FROM_TABLE} from "./select-buil
 import {Join, JoinType, AnyJoin} from "./join";
 import {AnyAliasedTable, AliasedTableUtil} from "./aliased-table";;
 import {SelectDelegate} from "./select-delegate";
-import {Table, AnyTable, UniqueKeys, TableRow} from "./table";
+import {Table, AnyTable, AnyTableAllowInsert, UniqueKeys, TableRow} from "./table";
 import {RawInsertValueRow, InsertValueBuilder} from "./insert-value-builder";
 import {InsertAssignmentCollectionDelegate, InsertSelectBuilder, InsertSelectBuilderConvenientDelegate} from "./insert-select-builder";
 import {UpdateBuilder, RawUpdateAssignmentReferences, UpdateAssignmentReferencesDelegate, UpdateResult} from "./update-builder";
@@ -513,7 +513,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         }
     }
 
-    insertValue<TableT extends AnyTable> (
+    insertValue<TableT extends AnyTableAllowInsert> (
         table : TableT,
         value : RawInsertValueRow<TableT>
     ) : (
@@ -527,7 +527,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
         ).value(value);
     };
     async insertValueAndFetch<
-        TableT extends AnyTable & { data : { uniqueKeys : UniqueKeyCollection } }
+        TableT extends AnyTableAllowInsert & { data : { uniqueKeys : UniqueKeyCollection } }
     > (
         table : TableT,
         value : RawInsertValueRow<TableT>
@@ -543,7 +543,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
             .executeAndFetch();
     }
     readonly insertSelect : InsertSelectBuilderConvenientDelegate = <
-        TableT extends AnyTable,
+        TableT extends AnyTableAllowInsert,
         SelectBuilderT extends AnySelectBuilder
     > (
         table : TableT,
@@ -1291,7 +1291,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
                 }
 
                 if (actualColumn.COLUMN_DEFAULT == undefined) {
-                    error(`INSERTs to ${declaredTable.name} will fail as ${actualColumn.COLUMN_NAME} has no default value`);
+                    error(`INSERTs to ${declaredTable.name} will fail as ${actualColumn.COLUMN_NAME} has no default value; and declared table does not have the column`);
                 }
             } else {
                 if (actualColumn.EXTRA == "auto_increment") {
