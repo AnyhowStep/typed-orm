@@ -24,12 +24,14 @@ exports.COLUMNS = table_1.table("COLUMNS", {
     COLLATION_NAME: sd.nullable(sd.varChar(32)),
     COLUMN_TYPE: sd.string(),
     COLUMN_KEY: sd.varChar(3),
-    EXTRA: sd.varChar(30),
+    EXTRA: sd.or(sd.literal("auto_increment", "STORED GENERATED"), sd.varChar(30)),
     PRIVILEGES: sd.varChar(80),
     COLUMN_COMMENT: sd.varChar(1024),
+    //Seems to be an empty string when there is no generation expression
     GENERATION_EXPRESSION: sd.string(),
 })
-    .setHasDefaultValue(c => [
+    //HACK We make them generated so we cannot insert into the table
+    .setIsGenerated(c => [
     c.TABLE_CATALOG,
     c.TABLE_SCHEMA,
     c.TABLE_NAME,

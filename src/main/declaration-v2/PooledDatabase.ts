@@ -25,12 +25,15 @@ import {SelectValue} from "./select-value";
 import {ColumnReferencesUtil} from "./column-references";
 import {TableParentCollectionUtil} from "./table-parent-collection";
 import {Tuple, TupleKeys} from "./tuple";
+import {ASCENDING} from "./order-by";
 
 import {AliasedTable} from "./aliased-table";;
 import {AliasedExpr, AnyAliasedExpr} from "./aliased-expr";
 import {Column, AnyColumn} from "./column";
 import {Expr} from "./expr";
 import {TableData} from "./table-data";
+import { PoolConnection } from "mysql";
+import { UniqueKey } from "./unique-key";
 AliasedTable;
 AliasedExpr;
 Column;
@@ -1055,15 +1058,21 @@ export class PooledDatabase extends mysql.PooledDatabase {
             }, this);
         }
     ) as any;*/
-    async getGenerationExpression (column : AnyColumn) : Promise<string>{
+    async getOrAllocateConnectionWithDefaultDatabase () : (
+        Promise<PoolConnection & { config : { database : string } }>
+    ) {
         const connection = await this.getOrAllocateConnection();
         const db = connection.config.database;
         if (db == undefined) {
             throw new Error(`Multi-database support not implemented, please pass database value to connection configuration`);
         }
+        return connection as any;
+    }
+    async getGenerationExpression (column : AnyColumn) : Promise<string>{
+        const connection = await this.getOrAllocateConnectionWithDefaultDatabase();
         return this.from(informationSchema.COLUMNS)
             .select(c => [c.GENERATION_EXPRESSION])
-            .whereIsEqual(c => c.TABLE_SCHEMA, db)
+            .whereIsEqual(c => c.TABLE_SCHEMA, connection.config.database)
             .whereIsEqual(c => c.TABLE_NAME, column.tableAlias)
             .whereIsEqual(c => c.COLUMN_NAME, column.name)
             .fetchValue();
@@ -1211,5 +1220,287 @@ export class PooledDatabase extends mysql.PooledDatabase {
             result = result.from(t).subQuery();
         }
         return result;
+    }
+
+    async tableExists (tableName : string) : Promise<boolean> {
+        const connection = await this.getOrAllocateConnectionWithDefaultDatabase();
+        return this.from(informationSchema.TABLES)
+            .whereIsEqual(
+                c => c.TABLE_SCHEMA,
+                connection.config.database
+            )
+            .whereIsEqual(
+                c => c.TABLE_NAME,
+                tableName
+            )
+            .exists();
+    }
+
+    async validateColumns (declaredTable : AnyTable, output : { warnings : string[], errors : string[] }) {
+        function warning (message : string) {
+            output.warnings.push(message);
+        }
+        function error (message : string) {
+            output.errors.push(message);
+        }
+
+        const connection = await this.getOrAllocateConnectionWithDefaultDatabase();
+        const databaseName = connection.config.database;
+
+        const actualColumns = await this.from(informationSchema.COLUMNS)
+            .whereIsEqual(
+                c => c.TABLE_SCHEMA,
+                databaseName
+            )
+            .whereIsEqual(
+                c => c.TABLE_NAME,
+                declaredTable.name
+            )
+            .orderBy(c => [
+                [c.ORDINAL_POSITION, ASCENDING]
+            ])
+            .select(c => [
+                c.COLUMN_NAME,
+                c.ORDINAL_POSITION,
+                c.IS_NULLABLE,
+                c.COLUMN_DEFAULT,
+                c.GENERATION_EXPRESSION,
+                c.EXTRA
+            ])
+            .fetchAll();
+
+        if (actualColumns.length == 0) {
+            error(`Table ${declaredTable.name} has no columns or does not exist`);
+            return;
+        }
+
+        for (let actualColumn of actualColumns) {
+            const actualNullable = (actualColumn.IS_NULLABLE === "YES");
+
+            const declaredColumn = declaredTable.columns[actualColumn.COLUMN_NAME];
+            if (declaredColumn == undefined) {
+                warning(`Table ${declaredTable.name} on database has column ${actualColumn.COLUMN_NAME}; declared table does not have it`);
+                if (actualColumn.GENERATION_EXPRESSION != "") {
+                    warning(`This should be fine as ${actualColumn.COLUMN_NAME} is a generated column; INSERTs will set the value to ${actualColumn.GENERATION_EXPRESSION}`);
+                    continue;
+                }
+
+                if (actualNullable) {
+                    warning(`This should be fine as ${actualColumn.COLUMN_NAME} is nullable; INSERTs will set the value to ${actualColumn.COLUMN_DEFAULT}`);
+                    continue;
+                }
+
+                if (actualColumn.COLUMN_DEFAULT == undefined) {
+                    error(`INSERTs will fail as ${actualColumn.COLUMN_NAME} has no default value`);
+                }
+            } else {
+                if (actualColumn.EXTRA == "auto_increment") {
+                    if (declaredTable.data.autoIncrement == undefined) {
+                        warning(`Column ${actualColumn.COLUMN_NAME} on database is the auto increment column; declared table does not set it`);
+                    } else {
+                        if (actualColumn.COLUMN_NAME != declaredTable.data.autoIncrement.name) {
+                            error(`Column ${actualColumn.COLUMN_NAME} on database is the auto increment column; declared table sets ${declaredTable.data.autoIncrement.name} as the auto increment column`);
+                        }
+                    }
+                } else {
+                    if (declaredTable.data.autoIncrement != undefined) {
+                        if (actualColumn.COLUMN_NAME == declaredTable.data.autoIncrement.name) {
+                            error(`Column ${actualColumn.COLUMN_NAME} on database is NOT the auto increment column; declared table sets ${declaredTable.data.autoIncrement.name} as the auto increment column`);
+                        }
+                    }
+                }
+
+                if (actualColumn.GENERATION_EXPRESSION != "") {
+                    if (declaredTable.data.isGenerated[actualColumn.COLUMN_NAME] !== true) {
+                        error(`Column ${actualColumn.COLUMN_NAME} on database is generated; declared column is not`);
+                        continue;
+                    }
+                } else {
+                    if (declaredTable.data.isGenerated[actualColumn.COLUMN_NAME] === true) {
+                        error(`Column ${actualColumn.COLUMN_NAME} on database is not generated; declared column is`);
+                        continue;
+                    }
+                }
+
+                const declaredNullable = sd.isNullable(declaredColumn.assertDelegate);
+                if (actualNullable) {
+                    if (!declaredNullable) {
+                        warning(`Column ${actualColumn.COLUMN_NAME} on database is nullable; declared column is not`);
+                    }
+                } else {
+                    if (declaredNullable) {
+                        error(`Column ${actualColumn.COLUMN_NAME} on database is NOT nullable; declared column is`);
+                    }
+
+                    if (actualColumn.COLUMN_DEFAULT == undefined) {
+                        //Not nullable, but column default is null
+                        //So, there is no default value.
+                        if (declaredTable.data.hasDefaultValue[actualColumn.COLUMN_NAME] === true) {
+                            error(`Column ${actualColumn.COLUMN_NAME} on database has no default value; declared column does`);
+                        }
+                    } else {
+                        if (declaredTable.data.hasDefaultValue[actualColumn.COLUMN_NAME] !== true) {
+                            error(`Column ${actualColumn.COLUMN_NAME} on database has default value ${actualColumn.COLUMN_DEFAULT}; declared column does not`);
+                        }
+                    }
+                }
+            }
+        }
+
+        Object.keys(declaredTable.columns)
+            .map(k => declaredTable.columns[k])
+            .filter(declared => actualColumns.every(
+                actual => declared.name != actual.COLUMN_NAME
+            ))
+            .forEach(declared => {
+                error(`Declared column ${declared.name} does not exist`);
+            });
+    }
+
+    async validateUniqueKeys (declaredTable : AnyTable, output : { warnings : string[], errors : string[] }) {
+        function warning (message : string) {
+            output.warnings.push(message);
+        }
+        function error (message : string) {
+            output.errors.push(message);
+        }
+
+        const connection = await this.getOrAllocateConnectionWithDefaultDatabase();
+        const databaseName = connection.config.database;
+
+        const actualUniqueKeys = await this.from(informationSchema.STATISTICS)
+            .whereIsEqual(
+                c => c.TABLE_SCHEMA,
+                databaseName
+            )
+            .whereIsEqual(
+                c => c.TABLE_NAME,
+                declaredTable.name
+            )
+            .whereIsEqual(
+                //We want unique keys
+                c => c.NON_UNIQUE,
+                false
+            )
+            .select(c => [
+                c.INDEX_NAME,
+                c.COLUMN_NAME,
+                c.NULLABLE,
+            ])
+            .orderBy(c => [
+                [c.INDEX_NAME, ASCENDING],
+                [c.SEQ_IN_INDEX, ASCENDING]
+            ])
+            .fetchAll()
+            .then(arr => {
+                return arr.reduce<{ [indexName : string] : {
+                    INDEX_NAME : string,
+                    COLUMN_NAME : string,
+                    NULLABLE : string,
+                }[]|undefined }>((memo, row) => {
+                    let arr = memo[row.INDEX_NAME];
+                    if (arr == undefined) {
+                        arr = [];
+                        memo[row.INDEX_NAME] = arr;
+                    }
+                    arr.push(row);
+                    return memo;
+                }, {});
+            });
+
+        if (declaredTable.data.uniqueKeys == undefined) {
+            if (Object.keys(actualUniqueKeys).length == 0) {
+                //Both declared and actual table do not have unique keys
+                return;
+            }
+            error(`Declared table ${declaredTable.name} has no unique keys; database on table has ${Object.keys(actualUniqueKeys).length} unique keys`);
+        }
+
+        const declaredUniqueKeys : UniqueKeyCollection = declaredTable.data.uniqueKeys;
+
+        function isEqual (actualUniqueKey : {
+            INDEX_NAME: string;
+            COLUMN_NAME: string;
+            NULLABLE: string;
+        }[], declaredColumnNames : string[]) {
+            if (actualUniqueKey.length != declaredColumnNames.length) {
+                return false;
+            }
+
+            for (let declaredColumnName of declaredColumnNames) {
+                if (actualUniqueKey.every(
+                    actualColumn => actualColumn.COLUMN_NAME != declaredColumnName
+                )) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function findDeclaredUniqueKey (actualUniqueKey : {
+            INDEX_NAME: string;
+            COLUMN_NAME: string;
+            NULLABLE: string;
+        }[]) {
+            return declaredUniqueKeys.find(declared => {
+                const declaredColumnNames = Object.keys(declared);
+                return isEqual(actualUniqueKey, declaredColumnNames);
+            });
+        }
+
+        function findActualUniqueKey (declaredUniqueKey : UniqueKey) {
+            const declaredColumnNames = Object.keys(declaredUniqueKey);
+
+            return Object.keys(actualUniqueKeys)
+                .map(k => actualUniqueKeys[k])
+                .find(actualUniqueKey => {
+                    if (actualUniqueKey == undefined) {
+                        return false;
+                    }
+                    return isEqual(actualUniqueKey, declaredColumnNames);
+                });
+        }
+
+        for (let actualIndexName in actualUniqueKeys) {
+            const actualUniqueKey = actualUniqueKeys[actualIndexName];
+            if (actualUniqueKey == undefined) {
+                //Should not happen
+                continue;
+            }
+
+            const declaredUniqueKey = findDeclaredUniqueKey(actualUniqueKey);
+            if (declaredUniqueKey == undefined) {
+                const str = actualUniqueKey.map(c => c.COLUMN_NAME).join(", ");
+                warning(`Table ${declaredTable.name} on database has unique key [${str}]; declared table does not`);
+            }
+        }
+
+        for (let declaredUniqueKey of declaredUniqueKeys) {
+            const actualUniqueKey = findActualUniqueKey(declaredUniqueKey);
+            if (actualUniqueKey == undefined) {
+                const str = Object.keys(declaredUniqueKey).join(", ");
+                error(`Table ${declaredTable.name} on database does not have unique key [${str}]; declared table does`);
+            }
+        }
+    }
+
+    async validateTable (declaredTable : AnyTable, output : { warnings : string[], errors : string[] }) {
+        function error (message : string) {
+            output.errors.push(message);
+        }
+
+        if (declaredTable.alias != declaredTable.name) {
+            error(`Cannot validate table named ${declaredTable.name} with alias ${declaredTable.alias}; both alias and name must be the same`);
+            return;
+        }
+
+
+        if (!await this.tableExists(declaredTable.name)) {
+            error(`Table ${declaredTable.name} does not exist`);
+            return;
+        }
+
+        await this.validateColumns(declaredTable, output);
+        await this.validateUniqueKeys(declaredTable, output);
     }
 }

@@ -24,17 +24,7 @@ export declare const COLUMNS: Table<"COLUMNS", "COLUMNS", {
     readonly GENERATION_EXPRESSION: Column<"COLUMNS", "GENERATION_EXPRESSION", string>;
 }, {
     readonly autoIncrement: undefined;
-    readonly isGenerated: {};
-    readonly hasDefaultValue: {
-        COLUMN_DEFAULT: true;
-        CHARACTER_MAXIMUM_LENGTH: true;
-        CHARACTER_OCTET_LENGTH: true;
-        NUMERIC_PRECISION: true;
-        NUMERIC_SCALE: true;
-        DATETIME_PRECISION: true;
-        CHARACTER_SET_NAME: true;
-        COLLATION_NAME: true;
-    } & {
+    readonly isGenerated: {
         readonly TABLE_CATALOG: true;
         readonly TABLE_SCHEMA: true;
         readonly TABLE_NAME: true;
@@ -42,6 +32,28 @@ export declare const COLUMNS: Table<"COLUMNS", "COLUMNS", {
         readonly ORDINAL_POSITION: true;
         readonly IS_NULLABLE: true;
         readonly DATA_TYPE: true;
+        readonly COLUMN_KEY: true;
+        readonly EXTRA: true;
+        readonly PRIVILEGES: true;
+        readonly COLUMN_COMMENT: true;
+        readonly GENERATION_EXPRESSION: true;
+    };
+    readonly hasDefaultValue: {
+        readonly TABLE_CATALOG: true;
+        readonly TABLE_SCHEMA: true;
+        readonly TABLE_NAME: true;
+        readonly COLUMN_NAME: true;
+        readonly ORDINAL_POSITION: true;
+        readonly COLUMN_DEFAULT: true;
+        readonly IS_NULLABLE: true;
+        readonly DATA_TYPE: true;
+        readonly CHARACTER_MAXIMUM_LENGTH: true;
+        readonly CHARACTER_OCTET_LENGTH: true;
+        readonly NUMERIC_PRECISION: true;
+        readonly NUMERIC_SCALE: true;
+        readonly DATETIME_PRECISION: true;
+        readonly CHARACTER_SET_NAME: true;
+        readonly COLLATION_NAME: true;
         readonly COLUMN_KEY: true;
         readonly EXTRA: true;
         readonly PRIVILEGES: true;

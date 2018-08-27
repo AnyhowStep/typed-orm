@@ -4,4 +4,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./columns"));
+__export(require("./key-column-usage"));
+__export(require("./statistics"));
+__export(require("./tables"));
 //# sourceMappingURL=index.js.map
