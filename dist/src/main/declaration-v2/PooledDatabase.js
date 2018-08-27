@@ -735,38 +735,38 @@ class PooledDatabase extends mysql.PooledDatabase {
                 if (declaredColumn == undefined) {
                     warning(`Table ${declaredTable.name} on database has column ${actualColumn.COLUMN_NAME}; declared table does not have it`);
                     if (actualColumn.GENERATION_EXPRESSION != "") {
-                        warning(`This should be fine as ${actualColumn.COLUMN_NAME} is a generated column; INSERTs will set the value to ${actualColumn.GENERATION_EXPRESSION}`);
+                        warning(`This should be fine as ${declaredTable.name}.${actualColumn.COLUMN_NAME} is a generated column; INSERTs will set the value to ${actualColumn.GENERATION_EXPRESSION}`);
                         continue;
                     }
                     if (actualNullable) {
-                        warning(`This should be fine as ${actualColumn.COLUMN_NAME} is nullable; INSERTs will set the value to ${actualColumn.COLUMN_DEFAULT}`);
+                        warning(`This should be fine as ${declaredTable.name}.${actualColumn.COLUMN_NAME} is nullable; INSERTs will set the value to ${actualColumn.COLUMN_DEFAULT}`);
                         continue;
                     }
                     if (actualColumn.COLUMN_DEFAULT == undefined) {
-                        error(`INSERTs will fail as ${actualColumn.COLUMN_NAME} has no default value`);
+                        error(`INSERTs to ${declaredTable.name} will fail as ${actualColumn.COLUMN_NAME} has no default value`);
                     }
                 }
                 else {
                     if (actualColumn.EXTRA == "auto_increment") {
                         if (declaredTable.data.autoIncrement == undefined) {
-                            warning(`Column ${actualColumn.COLUMN_NAME} on database is the auto increment column; declared table does not set it`);
+                            warning(`Column ${declaredTable.name}.${actualColumn.COLUMN_NAME} on database is the auto increment column; declared table does not set it`);
                         }
                         else {
                             if (actualColumn.COLUMN_NAME != declaredTable.data.autoIncrement.name) {
-                                error(`Column ${actualColumn.COLUMN_NAME} on database is the auto increment column; declared table sets ${declaredTable.data.autoIncrement.name} as the auto increment column`);
+                                error(`Column ${declaredTable.name}.${actualColumn.COLUMN_NAME} on database is the auto increment column; declared table sets ${declaredTable.data.autoIncrement.name} as the auto increment column`);
                             }
                         }
                     }
                     else {
                         if (declaredTable.data.autoIncrement != undefined) {
                             if (actualColumn.COLUMN_NAME == declaredTable.data.autoIncrement.name) {
-                                error(`Column ${actualColumn.COLUMN_NAME} on database is NOT the auto increment column; declared table sets ${declaredTable.data.autoIncrement.name} as the auto increment column`);
+                                error(`Column ${declaredTable.name}.${actualColumn.COLUMN_NAME} on database is NOT the auto increment column; declared table sets ${declaredTable.data.autoIncrement.name} as the auto increment column`);
                             }
                         }
                     }
                     if (actualColumn.GENERATION_EXPRESSION != "") {
                         if (declaredTable.data.isGenerated[actualColumn.COLUMN_NAME] !== true) {
-                            error(`Column ${actualColumn.COLUMN_NAME} on database is generated; declared column is not`);
+                            error(`Column ${declaredTable.name}.${actualColumn.COLUMN_NAME} on database is generated; declared column is not`);
                             continue;
                         }
                     }
@@ -774,7 +774,7 @@ class PooledDatabase extends mysql.PooledDatabase {
                         if (declaredTable.data.isGenerated[actualColumn.COLUMN_NAME] === true) {
                             if (declaredTable.data.autoIncrement == undefined ||
                                 actualColumn.COLUMN_NAME != declaredTable.data.autoIncrement.name) {
-                                error(`Column ${actualColumn.COLUMN_NAME} on database is NOT generated; declared column is`);
+                                error(`Column ${declaredTable.name}.${actualColumn.COLUMN_NAME} on database is NOT generated; declared column is`);
                                 continue;
                             }
                         }
@@ -782,23 +782,26 @@ class PooledDatabase extends mysql.PooledDatabase {
                     const declaredNullable = sd.isNullable(declaredColumn.assertDelegate);
                     if (actualNullable) {
                         if (!declaredNullable) {
-                            warning(`Column ${actualColumn.COLUMN_NAME} on database is nullable; declared column is not`);
+                            warning(`Column ${declaredTable.name}.${actualColumn.COLUMN_NAME} on database is nullable; declared column is not`);
                         }
                     }
                     else {
                         if (declaredNullable) {
-                            error(`Column ${actualColumn.COLUMN_NAME} on database is NOT nullable; declared column is`);
+                            error(`Column ${declaredTable.name}.${actualColumn.COLUMN_NAME} on database is NOT nullable; declared column is`);
                         }
                         if (actualColumn.COLUMN_DEFAULT == undefined) {
                             //Not nullable, but column default is null
                             //So, there is no default value.
                             if (declaredTable.data.hasDefaultValue[actualColumn.COLUMN_NAME] === true) {
-                                error(`Column ${actualColumn.COLUMN_NAME} on database has no default value; declared column does`);
+                                if (declaredTable.data.autoIncrement == undefined ||
+                                    actualColumn.COLUMN_NAME != declaredTable.data.autoIncrement.name) {
+                                    error(`Column ${declaredTable.name}.${actualColumn.COLUMN_NAME} on database has no default value; declared column does`);
+                                }
                             }
                         }
                         else {
                             if (declaredTable.data.hasDefaultValue[actualColumn.COLUMN_NAME] !== true) {
-                                error(`Column ${actualColumn.COLUMN_NAME} on database has default value ${actualColumn.COLUMN_DEFAULT}; declared column does not`);
+                                warning(`Column ${declaredTable.name}.${actualColumn.COLUMN_NAME} on database has default value ${actualColumn.COLUMN_DEFAULT}; declared column does not`);
                             }
                         }
                     }
@@ -894,7 +897,7 @@ class PooledDatabase extends mysql.PooledDatabase {
                 const declaredUniqueKey = findDeclaredUniqueKey(actualUniqueKey);
                 if (declaredUniqueKey == undefined) {
                     const str = actualUniqueKey.map(c => c.COLUMN_NAME).join(", ");
-                    warning(`Table ${declaredTable.name} on database has unique key [${str}]; declared table does not`);
+                    warning(`Table ${declaredTable.name} on database has unique key ${actualIndexName} [${str}]; declared table does not`);
                 }
             }
             for (let declaredUniqueKey of declaredUniqueKeys) {
