@@ -772,8 +772,11 @@ class PooledDatabase extends mysql.PooledDatabase {
                     }
                     else {
                         if (declaredTable.data.isGenerated[actualColumn.COLUMN_NAME] === true) {
-                            error(`Column ${actualColumn.COLUMN_NAME} on database is not generated; declared column is`);
-                            continue;
+                            if (declaredTable.data.autoIncrement == undefined ||
+                                actualColumn.COLUMN_NAME != declaredTable.data.autoIncrement.name) {
+                                error(`Column ${actualColumn.COLUMN_NAME} on database is NOT generated; declared column is`);
+                                continue;
+                            }
                         }
                     }
                     const declaredNullable = sd.isNullable(declaredColumn.assertDelegate);
