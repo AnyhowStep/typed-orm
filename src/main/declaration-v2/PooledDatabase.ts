@@ -1345,7 +1345,9 @@ export class PooledDatabase extends mysql.PooledDatabase {
                                 declaredTable.data.autoIncrement == undefined ||
                                 actualColumn.COLUMN_NAME != declaredTable.data.autoIncrement.name
                             ) {
-                                error(`Column ${declaredTable.name}.${actualColumn.COLUMN_NAME} on database has no default value; declared column does`);
+                                if (declaredTable.data.isGenerated[actualColumn.COLUMN_NAME] !== true) {
+                                    error(`Column ${declaredTable.name}.${actualColumn.COLUMN_NAME} on database has no default value; declared column does`);
+                                }
                             }
                         }
                     } else {
