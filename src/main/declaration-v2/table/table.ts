@@ -79,7 +79,9 @@ export type AnyTable = (
     Table<string, string, ColumnCollection, any>
 );
 export type AnyTableAllowInsert = (
-    Table<string, string, ColumnCollection, TableData & { noInsert : false }>
+    //TODO Find a way to make this work with noInsert without breaking everything
+    AnyTable
+    //Table<string, string, ColumnCollection, TableData & { noInsert : false }>
 );
 
 export type TableRow<TableT extends AnyTable> = (
