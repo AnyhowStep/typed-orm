@@ -1365,7 +1365,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
                 actual => declared.name != actual.COLUMN_NAME
             ))
             .forEach(declared => {
-                error(`Declared column ${declared.name} does not exist`);
+                error(`Declared column ${declaredTable.name}.${declared.name} does not exist`);
             });
     }
 
