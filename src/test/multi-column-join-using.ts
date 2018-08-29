@@ -49,19 +49,19 @@ tape(__filename, async (t) => {
             }
         });
     await db.from(appSource)
-        .declareInnerJoinsUnsafe(
+        .joinUsing(
             appSourceEnabled,
-            app
-        )
-        .defineInnerJoinsUnsafe([
             c => [
                 c.appId,
                 c.sourceId
-            ],
+            ]
+        )
+        .joinUsing(
+            app,
             c => [
                 c.appSourceEnabled.appId
             ]
-        ])
+        )
         .selectAll()
         .fetchAll()
         .then((result) => {
@@ -79,60 +79,12 @@ tape(__filename, async (t) => {
                 c.sourceId
             ]
         )
-        .declareInnerJoinsUnsafe(
-            app
-        )
-        .defineInnerJoinsUnsafe([
+        .leftJoinUsing(
+            app,
             c => [
                 c.appSourceEnabled.appId
             ]
-        ])
-        .selectAll()
-        .fetchAll()
-        .then((result) => {
-            for (let row of result) {
-                t.equal(row.appSource.appId, row.appSourceEnabled.appId);
-                t.equal(row.appSource.sourceId, row.appSourceEnabled.sourceId);
-                t.equal(row.appSourceEnabled.appId, row.app.appId);
-            }
-        });
-    await db.from(appSource)
-        .declareJoinsUnsafe(
-            [o.JoinType.INNER, appSourceEnabled],
-            [o.JoinType.INNER, app]
         )
-        .defineJoinsUnsafe([
-            c => [
-                c.appId,
-                c.sourceId
-            ],
-            c => [
-                c.appSourceEnabled.appId
-            ]
-        ])
-        .selectAll()
-        .fetchAll()
-        .then((result) => {
-            for (let row of result) {
-                t.equal(row.appSource.appId, row.appSourceEnabled.appId);
-                t.equal(row.appSource.sourceId, row.appSourceEnabled.sourceId);
-                t.equal(row.appSourceEnabled.appId, row.app.appId);
-            }
-        });
-    await db.from(appSource)
-        .declareJoinsUnsafe(
-            [o.JoinType.INNER, appSourceEnabled],
-            [o.JoinType.LEFT, app]
-        )
-        .defineJoinsUnsafe([
-            c => [
-                c.appId,
-                c.sourceId
-            ],
-            c => [
-                c.appSourceEnabled.appId
-            ]
-        ])
         .selectAll()
         .fetchAll()
         .then((result) => {

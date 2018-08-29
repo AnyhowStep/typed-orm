@@ -88,15 +88,15 @@ export type TableRow<TableT extends AnyTable> = (
     ColumnCollectionUtil.Type<TableT["columns"]>
 );
 export type MinimalUniqueKeys<TableT extends AnyTable> = (
-    TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ?
-        UniqueKeyCollectionUtil.MinimalWithType<TableT["data"]["uniqueKeys"], TableT["columns"]> :
-        never
+    UniqueKeyCollectionUtil.MinimalWithType<
+        Extract<TableT["data"]["uniqueKeys"], UniqueKeyCollection>,
+        TableT["columns"]
+    >
 );
 export type UniqueKeys<TableT extends AnyTable> = (
     MinimalUniqueKeys<TableT> |
-    (
-        TableT["data"]["uniqueKeys"] extends UniqueKeyCollection ?
-            UniqueKeyCollectionUtil.WithType<TableT["data"]["uniqueKeys"], TableT["columns"]> :
-            never
-    )
+    UniqueKeyCollectionUtil.WithType<
+        Extract<TableT["data"]["uniqueKeys"], UniqueKeyCollection>,
+        TableT["columns"]
+    >
 );
