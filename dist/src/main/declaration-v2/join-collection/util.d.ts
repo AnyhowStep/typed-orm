@@ -16,23 +16,23 @@ export declare namespace JoinCollectionUtil {
         [index in TupleKeys<JoinsT>]: (Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ? Extract<JoinsT[index], AnyJoin> : never);
     }[TupleKeys<JoinsT>]);
     type IndexWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string> = ({
-        [index in TupleKeys<JoinsT>]: (JoinsT[index] extends AnyJoin ? (Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ? index : never) : never);
+        [index in TupleKeys<JoinsT>]: (Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ? index : never);
     }[TupleKeys<JoinsT>]);
     type Joins<JoinsT extends JoinCollection> = (Extract<{
         [index in TupleKeys<JoinsT>]: (JoinsT[index]);
     }[TupleKeys<JoinsT>], AnyJoin>);
-    type TableAliases<JoinsT extends JoinCollection> = (Joins<JoinsT> extends AnyJoin ? Joins<JoinsT>["table"]["alias"] : never);
-    type Tables<JoinsT extends JoinCollection> = (Joins<JoinsT> extends AnyJoin ? Joins<JoinsT>["table"] : never);
+    type TableAliases<JoinsT extends JoinCollection> = (Joins<JoinsT>["table"]["alias"]);
+    type Tables<JoinsT extends JoinCollection> = (Joins<JoinsT>["table"]);
     type ToTableCollectionImpl<JoinsT extends JoinCollection, K extends string> = (K extends Extract<keyof JoinsT, string> ? (JoinsT[K] extends Join<infer TableT, any, any> ? {
         readonly [tableAlias in TableT["alias"]]: (TableT);
     } : {}) : {});
     type ToTableCollection<JoinsT extends JoinCollection> = (ToTableCollectionImpl<JoinsT, "0"> & ToTableCollectionImpl<JoinsT, "1"> & ToTableCollectionImpl<JoinsT, "2"> & ToTableCollectionImpl<JoinsT, "3"> & ToTableCollectionImpl<JoinsT, "4"> & ToTableCollectionImpl<JoinsT, "5"> & ToTableCollectionImpl<JoinsT, "6"> & ToTableCollectionImpl<JoinsT, "7"> & ToTableCollectionImpl<JoinsT, "8"> & ToTableCollectionImpl<JoinsT, "9"> & ToTableCollectionImpl<JoinsT, "10"> & ToTableCollectionImpl<JoinsT, "11"> & ToTableCollectionImpl<JoinsT, "12"> & ToTableCollectionImpl<JoinsT, "13"> & ToTableCollectionImpl<JoinsT, "14"> & ToTableCollectionImpl<JoinsT, "15"> & ToTableCollectionImpl<JoinsT, "16"> & ToTableCollectionImpl<JoinsT, "17"> & ToTableCollectionImpl<JoinsT, "18"> & ToTableCollectionImpl<JoinsT, "19"> & ToTableCollectionImpl<JoinsT, "20">);
     function toTableCollection<JoinsT extends JoinCollection>(joins: JoinsT): ToTableCollection<JoinsT>;
     type Columns<JoinsT extends JoinCollection> = ({
-        [index in TupleKeys<JoinsT>]: (JoinsT[index] extends AnyJoin ? (ColumnCollectionUtil.Columns<JoinsT[index]["columns"]>) : never);
+        [index in TupleKeys<JoinsT>]: (ColumnCollectionUtil.Columns<Extract<JoinsT[index], AnyJoin>["columns"]>);
     }[TupleKeys<JoinsT>]);
     type NullableColumns<JoinsT extends JoinCollection> = ({
-        [index in TupleKeys<JoinsT>]: (JoinsT[index] extends AnyJoin ? ColumnCollectionUtil.Columns<ColumnCollectionUtil.ToNullable<JoinsT[index]["columns"]>> : never);
+        [index in TupleKeys<JoinsT>]: (ColumnCollectionUtil.Columns<ColumnCollectionUtil.ToNullable<Extract<JoinsT[index], AnyJoin>["columns"]>>);
     }[TupleKeys<JoinsT>]);
     const push: <TupleT extends import("../tuple").Tuple<Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean>>, NextT extends Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean>>(tuple: TupleT, next: NextT) => { [index in Extract<keyof TupleT, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">]: Extract<TupleT[index], Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean>>; } & { [index in TupleT extends {
         "19": any;
@@ -122,7 +122,7 @@ export declare namespace JoinCollectionUtil {
         } ? 2 : never;
     } & Join<AliasedTable<string, string, ColumnCollection>, ColumnCollection, boolean>[];
     type NullableTableAlias<JoinsT extends JoinCollection> = ({
-        [index in TupleKeys<JoinsT>]: (JoinsT[index] extends AnyJoin ? (true extends JoinsT[index]["nullable"] ? Extract<JoinsT[index], AnyJoin>["table"]["alias"] : never) : never);
+        [index in TupleKeys<JoinsT>]: (true extends Extract<JoinsT[index], AnyJoin>["nullable"] ? Extract<JoinsT[index], AnyJoin>["table"]["alias"] : never);
     }[TupleKeys<JoinsT>]);
     type ToColumnReferences<JoinsT extends JoinCollection> = (Joins<JoinsT> extends AnyJoin ? (Joins<JoinsT>["table"] extends AnyAliasedTable ? {
         readonly [tableAlias in Joins<JoinsT>["table"]["alias"]]: (FindWithTableAlias<JoinsT, tableAlias> extends AnyJoin ? (true extends FindWithTableAlias<JoinsT, tableAlias>["nullable"] ? ColumnCollectionUtil.ToNullable<FindWithTableAlias<JoinsT, tableAlias>["columns"]> : FindWithTableAlias<JoinsT, tableAlias>["columns"]) : never);

@@ -12,6 +12,7 @@ import {coalesce} from "../expression/coalesce";
 import {and} from "../expression/logical-connective/and";
 import {isNotNullAndEq} from "../expression/type-check";
 import {SelectBuilderUtil} from "../select-builder-util";
+import * as mysql from "typed-mysql";
 
 export namespace LogDataUtil {
     export type EntityIdentifier<DataT extends LogData> = (
@@ -203,7 +204,13 @@ export namespace LogDataUtil {
         }
 
         if (data.defaultRowDelegate == undefined) {
-            throw new Error(`Could not fetch latest log for ${data.table.alias}, ${JSON.stringify(entityIdentifier)}, and no default row has been specified`);
+            if (db.willPrintQueryOnRowCountError()) {
+                console.error(
+                    data.table.name,
+                    entityIdentifier
+                );
+            }
+            throw new mysql.RowNotFoundError(`Could not fetch latest log for ${data.table.alias}, ${JSON.stringify(entityIdentifier)}, and no default row has been specified`);
         }
         return data.defaultRowDelegate(entityIdentifier, db);
     }

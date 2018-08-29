@@ -1,6 +1,6 @@
 {
   "name": "typed-orm",
-  "version": "0.9.42",
+  "version": "0.9.43",
   "description": "A strongly typed MySQL ORM",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",
@@ -22,7 +22,7 @@
     "@anyhowstep/type-util": "^1.9.1",
     "enum-util": "^1.5.1",
     "schema-decorator": "^2.10.1",
-    "typed-mysql": "^3.0.0"
+    "typed-mysql": "^3.1.0"
   },
   "devDependencies": {
     "@anyhowstep/typed-env": "^2.1.0",

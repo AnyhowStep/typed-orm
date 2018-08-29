@@ -338,6 +338,28 @@ class PooledDatabase extends mysql.PooledDatabase {
             .where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, uniqueKey))
             .exists();
     }
+    assertExistsById(table, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const exists = yield this.existsById(table, id);
+            if (!exists) {
+                if (this.willPrintQueryOnRowCountError()) {
+                    console.error(table.name, id);
+                }
+                throw new mysql.RowNotFoundError(`${table.name} does not exist`);
+            }
+        });
+    }
+    assertExistsByUniqueKey(table, uniqueKey) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const exists = yield this.existsByUniqueKey(table, uniqueKey);
+            if (!exists) {
+                if (this.willPrintQueryOnRowCountError()) {
+                    console.error(table.name, uniqueKey);
+                }
+                throw new mysql.RowNotFoundError(`${table.name} does not exist`);
+            }
+        });
+    }
     updateZeroOrOneById(table, id, delegate) {
         if (table.data.id == undefined) {
             throw new Error(`Expected ${table.alias} to have an id column`);

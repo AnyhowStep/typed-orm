@@ -32,12 +32,8 @@ export namespace JoinCollectionUtil {
     export type IndexWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string> = (
         {
             [index in TupleKeys<JoinsT>] : (
-                JoinsT[index] extends AnyJoin ?
-                    (
-                        Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ?
-                            index :
-                            never
-                    ) :
+                Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ?
+                    index :
                     never
             )
         }[TupleKeys<JoinsT>]
@@ -53,14 +49,10 @@ export namespace JoinCollectionUtil {
         >
     );
     export type TableAliases<JoinsT extends JoinCollection> = (
-        Joins<JoinsT> extends AnyJoin ?
-            Joins<JoinsT>["table"]["alias"] :
-            never
+        Joins<JoinsT>["table"]["alias"]
     );
     export type Tables<JoinsT extends JoinCollection> = (
-        Joins<JoinsT> extends AnyJoin ?
-            Joins<JoinsT>["table"] :
-            never
+        Joins<JoinsT>["table"]
     );
     export type ToTableCollectionImpl<JoinsT extends JoinCollection, K extends string> = (
         K extends Extract<keyof JoinsT, string> ?
@@ -151,22 +143,20 @@ export namespace JoinCollectionUtil {
     export type Columns<JoinsT extends JoinCollection> = (
         {
             [index in TupleKeys<JoinsT>] : (
-                JoinsT[index] extends AnyJoin ?
-                    (ColumnCollectionUtil.Columns<JoinsT[index]["columns"]>) :
-                    never
+                ColumnCollectionUtil.Columns<
+                    Extract<JoinsT[index], AnyJoin>["columns"]
+                >
             )
         }[TupleKeys<JoinsT>]
     );
     export type NullableColumns<JoinsT extends JoinCollection> = (
         {
             [index in TupleKeys<JoinsT>] : (
-                JoinsT[index] extends AnyJoin ?
-                    ColumnCollectionUtil.Columns<
-                        ColumnCollectionUtil.ToNullable<
-                            JoinsT[index]["columns"]
-                        >
-                    > :
-                    never
+                ColumnCollectionUtil.Columns<
+                    ColumnCollectionUtil.ToNullable<
+                        Extract<JoinsT[index], AnyJoin>["columns"]
+                    >
+                >
             )
         }[TupleKeys<JoinsT>]
     );
@@ -174,18 +164,13 @@ export namespace JoinCollectionUtil {
     //Types with implementation
     export const push = tupleWPush<AnyJoin>();
 
-
     export type NullableTableAlias<
         JoinsT extends JoinCollection
     > = (
         {
             [index in TupleKeys<JoinsT>] : (
-                JoinsT[index] extends AnyJoin ?
-                    (
-                        true extends JoinsT[index]["nullable"] ?
-                            Extract<JoinsT[index], AnyJoin>["table"]["alias"] :
-                            never
-                    ) :
+                true extends Extract<JoinsT[index], AnyJoin>["nullable"] ?
+                    Extract<JoinsT[index], AnyJoin>["table"]["alias"] :
                     never
             )
         }[TupleKeys<JoinsT>]
@@ -194,23 +179,6 @@ export namespace JoinCollectionUtil {
     export type ToColumnReferences<
         JoinsT extends JoinCollection
     > = (
-        /*Joins<JoinsT> extends AnyJoin ?
-            (
-                {
-                    [tableAlias in Extract<NullableTableAlias<JoinsT>, string>] : (
-                        ColumnCollectionUtil.ToNullable<FindWithTableAlias<JoinsT, tableAlias>["columns"]>
-                    )
-                } &
-                {
-                    [tableAlias in Exclude<
-                        Joins<JoinsT>["table"]["alias"],
-                        NullableTableAlias<JoinsT>
-                    >] : (
-                        FindWithTableAlias<JoinsT, tableAlias>["columns"]
-                    )
-                }
-            ) :
-            never*/
         Joins<JoinsT> extends AnyJoin ?
             (
                 Joins<JoinsT>["table"] extends AnyAliasedTable ?

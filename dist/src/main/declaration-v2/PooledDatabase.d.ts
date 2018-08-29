@@ -103,6 +103,16 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
             uniqueKeys: UniqueKeyCollection;
         };
     }>(table: TableT, uniqueKey: UniqueKeys<TableT>): Promise<boolean>;
+    assertExistsById<TableT extends AnyTable & {
+        data: {
+            id: Column<any, any, number>;
+        };
+    }>(table: TableT, id: number): Promise<void>;
+    assertExistsByUniqueKey<TableT extends AnyTable & {
+        data: {
+            uniqueKeys: UniqueKeyCollection;
+        };
+    }>(table: TableT, uniqueKey: UniqueKeys<TableT>): Promise<void>;
     updateZeroOrOneById<TableT extends AnyTable & {
         data: {
             id: Column<any, any, number>;

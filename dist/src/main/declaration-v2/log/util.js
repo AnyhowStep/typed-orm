@@ -18,6 +18,7 @@ const column_references_1 = require("../column-references");
 const coalesce_1 = require("../expression/coalesce");
 const and_1 = require("../expression/logical-connective/and");
 const type_check_1 = require("../expression/type-check");
+const mysql = require("typed-mysql");
 var LogDataUtil;
 (function (LogDataUtil) {
     function entityIdentifierAssertDelegate(data) {
@@ -90,7 +91,10 @@ var LogDataUtil;
                 return result;
             }
             if (data.defaultRowDelegate == undefined) {
-                throw new Error(`Could not fetch latest log for ${data.table.alias}, ${JSON.stringify(entityIdentifier)}, and no default row has been specified`);
+                if (db.willPrintQueryOnRowCountError()) {
+                    console.error(data.table.name, entityIdentifier);
+                }
+                throw new mysql.RowNotFoundError(`Could not fetch latest log for ${data.table.alias}, ${JSON.stringify(entityIdentifier)}, and no default row has been specified`);
             }
             return data.defaultRowDelegate(entityIdentifier, db);
         });

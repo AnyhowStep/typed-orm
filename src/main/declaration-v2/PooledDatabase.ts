@@ -618,6 +618,40 @@ export class PooledDatabase extends mysql.PooledDatabase {
             ))
             .exists();
     }
+    async assertExistsById<
+        TableT extends AnyTable & { data : { id : Column<any, any, number> } }
+    > (
+        table : TableT,
+        id : number
+    ) : Promise<void> {
+        const exists = await this.existsById(table, id);
+        if (!exists) {
+            if (this.willPrintQueryOnRowCountError()) {
+                console.error(
+                    table.name,
+                    id
+                );
+            }
+            throw new mysql.RowNotFoundError(`${table.name} does not exist`);
+        }
+    }
+    async assertExistsByUniqueKey<
+        TableT extends AnyTable & { data : { uniqueKeys : UniqueKeyCollection } }
+    > (
+        table : TableT,
+        uniqueKey : UniqueKeys<TableT>
+    ) : Promise<void> {
+        const exists = await this.existsByUniqueKey(table, uniqueKey);
+        if (!exists) {
+            if (this.willPrintQueryOnRowCountError()) {
+                console.error(
+                    table.name,
+                    uniqueKey
+                );
+            }
+            throw new mysql.RowNotFoundError(`${table.name} does not exist`);
+        }
+    }
     updateZeroOrOneById<
         TableT extends AnyTable & { data : { id : Column<any, any, number> } }
     > (

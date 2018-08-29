@@ -67,9 +67,7 @@ function fetchLatest<
             TableT["columns"],
             o.ColumnCollectionUtil.ColumnNames<typeof logBase["columns"]>|
             (
-                TableT["data"]["autoIncrement"] extends o.AnyColumn ?
-                    TableT["data"]["autoIncrement"]["name"] :
-                    never
+                Extract<TableT["data"]["autoIncrement"], o.AnyColumn>["name"]
             )
         >
     >
