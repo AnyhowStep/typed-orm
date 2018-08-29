@@ -23,12 +23,8 @@ export namespace JoinCollectionUtil {
     export type FindWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string> = (
         {
             [index in TupleKeys<JoinsT>] : (
-                JoinsT[index] extends AnyJoin ?
-                    (
-                        Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ?
-                            Extract<JoinsT[index], AnyJoin> :
-                            never
-                    ) :
+                Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ?
+                    Extract<JoinsT[index], AnyJoin> :
                     never
             )
         }[TupleKeys<JoinsT>]

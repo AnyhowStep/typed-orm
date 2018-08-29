@@ -13,7 +13,7 @@ import { AliasedTable } from "../aliased-table";
 import { ColumnCollection } from "../column-collection";
 export declare namespace JoinCollectionUtil {
     type FindWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string> = ({
-        [index in TupleKeys<JoinsT>]: (JoinsT[index] extends AnyJoin ? (Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ? Extract<JoinsT[index], AnyJoin> : never) : never);
+        [index in TupleKeys<JoinsT>]: (Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ? Extract<JoinsT[index], AnyJoin> : never);
     }[TupleKeys<JoinsT>]);
     type IndexWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string> = ({
         [index in TupleKeys<JoinsT>]: (JoinsT[index] extends AnyJoin ? (Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ? index : never) : never);

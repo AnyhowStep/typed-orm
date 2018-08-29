@@ -39,9 +39,10 @@ export namespace ColumnCollectionUtil {
                 Extract<keyof ColumnCollectionT, string>,
                 ExcludeT
             >] : (
-                ColumnCollectionT[columnName] extends AnyColumn ?
-                    ColumnCollectionT[columnName] :
-                    never
+                Extract<
+                    ColumnCollectionT[columnName],
+                    AnyColumn
+                >
             )
         }
     );
@@ -70,9 +71,10 @@ export namespace ColumnCollectionUtil {
                 keyof ColumnCollectionT,
                 ExtractT
             >] : (
-                ColumnCollectionT[columnName] extends AnyColumn ?
-                    ColumnCollectionT[columnName] :
-                    never
+                Extract<
+                    ColumnCollectionT[columnName],
+                    AnyColumn
+                >
             )
         }
     );
@@ -152,9 +154,7 @@ export namespace ColumnCollectionUtil {
     > = (
         {
             [index in TupleKeys<ColumnT>] : (
-                ColumnT[index] extends AnyColumn ?
-                    HasColumn<ColumnCollectionT, ColumnT[index]> :
-                    never
+                HasColumn<ColumnCollectionT, Extract<ColumnT[index], AnyColumn>>
             )
         }[TupleKeys<ColumnT>]
     );

@@ -13,11 +13,11 @@ export declare namespace ColumnCollectionUtil {
         [columnName in Extract<keyof ColumnCollectionT, string>]: (ReturnType<ColumnCollectionT[columnName]["assertDelegate"]>);
     });
     type ExcludeColumnNames<ColumnCollectionT extends ColumnCollection, ExcludeT extends string> = ({
-        readonly [columnName in Exclude<Extract<keyof ColumnCollectionT, string>, ExcludeT>]: (ColumnCollectionT[columnName] extends AnyColumn ? ColumnCollectionT[columnName] : never);
+        readonly [columnName in Exclude<Extract<keyof ColumnCollectionT, string>, ExcludeT>]: (Extract<ColumnCollectionT[columnName], AnyColumn>);
     });
     function excludeColumnNames<ColumnCollectionT extends ColumnCollection, ExcludeT extends string>(columnCollection: ColumnCollectionT, exclude: ExcludeT[]): ExcludeColumnNames<ColumnCollectionT, ExcludeT>;
     type ExtractColumnNames<ColumnCollectionT extends ColumnCollection, ExtractT extends string> = ({
-        readonly [columnName in Extract<keyof ColumnCollectionT, ExtractT>]: (ColumnCollectionT[columnName] extends AnyColumn ? ColumnCollectionT[columnName] : never);
+        readonly [columnName in Extract<keyof ColumnCollectionT, ExtractT>]: (Extract<ColumnCollectionT[columnName], AnyColumn>);
     });
     function extractColumnNames<ColumnCollectionT extends ColumnCollection, ExtractT extends string>(columnCollection: ColumnCollectionT, extract: ExtractT[]): ExtractColumnNames<ColumnCollectionT, ExtractT>;
     type HasColumn<ColumnCollectionT extends ColumnCollection, ColumnT extends AnyColumn> = (ColumnT["name"] extends keyof ColumnCollectionT ? (ColumnT["tableAlias"] extends ColumnCollectionT[ColumnT["name"]]["tableAlias"] ? (ColumnT["name"] extends ColumnCollectionT[ColumnT["name"]]["name"] ? (ReturnType<ColumnT["assertDelegate"]> extends ReturnType<ColumnCollectionT[ColumnT["name"]]["assertDelegate"]> ? (true) : false) : false) : false) : false);
@@ -25,7 +25,7 @@ export declare namespace ColumnCollectionUtil {
     function assertHasColumn(columnCollection: ColumnCollection, column: AnyColumn): void;
     function assertHasColumns(columnCollection: ColumnCollection, arr: AnyColumn[]): void;
     type HasColumns<ColumnCollectionT extends ColumnCollection, ColumnT extends Tuple<AnyColumn>> = ({
-        [index in TupleKeys<ColumnT>]: (ColumnT[index] extends AnyColumn ? HasColumn<ColumnCollectionT, ColumnT[index]> : never);
+        [index in TupleKeys<ColumnT>]: (HasColumn<ColumnCollectionT, Extract<ColumnT[index], AnyColumn>>);
     }[TupleKeys<ColumnT>]);
     type ToNullable<ColumnCollectionT extends ColumnCollection> = ({
         readonly [columnName in Extract<keyof ColumnCollectionT, string>]: ColumnUtil.ToNullable<ColumnCollectionT[columnName]>;
