@@ -11,6 +11,7 @@ export * from "./if-null";
 export * from "./if";
 export * from "./interval-unit";
 export * from "./like";
+export * from "./load-file";
 export * from "./max";
 export * from "./min";
 export * from "./now";

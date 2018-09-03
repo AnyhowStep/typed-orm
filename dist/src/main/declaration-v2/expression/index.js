@@ -15,6 +15,7 @@ __export(require("./if-null"));
 __export(require("./if"));
 __export(require("./interval-unit"));
 __export(require("./like"));
+__export(require("./load-file"));
 __export(require("./max"));
 __export(require("./min"));
 __export(require("./now"));

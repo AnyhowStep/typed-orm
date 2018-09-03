@@ -13,6 +13,7 @@ import "./insert-and-fetch-with-unique-key";
 import "./insert-ignore";
 import "./join-declaration";
 import "./latest-value-expression";
+import "./load-file";
 import "./log-table";
 import "./log";
 import "./multi-column-join-using";
