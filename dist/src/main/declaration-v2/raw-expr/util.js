@@ -41,7 +41,7 @@ var RawExprUtil;
                 return mysql.escape(raw, true);
             }
             if (raw instanceof Buffer) {
-                return mysql.escape(raw.toString("binary"));
+                return mysql.escape(raw);
             }
             switch (typeof raw) {
                 case "number": {
