@@ -18,6 +18,9 @@ var RawExprUtil;
         if (raw instanceof Date) {
             return true;
         }
+        if (raw instanceof Buffer) {
+            return true;
+        }
         switch (typeof raw) {
             case "number":
             case "string":
@@ -36,6 +39,9 @@ var RawExprUtil;
             if (raw instanceof Date) {
                 //TODO Make this toggleable
                 return mysql.escape(raw, true);
+            }
+            if (raw instanceof Buffer) {
+                return mysql.escape(raw.toString("binary"));
             }
             switch (typeof raw) {
                 case "number": {
@@ -99,6 +105,9 @@ var RawExprUtil;
             }
             if (raw instanceof Date) {
                 return sd.date();
+            }
+            if (raw instanceof Buffer) {
+                return sd.buffer();
             }
             switch (typeof raw) {
                 case "number": {

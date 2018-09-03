@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { Expr } from "../expr";
 import { Column } from "../column";
 import { SelectBuilder } from "../select-builder";
@@ -31,7 +32,7 @@ export declare type AnySelectValueBuilder = {
         });
     };
 };
-export declare type AllowedExprConstant = number | string | boolean | Date | null | undefined;
+export declare type AllowedExprConstant = number | string | boolean | Date | Buffer | null | undefined;
 export declare type RawExpr<TypeT> = ((TypeT extends AllowedExprConstant ? TypeT : never) | Expr<any, TypeT> | Column<any, any, TypeT>);
 export declare type AnyRawExpr = ((AllowedExprConstant) | Expr<any, any> | Column<any, any, any> | AnySelectValueBuilder);
 export declare type SelectValueBuilderNoUsedRef<TypeT> = SelectBuilder<{

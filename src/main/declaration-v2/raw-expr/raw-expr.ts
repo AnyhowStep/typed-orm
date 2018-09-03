@@ -57,7 +57,7 @@ export type AnySelectValueBuilder = {
     parentJoins : any,
 }>;*/
 
-export type AllowedExprConstant = number|string|boolean|Date|null|undefined;
+export type AllowedExprConstant = number|string|boolean|Date|Buffer|null|undefined;
 export type RawExpr<TypeT> = (
     (
         //TODO `undefined` constant should be mapped to `null`, maybe; unsure
