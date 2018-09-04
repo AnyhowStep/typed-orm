@@ -409,6 +409,26 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: false;
         parentJoins: any;
     }>): Promise<boolean>;
+    getExistsQuery(this: SelectBuilder<{
+        hasSelect: any;
+        hasFrom: true;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: any;
+        parentJoins: any;
+    }>): string;
+    assertExists(this: SelectBuilder<{
+        hasSelect: any;
+        hasFrom: true;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: false;
+        parentJoins: any;
+    }>): Promise<void>;
     paginate(this: SelectBuilder<{
         hasSelect: true;
         hasFrom: any;

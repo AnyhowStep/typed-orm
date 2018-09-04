@@ -401,22 +401,38 @@ class SelectBuilder {
     //Must be called after `FROM` or there will be no tables to check existence from
     exists() {
         this.assertAfterFrom();
+        return this.extraData.db.selectBoolean(this.getExistsQuery());
+    }
+    getExistsQuery() {
+        this.assertAfterFrom();
         if (this.data.selects == undefined) {
-            return this.extraData.db.selectBoolean(`
+            return `
                 SELECT EXISTS (
                     SELECT
                         *
                     ${this.getQuery()}
                 )
-            `);
+            `;
         }
         else {
-            return this.extraData.db.selectBoolean(`
+            return `
                 SELECT EXISTS (
                     ${this.getQuery()}
                 )
-            `);
+            `;
         }
+    }
+    assertExists() {
+        this.assertAfterFrom();
+        return this.exists()
+            .then((exists) => {
+            if (!exists) {
+                if (this.extraData.db.willPrintQueryOnRowCountError()) {
+                    console.error(this.getExistsQuery());
+                }
+                throw new mysql.RowNotFoundError(`${this.data.joins[0].table.alias} does not exist`);
+            }
+        });
     }
     //Uses count() internally
     paginate(rawPaginationArgs = {}) {
