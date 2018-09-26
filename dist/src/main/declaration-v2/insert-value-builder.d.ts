@@ -19,6 +19,16 @@ export declare type InsertLiteralRow<TableT extends AnyTable> = ({
 } & {
     [name in TableUtil.OptionalColumnNames<TableT>]?: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
 });
+export declare type InsertLiteralSubRow<TableT extends AnyTable, ExtractT extends Extract<keyof TableT["columns"], string>> = ({
+    [name in Extract<TableUtil.RequiredColumnNames<TableT>, ExtractT>]: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
+} & {
+    [name in Extract<TableUtil.OptionalColumnNames<TableT>, ExtractT>]?: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
+});
+export declare type InsertLiteralRowExclude<TableT extends AnyTable, ExcludeT extends Extract<keyof TableT["columns"], string>> = ({
+    [name in Exclude<TableUtil.RequiredColumnNames<TableT>, ExcludeT>]: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
+} & {
+    [name in Exclude<TableUtil.OptionalColumnNames<TableT>, ExcludeT>]?: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
+});
 export declare class InsertValueBuilder<TableT extends AnyTableAllowInsert, ValuesT extends undefined | (RawInsertValueRow<TableT>[]), InsertModeT extends "IGNORE" | "REPLACE" | "NORMAL"> implements Querify {
     readonly table: TableT;
     readonly values: ValuesT;

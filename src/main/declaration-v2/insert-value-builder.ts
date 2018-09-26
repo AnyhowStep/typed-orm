@@ -35,6 +35,30 @@ export type InsertLiteralRow<TableT extends AnyTable> = (
         )
     }
 );
+export type InsertLiteralSubRow<TableT extends AnyTable, ExtractT extends Extract<keyof TableT["columns"], string>> = (
+    {
+        [name in Extract<TableUtil.RequiredColumnNames<TableT>, ExtractT>] : (
+            ReturnType<TableT["columns"][name]["assertDelegate"]>
+        )
+    } &
+    {
+        [name in Extract<TableUtil.OptionalColumnNames<TableT>, ExtractT>]? : (
+            ReturnType<TableT["columns"][name]["assertDelegate"]>
+        )
+    }
+);
+export type InsertLiteralRowExclude<TableT extends AnyTable, ExcludeT extends Extract<keyof TableT["columns"], string>> = (
+    {
+        [name in Exclude<TableUtil.RequiredColumnNames<TableT>, ExcludeT>] : (
+            ReturnType<TableT["columns"][name]["assertDelegate"]>
+        )
+    } &
+    {
+        [name in Exclude<TableUtil.OptionalColumnNames<TableT>, ExcludeT>]? : (
+            ReturnType<TableT["columns"][name]["assertDelegate"]>
+        )
+    }
+);
 
 export class InsertValueBuilder<
     TableT extends AnyTableAllowInsert,
