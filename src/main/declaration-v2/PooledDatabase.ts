@@ -1168,6 +1168,16 @@ export class PooledDatabase extends mysql.PooledDatabase {
     }> {
         return LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, insertIfDifferentRow);
     }
+    insertIfDifferentOrFirstAndFetch<DataT extends LogData> (
+        data : DataT,
+        entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
+        insertIfDifferentOrFirstRow : LogDataUtil.InsertIfDifferentRow<DataT>
+    ) : Promise<{
+        latest : TableRow<DataT["table"]>,
+        wasInserted : boolean,
+    }> {
+        return LogDataUtil.insertIfDifferentOrFirstAndFetch(this, data, entityIdentifier, insertIfDifferentOrFirstRow);
+    }
     latestValueExpression<
         DataT extends LogData,
         EntityT extends LogDataUtil.LatestValueExpressionEntityTable<DataT>,
@@ -1198,6 +1208,16 @@ export class PooledDatabase extends mysql.PooledDatabase {
             defaultValueDelegate
         );
     };
+    rowsExistForEntity<DataT extends LogData> (
+        data : DataT,
+        entityIdentifier : LogDataUtil.EntityIdentifier<DataT>
+    ) {
+        return LogDataUtil.rowsExistForEntity(
+            this,
+            data,
+            entityIdentifier
+        );
+    }
 
     createSubQuery<TablesT extends Tuple<AnyAliasedTable>> (...tables : TablesT) : (
         TablesT["length"] extends 0 ?

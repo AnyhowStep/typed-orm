@@ -699,10 +699,16 @@ class PooledDatabase extends mysql.PooledDatabase {
     insertIfDifferentAndFetch(data, entityIdentifier, insertIfDifferentRow) {
         return log_1.LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, insertIfDifferentRow);
     }
+    insertIfDifferentOrFirstAndFetch(data, entityIdentifier, insertIfDifferentOrFirstRow) {
+        return log_1.LogDataUtil.insertIfDifferentOrFirstAndFetch(this, data, entityIdentifier, insertIfDifferentOrFirstRow);
+    }
     latestValueExpression(data, entity, valueDelegate, defaultValueDelegate) {
         return log_1.LogDataUtil.latestValueExpression(this, data, entity, valueDelegate, defaultValueDelegate);
     }
     ;
+    rowsExistForEntity(data, entityIdentifier) {
+        return log_1.LogDataUtil.rowsExistForEntity(this, data, entityIdentifier);
+    }
     createSubQuery(...tables) {
         if (tables.length == 0) {
             return this.query();

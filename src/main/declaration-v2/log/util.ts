@@ -71,6 +71,14 @@ export namespace LogDataUtil {
             Object.keys(data.isTrackable)
         ) as any;
     }
+    export function fullOverwriteTrackableAssertDelegate<DataT extends LogData> (
+        data : DataT
+    ) : sd.AssertDelegate<FullOverwriteTrackable<DataT>> {
+        return ColumnCollectionUtil.assertDelegate(
+            data.table.columns,
+            Object.keys(data.isTrackable)
+        ) as any;
+    }
     export type DoNotCopyOnTrackableChanged<DataT extends LogData> = (
         {
             [name in Extract<
@@ -288,6 +296,62 @@ export namespace LogDataUtil {
         });
     }
 
+    /*
+        If a row exists for the entity,
+        then it behaves the same as insertIfDifferentAndFetch()
+
+        If a row *does not* exist for the entity,
+        then it will try to insert the row;
+        this requires all trackable fields to be set or
+        it will throw an error.
+    */
+    export function insertIfDifferentOrFirstAndFetch<
+        DataT extends LogData
+    > (
+        db : PooledDatabase,
+        data : DataT,
+        entityIdentifier : EntityIdentifier<DataT>,
+        insertIfDifferentOrFirstRow : InsertIfDifferentRow<DataT>
+    ) : Promise<{
+        latest : TableRow<DataT["table"]>,
+        wasInserted : boolean,
+    }> {
+        return db.transactionIfNotInOne(async (db) => {
+            if (await rowsExistForEntity(db, data, entityIdentifier)) {
+                return insertIfDifferentAndFetch(
+                    db,
+                    data,
+                    entityIdentifier,
+                    insertIfDifferentOrFirstRow
+                );
+            } else {
+                entityIdentifier = entityIdentifierAssertDelegate(data)(
+                    `${data.table.alias} entity identifier`,
+                    entityIdentifier
+                );
+                const fullOverwriteTrackable = fullOverwriteTrackableAssertDelegate(data)(
+                    `${data.table.alias} full overwrite trackable`,
+                    insertIfDifferentOrFirstRow
+                );
+                const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(
+                    `${data.table.alias} do not copy`,
+                    insertIfDifferentOrFirstRow
+                );
+                return {
+                    latest : await db.insertValueAndFetch(
+                        data.table,
+                        {
+                            ...(entityIdentifier as any),
+                            ...(fullOverwriteTrackable as any),
+                            ...(doNotCopy as any),
+                        }
+                    ) as any,
+                    wasInserted : true,
+                };
+            }
+        });
+    }
+
     export type LatestValueExpressionEntityTable<DataT extends LogData> = (
         Table<
             any,
@@ -491,6 +555,21 @@ export namespace LogDataUtil {
                 .select(() => [value]),
             defaultValue
         ) as any;
+    }
+    export function rowsExistForEntity<
+        DataT extends LogData
+    > (
+        db : PooledDatabase,
+        data : DataT,
+        entityIdentifier : EntityIdentifier<DataT>
+    ) : Promise<boolean> {
+        entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
+        return db.from(data.table)
+            .where(() => RawExprUtil.toEqualityCondition(
+                data.table,
+                entityIdentifier
+            ))
+            .exists();
     }
 }
 export type Trackable<DataT extends LogData> = LogDataUtil.Trackable<DataT>;

@@ -171,7 +171,12 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         latest: TableRow<DataT["table"]>;
         wasInserted: boolean;
     }>;
+    insertIfDifferentOrFirstAndFetch<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>, insertIfDifferentOrFirstRow: LogDataUtil.InsertIfDifferentRow<DataT>): Promise<{
+        latest: TableRow<DataT["table"]>;
+        wasInserted: boolean;
+    }>;
     latestValueExpression<DataT extends LogData, EntityT extends LogDataUtil.LatestValueExpressionEntityTable<DataT>, ValueDelegateT extends LogDataUtil.LatestValueExpressionValueDelegate<DataT, EntityT>, DefaultValueDelegateT extends LogDataUtil.LatestValueExpressionDefaultValueDelegate<DataT, EntityT>>(data: DataT, entity: EntityT, valueDelegate: ValueDelegateT, defaultValueDelegate: DefaultValueDelegateT): LogDataUtil.LatestValueExpression<DataT, EntityT, ValueDelegateT, DefaultValueDelegateT>;
+    rowsExistForEntity<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>): Promise<boolean>;
     createSubQuery<TablesT extends Tuple<AnyAliasedTable>>(...tables: TablesT): (TablesT["length"] extends 0 ? ReturnType<CreateSelectBuilderDelegate> : SelectBuilder<{
         hasSelect: false;
         hasFrom: false;

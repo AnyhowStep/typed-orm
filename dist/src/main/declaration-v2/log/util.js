@@ -29,6 +29,10 @@ var LogDataUtil;
         return column_collection_1.ColumnCollectionUtil.partialAssertDelegate(data.table.columns, Object.keys(data.isTrackable));
     }
     LogDataUtil.trackableAssertDelegate = trackableAssertDelegate;
+    function fullOverwriteTrackableAssertDelegate(data) {
+        return column_collection_1.ColumnCollectionUtil.assertDelegate(data.table.columns, Object.keys(data.isTrackable));
+    }
+    LogDataUtil.fullOverwriteTrackableAssertDelegate = fullOverwriteTrackableAssertDelegate;
     function doNotCopyOnTrackableChangedAssertDelegate(data) {
         const columnCollection = column_collection_1.ColumnCollectionUtil.extractColumnNames(data.table.columns, Object.keys(data.doNotCopyOnTrackableChanged));
         return sd.schema(...Object.keys(columnCollection)
@@ -155,6 +159,32 @@ var LogDataUtil;
         }));
     }
     LogDataUtil.insertIfDifferentAndFetch = insertIfDifferentAndFetch;
+    /*
+        If a row exists for the entity,
+        then it behaves the same as insertIfDifferentAndFetch()
+
+        If a row *does not* exist for the entity,
+        then it will try to insert the row;
+        this requires all trackable fields to be set or
+        it will throw an error.
+    */
+    function insertIfDifferentOrFirstAndFetch(db, data, entityIdentifier, insertIfDifferentOrFirstRow) {
+        return db.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
+            if (yield rowsExistForEntity(db, data, entityIdentifier)) {
+                return insertIfDifferentAndFetch(db, data, entityIdentifier, insertIfDifferentOrFirstRow);
+            }
+            else {
+                entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
+                const fullOverwriteTrackable = fullOverwriteTrackableAssertDelegate(data)(`${data.table.alias} full overwrite trackable`, insertIfDifferentOrFirstRow);
+                const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(`${data.table.alias} do not copy`, insertIfDifferentOrFirstRow);
+                return {
+                    latest: yield db.insertValueAndFetch(data.table, Object.assign({}, entityIdentifier, fullOverwriteTrackable, doNotCopy)),
+                    wasInserted: true,
+                };
+            }
+        }));
+    }
+    LogDataUtil.insertIfDifferentOrFirstAndFetch = insertIfDifferentOrFirstAndFetch;
     function latestValueExpression(db, data, entity, valueDelegate, defaultValueDelegate) {
         const entityRefs = {
             [entity.alias]: entity.columns
@@ -195,5 +225,12 @@ var LogDataUtil;
             .select(() => [value]), defaultValue);
     }
     LogDataUtil.latestValueExpression = latestValueExpression;
+    function rowsExistForEntity(db, data, entityIdentifier) {
+        entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
+        return db.from(data.table)
+            .where(() => raw_expr_1.RawExprUtil.toEqualityCondition(data.table, entityIdentifier))
+            .exists();
+    }
+    LogDataUtil.rowsExistForEntity = rowsExistForEntity;
 })(LogDataUtil = exports.LogDataUtil || (exports.LogDataUtil = {}));
 //# sourceMappingURL=util.js.map

@@ -20,6 +20,7 @@ export declare namespace LogDataUtil {
         [columnName in Extract<Extract<keyof DataT["table"]["columns"], keyof DataT["isTrackable"]>, string>]: (ReturnType<DataT["table"]["columns"][columnName]["assertDelegate"]>);
     });
     function trackableAssertDelegate<DataT extends LogData>(data: DataT): sd.AssertDelegate<Trackable<DataT>>;
+    function fullOverwriteTrackableAssertDelegate<DataT extends LogData>(data: DataT): sd.AssertDelegate<FullOverwriteTrackable<DataT>>;
     type DoNotCopyOnTrackableChanged<DataT extends LogData> = ({
         [name in Extract<TableUtil.RequiredColumnNames<DataT["table"]>, Extract<keyof DataT["doNotCopyOnTrackableChanged"], string>>]: (ReturnType<DataT["table"]["columns"][name]["assertDelegate"]>);
     } & {
@@ -37,6 +38,10 @@ export declare namespace LogDataUtil {
         latest: TableRow<DataT["table"]>;
         wasInserted: boolean;
     }>;
+    function insertIfDifferentOrFirstAndFetch<DataT extends LogData>(db: PooledDatabase, data: DataT, entityIdentifier: EntityIdentifier<DataT>, insertIfDifferentOrFirstRow: InsertIfDifferentRow<DataT>): Promise<{
+        latest: TableRow<DataT["table"]>;
+        wasInserted: boolean;
+    }>;
     type LatestValueExpressionEntityTable<DataT extends LogData> = (Table<any, any, {
         [entityKey in keyof DataT["entityIdentifier"]]: (entityKey extends keyof DataT["table"]["columns"] ? Column<any, any, sd.TypeOf<DataT["table"]["columns"][entityKey]["assertDelegate"]>> : never);
     }, any>);
@@ -50,6 +55,7 @@ export declare namespace LogDataUtil {
         };
     }), (RawExprUtil.Type<ReturnType<ValueDelegateT>> | RawExprUtil.Type<ReturnType<DefaultValueDelegateT>>)>);
     function latestValueExpression<DataT extends LogData, EntityT extends LatestValueExpressionEntityTable<DataT>, ValueDelegateT extends LatestValueExpressionValueDelegate<DataT, EntityT>, DefaultValueDelegateT extends LatestValueExpressionDefaultValueDelegate<DataT, EntityT>>(db: PooledDatabase, data: DataT, entity: EntityT, valueDelegate: ValueDelegateT, defaultValueDelegate: DefaultValueDelegateT): LatestValueExpression<DataT, EntityT, ValueDelegateT, DefaultValueDelegateT>;
+    function rowsExistForEntity<DataT extends LogData>(db: PooledDatabase, data: DataT, entityIdentifier: EntityIdentifier<DataT>): Promise<boolean>;
 }
 export declare type Trackable<DataT extends LogData> = LogDataUtil.Trackable<DataT>;
 //# sourceMappingURL=util.d.ts.map
