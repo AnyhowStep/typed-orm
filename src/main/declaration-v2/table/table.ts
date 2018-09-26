@@ -87,6 +87,22 @@ export type AnyTableAllowInsert = (
 export type TableRow<TableT extends AnyTable> = (
     ColumnCollectionUtil.Type<TableT["columns"]>
 );
+export type TableSubRow<TableT extends AnyTable, ExtractT extends Extract<keyof TableT["columns"], string>> = (
+    ColumnCollectionUtil.Type<
+        ColumnCollectionUtil.ExtractColumnNames<
+            TableT["columns"],
+            ExtractT
+        >
+    >
+);
+export type TableRowExclude<TableT extends AnyTable, ExcludeT extends Extract<keyof TableT["columns"], string>> = (
+    ColumnCollectionUtil.Type<
+        ColumnCollectionUtil.ExcludeColumnNames<
+            TableT["columns"],
+            ExcludeT
+        >
+    >
+);
 export type MinimalUniqueKeys<TableT extends AnyTable> = (
     UniqueKeyCollectionUtil.MinimalWithType<
         Extract<TableT["data"]["uniqueKeys"], UniqueKeyCollection>,
