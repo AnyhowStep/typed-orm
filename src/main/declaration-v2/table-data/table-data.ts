@@ -39,6 +39,7 @@ export interface TableData {
         [name : string] : true;
     };
 
+    //TODO Maybe allow data types that are not just `number` for `id`?
     //A table can have a PK that is an FK to an auto-increment column in another table
     readonly id : undefined|Column<any, any, number>;
     readonly uniqueKeys : undefined|(UniqueKeyCollection);

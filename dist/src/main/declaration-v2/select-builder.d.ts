@@ -531,6 +531,52 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: any;
         parentJoins: any;
     }>, whereDelegate: WhereDelegateT): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"] ? this : invalid.E4<"WHERE expression", Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"], "contains some invalid columns; only the following are allowed:", WhereDelegateColumnReferences<SelectBuilder<DataT>>>);
+    whereEqualsId<TableT extends AnyTable & {
+        data: {
+            id: Column<any, any, number>;
+        };
+    }>(this: SelectBuilder<{
+        hasSelect: any;
+        hasFrom: true;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: any;
+        parentJoins: any;
+    }>, table: TableT, id: ReturnType<TableT["data"]["id"]["assertDelegate"]>): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends {
+        [tableAlias in TableT["data"]["id"]["tableAlias"]]: {
+            [columnName in TableT["data"]["id"]["name"]]: (TableT["data"]["id"]);
+        };
+    } ? this : invalid.E4<"WHERE expression", {
+        [tableAlias in TableT["data"]["id"]["tableAlias"]]: {
+            [columnName in TableT["data"]["id"]["name"]]: (TableT["data"]["id"]);
+        };
+    }, "contains some invalid columns; only the following are allowed:", WhereDelegateColumnReferences<SelectBuilder<DataT>>>);
+    whereEqualsIdColumn<TableT extends AnyTable & {
+        data: {
+            id: Column<any, any, number>;
+        };
+    }>(this: SelectBuilder<{
+        hasSelect: any;
+        hasFrom: true;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: any;
+        parentJoins: any;
+    }>, table: TableT, id: {
+        [columnName in TableT["data"]["id"]["name"]]: (ReturnType<TableT["data"]["id"]["assertDelegate"]>);
+    }): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends {
+        [tableAlias in TableT["data"]["id"]["tableAlias"]]: {
+            [columnName in TableT["data"]["id"]["name"]]: (TableT["data"]["id"]);
+        };
+    } ? this : invalid.E4<"WHERE expression", {
+        [tableAlias in TableT["data"]["id"]["tableAlias"]]: {
+            [columnName in TableT["data"]["id"]["name"]]: (TableT["data"]["id"]);
+        };
+    }, "contains some invalid columns; only the following are allowed:", WhereDelegateColumnReferences<SelectBuilder<DataT>>>);
     whereEqualsColumns<TableT extends AnyTable>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;

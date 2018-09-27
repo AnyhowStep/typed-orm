@@ -661,6 +661,33 @@ class SelectBuilder {
     }
     /*
         Convenience method for,
+
+        .whereIsEqual(c => c.table.id, id)
+    */
+    whereEqualsId(table, id) {
+        return this.whereIsEqual((() => table.data.id), id);
+    }
+    /*
+        Convenience method for,
+
+        .whereIsEqual(c => c.table.tableId, obj.tableId)
+
+        This is generally safer,
+        especially if you adopt the following convention,
+
+        Name of id column = <tableName> + "Id"
+
+        So,
+
+        + A "user" table will have an id column called "userId"
+        + A "book" table will have an id column called "bookId"
+        + A "notification" table will have an id column called "notificationId"
+    */
+    whereEqualsIdColumn(table, id) {
+        return this.whereIsEqual((() => table.data.id), id[table.data.id.name]);
+    }
+    /*
+        Convenience method for,
         //TODO Maybe rename toEqualityCondition to toColumnEqualityCondition?
         .where(() => toEqualityCondition(
             table,

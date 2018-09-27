@@ -1853,6 +1853,129 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
 
     /*
         Convenience method for,
+
+        .whereIsEqual(c => c.table.id, id)
+    */
+    whereEqualsId<
+        TableT extends AnyTable & { data : { id : Column<any, any, number> } }
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        table : TableT,
+        id : ReturnType<TableT["data"]["id"]["assertDelegate"]>
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        {
+            [tableAlias in TableT["data"]["id"]["tableAlias"]] : {
+                [columnName in TableT["data"]["id"]["name"]] : (
+                    TableT["data"]["id"]
+                )
+            }
+        } ?
+            this :
+            invalid.E4<
+                "WHERE expression",
+                {
+                    [tableAlias in TableT["data"]["id"]["tableAlias"]] : {
+                        [columnName in TableT["data"]["id"]["name"]] : (
+                            TableT["data"]["id"]
+                        )
+                    }
+                },
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
+    ) {
+        return this.whereIsEqual(
+            (() => table.data.id) as any,
+            id
+        ) as any;
+    }
+
+    /*
+        Convenience method for,
+
+        .whereIsEqual(c => c.table.tableId, obj.tableId)
+
+        This is generally safer,
+        especially if you adopt the following convention,
+
+        Name of id column = <tableName> + "Id"
+
+        So,
+
+        + A "user" table will have an id column called "userId"
+        + A "book" table will have an id column called "bookId"
+        + A "notification" table will have an id column called "notificationId"
+    */
+    whereEqualsIdColumn<
+        TableT extends AnyTable & { data : { id : Column<any, any, number> } }
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        table : TableT,
+        id : {
+            [columnName in TableT["data"]["id"]["name"]] : (
+                ReturnType<TableT["data"]["id"]["assertDelegate"]>
+            )
+        }
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        {
+            [tableAlias in TableT["data"]["id"]["tableAlias"]] : {
+                [columnName in TableT["data"]["id"]["name"]] : (
+                    TableT["data"]["id"]
+                )
+            }
+        } ?
+            this :
+            invalid.E4<
+                "WHERE expression",
+                {
+                    [tableAlias in TableT["data"]["id"]["tableAlias"]] : {
+                        [columnName in TableT["data"]["id"]["name"]] : (
+                            TableT["data"]["id"]
+                        )
+                    }
+                },
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
+    ) {
+        return this.whereIsEqual(
+            (() => table.data.id) as any,
+            id[table.data.id.name]
+        ) as any;
+    }
+
+    /*
+        Convenience method for,
         //TODO Maybe rename toEqualityCondition to toColumnEqualityCondition?
         .where(() => toEqualityCondition(
             table,
