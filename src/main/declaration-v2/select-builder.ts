@@ -62,7 +62,7 @@ import {SelectBuilderUtil} from "./select-builder-util";
 import {JoinDeclarationUtil, JoinDeclarationUsage} from "./join-declaration";
 import {ColumnReferencesUtil} from "./column-references";
 import {ColumnCollectionUtil} from "./column-collection";
-import {Table} from "./table";
+import {Table, AnyTable, UniqueKeys, MinimalUniqueKeys} from "./table";
 
 Table;
 
@@ -1849,6 +1849,182 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ),
             }
         ) as any;
+    }
+
+    /*
+        Convenience method for,
+        //TODO Maybe rename toEqualityCondition to toColumnEqualityCondition?
+        .where(() => toEqualityCondition(
+            table,
+            {
+                column0 : value0,
+                column1 : value1,
+                column2 : value2,
+                //etc.
+            }
+        ))
+    */
+    whereEqualsColumns<
+        TableT extends AnyTable
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        table : TableT,
+        rawCondition : {
+            [otherColumnName : string]  : any
+        }
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        ColumnReferencesUtil.Partial<
+            ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+        > ?
+            this :
+            invalid.E4<
+                "WHERE expression",
+                ColumnReferencesUtil.Partial<
+                    ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+                >,
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
+    ) {
+        return this.where(() => RawExprUtil.toEqualityCondition(
+            table,
+            rawCondition
+        )) as any;
+    }
+
+    /*
+        Convenience method for,
+        .where(() => toUniqueKeyEqualityCondition(
+            table,
+            {
+                column0 : value0,
+                column1 : value1,
+                column2 : value2,
+                //etc.
+            }
+        ))
+    */
+    whereEqualsUniqueKey<
+        TableT extends AnyTable,
+        ConditionT extends UniqueKeys<TableT>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        table : TableT,
+        rawCondition : ConditionT
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        //TODO This might need fixing
+        //It should only use columns
+        //that are present in ConditionT
+        ColumnReferencesUtil.Partial<
+            ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+        > ?
+            this :
+            invalid.E4<
+                "WHERE expression",
+                //TODO This might need fixing
+                //It should only use columns
+                //that are present in ConditionT
+                ColumnReferencesUtil.Partial<
+                    ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+                >,
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
+    ) {
+        return this.where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+            table,
+            rawCondition
+        )) as any;
+    }
+
+    /*
+        Convenience method for,
+        .where(() => toMinimalUniqueKeyEqualityCondition(
+            table,
+            {
+                column0 : value0,
+                column1 : value1,
+                column2 : value2,
+                //etc.
+            }
+        ))
+    */
+    whereEqualsMinimalUniqueKey<
+        TableT extends AnyTable,
+        ConditionT extends MinimalUniqueKeys<TableT>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        table : TableT,
+        rawCondition : ConditionT
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        //TODO This might need fixing
+        //It should only use columns
+        //that are present in ConditionT
+        ColumnReferencesUtil.Partial<
+            ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+        > ?
+            this :
+            invalid.E4<
+                "WHERE expression",
+                //TODO This might need fixing
+                //It should only use columns
+                //that are present in ConditionT
+                ColumnReferencesUtil.Partial<
+                    ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+                >,
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
+    ) {
+        return this.where(() => RawExprUtil.toMinimalUniqueKeyEqualityCondition(
+            table,
+            rawCondition
+        )) as any;
     }
 
     //DISTINCT CLAUSE

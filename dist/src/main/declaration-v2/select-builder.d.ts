@@ -38,7 +38,7 @@ import { SelectBuilderUtil } from "./select-builder-util";
 import { JoinDeclarationUtil, JoinDeclarationUsage } from "./join-declaration";
 import { ColumnReferencesUtil } from "./column-references";
 import { ColumnCollectionUtil } from "./column-collection";
-import { Table } from "./table";
+import { Table, AnyTable, UniqueKeys, MinimalUniqueKeys } from "./table";
 export declare const ARBITRARY_ROW_COUNT = 999999999;
 export interface LimitData {
     readonly rowCount: number;
@@ -531,6 +531,38 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: any;
         parentJoins: any;
     }>, whereDelegate: WhereDelegateT): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"] ? this : invalid.E4<"WHERE expression", Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"], "contains some invalid columns; only the following are allowed:", WhereDelegateColumnReferences<SelectBuilder<DataT>>>);
+    whereEqualsColumns<TableT extends AnyTable>(this: SelectBuilder<{
+        hasSelect: any;
+        hasFrom: true;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: any;
+        parentJoins: any;
+    }>, table: TableT, rawCondition: {
+        [otherColumnName: string]: any;
+    }): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>> ? this : invalid.E4<"WHERE expression", ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, "contains some invalid columns; only the following are allowed:", WhereDelegateColumnReferences<SelectBuilder<DataT>>>);
+    whereEqualsUniqueKey<TableT extends AnyTable, ConditionT extends UniqueKeys<TableT>>(this: SelectBuilder<{
+        hasSelect: any;
+        hasFrom: true;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: any;
+        parentJoins: any;
+    }>, table: TableT, rawCondition: ConditionT): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>> ? this : invalid.E4<"WHERE expression", ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, "contains some invalid columns; only the following are allowed:", WhereDelegateColumnReferences<SelectBuilder<DataT>>>);
+    whereEqualsMinimalUniqueKey<TableT extends AnyTable, ConditionT extends MinimalUniqueKeys<TableT>>(this: SelectBuilder<{
+        hasSelect: any;
+        hasFrom: true;
+        hasUnion: any;
+        joins: any;
+        selects: any;
+        aggregateDelegate: any;
+        hasParentJoins: any;
+        parentJoins: any;
+    }>, table: TableT, rawCondition: ConditionT): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>> ? this : invalid.E4<"WHERE expression", ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, "contains some invalid columns; only the following are allowed:", WhereDelegateColumnReferences<SelectBuilder<DataT>>>);
     distinct(distinct?: boolean): this;
     sqlCalcFoundRows(sqlCalcFoundRows?: boolean): this;
     groupBy<GroupByDelegateT extends GroupByDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{

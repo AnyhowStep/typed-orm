@@ -294,6 +294,9 @@ export namespace RawExprUtil {
         rawCondition : ConditionT
     ) : (
         Expr<
+            //TODO This might need fixing
+            //It should only use columns
+            //that are present in ConditionT
             ColumnReferencesUtil.Partial<
                 ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
             >,
@@ -317,6 +320,9 @@ export namespace RawExprUtil {
         rawCondition : ConditionT
     ) : (
         Expr<
+            //TODO This might need fixing
+            //It should only use columns
+            //that are present in ConditionT
             ColumnReferencesUtil.Partial<
                 ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
             >,

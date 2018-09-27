@@ -659,6 +659,52 @@ class SelectBuilder {
         }
         return new SelectBuilder(this.data, Object.assign({}, this.extraData, { whereExpr: e.and(this.extraData.whereExpr, whereExpr) }));
     }
+    /*
+        Convenience method for,
+        //TODO Maybe rename toEqualityCondition to toColumnEqualityCondition?
+        .where(() => toEqualityCondition(
+            table,
+            {
+                column0 : value0,
+                column1 : value1,
+                column2 : value2,
+                //etc.
+            }
+        ))
+    */
+    whereEqualsColumns(table, rawCondition) {
+        return this.where(() => raw_expr_1.RawExprUtil.toEqualityCondition(table, rawCondition));
+    }
+    /*
+        Convenience method for,
+        .where(() => toUniqueKeyEqualityCondition(
+            table,
+            {
+                column0 : value0,
+                column1 : value1,
+                column2 : value2,
+                //etc.
+            }
+        ))
+    */
+    whereEqualsUniqueKey(table, rawCondition) {
+        return this.where(() => raw_expr_1.RawExprUtil.toUniqueKeyEqualityCondition(table, rawCondition));
+    }
+    /*
+        Convenience method for,
+        .where(() => toMinimalUniqueKeyEqualityCondition(
+            table,
+            {
+                column0 : value0,
+                column1 : value1,
+                column2 : value2,
+                //etc.
+            }
+        ))
+    */
+    whereEqualsMinimalUniqueKey(table, rawCondition) {
+        return this.where(() => raw_expr_1.RawExprUtil.toMinimalUniqueKeyEqualityCondition(table, rawCondition));
+    }
     //DISTINCT CLAUSE
     distinct(distinct = true) {
         return new SelectBuilder(this.data, Object.assign({}, this.extraData, { distinct: distinct }));
