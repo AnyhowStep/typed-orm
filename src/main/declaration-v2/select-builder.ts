@@ -2003,7 +2003,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         table : TableT,
         rawCondition : {
-            [otherColumnName : string]  : any
+            [columnName in keyof TableT["columns"]]? : (
+                ReturnType<TableT["columns"][columnName]["assertDelegate"]>
+            )
         }
     ) : (
         WhereDelegateColumnReferences<

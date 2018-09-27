@@ -243,8 +243,14 @@ export namespace RawExprUtil {
         table : TableT,
         //TODO Force proper typing?
         //For now, ignores invalid columns
-        condition : /*Partial<ColumnCollectionUtil.Type<TableT["columns"]>> & */{
+        /*condition : {
             [otherColumnName : string]  : any
+        }*/
+        //TODO Check this works
+        condition : {
+            [columnName in Extract<keyof TableT["columns"], string>]? : (
+                ReturnType<TableT["columns"][columnName]["assertDelegate"]>
+            )
         }
     ) : (
         Expr<
@@ -309,7 +315,7 @@ export namespace RawExprUtil {
         );
         return toEqualityCondition(
             table,
-            condition
+            condition as any
         ) as any;
     }
     export function toMinimalUniqueKeyEqualityCondition<
@@ -335,7 +341,7 @@ export namespace RawExprUtil {
         );
         return toEqualityCondition(
             table,
-            condition
+            condition as any
         ) as any;
     }
 }

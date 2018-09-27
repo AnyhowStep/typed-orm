@@ -167,6 +167,10 @@ var RawExprUtil;
     function toEqualityCondition(table, 
     //TODO Force proper typing?
     //For now, ignores invalid columns
+    /*condition : {
+        [otherColumnName : string]  : any
+    }*/
+    //TODO Check this works
     condition) {
         const assertDelegate = column_collection_1.ColumnCollectionUtil.partialAssertDelegate(table.columns);
         condition = assertDelegate(`${table.alias} condition`, condition);

@@ -587,7 +587,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: any;
         parentJoins: any;
     }>, table: TableT, rawCondition: {
-        [otherColumnName: string]: any;
+        [columnName in keyof TableT["columns"]]?: (ReturnType<TableT["columns"][columnName]["assertDelegate"]>);
     }): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>> ? this : invalid.E4<"WHERE expression", ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, "contains some invalid columns; only the following are allowed:", WhereDelegateColumnReferences<SelectBuilder<DataT>>>);
     whereEqualsUniqueKey<TableT extends AnyTable, ConditionT extends UniqueKeys<TableT>>(this: SelectBuilder<{
         hasSelect: any;

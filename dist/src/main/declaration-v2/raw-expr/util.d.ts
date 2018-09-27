@@ -34,7 +34,7 @@ export declare namespace RawExprUtil {
     function isNullable(raw: AnyRawExpr): boolean;
     function assertNonNullable(raw: AnyRawExpr): void;
     function toEqualityCondition<TableT extends AnyAliasedTable>(table: TableT, condition: {
-        [otherColumnName: string]: any;
+        [columnName in Extract<keyof TableT["columns"], string>]?: (ReturnType<TableT["columns"][columnName]["assertDelegate"]>);
     }): (Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, boolean>);
     function toUniqueKeyEqualityCondition<TableT extends AnyTable, ConditionT extends UniqueKeys<TableT>>(table: TableT, rawCondition: ConditionT): (Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, boolean>);
     function toMinimalUniqueKeyEqualityCondition<TableT extends AnyTable, ConditionT extends MinimalUniqueKeys<TableT>>(table: TableT, rawCondition: ConditionT): (Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, boolean>);

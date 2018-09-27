@@ -151,7 +151,7 @@ export namespace LogDataUtil {
         return (db.from(data.table) as any)
             .where(() => RawExprUtil.toEqualityCondition(
                 data.table,
-                entityIdentifier
+                entityIdentifier as any
             ))
             .orderBy(() => {
                 return data.orderByLatest;
@@ -169,7 +169,7 @@ export namespace LogDataUtil {
         return (db.from(data.table) as any)
             .where(() => RawExprUtil.toEqualityCondition(
                 data.table,
-                entityIdentifier
+                entityIdentifier as any
             ))
             .orderBy(() => {
                 return data.orderByLatest;
@@ -189,7 +189,7 @@ export namespace LogDataUtil {
         return (db.from(data.table) as any)
             .where(() => RawExprUtil.toEqualityCondition(
                 data.table,
-                entityIdentifier
+                entityIdentifier as any
             ))
             .orderBy(() => {
                 return data.orderByLatest;
@@ -567,7 +567,7 @@ export namespace LogDataUtil {
         return db.from(data.table)
             .where(() => RawExprUtil.toEqualityCondition(
                 data.table,
-                entityIdentifier
+                entityIdentifier as any
             ))
             .exists();
     }
