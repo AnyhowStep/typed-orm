@@ -56,7 +56,9 @@ var LogDataUtil;
     function fetchLatestQuery(db, data, entityIdentifier) {
         entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
         return db.from(data.table)
-            .where(() => raw_expr_1.RawExprUtil.toEqualityCondition(data.table, entityIdentifier))
+            .where(() => raw_expr_1.RawExprUtil.toEqualityCondition(data.table, 
+        //https://github.com/Microsoft/TypeScript/issues/27399
+        entityIdentifier))
             .orderBy(() => {
             return data.orderByLatest;
         })
@@ -66,7 +68,9 @@ var LogDataUtil;
     function fetchLatestOrError(db, data, entityIdentifier) {
         entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
         return db.from(data.table)
-            .where(() => raw_expr_1.RawExprUtil.toEqualityCondition(data.table, entityIdentifier))
+            .where(() => raw_expr_1.RawExprUtil.toEqualityCondition(data.table, 
+        //https://github.com/Microsoft/TypeScript/issues/27399
+        entityIdentifier))
             .orderBy(() => {
             return data.orderByLatest;
         })

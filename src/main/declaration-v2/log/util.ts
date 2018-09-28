@@ -151,6 +151,7 @@ export namespace LogDataUtil {
         return (db.from(data.table) as any)
             .where(() => RawExprUtil.toEqualityCondition(
                 data.table,
+                //https://github.com/Microsoft/TypeScript/issues/27399
                 entityIdentifier as any
             ))
             .orderBy(() => {
@@ -169,6 +170,7 @@ export namespace LogDataUtil {
         return (db.from(data.table) as any)
             .where(() => RawExprUtil.toEqualityCondition(
                 data.table,
+                //https://github.com/Microsoft/TypeScript/issues/27399
                 entityIdentifier as any
             ))
             .orderBy(() => {

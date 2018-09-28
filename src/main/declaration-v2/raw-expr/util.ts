@@ -315,6 +315,7 @@ export namespace RawExprUtil {
         );
         return toEqualityCondition(
             table,
+            //https://github.com/Microsoft/TypeScript/issues/27399
             condition as any
         ) as any;
     }
@@ -341,6 +342,7 @@ export namespace RawExprUtil {
         );
         return toEqualityCondition(
             table,
+            //https://github.com/Microsoft/TypeScript/issues/27399
             condition as any
         ) as any;
     }

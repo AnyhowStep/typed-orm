@@ -205,12 +205,16 @@ var RawExprUtil;
     RawExprUtil.toEqualityCondition = toEqualityCondition;
     function toUniqueKeyEqualityCondition(table, rawCondition) {
         const condition = table.getUniqueKeyAssertDelegate()(`${table.alias} condition`, rawCondition);
-        return toEqualityCondition(table, condition);
+        return toEqualityCondition(table, 
+        //https://github.com/Microsoft/TypeScript/issues/27399
+        condition);
     }
     RawExprUtil.toUniqueKeyEqualityCondition = toUniqueKeyEqualityCondition;
     function toMinimalUniqueKeyEqualityCondition(table, rawCondition) {
         const condition = table.getMinimalUniqueKeyAssertDelegate()(`${table.alias} condition`, rawCondition);
-        return toEqualityCondition(table, condition);
+        return toEqualityCondition(table, 
+        //https://github.com/Microsoft/TypeScript/issues/27399
+        condition);
     }
     RawExprUtil.toMinimalUniqueKeyEqualityCondition = toMinimalUniqueKeyEqualityCondition;
 })(RawExprUtil = exports.RawExprUtil || (exports.RawExprUtil = {}));

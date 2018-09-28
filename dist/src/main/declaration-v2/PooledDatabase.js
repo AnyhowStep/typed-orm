@@ -460,6 +460,17 @@ class PooledDatabase extends mysql.PooledDatabase {
             return Object.assign({}, updateResult, { row: yield db.fetchOneById(table, id) });
         }));
     }
+    updateAndFetchOneById(table, id, delegate) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.updateAndFetchZeroOrOneById(table, id, delegate);
+            if (result.foundRowCount == 1) {
+                return result;
+            }
+            else {
+                throw new mysql.RowNotFoundError(`${table.name} ${id} does not exist`);
+            }
+        });
+    }
     updateZeroOrOneByUniqueKey(table, uniqueKey, delegate) {
         if (table.data.uniqueKeys == undefined) {
             throw new Error(`Expected ${table.alias} to have a unique key`);

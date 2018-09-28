@@ -134,6 +134,14 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         foundRowCount: 0;
         row: undefined;
     })>);
+    updateAndFetchOneById<TableT extends AnyTable & {
+        data: {
+            id: Column<any, any, number>;
+        };
+    }>(table: TableT, id: number, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<UpdateResult & ({
+        foundRowCount: 1;
+        row: (FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>>);
+    })>);
     updateZeroOrOneByUniqueKey<TableT extends AnyTable & {
         data: {
             uniqueKeys: UniqueKeyCollection;

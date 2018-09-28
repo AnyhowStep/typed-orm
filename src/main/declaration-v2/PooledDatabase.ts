@@ -832,6 +832,37 @@ export class PooledDatabase extends mysql.PooledDatabase {
             };
         }) as any;
     }
+    async updateAndFetchOneById<
+        TableT extends AnyTable & { data : { id : Column<any, any, number> } }
+    > (
+        table : TableT,
+        id : number,
+        delegate : UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>
+    ) : (
+        Promise<
+            UpdateResult &
+            (
+                {
+                    foundRowCount : 1,
+                    row : (
+                        FetchRow<
+                            SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"],
+                            SelectCollectionUtil.ToColumnReferences<
+                                SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]
+                            >
+                        >
+                    )
+                }
+            )
+        >
+    ) {
+        const result = await this.updateAndFetchZeroOrOneById(table, id, delegate);
+        if (result.foundRowCount == 1) {
+            return result;
+        } else {
+            throw new mysql.RowNotFoundError(`${table.name} ${id} does not exist`);
+        }
+    }
     updateZeroOrOneByUniqueKey<
         TableT extends AnyTable & { data : { uniqueKeys : UniqueKeyCollection } }
     > (
