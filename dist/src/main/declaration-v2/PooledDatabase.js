@@ -500,6 +500,32 @@ class PooledDatabase extends mysql.PooledDatabase {
             return updateResult;
         }));
     }
+    /*
+        If the row does not exist, it returns,
+        {
+            foundRowCount : 0,
+            row : undefined
+        }
+
+        If the row exists but was not updated, it returns,
+        {
+            updatedRowCount : 0
+            row : Object
+        }
+    */
+    updateAndFetchZeroOrOneByUniqueKey(table, uniqueKey, delegate) {
+        if (table.data.uniqueKeys == undefined || table.data.uniqueKeys.length == 0) {
+            throw new Error(`Expected ${table.alias} to have unique keys`);
+        }
+        return this.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
+            const updateResult = yield this
+                .updateZeroOrOneByUniqueKey(table, uniqueKey, delegate);
+            if (updateResult.foundRowCount == 0) {
+                return Object.assign({}, updateResult, { row: undefined });
+            }
+            return Object.assign({}, updateResult, { row: yield db.fetchOneByUniqueKey(table, uniqueKey) });
+        }));
+    }
     updateOneByUniqueKey(table, uniqueKey, delegate) {
         if (table.data.uniqueKeys == undefined) {
             throw new Error(`Expected ${table.alias} to have a unique key`);

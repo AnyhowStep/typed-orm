@@ -914,6 +914,71 @@ export class PooledDatabase extends mysql.PooledDatabase {
             return updateResult;
         }) as any;
     }
+    /*
+        If the row does not exist, it returns,
+        {
+            foundRowCount : 0,
+            row : undefined
+        }
+
+        If the row exists but was not updated, it returns,
+        {
+            updatedRowCount : 0
+            row : Object
+        }
+    */
+    updateAndFetchZeroOrOneByUniqueKey<
+        TableT extends AnyTable & { data : { uniqueKeys : UniqueKeyCollection } }
+    > (
+        table : TableT,
+        uniqueKey : UniqueKeys<TableT>,
+        delegate : UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>
+    ) : (
+        Promise<
+            UpdateResult &
+            (
+                {
+                    foundRowCount : 1,
+                    row : (
+                        FetchRow<
+                            SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"],
+                            SelectCollectionUtil.ToColumnReferences<
+                                SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]
+                            >
+                        >
+                    )
+                } |
+                {
+                    foundRowCount : 0,
+                    row : undefined
+                }
+            )
+        >
+    ) {
+        if (table.data.uniqueKeys == undefined || table.data.uniqueKeys.length == 0) {
+            throw new Error(`Expected ${table.alias} to have unique keys`);
+        }
+        return this.transactionIfNotInOne(async (db) => {
+            const updateResult : UpdateResult = await this
+                .updateZeroOrOneByUniqueKey(
+                    table,
+                    uniqueKey,
+                    delegate
+                );
+
+            if (updateResult.foundRowCount == 0) {
+                return {
+                    ...updateResult,
+                    row : undefined,
+                };
+            }
+
+            return {
+                ...updateResult,
+                row : await db.fetchOneByUniqueKey(table, uniqueKey),
+            };
+        }) as any;
+    }
     updateOneByUniqueKey<
         TableT extends AnyTable & { data : { uniqueKeys : UniqueKeyCollection } }
     > (
