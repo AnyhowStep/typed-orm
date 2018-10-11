@@ -4,6 +4,6 @@ export type TypeNarrowDelegate<
     JoinsT extends JoinCollection
 > = (
     (columnReferences : JoinCollectionUtil.ToConvenientColumnReferences<JoinsT>) => (
-        JoinCollectionUtil.Columns<JoinsT>
+        JoinCollectionUtil.NullableColumns<JoinsT>
     )
 );
