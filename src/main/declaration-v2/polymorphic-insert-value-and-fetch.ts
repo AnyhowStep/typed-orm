@@ -34,6 +34,30 @@ export type PolymorphicInsertLiteralRow<TableT extends AnyTable> = (
         )
     }
 );
+export type PolymorphicInsertLiteralSubRow<TableT extends AnyTable, ExtractT extends Extract<keyof TableT["columns"], string>> = (
+    {
+        [name in Extract<TableParentCollectionUtil.RequiredColumnNames<TableT>, ExtractT>] : (
+            TableParentCollectionUtil.ColumnType<TableT, name>
+        )
+    } &
+    {
+        [name in Extract<TableParentCollectionUtil.OptionalColumnNames<TableT>, ExtractT>]? : (
+            TableParentCollectionUtil.ColumnType<TableT, name>
+        )
+    }
+);
+export type PolymorphicInsertLiteralExclude<TableT extends AnyTable, ExcludeT extends Extract<keyof TableT["columns"], string>> = (
+    {
+        [name in Exclude<TableParentCollectionUtil.RequiredColumnNames<TableT>, ExcludeT>] : (
+            TableParentCollectionUtil.ColumnType<TableT, name>
+        )
+    } &
+    {
+        [name in Exclude<TableParentCollectionUtil.OptionalColumnNames<TableT>, ExcludeT>]? : (
+            TableParentCollectionUtil.ColumnType<TableT, name>
+        )
+    }
+);
 
 export async function polymorphicInsertValueAndFetch<
     TableT extends AnyTable
