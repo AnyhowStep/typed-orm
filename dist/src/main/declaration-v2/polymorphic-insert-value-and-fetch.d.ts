@@ -17,7 +17,7 @@ export declare type PolymorphicInsertLiteralSubRow<TableT extends AnyTable, Extr
 } & {
     [name in Extract<TableParentCollectionUtil.OptionalColumnNames<TableT>, ExtractT>]?: (TableParentCollectionUtil.ColumnType<TableT, name>);
 });
-export declare type PolymorphicInsertLiteralExclude<TableT extends AnyTable, ExcludeT extends Extract<keyof TableT["columns"], string>> = ({
+export declare type PolymorphicInsertLiteralRowExclude<TableT extends AnyTable, ExcludeT extends Extract<keyof TableT["columns"], string>> = ({
     [name in Exclude<TableParentCollectionUtil.RequiredColumnNames<TableT>, ExcludeT>]: (TableParentCollectionUtil.ColumnType<TableT, name>);
 } & {
     [name in Exclude<TableParentCollectionUtil.OptionalColumnNames<TableT>, ExcludeT>]?: (TableParentCollectionUtil.ColumnType<TableT, name>);
