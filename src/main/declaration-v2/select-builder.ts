@@ -1641,15 +1641,6 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
 
         const column = TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate as any);
 
-        const inJoin = JoinCollectionUtil.findWithTableAlias(
-            this.data.joins,
-            column.tableAlias
-        );
-        const inParentJoin = JoinCollectionUtil.findWithTableAlias(
-            this.data.parentJoins,
-            column.tableAlias
-        );
-
         const narrowed = this.narrow(
             new Column(
                 column.tableAlias,
@@ -1661,41 +1652,28 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             e.isNotNull(column)
         ) as any;
 
-        if (
-            inJoin != undefined &&
-            sd.isNullable(inJoin.table.columns[column.name].assertDelegate) &&
-            !JoinCollectionUtil.hasRightJoin(this.data.joins)
-        ) {
-            return new SelectBuilder(
-                {
-                    ...narrowed.data,
-                    joins : JoinCollectionUtil.replaceNullable(
-                        this.data.joins,
-                        column.tableAlias,
-                        false
-                    ),
-                },
-                narrowed.extraData
-            ) as any;
-        } else if (
-            inParentJoin != undefined &&
-            sd.isNullable(inParentJoin.table.columns[column.name].assertDelegate) &&
-            !JoinCollectionUtil.hasRightJoin(this.data.parentJoins)
-        ) {
-            return new SelectBuilder(
-                {
-                    ...narrowed.data,
-                    parentJoins : JoinCollectionUtil.replaceNullable(
-                        this.data.parentJoins,
-                        column.tableAlias,
-                        false
-                    ),
-                },
-                narrowed.extraData
-            ) as any;
-        } else {
-            return narrowed;
-        }
+        const joins = JoinCollectionUtil.hasRightJoin(this.data.joins) ?
+            this.data.joins :
+            JoinCollectionUtil.replaceNullable(
+                this.data.joins,
+                column.tableAlias,
+                false
+            );
+        const parentJoins = JoinCollectionUtil.hasRightJoin(this.data.parentJoins) ?
+            this.data.parentJoins :
+            JoinCollectionUtil.replaceNullable(
+                this.data.parentJoins,
+                column.tableAlias,
+                false
+            );
+        return new SelectBuilder(
+            {
+                ...narrowed.data,
+                joins : joins,
+                parentJoins : parentJoins,
+            },
+            narrowed.extraData
+        ) as any;
     };
     whereIsNull<
         TypeNarrowDelegateT extends TypeNarrowDelegate<this>
