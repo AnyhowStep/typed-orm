@@ -480,7 +480,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         parentJoins: any;
     }>): AsyncIterableIterator<SelectBuilderUtil.AggregatedRow<this>>;
     private narrow;
-    whereIsNotNull<TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>>(this: SelectBuilder<{
+    whereIsNotNull<TypeNarrowDelegateT extends TypeNarrowDelegate<this>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
         hasUnion: false;
@@ -490,7 +490,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: any;
         parentJoins: any;
     }>, typeNarrowDelegate: TypeNarrowDelegateT): (SelectBuilderUtil.WhereIsNotNull<this, TypeNarrowDelegateT>);
-    whereIsNull<TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>>(this: SelectBuilder<{
+    whereIsNull<TypeNarrowDelegateT extends TypeNarrowDelegate<this>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
         hasUnion: false;
@@ -500,7 +500,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         hasParentJoins: any;
         parentJoins: any;
     }>, typeNarrowDelegate: TypeNarrowDelegateT): (SelectBuilderUtil.WhereIsNull<this, TypeNarrowDelegateT>);
-    whereIsEqual<TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>, ConstT extends boolean | number | string>(this: SelectBuilder<{
+    whereIsEqual<TypeNarrowDelegateT extends TypeNarrowDelegate<this>, ConstT extends boolean | number | string>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
         hasUnion: false;

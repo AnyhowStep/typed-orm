@@ -581,6 +581,7 @@ class SelectBuilder {
     narrow(column, condition) {
         const joins = join_collection_1.JoinCollectionUtil.replaceColumnType(this.data.joins, column.tableAlias, column.name, column.assertDelegate);
         const selects = select_collection_1.SelectCollectionUtil.replaceSelectType(this.data.selects, column.tableAlias, column.name, column.assertDelegate);
+        const parentJoins = join_collection_1.JoinCollectionUtil.replaceColumnType(this.data.parentJoins, column.tableAlias, column.name, column.assertDelegate);
         let narrowExpr = this.extraData.narrowExpr;
         if (narrowExpr == undefined) {
             narrowExpr = condition;
@@ -598,6 +599,7 @@ class SelectBuilder {
         return new SelectBuilder(type_util_1.spread(this.data, {
             joins: joins,
             selects: selects,
+            parentJoins: parentJoins,
         }), Object.assign({}, this.extraData, { narrowExpr: narrowExpr, whereExpr: whereExpr }));
     }
     //Narrowing is only allowed before UNION
@@ -610,14 +612,14 @@ class SelectBuilder {
     whereIsNotNull(typeNarrowDelegate) {
         this.assertAfterFrom();
         this.assertBeforeUnion();
-        const column = type_narrow_delegate_1.TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate);
+        const column = type_narrow_delegate_1.TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate);
         return this.narrow(new column_1.Column(column.tableAlias, column.name, sd.notNullable(column.assertDelegate), column.subTableName, column.isSelectReference), e.isNotNull(column));
     }
     ;
     whereIsNull(typeNarrowDelegate) {
         this.assertAfterFrom();
         this.assertBeforeUnion();
-        const column = type_narrow_delegate_1.TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate);
+        const column = type_narrow_delegate_1.TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate);
         return this.narrow(new column_1.Column(column.tableAlias, column.name, sd.nil(), column.subTableName, column.isSelectReference), e.isNull(column));
     }
     ;
@@ -625,7 +627,7 @@ class SelectBuilder {
         this.assertAfterFrom();
         this.assertBeforeUnion();
         sd.or(sd.boolean(), sd.number(), sd.string())("value", value);
-        const column = type_narrow_delegate_1.TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate);
+        const column = type_narrow_delegate_1.TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate);
         let assertDelegate = sd.literal(value);
         if (value === true) {
             assertDelegate = sd.numberToTrue();

@@ -1572,6 +1572,12 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             column.name,
             column.assertDelegate
         );
+        const parentJoins = JoinCollectionUtil.replaceColumnType(
+            this.data.parentJoins,
+            column.tableAlias,
+            column.name,
+            column.assertDelegate
+        );
 
         let narrowExpr = this.extraData.narrowExpr;
         if (narrowExpr == undefined) {
@@ -1592,6 +1598,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 {
                     joins : joins,
                     selects : selects,
+                    parentJoins : parentJoins,
                 }
             ),
             {
@@ -1609,7 +1616,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Must be called after `FROM` or there will be no columns
     //to narrow.
     whereIsNotNull<
-        TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>
+        TypeNarrowDelegateT extends TypeNarrowDelegate<this>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -1632,7 +1639,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         this.assertAfterFrom();
         this.assertBeforeUnion();
 
-        const column = TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate as any);
+        const column = TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate as any);
 
         return this.narrow(
             new Column(
@@ -1646,7 +1653,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         ) as any;
     };
     whereIsNull<
-        TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>
+        TypeNarrowDelegateT extends TypeNarrowDelegate<this>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -1669,7 +1676,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         this.assertAfterFrom();
         this.assertBeforeUnion();
 
-        const column = TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate as any);
+        const column = TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate as any);
 
         return this.narrow(
             new Column(
@@ -1683,7 +1690,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         ) as any;
     };
     whereIsEqual<
-        TypeNarrowDelegateT extends TypeNarrowDelegate<this["data"]["joins"]>,
+        TypeNarrowDelegateT extends TypeNarrowDelegate<this>,
         ConstT extends boolean|number|string
     > (
         this : SelectBuilder<{
@@ -1715,7 +1722,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             sd.string()
         )("value", value);
 
-        const column = TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate as any);
+        const column = TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate as any);
 
         let assertDelegate : sd.AssertDelegate<ConstT> = sd.literal(value);
         if (value === true) {

@@ -273,7 +273,7 @@ export namespace SelectBuilderUtil {
     );
     export type WhereIsNotNull<
         SelectBuilderT extends AnySelectBuilder,
-        TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT["data"]["joins"]>
+        TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT>
     > = (
         SelectBuilderT extends SelectBuilder<infer DataT> ?
             (
@@ -293,6 +293,16 @@ export namespace SelectBuilderUtil {
                             key extends "selects" ?
                             SelectCollectionUtil.ReplaceSelectType<
                                 DataT["selects"],
+                                TableAliasT,
+                                ColumnNameT,
+                                Exclude<
+                                    TypeT,
+                                    null|undefined
+                                >
+                            > :
+                            key extends "parentJoins" ?
+                            JoinCollectionUtil.ReplaceColumnType<
+                                DataT["parentJoins"],
                                 TableAliasT,
                                 ColumnNameT,
                                 Exclude<
@@ -309,7 +319,7 @@ export namespace SelectBuilderUtil {
     );
     export type WhereIsNull<
         SelectBuilderT extends AnySelectBuilder,
-        TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT["data"]["joins"]>
+        TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT>
     > = (
         SelectBuilderT extends SelectBuilder<infer DataT> ?
             (
@@ -330,6 +340,13 @@ export namespace SelectBuilderUtil {
                                 ColumnNameT,
                                 null
                             > :
+                            key extends "parentJoins" ?
+                            JoinCollectionUtil.ReplaceColumnType<
+                                DataT["parentJoins"],
+                                TableAliasT,
+                                ColumnNameT,
+                                null
+                            > :
                             DataT[key]
                         )
                     }> :
@@ -339,7 +356,7 @@ export namespace SelectBuilderUtil {
     );
     export type WhereIsEqual<
         SelectBuilderT extends AnySelectBuilder,
-        TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT["data"]["joins"]>,
+        TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT>,
         ConstT extends boolean|number|string
     > = (
         SelectBuilderT extends SelectBuilder<infer DataT> ?
