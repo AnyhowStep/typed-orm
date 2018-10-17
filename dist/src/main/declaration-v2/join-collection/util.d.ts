@@ -15,6 +15,7 @@ export declare namespace JoinCollectionUtil {
     type FindWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string> = ({
         [index in TupleKeys<JoinsT>]: (Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ? Extract<JoinsT[index], AnyJoin> : never);
     }[TupleKeys<JoinsT>]);
+    function findWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string>(joins: JoinsT, tableAlias: TableAliasT): AnyJoin | undefined;
     type IndexWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string> = ({
         [index in TupleKeys<JoinsT>]: (Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ? index : never);
     }[TupleKeys<JoinsT>]);
@@ -180,5 +181,14 @@ export declare namespace JoinCollectionUtil {
         length: TupleLength<JoinsT>;
     } & AnyJoin[]);
     function replaceColumnType<JoinsT extends JoinCollection, TableAliasT extends string, ColumnNameT extends string, NewTypeT>(joins: JoinsT, tableAlias: TableAliasT, columnName: ColumnNameT, newAssertDelegate: sd.AssertDelegate<NewTypeT>): (ReplaceColumnType<JoinsT, TableAliasT, ColumnNameT, NewTypeT>);
+    type ReplaceNullable<JoinsT extends JoinCollection, TableAliasT extends string, NullableT extends boolean> = ({
+        [index in TupleKeys<JoinsT>]: (JoinUtil.ReplaceNullable<Extract<JoinsT[index], AnyJoin>, TableAliasT, NullableT>);
+    } & {
+        "0": (JoinUtil.ReplaceNullable<JoinsT[0], TableAliasT, NullableT>);
+        length: TupleLength<JoinsT>;
+    } & AnyJoin[]);
+    function replaceNullable<JoinsT extends JoinCollection, TableAliasT extends string, NullableT extends boolean>(joins: JoinsT, tableAlias: TableAliasT, nullable: NullableT): (ReplaceNullable<JoinsT, TableAliasT, NullableT>);
+    type HasRightJoin<JoinsT extends JoinCollection> = (JoinsT[0]["nullable"] extends true ? true : false);
+    function hasRightJoin<JoinsT extends JoinCollection>(joins: JoinsT): HasRightJoin<JoinsT>;
 }
 //# sourceMappingURL=util.d.ts.map

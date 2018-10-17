@@ -60,7 +60,7 @@ import {TupleWConcat, Tuple, TupleKeys, TupleKeysUpTo, TupleLength} from "./tupl
 import {AnyJoin} from "./join";
 import {SelectBuilderUtil} from "./select-builder-util";
 import {JoinDeclarationUtil, JoinDeclarationUsage} from "./join-declaration";
-import {ColumnReferencesUtil} from "./column-references";
+import {ColumnReferences, ColumnReferencesUtil} from "./column-references";
 import {ColumnCollectionUtil} from "./column-collection";
 import {Table, AnyTable, UniqueKeys, MinimalUniqueKeys} from "./table";
 
@@ -1641,7 +1641,16 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
 
         const column = TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate as any);
 
-        return this.narrow(
+        const inJoin = JoinCollectionUtil.findWithTableAlias(
+            this.data.joins,
+            column.tableAlias
+        );
+        const inParentJoin = JoinCollectionUtil.findWithTableAlias(
+            this.data.parentJoins,
+            column.tableAlias
+        );
+
+        const narrowed = this.narrow(
             new Column(
                 column.tableAlias,
                 column.name,
@@ -1651,6 +1660,42 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             ),
             e.isNotNull(column)
         ) as any;
+
+        if (
+            inJoin != undefined &&
+            sd.isNullable(inJoin.table.columns[column.name].assertDelegate) &&
+            !JoinCollectionUtil.hasRightJoin(this.data.joins)
+        ) {
+            return new SelectBuilder(
+                {
+                    ...narrowed.data,
+                    joins : JoinCollectionUtil.replaceNullable(
+                        this.data.joins,
+                        column.tableAlias,
+                        false
+                    ),
+                },
+                narrowed.extraData
+            ) as any;
+        } else if (
+            inParentJoin != undefined &&
+            sd.isNullable(inParentJoin.table.columns[column.name].assertDelegate) &&
+            !JoinCollectionUtil.hasRightJoin(this.data.parentJoins)
+        ) {
+            return new SelectBuilder(
+                {
+                    ...narrowed.data,
+                    parentJoins : JoinCollectionUtil.replaceNullable(
+                        this.data.parentJoins,
+                        column.tableAlias,
+                        false
+                    ),
+                },
+                narrowed.extraData
+            ) as any;
+        } else {
+            return narrowed;
+        }
     };
     whereIsNull<
         TypeNarrowDelegateT extends TypeNarrowDelegate<this>
@@ -1779,15 +1824,23 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             AnyExpr
         >["usedReferences"] ?
             this :
-            invalid.E4<
-                "WHERE expression",
-                Extract<
-                    ReturnType<WhereDelegateT>,
-                    AnyExpr
-                >["usedReferences"],
-                "contains some invalid columns; only the following are allowed:",
-                WhereDelegateColumnReferences<
-                    SelectBuilder<DataT>
+            invalid.E2<
+                "WHERE expression contains some invalid columns; the following are not allowed:",
+                Exclude<
+                    ColumnReferencesUtil.Columns<
+                        Extract<
+                            Extract<
+                                ReturnType<WhereDelegateT>,
+                                AnyExpr
+                            >["usedReferences"],
+                            ColumnReferences
+                        >
+                    >,
+                    ColumnReferencesUtil.Columns<
+                        WhereDelegateColumnReferences<
+                            SelectBuilder<DataT>
+                        >
+                    >
                 >
             >
     ) {

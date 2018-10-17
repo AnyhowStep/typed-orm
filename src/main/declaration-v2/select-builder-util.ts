@@ -271,6 +271,9 @@ export namespace SelectBuilderUtil {
             SelectBuilderT["data"]["aggregateDelegate"]
         >
     );
+    //If there is a RIGHT JOIN, we cannot set the `nullable` part to false
+    //for the JOIN at the moment.
+    //The type system isn't strong enough at the moment
     export type WhereIsNotNull<
         SelectBuilderT extends AnySelectBuilder,
         TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT>
@@ -278,41 +281,155 @@ export namespace SelectBuilderUtil {
         SelectBuilderT extends SelectBuilder<infer DataT> ?
             (
                 ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
-                    SelectBuilder<{
-                        readonly [key in keyof DataT] : (
-                            key extends "joins" ?
-                            JoinCollectionUtil.ReplaceColumnType<
-                                DataT["joins"],
-                                TableAliasT,
-                                ColumnNameT,
-                                Exclude<
-                                    TypeT,
-                                    null|undefined
-                                >
-                            > :
-                            key extends "selects" ?
-                            SelectCollectionUtil.ReplaceSelectType<
-                                DataT["selects"],
-                                TableAliasT,
-                                ColumnNameT,
-                                Exclude<
-                                    TypeT,
-                                    null|undefined
-                                >
-                            > :
-                            key extends "parentJoins" ?
-                            JoinCollectionUtil.ReplaceColumnType<
-                                DataT["parentJoins"],
-                                TableAliasT,
-                                ColumnNameT,
-                                Exclude<
-                                    TypeT,
-                                    null|undefined
-                                >
-                            > :
-                            DataT[key]
-                        )
-                    }> :
+                    (
+                        (
+                            (
+                                null extends ReturnType<
+                                    JoinCollectionUtil.FindWithTableAlias<
+                                        DataT["joins"],
+                                        TableAliasT
+                                    >["table"]["columns"][ColumnNameT]["assertDelegate"]
+                                > ?
+                                    true :
+                                    false
+                            ) |
+                            (
+                                JoinCollectionUtil.HasRightJoin<DataT["joins"]> extends true ?
+                                    false :
+                                    true
+                            )
+                        ) extends true ?
+                        SelectBuilder<{
+                            readonly [key in keyof DataT] : (
+                                key extends "joins" ?
+                                JoinCollectionUtil.ReplaceColumnType<
+                                    JoinCollectionUtil.ReplaceNullable<
+                                        DataT["joins"],
+                                        TableAliasT,
+                                        false
+                                    >,
+                                    TableAliasT,
+                                    ColumnNameT,
+                                    Exclude<
+                                        TypeT,
+                                        null|undefined
+                                    >
+                                > :
+                                key extends "selects" ?
+                                SelectCollectionUtil.ReplaceSelectType<
+                                    DataT["selects"],
+                                    TableAliasT,
+                                    ColumnNameT,
+                                    Exclude<
+                                        TypeT,
+                                        null|undefined
+                                    >
+                                > :
+                                key extends "parentJoins" ?
+                                JoinCollectionUtil.ReplaceColumnType<
+                                    DataT["parentJoins"],
+                                    TableAliasT,
+                                    ColumnNameT,
+                                    Exclude<
+                                        TypeT,
+                                        null|undefined
+                                    >
+                                > :
+                                DataT[key]
+                            )
+                        }> :
+                        (
+                            (
+                                null extends ReturnType<
+                                    JoinCollectionUtil.FindWithTableAlias<
+                                        DataT["parentJoins"],
+                                        TableAliasT
+                                    >["table"]["columns"][ColumnNameT]["assertDelegate"]
+                                > ?
+                                    true :
+                                    false
+                            ) |
+                            (
+                                JoinCollectionUtil.HasRightJoin<DataT["parentJoins"]> extends true ?
+                                    false :
+                                    true
+                            )
+                        ) extends true ?
+                        SelectBuilder<{
+                            readonly [key in keyof DataT] : (
+                                key extends "joins" ?
+                                JoinCollectionUtil.ReplaceColumnType<
+                                    DataT["joins"],
+                                    TableAliasT,
+                                    ColumnNameT,
+                                    Exclude<
+                                        TypeT,
+                                        null|undefined
+                                    >
+                                > :
+                                key extends "selects" ?
+                                SelectCollectionUtil.ReplaceSelectType<
+                                    DataT["selects"],
+                                    TableAliasT,
+                                    ColumnNameT,
+                                    Exclude<
+                                        TypeT,
+                                        null|undefined
+                                    >
+                                > :
+                                key extends "parentJoins" ?
+                                JoinCollectionUtil.ReplaceColumnType<
+                                    JoinCollectionUtil.ReplaceNullable<
+                                        DataT["parentJoins"],
+                                        TableAliasT,
+                                        false
+                                    >,
+                                    TableAliasT,
+                                    ColumnNameT,
+                                    Exclude<
+                                        TypeT,
+                                        null|undefined
+                                    >
+                                > :
+                                DataT[key]
+                            )
+                        }> :
+                        SelectBuilder<{
+                            readonly [key in keyof DataT] : (
+                                key extends "joins" ?
+                                JoinCollectionUtil.ReplaceColumnType<
+                                    DataT["joins"],
+                                    TableAliasT,
+                                    ColumnNameT,
+                                    Exclude<
+                                        TypeT,
+                                        null|undefined
+                                    >
+                                > :
+                                key extends "selects" ?
+                                SelectCollectionUtil.ReplaceSelectType<
+                                    DataT["selects"],
+                                    TableAliasT,
+                                    ColumnNameT,
+                                    Exclude<
+                                        TypeT,
+                                        null|undefined
+                                    >
+                                > :
+                                key extends "parentJoins" ?
+                                JoinCollectionUtil.ReplaceColumnType<
+                                    DataT["parentJoins"],
+                                    TableAliasT,
+                                    ColumnNameT,
+                                    Exclude<
+                                        TypeT,
+                                        null|undefined
+                                    >
+                                > :
+                                DataT[key]
+                            )
+                        }>
+                    ) :
                     (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
             ) :
             never

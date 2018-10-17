@@ -613,7 +613,22 @@ class SelectBuilder {
         this.assertAfterFrom();
         this.assertBeforeUnion();
         const column = type_narrow_delegate_1.TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate);
-        return this.narrow(new column_1.Column(column.tableAlias, column.name, sd.notNullable(column.assertDelegate), column.subTableName, column.isSelectReference), e.isNotNull(column));
+        const inJoin = join_collection_1.JoinCollectionUtil.findWithTableAlias(this.data.joins, column.tableAlias);
+        const inParentJoin = join_collection_1.JoinCollectionUtil.findWithTableAlias(this.data.parentJoins, column.tableAlias);
+        const narrowed = this.narrow(new column_1.Column(column.tableAlias, column.name, sd.notNullable(column.assertDelegate), column.subTableName, column.isSelectReference), e.isNotNull(column));
+        if (inJoin != undefined &&
+            sd.isNullable(inJoin.table.columns[column.name].assertDelegate) &&
+            !join_collection_1.JoinCollectionUtil.hasRightJoin(this.data.joins)) {
+            return new SelectBuilder(Object.assign({}, narrowed.data, { joins: join_collection_1.JoinCollectionUtil.replaceNullable(this.data.joins, column.tableAlias, false) }), narrowed.extraData);
+        }
+        else if (inParentJoin != undefined &&
+            sd.isNullable(inParentJoin.table.columns[column.name].assertDelegate) &&
+            !join_collection_1.JoinCollectionUtil.hasRightJoin(this.data.parentJoins)) {
+            return new SelectBuilder(Object.assign({}, narrowed.data, { parentJoins: join_collection_1.JoinCollectionUtil.replaceNullable(this.data.parentJoins, column.tableAlias, false) }), narrowed.extraData);
+        }
+        else {
+            return narrowed;
+        }
     }
     ;
     whereIsNull(typeNarrowDelegate) {

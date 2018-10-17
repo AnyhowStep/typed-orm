@@ -29,6 +29,14 @@ export namespace JoinCollectionUtil {
             )
         }[TupleKeys<JoinsT>]
     );
+    export function findWithTableAlias<
+        JoinsT extends JoinCollection, TableAliasT extends string
+    > (
+        joins : JoinsT,
+        tableAlias : TableAliasT
+    ) : AnyJoin|undefined {
+        return joins.find(j => j.table.alias == tableAlias) as any;
+    }
     export type IndexWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string> = (
         {
             [index in TupleKeys<JoinsT>] : (
@@ -1066,4 +1074,66 @@ export namespace JoinCollectionUtil {
             );
         }) as any;
     };
+
+    export type ReplaceNullable<
+        JoinsT extends JoinCollection,
+        TableAliasT extends string,
+        NullableT extends boolean
+    > = (
+        {
+            [index in TupleKeys<JoinsT>] : (
+                JoinUtil.ReplaceNullable<
+                    Extract<JoinsT[index], AnyJoin>,
+                    TableAliasT,
+                    NullableT
+                >
+            )
+        } &
+        {
+            "0" : (
+                JoinUtil.ReplaceNullable<
+                    JoinsT[0],
+                    TableAliasT,
+                    NullableT
+                >
+            ),
+            length : TupleLength<JoinsT>
+        } &
+        AnyJoin[]
+    );
+    export function replaceNullable<
+        JoinsT extends JoinCollection,
+        TableAliasT extends string,
+        NullableT extends boolean
+    > (
+        joins : JoinsT,
+        tableAlias : TableAliasT,
+        nullable : NullableT
+    ) : (
+        ReplaceNullable<
+            JoinsT,
+            TableAliasT,
+            NullableT
+        >
+    ) {
+        return joins.map((join) => {
+            return JoinUtil.replaceNullable(
+                join,
+                tableAlias,
+                nullable
+            );
+        }) as any;
+    };
+
+    //The very from Join is in the FROM clause
+    //It will never be nullable unless a RIGHT JOIN was used.
+    export type HasRightJoin<JoinsT extends JoinCollection> = (
+        JoinsT[0]["nullable"] extends true ?
+            true : false
+    );
+    export function hasRightJoin<JoinsT extends JoinCollection> (
+        joins : JoinsT
+    ) : HasRightJoin<JoinsT> {
+        return joins[0].nullable as any;
+    }
 }

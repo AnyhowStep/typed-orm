@@ -14,6 +14,10 @@ const _0 = undefined;
 _0;
 var JoinCollectionUtil;
 (function (JoinCollectionUtil) {
+    function findWithTableAlias(joins, tableAlias) {
+        return joins.find(j => j.table.alias == tableAlias);
+    }
+    JoinCollectionUtil.findWithTableAlias = findWithTableAlias;
     function toTableCollection(joins) {
         return joins.reduce((memo, join) => {
             memo[join.table.alias] = join.table;
@@ -183,5 +187,16 @@ var JoinCollectionUtil;
     }
     JoinCollectionUtil.replaceColumnType = replaceColumnType;
     ;
+    function replaceNullable(joins, tableAlias, nullable) {
+        return joins.map((join) => {
+            return join_1.JoinUtil.replaceNullable(join, tableAlias, nullable);
+        });
+    }
+    JoinCollectionUtil.replaceNullable = replaceNullable;
+    ;
+    function hasRightJoin(joins) {
+        return joins[0].nullable;
+    }
+    JoinCollectionUtil.hasRightJoin = hasRightJoin;
 })(JoinCollectionUtil = exports.JoinCollectionUtil || (exports.JoinCollectionUtil = {}));
 //# sourceMappingURL=util.js.map

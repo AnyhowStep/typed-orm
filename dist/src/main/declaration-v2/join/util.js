@@ -17,5 +17,14 @@ var JoinUtil;
         }
     }
     JoinUtil.replaceColumnType = replaceColumnType;
+    function replaceNullable(join, tableAlias, nullable) {
+        if (join.table.alias == tableAlias) {
+            return new join_1.Join(join.joinType, join.table, join.columns, nullable, join.from, join.to);
+        }
+        else {
+            return join;
+        }
+    }
+    JoinUtil.replaceNullable = replaceNullable;
 })(JoinUtil = exports.JoinUtil || (exports.JoinUtil = {}));
 //# sourceMappingURL=util.js.map

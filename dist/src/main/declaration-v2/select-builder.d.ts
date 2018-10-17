@@ -36,7 +36,7 @@ import { TupleWConcat, Tuple, TupleKeys, TupleKeysUpTo, TupleLength } from "./tu
 import { AnyJoin } from "./join";
 import { SelectBuilderUtil } from "./select-builder-util";
 import { JoinDeclarationUtil, JoinDeclarationUsage } from "./join-declaration";
-import { ColumnReferencesUtil } from "./column-references";
+import { ColumnReferences, ColumnReferencesUtil } from "./column-references";
 import { ColumnCollectionUtil } from "./column-collection";
 import { Table, AnyTable, UniqueKeys, MinimalUniqueKeys } from "./table";
 export declare const ARBITRARY_ROW_COUNT = 999999999;
@@ -520,7 +520,7 @@ export declare class SelectBuilder<DataT extends SelectBuilderData> implements Q
         aggregateDelegate: any;
         hasParentJoins: any;
         parentJoins: any;
-    }>, whereDelegate: WhereDelegateT): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"] ? this : invalid.E4<"WHERE expression", Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"], "contains some invalid columns; only the following are allowed:", WhereDelegateColumnReferences<SelectBuilder<DataT>>>);
+    }>, whereDelegate: WhereDelegateT): (WhereDelegateColumnReferences<SelectBuilder<DataT>> extends Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"] ? this : invalid.E2<"WHERE expression contains some invalid columns; the following are not allowed:", Exclude<ColumnReferencesUtil.Columns<Extract<Extract<ReturnType<WhereDelegateT>, AnyExpr>["usedReferences"], ColumnReferences>>, ColumnReferencesUtil.Columns<WhereDelegateColumnReferences<SelectBuilder<DataT>>>>>);
     andWhere<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>>(this: SelectBuilder<{
         hasSelect: any;
         hasFrom: true;
