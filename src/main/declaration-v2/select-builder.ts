@@ -1652,20 +1652,16 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             e.isNotNull(column)
         ) as any;
 
-        const joins = JoinCollectionUtil.hasRightJoin(this.data.joins) ?
-            this.data.joins :
-            JoinCollectionUtil.replaceNullable(
-                this.data.joins,
-                column.tableAlias,
-                false
-            );
-        const parentJoins = JoinCollectionUtil.hasRightJoin(this.data.parentJoins) ?
-            this.data.parentJoins :
-            JoinCollectionUtil.replaceNullable(
-                this.data.parentJoins,
-                column.tableAlias,
-                false
-            );
+        const joins = JoinCollectionUtil.replaceNullable(
+            this.data.joins,
+            column.tableAlias,
+            false
+        );
+        const parentJoins = JoinCollectionUtil.replaceNullable(
+            this.data.parentJoins,
+            column.tableAlias,
+            false
+        );
         return new SelectBuilder(
             {
                 ...narrowed.data,

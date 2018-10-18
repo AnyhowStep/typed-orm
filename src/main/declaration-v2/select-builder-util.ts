@@ -284,31 +284,19 @@ export namespace SelectBuilderUtil {
                     SelectBuilder<{
                         readonly [key in keyof DataT] : (
                             key extends "joins" ?
-                            (
-                                JoinCollectionUtil.HasRightJoin<DataT["joins"]> extends true ?
-                                    JoinCollectionUtil.ReplaceColumnType<
-                                        DataT["joins"],
-                                        TableAliasT,
-                                        ColumnNameT,
-                                        Exclude<
-                                            TypeT,
-                                            null|undefined
-                                        >
-                                    > :
-                                    JoinCollectionUtil.ReplaceColumnType<
-                                        JoinCollectionUtil.ReplaceNullable<
-                                            DataT["joins"],
-                                            TableAliasT,
-                                            false
-                                        >,
-                                        TableAliasT,
-                                        ColumnNameT,
-                                        Exclude<
-                                            TypeT,
-                                            null|undefined
-                                        >
-                                    >
-                            ) :
+                            JoinCollectionUtil.ReplaceColumnType<
+                                JoinCollectionUtil.ReplaceNullable<
+                                    DataT["joins"],
+                                    TableAliasT,
+                                    false
+                                >,
+                                TableAliasT,
+                                ColumnNameT,
+                                Exclude<
+                                    TypeT,
+                                    null|undefined
+                                >
+                            > :
                             key extends "selects" ?
                             SelectCollectionUtil.ReplaceSelectType<
                                 DataT["selects"],
@@ -320,31 +308,19 @@ export namespace SelectBuilderUtil {
                                 >
                             > :
                             key extends "parentJoins" ?
-                            (
-                                JoinCollectionUtil.HasRightJoin<DataT["parentJoins"]> extends true ?
-                                    JoinCollectionUtil.ReplaceColumnType<
-                                        DataT["parentJoins"],
-                                        TableAliasT,
-                                        ColumnNameT,
-                                        Exclude<
-                                            TypeT,
-                                            null|undefined
-                                        >
-                                    > :
-                                    JoinCollectionUtil.ReplaceColumnType<
-                                        JoinCollectionUtil.ReplaceNullable<
-                                            DataT["parentJoins"],
-                                            TableAliasT,
-                                            false
-                                        >,
-                                        TableAliasT,
-                                        ColumnNameT,
-                                        Exclude<
-                                            TypeT,
-                                            null|undefined
-                                        >
-                                    >
-                            ) :
+                            JoinCollectionUtil.ReplaceColumnType<
+                                JoinCollectionUtil.ReplaceNullable<
+                                    DataT["parentJoins"],
+                                    TableAliasT,
+                                    false
+                                >,
+                                TableAliasT,
+                                ColumnNameT,
+                                Exclude<
+                                    TypeT,
+                                    null|undefined
+                                >
+                            > :
                             DataT[key]
                         )
                     }> :

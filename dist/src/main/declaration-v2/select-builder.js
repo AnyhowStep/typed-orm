@@ -614,12 +614,8 @@ class SelectBuilder {
         this.assertBeforeUnion();
         const column = type_narrow_delegate_1.TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate);
         const narrowed = this.narrow(new column_1.Column(column.tableAlias, column.name, sd.notNullable(column.assertDelegate), column.subTableName, column.isSelectReference), e.isNotNull(column));
-        const joins = join_collection_1.JoinCollectionUtil.hasRightJoin(this.data.joins) ?
-            this.data.joins :
-            join_collection_1.JoinCollectionUtil.replaceNullable(this.data.joins, column.tableAlias, false);
-        const parentJoins = join_collection_1.JoinCollectionUtil.hasRightJoin(this.data.parentJoins) ?
-            this.data.parentJoins :
-            join_collection_1.JoinCollectionUtil.replaceNullable(this.data.parentJoins, column.tableAlias, false);
+        const joins = join_collection_1.JoinCollectionUtil.replaceNullable(this.data.joins, column.tableAlias, false);
+        const parentJoins = join_collection_1.JoinCollectionUtil.replaceNullable(this.data.parentJoins, column.tableAlias, false);
         return new SelectBuilder(Object.assign({}, narrowed.data, { joins: joins, parentJoins: parentJoins }), narrowed.extraData);
     }
     ;
