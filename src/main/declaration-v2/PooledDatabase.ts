@@ -778,7 +778,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
                             >
                         > &
                         {
-                            [columnName in (
+                            readonly [columnName in (
                                 {
                                     [columnName in keyof ReturnType<DelegateT>] : (
                                         undefined extends ReturnType<DelegateT>[columnName] ?
@@ -849,11 +849,12 @@ export class PooledDatabase extends mysql.PooledDatabase {
         }) as any;
     }
     async updateAndFetchOneById<
-        TableT extends AnyTable & { data : { id : Column<any, any, number> } }
+        TableT extends AnyTable & { data : { id : Column<any, any, number> } },
+        DelegateT extends UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>
     > (
         table : TableT,
         id : number,
-        delegate : UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>
+        delegate : DelegateT
     ) : (
         Promise<
             UpdateResult &
@@ -866,7 +867,22 @@ export class PooledDatabase extends mysql.PooledDatabase {
                             SelectCollectionUtil.ToColumnReferences<
                                 SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]
                             >
-                        >
+                        > &
+                        {
+                            readonly [columnName in (
+                                {
+                                    [columnName in keyof ReturnType<DelegateT>] : (
+                                        undefined extends ReturnType<DelegateT>[columnName] ?
+                                        never :
+                                        columnName
+                                    )
+                                }[keyof ReturnType<DelegateT>]
+                            )] : (
+                                ReturnType<DelegateT>[columnName] extends AnyRawExpr ?
+                                RawExprUtil.Type<ReturnType<DelegateT>[columnName]> :
+                                never
+                            )
+                        }
                     )
                 }
             )

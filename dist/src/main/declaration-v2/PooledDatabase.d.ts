@@ -130,7 +130,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
     }, DelegateT extends UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>>(table: TableT, id: number, delegate: DelegateT): (Promise<UpdateResult & ({
         foundRowCount: 1;
         row: (FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>> & {
-            [columnName in ({
+            readonly [columnName in ({
                 [columnName in keyof ReturnType<DelegateT>]: (undefined extends ReturnType<DelegateT>[columnName] ? never : columnName);
             }[keyof ReturnType<DelegateT>])]: (ReturnType<DelegateT>[columnName] extends AnyRawExpr ? RawExprUtil.Type<ReturnType<DelegateT>[columnName]> : never);
         });
@@ -142,9 +142,13 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         data: {
             id: Column<any, any, number>;
         };
-    }>(table: TableT, id: number, delegate: UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>): (Promise<UpdateResult & ({
+    }, DelegateT extends UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>>(table: TableT, id: number, delegate: DelegateT): (Promise<UpdateResult & ({
         foundRowCount: 1;
-        row: (FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>>);
+        row: (FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>> & {
+            readonly [columnName in ({
+                [columnName in keyof ReturnType<DelegateT>]: (undefined extends ReturnType<DelegateT>[columnName] ? never : columnName);
+            }[keyof ReturnType<DelegateT>])]: (ReturnType<DelegateT>[columnName] extends AnyRawExpr ? RawExprUtil.Type<ReturnType<DelegateT>[columnName]> : never);
+        });
     })>);
     updateZeroOrOneByUniqueKey<TableT extends AnyTable & {
         data: {
