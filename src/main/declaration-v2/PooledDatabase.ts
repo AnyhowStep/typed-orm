@@ -18,7 +18,7 @@ import {UniqueKeyCollection} from "./unique-key-collection";
 import * as informationSchema from "./information-schema";
 import {PolymorphicRawInsertValueRow, polymorphicInsertValueAndFetch} from "./polymorphic-insert-value-and-fetch";
 import {PolymorphicUpdateAssignmentCollectionDelegate, polymorphicUpdateZeroOrOneByUniqueKey} from "./polymorphic-update-zero-or-one-by-unique-key";
-import {RawExprUtil} from "./raw-expr";
+import {AnyRawExpr, RawExprUtil} from "./raw-expr";
 import {LogData, LogDataUtil} from "./log";
 import {ColumnCollectionUtil} from "./column-collection";
 import {SelectValue} from "./select-value";
@@ -758,11 +758,12 @@ export class PooledDatabase extends mysql.PooledDatabase {
         }
     */
     updateAndFetchZeroOrOneById<
-        TableT extends AnyTable & { data : { id : Column<any, any, number> } }
+        TableT extends AnyTable & { data : { id : Column<any, any, number> } },
+        DelegateT extends UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>
     > (
         table : TableT,
         id : number,
-        delegate : UpdateAssignmentReferencesDelegate<ConvenientUpdateSelectBuilder<TableT>>
+        delegate : DelegateT
     ) : (
         Promise<
             UpdateResult &
@@ -775,7 +776,22 @@ export class PooledDatabase extends mysql.PooledDatabase {
                             SelectCollectionUtil.ToColumnReferences<
                                 SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]
                             >
-                        >
+                        > &
+                        {
+                            [columnName in (
+                                {
+                                    [columnName in keyof ReturnType<DelegateT>] : (
+                                        undefined extends ReturnType<DelegateT>[columnName] ?
+                                        never :
+                                        columnName
+                                    )
+                                }[keyof ReturnType<DelegateT>]
+                            )] : (
+                                ReturnType<DelegateT>[columnName] extends AnyRawExpr ?
+                                RawExprUtil.Type<ReturnType<DelegateT>[columnName]> :
+                                never
+                            )
+                        }
                     )
                 } |
                 {
