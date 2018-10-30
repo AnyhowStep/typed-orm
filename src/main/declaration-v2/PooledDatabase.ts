@@ -1300,7 +1300,10 @@ export class PooledDatabase extends mysql.PooledDatabase {
         data : DataT,
         entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
         insertIfDifferentRow : LogDataUtil.InsertIfDifferentRow<DataT>,
-        onFirstDelegate : (db : PooledDatabase, row : LogDataUtil.InsertIfDifferentRow<DataT>) => Promise<RawInsertValueRow<DataT["table"]>>
+        onFirstDelegate : (args : {
+            db : PooledDatabase,
+            row : LogDataUtil.EntityIdentifier<DataT> & LogDataUtil.InsertIfDifferentRow<DataT>
+        }) => Promise<RawInsertValueRow<DataT["table"]>>
     ) : Promise<{
         latest : TableRow<DataT["table"]>,
         wasInserted : boolean,

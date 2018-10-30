@@ -193,8 +193,13 @@ var LogDataUtil;
                 return insertIfDifferentAndFetch(db, data, entityIdentifier, insertIfDifferentRow);
             }
             else {
+                entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entityIdentifier`, entityIdentifier);
+                insertIfDifferentRow = insertIfDifferentRowAssertDelegate(data)(`${data.table.alias} insertIfDifferentRow`, insertIfDifferentRow);
                 return {
-                    latest: yield db.insertValueAndFetch(data.table, yield onFirstDelegate(db, insertIfDifferentRow)),
+                    latest: yield db.insertValueAndFetch(data.table, yield onFirstDelegate({
+                        db,
+                        row: Object.assign({}, entityIdentifier, insertIfDifferentRow),
+                    })),
                     wasInserted: true,
                 };
             }

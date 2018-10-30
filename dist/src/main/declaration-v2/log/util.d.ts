@@ -44,7 +44,10 @@ export declare namespace LogDataUtil {
         latest: TableRow<DataT["table"]>;
         wasInserted: boolean;
     }>;
-    function insertIfDifferentOrFirstAndFetch<DataT extends LogData>(db: PooledDatabase, data: DataT, entityIdentifier: EntityIdentifier<DataT>, insertIfDifferentRow: InsertIfDifferentRow<DataT>, onFirstDelegate: (db: PooledDatabase, row: InsertIfDifferentRow<DataT>) => Promise<RawInsertValueRow<DataT["table"]>>): Promise<{
+    function insertIfDifferentOrFirstAndFetch<DataT extends LogData>(db: PooledDatabase, data: DataT, entityIdentifier: EntityIdentifier<DataT>, insertIfDifferentRow: InsertIfDifferentRow<DataT>, onFirstDelegate: (args: {
+        db: PooledDatabase;
+        row: EntityIdentifier<DataT> & InsertIfDifferentRow<DataT>;
+    }) => Promise<RawInsertValueRow<DataT["table"]>>): Promise<{
         latest: TableRow<DataT["table"]>;
         wasInserted: boolean;
     }>;

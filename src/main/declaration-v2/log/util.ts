@@ -359,7 +359,10 @@ export namespace LogDataUtil {
         data : DataT,
         entityIdentifier : EntityIdentifier<DataT>,
         insertIfDifferentRow : InsertIfDifferentRow<DataT>,
-        onFirstDelegate : (db : PooledDatabase, row : InsertIfDifferentRow<DataT>) => Promise<RawInsertValueRow<DataT["table"]>>
+        onFirstDelegate : (args : {
+            db : PooledDatabase,
+            row : EntityIdentifier<DataT> & InsertIfDifferentRow<DataT>
+        }) => Promise<RawInsertValueRow<DataT["table"]>>
     ) : Promise<{
         latest : TableRow<DataT["table"]>,
         wasInserted : boolean,
@@ -373,10 +376,24 @@ export namespace LogDataUtil {
                     insertIfDifferentRow
                 );
             } else {
+                entityIdentifier = entityIdentifierAssertDelegate(data)(
+                    `${data.table.alias} entityIdentifier`,
+                    entityIdentifier
+                );
+                insertIfDifferentRow = insertIfDifferentRowAssertDelegate(data)(
+                    `${data.table.alias} insertIfDifferentRow`,
+                    insertIfDifferentRow
+                );
                 return {
                     latest : await db.insertValueAndFetch(
                         data.table,
-                        await onFirstDelegate(db, insertIfDifferentRow)
+                        await onFirstDelegate({
+                            db,
+                            row : {
+                                ...(entityIdentifier as any),
+                                ...(insertIfDifferentRow as any),
+                            },
+                        })
                     ) as any,
                     wasInserted : true,
                 };
