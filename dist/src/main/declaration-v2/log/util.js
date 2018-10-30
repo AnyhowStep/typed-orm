@@ -18,6 +18,7 @@ const column_references_1 = require("../column-references");
 const coalesce_1 = require("../expression/coalesce");
 const and_1 = require("../expression/logical-connective/and");
 const type_check_1 = require("../expression/type-check");
+//import {RawInsertValueRow} from "../insert-value-builder";
 const mysql = require("typed-mysql");
 var LogDataUtil;
 (function (LogDataUtil) {
@@ -178,28 +179,26 @@ var LogDataUtil;
         }));
     }
     LogDataUtil.insertIfDifferentAndFetch = insertIfDifferentAndFetch;
-    /*
-        If a row exists for the entity,
-        then it behaves the same as insertIfDifferentAndFetch()
-
-        If a row *does not* exist for the entity,
-        then it will try to insert the row;
-        this requires all trackable fields to be set or
-        it will throw an error.
-    */
-    function insertIfDifferentOrFirstAndFetch(db, data, entityIdentifier, insertIfDifferentRow, onFirstDelegate) {
+    function insertIfDifferentOrFirstAndFetch(args) {
+        let { db, data, entityIdentifier, newValues, onFirstDelegate } = args;
         return db.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
-            if (yield rowsExistForEntity(db, data, entityIdentifier)) {
-                return insertIfDifferentAndFetch(db, data, entityIdentifier, insertIfDifferentRow);
+            if (data.defaultRowDelegate != undefined ||
+                (yield rowsExistForEntity(db, data, entityIdentifier))) {
+                return insertIfDifferentAndFetch(db, data, entityIdentifier, newValues);
             }
             else {
-                entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entityIdentifier`, entityIdentifier);
-                insertIfDifferentRow = insertIfDifferentRowAssertDelegate(data)(`${data.table.alias} insertIfDifferentRow`, insertIfDifferentRow);
+                if (onFirstDelegate == undefined) {
+                    throw new Error(`No log exists for ${data.table.alias} and no default row exists; but no initialization method defined`);
+                }
+                entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
+                const fullOverwriteTrackable = fullOverwriteTrackableAssertDelegate(data)(`${data.table.alias} initial value`, newValues);
+                const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(`${data.table.alias} do not copy`, newValues);
+                const doNotModify = doNotModifyOnTrackableChangedAssertDelegate(data)(`${data.table.alias} do not modify`, yield onFirstDelegate({
+                    db,
+                    entityIdentifier
+                }));
                 return {
-                    latest: yield db.insertValueAndFetch(data.table, yield onFirstDelegate({
-                        db,
-                        row: Object.assign({}, entityIdentifier, insertIfDifferentRow),
-                    })),
+                    latest: yield db.insertValueAndFetch(data.table, Object.assign({}, entityIdentifier, fullOverwriteTrackable, doNotCopy, doNotModify)),
                     wasInserted: true,
                 };
             }

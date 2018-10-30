@@ -736,8 +736,8 @@ class PooledDatabase extends mysql.PooledDatabase {
     insertIfDifferentAndFetch(data, entityIdentifier, insertIfDifferentRow) {
         return log_1.LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, insertIfDifferentRow);
     }
-    insertIfDifferentOrFirstAndFetch(data, entityIdentifier, insertIfDifferentRow, onFirstDelegate) {
-        return log_1.LogDataUtil.insertIfDifferentOrFirstAndFetch(this, data, entityIdentifier, insertIfDifferentRow, onFirstDelegate);
+    insertIfDifferentOrFirstAndFetch(args) {
+        return log_1.LogDataUtil.insertIfDifferentOrFirstAndFetch(Object.assign({}, args, { db: this }));
     }
     latestValueExpression(data, entity, valueDelegate, defaultValueDelegate) {
         return log_1.LogDataUtil.latestValueExpression(this, data, entity, valueDelegate, defaultValueDelegate);

@@ -1,4 +1,5 @@
 import * as sd from "schema-decorator";
+import {AnyDefaultRowDelegate} from "./log-builder";
 import {LogData} from "./log-data";
 import {PooledDatabase} from "../PooledDatabase";
 import {ColumnCollectionUtil} from "../column-collection";
@@ -12,7 +13,7 @@ import {coalesce} from "../expression/coalesce";
 import {and} from "../expression/logical-connective/and";
 import {isNotNullAndEq} from "../expression/type-check";
 import {SelectBuilderUtil} from "../select-builder-util";
-import {RawInsertValueRow} from "../insert-value-builder";
+//import {RawInsertValueRow} from "../insert-value-builder";
 import * as mysql from "typed-mysql";
 
 export namespace LogDataUtil {
@@ -343,57 +344,96 @@ export namespace LogDataUtil {
         });
     }
 
-    /*
-        If a row exists for the entity,
-        then it behaves the same as insertIfDifferentAndFetch()
-
-        If a row *does not* exist for the entity,
-        then it will try to insert the row;
-        this requires all trackable fields to be set or
-        it will throw an error.
-    */
     export function insertIfDifferentOrFirstAndFetch<
         DataT extends LogData
     > (
-        db : PooledDatabase,
-        data : DataT,
-        entityIdentifier : EntityIdentifier<DataT>,
-        insertIfDifferentRow : InsertIfDifferentRow<DataT>,
-        onFirstDelegate : (args : {
-            db : PooledDatabase,
-            row : EntityIdentifier<DataT> & InsertIfDifferentRow<DataT>
-        }) => Promise<RawInsertValueRow<DataT["table"]>>
+        args : (
+            DataT extends  & { defaultRowDelegate : AnyDefaultRowDelegate } ?
+            {
+                db : PooledDatabase,
+                data : DataT,
+                entityIdentifier : EntityIdentifier<DataT>,
+                newValues : InsertIfDifferentRow<DataT>,
+                onFirstDelegate? : undefined,
+            } :
+            (
+                string extends keyof DoNotModifyOnTrackableChanged<DataT> ?
+                {
+                    db : PooledDatabase,
+                    data : DataT,
+                    entityIdentifier : EntityIdentifier<DataT>,
+                    newValues : InsertIfDifferentRow<DataT>,
+                    onFirstDelegate : (args : {
+                        db : PooledDatabase,
+                        entityIdentifier : EntityIdentifier<DataT>,
+                    }) => (
+                        Promise<DoNotModifyOnTrackableChanged<DataT>>|
+                        DoNotModifyOnTrackableChanged<DataT>
+                    )
+                } :
+                {
+                    db : PooledDatabase,
+                    data : DataT,
+                    entityIdentifier : EntityIdentifier<DataT>,
+                    newValues : InsertIfDifferentRow<DataT>,
+                    onFirstDelegate? : undefined,
+                }
+            )
+        )
     ) : Promise<{
         latest : TableRow<DataT["table"]>,
         wasInserted : boolean,
     }> {
+        let {
+            db,
+            data,
+            entityIdentifier,
+            newValues,
+            onFirstDelegate
+        } = args;
         return db.transactionIfNotInOne(async (db) => {
-            if (await rowsExistForEntity(db, data, entityIdentifier)) {
+            if (
+                data.defaultRowDelegate != undefined ||
+                await rowsExistForEntity(db, data, entityIdentifier)
+            ) {
                 return insertIfDifferentAndFetch(
                     db,
                     data,
                     entityIdentifier,
-                    insertIfDifferentRow
+                    newValues
                 );
             } else {
+                if (onFirstDelegate == undefined) {
+                    throw new Error(`No log exists for ${data.table.alias} and no default row exists; but no initialization method defined`);
+                }
                 entityIdentifier = entityIdentifierAssertDelegate(data)(
-                    `${data.table.alias} entityIdentifier`,
+                    `${data.table.alias} entity identifier`,
                     entityIdentifier
                 );
-                insertIfDifferentRow = insertIfDifferentRowAssertDelegate(data)(
-                    `${data.table.alias} insertIfDifferentRow`,
-                    insertIfDifferentRow
+                const fullOverwriteTrackable = fullOverwriteTrackableAssertDelegate(data)(
+                    `${data.table.alias} initial value`,
+                    newValues
+                );
+                const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(
+                    `${data.table.alias} do not copy`,
+                    newValues
+                );
+                const doNotModify = doNotModifyOnTrackableChangedAssertDelegate(data)(
+                    `${data.table.alias} do not modify`,
+                    await (onFirstDelegate as any)({
+                        db,
+                        entityIdentifier
+                    })
                 );
                 return {
                     latest : await db.insertValueAndFetch(
                         data.table,
-                        await onFirstDelegate({
-                            db,
-                            row : {
-                                ...(entityIdentifier as any),
-                                ...(insertIfDifferentRow as any),
-                            },
-                        })
+                        {
+                            ...(entityIdentifier as any),
+                            ...(fullOverwriteTrackable as any),
+                            ...(doNotCopy as any),
+                            ...(doNotModify as any),
+                        }
                     ) as any,
                     wasInserted : true,
                 };

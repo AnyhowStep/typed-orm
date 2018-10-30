@@ -26,6 +26,7 @@ import {ColumnReferencesUtil} from "./column-references";
 import {TableParentCollectionUtil} from "./table-parent-collection";
 import {Tuple, TupleKeys} from "./tuple";
 import {ASCENDING} from "./order-by";
+import {AnyDefaultRowDelegate} from "./log";
 
 import {AliasedTable} from "./aliased-table";;
 import {AliasedExpr, AnyAliasedExpr} from "./aliased-expr";
@@ -1297,24 +1298,44 @@ export class PooledDatabase extends mysql.PooledDatabase {
         return LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, insertIfDifferentRow);
     }
     insertIfDifferentOrFirstAndFetch<DataT extends LogData> (
-        data : DataT,
-        entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
-        insertIfDifferentRow : LogDataUtil.InsertIfDifferentRow<DataT>,
-        onFirstDelegate : (args : {
-            db : PooledDatabase,
-            row : LogDataUtil.EntityIdentifier<DataT> & LogDataUtil.InsertIfDifferentRow<DataT>
-        }) => Promise<RawInsertValueRow<DataT["table"]>>
+        args : (
+            DataT extends  & { defaultRowDelegate : AnyDefaultRowDelegate } ?
+            {
+                data : DataT,
+                entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
+                newValues : LogDataUtil.InsertIfDifferentRow<DataT>,
+                onFirstDelegate? : undefined,
+            } :
+            (
+                string extends keyof LogDataUtil.DoNotModifyOnTrackableChanged<DataT> ?
+                {
+                    data : DataT,
+                    entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
+                    newValues : LogDataUtil.InsertIfDifferentRow<DataT>,
+                    onFirstDelegate : (args : {
+                        db : PooledDatabase,
+                        entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
+                    }) => (
+                        Promise<LogDataUtil.DoNotModifyOnTrackableChanged<DataT>>|
+                        LogDataUtil.DoNotModifyOnTrackableChanged<DataT>
+                    )
+                } :
+                {
+                    data : DataT,
+                    entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
+                    newValues : LogDataUtil.InsertIfDifferentRow<DataT>,
+                    onFirstDelegate? : undefined,
+                }
+            )
+        )
     ) : Promise<{
         latest : TableRow<DataT["table"]>,
         wasInserted : boolean,
     }> {
-        return LogDataUtil.insertIfDifferentOrFirstAndFetch(
-            this,
-            data,
-            entityIdentifier,
-            insertIfDifferentRow,
-            onFirstDelegate
-        );
+        return LogDataUtil.insertIfDifferentOrFirstAndFetch({
+            ...(args as any),
+            db : this
+        });
     }
     latestValueExpression<
         DataT extends LogData,

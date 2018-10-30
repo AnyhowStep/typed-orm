@@ -24,6 +24,7 @@ import { SelectValue } from "./select-value";
 import { ColumnReferencesUtil } from "./column-references";
 import { TableParentCollectionUtil } from "./table-parent-collection";
 import { Tuple, TupleKeys } from "./tuple";
+import { AnyDefaultRowDelegate } from "./log";
 import { AnyAliasedExpr } from "./aliased-expr";
 import { Column, AnyColumn } from "./column";
 import { Expr } from "./expr";
@@ -198,10 +199,27 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         latest: TableRow<DataT["table"]>;
         wasInserted: boolean;
     }>;
-    insertIfDifferentOrFirstAndFetch<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>, insertIfDifferentRow: LogDataUtil.InsertIfDifferentRow<DataT>, onFirstDelegate: (args: {
-        db: PooledDatabase;
-        row: LogDataUtil.EntityIdentifier<DataT> & LogDataUtil.InsertIfDifferentRow<DataT>;
-    }) => Promise<RawInsertValueRow<DataT["table"]>>): Promise<{
+    insertIfDifferentOrFirstAndFetch<DataT extends LogData>(args: (DataT extends {
+        defaultRowDelegate: AnyDefaultRowDelegate;
+    } ? {
+        data: DataT;
+        entityIdentifier: LogDataUtil.EntityIdentifier<DataT>;
+        newValues: LogDataUtil.InsertIfDifferentRow<DataT>;
+        onFirstDelegate?: undefined;
+    } : (string extends keyof LogDataUtil.DoNotModifyOnTrackableChanged<DataT> ? {
+        data: DataT;
+        entityIdentifier: LogDataUtil.EntityIdentifier<DataT>;
+        newValues: LogDataUtil.InsertIfDifferentRow<DataT>;
+        onFirstDelegate: (args: {
+            db: PooledDatabase;
+            entityIdentifier: LogDataUtil.EntityIdentifier<DataT>;
+        }) => (Promise<LogDataUtil.DoNotModifyOnTrackableChanged<DataT>> | LogDataUtil.DoNotModifyOnTrackableChanged<DataT>);
+    } : {
+        data: DataT;
+        entityIdentifier: LogDataUtil.EntityIdentifier<DataT>;
+        newValues: LogDataUtil.InsertIfDifferentRow<DataT>;
+        onFirstDelegate?: undefined;
+    }))): Promise<{
         latest: TableRow<DataT["table"]>;
         wasInserted: boolean;
     }>;
