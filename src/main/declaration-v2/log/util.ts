@@ -1,5 +1,4 @@
 import * as sd from "schema-decorator";
-import {AnyDefaultRowDelegate} from "./log-builder";
 import {LogData} from "./log-data";
 import {PooledDatabase} from "../PooledDatabase";
 import {ColumnCollectionUtil} from "../column-collection";
@@ -134,7 +133,8 @@ export namespace LogDataUtil {
                     (
                         (keyof DataT["doNotCopyOnTrackableChanged"])|
                         (keyof DataT["isTrackable"])|
-                        (keyof DataT["entityIdentifier"])
+                        (keyof DataT["entityIdentifier"])|
+                        (keyof DataT["table"]["data"]["isGenerated"])
                     )
                 >,
                 string
@@ -151,6 +151,7 @@ export namespace LogDataUtil {
             Object.keys(data.doNotCopyOnTrackableChanged)
                 .concat(...Object.keys(data.isTrackable))
                 .concat(...Object.keys(data.entityIdentifier))
+                .concat(...Object.keys(data.table.data.isGenerated))
         );
         return sd.schema(
             ...Object.keys(columnCollection)
@@ -347,50 +348,30 @@ export namespace LogDataUtil {
     export function insertIfDifferentOrFirstAndFetch<
         DataT extends LogData
     > (
-        args : (
-            DataT extends  & { defaultRowDelegate : AnyDefaultRowDelegate } ?
-            {
+        db : PooledDatabase,
+        data : DataT,
+        entityIdentifier : EntityIdentifier<DataT>,
+        insertIfDifferentRow : InsertIfDifferentRow<DataT>,
+        //TODO Find a way to enforce delegate
+        //only if no defaultRowDelegate and there are fields that cannot
+        //be modified when trackables are changed
+        onFirstDelegate : (
+            /*DataT extends  & { defaultRowDelegate : AnyDefaultRowDelegate } ?
+            undefined :
+            keyof DoNotModifyOnTrackableChanged<DataT> extends never ?
+            undefined :*/
+            (args : {
                 db : PooledDatabase,
-                data : DataT,
                 entityIdentifier : EntityIdentifier<DataT>,
-                newValues : InsertIfDifferentRow<DataT>,
-                onFirstDelegate? : undefined,
-            } :
-            (
-                string extends keyof DoNotModifyOnTrackableChanged<DataT> ?
-                {
-                    db : PooledDatabase,
-                    data : DataT,
-                    entityIdentifier : EntityIdentifier<DataT>,
-                    newValues : InsertIfDifferentRow<DataT>,
-                    onFirstDelegate : (args : {
-                        db : PooledDatabase,
-                        entityIdentifier : EntityIdentifier<DataT>,
-                    }) => (
-                        Promise<DoNotModifyOnTrackableChanged<DataT>>|
-                        DoNotModifyOnTrackableChanged<DataT>
-                    )
-                } :
-                {
-                    db : PooledDatabase,
-                    data : DataT,
-                    entityIdentifier : EntityIdentifier<DataT>,
-                    newValues : InsertIfDifferentRow<DataT>,
-                    onFirstDelegate? : undefined,
-                }
+            }) => (
+                Promise<DoNotModifyOnTrackableChanged<DataT>>|
+                DoNotModifyOnTrackableChanged<DataT>
             )
         )
     ) : Promise<{
         latest : TableRow<DataT["table"]>,
         wasInserted : boolean,
     }> {
-        let {
-            db,
-            data,
-            entityIdentifier,
-            newValues,
-            onFirstDelegate
-        } = args;
         return db.transactionIfNotInOne(async (db) => {
             if (
                 data.defaultRowDelegate != undefined ||
@@ -400,31 +381,30 @@ export namespace LogDataUtil {
                     db,
                     data,
                     entityIdentifier,
-                    newValues
+                    insertIfDifferentRow
                 );
             } else {
-                if (onFirstDelegate == undefined) {
-                    throw new Error(`No log exists for ${data.table.alias} and no default row exists; but no initialization method defined`);
-                }
                 entityIdentifier = entityIdentifierAssertDelegate(data)(
                     `${data.table.alias} entity identifier`,
                     entityIdentifier
                 );
                 const fullOverwriteTrackable = fullOverwriteTrackableAssertDelegate(data)(
                     `${data.table.alias} initial value`,
-                    newValues
+                    insertIfDifferentRow
                 );
                 const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(
                     `${data.table.alias} do not copy`,
-                    newValues
+                    insertIfDifferentRow
                 );
-                const doNotModify = doNotModifyOnTrackableChangedAssertDelegate(data)(
-                    `${data.table.alias} do not modify`,
-                    await (onFirstDelegate as any)({
-                        db,
-                        entityIdentifier
-                    })
-                );
+                const doNotModify = (onFirstDelegate == undefined) ?
+                    {} :
+                    doNotModifyOnTrackableChangedAssertDelegate(data)(
+                        `${data.table.alias} initialization value`,
+                        await (onFirstDelegate as any)({
+                            db,
+                            entityIdentifier
+                        })
+                    );
                 return {
                     latest : await db.insertValueAndFetch(
                         data.table,

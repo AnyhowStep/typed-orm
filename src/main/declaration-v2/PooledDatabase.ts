@@ -26,7 +26,6 @@ import {ColumnReferencesUtil} from "./column-references";
 import {TableParentCollectionUtil} from "./table-parent-collection";
 import {Tuple, TupleKeys} from "./tuple";
 import {ASCENDING} from "./order-by";
-import {AnyDefaultRowDelegate} from "./log";
 
 import {AliasedTable} from "./aliased-table";;
 import {AliasedExpr, AnyAliasedExpr} from "./aliased-expr";
@@ -1298,44 +1297,36 @@ export class PooledDatabase extends mysql.PooledDatabase {
         return LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, insertIfDifferentRow);
     }
     insertIfDifferentOrFirstAndFetch<DataT extends LogData> (
-        args : (
-            DataT extends  & { defaultRowDelegate : AnyDefaultRowDelegate } ?
-            {
-                data : DataT,
+        data : DataT,
+        entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
+        insertIfDifferentRow : LogDataUtil.InsertIfDifferentRow<DataT>,
+        //TODO Find a way to enforce delegate
+        //only if no defaultRowDelegate and there are fields that cannot
+        //be modified when trackables are changed
+        onFirstDelegate : (
+            /*DataT extends  & { defaultRowDelegate : AnyDefaultRowDelegate } ?
+            undefined :
+            keyof DoNotModifyOnTrackableChanged<DataT> extends never ?
+            undefined :*/
+            (args : {
+                db : PooledDatabase,
                 entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
-                newValues : LogDataUtil.InsertIfDifferentRow<DataT>,
-                onFirstDelegate? : undefined,
-            } :
-            (
-                string extends keyof LogDataUtil.DoNotModifyOnTrackableChanged<DataT> ?
-                {
-                    data : DataT,
-                    entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
-                    newValues : LogDataUtil.InsertIfDifferentRow<DataT>,
-                    onFirstDelegate : (args : {
-                        db : PooledDatabase,
-                        entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
-                    }) => (
-                        Promise<LogDataUtil.DoNotModifyOnTrackableChanged<DataT>>|
-                        LogDataUtil.DoNotModifyOnTrackableChanged<DataT>
-                    )
-                } :
-                {
-                    data : DataT,
-                    entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
-                    newValues : LogDataUtil.InsertIfDifferentRow<DataT>,
-                    onFirstDelegate? : undefined,
-                }
+            }) => (
+                Promise<LogDataUtil.DoNotModifyOnTrackableChanged<DataT>>|
+                LogDataUtil.DoNotModifyOnTrackableChanged<DataT>
             )
         )
     ) : Promise<{
         latest : TableRow<DataT["table"]>,
         wasInserted : boolean,
     }> {
-        return LogDataUtil.insertIfDifferentOrFirstAndFetch({
-            ...(args as any),
-            db : this
-        });
+        return LogDataUtil.insertIfDifferentOrFirstAndFetch(
+            this,
+            data,
+            entityIdentifier,
+            insertIfDifferentRow,
+            onFirstDelegate
+        );
     }
     latestValueExpression<
         DataT extends LogData,

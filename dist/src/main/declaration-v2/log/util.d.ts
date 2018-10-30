@@ -1,5 +1,4 @@
 import * as sd from "schema-decorator";
-import { AnyDefaultRowDelegate } from "./log-builder";
 import { LogData } from "./log-data";
 import { PooledDatabase } from "../PooledDatabase";
 import { ColumnCollectionUtil } from "../column-collection";
@@ -29,7 +28,7 @@ export declare namespace LogDataUtil {
     });
     function doNotCopyOnTrackableChangedAssertDelegate<DataT extends LogData>(data: DataT): sd.AssertDelegate<DoNotCopyOnTrackableChanged<DataT>>;
     type DoNotModifyOnTrackableChanged<DataT extends LogData> = ({
-        [name in Extract<Exclude<keyof DataT["table"]["columns"], ((keyof DataT["doNotCopyOnTrackableChanged"]) | (keyof DataT["isTrackable"]) | (keyof DataT["entityIdentifier"]))>, string>]: (ReturnType<DataT["table"]["columns"][name]["assertDelegate"]>);
+        [name in Extract<Exclude<keyof DataT["table"]["columns"], ((keyof DataT["doNotCopyOnTrackableChanged"]) | (keyof DataT["isTrackable"]) | (keyof DataT["entityIdentifier"]) | (keyof DataT["table"]["data"]["isGenerated"]))>, string>]: (ReturnType<DataT["table"]["columns"][name]["assertDelegate"]>);
     });
     function doNotModifyOnTrackableChangedAssertDelegate<DataT extends LogData>(data: DataT): sd.AssertDelegate<DoNotModifyOnTrackableChanged<DataT>>;
     type InsertIfDifferentRow<DataT extends LogData> = (Trackable<DataT> & DoNotCopyOnTrackableChanged<DataT>);
@@ -44,30 +43,10 @@ export declare namespace LogDataUtil {
         latest: TableRow<DataT["table"]>;
         wasInserted: boolean;
     }>;
-    function insertIfDifferentOrFirstAndFetch<DataT extends LogData>(args: (DataT extends {
-        defaultRowDelegate: AnyDefaultRowDelegate;
-    } ? {
+    function insertIfDifferentOrFirstAndFetch<DataT extends LogData>(db: PooledDatabase, data: DataT, entityIdentifier: EntityIdentifier<DataT>, insertIfDifferentRow: InsertIfDifferentRow<DataT>, onFirstDelegate: ((args: {
         db: PooledDatabase;
-        data: DataT;
         entityIdentifier: EntityIdentifier<DataT>;
-        newValues: InsertIfDifferentRow<DataT>;
-        onFirstDelegate?: undefined;
-    } : (string extends keyof DoNotModifyOnTrackableChanged<DataT> ? {
-        db: PooledDatabase;
-        data: DataT;
-        entityIdentifier: EntityIdentifier<DataT>;
-        newValues: InsertIfDifferentRow<DataT>;
-        onFirstDelegate: (args: {
-            db: PooledDatabase;
-            entityIdentifier: EntityIdentifier<DataT>;
-        }) => (Promise<DoNotModifyOnTrackableChanged<DataT>> | DoNotModifyOnTrackableChanged<DataT>);
-    } : {
-        db: PooledDatabase;
-        data: DataT;
-        entityIdentifier: EntityIdentifier<DataT>;
-        newValues: InsertIfDifferentRow<DataT>;
-        onFirstDelegate?: undefined;
-    }))): Promise<{
+    }) => (Promise<DoNotModifyOnTrackableChanged<DataT>> | DoNotModifyOnTrackableChanged<DataT>))): Promise<{
         latest: TableRow<DataT["table"]>;
         wasInserted: boolean;
     }>;

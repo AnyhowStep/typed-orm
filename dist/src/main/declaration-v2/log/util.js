@@ -53,7 +53,8 @@ var LogDataUtil;
     function doNotModifyOnTrackableChangedAssertDelegate(data) {
         const columnCollection = column_collection_1.ColumnCollectionUtil.excludeColumnNames(data.table.columns, Object.keys(data.doNotCopyOnTrackableChanged)
             .concat(...Object.keys(data.isTrackable))
-            .concat(...Object.keys(data.entityIdentifier)));
+            .concat(...Object.keys(data.entityIdentifier))
+            .concat(...Object.keys(data.table.data.isGenerated)));
         return sd.schema(...Object.keys(columnCollection)
             .map((columnName) => {
             const column = columnCollection[columnName];
@@ -179,24 +180,26 @@ var LogDataUtil;
         }));
     }
     LogDataUtil.insertIfDifferentAndFetch = insertIfDifferentAndFetch;
-    function insertIfDifferentOrFirstAndFetch(args) {
-        let { db, data, entityIdentifier, newValues, onFirstDelegate } = args;
+    function insertIfDifferentOrFirstAndFetch(db, data, entityIdentifier, insertIfDifferentRow, 
+    //TODO Find a way to enforce delegate
+    //only if no defaultRowDelegate and there are fields that cannot
+    //be modified when trackables are changed
+    onFirstDelegate) {
         return db.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
             if (data.defaultRowDelegate != undefined ||
                 (yield rowsExistForEntity(db, data, entityIdentifier))) {
-                return insertIfDifferentAndFetch(db, data, entityIdentifier, newValues);
+                return insertIfDifferentAndFetch(db, data, entityIdentifier, insertIfDifferentRow);
             }
             else {
-                if (onFirstDelegate == undefined) {
-                    throw new Error(`No log exists for ${data.table.alias} and no default row exists; but no initialization method defined`);
-                }
                 entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
-                const fullOverwriteTrackable = fullOverwriteTrackableAssertDelegate(data)(`${data.table.alias} initial value`, newValues);
-                const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(`${data.table.alias} do not copy`, newValues);
-                const doNotModify = doNotModifyOnTrackableChangedAssertDelegate(data)(`${data.table.alias} do not modify`, yield onFirstDelegate({
-                    db,
-                    entityIdentifier
-                }));
+                const fullOverwriteTrackable = fullOverwriteTrackableAssertDelegate(data)(`${data.table.alias} initial value`, insertIfDifferentRow);
+                const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(`${data.table.alias} do not copy`, insertIfDifferentRow);
+                const doNotModify = (onFirstDelegate == undefined) ?
+                    {} :
+                    doNotModifyOnTrackableChangedAssertDelegate(data)(`${data.table.alias} initialization value`, yield onFirstDelegate({
+                        db,
+                        entityIdentifier
+                    }));
                 return {
                     latest: yield db.insertValueAndFetch(data.table, Object.assign({}, entityIdentifier, fullOverwriteTrackable, doNotCopy, doNotModify)),
                     wasInserted: true,

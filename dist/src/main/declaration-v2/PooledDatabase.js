@@ -736,8 +736,12 @@ class PooledDatabase extends mysql.PooledDatabase {
     insertIfDifferentAndFetch(data, entityIdentifier, insertIfDifferentRow) {
         return log_1.LogDataUtil.insertIfDifferentAndFetch(this, data, entityIdentifier, insertIfDifferentRow);
     }
-    insertIfDifferentOrFirstAndFetch(args) {
-        return log_1.LogDataUtil.insertIfDifferentOrFirstAndFetch(Object.assign({}, args, { db: this }));
+    insertIfDifferentOrFirstAndFetch(data, entityIdentifier, insertIfDifferentRow, 
+    //TODO Find a way to enforce delegate
+    //only if no defaultRowDelegate and there are fields that cannot
+    //be modified when trackables are changed
+    onFirstDelegate) {
+        return log_1.LogDataUtil.insertIfDifferentOrFirstAndFetch(this, data, entityIdentifier, insertIfDifferentRow, onFirstDelegate);
     }
     latestValueExpression(data, entity, valueDelegate, defaultValueDelegate) {
         return log_1.LogDataUtil.latestValueExpression(this, data, entity, valueDelegate, defaultValueDelegate);
