@@ -1299,7 +1299,7 @@ export class PooledDatabase extends mysql.PooledDatabase {
     insertIfDifferentOrFirstAndFetch<DataT extends LogData> (
         data : DataT,
         entityIdentifier : LogDataUtil.EntityIdentifier<DataT>,
-        insertIfDifferentOrFirstRow : LogDataUtil.InsertIfDifferentRow<DataT>
+        insertIfDifferentOrFirstRow : LogDataUtil.FullOverwriteInsertIfDifferentRow<DataT>
     ) : Promise<{
         latest : TableRow<DataT["table"]>,
         wasInserted : boolean,

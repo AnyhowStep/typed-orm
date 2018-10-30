@@ -313,7 +313,7 @@ export namespace LogDataUtil {
         db : PooledDatabase,
         data : DataT,
         entityIdentifier : EntityIdentifier<DataT>,
-        insertIfDifferentOrFirstRow : InsertIfDifferentRow<DataT>
+        insertIfDifferentOrFirstRow : FullOverwriteInsertIfDifferentRow<DataT>
     ) : Promise<{
         latest : TableRow<DataT["table"]>,
         wasInserted : boolean,
