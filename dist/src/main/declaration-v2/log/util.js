@@ -49,10 +49,25 @@ var LogDataUtil;
         }));
     }
     LogDataUtil.doNotCopyOnTrackableChangedAssertDelegate = doNotCopyOnTrackableChangedAssertDelegate;
+    function doNotModifyOnTrackableChangedAssertDelegate(data) {
+        const columnCollection = column_collection_1.ColumnCollectionUtil.excludeColumnNames(data.table.columns, Object.keys(data.doNotCopyOnTrackableChanged)
+            .concat(...Object.keys(data.isTrackable))
+            .concat(...Object.keys(data.entityIdentifier)));
+        return sd.schema(...Object.keys(columnCollection)
+            .map((columnName) => {
+            const column = columnCollection[columnName];
+            return sd.field(column.name, column.assertDelegate);
+        }));
+    }
+    LogDataUtil.doNotModifyOnTrackableChangedAssertDelegate = doNotModifyOnTrackableChangedAssertDelegate;
     function insertIfDifferentRowAssertDelegate(data) {
-        return sd.intersect(trackableAssertDelegate(data), doNotCopyOnTrackableChangedAssertDelegate(data));
+        return sd.intersect(trackableAssertDelegate(data), doNotCopyOnTrackableChangedAssertDelegate(data), doNotModifyOnTrackableChangedAssertDelegate(data));
     }
     LogDataUtil.insertIfDifferentRowAssertDelegate = insertIfDifferentRowAssertDelegate;
+    function fullOverwriteInsertIfDifferentRowAssertDelegate(data) {
+        return sd.intersect(fullOverwriteTrackableAssertDelegate(data), doNotCopyOnTrackableChangedAssertDelegate(data), doNotModifyOnTrackableChangedAssertDelegate(data));
+    }
+    LogDataUtil.fullOverwriteInsertIfDifferentRowAssertDelegate = fullOverwriteInsertIfDifferentRowAssertDelegate;
     function fetchLatestQuery(db, data, entityIdentifier) {
         entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
         return db.from(data.table)
@@ -112,8 +127,8 @@ var LogDataUtil;
         return db.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
             const trackable = trackableAssertDelegate(data)(`${data.table.alias} trackable`, insertIfDifferentRow);
             const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(`${data.table.alias} do not copy`, insertIfDifferentRow);
-            let differenceFound = false;
             const curValues = yield fetchLatestOrDefault(db, data, entityIdentifier);
+            let differenceFound = false;
             for (let columnName in trackable) {
                 const newTrackableValue = trackable[columnName];
                 if (newTrackableValue === undefined) {
@@ -172,17 +187,14 @@ var LogDataUtil;
         this requires all trackable fields to be set or
         it will throw an error.
     */
-    function insertIfDifferentOrFirstAndFetch(db, data, entityIdentifier, insertIfDifferentOrFirstRow) {
+    function insertIfDifferentOrFirstAndFetch(db, data, entityIdentifier, insertIfDifferentRow, onFirstDelegate) {
         return db.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
             if (yield rowsExistForEntity(db, data, entityIdentifier)) {
-                return insertIfDifferentAndFetch(db, data, entityIdentifier, insertIfDifferentOrFirstRow);
+                return insertIfDifferentAndFetch(db, data, entityIdentifier, insertIfDifferentRow);
             }
             else {
-                entityIdentifier = entityIdentifierAssertDelegate(data)(`${data.table.alias} entity identifier`, entityIdentifier);
-                const fullOverwriteTrackable = fullOverwriteTrackableAssertDelegate(data)(`${data.table.alias} full overwrite trackable`, insertIfDifferentOrFirstRow);
-                const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(`${data.table.alias} do not copy`, insertIfDifferentOrFirstRow);
                 return {
-                    latest: yield db.insertValueAndFetch(data.table, Object.assign({}, entityIdentifier, fullOverwriteTrackable, doNotCopy)),
+                    latest: yield db.insertValueAndFetch(data.table, yield onFirstDelegate(db, insertIfDifferentRow)),
                     wasInserted: true,
                 };
             }

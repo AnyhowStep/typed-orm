@@ -12,6 +12,7 @@ import {coalesce} from "../expression/coalesce";
 import {and} from "../expression/logical-connective/and";
 import {isNotNullAndEq} from "../expression/type-check";
 import {SelectBuilderUtil} from "../select-builder-util";
+import {RawInsertValueRow} from "../insert-value-builder";
 import * as mysql from "typed-mysql";
 
 export namespace LogDataUtil {
@@ -124,6 +125,40 @@ export namespace LogDataUtil {
                 })
         ) as any;
     }
+    export type DoNotModifyOnTrackableChanged<DataT extends LogData> = (
+        {
+            [name in Extract<
+                Exclude<
+                    keyof DataT["table"]["columns"],
+                    (
+                        (keyof DataT["doNotCopyOnTrackableChanged"])|
+                        (keyof DataT["isTrackable"])|
+                        (keyof DataT["entityIdentifier"])
+                    )
+                >,
+                string
+            >] : (
+                ReturnType<DataT["table"]["columns"][name]["assertDelegate"]>
+            )
+        }
+    );
+    export function doNotModifyOnTrackableChangedAssertDelegate<DataT extends LogData> (
+        data : DataT
+    ) : sd.AssertDelegate<DoNotModifyOnTrackableChanged<DataT>> {
+        const columnCollection = ColumnCollectionUtil.excludeColumnNames(
+            data.table.columns,
+            Object.keys(data.doNotCopyOnTrackableChanged)
+                .concat(...Object.keys(data.isTrackable))
+                .concat(...Object.keys(data.entityIdentifier))
+        );
+        return sd.schema(
+            ...Object.keys(columnCollection)
+                .map((columnName) => {
+                    const column = (columnCollection as any)[columnName];
+                    return sd.field(column.name, column.assertDelegate);
+                })
+        ) as any;
+    }
     export type InsertIfDifferentRow<DataT extends LogData> = (
         Trackable<DataT> &
         DoNotCopyOnTrackableChanged<DataT>
@@ -137,7 +172,17 @@ export namespace LogDataUtil {
     ) : sd.AssertDelegate<InsertIfDifferentRow<DataT>> {
         return sd.intersect(
             trackableAssertDelegate(data),
-            doNotCopyOnTrackableChangedAssertDelegate(data)
+            doNotCopyOnTrackableChangedAssertDelegate(data),
+            doNotModifyOnTrackableChangedAssertDelegate(data)
+        ) as any;
+    }
+    export function fullOverwriteInsertIfDifferentRowAssertDelegate<DataT extends LogData> (
+        data : DataT
+    ) : sd.AssertDelegate<FullOverwriteInsertIfDifferentRow<DataT>> {
+        return sd.intersect(
+            fullOverwriteTrackableAssertDelegate(data),
+            doNotCopyOnTrackableChangedAssertDelegate(data),
+            doNotModifyOnTrackableChangedAssertDelegate(data)
         ) as any;
     }
     export function fetchLatestQuery<
@@ -239,9 +284,9 @@ export namespace LogDataUtil {
         return db.transactionIfNotInOne(async (db) => {
             const trackable = trackableAssertDelegate(data)(`${data.table.alias} trackable`, insertIfDifferentRow);
             const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(`${data.table.alias} do not copy`, insertIfDifferentRow);
+            const curValues = await fetchLatestOrDefault(db, data, entityIdentifier);
 
             let differenceFound = false;
-            const curValues = await fetchLatestOrDefault(db, data, entityIdentifier);
             for (let columnName in trackable) {
                 const newTrackableValue = (trackable as any)[columnName];
                 if (newTrackableValue === undefined) {
@@ -313,7 +358,8 @@ export namespace LogDataUtil {
         db : PooledDatabase,
         data : DataT,
         entityIdentifier : EntityIdentifier<DataT>,
-        insertIfDifferentOrFirstRow : InsertIfDifferentRow<DataT>
+        insertIfDifferentRow : InsertIfDifferentRow<DataT>,
+        onFirstDelegate : (db : PooledDatabase, row : InsertIfDifferentRow<DataT>) => Promise<RawInsertValueRow<DataT["table"]>>
     ) : Promise<{
         latest : TableRow<DataT["table"]>,
         wasInserted : boolean,
@@ -324,29 +370,13 @@ export namespace LogDataUtil {
                     db,
                     data,
                     entityIdentifier,
-                    insertIfDifferentOrFirstRow
+                    insertIfDifferentRow
                 );
             } else {
-                entityIdentifier = entityIdentifierAssertDelegate(data)(
-                    `${data.table.alias} entity identifier`,
-                    entityIdentifier
-                );
-                const fullOverwriteTrackable = fullOverwriteTrackableAssertDelegate(data)(
-                    `${data.table.alias} full overwrite trackable`,
-                    insertIfDifferentOrFirstRow
-                );
-                const doNotCopy = doNotCopyOnTrackableChangedAssertDelegate(data)(
-                    `${data.table.alias} do not copy`,
-                    insertIfDifferentOrFirstRow
-                );
                 return {
                     latest : await db.insertValueAndFetch(
                         data.table,
-                        {
-                            ...(entityIdentifier as any),
-                            ...(fullOverwriteTrackable as any),
-                            ...(doNotCopy as any),
-                        }
+                        await onFirstDelegate(db, insertIfDifferentRow)
                     ) as any,
                     wasInserted : true,
                 };
