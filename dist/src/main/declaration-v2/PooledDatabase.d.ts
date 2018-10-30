@@ -198,7 +198,7 @@ export declare class PooledDatabase extends mysql.PooledDatabase {
         latest: TableRow<DataT["table"]>;
         wasInserted: boolean;
     }>;
-    insertIfDifferentOrFirstAndFetch<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>, insertIfDifferentOrFirstRow: LogDataUtil.FullOverwriteInsertIfDifferentRow<DataT>): Promise<{
+    insertIfDifferentOrFirstAndFetch<DataT extends LogData>(data: DataT, entityIdentifier: LogDataUtil.EntityIdentifier<DataT>, insertIfDifferentOrFirstRow: LogDataUtil.InsertIfDifferentRow<DataT>): Promise<{
         latest: TableRow<DataT["table"]>;
         wasInserted: boolean;
     }>;
