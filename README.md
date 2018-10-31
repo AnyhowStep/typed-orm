@@ -165,3 +165,41 @@ await db.from(app)
     .fetchOne()
     .then(console.log);
 ```
+
+### Example of a complicated query
+
+```ts
+/*snip*/
+    tryFetchOneAwaitingCreation () {
+        return this.dao.from(t.merchant)
+            .useJoins(
+                j.merchantBelongsToOneAppPlatform,
+                j.merchantBelongsToOneBusiness,
+                j.businessBelongsToOneUser
+            )
+            .where(() => this.canStartCreationAttemptExpression())
+            .selectAll()
+            .select(() => [
+                this.lastCreationAttemptAtExpression().as("lastCreationAttemptAt")
+            ])
+            .orderBy(c => [
+                //We prioritize those that have not been attempted
+                [o.isNull(c.__expr.lastCreationAttemptAt), o.DESCENDING],
+                //For those that have been attempted,
+                //we get the earliest attempted
+                [c.__expr.lastCreationAttemptAt, o.ASCENDING],
+                //For those that have not been attempted,
+                //we get the earliest created
+                [c.merchant.createdAt, o.ASCENDING]
+            ])
+            .limit(1)
+            .fetchZeroOrOne();
+    }
+/*snip*/
+```
+
+### TODO
+
++ Better documentation
++ Better examples
++ Better tests
