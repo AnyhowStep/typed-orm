@@ -72,7 +72,7 @@ export declare namespace TableDataUtil {
     } : TupleT[K] extends sd.Field<infer NameT, any> ? {
         readonly [name in NameT]: true;
     } : {}) : {});
-    type ToUniqueKey<TupleT extends fieldUtil.AnyFieldTuple> = (ToUniqueKeyImpl<TupleT, "0"> & ToUniqueKeyImpl<TupleT, "1"> & ToUniqueKeyImpl<TupleT, "1"> & ToUniqueKeyImpl<TupleT, "3"> & ToUniqueKeyImpl<TupleT, "4"> & ToUniqueKeyImpl<TupleT, "5"> & ToUniqueKeyImpl<TupleT, "6"> & ToUniqueKeyImpl<TupleT, "7"> & ToUniqueKeyImpl<TupleT, "8"> & ToUniqueKeyImpl<TupleT, "9">);
+    type ToUniqueKey<TupleT extends fieldUtil.AnyFieldTuple> = (ToUniqueKeyImpl<TupleT, "0"> & ToUniqueKeyImpl<TupleT, "1"> & ToUniqueKeyImpl<TupleT, "2"> & ToUniqueKeyImpl<TupleT, "3"> & ToUniqueKeyImpl<TupleT, "4"> & ToUniqueKeyImpl<TupleT, "5"> & ToUniqueKeyImpl<TupleT, "6"> & ToUniqueKeyImpl<TupleT, "7"> & ToUniqueKeyImpl<TupleT, "8"> & ToUniqueKeyImpl<TupleT, "9">);
     type AddUniqueKey<DataT extends TableData, ColumnCollectionT extends ColumnCollection, AddUniqueKeyDelegateT extends AddUniqueKeyDelegate<ColumnCollectionT>> = ({
         readonly [key in keyof DataT]: (key extends "uniqueKeys" ? (DataT["uniqueKeys"] extends Tuple<UniqueKey> ? (TupleWPush<UniqueKey, DataT["uniqueKeys"], ToUniqueKey<ReturnType<AddUniqueKeyDelegateT>>>) : TupleWiden<[ToUniqueKey<ReturnType<AddUniqueKeyDelegateT>>], UniqueKey>) : DataT[key]);
     });

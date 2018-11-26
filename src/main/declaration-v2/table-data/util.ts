@@ -439,7 +439,7 @@ export namespace TableDataUtil {
     > = (
         ToUniqueKeyImpl<TupleT, "0"> &
         ToUniqueKeyImpl<TupleT, "1"> &
-        ToUniqueKeyImpl<TupleT, "1"> &
+        ToUniqueKeyImpl<TupleT, "2"> &
         ToUniqueKeyImpl<TupleT, "3"> &
         ToUniqueKeyImpl<TupleT, "4"> &
         ToUniqueKeyImpl<TupleT, "5"> &
