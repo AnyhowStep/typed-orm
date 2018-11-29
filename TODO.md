@@ -57,3 +57,4 @@ query.transform(transformBuilder)
 -----
 
 + Multi-database support?
++ Polymorphic log tables?

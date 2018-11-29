@@ -6,11 +6,14 @@
   "types": "dist/src/main/index.d.ts",
   "scripts": {
     "test-sandbox": "ts-node ./src/main/sandbox/select-builder-v2",
-    "test-all": "ts-node -P ./src/test/tsconfig.json ./src/test/test-all",
     "test": "ts-node -P ./src/test/tsconfig.json",
     "check": "  tsc --noEmit --diagnostics",
     "check2": "node --max-old-space-size=8192 ./node_modules/typescript/lib/tsc.js --noEmit --noErrorTruncation --diagnostics",
-    "build": "(rm -r ./dist || true) && tsc -d --diagnostics"
+    "build": "(rm -r ./dist || true) && tsc -d --diagnostics",
+    "test-compile-time": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/runner.ts",
+    "accept-compile-time": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/accept-actual.ts",
+    "test-run-time": "ts-node -P ./test/run-time/tsconfig.json ./test/run-time/runner.ts",
+    "test-all": "(npm run test-compile-time) && (npm run test-run-time)"
   },
   "author": "anyhowstep",
   "license": "ISC",
@@ -20,16 +23,20 @@
   },
   "dependencies": {
     "@anyhowstep/type-util": "^1.9.1",
+    "@types/sqlstring": "^2.2.0",
     "enum-util": "^1.5.1",
     "schema-decorator": "^2.35.0",
+    "sqlstring": "^2.3.1",
     "typed-mysql": "^3.1.0"
   },
   "devDependencies": {
     "@anyhowstep/typed-env": "^2.1.0",
+    "@types/diff": "^3.5.2",
     "@types/node": "^10.0.4",
     "@types/tape": "^4.2.32",
+    "diff": "^3.5.0",
     "tape": "^4.9.0",
     "ts-node": "^6.0.3",
-    "typescript": "^3.0.1"
+    "typescript": "^3.3.0-dev.20181129"
   }
 }

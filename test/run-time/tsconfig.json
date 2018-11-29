@@ -1,10 +1,6 @@
 {
     "compilerOptions": {
-        "outDir": "./dist/src/main",
         "sourceMap": true,
-        "declaration": true,
-        "declarationMap": true,
-        "composite": true,
 
 
         "experimentalDecorators": true,
@@ -33,11 +29,17 @@
         "target": "ES6",
         "jsx": "react",
         "jsxFactory": "h",
-        "rootDir":"./src/main"
+
+        "baseUrl": "./src",
+        "paths": {
+            "*": [
+                "./types/*"
+            ]
+        }
     },
     "compileOnSave": false,
 
     "include": [
-        "./src/main/v3/**/*"
+        "./runner.ts",
     ]
 }

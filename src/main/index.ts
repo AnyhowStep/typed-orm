@@ -1,1 +1,1 @@
-export * from "./declaration-v2";
+export * from "./v3";

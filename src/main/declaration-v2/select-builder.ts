@@ -299,7 +299,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         return this.joinUsing(toTable, fromDelegate as any) as any;
     }
     //We don't allow right joins after selecting
-    //because it'll narrow the data type of selected columns
+    //because it'll widen the data type of selected columns
     rightJoin<
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<DataT["joins"]>
