@@ -15,3 +15,21 @@ export const emptyColumnMap = o.ColumnMapUtil.fromAssertMap(
     {}
 );
 export const emptyColumnArray = o.ColumnMapUtil.toArray(emptyColumnMap);
+
+export const mixedColumnMap = o.ColumnMapUtil.intersect(
+    o.ColumnMapUtil.fromAssertMap(
+        "tableA",
+        {
+            ax : sd.naturalNumber(),
+            ay : sd.string(),
+        }
+    ),
+    o.ColumnMapUtil.fromAssertMap(
+        "tableB",
+        {
+            bx : sd.boolean(),
+            by : sd.buffer(),
+        }
+    )
+);
+export const mixedColumnArray = o.ColumnMapUtil.toArray(mixedColumnMap);

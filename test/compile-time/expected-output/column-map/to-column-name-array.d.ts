@@ -30,3 +30,39 @@ export declare const columnMap: {
 export declare const columnNameArray: ("x" | "y" | "z")[];
 export declare const emptyColumnMap: {};
 export declare const emptyColumnNameArray: never[];
+export declare const mixedColumnMap: {
+    readonly ax: o.Column<{
+        tableAlias: "tableA";
+        name: "ax";
+        assertDelegate: sd.AssertDelegate<number> & {
+            __accepts: number;
+            __canAccept: number;
+        };
+    }>;
+    readonly ay: o.Column<{
+        tableAlias: "tableA";
+        name: "ay";
+        assertDelegate: sd.AssertDelegate<string> & {
+            __accepts: string;
+            __canAccept: string;
+        };
+    }>;
+} & {
+    readonly bx: o.Column<{
+        tableAlias: "tableB";
+        name: "bx";
+        assertDelegate: sd.AssertDelegate<boolean> & {
+            __accepts: boolean;
+            __canAccept: boolean;
+        };
+    }>;
+    readonly by: o.Column<{
+        tableAlias: "tableB";
+        name: "by";
+        assertDelegate: sd.AssertDelegate<Buffer> & {
+            __accepts: Buffer;
+            __canAccept: Buffer;
+        };
+    }>;
+};
+export declare const mixedColumnNameArray: ("ax" | "ay" | "bx" | "by")[];

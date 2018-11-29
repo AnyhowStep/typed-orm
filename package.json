@@ -6,7 +6,7 @@
   "types": "dist/src/main/index.d.ts",
   "scripts": {
     "test-sandbox": "ts-node ./src/main/sandbox/select-builder-v2",
-    "test": "ts-node -P ./src/test/tsconfig.json",
+    "test": "ts-node -P ./test/run-time/tsconfig.json",
     "check": "  tsc --noEmit --diagnostics",
     "check2": "node --max-old-space-size=8192 ./node_modules/typescript/lib/tsc.js --noEmit --noErrorTruncation --diagnostics",
     "build": "(rm -r ./dist || true) && tsc -d --diagnostics",
@@ -27,7 +27,7 @@
     "enum-util": "^1.5.1",
     "schema-decorator": "^2.35.0",
     "sqlstring": "^2.3.1",
-    "typed-mysql": "^3.1.0"
+    "typed-mysql": "^3.2.0"
   },
   "devDependencies": {
     "@anyhowstep/typed-env": "^2.1.0",

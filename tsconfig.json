@@ -30,7 +30,7 @@
 
         "module": "commonjs",
         "moduleResolution": "node",
-        "target": "ES6",
+        "target": "esnext",
         "jsx": "react",
         "jsxFactory": "h",
         "rootDir":"./src/main"
