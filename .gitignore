@@ -2,5 +2,5 @@ node_modules
 dist/src/main/sandbox/*
 src/main/sandbox/*
 src/test/test.env
-v3
+src/v3
 test/compile-time/actual-output/*
