@@ -4,7 +4,7 @@ import {IJoin} from "../join";
 import {SelectItem, SingleValueSelectItem} from "../select-item";
 import {ColumnIdentifier} from "../column-identifier";
 import {SelectItemArrayUtil} from "../select-item-array";
-import {IExprSelectItem} from "../expr-select-item";
+import {IExprSelectItem, ExprSelectItemUtil} from "../expr-select-item";
 
 export interface ColumnMap {
     readonly [columnName : string] : IColumn
@@ -531,6 +531,7 @@ export namespace ColumnMapUtil {
     );
 
 
+    //Assumes no duplicate columnName in SelectsT
     export type FromSelectItemArray<SelectsT extends SelectItem[]> = (
         SelectsT[number] extends never ?
         {} :
@@ -552,10 +553,25 @@ export namespace ColumnMapUtil {
             )
         }
     );
+    //Assumes no duplicate columnName in SelectsT
     export function fromSelectItemArray<SelectsT extends SelectItem[]> (
-        _selects : SelectsT
+        selects : SelectsT
     ) : FromSelectItemArray<SelectsT> {
-        throw new Error(`Not implemented`);
+        const columnMaps = selects.map((selectItem) : ColumnMap => {
+            if (Column.isColumn(selectItem)) {
+                return fromColumn(selectItem);
+            } else if (ExprSelectItemUtil.isExprSelectItem(selectItem)) {
+                return fromSingleValueSelectItem(selectItem);
+            } else if (isColumnMap(selectItem)) {
+                return selectItem;
+            } else {
+                throw new Error(`Unknown select item`);
+            }
+        });
+        return Object.assign(
+            {},
+            ...columnMaps
+        );
     }
 
     export function assertIsSubset (a : ColumnMap, b : ColumnMap) {

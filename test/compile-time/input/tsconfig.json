@@ -33,7 +33,6 @@
     "compileOnSave": false,
 
     "include": [
-        "../../../dist/src/main/**/*",
         "./**/*"
     ]
 }

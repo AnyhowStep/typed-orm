@@ -33,7 +33,7 @@
         "target": "esnext",
         "jsx": "react",
         "jsxFactory": "h",
-        "rootDir":"./src/main"
+        "rootDir": "./src/main"
     },
     "compileOnSave": false,
 

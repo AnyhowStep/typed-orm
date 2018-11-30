@@ -86,7 +86,7 @@ export declare namespace ColumnMapUtil {
             alias: columnName;
         }>> : columnName extends ColumnMapUtil.ToColumnNameUnion<Extract<SelectsT[number], ColumnMap>> ? ColumnMapUtil.FindWithColumnName<Extract<SelectsT[number], ColumnMap>, columnName> : never);
     });
-    function fromSelectItemArray<SelectsT extends SelectItem[]>(_selects: SelectsT): FromSelectItemArray<SelectsT>;
+    function fromSelectItemArray<SelectsT extends SelectItem[]>(selects: SelectsT): FromSelectItemArray<SelectsT>;
     function assertIsSubset(a: ColumnMap, b: ColumnMap): void;
     type FindWithColumnName<ColumnMapT extends ColumnMap, ColumnNameT extends string> = (ColumnMapT extends ColumnMap ? (ColumnNameT extends keyof ColumnMapT ? ColumnMapT[ColumnNameT] : never) : never);
 }

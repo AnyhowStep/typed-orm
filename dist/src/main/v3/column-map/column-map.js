@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 const column_1 = require("../column");
+const expr_select_item_1 = require("../expr-select-item");
 ;
 var ColumnMapUtil;
 (function (ColumnMapUtil) {
@@ -147,8 +148,23 @@ var ColumnMapUtil;
         return fromColumn(column_1.Column.fromSingleValueSelectItem(selectItem));
     }
     ColumnMapUtil.fromSingleValueSelectItem = fromSingleValueSelectItem;
-    function fromSelectItemArray(_selects) {
-        throw new Error(`Not implemented`);
+    //Assumes no duplicate columnName in SelectsT
+    function fromSelectItemArray(selects) {
+        const columnMaps = selects.map((selectItem) => {
+            if (column_1.Column.isColumn(selectItem)) {
+                return fromColumn(selectItem);
+            }
+            else if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(selectItem)) {
+                return fromSingleValueSelectItem(selectItem);
+            }
+            else if (isColumnMap(selectItem)) {
+                return selectItem;
+            }
+            else {
+                throw new Error(`Unknown select item`);
+            }
+        });
+        return Object.assign({}, ...columnMaps);
     }
     ColumnMapUtil.fromSelectItemArray = fromSelectItemArray;
     function assertIsSubset(a, b) {
