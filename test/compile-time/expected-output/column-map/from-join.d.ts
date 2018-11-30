@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../dist/src/main";
-export declare const t: o.Table<{
+export declare const table: o.Table<{
     readonly alias: "t";
     readonly name: "t";
     readonly columns: {
@@ -31,7 +31,7 @@ export declare const t: o.Table<{
     readonly insertAllowed: true;
     readonly deleteAllowed: true;
 }>;
-export declare const j: o.Join<{
+export declare const join: o.Join<{
     aliasedTable: o.Table<{
         readonly alias: "t";
         readonly name: "t";
@@ -101,7 +101,7 @@ export declare const columnMap: {
         };
     }>;
 };
-export declare const nullableJ: o.Join<{
+export declare const nullableJoin: o.Join<{
     aliasedTable: o.Table<{
         readonly alias: "t";
         readonly name: "t";
@@ -163,5 +163,13 @@ export declare const nullableColumnMap: {
         readonly tableAlias: "t";
         readonly name: "y";
         readonly assertDelegate: sd.AssertDelegate<string | null>;
+    }>;
+};
+export declare const untypedJoin: o.IJoin;
+export declare const untypedColumnMap: {
+    readonly [x: string]: o.Column<{
+        readonly tableAlias: string;
+        readonly name: string;
+        readonly assertDelegate: sd.AssertDelegate<any>;
     }>;
 };

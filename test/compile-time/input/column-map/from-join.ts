@@ -1,33 +1,36 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../dist/src/main";
 
-export const t = o.table(
+export const table = o.table(
     "t",
     {
         x : sd.naturalNumber(),
         y : sd.string(),
     }
 );
-export const j = new o.Join(
+export const join = new o.Join(
     {
-        aliasedTable : t,
-        columns : t.columns,
+        aliasedTable : table,
+        columns : table.columns,
         nullable : false,
     },
     o.JoinType.FROM,
     [],
     []
 );
-export const columnMap = o.ColumnMapUtil.fromJoin(j);
+export const columnMap = o.ColumnMapUtil.fromJoin(join);
 
-export const nullableJ = new o.Join(
+export const nullableJoin = new o.Join(
     {
-        aliasedTable : t,
-        columns : t.columns,
+        aliasedTable : table,
+        columns : table.columns,
         nullable : true,
     },
     o.JoinType.FROM,
     [],
     []
 );
-export const nullableColumnMap = o.ColumnMapUtil.fromJoin(nullableJ);
+export const nullableColumnMap = o.ColumnMapUtil.fromJoin(nullableJoin);
+
+export declare const untypedJoin : o.IJoin;
+export const untypedColumnMap = o.ColumnMapUtil.fromJoin(untypedJoin);
