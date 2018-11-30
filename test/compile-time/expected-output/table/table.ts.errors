@@ -4,13 +4,13 @@
     "code": 2345,
     "category": 1,
     "length": 3,
-    "start": 232
+    "start": 237
   },
   {
     "messageText": "Property 'x' does not exist on type '{ y: Column<{ tableAlias: \"232\"; name: \"y\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; }'.",
     "code": 2339,
     "category": 1,
     "length": 1,
-    "start": 485
+    "start": 490
   }
 ]

@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import * as sd from "schema-decorator";
-import * as o from "../../../../src/main";
+import * as o from "../../../../dist/src/main";
 export declare const c: o.Column<{
     tableAlias: string;
     name: string;

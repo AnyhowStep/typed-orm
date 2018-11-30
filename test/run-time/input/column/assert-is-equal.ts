@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import * as tape from "tape";
-import * as o from "../../../../src/main";
+import * as o from "../../../../dist/src/main";
 
 tape(__filename, (t) => {
     const c = new o.Column(

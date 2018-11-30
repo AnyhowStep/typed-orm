@@ -4,34 +4,34 @@
     "code": 2322,
     "category": 1,
     "length": 22,
-    "start": 375
+    "start": 380
   },
   {
     "messageText": "Type 'false' is not assignable to type 'true'.",
     "code": 2322,
     "category": 1,
     "length": 27,
-    "start": 675
+    "start": 680
   },
   {
     "messageText": "Type 'true' is not assignable to type 'false'.",
     "code": 2322,
     "category": 1,
     "length": 25,
-    "start": 913
+    "start": 918
   },
   {
     "messageText": "Type 'boolean' is not assignable to type 'false'.",
     "code": 2322,
     "category": 1,
     "length": 28,
-    "start": 1179
+    "start": 1184
   },
   {
     "messageText": "Type 'boolean' is not assignable to type 'true'.",
     "code": 2322,
     "category": 1,
     "length": 29,
-    "start": 1303
+    "start": 1308
   }
 ]

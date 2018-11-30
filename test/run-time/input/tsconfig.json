@@ -28,14 +28,7 @@
         "moduleResolution": "node",
         "target": "esnext",
         "jsx": "react",
-        "jsxFactory": "h",
-
-        "baseUrl": "./src",
-        "paths": {
-            "*": [
-                "./types/*"
-            ]
-        }
+        "jsxFactory": "h"
     },
     "compileOnSave": false,
 

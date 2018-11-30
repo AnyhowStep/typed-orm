@@ -38,6 +38,7 @@
     "compileOnSave": false,
 
     "include": [
-        "./src/main/v3/**/*"
+        "./src/main/v3/**/*",
+        "./src/main/index.ts"
     ]
 }

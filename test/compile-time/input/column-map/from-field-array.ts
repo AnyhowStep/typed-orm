@@ -1,5 +1,5 @@
 import * as sd from "schema-decorator";
-import * as o from "../../../../src/main";
+import * as o from "../../../../dist/src/main";
 
 export const columnMap = o.ColumnMapUtil.fromFieldArray(
     "someTable",

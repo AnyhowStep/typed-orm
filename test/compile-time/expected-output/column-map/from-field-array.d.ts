@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import * as sd from "schema-decorator";
-import * as o from "../../../../src/main";
+import * as o from "../../../../dist/src/main";
 export declare const columnMap: {
     readonly x: o.Column<{
         tableAlias: "someTable";
