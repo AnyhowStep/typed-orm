@@ -10,5 +10,6 @@ export declare namespace SelectItemUtil {
         readonly tableAlias: SelectItemT["tableAlias"];
         readonly name: SelectItemT["alias"];
     } : SelectItemT extends ColumnMap ? ColumnMapUtil.ToColumnIdentifierUnion<SelectItemT> : never);
+    function isSingleValueSelectItem(raw: any): raw is SingleValueSelectItem;
 }
 //# sourceMappingURL=select-item.d.ts.map

@@ -148,21 +148,25 @@ var ColumnMapUtil;
         return fromColumn(column_1.Column.fromSingleValueSelectItem(selectItem));
     }
     ColumnMapUtil.fromSingleValueSelectItem = fromSingleValueSelectItem;
+    function fromSelectItem(selectItem) {
+        if (column_1.Column.isColumn(selectItem)) {
+            return fromColumn(selectItem);
+        }
+        else if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(selectItem)) {
+            return fromSingleValueSelectItem(selectItem);
+        }
+        else if (isColumnMap(selectItem)) {
+            return selectItem;
+        }
+        else {
+            throw new Error(`Unknown select item`);
+        }
+    }
+    ColumnMapUtil.fromSelectItem = fromSelectItem;
     //Assumes no duplicate columnName in SelectsT
     function fromSelectItemArray(selects) {
         const columnMaps = selects.map((selectItem) => {
-            if (column_1.Column.isColumn(selectItem)) {
-                return fromColumn(selectItem);
-            }
-            else if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(selectItem)) {
-                return fromSingleValueSelectItem(selectItem);
-            }
-            else if (isColumnMap(selectItem)) {
-                return selectItem;
-            }
-            else {
-                throw new Error(`Unknown select item`);
-            }
+            return fromSelectItem(selectItem);
         });
         return Object.assign({}, ...columnMaps);
     }

@@ -11,4 +11,5 @@ __export(require("./assert-map"));
 __export(require("./expr-select-item"));
 __export(require("./constants"));
 __export(require("./join"));
+__export(require("./select-item"));
 //# sourceMappingURL=index.js.map

@@ -526,9 +526,22 @@ export namespace ColumnMapUtil {
         SelectItemT extends SingleValueSelectItem ?
         FromSingleValueSelectItem<SelectItemT> :
         SelectItemT extends ColumnMap ?
-        SelectItem :
+        SelectItemT :
         never
     );
+    export function fromSelectItem<SelectItemT extends SelectItem> (
+        selectItem : SelectItemT
+    ) : FromSelectItem<SelectItemT> {
+        if (Column.isColumn(selectItem)) {
+            return fromColumn(selectItem) as any;
+        } else if (ExprSelectItemUtil.isExprSelectItem(selectItem)) {
+            return fromSingleValueSelectItem(selectItem) as any;
+        } else if (isColumnMap(selectItem)) {
+            return selectItem as any;
+        } else {
+            throw new Error(`Unknown select item`);
+        }
+    }
 
 
     //Assumes no duplicate columnName in SelectsT
@@ -558,15 +571,7 @@ export namespace ColumnMapUtil {
         selects : SelectsT
     ) : FromSelectItemArray<SelectsT> {
         const columnMaps = selects.map((selectItem) : ColumnMap => {
-            if (Column.isColumn(selectItem)) {
-                return fromColumn(selectItem);
-            } else if (ExprSelectItemUtil.isExprSelectItem(selectItem)) {
-                return fromSingleValueSelectItem(selectItem);
-            } else if (isColumnMap(selectItem)) {
-                return selectItem;
-            } else {
-                throw new Error(`Unknown select item`);
-            }
+            return fromSelectItem(selectItem);
         });
         return Object.assign(
             {},

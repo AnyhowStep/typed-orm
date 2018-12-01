@@ -78,7 +78,8 @@ export declare namespace ColumnMapUtil {
     function fromColumn<ColumnT extends IColumn>(column: ColumnT): FromColumn<ColumnT>;
     type FromSingleValueSelectItem<SelectItemT extends SingleValueSelectItem> = (FromColumn<Column.FromSingleValueSelectItem<SelectItemT>>);
     function fromSingleValueSelectItem<SelectItemT extends SingleValueSelectItem>(selectItem: SelectItemT): (FromSingleValueSelectItem<SelectItemT>);
-    type FromSelectItem<SelectItemT extends SelectItem> = (SelectItemT extends SingleValueSelectItem ? FromSingleValueSelectItem<SelectItemT> : SelectItemT extends ColumnMap ? SelectItem : never);
+    type FromSelectItem<SelectItemT extends SelectItem> = (SelectItemT extends SingleValueSelectItem ? FromSingleValueSelectItem<SelectItemT> : SelectItemT extends ColumnMap ? SelectItemT : never);
+    function fromSelectItem<SelectItemT extends SelectItem>(selectItem: SelectItemT): FromSelectItem<SelectItemT>;
     type FromSelectItemArray<SelectsT extends SelectItem[]> = (SelectsT[number] extends never ? {} : {
         readonly [columnName in SelectItemArrayUtil.ToColumnNameUnion<SelectsT>]: (columnName extends Extract<SelectsT[number], IColumn>["name"] ? Column.FromSingleValueSelectItem<Extract<SelectsT[number], {
             name: columnName;
