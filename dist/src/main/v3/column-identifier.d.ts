@@ -25,5 +25,8 @@ export declare namespace ColumnIdentifierUtil {
     type UnionFromSelectItemArrayIgnoreIndex<SelectsT extends SelectItem[], IgnoreIndexT extends Extract<keyof SelectsT, string>> = ({
         [index in Exclude<Extract<keyof SelectsT, string>, IgnoreIndexT>]: (SelectsT[index] extends SelectItem ? UnionFromSelectItem<SelectsT[index]> : never);
     }[Exclude<Extract<keyof SelectsT, string>, IgnoreIndexT>]);
+    type IsEqual<A extends ColumnIdentifier, B extends ColumnIdentifier> = (string extends A["tableAlias"] ? boolean : string extends B["tableAlias"] ? boolean : A["tableAlias"] extends B["tableAlias"] ? (string extends A["name"] ? boolean : string extends B["name"] ? boolean : A["name"] extends B["name"] ? true : false) : false);
+    function isEqual<A extends ColumnIdentifier, B extends ColumnIdentifier>(a: A, b: B): IsEqual<A, B>;
+    function assertIsEqual(a: ColumnIdentifier, b: ColumnIdentifier): void;
 }
 //# sourceMappingURL=column-identifier.d.ts.map

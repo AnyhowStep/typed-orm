@@ -4,6 +4,7 @@ import {JoinArrayUtil} from "./join-array";
 import {StringUtil} from "./string";
 import {IColumn, Column} from "./column";
 import {IQuery} from "./query";
+import {ColumnIdentifierMapUtil} from "./column-identifier-map";
 
 export type ColumnRef = {
     readonly [tableAlias : string] : ColumnMap
@@ -128,7 +129,7 @@ export namespace ColumnRefUtil {
                 throw new Error(`Table ${tableAliasA} is not allowed`);
             }
 
-            ColumnMapUtil.assertIsSubset(columnMapA, columnMapB);
+            ColumnIdentifierMapUtil.assertIsSubset(columnMapA, columnMapB);
         }
     }
 }

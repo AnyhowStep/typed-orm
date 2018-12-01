@@ -171,16 +171,5 @@ var ColumnMapUtil;
         return Object.assign({}, ...columnMaps);
     }
     ColumnMapUtil.fromSelectItemArray = fromSelectItemArray;
-    function assertIsSubset(a, b) {
-        for (let columnNameA in a) {
-            const columnA = a[columnNameA];
-            const columnB = b[columnNameA];
-            if (columnB == undefined) {
-                throw new Error(`Column ${columnNameA} is not allowed`);
-            }
-            column_1.Column.assertIsEqual(columnA, columnB);
-        }
-    }
-    ColumnMapUtil.assertIsSubset = assertIsSubset;
 })(ColumnMapUtil = exports.ColumnMapUtil || (exports.ColumnMapUtil = {}));
 //# sourceMappingURL=column-map.js.map

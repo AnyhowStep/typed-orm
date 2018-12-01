@@ -71,9 +71,6 @@ export class Column<DataT extends ColumnData> implements IColumn<DataT> {
     ) {
         return Column.withType(this, newAssertFunc);
     }
-    assertIsEqual (other : IColumn) {
-        Column.assertIsEqual(this, other);
-    }
 
     /*as<AliasT extends string>(alias : AliasT) : AliasedExpr<
         {
@@ -358,19 +355,6 @@ export namespace Column {
             return fromExprSelectItem(item) as any;
         } else {
             throw new Error(`Unknown SingleValueSelectItem`);
-        }
-    }
-
-    /*
-        Cannot actually check `assertDelegate` are equal.
-        TODO Refactor this to ColumnIdentifier.assertIsEqual()
-    */
-    export function assertIsEqual (a : IColumn, b : IColumn) {
-        if (a.tableAlias != b.tableAlias) {
-            throw new Error(`Table alias mismatch ${a.tableAlias} != ${b.tableAlias}`);
-        }
-        if (a.name != b.name) {
-            throw new Error(`Name mismatch ${a.name} != ${b.name}`);
         }
     }
 

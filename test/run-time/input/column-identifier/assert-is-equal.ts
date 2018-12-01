@@ -65,19 +65,19 @@ tape(__filename, (t) => {
     );
 
     t.throws(() => {
-        c.assertIsEqual(c2);
+        o.ColumnIdentifierUtil.assertIsEqual(c, c2);
     });
     t.throws(() => {
-        c.assertIsEqual(c3);
+        o.ColumnIdentifierUtil.assertIsEqual(c, c3);
     });
     t.throws(() => {
-        c.assertIsEqual(c4);
+        o.ColumnIdentifierUtil.assertIsEqual(c, c4);
     });
     t.doesNotThrow(() => {
-        c.assertIsEqual(c5);
+        o.ColumnIdentifierUtil.assertIsEqual(c, c5);
     });
     t.doesNotThrow(() => {
-        c.assertIsEqual(c6);
+        o.ColumnIdentifierUtil.assertIsEqual(c, c6);
     });
 
     t.end();

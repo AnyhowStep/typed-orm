@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const column_map_1 = require("./column-map");
+const column_identifier_map_1 = require("./column-identifier-map");
 var ColumnRefUtil;
 (function (ColumnRefUtil) {
     function fromJoinArray(joins) {
@@ -59,7 +60,7 @@ var ColumnRefUtil;
             if (columnMapB == undefined) {
                 throw new Error(`Table ${tableAliasA} is not allowed`);
             }
-            column_map_1.ColumnMapUtil.assertIsSubset(columnMapA, columnMapB);
+            column_identifier_map_1.ColumnIdentifierMapUtil.assertIsSubset(columnMapA, columnMapB);
         }
     }
     ColumnRefUtil.assertIsSubset = assertIsSubset;

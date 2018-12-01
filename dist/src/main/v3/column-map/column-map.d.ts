@@ -83,7 +83,6 @@ export declare namespace ColumnMapUtil {
     });
     function fromSelectItemArray<SelectsT extends SelectItem[]>(selects: SelectsT): FromSelectItemArray<SelectsT>;
     type IsSubset<A extends ColumnMap, B extends ColumnMap> = (B extends A ? true : false);
-    function assertIsSubset(a: ColumnMap, b: ColumnMap): void;
     type FindWithColumnName<ColumnMapT extends ColumnMap, ColumnNameT extends string> = (ColumnMapT extends ColumnMap ? (ColumnNameT extends keyof ColumnMapT ? ColumnMapT[ColumnNameT] : never) : never);
 }
 //# sourceMappingURL=column-map.d.ts.map

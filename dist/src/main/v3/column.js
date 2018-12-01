@@ -26,9 +26,6 @@ class Column {
     withType(newAssertFunc) {
         return Column.withType(this, newAssertFunc);
     }
-    assertIsEqual(other) {
-        Column.assertIsEqual(this, other);
-    }
 }
 exports.Column = Column;
 /*
@@ -158,19 +155,6 @@ exports.Column = Column;
         }
     }
     Column.fromSingleValueSelectItem = fromSingleValueSelectItem;
-    /*
-        Cannot actually check `assertDelegate` are equal.
-        TODO Refactor this to ColumnIdentifier.assertIsEqual()
-    */
-    function assertIsEqual(a, b) {
-        if (a.tableAlias != b.tableAlias) {
-            throw new Error(`Table alias mismatch ${a.tableAlias} != ${b.tableAlias}`);
-        }
-        if (a.name != b.name) {
-            throw new Error(`Name mismatch ${a.name} != ${b.name}`);
-        }
-    }
-    Column.assertIsEqual = assertIsEqual;
 })(Column = exports.Column || (exports.Column = {}));
 function column(tableAlias, name, assertFunc) {
     return new Column({
