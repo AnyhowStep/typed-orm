@@ -27,6 +27,9 @@ export interface ColumnMap {
 
 export namespace ColumnMapUtil {
     export function isColumnMap (raw : any) : raw is ColumnMap {
+        if (!(raw instanceof Object)) {
+            return false;
+        }
         for (let columnName in raw) {
             const column = raw[columnName];
             if (!Column.isColumn(column)) {

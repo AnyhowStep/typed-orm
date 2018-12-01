@@ -22,6 +22,9 @@ const expr_select_item_1 = require("../expr-select-item");
 var ColumnMapUtil;
 (function (ColumnMapUtil) {
     function isColumnMap(raw) {
+        if (!(raw instanceof Object)) {
+            return false;
+        }
         for (let columnName in raw) {
             const column = raw[columnName];
             if (!column_1.Column.isColumn(column)) {

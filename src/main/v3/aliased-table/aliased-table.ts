@@ -1,4 +1,4 @@
-import {ColumnMap} from "../column-map";
+import {ColumnMap, ColumnMapUtil} from "../column-map";
 import {escapeId} from "sqlstring";
 
 export interface AliasedTableData {
@@ -71,7 +71,11 @@ export namespace AliasedTable {
             ("columns" in raw) &&
             (typeof raw.alias == "string") &&
             (typeof raw.name == "string") &&
-            (raw.columns instanceof Object)
+            ColumnMapUtil.isColumnMap(raw.columns) &&
+            (
+                raw.__databaseName === undefined ||
+                typeof raw.__databaseName == "string"
+            )
         );
     }
 }

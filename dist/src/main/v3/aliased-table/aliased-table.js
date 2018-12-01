@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const column_map_1 = require("../column-map");
 const sqlstring_1 = require("sqlstring");
 class AliasedTable {
     constructor(data, __databaseName) {
@@ -39,7 +40,9 @@ exports.AliasedTable = AliasedTable;
             ("columns" in raw) &&
             (typeof raw.alias == "string") &&
             (typeof raw.name == "string") &&
-            (raw.columns instanceof Object));
+            column_map_1.ColumnMapUtil.isColumnMap(raw.columns) &&
+            (raw.__databaseName === undefined ||
+                typeof raw.__databaseName == "string"));
     }
     AliasedTable.isAliasedTable = isAliasedTable;
 })(AliasedTable = exports.AliasedTable || (exports.AliasedTable = {}));
