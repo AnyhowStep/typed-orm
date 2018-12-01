@@ -31,12 +31,6 @@ var ColumnMapUtil;
         return true;
     }
     ColumnMapUtil.isColumnMap = isColumnMap;
-    function toColumnNameArray(columnMap) {
-        //Technically, this could be wrong.
-        //But it shouldn't be wrong, in general.
-        return Object.keys(columnMap);
-    }
-    ColumnMapUtil.toColumnNameArray = toColumnNameArray;
     function hasOneColumn(columnMap) {
         return (Object.keys(columnMap).length == 1);
     }

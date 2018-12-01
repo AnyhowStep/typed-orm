@@ -13,6 +13,21 @@ export namespace ColumnIdentifierMapUtil {
             )
         }
     );
+    export function fromColumnMap<ColumnMapT extends ColumnMap> (
+        columnMap : ColumnMapT
+    ) : FromColumnMap<ColumnMapT> {
+        return (Object.keys(columnMap) as Extract<keyof ColumnMapT, string>[])
+            .reduce<{
+                [columnName in Extract<keyof ColumnMapT, string>] : (
+                    ColumnIdentifierUtil.FromColumn<ColumnMapT[columnName]>
+                )
+            }>((memo, columnName) => {
+                memo[columnName] = ColumnIdentifierUtil.fromColumn(
+                    columnMap[columnName]
+                );
+                return memo;
+            }, {} as any);
+    }
 
     export type IsSubset<
         A extends ColumnIdentifierMap,

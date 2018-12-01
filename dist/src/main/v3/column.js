@@ -155,6 +155,13 @@ exports.Column = Column;
         }
     }
     Column.fromSingleValueSelectItem = fromSingleValueSelectItem;
+    //TODO Figure out naming convention
+    function nameArrayFromColumnMap(columnMap) {
+        //Technically, this could be wrong.
+        //But it shouldn't be wrong, in general.
+        return Object.keys(columnMap);
+    }
+    Column.nameArrayFromColumnMap = nameArrayFromColumnMap;
 })(Column = exports.Column || (exports.Column = {}));
 function column(tableAlias, name, assertFunc) {
     return new Column({

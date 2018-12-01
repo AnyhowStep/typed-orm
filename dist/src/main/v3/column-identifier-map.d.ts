@@ -7,6 +7,7 @@ export declare namespace ColumnIdentifierMapUtil {
     type FromColumnMap<ColumnMapT extends ColumnMap> = ({
         readonly [columnName in Extract<keyof ColumnMapT, string>]: (ColumnIdentifierUtil.FromColumn<ColumnMapT[columnName]>);
     });
+    function fromColumnMap<ColumnMapT extends ColumnMap>(columnMap: ColumnMapT): FromColumnMap<ColumnMapT>;
     type IsSubset<A extends ColumnIdentifierMap, B extends ColumnIdentifierMap> = (string extends Extract<keyof A, string> ? boolean : string extends Extract<keyof B, string> ? boolean : Extract<keyof A, string> extends Extract<keyof B, string> ? ({
         [columnName in Extract<keyof A, string>]: (ColumnIdentifierUtil.IsEqual<A[columnName], B[columnName]>);
     }[Extract<keyof A, string>]) : false);

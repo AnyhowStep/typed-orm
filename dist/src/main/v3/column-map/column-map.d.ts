@@ -10,8 +10,6 @@ export interface ColumnMap {
 }
 export declare namespace ColumnMapUtil {
     function isColumnMap(raw: any): raw is ColumnMap;
-    type ToColumnNameUnion<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? Extract<keyof ColumnMapT, string> : never);
-    function toColumnNameArray<ColumnMapT extends ColumnMap>(columnMap: ColumnMapT): ToColumnNameUnion<ColumnMapT>[];
     type HasOneColumn<ColumnMapT extends ColumnMap> = (Extract<keyof ColumnMapT, string> extends never ? false : string extends Extract<keyof ColumnMapT, string> ? boolean : ({
         [columnName in Extract<keyof ColumnMapT, string>]: (Exclude<Extract<keyof ColumnMapT, string>, columnName>);
     }[Extract<keyof ColumnMapT, string>]) extends never ? true : false);
@@ -79,7 +77,7 @@ export declare namespace ColumnMapUtil {
             name: columnName;
         }>> : columnName extends Extract<SelectsT[number], IExprSelectItem>["alias"] ? Column.FromSingleValueSelectItem<Extract<SelectsT[number], {
             alias: columnName;
-        }>> : columnName extends ColumnMapUtil.ToColumnNameUnion<Extract<SelectsT[number], ColumnMap>> ? ColumnMapUtil.FindWithColumnName<Extract<SelectsT[number], ColumnMap>, columnName> : never);
+        }>> : columnName extends Column.NameUnionFromColumnMap<Extract<SelectsT[number], ColumnMap>> ? ColumnMapUtil.FindWithColumnName<Extract<SelectsT[number], ColumnMap>, columnName> : never);
     });
     function fromSelectItemArray<SelectsT extends SelectItem[]>(selects: SelectsT): FromSelectItemArray<SelectsT>;
     type IsAssignableSubset<A extends ColumnMap, B extends ColumnMap> = (Extract<keyof A, string> extends never ? true : string extends Extract<keyof A, string> ? boolean : string extends Extract<keyof B, string> ? boolean : Extract<keyof A, string> extends Extract<keyof B, string> ? ({

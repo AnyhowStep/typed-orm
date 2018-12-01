@@ -385,6 +385,22 @@ export namespace Column {
         ) :
         false
     );
+
+    //Technically, this could be wrong.
+    //But it shouldn't be wrong, in general.
+    export type NameUnionFromColumnMap<ColumnMapT extends ColumnMap> = (
+        ColumnMapT extends ColumnMap ?
+        Extract<keyof ColumnMapT, string> :
+        never
+    );
+    //TODO Figure out naming convention
+    export function nameArrayFromColumnMap<ColumnMapT extends ColumnMap> (
+        columnMap : ColumnMapT
+    ) : NameUnionFromColumnMap<ColumnMapT>[] {
+        //Technically, this could be wrong.
+        //But it shouldn't be wrong, in general.
+        return Object.keys(columnMap) as NameUnionFromColumnMap<ColumnMapT>[];
+    }
 }
 
 export function column<

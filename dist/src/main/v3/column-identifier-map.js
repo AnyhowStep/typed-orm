@@ -4,6 +4,14 @@ const column_identifier_1 = require("./column-identifier");
 ;
 var ColumnIdentifierMapUtil;
 (function (ColumnIdentifierMapUtil) {
+    function fromColumnMap(columnMap) {
+        return Object.keys(columnMap)
+            .reduce((memo, columnName) => {
+            memo[columnName] = column_identifier_1.ColumnIdentifierUtil.fromColumn(columnMap[columnName]);
+            return memo;
+        }, {});
+    }
+    ColumnIdentifierMapUtil.fromColumnMap = fromColumnMap;
     function isSubset(a, b) {
         for (let columnNameA in a) {
             const columnA = a[columnNameA];

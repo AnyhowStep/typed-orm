@@ -67,6 +67,8 @@ export declare namespace Column {
     function fromSingleValueSelectItem<ItemT extends SingleValueSelectItem>(item: ItemT): FromSingleValueSelectItem<ItemT>;
     type UnionFromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? ColumnMapT[Extract<keyof ColumnMapT, string>] : never);
     type IsAssignableTo<A extends IColumn, B extends IColumn> = (boolean extends ColumnIdentifierUtil.IsEqual<A, B> ? (ReturnType<A["assertDelegate"]> extends ReturnType<B["assertDelegate"]> ? boolean : false) : ColumnIdentifierUtil.IsEqual<A, B> extends true ? (ReturnType<A["assertDelegate"]> extends ReturnType<B["assertDelegate"]> ? true : false) : false);
+    type NameUnionFromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? Extract<keyof ColumnMapT, string> : never);
+    function nameArrayFromColumnMap<ColumnMapT extends ColumnMap>(columnMap: ColumnMapT): NameUnionFromColumnMap<ColumnMapT>[];
 }
 export declare function column<TableAliasT extends string, NameT extends string, AssertFuncT extends sd.AnyAssertFunc>(tableAlias: TableAliasT, name: NameT, assertFunc: AssertFuncT): Column<{
     readonly tableAlias: TableAliasT;

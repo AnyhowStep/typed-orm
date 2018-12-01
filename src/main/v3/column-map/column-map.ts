@@ -35,20 +35,6 @@ export namespace ColumnMapUtil {
         }
         return true;
     }
-    //Technically, this could be wrong.
-    //But it shouldn't be wrong, in general.
-    export type ToColumnNameUnion<ColumnMapT extends ColumnMap> = (
-        ColumnMapT extends ColumnMap ?
-        Extract<keyof ColumnMapT, string> :
-        never
-    );
-    export function toColumnNameArray<ColumnMapT extends ColumnMap> (
-        columnMap : ColumnMapT
-    ) : ToColumnNameUnion<ColumnMapT>[] {
-        //Technically, this could be wrong.
-        //But it shouldn't be wrong, in general.
-        return Object.keys(columnMap) as ToColumnNameUnion<ColumnMapT>[];
-    }
     //HasOneColumn<ColumnMapT> extends true ?
     //    true :
     //    false
@@ -541,7 +527,7 @@ export namespace ColumnMapUtil {
                 columnName extends Extract<SelectsT[number], IExprSelectItem>["alias"] ?
                 Column.FromSingleValueSelectItem<Extract<SelectsT[number], { alias : columnName }>> :
 
-                columnName extends ColumnMapUtil.ToColumnNameUnion<Extract<SelectsT[number], ColumnMap>> ?
+                columnName extends Column.NameUnionFromColumnMap<Extract<SelectsT[number], ColumnMap>> ?
                 ColumnMapUtil.FindWithColumnName<
                     Extract<SelectsT[number], ColumnMap>,
                     columnName
