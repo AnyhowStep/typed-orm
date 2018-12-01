@@ -73,10 +73,6 @@ export class Column<DataT extends ColumnData> implements IColumn<DataT> {
     assertIsEqual (other : IColumn) {
         Column.assertIsEqual(this, other);
     }
-    toColumnIdentifier () : Column.ToColumnIdentifier<this> {
-        return Column.toColumnIdentifier(this);
-    }
-
 
     /*as<AliasT extends string>(alias : AliasT) : AliasedExpr<
         {
@@ -370,21 +366,6 @@ export namespace Column {
         if (a.name != b.name) {
             throw new Error(`Name mismatch ${a.name} != ${b.name}`);
         }
-    }
-
-    export type ToColumnIdentifier<ColumnT extends IColumn> = (
-        {
-            readonly tableAlias : ColumnT["tableAlias"],
-            readonly name : ColumnT["name"],
-        }
-    );
-    export function toColumnIdentifier<ColumnT extends IColumn> (
-        column : ColumnT
-    ) : ToColumnIdentifier<ColumnT> {
-        return {
-            tableAlias : column.tableAlias,
-            name : column.name,
-        };
     }
 }
 

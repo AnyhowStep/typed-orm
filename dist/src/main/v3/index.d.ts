@@ -4,6 +4,8 @@ export * from "./column-map";
 export * from "./table";
 export * from "./assert-map";
 export * from "./expr-select-item";
+export * from "./column-identifier-array";
+export * from "./column-identifier-map";
 export * from "./column-identifier";
 export * from "./constants";
 export * from "./join";

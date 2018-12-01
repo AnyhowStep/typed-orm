@@ -1,1 +1,1 @@
-{"version":3,"file":"column-identifier.js","sourceRoot":"","sources":["../../../../src/main/v3/column-identifier.ts"],"names":[],"mappings":""}
+{"version":3,"file":"column-identifier.js","sourceRoot":"","sources":["../../../../src/main/v3/column-identifier.ts"],"names":[],"mappings":";;AAUA,IAAiB,oBAAoB,CA0DpC;AA1DD,WAAiB,oBAAoB;IAOjC,SAAgB,UAAU,CACtB,MAAgB;QAEhB,OAAO;YACH,UAAU,EAAG,MAAM,CAAC,UAAU;YAC9B,IAAI,EAAG,MAAM,CAAC,IAAI;SACrB,CAAC;IACN,CAAC;IAPe,+BAAU,aAOzB,CAAA;AA4CL,CAAC,EA1DgB,oBAAoB,GAApB,4BAAoB,KAApB,4BAAoB,QA0DpC"}

@@ -1,5 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+/*
+    TODO Debate data type conversion utils naming convention.
+    + ToXxx vs. FromXxx
+
+    Using ToXxx seems to apply to more cases.
+    Example,
+
+    ColumnMapUtil.ToColumnIdentifierUnion<>
+    vs.
+    ColumnIdentifierUtil.UnionFromColumnMap<>
+
+    ColumnMapUtil.ToColumnIdentifierArray<>
+    vs.
+    ColumnIdentifierArrayUtil.FromColumnMap<>
+*/
 const sd = require("schema-decorator");
 const column_1 = require("../column");
 const expr_select_item_1 = require("../expr-select-item");
@@ -111,14 +126,6 @@ var ColumnMapUtil;
         return Object.assign({}, left, right);
     }
     ColumnMapUtil.intersect = intersect;
-    function toColumnIdentifierArray(columnMap) {
-        const columnNames = Object.keys(columnMap);
-        return columnNames.map(columnName => ({
-            tableAlias: columnMap[columnName].tableAlias,
-            name: columnName,
-        }));
-    }
-    ColumnMapUtil.toColumnIdentifierArray = toColumnIdentifierArray;
     function toNullable(columnMap) {
         return Object.keys(columnMap).reduce((memo, columnName) => {
             memo[columnName] = column_1.Column.toNullable(columnMap[columnName]);

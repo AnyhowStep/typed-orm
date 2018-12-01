@@ -2,7 +2,7 @@ import * as sd from "schema-decorator";
 import {IJoin, Join, JoinType} from "./join";
 import {IAliasedTable} from "./aliased-table";
 import {IColumn} from "./column";
-import {SelectItem, SelectItemUtil} from "./select-item";
+import {SelectItem} from "./select-item";
 import {RawExpr, RawExprUtil} from "./raw-expr";
 import {IExpr, Expr} from "./expr";
 import {ColumnRefUtil} from "./column-ref";
@@ -10,9 +10,9 @@ import {ColumnMapUtil} from "./column-map";
 import {JoinArrayUtil} from "./join-array";
 import {NonEmptyTuple, TupleUtil} from "./tuple";
 import {ColumnMap} from "./column-map";
-import {SelectItemArrayUtil} from "./select-item-array";
 import {IExprSelectItem} from "./expr-select-item";
 import {ToUnknownIfAllFieldsNever} from "./type";
+import {ColumnIdentifierUtil} from "./column-identifier";
 
 export interface UnionQuery {
     readonly distinct : boolean,
@@ -669,10 +669,10 @@ export namespace Query {
                             ReturnType<SelectDelegateT>[index] extends SelectItem ?
                             (
                                 Extract<
-                                    SelectItemUtil.ToColumnIdentifierUnion<
+                                    ColumnIdentifierUtil.UnionFromSelectItem<
                                         ReturnType<SelectDelegateT>[index]
                                     >,
-                                    SelectItemArrayUtil.ToColumnIdentifierUnion<
+                                    ColumnIdentifierUtil.UnionFromSelectItemArray<
                                         QueryT["selects"]
                                     >
                                 > extends never ?
@@ -680,10 +680,10 @@ export namespace Query {
                                 [
                                     "Duplicate columns in SELECT clause; consider aliasing",
                                     Extract<
-                                        SelectItemUtil.ToColumnIdentifierUnion<
+                                        ColumnIdentifierUtil.UnionFromSelectItem<
                                             ReturnType<SelectDelegateT>[index]
                                         >,
-                                        SelectItemArrayUtil.ToColumnIdentifierUnion<
+                                        ColumnIdentifierUtil.UnionFromSelectItemArray<
                                             QueryT["selects"]
                                         >
                                     >
@@ -698,10 +698,10 @@ export namespace Query {
                             ReturnType<SelectDelegateT>[index] extends SelectItem ?
                             (
                                 Extract<
-                                    SelectItemUtil.ToColumnIdentifierUnion<
+                                    ColumnIdentifierUtil.UnionFromSelectItem<
                                         ReturnType<SelectDelegateT>[index]
                                     >,
-                                    SelectItemArrayUtil.ToColumnIdentifierUnionIgnoreIndex<
+                                    ColumnIdentifierUtil.UnionFromSelectItemArrayIgnoreIndex<
                                         ReturnType<SelectDelegateT>,
                                         index
                                     >
@@ -710,10 +710,10 @@ export namespace Query {
                                 [
                                     "Duplicate columns in SELECT clause",
                                     Extract<
-                                        SelectItemUtil.ToColumnIdentifierUnion<
+                                        ColumnIdentifierUtil.UnionFromSelectItem<
                                             ReturnType<SelectDelegateT>[index]
                                         >,
-                                        SelectItemArrayUtil.ToColumnIdentifierUnionIgnoreIndex<
+                                        ColumnIdentifierUtil.UnionFromSelectItemArrayIgnoreIndex<
                                             ReturnType<SelectDelegateT>,
                                             index
                                         >

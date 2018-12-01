@@ -62,10 +62,6 @@ export declare namespace ColumnMapUtil {
         readonly [columnName in Exclude<Extract<keyof ColumnMapB, string>, keyof ColumnMapA>]: (ColumnMapB[columnName]);
     });
     function intersect<ColumnMapA extends ColumnMap, ColumnMapB extends ColumnMap>(columnMapA: ColumnMapA, columnMapB: ColumnMapB): (Intersect<ColumnMapA, ColumnMapB>);
-    type ToColumnIdentifierUnion<ColumnMapT extends ColumnMap> = ({
-        [columnName in Extract<keyof ColumnMapT, string>]: (Column.ToColumnIdentifier<ColumnMapT[columnName]>);
-    }[Extract<keyof ColumnMapT, string>]);
-    function toColumnIdentifierArray<ColumnMapT extends ColumnMap>(columnMap: ColumnMapT): ToColumnIdentifierUnion<ColumnMapT>[];
     type ToNullable<ColumnMapT extends ColumnMap> = ({
         readonly [columnName in keyof ColumnMapT]: (Column.ToNullable<ColumnMapT[columnName]>);
     });
@@ -88,6 +84,7 @@ export declare namespace ColumnMapUtil {
         }>> : columnName extends ColumnMapUtil.ToColumnNameUnion<Extract<SelectsT[number], ColumnMap>> ? ColumnMapUtil.FindWithColumnName<Extract<SelectsT[number], ColumnMap>, columnName> : never);
     });
     function fromSelectItemArray<SelectsT extends SelectItem[]>(selects: SelectsT): FromSelectItemArray<SelectsT>;
+    type IsSubset<A extends ColumnMap, B extends ColumnMap> = (B extends A ? true : false);
     function assertIsSubset(a: ColumnMap, b: ColumnMap): void;
     type FindWithColumnName<ColumnMapT extends ColumnMap, ColumnNameT extends string> = (ColumnMapT extends ColumnMap ? (ColumnNameT extends keyof ColumnMapT ? ColumnMapT[ColumnNameT] : never) : never);
 }

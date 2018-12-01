@@ -9,6 +9,8 @@ __export(require("./column-map"));
 __export(require("./table"));
 __export(require("./assert-map"));
 __export(require("./expr-select-item"));
+__export(require("./column-identifier-array"));
+__export(require("./column-identifier"));
 __export(require("./constants"));
 __export(require("./join"));
 __export(require("./select-item"));

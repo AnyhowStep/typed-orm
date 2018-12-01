@@ -9,12 +9,12 @@ export const columnMap = o.ColumnMapUtil.fromAssertMap(
         z : sd.buffer(),
     }
 );
-export const columnIdentifierArray = o.ColumnMapUtil.toColumnIdentifierArray(columnMap);
+export const columnIdentifierArray = o.ColumnIdentifierArrayUtil.fromColumnMap(columnMap);
 export const emptyColumnMap = o.ColumnMapUtil.fromAssertMap(
     "someEmptyTable",
     {}
 );
-export const emptyColumnIdentifierArray = o.ColumnMapUtil.toColumnIdentifierArray(emptyColumnMap);
+export const emptyColumnIdentifierArray = o.ColumnIdentifierArrayUtil.fromColumnMap(emptyColumnMap);
 
 export const mixedColumnMap = o.ColumnMapUtil.intersect(
     o.ColumnMapUtil.fromAssertMap(
@@ -32,4 +32,4 @@ export const mixedColumnMap = o.ColumnMapUtil.intersect(
         }
     )
 );
-export const mixedColumnIdentifierArray = o.ColumnMapUtil.toColumnIdentifierArray(mixedColumnMap);
+export const mixedColumnIdentifierArray = o.ColumnIdentifierArrayUtil.fromColumnMap(mixedColumnMap);

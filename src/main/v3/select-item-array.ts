@@ -38,26 +38,4 @@ export namespace SelectItemArrayUtil {
             )
         }[Extract<keyof SelectsT, string>]
     );
-
-    export type ToColumnIdentifierUnion<SelectsT extends SelectItem[]> = (
-        {
-            [index in keyof SelectsT] : (
-                SelectsT[index] extends SelectItem ?
-                SelectItemUtil.ToColumnIdentifierUnion<SelectsT[index]> :
-                never
-            )
-        }[keyof SelectsT]
-    );
-    export type ToColumnIdentifierUnionIgnoreIndex<
-        SelectsT extends SelectItem[],
-        IgnoreIndexT extends Extract<keyof SelectsT, string>
-    > = (
-        {
-            [index in Exclude<Extract<keyof SelectsT, string>, IgnoreIndexT>] : (
-                SelectsT[index] extends SelectItem ?
-                SelectItemUtil.ToColumnIdentifierUnion<SelectsT[index]> :
-                never
-            )
-        }[Exclude<Extract<keyof SelectsT, string>, IgnoreIndexT>]
-    );
 }

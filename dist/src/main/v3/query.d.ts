@@ -2,7 +2,7 @@ import * as sd from "schema-decorator";
 import { IJoin, Join } from "./join";
 import { IAliasedTable } from "./aliased-table";
 import { IColumn } from "./column";
-import { SelectItem, SelectItemUtil } from "./select-item";
+import { SelectItem } from "./select-item";
 import { RawExpr, RawExprUtil } from "./raw-expr";
 import { IExpr } from "./expr";
 import { ColumnRefUtil } from "./column-ref";
@@ -10,9 +10,9 @@ import { ColumnMapUtil } from "./column-map";
 import { JoinArrayUtil } from "./join-array";
 import { NonEmptyTuple, TupleUtil } from "./tuple";
 import { ColumnMap } from "./column-map";
-import { SelectItemArrayUtil } from "./select-item-array";
 import { IExprSelectItem } from "./expr-select-item";
 import { ToUnknownIfAllFieldsNever } from "./type";
+import { ColumnIdentifierUtil } from "./column-identifier";
 export interface UnionQuery {
     readonly distinct: boolean;
     readonly query: IQuery;
@@ -176,9 +176,9 @@ export declare namespace Query {
     }> & ToUnknownIfAllFieldsNever<{
         [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends ColumnMap ? (ColumnMapUtil.ToUnion<ReturnType<SelectDelegateT>[index]> extends ColumnRefUtil.ToUnion<ColumnRefUtil.FromQuery<QueryT>> ? never : ["Invalid ColumnMap", Exclude<ColumnMapUtil.ToUnion<ReturnType<SelectDelegateT>[index]>, ColumnRefUtil.ToUnion<ColumnRefUtil.FromQuery<QueryT>>>] | void) : never);
     }> & (QueryT["selects"] extends SelectItem[] ? (ToUnknownIfAllFieldsNever<{
-        [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends SelectItem ? (Extract<SelectItemUtil.ToColumnIdentifierUnion<ReturnType<SelectDelegateT>[index]>, SelectItemArrayUtil.ToColumnIdentifierUnion<QueryT["selects"]>> extends never ? never : ["Duplicate columns in SELECT clause; consider aliasing", Extract<SelectItemUtil.ToColumnIdentifierUnion<ReturnType<SelectDelegateT>[index]>, SelectItemArrayUtil.ToColumnIdentifierUnion<QueryT["selects"]>>] | void) : never);
+        [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends SelectItem ? (Extract<ColumnIdentifierUtil.UnionFromSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.UnionFromSelectItemArray<QueryT["selects"]>> extends never ? never : ["Duplicate columns in SELECT clause; consider aliasing", Extract<ColumnIdentifierUtil.UnionFromSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.UnionFromSelectItemArray<QueryT["selects"]>>] | void) : never);
     }> & ToUnknownIfAllFieldsNever<{
-        [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends SelectItem ? (Extract<SelectItemUtil.ToColumnIdentifierUnion<ReturnType<SelectDelegateT>[index]>, SelectItemArrayUtil.ToColumnIdentifierUnionIgnoreIndex<ReturnType<SelectDelegateT>, index>> extends never ? never : ["Duplicate columns in SELECT clause", Extract<SelectItemUtil.ToColumnIdentifierUnion<ReturnType<SelectDelegateT>[index]>, SelectItemArrayUtil.ToColumnIdentifierUnionIgnoreIndex<ReturnType<SelectDelegateT>, index>>] | void) : never);
+        [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends SelectItem ? (Extract<ColumnIdentifierUtil.UnionFromSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.UnionFromSelectItemArrayIgnoreIndex<ReturnType<SelectDelegateT>, index>> extends never ? never : ["Duplicate columns in SELECT clause", Extract<ColumnIdentifierUtil.UnionFromSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.UnionFromSelectItemArrayIgnoreIndex<ReturnType<SelectDelegateT>, index>>] | void) : never);
     }>) : unknown))): Select<QueryT, SelectDelegateT>;
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: Query.AssertUniqueJoinTarget<Query.NewInstance, AliasedTableT>): (Query.From<Query.NewInstance, AliasedTableT>);

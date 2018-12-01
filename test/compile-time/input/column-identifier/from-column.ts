@@ -6,7 +6,7 @@ export const c = new o.Column({
     name : "columnName",
     assertDelegate : sd.naturalNumber(),
 });
-export const c2 = c.toColumnIdentifier();
+export const c2 = o.ColumnIdentifierUtil.fromColumn(c);
 
 export const c3 = o.column("tableAlias", "columnName", sd.varChar(255));
-export const c4 = c3.toColumnIdentifier();
+export const c4 = o.ColumnIdentifierUtil.fromColumn(c3);

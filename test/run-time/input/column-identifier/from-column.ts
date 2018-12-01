@@ -12,7 +12,7 @@ tape(__filename, (t) => {
         undefined,
         undefined
     );
-    const identifier = c.toColumnIdentifier();
+    const identifier = o.ColumnIdentifierUtil.fromColumn(c);
 
     t.deepEqual(o.Column.isColumn(identifier), false);
     t.deepEqual(c.tableAlias, "tableAlias");

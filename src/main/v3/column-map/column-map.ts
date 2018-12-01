@@ -1,3 +1,18 @@
+/*
+    TODO Debate data type conversion utils naming convention.
+    + ToXxx vs. FromXxx
+
+    Using ToXxx seems to apply to more cases.
+    Example,
+
+    ColumnMapUtil.ToColumnIdentifierUnion<>
+    vs.
+    ColumnIdentifierUtil.UnionFromColumnMap<>
+
+    ColumnMapUtil.ToColumnIdentifierArray<>
+    vs.
+    ColumnIdentifierArrayUtil.FromColumnMap<>
+*/
 import * as sd from "schema-decorator";
 import {IColumn, Column} from "../column";
 import {IJoin} from "../join";
@@ -442,23 +457,6 @@ export namespace ColumnMapUtil {
         );
     }
 
-    export type ToColumnIdentifierUnion<ColumnMapT extends ColumnMap> = (
-        {
-            [columnName in Extract<keyof ColumnMapT, string>] : (
-                Column.ToColumnIdentifier<ColumnMapT[columnName]>
-            )
-        }[Extract<keyof ColumnMapT, string>]
-    );
-    export function toColumnIdentifierArray<ColumnMapT extends ColumnMap> (
-        columnMap : ColumnMapT
-    ) : ToColumnIdentifierUnion<ColumnMapT>[] {
-        const columnNames = Object.keys(columnMap) as Extract<keyof ColumnMapT, string>[];
-        return columnNames.map(columnName => ({
-            tableAlias : columnMap[columnName].tableAlias,
-            name : columnName,
-        }));
-    }
-
     export type ToNullable<ColumnMapT extends ColumnMap> = (
         {
             readonly [columnName in keyof ColumnMapT] : (
@@ -578,6 +576,12 @@ export namespace ColumnMapUtil {
             ...columnMaps
         );
     }
+
+    export type IsSubset<A extends ColumnMap, B extends ColumnMap> = (
+        B extends A ?
+        true :
+        false
+    );
 
     export function assertIsSubset (a : ColumnMap, b : ColumnMap) {
         for (let columnNameA in a) {

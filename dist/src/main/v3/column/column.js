@@ -29,9 +29,6 @@ class Column {
     assertIsEqual(other) {
         Column.assertIsEqual(this, other);
     }
-    toColumnIdentifier() {
-        return Column.toColumnIdentifier(this);
-    }
 }
 exports.Column = Column;
 (function (Column) {
@@ -169,13 +166,6 @@ exports.Column = Column;
         }
     }
     Column.assertIsEqual = assertIsEqual;
-    function toColumnIdentifier(column) {
-        return {
-            tableAlias: column.tableAlias,
-            name: column.name,
-        };
-    }
-    Column.toColumnIdentifier = toColumnIdentifier;
 })(Column = exports.Column || (exports.Column = {}));
 function column(tableAlias, name, assertFunc) {
     return new Column({

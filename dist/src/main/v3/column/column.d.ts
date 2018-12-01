@@ -30,7 +30,6 @@ export declare class Column<DataT extends ColumnData> implements IColumn<DataT> 
     withTableAlias<NewTableAliasT extends string>(newTableAlias: NewTableAliasT): (Column.WithTableAlias<this, NewTableAliasT>);
     withType<NewAssertFuncT extends sd.AnyAssertFunc>(newAssertFunc: NewAssertFuncT): (Column.WithType<this, NewAssertFuncT>);
     assertIsEqual(other: IColumn): void;
-    toColumnIdentifier(): Column.ToColumnIdentifier<this>;
 }
 export declare namespace Column {
     function queryStringTree({ tableAlias, name, __subTableName, __isInSelectClause, }: IColumn): string;
@@ -66,11 +65,6 @@ export declare namespace Column {
     }> : ItemT extends IExprSelectItem ? FromExprSelectItem<ItemT> : never);
     function fromSingleValueSelectItem<ItemT extends SingleValueSelectItem>(item: ItemT): FromSingleValueSelectItem<ItemT>;
     function assertIsEqual(a: IColumn, b: IColumn): void;
-    type ToColumnIdentifier<ColumnT extends IColumn> = ({
-        readonly tableAlias: ColumnT["tableAlias"];
-        readonly name: ColumnT["name"];
-    });
-    function toColumnIdentifier<ColumnT extends IColumn>(column: ColumnT): ToColumnIdentifier<ColumnT>;
 }
 export declare function column<TableAliasT extends string, NameT extends string, AssertFuncT extends sd.AnyAssertFunc>(tableAlias: TableAliasT, name: NameT, assertFunc: AssertFuncT): Column<{
     readonly tableAlias: TableAliasT;

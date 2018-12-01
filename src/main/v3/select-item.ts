@@ -27,20 +27,6 @@ export namespace SelectItemUtil {
         ColumnMapUtil.ToColumnNameUnion<SelectItemT> :
         never
     );
-    //TODO Better name
-    //Basically, only tableAlias and name, so we can check for duplicates.
-    export type ToColumnIdentifierUnion<SelectItemT extends SelectItem> = (
-        SelectItemT extends IColumn ?
-        Column.ToColumnIdentifier<SelectItemT> :
-        SelectItemT extends IExprSelectItem ?
-        {
-            readonly tableAlias : SelectItemT["tableAlias"],
-            readonly name : SelectItemT["alias"],
-        } :
-        SelectItemT extends ColumnMap ?
-        ColumnMapUtil.ToColumnIdentifierUnion<SelectItemT> :
-        never
-    );
     export function isSingleValueSelectItem (raw : any) : raw is SingleValueSelectItem {
         return (
             Column.isColumn(raw) ||
