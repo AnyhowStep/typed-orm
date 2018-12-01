@@ -82,7 +82,9 @@ export declare namespace ColumnMapUtil {
         }>> : columnName extends ColumnMapUtil.ToColumnNameUnion<Extract<SelectsT[number], ColumnMap>> ? ColumnMapUtil.FindWithColumnName<Extract<SelectsT[number], ColumnMap>, columnName> : never);
     });
     function fromSelectItemArray<SelectsT extends SelectItem[]>(selects: SelectsT): FromSelectItemArray<SelectsT>;
-    type IsSubset<A extends ColumnMap, B extends ColumnMap> = (B extends A ? true : false);
+    type IsAssignableSubset<A extends ColumnMap, B extends ColumnMap> = (Extract<keyof A, string> extends never ? true : string extends Extract<keyof A, string> ? boolean : string extends Extract<keyof B, string> ? boolean : Extract<keyof A, string> extends Extract<keyof B, string> ? ({
+        [columnName in Extract<keyof A, string>]: (Column.IsAssignableTo<A[columnName], B[columnName]>);
+    }[Extract<keyof A, string>]) : false);
     type FindWithColumnName<ColumnMapT extends ColumnMap, ColumnNameT extends string> = (ColumnMapT extends ColumnMap ? (ColumnNameT extends keyof ColumnMapT ? ColumnMapT[ColumnNameT] : never) : never);
 }
 //# sourceMappingURL=column-map.d.ts.map
