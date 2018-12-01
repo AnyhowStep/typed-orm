@@ -56,7 +56,23 @@ export function table<
 );
 export function table<TableT extends ITable> (
     table : TableT
-) : Table<TableT>;
+) : (
+    Table<{
+        readonly alias : TableT["alias"];
+        readonly name  : TableT["name"];
+        readonly columns : TableT["columns"];
+
+        readonly autoIncrement : TableT["autoIncrement"];
+        readonly generated : TableT["generated"];
+        readonly hasDefaultValue : TableT["hasDefaultValue"];
+        readonly mutable : TableT["mutable"];
+        readonly id : TableT["id"];
+        readonly candidateKeys : TableT["candidateKeys"];
+        readonly parents : TableT["parents"];
+        readonly insertAllowed : TableT["insertAllowed"];
+        readonly deleteAllowed : TableT["deleteAllowed"];
+    }>
+);
 export function table (arg0 : any, arg1? : any) {
     if (arg1 == undefined) {
         return tableFromTable(arg0);

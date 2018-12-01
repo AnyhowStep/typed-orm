@@ -32,5 +32,18 @@ export declare function table<NameT extends string, FieldsT extends Tuple<sd.Any
     readonly insertAllowed: true;
     readonly deleteAllowed: true;
 }>);
-export declare function table<TableT extends ITable>(table: TableT): Table<TableT>;
+export declare function table<TableT extends ITable>(table: TableT): (Table<{
+    readonly alias: TableT["alias"];
+    readonly name: TableT["name"];
+    readonly columns: TableT["columns"];
+    readonly autoIncrement: TableT["autoIncrement"];
+    readonly generated: TableT["generated"];
+    readonly hasDefaultValue: TableT["hasDefaultValue"];
+    readonly mutable: TableT["mutable"];
+    readonly id: TableT["id"];
+    readonly candidateKeys: TableT["candidateKeys"];
+    readonly parents: TableT["parents"];
+    readonly insertAllowed: TableT["insertAllowed"];
+    readonly deleteAllowed: TableT["deleteAllowed"];
+}>);
 //# sourceMappingURL=instantiate.d.ts.map
