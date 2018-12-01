@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const sqlstring_1 = require("sqlstring");
 const sd = require("schema-decorator");
-const constants_1 = require("../constants");
-const expr_select_item_1 = require("../expr-select-item");
+const constants_1 = require("./constants");
+const expr_select_item_1 = require("./expr-select-item");
 class Column {
     constructor(data, __subTableName, __isInSelectClause) {
         this.tableAlias = data.tableAlias;
@@ -31,6 +31,10 @@ class Column {
     }
 }
 exports.Column = Column;
+/*
+    TODO Consider renaming to ColumnUtil
+    to be more consistent with other utility namespaces
+*/
 (function (Column) {
     function queryStringTree({ tableAlias, name, __subTableName, __isInSelectClause, }) {
         if (tableAlias == constants_1.ALIASED) {
@@ -156,6 +160,7 @@ exports.Column = Column;
     Column.fromSingleValueSelectItem = fromSingleValueSelectItem;
     /*
         Cannot actually check `assertDelegate` are equal.
+        TODO Refactor this to ColumnIdentifier.assertIsEqual()
     */
     function assertIsEqual(a, b) {
         if (a.tableAlias != b.tableAlias) {

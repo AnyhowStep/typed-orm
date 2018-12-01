@@ -9,6 +9,7 @@ import { SuperKeyArrayUtil } from "../super-key-array";
 import { ToUnknownIfAllFieldsNever } from "../type";
 import { AssertMap, AssertMapUtil } from "../assert-map";
 import { FieldArrayUtil } from "../field-array";
+import { Column } from "../column";
 export interface TableData extends AliasedTableData {
     readonly autoIncrement: undefined | string;
     readonly id: undefined | string;
@@ -339,7 +340,7 @@ export declare namespace Table {
     function disallowDelete<TableT extends ITable>(table: TableT): (DisallowDelete<TableT>);
 }
 export declare namespace Table {
-    type PolymorphicColumnNameUnion<TableT extends ITable> = ((ColumnMapUtil.ToUnion<TableT["columns"]>["name"]) | (ColumnMapUtil.ToUnion<TableT["parents"][number]["columns"]>["name"]));
+    type PolymorphicColumnNameUnion<TableT extends ITable> = ((Column.UnionFromColumnMap<TableT["columns"]>["name"]) | (Column.UnionFromColumnMap<TableT["parents"][number]["columns"]>["name"]));
     type PolymorphicGeneratedUnion<TableT extends ITable> = ((TableT["generated"][number]) | (TableT["parents"][number]["generated"][number]));
 }
 //# sourceMappingURL=table.d.ts.map

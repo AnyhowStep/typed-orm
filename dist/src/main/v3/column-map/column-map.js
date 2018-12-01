@@ -31,13 +31,6 @@ var ColumnMapUtil;
         return true;
     }
     ColumnMapUtil.isColumnMap = isColumnMap;
-    function toArray(columnMap) {
-        return Object.keys(columnMap)
-            .map((columnName) => {
-            return columnMap[columnName];
-        });
-    }
-    ColumnMapUtil.toArray = toArray;
     function toColumnNameArray(columnMap) {
         //Technically, this could be wrong.
         //But it shouldn't be wrong, in general.

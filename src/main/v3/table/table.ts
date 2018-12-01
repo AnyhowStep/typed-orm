@@ -9,6 +9,7 @@ import {SuperKeyArrayUtil} from "../super-key-array";
 import {ToUnknownIfAllFieldsNever} from "../type";
 import {AssertMap, AssertMapUtil} from "../assert-map";
 import {FieldArrayUtil} from "../field-array";
+import {Column} from "../column";
 
 export interface TableData extends AliasedTableData {
     //The maximum value `UNSIGNED BIGINT` can have is
@@ -1664,8 +1665,8 @@ export namespace Table {
 export namespace Table {
     //TODO Find better names
     export type PolymorphicColumnNameUnion<TableT extends ITable> = (
-        (ColumnMapUtil.ToUnion<TableT["columns"]>["name"]) |
-        (ColumnMapUtil.ToUnion<TableT["parents"][number]["columns"]>["name"])
+        (Column.UnionFromColumnMap<TableT["columns"]>["name"]) |
+        (Column.UnionFromColumnMap<TableT["parents"][number]["columns"]>["name"])
     );
     export type PolymorphicGeneratedUnion<TableT extends ITable> = (
         (TableT["generated"][number])|

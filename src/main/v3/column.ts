@@ -1,8 +1,9 @@
 import {escapeId} from "sqlstring";
 import * as sd from "schema-decorator";
-import {ALIASED} from "../constants";
-import {SingleValueSelectItem} from "../select-item";
-import {IExprSelectItem, ExprSelectItemUtil} from "../expr-select-item";
+import {ALIASED} from "./constants";
+import {SingleValueSelectItem} from "./select-item";
+import {IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
+import {ColumnMap} from "./column-map";
 
 export interface ColumnData {
     readonly tableAlias : string;
@@ -101,6 +102,10 @@ export class Column<DataT extends ColumnData> implements IColumn<DataT> {
         ) as any;
     }*/
 }
+/*
+    TODO Consider renaming to ColumnUtil
+    to be more consistent with other utility namespaces
+*/
 export namespace Column {
     export function queryStringTree (
         {
@@ -358,6 +363,7 @@ export namespace Column {
 
     /*
         Cannot actually check `assertDelegate` are equal.
+        TODO Refactor this to ColumnIdentifier.assertIsEqual()
     */
     export function assertIsEqual (a : IColumn, b : IColumn) {
         if (a.tableAlias != b.tableAlias) {
@@ -367,6 +373,12 @@ export namespace Column {
             throw new Error(`Name mismatch ${a.name} != ${b.name}`);
         }
     }
+
+    export type UnionFromColumnMap<ColumnMapT extends ColumnMap> = (
+        ColumnMapT extends ColumnMap ?
+            ColumnMapT[Extract<keyof ColumnMapT, string>] :
+            never
+    );
 }
 
 export function column<

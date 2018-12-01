@@ -1,6 +1,6 @@
 import { IAliasedTable } from "./aliased-table";
 import { ColumnMap, ColumnMapUtil } from "./column-map";
-import { IColumn } from "./column";
+import { IColumn, Column } from "./column";
 export declare enum JoinType {
     FROM = "FROM",
     INNER = "INNER",
@@ -31,6 +31,6 @@ export declare class Join<DataT extends JoinData> implements IJoin<DataT> {
     constructor(data: DataT, joinType: JoinType, from: IColumn[], to: IColumn[]);
 }
 export declare namespace Join {
-    type ToUnion<JoinT extends IJoin> = (ColumnMapUtil.ToUnion<ColumnMapUtil.FromJoin<JoinT>>);
+    type ToUnion<JoinT extends IJoin> = (Column.UnionFromColumnMap<ColumnMapUtil.FromJoin<JoinT>>);
 }
 //# sourceMappingURL=join.d.ts.map

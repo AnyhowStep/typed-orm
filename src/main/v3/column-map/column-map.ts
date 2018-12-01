@@ -35,19 +35,6 @@ export namespace ColumnMapUtil {
         }
         return true;
     }
-    export type ToUnion<ColumnMapT extends ColumnMap> = (
-        ColumnMapT extends ColumnMap ?
-            ColumnMapT[Extract<keyof ColumnMapT, string>] :
-            never
-    );
-    export function toArray<ColumnMapT extends ColumnMap> (
-        columnMap : ColumnMapT
-    ) : ToUnion<ColumnMapT>[] {
-        return (Object.keys(columnMap) as Extract<keyof ColumnMapT, string>[])
-            .map<ToUnion<ColumnMapT>>((columnName) => {
-                return columnMap[columnName] as ToUnion<ColumnMapT>;
-            });
-    }
     //Technically, this could be wrong.
     //But it shouldn't be wrong, in general.
     export type ToColumnNameUnion<ColumnMapT extends ColumnMap> = (
@@ -148,11 +135,11 @@ export namespace ColumnMapUtil {
             string extends ColumnT["tableAlias"] ?
             (
                 //No run-time check for this
-                ReturnType<ColumnT["assertDelegate"]> extends ReturnType<ToUnion<ColumnMapT>["assertDelegate"]> ?
+                ReturnType<ColumnT["assertDelegate"]> extends ReturnType<Column.UnionFromColumnMap<ColumnMapT>["assertDelegate"]> ?
                 boolean :
                 false
             ) :
-            ColumnT["tableAlias"] extends ToUnion<ColumnMapT>["tableAlias"] ?
+            ColumnT["tableAlias"] extends Column.UnionFromColumnMap<ColumnMapT>["tableAlias"] ?
             (
                 //No run-time check for this
                 ReturnType<ColumnT["assertDelegate"]> extends ReturnType<{
@@ -203,7 +190,7 @@ export namespace ColumnMapUtil {
         (
             string extends ColumnIdentifierT["tableAlias"] ?
             boolean :
-            ColumnIdentifierT["tableAlias"] extends ToUnion<ColumnMapT>["tableAlias"] ?
+            ColumnIdentifierT["tableAlias"] extends Column.UnionFromColumnMap<ColumnMapT>["tableAlias"] ?
             boolean :
             false
         ) :

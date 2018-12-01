@@ -1,6 +1,6 @@
 import {IAliasedTable} from "./aliased-table";
 import {ColumnMap, ColumnMapUtil} from "./column-map";
-import {IColumn} from "./column";
+import {IColumn, Column} from "./column";
 
 export enum JoinType {
     FROM  = "FROM",
@@ -62,7 +62,7 @@ export class Join<DataT extends JoinData> implements IJoin<DataT> {
 }
 export namespace Join {
     export type ToUnion<JoinT extends IJoin> = (
-        ColumnMapUtil.ToUnion<
+        Column.UnionFromColumnMap<
             ColumnMapUtil.FromJoin<JoinT>
         >
     );

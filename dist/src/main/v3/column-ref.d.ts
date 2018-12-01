@@ -2,7 +2,7 @@ import { ColumnMap, ColumnMapUtil } from "./column-map";
 import { IJoin } from "./join";
 import { JoinArrayUtil } from "./join-array";
 import { StringUtil } from "./string";
-import { IColumn } from "./column";
+import { IColumn, Column } from "./column";
 import { IQuery } from "./query";
 export declare type ColumnRef = {
     readonly [tableAlias: string]: ColumnMap;
@@ -14,7 +14,7 @@ export declare namespace ColumnRefUtil {
     function fromJoinArray<JoinsT extends IJoin[]>(joins: JoinsT): (FromJoinArray<JoinsT>);
     type ToConvenient<ColumnRefT extends ColumnRef> = (StringUtil.IsOneLiteral<Extract<keyof ColumnRefT, string>> extends true ? ColumnRefT[Extract<keyof ColumnRefT, string>] : ColumnRefT);
     function toConvenient<ColumnRefT extends ColumnRef>(columnRef: ColumnRefT): ToConvenient<ColumnRefT>;
-    type ToUnion<ColumnRefT extends ColumnRef> = (ColumnRefT extends ColumnRef ? ColumnMapUtil.ToUnion<ColumnRefT[keyof ColumnRefT]> : never);
+    type ToUnion<ColumnRefT extends ColumnRef> = (ColumnRefT extends ColumnRef ? Column.UnionFromColumnMap<ColumnRefT[keyof ColumnRefT]> : never);
     type FromColumn<ColumnT extends IColumn> = ({
         readonly [tableAlias in ColumnT["tableAlias"]]: (ColumnMapUtil.FromColumn<ColumnT>);
     });

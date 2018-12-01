@@ -1,6 +1,7 @@
 import * as sd from "schema-decorator";
-import { SingleValueSelectItem } from "../select-item";
-import { IExprSelectItem } from "../expr-select-item";
+import { SingleValueSelectItem } from "./select-item";
+import { IExprSelectItem } from "./expr-select-item";
+import { ColumnMap } from "./column-map";
 export interface ColumnData {
     readonly tableAlias: string;
     readonly name: string;
@@ -65,6 +66,7 @@ export declare namespace Column {
     }> : ItemT extends IExprSelectItem ? FromExprSelectItem<ItemT> : never);
     function fromSingleValueSelectItem<ItemT extends SingleValueSelectItem>(item: ItemT): FromSingleValueSelectItem<ItemT>;
     function assertIsEqual(a: IColumn, b: IColumn): void;
+    type UnionFromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? ColumnMapT[Extract<keyof ColumnMapT, string>] : never);
 }
 export declare function column<TableAliasT extends string, NameT extends string, AssertFuncT extends sd.AnyAssertFunc>(tableAlias: TableAliasT, name: NameT, assertFunc: AssertFuncT): Column<{
     readonly tableAlias: TableAliasT;

@@ -2,7 +2,7 @@ import {ColumnMap, ColumnMapUtil} from "./column-map";
 import {IJoin} from "./join";
 import {JoinArrayUtil} from "./join-array";
 import {StringUtil} from "./string";
-import {IColumn} from "./column";
+import {IColumn, Column} from "./column";
 import {IQuery} from "./query";
 
 export type ColumnRef = {
@@ -60,7 +60,7 @@ export namespace ColumnRefUtil {
     }
     export type ToUnion<ColumnRefT extends ColumnRef> = (
         ColumnRefT extends ColumnRef ?
-            ColumnMapUtil.ToUnion<ColumnRefT[keyof ColumnRefT]> :
+            Column.UnionFromColumnMap<ColumnRefT[keyof ColumnRefT]> :
             never
     );
 

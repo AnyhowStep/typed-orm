@@ -1,12 +1,11 @@
 import * as sd from "schema-decorator";
 import {IJoin, Join, JoinType} from "./join";
 import {IAliasedTable} from "./aliased-table";
-import {IColumn} from "./column";
+import {IColumn, Column} from "./column";
 import {SelectItem} from "./select-item";
 import {RawExpr, RawExprUtil} from "./raw-expr";
 import {IExpr, Expr} from "./expr";
 import {ColumnRefUtil} from "./column-ref";
-import {ColumnMapUtil} from "./column-map";
 import {JoinArrayUtil} from "./join-array";
 import {NonEmptyTuple, TupleUtil} from "./tuple";
 import {ColumnMap} from "./column-map";
@@ -339,7 +338,7 @@ export namespace Query {
         FromDelegateT extends JoinFromDelegate<QueryT["joins"]>
     > = (
         (columns : AliasedTableT["columns"]) => (
-            ColumnMapUtil.ToUnion<AliasedTableT["columns"]>[] &
+            Column.UnionFromColumnMap<AliasedTableT["columns"]>[] &
             { length : ReturnType<FromDelegateT>["length"] } &
             {
                 //Surely a JOIN on anything more than 10 columns is a bit much...
@@ -647,12 +646,12 @@ export namespace Query {
                 [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
                     ReturnType<SelectDelegateT>[index] extends ColumnMap ?
                     (
-                        ColumnMapUtil.ToUnion<ReturnType<SelectDelegateT>[index]> extends ColumnRefUtil.ToUnion<ColumnRefUtil.FromQuery<QueryT>> ?
+                        Column.UnionFromColumnMap<ReturnType<SelectDelegateT>[index]> extends ColumnRefUtil.ToUnion<ColumnRefUtil.FromQuery<QueryT>> ?
                         never :
                         [
                             "Invalid ColumnMap",
                             Exclude<
-                                ColumnMapUtil.ToUnion<ReturnType<SelectDelegateT>[index]>,
+                                Column.UnionFromColumnMap<ReturnType<SelectDelegateT>[index]>,
                                 ColumnRefUtil.ToUnion<ColumnRefUtil.FromQuery<QueryT>>
                             >
                         ]|void

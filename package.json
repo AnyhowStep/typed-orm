@@ -15,7 +15,8 @@
     "test-compile-time": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/runner.ts",
     "accept-compile-time": "ts-node -P ./test/compile-time/tsconfig.json ./test/compile-time/accept-actual.ts",
     "test-run-time": "ts-node -P ./test/run-time/tsconfig.json ./test/run-time/runner.ts",
-    "test-all": "(npm run test-compile-time) && (npm run test-run-time)"
+    "test-all": "(npm run test-compile-time) && (npm run test-run-time)",
+    "sanity-check": "(npm run rebuild) && (npm run test-all)"
   },
   "author": "anyhowstep",
   "license": "ISC",
