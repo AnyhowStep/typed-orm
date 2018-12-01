@@ -155,4 +155,4 @@ if (allDiffResults.length > 0) {
     }
     process.exit(1);
 }
-console.log("done");
+console.log("tested", rootNames.length, "files");
