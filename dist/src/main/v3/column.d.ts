@@ -2,6 +2,7 @@ import * as sd from "schema-decorator";
 import { SingleValueSelectItem } from "./select-item";
 import { IExprSelectItem } from "./expr-select-item";
 import { ColumnMap } from "./column-map";
+import { ColumnIdentifierUtil } from "./column-identifier";
 export interface ColumnData {
     readonly tableAlias: string;
     readonly name: string;
@@ -65,6 +66,7 @@ export declare namespace Column {
     }> : ItemT extends IExprSelectItem ? FromExprSelectItem<ItemT> : never);
     function fromSingleValueSelectItem<ItemT extends SingleValueSelectItem>(item: ItemT): FromSingleValueSelectItem<ItemT>;
     type UnionFromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? ColumnMapT[Extract<keyof ColumnMapT, string>] : never);
+    type IsAssignableTo<A extends IColumn, B extends IColumn> = (boolean extends ColumnIdentifierUtil.IsEqual<A, B> ? (ReturnType<A["assertDelegate"]> extends ReturnType<B["assertDelegate"]> ? boolean : false) : ColumnIdentifierUtil.IsEqual<A, B> extends true ? (ReturnType<A["assertDelegate"]> extends ReturnType<B["assertDelegate"]> ? true : false) : false);
 }
 export declare function column<TableAliasT extends string, NameT extends string, AssertFuncT extends sd.AnyAssertFunc>(tableAlias: TableAliasT, name: NameT, assertFunc: AssertFuncT): Column<{
     readonly tableAlias: TableAliasT;

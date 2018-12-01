@@ -566,6 +566,9 @@ export namespace ColumnMapUtil {
 
     /*
         TODO
+        In this case "subset" means
+        all of A's columns are assignable to
+        the corresponding columns in B
     */
     export type IsSubset<A extends ColumnMap, B extends ColumnMap> = (
         B extends A ?
