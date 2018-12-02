@@ -70,15 +70,59 @@ export class Query<DataT extends QueryData> {
     public from<
         AliasedTableT extends IAliasedTable
     > (
-        this : Query.BeforeFromClause,
+        this : this & Query.BeforeFromClause,
         aliasedTable : Query.AssertUniqueJoinTarget<
             this & Query.BeforeFromClause,
             AliasedTableT
         >
     ) : (
-        Query.From<this & Query.BeforeFromClause, AliasedTableT>
+        Query.From<
+            this & Query.BeforeFromClause,
+            AliasedTableT
+        >
     ) {
-        return Query.from(this, aliasedTable);
+        return Query.from<
+            this & Query.BeforeFromClause,
+            AliasedTableT
+        >(
+            this,
+            aliasedTable
+        );
+    }
+
+    public innerJoin<
+        AliasedTableT extends IAliasedTable,
+        FromDelegateT extends Query.JoinFromDelegate<
+            (this & Query.AfterFromClause)["joins"]
+        >
+    > (
+        this : this & Query.AfterFromClause,
+        aliasedTable : Query.AssertUniqueJoinTarget<
+            this & Query.AfterFromClause,
+            AliasedTableT
+        >,
+        fromDelegate : FromDelegateT,
+        toDelegate : Query.JoinToDelegate<
+            this & Query.AfterFromClause,
+            AliasedTableT,
+            FromDelegateT
+        >
+    ) : (
+        Query.InnerJoin<
+            this & Query.AfterFromClause,
+            AliasedTableT
+        >
+    ) {
+        return Query.innerJoin<
+            this & Query.AfterFromClause,
+            AliasedTableT,
+            FromDelegateT
+        >(
+            this,
+            aliasedTable,
+            fromDelegate,
+            toDelegate
+        );
     }
 }
 export namespace Query {
@@ -421,7 +465,96 @@ export namespace Query {
         FromDelegateT extends JoinFromDelegate<QueryT["joins"]>
     > = (
         (columns : AliasedTableT["columns"]) => (
-            Column.UnionFromColumnMap<AliasedTableT["columns"]>[] &
+            ReturnType<FromDelegateT> extends [infer C0] ?
+            [
+                JoinToColumn<AliasedTableT, Extract<C0, IColumn>>
+            ] :
+            ReturnType<FromDelegateT> extends [infer C0, infer C1] ?
+            [
+                JoinToColumn<AliasedTableT, Extract<C0, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C1, IColumn>>
+            ] :
+            ReturnType<FromDelegateT> extends [infer C0, infer C1, infer C2] ?
+            [
+                JoinToColumn<AliasedTableT, Extract<C0, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C1, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C2, IColumn>>
+            ] :
+            ReturnType<FromDelegateT> extends [infer C0, infer C1, infer C2, infer C3] ?
+            [
+                JoinToColumn<AliasedTableT, Extract<C0, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C1, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C2, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C3, IColumn>>
+            ] :
+            ReturnType<FromDelegateT> extends [infer C0, infer C1, infer C2, infer C3, infer C4] ?
+            [
+                JoinToColumn<AliasedTableT, Extract<C0, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C1, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C2, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C3, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C4, IColumn>>
+            ] :
+            ReturnType<FromDelegateT> extends [infer C0, infer C1, infer C2, infer C3, infer C4, infer C5] ?
+            [
+                JoinToColumn<AliasedTableT, Extract<C0, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C1, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C2, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C3, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C4, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C5, IColumn>>
+            ] :
+            ReturnType<FromDelegateT> extends [infer C0, infer C1, infer C2, infer C3, infer C4, infer C5, infer C6] ?
+            [
+                JoinToColumn<AliasedTableT, Extract<C0, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C1, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C2, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C3, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C4, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C5, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C6, IColumn>>
+            ] :
+            ReturnType<FromDelegateT> extends [infer C0, infer C1, infer C2, infer C3, infer C4, infer C5, infer C6, infer C7] ?
+            [
+                JoinToColumn<AliasedTableT, Extract<C0, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C1, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C2, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C3, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C4, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C5, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C6, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C7, IColumn>>
+            ] :
+            ReturnType<FromDelegateT> extends [infer C0, infer C1, infer C2, infer C3, infer C4, infer C5, infer C6, infer C7, infer C8] ?
+            [
+                JoinToColumn<AliasedTableT, Extract<C0, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C1, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C2, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C3, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C4, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C5, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C6, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C7, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C8, IColumn>>
+            ] :
+            ReturnType<FromDelegateT> extends [infer C0, infer C1, infer C2, infer C3, infer C4, infer C5, infer C6, infer C7, infer C8, infer C9] ?
+            [
+                JoinToColumn<AliasedTableT, Extract<C0, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C1, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C2, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C3, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C4, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C5, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C6, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C7, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C8, IColumn>>,
+                JoinToColumn<AliasedTableT, Extract<C9, IColumn>>
+            ] :
+            //Turn off type-checking.
+            //Surely a JOIN on anything more than 10 columns is a bit much...
+            //Right?
+            Column.UnionFromColumnMap<AliasedTableT["columns"]>[]
+            /*Column.UnionFromColumnMap<AliasedTableT["columns"]>[] &
             { length : ReturnType<FromDelegateT>["length"] } &
             {
                 //Surely a JOIN on anything more than 10 columns is a bit much...
@@ -432,7 +565,7 @@ export namespace Query {
                         Extract<ReturnType<FromDelegateT>[index], IColumn>
                     >
                 )
-            }
+            }*/
         )
     );
     export type InnerJoin<

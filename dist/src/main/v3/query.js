@@ -18,6 +18,9 @@ class Query {
     from(aliasedTable) {
         return Query.from(this, aliasedTable);
     }
+    innerJoin(aliasedTable, fromDelegate, toDelegate) {
+        return Query.innerJoin(this, aliasedTable, fromDelegate, toDelegate);
+    }
 }
 exports.Query = Query;
 (function (Query) {
