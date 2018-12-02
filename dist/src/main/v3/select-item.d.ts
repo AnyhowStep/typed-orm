@@ -7,5 +7,6 @@ export declare type SelectItem = (SingleValueSelectItem | ColumnMap);
 export declare namespace SelectItemUtil {
     type ToColumnNameUnion<SelectItemT extends SelectItem> = (SelectItemT extends IColumn ? SelectItemT["name"] : SelectItemT extends IExprSelectItem ? SelectItemT["alias"] : SelectItemT extends ColumnMap ? Column.NameUnionFromColumnMap<SelectItemT> : never);
     function isSingleValueSelectItem(raw: any): raw is SingleValueSelectItem;
+    function isSelectItem(raw: any): raw is SelectItem;
 }
 //# sourceMappingURL=select-item.d.ts.map

@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const join_1 = require("./join");
 const expr_1 = require("./expr");
 const column_ref_1 = require("./column-ref");
+const join_array_1 = require("./join-array");
+const select_item_array_1 = require("./select-item-array");
 class Query {
     constructor(data, extraData) {
         this.joins = data.joins;
@@ -19,6 +21,69 @@ class Query {
 }
 exports.Query = Query;
 (function (Query) {
+    function isUnionQuery(raw) {
+        return (raw != undefined &&
+            (raw instanceof Object) &&
+            ("distinct" in raw) &&
+            ("query" in raw) &&
+            (typeof raw.distinct == "boolean") &&
+            isQuery(raw.query));
+    }
+    Query.isUnionQuery = isUnionQuery;
+    function isUnionQueryArray(raw) {
+        if (!(raw instanceof Array)) {
+            return false;
+        }
+        for (let item of raw) {
+            if (!isUnionQuery(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    Query.isUnionQueryArray = isUnionQueryArray;
+    function isLimit(raw) {
+        return (raw != undefined &&
+            (raw instanceof Object) &&
+            ("rowCount" in raw) &&
+            ("offset" in raw) &&
+            (typeof raw.rowCount == "number") &&
+            (typeof raw.offset == "number"));
+    }
+    Query.isLimit = isLimit;
+    function isExtraQueryData(raw) {
+        return (raw != undefined &&
+            (raw instanceof Object) &&
+            ("where" in raw) &&
+            (raw.where == undefined ||
+                expr_1.Expr.isExpr(raw.where)));
+    }
+    Query.isExtraQueryData = isExtraQueryData;
+    function isQuery(raw) {
+        return (raw != undefined &&
+            (raw instanceof Object) &&
+            ("joins" in raw) &&
+            ("parentJoins" in raw) &&
+            ("unions" in raw) &&
+            ("selects" in raw) &&
+            ("limit" in raw) &&
+            ("unionLimit" in raw) &&
+            ("extraData" in raw) &&
+            (raw.joins == undefined ||
+                join_array_1.JoinArrayUtil.isJoinArray(raw.joins)) &&
+            (raw.parentJoins == undefined ||
+                join_array_1.JoinArrayUtil.isJoinArray(raw.parentJoins)) &&
+            (raw.unions == undefined ||
+                isUnionQueryArray(raw.unions)) &&
+            (raw.selects == undefined ||
+                select_item_array_1.SelectItemArrayUtil.isSelectItemArray(raw.selects)) &&
+            (raw.limit == undefined ||
+                isLimit(raw.limit)) &&
+            (raw.unionLimit == undefined ||
+                isLimit(raw.unionLimit)) &&
+            isExtraQueryData(raw.extraData));
+    }
+    Query.isQuery = isQuery;
     function newInstance() {
         return new Query({
             joins: undefined,

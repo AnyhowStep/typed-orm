@@ -16,4 +16,15 @@ export namespace JoinArrayUtil {
     export type ToUnion<JoinsT extends IJoin[]> = (
         Join.ToUnion<JoinsT[number]>
     );
+    export function isJoinArray (raw : any) : raw is IJoin[] {
+        if (!(raw instanceof Array)) {
+            return false;
+        }
+        for (let item of raw) {
+            if (!Join.isJoin(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

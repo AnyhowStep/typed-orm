@@ -11,6 +11,7 @@ export * from "./column-identifier";
 export * from "./column";
 export * from "./constants";
 export * from "./join";
+export * from "./query";
 export * from "./select-item-array";
 export * from "./select-item";
 export * from "./string";

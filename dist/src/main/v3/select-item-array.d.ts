@@ -9,5 +9,6 @@ export declare namespace SelectItemArrayUtil {
     type HasDuplicateColumnName<SelectsT extends SelectItem[]> = ({
         [index in Extract<keyof SelectsT, string>]: (SelectsT[index] extends SelectItem ? (SelectItemUtil.ToColumnNameUnion<SelectsT[index]> extends ToColumnNameUnionIgnoreIndex<SelectsT, index> ? true : false) : never);
     }[Extract<keyof SelectsT, string>]);
+    function isSelectItemArray(raw: any): raw is SelectItem[];
 }
 //# sourceMappingURL=select-item-array.d.ts.map

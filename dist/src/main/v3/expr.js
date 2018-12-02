@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const raw_expr_1 = require("./raw-expr");
+const query_string_tree_1 = require("./query-string-tree");
 class Expr {
     constructor(data, queryStringTree) {
         this.usedRef = data.usedRef;
@@ -15,10 +16,10 @@ exports.Expr = Expr;
             (raw instanceof Object) &&
             ("usedRef" in raw) &&
             ("assertDelegate" in raw) &&
-            ("query" in raw) &&
+            ("queryStringTree" in raw) &&
             (raw.usedRef instanceof Object) &&
             (typeof raw.assertDelegate == "function") &&
-            (typeof raw.query == "string"));
+            (query_string_tree_1.QueryStringTreeUtil.isQueryStringTree(raw.queryStringTree)));
     }
     Expr.isExpr = isExpr;
     function fromRawExpr(rawExpr) {

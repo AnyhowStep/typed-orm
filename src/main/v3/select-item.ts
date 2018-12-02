@@ -1,5 +1,5 @@
 import {IColumn, Column, IAnonymousTypedColumn} from "./column";
-import {ColumnMap} from "./column-map";
+import {ColumnMap, ColumnMapUtil} from "./column-map";
 import {IExprSelectItem, IAnonymousTypedExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 
 export type SingleValueSelectItem = (
@@ -32,5 +32,12 @@ export namespace SelectItemUtil {
             Column.isColumn(raw) ||
             ExprSelectItemUtil.isExprSelectItem(raw)
         );
+    }
+    export function isSelectItem (raw : any) : raw is SelectItem {
+        if (isSingleValueSelectItem(raw)) {
+            return true;
+        } else {
+            return ColumnMapUtil.isColumnMap(raw);
+        }
     }
 }

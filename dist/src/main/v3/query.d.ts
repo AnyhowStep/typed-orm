@@ -52,6 +52,11 @@ export declare class Query<DataT extends QueryData> {
     from<AliasedTableT extends IAliasedTable>(this: Query.BeforeFromClause, aliasedTable: Query.AssertUniqueJoinTarget<this & Query.BeforeFromClause, AliasedTableT>): (Query.From<this & Query.BeforeFromClause, AliasedTableT>);
 }
 export declare namespace Query {
+    function isUnionQuery(raw: any): raw is UnionQuery;
+    function isUnionQueryArray(raw: any): raw is UnionQuery[];
+    function isLimit(raw: any): raw is Limit;
+    function isExtraQueryData(raw: any): raw is ExtraQueryData;
+    function isQuery(raw: any): raw is IQuery;
     type NewInstance = Query<{
         readonly joins: undefined;
         readonly parentJoins: undefined;

@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import {ColumnRef} from "./column-ref";
 import {RawExpr, RawExprUtil} from "./raw-expr";
-import {QueryStringTree} from "./query-string-tree";
+import {QueryStringTree, QueryStringTreeUtil} from "./query-string-tree";
 
 export interface ExprData {
     readonly usedRef : ColumnRef;
@@ -46,10 +46,10 @@ export namespace Expr {
             (raw instanceof Object) &&
             ("usedRef" in raw) &&
             ("assertDelegate" in raw) &&
-            ("query" in raw) &&
+            ("queryStringTree" in raw) &&
             (raw.usedRef instanceof Object) &&
             (typeof raw.assertDelegate == "function") &&
-            (typeof raw.query == "string")
+            (QueryStringTreeUtil.isQueryStringTree(raw.queryStringTree))
         );
     }
 

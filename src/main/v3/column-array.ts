@@ -1,4 +1,4 @@
-import {Column} from "./column";
+import {Column, IColumn} from "./column";
 import {ColumnMap} from "./column-map";
 
 export namespace ColumnArrayUtil {
@@ -12,5 +12,16 @@ export namespace ColumnArrayUtil {
             .map<Column.UnionFromColumnMap<ColumnMapT>>((columnName) => {
                 return columnMap[columnName] as Column.UnionFromColumnMap<ColumnMapT>;
             });
+    }
+    export function isColumnArray (raw : any) : raw is IColumn[] {
+        if (!(raw instanceof Array)) {
+            return false;
+        }
+        for (let item of raw) {
+            if (!Column.isColumn(item)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

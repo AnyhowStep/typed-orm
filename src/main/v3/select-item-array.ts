@@ -38,4 +38,15 @@ export namespace SelectItemArrayUtil {
             )
         }[Extract<keyof SelectsT, string>]
     );
+    export function isSelectItemArray (raw : any) : raw is SelectItem[] {
+        if (!(raw instanceof Array)) {
+            return false;
+        }
+        for (let item of raw) {
+            if (!SelectItemUtil.isSelectItem(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -1,6 +1,8 @@
-import {IAliasedTable} from "./aliased-table";
+import {IAliasedTable, AliasedTable} from "./aliased-table";
 import {ColumnMap, ColumnMapUtil} from "./column-map";
 import {IColumn, Column} from "./column";
+import {ColumnArrayUtil} from "./column-array";
+import * as e from "enum-util";
 
 export enum JoinType {
     FROM  = "FROM",
@@ -9,6 +11,7 @@ export enum JoinType {
     RIGHT = "RIGHT",
     CROSS = "CROSS",
 };
+export const JoinTypeUtil = new e.WrappedEnum(JoinType);
 
 export interface JoinData {
     //We may JOIN to a Table or an AliasedTable.
@@ -66,4 +69,22 @@ export namespace Join {
             ColumnMapUtil.FromJoin<JoinT>
         >
     );
+    export function isJoin (raw : any) : raw is IJoin {
+        return (
+            raw != undefined &&
+            (raw instanceof Object) &&
+            ("aliasedTable" in raw) &&
+            ("columns" in raw) &&
+            ("nullable" in raw) &&
+            ("joinType" in raw) &&
+            ("from" in raw) &&
+            ("to" in raw) &&
+            AliasedTable.isAliasedTable(raw.aliasedTable) &&
+            ColumnMapUtil.isColumnMap(raw.columns) &&
+            (typeof raw.nullable == "boolean") &&
+            JoinTypeUtil.isValue(raw.joinType) &&
+            ColumnArrayUtil.isColumnArray(raw.from) &&
+            ColumnArrayUtil.isColumnArray(raw.to)
+        );
+    }
 }

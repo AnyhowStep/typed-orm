@@ -12,12 +12,15 @@ import {ColumnMap} from "./column-map";
 import {IExprSelectItem} from "./expr-select-item";
 import {ToUnknownIfAllFieldsNever} from "./type";
 import {ColumnIdentifierUtil} from "./column-identifier";
+import {SelectItemArrayUtil} from "./select-item-array";
 
 export interface UnionQuery {
     readonly distinct : boolean,
     readonly query : IQuery,
 }
 export interface Limit {
+    //TODO consider allowing this to be bigint?
+    //A rowCount/offset of 3.141 would be weird
     readonly rowCount : number,
     readonly offset   : number,
 }
@@ -79,6 +82,86 @@ export class Query<DataT extends QueryData> {
     }
 }
 export namespace Query {
+    export function isUnionQuery (raw : any) : raw is UnionQuery {
+        return (
+            raw != undefined &&
+            (raw instanceof Object) &&
+            ("distinct" in raw) &&
+            ("query" in raw) &&
+            (typeof raw.distinct == "boolean") &&
+            isQuery(raw.query)
+        );
+    }
+    export function isUnionQueryArray (raw : any) : raw is UnionQuery[] {
+        if (!(raw instanceof Array)) {
+            return false;
+        }
+        for (let item of raw) {
+            if (!isUnionQuery(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    export function isLimit (raw : any) : raw is Limit {
+        return (
+            raw != undefined &&
+            (raw instanceof Object) &&
+            ("rowCount" in raw) &&
+            ("offset" in raw) &&
+            (typeof raw.rowCount == "number") &&
+            (typeof raw.offset == "number")
+        );
+    }
+    export function isExtraQueryData (raw : any) : raw is ExtraQueryData {
+        return (
+            raw != undefined &&
+            (raw instanceof Object) &&
+            ("where" in raw) &&
+            (
+                raw.where == undefined ||
+                Expr.isExpr(raw.where)
+            )
+        );
+    }
+    export function isQuery (raw : any) : raw is IQuery {
+        return (
+            raw != undefined &&
+            (raw instanceof Object) &&
+            ("joins" in raw) &&
+            ("parentJoins" in raw) &&
+            ("unions" in raw) &&
+            ("selects" in raw) &&
+            ("limit" in raw) &&
+            ("unionLimit" in raw) &&
+            ("extraData" in raw) &&
+            (
+                raw.joins == undefined ||
+                JoinArrayUtil.isJoinArray(raw.joins)
+            ) &&
+            (
+                raw.parentJoins == undefined ||
+                JoinArrayUtil.isJoinArray(raw.parentJoins)
+            ) &&
+            (
+                raw.unions == undefined ||
+                isUnionQueryArray(raw.unions)
+            ) &&
+            (
+                raw.selects == undefined ||
+                SelectItemArrayUtil.isSelectItemArray(raw.selects)
+            ) &&
+            (
+                raw.limit == undefined ||
+                isLimit(raw.limit)
+            ) &&
+            (
+                raw.unionLimit == undefined ||
+                isLimit(raw.unionLimit)
+            ) &&
+            isExtraQueryData(raw.extraData)
+        );
+    }
     export type NewInstance = Query<{
         readonly joins : undefined,
         readonly parentJoins : undefined,

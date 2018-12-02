@@ -7,5 +7,6 @@ export declare namespace JoinArrayUtil {
         };
     }>);
     type ToUnion<JoinsT extends IJoin[]> = (Join.ToUnion<JoinsT[number]>);
+    function isJoinArray(raw: any): raw is IJoin[];
 }
 //# sourceMappingURL=join-array.d.ts.map
