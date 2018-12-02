@@ -1,20 +1,11 @@
 import * as sd from "schema-decorator";
+import {FieldUtil} from "./field";
 
 export namespace FieldArrayUtil {
     export type NullableNameUnion<
         FieldsT extends sd.AnyField[]
     > = (
-        {
-            [index in keyof FieldsT] : (
-                FieldsT[index] extends sd.AnyField ?
-                (
-                    null extends ReturnType<FieldsT[index]["assertDelegate"]> ?
-                    FieldsT[index]["name"] :
-                    never
-                ) :
-                never
-            )
-        }[number]
+        FieldUtil.NullableNameUnion<FieldsT[number]>
     );
     export function nullableNames<FieldsT extends sd.AnyField[]> (
         fields : FieldsT

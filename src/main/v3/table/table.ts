@@ -384,6 +384,9 @@ export namespace Table {
                 TableT["hasDefaultValue"][number] |
                 FieldArrayUtil.NullableNameUnion<FieldsT>
             )[];
+            /*
+                TODO Debate whether new columns should be mutable
+            */
             readonly mutable : TableT["mutable"];
 
             readonly parents : TableT["parents"];
@@ -482,6 +485,9 @@ export namespace Table {
                 TableT["hasDefaultValue"][number] |
                 AssertMapUtil.NullableNameUnion<AssertMapT>
             )[];
+            /*
+                TODO Debate whether new columns should be mutable
+            */
             readonly mutable : TableT["mutable"];
 
             readonly parents : TableT["parents"];
