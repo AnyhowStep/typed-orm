@@ -34,7 +34,7 @@ tape(__filename, (t) => {
 
     t.deepEqual(table.autoIncrement, undefined);
     t.deepEqual(table.generated.length, 0);
-    t.deepEqual(table.hasDefaultValue.length, 0);
+    t.deepEqual(table.hasExplicitDefaultValue.length, 0);
     t.deepEqual(table.mutable.length, 3);
     t.true(table.mutable.indexOf("x") >= 0);
     t.true(table.mutable.indexOf("y") >= 0);
@@ -63,8 +63,43 @@ tape(__filename, (t) => {
 
     t.deepEqual(table.autoIncrement, undefined);
     t.deepEqual(table.generated.length, 0);
-    t.deepEqual(table.hasDefaultValue.length, 0);
+    t.deepEqual(table.hasExplicitDefaultValue.length, 0);
     t.deepEqual(table.mutable.length, 0);
+    t.deepEqual(table.id, undefined);
+    t.deepEqual(table.candidateKeys.length, 0);
+    t.deepEqual(table.parents.length, 0);
+    t.deepEqual(table.insertAllowed, true);
+    t.deepEqual(table.deleteAllowed, true);
+
+    t.end();
+});
+
+tape(__filename, (t) => {
+    const tableSrc = o.table(
+        "table",
+        {
+            a : sd.nullable(sd.naturalNumber())
+        }
+    );
+    const table = o.table(tableSrc);
+
+    t.deepEqual(table.alias, "table");
+    t.deepEqual(table.name, "table");
+
+    t.true(o.ColumnMapUtil.isColumnMap(table.columns));
+    t.deepEqual(Object.keys(table.columns).length, 1);
+
+    t.deepEqual(table.columns.a.tableAlias, "table");
+    t.deepEqual(table.columns.a.name, "a");
+    t.deepEqual(table.columns.a.assertDelegate("", 67), 67);
+    t.deepEqual(table.columns.a.assertDelegate("", null), null);
+
+    t.deepEqual(table.autoIncrement, undefined);
+    t.deepEqual(table.generated.length, 0);
+    t.deepEqual(table.isNullable.length, 1);
+    t.true(table.isNullable.indexOf("a") >= 0);
+    t.deepEqual(table.hasExplicitDefaultValue.length, 0);
+    t.deepEqual(table.mutable.length, 1);
     t.deepEqual(table.id, undefined);
     t.deepEqual(table.candidateKeys.length, 0);
     t.deepEqual(table.parents.length, 0);

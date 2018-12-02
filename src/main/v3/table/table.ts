@@ -7,8 +7,7 @@ import {ColumnMap} from "../column-map";
 import {CandidateKeyArrayUtil} from "../candidate-key-array";
 import {SuperKeyArrayUtil} from "../super-key-array";
 import {ToUnknownIfAllFieldsNever} from "../type";
-import {AssertMap, AssertMapUtil} from "../assert-map";
-import {FieldArrayUtil} from "../field-array";
+import {AssertMap} from "../assert-map";
 import {Column} from "../column";
 
 export interface TableData extends AliasedTableData {
@@ -31,12 +30,32 @@ export interface TableData extends AliasedTableData {
     //Updating generated column values will also not be allowed with UPDATE statements.
     readonly generated : string[];
     //If a column is nullable, it has a server default value of `NULL`.
+    //A nullable column has a default value *implicitly*.
+    /*
+        const t1 = table(
+            "tableName",
+            {
+                column : sd.nullable(sd.naturalNumber())
+            }
+        );
+
+        t1.isNullable is now ["column"] because
+        "column" is is nullable.
+
+        const t2 = t1.addColumns({
+            column : sd.naturalNumber()
+        });
+
+        t2.isNullable is now [] because
+        "column" is no longer nullable.
+    */
+    readonly isNullable : string[];
     //If a column is NOT nullable, but has a server default value,
     //like CURRENT_TIMESTAMP or some other value,
     //you will have to specify as such manually.
     //If a column is a GENERATED column, then it also has a server default value.
     //Columns with server default values are optional with INSERT statements.
-    readonly hasDefaultValue : string[];
+    readonly hasExplicitDefaultValue : string[];
     //By default, all non-generated columns of the table are mutable.
     //Calling setMutable() will set only the specified columns as mutable.
     //Calling setImmutable() will make them all immutable.
@@ -92,7 +111,8 @@ export interface ITable<DataT extends TableData=TableData> {
     readonly candidateKeys : DataT["candidateKeys"];
 
     readonly generated : DataT["generated"];
-    readonly hasDefaultValue : DataT["hasDefaultValue"];
+    readonly isNullable : DataT["isNullable"];
+    readonly hasExplicitDefaultValue : DataT["hasExplicitDefaultValue"];
     readonly mutable : DataT["mutable"];
 
     readonly parents : DataT["parents"];
@@ -112,7 +132,8 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     readonly candidateKeys : DataT["candidateKeys"];
 
     readonly generated : DataT["generated"];
-    readonly hasDefaultValue : DataT["hasDefaultValue"];
+    readonly isNullable : DataT["isNullable"];
+    readonly hasExplicitDefaultValue : DataT["hasExplicitDefaultValue"];
     readonly mutable : DataT["mutable"];
 
     readonly parents : DataT["parents"];
@@ -134,7 +155,8 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
         this.candidateKeys = data.candidateKeys;
 
         this.generated = data.generated;
-        this.hasDefaultValue = data.hasDefaultValue;
+        this.isNullable = data.isNullable;
+        this.hasExplicitDefaultValue = data.hasExplicitDefaultValue;
         this.mutable = data.mutable;
 
         this.parents = data.parents;
@@ -218,14 +240,14 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     ) {
         return Table.setGenerated(this, delegate);
     }
-    setHasDefaultValue<
-        DelegateT extends Table.HasDefaultValueDelegate<this>
+    setHasExplicitDefaultValue<
+        DelegateT extends Table.HasExplicitDefaultValueDelegate<this>
     > (
         delegate : DelegateT
     ) : (
-        Table.SetHasDefaultValue<this, DelegateT>
+        Table.SetHasExplicitDefaultValue<this, DelegateT>
     ) {
-        return Table.setHasDefaultValue(this, delegate);
+        return Table.setHasExplicitDefaultValue(this, delegate);
     }
     setImmutable () : Table.SetImmutable<this> {
         return Table.setImmutable(this);
@@ -306,7 +328,8 @@ export namespace Table {
             readonly candidateKeys : TableT["candidateKeys"];
 
             readonly generated : TableT["generated"];
-            readonly hasDefaultValue : TableT["hasDefaultValue"];
+            readonly isNullable : TableT["isNullable"];
+            readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
             readonly mutable : TableT["mutable"];
 
             readonly parents : TableT["parents"];
@@ -329,7 +352,8 @@ export namespace Table {
             candidateKeys,
 
             generated,
-            hasDefaultValue,
+            isNullable,
+            hasExplicitDefaultValue,
             mutable,
 
             parents,
@@ -351,7 +375,8 @@ export namespace Table {
                 candidateKeys,
 
                 generated,
-                hasDefaultValue,
+                isNullable,
+                hasExplicitDefaultValue,
                 mutable,
 
                 parents,
@@ -380,10 +405,13 @@ export namespace Table {
             readonly candidateKeys : TableT["candidateKeys"];
 
             readonly generated : TableT["generated"];
-            readonly hasDefaultValue : (
-                TableT["hasDefaultValue"][number] |
-                FieldArrayUtil.NullableNameUnion<FieldsT>
-            )[];
+            readonly isNullable : Column.NullableNameUnionFromColumnMap<
+                ColumnMapUtil.Intersect<
+                    TableT["columns"],
+                    ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>
+                >
+            >[];
+            readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
             /*
                 TODO Debate whether new columns should be mutable
             */
@@ -416,13 +444,7 @@ export namespace Table {
             tableColumns,
             columnMapFromFieldArray
         );
-        const hasDefaultValue : (
-            TableT["hasDefaultValue"][number] |
-            FieldArrayUtil.NullableNameUnion<FieldsT>
-        )[] = [
-            ...table.hasDefaultValue,
-            ...FieldArrayUtil.nullableNames(fields),
-        ];
+        const isNullable = Column.nullableNameArrayFromColumnMap(columns);
 
         const {
             alias,
@@ -433,6 +455,7 @@ export namespace Table {
             candidateKeys,
 
             generated,
+            hasExplicitDefaultValue,
             mutable,
 
             parents,
@@ -451,7 +474,8 @@ export namespace Table {
                 candidateKeys,
 
                 generated,
-                hasDefaultValue,
+                isNullable,
+                hasExplicitDefaultValue,
                 mutable,
 
                 parents,
@@ -481,10 +505,13 @@ export namespace Table {
             readonly candidateKeys : TableT["candidateKeys"];
 
             readonly generated : TableT["generated"];
-            readonly hasDefaultValue : (
-                TableT["hasDefaultValue"][number] |
-                AssertMapUtil.NullableNameUnion<AssertMapT>
-            )[];
+            readonly isNullable : Column.NullableNameUnionFromColumnMap<
+                ColumnMapUtil.Intersect<
+                    TableT["columns"],
+                    ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>
+                >
+            >[];
+            readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
             /*
                 TODO Debate whether new columns should be mutable
             */
@@ -513,13 +540,7 @@ export namespace Table {
             tableColumns,
             ColumnMapUtil.fromAssertMap(table.alias, assertMap)
         );
-        const hasDefaultValue : (
-            TableT["hasDefaultValue"][number] |
-            AssertMapUtil.NullableNameUnion<AssertMapT>
-        )[] = [
-            ...table.hasDefaultValue,
-            ...AssertMapUtil.nullableNames(assertMap),
-        ];
+        const isNullable = Column.nullableNameArrayFromColumnMap(columns);
 
         const {
             alias,
@@ -530,6 +551,7 @@ export namespace Table {
             candidateKeys,
 
             generated,
+            hasExplicitDefaultValue,
             mutable,
 
             parents,
@@ -548,7 +570,8 @@ export namespace Table {
                 candidateKeys,
 
                 generated,
-                hasDefaultValue,
+                isNullable,
+                hasExplicitDefaultValue,
                 mutable,
 
                 parents,
@@ -640,13 +663,13 @@ export namespace Table {
     }
 }
 export namespace Table {
-    //The `number|string` requirement is only a compile-time constraint
+    //The `number|string|bigint` requirement is only a compile-time constraint
     //TODO Consider having run-time checks to see if it allows 1,2,3,4,5,... ?
     export type AutoIncrementColumnMap<ColumnMapT extends ColumnMap> = (
         {
             [columnName in {
                 [columnName in keyof ColumnMapT] : (
-                    ColumnMapT[columnName] extends IAnonymousTypedColumn<number|string> ?
+                    ColumnMapT[columnName] extends IAnonymousTypedColumn<number|string|bigint> ?
                     columnName :
                     never
                 )
@@ -684,8 +707,9 @@ export namespace Table {
                 TableT["generated"][number] |
                 ReturnType<DelegateT>["name"]
             )[];
-            readonly hasDefaultValue : (
-                TableT["hasDefaultValue"][number] |
+            readonly isNullable : TableT["isNullable"];
+            readonly hasExplicitDefaultValue : (
+                TableT["hasExplicitDefaultValue"][number] |
                 ReturnType<DelegateT>["name"]
             )[];
             //Generated columns cannot be mutable
@@ -730,13 +754,13 @@ export namespace Table {
                 ...table.generated,
                 autoIncrement.name
             ];
-        const hasDefaultValue : (
-            TableT["hasDefaultValue"][number] |
+        const hasExplicitDefaultValue : (
+            TableT["hasExplicitDefaultValue"][number] |
             ReturnType<DelegateT>["name"]
-        )[] = (table.hasDefaultValue.indexOf(autoIncrement.name) >= 0) ?
-            table.hasDefaultValue :
+        )[] = (table.hasExplicitDefaultValue.indexOf(autoIncrement.name) >= 0) ?
+            table.hasExplicitDefaultValue :
             [
-                ...table.hasDefaultValue,
+                ...table.hasExplicitDefaultValue,
                 autoIncrement.name,
             ];
         const mutable : Exclude<
@@ -753,6 +777,7 @@ export namespace Table {
         const {
             alias,
             name,
+            isNullable,
             parents,
             insertAllowed,
             deleteAllowed,
@@ -769,7 +794,8 @@ export namespace Table {
                 candidateKeys,
 
                 generated,
-                hasDefaultValue,
+                isNullable,
+                hasExplicitDefaultValue,
                 mutable,
 
                 parents,
@@ -808,7 +834,8 @@ export namespace Table {
             )[];
 
             readonly generated : TableT["generated"];
-            readonly hasDefaultValue : TableT["hasDefaultValue"];
+            readonly isNullable : TableT["isNullable"];
+            readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
             readonly mutable : TableT["mutable"];
 
             readonly parents : TableT["parents"];
@@ -843,7 +870,8 @@ export namespace Table {
             name,
             autoIncrement,
             generated,
-            hasDefaultValue,
+            isNullable,
+            hasExplicitDefaultValue,
             mutable,
             parents,
             insertAllowed,
@@ -861,7 +889,8 @@ export namespace Table {
                 candidateKeys,
 
                 generated,
-                hasDefaultValue,
+                isNullable,
+                hasExplicitDefaultValue,
                 mutable,
 
                 parents,
@@ -900,7 +929,8 @@ export namespace Table {
             )[];
 
             readonly generated : TableT["generated"];
-            readonly hasDefaultValue : TableT["hasDefaultValue"];
+            readonly isNullable : TableT["isNullable"];
+            readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
             readonly mutable : TableT["mutable"];
 
             readonly parents : TableT["parents"];
@@ -943,7 +973,8 @@ export namespace Table {
             id,
 
             generated,
-            hasDefaultValue,
+            isNullable,
+            hasExplicitDefaultValue,
             mutable,
 
             parents,
@@ -962,7 +993,8 @@ export namespace Table {
                 candidateKeys,
 
                 generated,
-                hasDefaultValue,
+                isNullable,
+                hasExplicitDefaultValue,
                 mutable,
 
                 parents,
@@ -1013,8 +1045,9 @@ export namespace Table {
                 TableT["generated"][number] |
                 ReturnType<DelegateT>[number]["name"]
             )[];
-            readonly hasDefaultValue : (
-                TableT["hasDefaultValue"][number] |
+            readonly isNullable : TableT["isNullable"];
+            readonly hasExplicitDefaultValue : (
+                TableT["hasExplicitDefaultValue"][number] |
                 ReturnType<DelegateT>[number]["name"]
             )[];
             //Generated columns cannot be mutable
@@ -1055,11 +1088,11 @@ export namespace Table {
             ...table.generated,
             ...generatedColumns.map(column => column.name),
         };
-        const hasDefaultValue : (
-            TableT["hasDefaultValue"][number] |
+        const hasExplicitDefaultValue : (
+            TableT["hasExplicitDefaultValue"][number] |
             ReturnType<DelegateT>[number]["name"]
         )[] = {
-            ...table.hasDefaultValue,
+            ...table.hasExplicitDefaultValue,
             ...generatedColumns.map(column => column.name),
         };
         const mutable : Exclude<
@@ -1084,6 +1117,8 @@ export namespace Table {
             id,
             candidateKeys,
 
+            isNullable,
+
             parents,
             insertAllowed,
             deleteAllowed,
@@ -1100,7 +1135,8 @@ export namespace Table {
                 candidateKeys,
 
                 generated,
-                hasDefaultValue,
+                isNullable,
+                hasExplicitDefaultValue,
                 mutable,
 
                 parents,
@@ -1113,30 +1149,30 @@ export namespace Table {
     }
 }
 export namespace Table {
-    export type HasDefaultValueColumnMap<
+    export type HasExplicitDefaultValueColumnMap<
         ColumnMapT extends ColumnMap,
-        HasDefaultValueT extends string[]
+        HasExplicitDefaultValueT extends string[]
     > = (
         {
-            [columnName in Exclude<keyof ColumnMapT, HasDefaultValueT[number]>] : (
+            [columnName in Exclude<keyof ColumnMapT, HasExplicitDefaultValueT[number]>] : (
                 ColumnMapT[columnName]
             )
         }
     );
-    export type HasDefaultValueDelegate<
+    export type HasExplicitDefaultValueDelegate<
         TableT extends ITable
     > = (
-        (columnMap : HasDefaultValueColumnMap<TableT["columns"], TableT["hasDefaultValue"]>) => (
-            HasDefaultValueColumnMap<TableT["columns"], TableT["hasDefaultValue"]>[
-                keyof HasDefaultValueColumnMap<TableT["columns"], TableT["hasDefaultValue"]>
+        (columnMap : HasExplicitDefaultValueColumnMap<TableT["columns"], TableT["hasExplicitDefaultValue"]>) => (
+            HasExplicitDefaultValueColumnMap<TableT["columns"], TableT["hasExplicitDefaultValue"]>[
+                keyof HasExplicitDefaultValueColumnMap<TableT["columns"], TableT["hasExplicitDefaultValue"]>
             ][]
         )
     );
     //Technically, "set" is the wrong verb to use.
     //This create an entirely new Table.
-    export type SetHasDefaultValue<
+    export type SetHasExplicitDefaultValue<
         TableT extends ITable,
-        DelegateT extends HasDefaultValueDelegate<TableT>
+        DelegateT extends HasExplicitDefaultValueDelegate<TableT>
     > = (
         Table<{
             readonly alias : TableT["alias"];
@@ -1148,8 +1184,9 @@ export namespace Table {
             readonly candidateKeys : TableT["candidateKeys"];
 
             readonly generated : TableT["generated"];
-            readonly hasDefaultValue : (
-                TableT["hasDefaultValue"][number] |
+            readonly isNullable : TableT["isNullable"];
+            readonly hasExplicitDefaultValue : (
+                TableT["hasExplicitDefaultValue"][number] |
                 ReturnType<DelegateT>[number]["name"]
             )[];
             readonly mutable : TableT["mutable"];
@@ -1159,32 +1196,32 @@ export namespace Table {
             readonly deleteAllowed : TableT["deleteAllowed"];
         }>
     );
-    export function setHasDefaultValue<
+    export function setHasExplicitDefaultValue<
         TableT extends ITable,
-        DelegateT extends HasDefaultValueDelegate<TableT>
+        DelegateT extends HasExplicitDefaultValueDelegate<TableT>
     > (
         table : TableT,
         delegate : DelegateT
     ) : (
-        SetHasDefaultValue<TableT, DelegateT>
+        SetHasExplicitDefaultValue<TableT, DelegateT>
     ) {
         //https://github.com/Microsoft/TypeScript/issues/28592
         const columns : TableT["columns"] = table.columns;
         //https://github.com/Microsoft/TypeScript/issues/24277
-        const hasDefaultValueColumns : ReturnType<DelegateT> = delegate(columns) as any;
+        const hasExplicitDefaultValueColumns : ReturnType<DelegateT> = delegate(columns) as any;
 
-        for (let hasDefaultValueColumn of hasDefaultValueColumns) {
-            if (table.hasDefaultValue.indexOf(hasDefaultValueColumn.name) >= 0) {
-                throw new Error(`Column ${table.name}.${hasDefaultValueColumn.name} already declared as having a default value`);
+        for (let hasExplicitDefaultValueColumn of hasExplicitDefaultValueColumns) {
+            if (table.hasExplicitDefaultValue.indexOf(hasExplicitDefaultValueColumn.name) >= 0) {
+                throw new Error(`Column ${table.name}.${hasExplicitDefaultValueColumn.name} already declared as having a default value`);
             }
-            ColumnMapUtil.assertHasColumnIdentifier(table.columns, hasDefaultValueColumn);
+            ColumnMapUtil.assertHasColumnIdentifier(table.columns, hasExplicitDefaultValueColumn);
         }
-        const hasDefaultValue : (
-            TableT["hasDefaultValue"][number] |
+        const hasExplicitDefaultValue : (
+            TableT["hasExplicitDefaultValue"][number] |
             ReturnType<DelegateT>[number]["name"]
         )[] = {
-            ...table.hasDefaultValue,
-            ...hasDefaultValueColumns.map(column => column.name),
+            ...table.hasExplicitDefaultValue,
+            ...hasExplicitDefaultValueColumns.map(column => column.name),
         };
 
         const {
@@ -1196,6 +1233,7 @@ export namespace Table {
             candidateKeys,
 
             generated,
+            isNullable,
             mutable,
 
             parents,
@@ -1203,7 +1241,7 @@ export namespace Table {
             deleteAllowed,
         } = table;
 
-        const result : SetHasDefaultValue<TableT, DelegateT> = new Table(
+        const result : SetHasExplicitDefaultValue<TableT, DelegateT> = new Table(
             {
                 alias,
                 name,
@@ -1214,7 +1252,8 @@ export namespace Table {
                 candidateKeys,
 
                 generated,
-                hasDefaultValue,
+                isNullable,
+                hasExplicitDefaultValue,
                 mutable,
 
                 parents,
@@ -1238,7 +1277,8 @@ export namespace Table {
             readonly candidateKeys : TableT["candidateKeys"];
 
             readonly generated : TableT["generated"];
-            readonly hasDefaultValue : TableT["hasDefaultValue"];
+            readonly isNullable : TableT["isNullable"];
+            readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
             readonly mutable : [];
 
             readonly parents : TableT["parents"];
@@ -1259,7 +1299,8 @@ export namespace Table {
             candidateKeys,
 
             generated,
-            hasDefaultValue,
+            isNullable,
+            hasExplicitDefaultValue,
 
             parents,
             insertAllowed,
@@ -1277,7 +1318,8 @@ export namespace Table {
                 candidateKeys,
 
                 generated,
-                hasDefaultValue,
+                isNullable,
+                hasExplicitDefaultValue,
                 mutable : [] as [],
 
                 parents,
@@ -1325,7 +1367,8 @@ export namespace Table {
             readonly candidateKeys : TableT["candidateKeys"];
 
             readonly generated : TableT["generated"];
-            readonly hasDefaultValue : TableT["hasDefaultValue"];
+            readonly isNullable : TableT["isNullable"];
+            readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
             readonly mutable : ReturnType<DelegateT>[number]["name"][];
 
             readonly parents : TableT["parents"];
@@ -1366,7 +1409,8 @@ export namespace Table {
             candidateKeys,
 
             generated,
-            hasDefaultValue,
+            isNullable,
+            hasExplicitDefaultValue,
 
             parents,
             insertAllowed,
@@ -1384,7 +1428,8 @@ export namespace Table {
                 candidateKeys,
 
                 generated,
-                hasDefaultValue,
+                isNullable,
+                hasExplicitDefaultValue,
                 mutable,
 
                 parents,
@@ -1461,8 +1506,9 @@ export namespace Table {
             readonly candidateKeys : TableT["candidateKeys"];
 
             readonly generated : TableT["generated"];
-            readonly hasDefaultValue : TableT["hasDefaultValue"];
-            readonly mutable : TableT["hasDefaultValue"];
+            readonly isNullable : TableT["isNullable"];
+            readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
+            readonly mutable : TableT["hasExplicitDefaultValue"];
 
             readonly parents : (
                 TableT["parents"][number] |
@@ -1521,7 +1567,8 @@ export namespace Table {
             candidateKeys,
 
             generated,
-            hasDefaultValue,
+            isNullable,
+            hasExplicitDefaultValue,
             mutable,
 
             insertAllowed,
@@ -1538,7 +1585,8 @@ export namespace Table {
             candidateKeys,
 
             generated,
-            hasDefaultValue,
+            isNullable,
+            hasExplicitDefaultValue,
             mutable,
 
             parents,
@@ -1559,7 +1607,8 @@ export namespace Table {
             readonly candidateKeys : TableT["candidateKeys"];
 
             readonly generated : TableT["generated"];
-            readonly hasDefaultValue : TableT["hasDefaultValue"];
+            readonly isNullable : TableT["isNullable"];
+            readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
             readonly mutable : TableT["mutable"];
 
             readonly parents : TableT["parents"];
@@ -1580,7 +1629,8 @@ export namespace Table {
             candidateKeys,
 
             generated,
-            hasDefaultValue,
+            isNullable,
+            hasExplicitDefaultValue,
             mutable,
 
             parents,
@@ -1588,7 +1638,8 @@ export namespace Table {
         } = table;
 
         return new Table(
-            {alias,
+            {
+                alias,
                 name,
                 columns,
 
@@ -1597,7 +1648,8 @@ export namespace Table {
                 candidateKeys,
 
                 generated,
-                hasDefaultValue,
+                isNullable,
+                hasExplicitDefaultValue,
                 mutable,
 
                 parents,
@@ -1618,7 +1670,8 @@ export namespace Table {
             readonly candidateKeys : TableT["candidateKeys"];
 
             readonly generated : TableT["generated"];
-            readonly hasDefaultValue : TableT["hasDefaultValue"];
+            readonly isNullable : TableT["isNullable"];
+            readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
             readonly mutable : TableT["mutable"];
 
             readonly parents : TableT["parents"];
@@ -1639,7 +1692,8 @@ export namespace Table {
             candidateKeys,
 
             generated,
-            hasDefaultValue,
+            isNullable,
+            hasExplicitDefaultValue,
             mutable,
 
             parents,
@@ -1657,7 +1711,8 @@ export namespace Table {
                 candidateKeys,
 
                 generated,
-                hasDefaultValue,
+                isNullable,
+                hasExplicitDefaultValue,
                 mutable,
 
                 parents,
@@ -1700,7 +1755,7 @@ const t = table(
         //c.a,
         c.d
     ])
-    .setHasDefaultValue(c => [
+    .setHasExplicitDefaultValue(c => [
         c.e
     ])
     .addCandidateKey(c => [
@@ -1711,7 +1766,7 @@ t.autoIncrement
 t.id
 t.candidateKeys
 t.generated
-t.hasDefaultValue
+t.hasExplicitDefaultValue
 t.mutable
 const t2 = t.setImmutable();
 t2.mutable
@@ -1770,11 +1825,11 @@ const omg2 = omg.addColumns({
     g : sd.nullable(sd.boolean())
 });
 omg2.columns.g
-omg2.hasDefaultValue
+omg2.hasExplicitDefaultValue
 
 const omg3 = omg.addColumns([
     sd.field("g", sd.nullable(sd.boolean()))
 ]);
 omg3.columns.g
-omg3.hasDefaultValue
+omg3.hasExplicitDefaultValue
 //*/

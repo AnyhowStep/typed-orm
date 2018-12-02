@@ -33,7 +33,8 @@ export declare const renamed: o.Table<{
     readonly id: undefined;
     readonly candidateKeys: [];
     readonly generated: [];
-    readonly hasDefaultValue: never[];
+    readonly isNullable: never[];
+    readonly hasExplicitDefaultValue: [];
     readonly mutable: ("x" | "y" | "z")[];
     readonly parents: [];
     readonly insertAllowed: true;
@@ -47,7 +48,8 @@ export declare const emptyRenamed: o.Table<{
     readonly id: undefined;
     readonly candidateKeys: [];
     readonly generated: [];
-    readonly hasDefaultValue: never[];
+    readonly isNullable: never[];
+    readonly hasExplicitDefaultValue: [];
     readonly mutable: never[];
     readonly parents: [];
     readonly insertAllowed: true;

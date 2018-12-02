@@ -13,7 +13,7 @@ const user = o.table(
 )
     .addUniqueKey(c => [c.appId, c.userId])
     .setIsGenerated(c => [c.generatedColumn])
-    .setHasDefaultValue(c => [c.createdAt])
+    .setHasExplicitDefaultValue(c => [c.createdAt])
     .setImmutable()
     .build();
 
@@ -29,7 +29,7 @@ const userBanned = o.table(
 )
     .setAutoIncrement(c => c.logId)
     .setImmutable()
-    .setHasDefaultValue(c => [c.loggedAt])
+    .setHasExplicitDefaultValue(c => [c.loggedAt])
     .build();
 
 const userBannedLog = o.log(userBanned)

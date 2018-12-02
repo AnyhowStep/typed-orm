@@ -31,7 +31,8 @@ export declare const table: o.Table<{
     };
     readonly autoIncrement: undefined;
     readonly generated: [];
-    readonly hasDefaultValue: never[];
+    readonly isNullable: never[];
+    readonly hasExplicitDefaultValue: [];
     readonly mutable: ("x" | "y" | "z")[];
     readonly id: undefined;
     readonly candidateKeys: [];
@@ -45,8 +46,33 @@ export declare const emptyTable: o.Table<{
     readonly columns: {};
     readonly autoIncrement: undefined;
     readonly generated: [];
-    readonly hasDefaultValue: never[];
+    readonly isNullable: never[];
+    readonly hasExplicitDefaultValue: [];
     readonly mutable: never[];
+    readonly id: undefined;
+    readonly candidateKeys: [];
+    readonly parents: [];
+    readonly insertAllowed: true;
+    readonly deleteAllowed: true;
+}>;
+export declare const nullableTable: o.Table<{
+    readonly alias: "table";
+    readonly name: "table";
+    readonly columns: {
+        readonly a: o.Column<{
+            tableAlias: "table";
+            name: "a";
+            assertDelegate: sd.AssertDelegate<number | null> & {
+                __accepts: number | null;
+                __canAccept: number | null;
+            };
+        }>;
+    };
+    readonly autoIncrement: undefined;
+    readonly generated: [];
+    readonly isNullable: "a"[];
+    readonly hasExplicitDefaultValue: [];
+    readonly mutable: "a"[];
     readonly id: undefined;
     readonly candidateKeys: [];
     readonly parents: [];

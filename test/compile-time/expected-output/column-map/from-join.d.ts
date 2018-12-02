@@ -23,7 +23,8 @@ export declare const table: o.Table<{
     };
     readonly autoIncrement: undefined;
     readonly generated: [];
-    readonly hasDefaultValue: never[];
+    readonly isNullable: never[];
+    readonly hasExplicitDefaultValue: [];
     readonly mutable: ("x" | "y")[];
     readonly id: undefined;
     readonly candidateKeys: [];
@@ -55,7 +56,8 @@ export declare const join: o.Join<{
         };
         readonly autoIncrement: undefined;
         readonly generated: [];
-        readonly hasDefaultValue: never[];
+        readonly isNullable: never[];
+        readonly hasExplicitDefaultValue: [];
         readonly mutable: ("x" | "y")[];
         readonly id: undefined;
         readonly candidateKeys: [];
@@ -125,7 +127,8 @@ export declare const nullableJoin: o.Join<{
         };
         readonly autoIncrement: undefined;
         readonly generated: [];
-        readonly hasDefaultValue: never[];
+        readonly isNullable: never[];
+        readonly hasExplicitDefaultValue: [];
         readonly mutable: ("x" | "y")[];
         readonly id: undefined;
         readonly candidateKeys: [];

@@ -10,7 +10,8 @@ export declare function table<NameT extends string, AssertMapT extends AssertMap
     readonly columns: ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
     readonly autoIncrement: undefined;
     readonly generated: [];
-    readonly hasDefaultValue: AssertMapUtil.NullableNameUnion<AssertMapT>[];
+    readonly isNullable: AssertMapUtil.NullableNameUnion<AssertMapT>[];
+    readonly hasExplicitDefaultValue: [];
     readonly mutable: Extract<keyof AssertMapT, string>[];
     readonly id: undefined;
     readonly candidateKeys: [];
@@ -24,7 +25,8 @@ export declare function table<NameT extends string, FieldsT extends Tuple<sd.Any
     readonly columns: ColumnMapUtil.FromFieldArray<NameT, FieldsT>;
     readonly autoIncrement: undefined;
     readonly generated: [];
-    readonly hasDefaultValue: FieldArrayUtil.NullableNameUnion<FieldsT>[];
+    readonly isNullable: FieldArrayUtil.NullableNameUnion<FieldsT>[];
+    readonly hasExplicitDefaultValue: [];
     readonly mutable: FieldsT[number]["name"][];
     readonly id: undefined;
     readonly candidateKeys: [];
@@ -38,7 +40,8 @@ export declare function table<TableT extends ITable>(table: TableT): (Table<{
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];
     readonly generated: TableT["generated"];
-    readonly hasDefaultValue: TableT["hasDefaultValue"];
+    readonly isNullable: TableT["isNullable"];
+    readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
     readonly mutable: TableT["mutable"];
     readonly id: TableT["id"];
     readonly candidateKeys: TableT["candidateKeys"];

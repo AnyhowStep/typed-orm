@@ -8,7 +8,7 @@ const logBase = o.table(
     {
         updatedAt : sd.date()
     }
-).setHasDefaultValue(c => [
+).setHasExplicitDefaultValue(c => [
     c.updatedAt
 ])
 .setImmutable()

@@ -7,7 +7,8 @@ export declare function tableFromAssertMap<NameT extends string, AssertMapT exte
     readonly columns: ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
     readonly autoIncrement: undefined;
     readonly generated: [];
-    readonly hasDefaultValue: AssertMapUtil.NullableNameUnion<AssertMapT>[];
+    readonly isNullable: AssertMapUtil.NullableNameUnion<AssertMapT>[];
+    readonly hasExplicitDefaultValue: [];
     readonly mutable: Extract<keyof AssertMapT, string>[];
     readonly id: undefined;
     readonly candidateKeys: [];

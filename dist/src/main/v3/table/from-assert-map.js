@@ -10,7 +10,7 @@ function tableFromAssertMap(name, assertMap) {
     */
     const columnNames = Object.keys(assertMap);
     const columns = column_map_1.ColumnMapUtil.fromAssertMap(name, assertMap);
-    const hasDefaultValue = assert_map_1.AssertMapUtil.nullableNames(assertMap);
+    const isNullable = assert_map_1.AssertMapUtil.nullableNames(assertMap);
     const mutable = columnNames;
     return new table_1.Table({
         alias: name,
@@ -20,7 +20,8 @@ function tableFromAssertMap(name, assertMap) {
         id: undefined,
         candidateKeys: [],
         generated: [],
-        hasDefaultValue,
+        isNullable,
+        hasExplicitDefaultValue: [],
         mutable,
         parents: [],
         insertAllowed: true,

@@ -9,7 +9,8 @@ export declare function tableFromFieldTuple<NameT extends string, FieldsT extend
     readonly columns: ColumnMapUtil.FromFieldArray<NameT, FieldsT>;
     readonly autoIncrement: undefined;
     readonly generated: [];
-    readonly hasDefaultValue: FieldArrayUtil.NullableNameUnion<FieldsT>[];
+    readonly isNullable: FieldArrayUtil.NullableNameUnion<FieldsT>[];
+    readonly hasExplicitDefaultValue: [];
     readonly mutable: FieldsT[number]["name"][];
     readonly id: undefined;
     readonly candidateKeys: [];

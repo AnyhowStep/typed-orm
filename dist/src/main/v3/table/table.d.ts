@@ -7,15 +7,15 @@ import { ColumnMap } from "../column-map";
 import { CandidateKeyArrayUtil } from "../candidate-key-array";
 import { SuperKeyArrayUtil } from "../super-key-array";
 import { ToUnknownIfAllFieldsNever } from "../type";
-import { AssertMap, AssertMapUtil } from "../assert-map";
-import { FieldArrayUtil } from "../field-array";
+import { AssertMap } from "../assert-map";
 import { Column } from "../column";
 export interface TableData extends AliasedTableData {
     readonly autoIncrement: undefined | string;
     readonly id: undefined | string;
     readonly candidateKeys: CandidateKey[];
     readonly generated: string[];
-    readonly hasDefaultValue: string[];
+    readonly isNullable: string[];
+    readonly hasExplicitDefaultValue: string[];
     readonly mutable: string[];
     readonly parents: ITable[];
     readonly insertAllowed: boolean;
@@ -30,7 +30,8 @@ export interface ITable<DataT extends TableData = TableData> {
     readonly id: DataT["id"];
     readonly candidateKeys: DataT["candidateKeys"];
     readonly generated: DataT["generated"];
-    readonly hasDefaultValue: DataT["hasDefaultValue"];
+    readonly isNullable: DataT["isNullable"];
+    readonly hasExplicitDefaultValue: DataT["hasExplicitDefaultValue"];
     readonly mutable: DataT["mutable"];
     readonly parents: DataT["parents"];
     readonly insertAllowed: DataT["insertAllowed"];
@@ -45,7 +46,8 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     readonly id: DataT["id"];
     readonly candidateKeys: DataT["candidateKeys"];
     readonly generated: DataT["generated"];
-    readonly hasDefaultValue: DataT["hasDefaultValue"];
+    readonly isNullable: DataT["isNullable"];
+    readonly hasExplicitDefaultValue: DataT["hasExplicitDefaultValue"];
     readonly mutable: DataT["mutable"];
     readonly parents: DataT["parents"];
     readonly insertAllowed: DataT["insertAllowed"];
@@ -66,7 +68,7 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     }, DelegateT>);
     addCandidateKey<DelegateT extends Table.CandidateKeyDelegate<this>>(delegate: DelegateT): (Table.AddCandidateKey<this, DelegateT>);
     setGenerated<DelegateT extends Table.GeneratedDelegate<this>>(delegate: DelegateT): (Table.SetGenerated<this, DelegateT>);
-    setHasDefaultValue<DelegateT extends Table.HasDefaultValueDelegate<this>>(delegate: DelegateT): (Table.SetHasDefaultValue<this, DelegateT>);
+    setHasExplicitDefaultValue<DelegateT extends Table.HasExplicitDefaultValueDelegate<this>>(delegate: DelegateT): (Table.SetHasExplicitDefaultValue<this, DelegateT>);
     setImmutable(): Table.SetImmutable<this>;
     overwriteMutable<DelegateT extends Table.MutableDelegate<this>>(delegate: DelegateT): (Table.OverwriteMutable<this, DelegateT>);
     addParent<ParentT extends ITable>(parent: Table.Parent<this, ParentT>): (Table.AddParent<this, ParentT>);
@@ -90,7 +92,8 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: TableT["candidateKeys"];
         readonly generated: TableT["generated"];
-        readonly hasDefaultValue: TableT["hasDefaultValue"];
+        readonly isNullable: TableT["isNullable"];
+        readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
         readonly mutable: TableT["mutable"];
         readonly parents: TableT["parents"];
         readonly insertAllowed: TableT["insertAllowed"];
@@ -107,7 +110,8 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: TableT["candidateKeys"];
         readonly generated: TableT["generated"];
-        readonly hasDefaultValue: (TableT["hasDefaultValue"][number] | FieldArrayUtil.NullableNameUnion<FieldsT>)[];
+        readonly isNullable: Column.NullableNameUnionFromColumnMap<ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>>>[];
+        readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
         readonly mutable: TableT["mutable"];
         readonly parents: TableT["parents"];
         readonly insertAllowed: TableT["insertAllowed"];
@@ -124,7 +128,8 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: TableT["candidateKeys"];
         readonly generated: TableT["generated"];
-        readonly hasDefaultValue: (TableT["hasDefaultValue"][number] | AssertMapUtil.NullableNameUnion<AssertMapT>)[];
+        readonly isNullable: Column.NullableNameUnionFromColumnMap<ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>>>[];
+        readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
         readonly mutable: TableT["mutable"];
         readonly parents: TableT["parents"];
         readonly insertAllowed: TableT["insertAllowed"];
@@ -147,7 +152,7 @@ export declare namespace Table {
 export declare namespace Table {
     type AutoIncrementColumnMap<ColumnMapT extends ColumnMap> = ({
         [columnName in {
-            [columnName in keyof ColumnMapT]: (ColumnMapT[columnName] extends IAnonymousTypedColumn<number | string> ? columnName : never);
+            [columnName in keyof ColumnMapT]: (ColumnMapT[columnName] extends IAnonymousTypedColumn<number | string | bigint> ? columnName : never);
         }[keyof ColumnMapT]]: (ColumnMapT[columnName]);
     });
     type AutoIncrementDelegate<ColumnMapT extends ColumnMap> = ((columnMap: AutoIncrementColumnMap<ColumnMapT>) => (AutoIncrementColumnMap<ColumnMapT>[keyof AutoIncrementColumnMap<ColumnMapT>]));
@@ -159,7 +164,8 @@ export declare namespace Table {
         readonly id: ReturnType<DelegateT>["name"];
         readonly candidateKeys: (TableT["candidateKeys"][number] | (ReturnType<DelegateT>["name"][]))[];
         readonly generated: (TableT["generated"][number] | ReturnType<DelegateT>["name"])[];
-        readonly hasDefaultValue: (TableT["hasDefaultValue"][number] | ReturnType<DelegateT>["name"])[];
+        readonly isNullable: TableT["isNullable"];
+        readonly hasExplicitDefaultValue: (TableT["hasExplicitDefaultValue"][number] | ReturnType<DelegateT>["name"])[];
         readonly mutable: Exclude<TableT["mutable"][number], ReturnType<DelegateT>["name"]>[];
         readonly parents: TableT["parents"];
         readonly insertAllowed: TableT["insertAllowed"];
@@ -179,7 +185,8 @@ export declare namespace Table {
         readonly id: ReturnType<DelegateT>["name"];
         readonly candidateKeys: (TableT["candidateKeys"][number] | (ReturnType<DelegateT>["name"][]))[];
         readonly generated: TableT["generated"];
-        readonly hasDefaultValue: TableT["hasDefaultValue"];
+        readonly isNullable: TableT["isNullable"];
+        readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
         readonly mutable: TableT["mutable"];
         readonly parents: TableT["parents"];
         readonly insertAllowed: TableT["insertAllowed"];
@@ -199,7 +206,8 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: (TableT["candidateKeys"][number] | (ReturnType<DelegateT>[number]["name"][]))[];
         readonly generated: TableT["generated"];
-        readonly hasDefaultValue: TableT["hasDefaultValue"];
+        readonly isNullable: TableT["isNullable"];
+        readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
         readonly mutable: TableT["mutable"];
         readonly parents: TableT["parents"];
         readonly insertAllowed: TableT["insertAllowed"];
@@ -220,7 +228,8 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: TableT["candidateKeys"];
         readonly generated: (TableT["generated"][number] | ReturnType<DelegateT>[number]["name"])[];
-        readonly hasDefaultValue: (TableT["hasDefaultValue"][number] | ReturnType<DelegateT>[number]["name"])[];
+        readonly isNullable: TableT["isNullable"];
+        readonly hasExplicitDefaultValue: (TableT["hasExplicitDefaultValue"][number] | ReturnType<DelegateT>[number]["name"])[];
         readonly mutable: Exclude<TableT["mutable"][number], ReturnType<DelegateT>[number]["name"]>[];
         readonly parents: TableT["parents"];
         readonly insertAllowed: TableT["insertAllowed"];
@@ -229,11 +238,11 @@ export declare namespace Table {
     function setGenerated<TableT extends ITable, DelegateT extends GeneratedDelegate<TableT>>(table: TableT, delegate: DelegateT): (SetGenerated<TableT, DelegateT>);
 }
 export declare namespace Table {
-    type HasDefaultValueColumnMap<ColumnMapT extends ColumnMap, HasDefaultValueT extends string[]> = ({
-        [columnName in Exclude<keyof ColumnMapT, HasDefaultValueT[number]>]: (ColumnMapT[columnName]);
+    type HasExplicitDefaultValueColumnMap<ColumnMapT extends ColumnMap, HasExplicitDefaultValueT extends string[]> = ({
+        [columnName in Exclude<keyof ColumnMapT, HasExplicitDefaultValueT[number]>]: (ColumnMapT[columnName]);
     });
-    type HasDefaultValueDelegate<TableT extends ITable> = ((columnMap: HasDefaultValueColumnMap<TableT["columns"], TableT["hasDefaultValue"]>) => (HasDefaultValueColumnMap<TableT["columns"], TableT["hasDefaultValue"]>[keyof HasDefaultValueColumnMap<TableT["columns"], TableT["hasDefaultValue"]>][]));
-    type SetHasDefaultValue<TableT extends ITable, DelegateT extends HasDefaultValueDelegate<TableT>> = (Table<{
+    type HasExplicitDefaultValueDelegate<TableT extends ITable> = ((columnMap: HasExplicitDefaultValueColumnMap<TableT["columns"], TableT["hasExplicitDefaultValue"]>) => (HasExplicitDefaultValueColumnMap<TableT["columns"], TableT["hasExplicitDefaultValue"]>[keyof HasExplicitDefaultValueColumnMap<TableT["columns"], TableT["hasExplicitDefaultValue"]>][]));
+    type SetHasExplicitDefaultValue<TableT extends ITable, DelegateT extends HasExplicitDefaultValueDelegate<TableT>> = (Table<{
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: TableT["columns"];
@@ -241,13 +250,14 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: TableT["candidateKeys"];
         readonly generated: TableT["generated"];
-        readonly hasDefaultValue: (TableT["hasDefaultValue"][number] | ReturnType<DelegateT>[number]["name"])[];
+        readonly isNullable: TableT["isNullable"];
+        readonly hasExplicitDefaultValue: (TableT["hasExplicitDefaultValue"][number] | ReturnType<DelegateT>[number]["name"])[];
         readonly mutable: TableT["mutable"];
         readonly parents: TableT["parents"];
         readonly insertAllowed: TableT["insertAllowed"];
         readonly deleteAllowed: TableT["deleteAllowed"];
     }>);
-    function setHasDefaultValue<TableT extends ITable, DelegateT extends HasDefaultValueDelegate<TableT>>(table: TableT, delegate: DelegateT): (SetHasDefaultValue<TableT, DelegateT>);
+    function setHasExplicitDefaultValue<TableT extends ITable, DelegateT extends HasExplicitDefaultValueDelegate<TableT>>(table: TableT, delegate: DelegateT): (SetHasExplicitDefaultValue<TableT, DelegateT>);
 }
 export declare namespace Table {
     type SetImmutable<TableT extends ITable> = (Table<{
@@ -258,7 +268,8 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: TableT["candidateKeys"];
         readonly generated: TableT["generated"];
-        readonly hasDefaultValue: TableT["hasDefaultValue"];
+        readonly isNullable: TableT["isNullable"];
+        readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
         readonly mutable: [];
         readonly parents: TableT["parents"];
         readonly insertAllowed: TableT["insertAllowed"];
@@ -279,7 +290,8 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: TableT["candidateKeys"];
         readonly generated: TableT["generated"];
-        readonly hasDefaultValue: TableT["hasDefaultValue"];
+        readonly isNullable: TableT["isNullable"];
+        readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
         readonly mutable: ReturnType<DelegateT>[number]["name"][];
         readonly parents: TableT["parents"];
         readonly insertAllowed: TableT["insertAllowed"];
@@ -299,8 +311,9 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: TableT["candidateKeys"];
         readonly generated: TableT["generated"];
-        readonly hasDefaultValue: TableT["hasDefaultValue"];
-        readonly mutable: TableT["hasDefaultValue"];
+        readonly isNullable: TableT["isNullable"];
+        readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
+        readonly mutable: TableT["hasExplicitDefaultValue"];
         readonly parents: (TableT["parents"][number] | ParentT["parents"][number] | ParentT)[];
         readonly insertAllowed: TableT["insertAllowed"];
         readonly deleteAllowed: TableT["deleteAllowed"];
@@ -316,7 +329,8 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: TableT["candidateKeys"];
         readonly generated: TableT["generated"];
-        readonly hasDefaultValue: TableT["hasDefaultValue"];
+        readonly isNullable: TableT["isNullable"];
+        readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
         readonly mutable: TableT["mutable"];
         readonly parents: TableT["parents"];
         readonly insertAllowed: false;
@@ -331,7 +345,8 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: TableT["candidateKeys"];
         readonly generated: TableT["generated"];
-        readonly hasDefaultValue: TableT["hasDefaultValue"];
+        readonly isNullable: TableT["isNullable"];
+        readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
         readonly mutable: TableT["mutable"];
         readonly parents: TableT["parents"];
         readonly insertAllowed: TableT["insertAllowed"];

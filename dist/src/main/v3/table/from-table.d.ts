@@ -5,7 +5,8 @@ export declare function tableFromTable<TableT extends ITable>(table: TableT): (T
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];
     readonly generated: TableT["generated"];
-    readonly hasDefaultValue: TableT["hasDefaultValue"];
+    readonly isNullable: TableT["isNullable"];
+    readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
     readonly mutable: TableT["mutable"];
     readonly id: TableT["id"];
     readonly candidateKeys: TableT["candidateKeys"];

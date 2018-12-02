@@ -22,3 +22,7 @@ export const emptyTable = o.table(
     sd.field("b", sd.string()),
     sd.field("c", sd.nullable(sd.boolean()))
 ]);
+
+export const narrow = table.addColumns([
+    sd.field("c", sd.boolean())
+]);

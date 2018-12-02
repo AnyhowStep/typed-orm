@@ -18,7 +18,8 @@ export function tableFromFieldTuple<
 
         readonly autoIncrement : undefined;
         readonly generated : [];
-        readonly hasDefaultValue : FieldArrayUtil.NullableNameUnion<FieldsT>[];
+        readonly isNullable : FieldArrayUtil.NullableNameUnion<FieldsT>[];
+        readonly hasExplicitDefaultValue : [];
         readonly mutable : FieldsT[number]["name"][];
         readonly id : undefined;
         readonly candidateKeys : [];
@@ -29,7 +30,7 @@ export function tableFromFieldTuple<
 ) {
     const columns = ColumnMapUtil.fromFieldArray(name, fields);
 
-    const hasDefaultValue = FieldArrayUtil.nullableNames(fields);
+    const isNullable = FieldArrayUtil.nullableNames(fields);
 
     const mutable : FieldsT[number]["name"][] = fields.map(field => field.name);
 
@@ -44,7 +45,8 @@ export function tableFromFieldTuple<
             candidateKeys : [] as [],
 
             generated : [] as [],
-            hasDefaultValue,
+            isNullable,
+            hasExplicitDefaultValue : [] as [],
             mutable,
 
             parents : [] as [],

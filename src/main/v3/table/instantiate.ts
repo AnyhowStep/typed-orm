@@ -22,7 +22,8 @@ export function table<
 
         readonly autoIncrement : undefined;
         readonly generated : [];
-        readonly hasDefaultValue : AssertMapUtil.NullableNameUnion<AssertMapT>[];
+        readonly isNullable : AssertMapUtil.NullableNameUnion<AssertMapT>[];
+        readonly hasExplicitDefaultValue : [];
         readonly mutable : Extract<keyof AssertMapT, string>[];
         readonly id : undefined;
         readonly candidateKeys : [];
@@ -45,7 +46,8 @@ export function table<
 
         readonly autoIncrement : undefined;
         readonly generated : [];
-        readonly hasDefaultValue : FieldArrayUtil.NullableNameUnion<FieldsT>[];
+        readonly isNullable : FieldArrayUtil.NullableNameUnion<FieldsT>[];
+        readonly hasExplicitDefaultValue : [];
         readonly mutable : FieldsT[number]["name"][];
         readonly id : undefined;
         readonly candidateKeys : [];
@@ -64,7 +66,8 @@ export function table<TableT extends ITable> (
 
         readonly autoIncrement : TableT["autoIncrement"];
         readonly generated : TableT["generated"];
-        readonly hasDefaultValue : TableT["hasDefaultValue"];
+        readonly isNullable : TableT["isNullable"];
+        readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
         readonly mutable : TableT["mutable"];
         readonly id : TableT["id"];
         readonly candidateKeys : TableT["candidateKeys"];

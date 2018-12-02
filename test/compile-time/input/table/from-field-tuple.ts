@@ -14,3 +14,10 @@ export const emptyTable = o.table(
     "table",
     []
 );
+
+export const nullable = o.table(
+    "table",
+    [
+        sd.field("a", sd.nullable(sd.naturalNumber())),
+    ]
+);

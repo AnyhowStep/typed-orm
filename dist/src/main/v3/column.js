@@ -162,6 +162,11 @@ exports.Column = Column;
         return Object.keys(columnMap);
     }
     Column.nameArrayFromColumnMap = nameArrayFromColumnMap;
+    function nullableNameArrayFromColumnMap(columnMap) {
+        const columnNames = Object.keys(columnMap);
+        return columnNames.filter(columnName => sd.isNullable(columnMap[columnName].assertDelegate));
+    }
+    Column.nullableNameArrayFromColumnMap = nullableNameArrayFromColumnMap;
 })(Column = exports.Column || (exports.Column = {}));
 function column(tableAlias, name, assertFunc) {
     return new Column({

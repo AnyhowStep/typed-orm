@@ -401,6 +401,26 @@ export namespace Column {
         //But it shouldn't be wrong, in general.
         return Object.keys(columnMap) as NameUnionFromColumnMap<ColumnMapT>[];
     }
+
+    export type NullableNameUnionFromColumnMap<ColumnMapT extends ColumnMap> = (
+        ColumnMapT extends ColumnMap ?
+        {
+            [columnName in Extract<keyof ColumnMapT, string>] : (
+                null extends ReturnType<ColumnMapT[columnName]["assertDelegate"]> ?
+                columnName :
+                never
+            )
+        }[Extract<keyof ColumnMapT, string>] :
+        never
+    );
+    export function nullableNameArrayFromColumnMap<ColumnMapT extends ColumnMap> (
+        columnMap : ColumnMapT
+    ) : NullableNameUnionFromColumnMap<ColumnMapT>[] {
+        const columnNames = Object.keys(columnMap) as Extract<keyof ColumnMapT, string>[];
+        return columnNames.filter(
+            columnName => sd.isNullable(columnMap[columnName].assertDelegate)
+        ) as any;
+    }
 }
 
 export function column<

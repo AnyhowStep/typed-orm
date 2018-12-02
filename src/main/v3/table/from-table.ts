@@ -10,7 +10,8 @@ export function tableFromTable<TableT extends ITable> (
 
         readonly autoIncrement : TableT["autoIncrement"];
         readonly generated : TableT["generated"];
-        readonly hasDefaultValue : TableT["hasDefaultValue"];
+        readonly isNullable : TableT["isNullable"];
+        readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
         readonly mutable : TableT["mutable"];
         readonly id : TableT["id"];
         readonly candidateKeys : TableT["candidateKeys"];
@@ -26,7 +27,8 @@ export function tableFromTable<TableT extends ITable> (
 
         autoIncrement,
         generated,
-        hasDefaultValue,
+        isNullable,
+        hasExplicitDefaultValue,
         mutable,
         id,
         candidateKeys,
@@ -42,7 +44,8 @@ export function tableFromTable<TableT extends ITable> (
 
             autoIncrement,
             generated,
-            hasDefaultValue,
+            isNullable,
+            hasExplicitDefaultValue,
             mutable,
             id,
             candidateKeys,

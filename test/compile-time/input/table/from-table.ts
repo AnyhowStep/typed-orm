@@ -16,3 +16,11 @@ const emptyTableSrc = o.table(
     {}
 );
 export const emptyTable = o.table(emptyTableSrc);
+
+const nullableTableSrc = o.table(
+    "table",
+    {
+        a : sd.nullable(sd.naturalNumber()),
+    }
+);
+export const nullableTable = o.table(nullableTableSrc);

@@ -69,6 +69,10 @@ export declare namespace Column {
     type IsAssignableTo<A extends IColumn, B extends IColumn> = (boolean extends ColumnIdentifierUtil.IsEqual<A, B> ? (ReturnType<A["assertDelegate"]> extends ReturnType<B["assertDelegate"]> ? boolean : false) : ColumnIdentifierUtil.IsEqual<A, B> extends true ? (ReturnType<A["assertDelegate"]> extends ReturnType<B["assertDelegate"]> ? true : false) : false);
     type NameUnionFromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? Extract<keyof ColumnMapT, string> : never);
     function nameArrayFromColumnMap<ColumnMapT extends ColumnMap>(columnMap: ColumnMapT): NameUnionFromColumnMap<ColumnMapT>[];
+    type NullableNameUnionFromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? {
+        [columnName in Extract<keyof ColumnMapT, string>]: (null extends ReturnType<ColumnMapT[columnName]["assertDelegate"]> ? columnName : never);
+    }[Extract<keyof ColumnMapT, string>] : never);
+    function nullableNameArrayFromColumnMap<ColumnMapT extends ColumnMap>(columnMap: ColumnMapT): NullableNameUnionFromColumnMap<ColumnMapT>[];
 }
 export declare function column<TableAliasT extends string, NameT extends string, AssertFuncT extends sd.AnyAssertFunc>(tableAlias: TableAliasT, name: NameT, assertFunc: AssertFuncT): Column<{
     readonly tableAlias: TableAliasT;

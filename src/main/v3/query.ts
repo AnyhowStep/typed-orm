@@ -807,7 +807,7 @@ const t = table(
         //c.a,
         c.d
     ])
-    .setHasDefaultValue(c => [
+    .setHasExplicitDefaultValue(c => [
         c.e
     ])
     .addCandidateKey(c => [

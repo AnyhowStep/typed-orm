@@ -16,7 +16,8 @@ export function tableFromAssertMap<
 
         readonly autoIncrement : undefined;
         readonly generated : [];
-        readonly hasDefaultValue : AssertMapUtil.NullableNameUnion<AssertMapT>[];
+        readonly isNullable : AssertMapUtil.NullableNameUnion<AssertMapT>[];
+        readonly hasExplicitDefaultValue : [];
         readonly mutable : Extract<keyof AssertMapT, string>[];
         readonly id : undefined;
         readonly candidateKeys : [];
@@ -31,7 +32,7 @@ export function tableFromAssertMap<
     */
     const columnNames = Object.keys(assertMap) as Extract<keyof AssertMapT, string>[];
     const columns = ColumnMapUtil.fromAssertMap(name, assertMap);
-    const hasDefaultValue = AssertMapUtil.nullableNames(assertMap);
+    const isNullable = AssertMapUtil.nullableNames(assertMap);
 
     const mutable : Extract<keyof AssertMapT, string>[] = columnNames;
 
@@ -46,7 +47,8 @@ export function tableFromAssertMap<
             candidateKeys : [] as [],
 
             generated : [] as [],
-            hasDefaultValue,
+            isNullable,
+            hasExplicitDefaultValue : [] as [],
             mutable,
 
             parents : [] as [],

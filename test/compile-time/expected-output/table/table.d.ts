@@ -23,7 +23,8 @@ export declare const t: o.Table<{
     };
     readonly autoIncrement: undefined;
     readonly generated: [];
-    readonly hasDefaultValue: never[];
+    readonly isNullable: never[];
+    readonly hasExplicitDefaultValue: [];
     readonly mutable: ("x" | "y")[];
     readonly id: undefined;
     readonly candidateKeys: [];
@@ -57,7 +58,8 @@ export declare const t3: o.Table<{
     readonly id: "x";
     readonly candidateKeys: "x"[][];
     readonly generated: "x"[];
-    readonly hasDefaultValue: "x"[];
+    readonly isNullable: never[];
+    readonly hasExplicitDefaultValue: "x"[];
     readonly mutable: any[];
     readonly parents: [];
     readonly insertAllowed: true;

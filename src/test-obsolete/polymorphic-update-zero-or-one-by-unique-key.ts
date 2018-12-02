@@ -13,7 +13,7 @@ const appKey = o.table(
     }
 )
     .setAutoIncrement(c => c.appKeyId)
-    .setHasDefaultValue(c => [c.parentValue])
+    .setHasExplicitDefaultValue(c => [c.parentValue])
     .setIsMutable(c => [c.key, c.parentValue])
     .build();
 const browserAppKey = o.table(
