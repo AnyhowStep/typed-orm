@@ -761,9 +761,11 @@ export namespace Table {
         const candidateKeys : (
             TableT["candidateKeys"][number] |
             (ReturnType<DelegateT>["name"][])
-        )[] = table.candidateKeys.concat([
-            [autoIncrement.name]
-        ]);
+        )[] = StringArrayUtil.uniqueStringArray(
+            table.candidateKeys.concat([
+                [autoIncrement.name]
+            ])
+        );
 
         const generated : (
             TableT["generated"][number] |
@@ -1381,6 +1383,9 @@ export namespace Table {
             ][]
         )
     );
+    /*
+        TODO Implement addMutable(), removeMutable() ?
+    */
     //Technically, "overwrite" is the wrong verb to use.
     //This creates an entirely new Table.
     export type OverwriteMutable<
@@ -1508,7 +1513,9 @@ export namespace Table {
                         ReturnType<ParentT["columns"][columnName]["assertDelegate"]> ?
                             never :
                             [
-                                "Incompatible column types",
+                                "Column",
+                                columnName,
+                                "has incompatible types",
                                 ReturnType<TableT["columns"][columnName]["assertDelegate"]>,
                                 ReturnType<ParentT["columns"][columnName]["assertDelegate"]>
                             ]|void
@@ -1578,7 +1585,20 @@ export namespace Table {
         }
         for (let otherParent of table.parents) {
             if (otherParent.name == parent.name) {
-                throw new Error(`Parent ${table.name} already added to table`);
+                throw new Error(`Parent ${parent.name} already added to table`);
+            }
+        }
+        //TODO Recursively find incompatible types
+        for (let columnName in table.columns) {
+            const parentColumn = parent.columns[columnName];
+            if (parentColumn == undefined) {
+                continue;
+            }
+            if (
+                sd.isNullable(table.columns[columnName].assertDelegate) !=
+                sd.isNullable(parentColumn.assertDelegate)
+            ) {
+                throw new Error(`Parent ${parent.name}.${columnName} and ${table.name}.${columnName} have incompatible types; one is nullable, the other is not`);
             }
         }
 

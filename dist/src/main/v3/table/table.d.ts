@@ -303,7 +303,7 @@ export declare namespace Table {
 }
 export declare namespace Table {
     type Parent<TableT extends ITable, ParentT extends ITable> = (ParentT & (CandidateKeyArrayUtil.CommonCandidateKeyUnion<TableT["candidateKeys"], ParentT["candidateKeys"]> extends never ? ["No common candidate keys found between table and parent", "Candidate keys: ", TableT["candidateKeys"][number], "Parent candidate keys: ", ParentT["candidateKeys"][number]] | void : unknown) & (ToUnknownIfAllFieldsNever<{
-        [columnName in Extract<keyof TableT["columns"], keyof ParentT["columns"]>]: (ReturnType<TableT["columns"][columnName]["assertDelegate"]> extends ReturnType<ParentT["columns"][columnName]["assertDelegate"]> ? never : ["Incompatible column types", ReturnType<TableT["columns"][columnName]["assertDelegate"]>, ReturnType<ParentT["columns"][columnName]["assertDelegate"]>] | void);
+        [columnName in Extract<keyof TableT["columns"], keyof ParentT["columns"]>]: (ReturnType<TableT["columns"][columnName]["assertDelegate"]> extends ReturnType<ParentT["columns"][columnName]["assertDelegate"]> ? never : ["Column", columnName, "has incompatible types", ReturnType<TableT["columns"][columnName]["assertDelegate"]>, ReturnType<ParentT["columns"][columnName]["assertDelegate"]>] | void);
     }>) & (ParentT["name"] extends TableT["name"] ? "Parent cannot have same name as table" | void : unknown) & (ParentT["name"] extends TableT["parents"][number]["name"] ? "Parent already added to table" | void : unknown));
     type AddParent<TableT extends ITable, ParentT extends ITable> = (Table<{
         readonly alias: TableT["alias"];

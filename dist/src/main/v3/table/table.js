@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const sd = require("schema-decorator");
 const aliased_table_1 = require("../aliased-table");
 const column_map_1 = require("../column-map");
 const candidate_key_array_1 = require("../candidate-key-array");
@@ -202,9 +203,9 @@ exports.Table = Table;
         //https://github.com/Microsoft/TypeScript/issues/24277
         const autoIncrement = delegate(columns);
         column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, autoIncrement);
-        const candidateKeys = table.candidateKeys.concat([
+        const candidateKeys = string_array_1.StringArrayUtil.uniqueStringArray(table.candidateKeys.concat([
             [autoIncrement.name]
-        ]);
+        ]));
         const generated = (table.generated.indexOf(autoIncrement.name) >= 0) ?
             table.generated :
             [
@@ -452,7 +453,18 @@ exports.Table = Table;
         }
         for (let otherParent of table.parents) {
             if (otherParent.name == parent.name) {
-                throw new Error(`Parent ${table.name} already added to table`);
+                throw new Error(`Parent ${parent.name} already added to table`);
+            }
+        }
+        //TODO Recursively find incompatible types
+        for (let columnName in table.columns) {
+            const parentColumn = parent.columns[columnName];
+            if (parentColumn == undefined) {
+                continue;
+            }
+            if (sd.isNullable(table.columns[columnName].assertDelegate) !=
+                sd.isNullable(parentColumn.assertDelegate)) {
+                throw new Error(`Parent ${parent.name}.${columnName} and ${table.name}.${columnName} have incompatible types; one is nullable, the other is not`);
             }
         }
         const parents = [

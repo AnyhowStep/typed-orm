@@ -1,0 +1,23 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type 'Table<{ readonly alias: \"table\"; readonly name: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 9 more ...; readonly deleteAllowed: true...' is not assignable to parameter of type '(Table<{ readonly alias: \"table\"; readonly name: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 9 more ...; readonly deleteAllowed: tru...'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly alias: \"table\"; readonly name: \"table\"; readonly columns: { readonly x: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column\").Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: import(\"/home/an...' is not assignable to type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly alias: \"table\"; readonly name: \"table\"; readonly columns: { readonly x: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column\").Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: import(\"/home/an...'. Two different types with this name exist, but they are unrelated.",
+        "category": 1,
+        "code": 2719,
+        "next": {
+          "messageText": "Type 'Table<{ readonly alias: \"table\"; readonly name: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 9 more ...; readonly deleteAllowed: true...' is not assignable to type '\"Parent cannot have same name as table\"'.",
+          "category": 1,
+          "code": 2322
+        }
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 6,
+    "start": 442
+  }
+]

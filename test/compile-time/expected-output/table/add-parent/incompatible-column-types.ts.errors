@@ -1,0 +1,23 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type 'Table<{ readonly alias: \"parent\"; readonly name: \"parent\"; readonly columns: { readonly x: Column<{ tableAlias: \"parent\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 9 more ...; readonly deleteAllowed: t...' is not assignable to parameter of type '(Table<{ readonly alias: \"parent\"; readonly name: \"parent\"; readonly columns: { readonly x: Column<{ tableAlias: \"parent\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 9 more ...; readonly deleteAllowed: ...'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly alias: \"parent\"; readonly name: \"parent\"; readonly columns: { readonly x: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column\").Column<{ tableAlias: \"parent\"; name: \"x\"; assertDelegate: import(\"/home...' is not assignable to type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly alias: \"parent\"; readonly name: \"parent\"; readonly columns: { readonly x: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column\").Column<{ tableAlias: \"parent\"; name: \"x\"; assertDelegate: import(\"/home...'. Two different types with this name exist, but they are unrelated.",
+        "category": 1,
+        "code": 2719,
+        "next": {
+          "messageText": "Type 'Table<{ readonly alias: \"parent\"; readonly name: \"parent\"; readonly columns: { readonly x: Column<{ tableAlias: \"parent\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 9 more ...; readonly deleteAllowed: t...' is missing the following properties from type '[\"Column\", \"x\", \"has incompatible types\", number | null, number]': 0, 1, 2, 3, and 33 more.",
+          "category": 1,
+          "code": 2740
+        }
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 6,
+    "start": 456
+  }
+]
