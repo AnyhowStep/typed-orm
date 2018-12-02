@@ -681,6 +681,7 @@ export namespace Table {
     }
 }
 export namespace Table {
+    //Auto-increment columns cannot be nullable
     //The `number|string|bigint` requirement is only a compile-time constraint
     //TODO Consider having run-time checks to see if it allows 1,2,3,4,5,... ?
     export type AutoIncrementColumnMap<ColumnMapT extends ColumnMap> = (
