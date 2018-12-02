@@ -14,10 +14,25 @@ tape(__filename, (t) => {
     ).addCandidateKey(c => [
         c.x,
         c.y,
+        c.x,
+        c.y,
     ]).addCandidateKey(c => [
         c.y,
         c.z,
+        c.z,
+    ]).addCandidateKey(c => [
+        c.x,
+        c.y,
+        c.y,
     ]);
+
+    t.deepEqual(table.candidateKeys[0].length, 2);
+    t.true((table.candidateKeys[0] as string[]).indexOf("x") >= 0);
+    t.true((table.candidateKeys[0] as string[]).indexOf("y") >= 0);
+
+    t.deepEqual(table.candidateKeys[1].length, 2);
+    t.true((table.candidateKeys[1] as string[]).indexOf("y") >= 0);
+    t.true((table.candidateKeys[1] as string[]).indexOf("z") >= 0);
 
     const ckad = table.candidateKeyAssertDelegate();
     t.deepEqual(

@@ -9,6 +9,7 @@ import {ToUnknownIfAllFieldsNever} from "../type";
 import {AssertMap} from "../assert-map";
 import {Column} from "../column";
 import {TypeMapUtil} from "../type-map";
+import {StringArrayUtil} from "../string-array";
 
 export interface TableData extends AliasedTableData {
     //The maximum value `UNSIGNED BIGINT` can have is
@@ -705,7 +706,7 @@ export namespace Table {
         )
     );
     //Technically, "set" is the wrong verb to use.
-    //This create an entirely new Table.
+    //This creates an entirely new Table.
     export type SetAutoIncrement<
         TableT extends ITable,
         DelegateT extends AutoIncrementDelegate<TableT["columns"]>
@@ -835,7 +836,7 @@ export namespace Table {
         )
     );
     //Technically, "set" is the wrong verb to use.
-    //This create an entirely new Table.
+    //This creates an entirely new Table.
     export type SetId<
         TableT extends ITable<TableData & { id : undefined }>,
         DelegateT extends IdDelegate<TableT["columns"]>
@@ -930,7 +931,7 @@ export namespace Table {
         )
     );
     //Technically, "add" is the wrong verb to use.
-    //This create an entirely new Table.
+    //This creates an entirely new Table.
     export type AddCandidateKey<
         TableT extends ITable,
         DelegateT extends CandidateKeyDelegate<TableT>
@@ -978,11 +979,13 @@ export namespace Table {
         const candidateKeys : (
             TableT["candidateKeys"][number] |
             (ReturnType<DelegateT>[number]["name"][])
-        )[] = table.candidateKeys.concat([
-            candidateKeyColumns.map(
-                candidateKeyColumn => candidateKeyColumn.name
-            )
-        ]);
+        )[] = StringArrayUtil.uniqueStringArray(
+            table.candidateKeys.concat([
+                candidateKeyColumns.map(
+                    candidateKeyColumn => candidateKeyColumn.name
+                )
+            ])
+        );
 
         const {
             alias,
@@ -1046,7 +1049,7 @@ export namespace Table {
         )
     );
     //Technically, "set" is the wrong verb to use.
-    //This create an entirely new Table.
+    //This creates an entirely new Table.
     export type SetGenerated<
         TableT extends ITable,
         DelegateT extends GeneratedDelegate<TableT>
@@ -1103,29 +1106,35 @@ export namespace Table {
         const generated : (
             TableT["generated"][number] |
             ReturnType<DelegateT>[number]["name"]
-        )[] = [
-            ...table.generated,
-            ...generatedColumns.map(column => column.name),
-        ];
+        )[] = StringArrayUtil.uniqueString(
+            [
+                ...table.generated,
+                ...generatedColumns.map(column => column.name),
+            ]
+        );
         const hasExplicitDefaultValue : (
             TableT["hasExplicitDefaultValue"][number] |
             ReturnType<DelegateT>[number]["name"]
-        )[] = [
-            ...table.hasExplicitDefaultValue,
-            ...generatedColumns.map(column => column.name),
-        ];
+        )[] = StringArrayUtil.uniqueString(
+            [
+                ...table.hasExplicitDefaultValue,
+                ...generatedColumns.map(column => column.name),
+            ]
+        );
         const mutable : Exclude<
             TableT["mutable"][number],
             ReturnType<DelegateT>[number]["name"]
-        >[] = table.mutable.filter(
-            (columnName) : columnName is Exclude<
-                TableT["mutable"][number],
-                ReturnType<DelegateT>[number]["name"]
-            > => {
-                return generatedColumns.every(
-                    column => column.name != columnName
-                );
-            }
+        >[] = StringArrayUtil.uniqueString(
+            table.mutable.filter(
+                (columnName) : columnName is Exclude<
+                    TableT["mutable"][number],
+                    ReturnType<DelegateT>[number]["name"]
+                > => {
+                    return generatedColumns.every(
+                        column => column.name != columnName
+                    );
+                }
+            )
         );
 
         const {
@@ -1188,7 +1197,7 @@ export namespace Table {
         )
     );
     //Technically, "set" is the wrong verb to use.
-    //This create an entirely new Table.
+    //This creates an entirely new Table.
     export type SetHasExplicitDefaultValue<
         TableT extends ITable,
         DelegateT extends HasExplicitDefaultValueDelegate<TableT>
@@ -1238,10 +1247,12 @@ export namespace Table {
         const hasExplicitDefaultValue : (
             TableT["hasExplicitDefaultValue"][number] |
             ReturnType<DelegateT>[number]["name"]
-        )[] = [
-            ...table.hasExplicitDefaultValue,
-            ...hasExplicitDefaultValueColumns.map(column => column.name),
-        ];
+        )[] = StringArrayUtil.uniqueString(
+            [
+                ...table.hasExplicitDefaultValue,
+                ...hasExplicitDefaultValueColumns.map(column => column.name),
+            ]
+        );
 
         const {
             alias,
@@ -1371,7 +1382,7 @@ export namespace Table {
         )
     );
     //Technically, "overwrite" is the wrong verb to use.
-    //This create an entirely new Table.
+    //This creates an entirely new Table.
     export type OverwriteMutable<
         TableT extends ITable,
         DelegateT extends MutableDelegate<TableT>
@@ -1416,8 +1427,13 @@ export namespace Table {
             ColumnMapUtil.assertHasColumnIdentifier(table.columns, mutableColumn);
         }
 
-        const mutable : ReturnType<DelegateT>[number]["name"][] = mutableColumns
-            .map(column => column.name);
+        //TODO Make other arrays of strings always
+        //have unique elements?
+        const mutable : ReturnType<DelegateT>[number]["name"][] = (
+            StringArrayUtil.uniqueString(
+                mutableColumns.map(column => column.name)
+            )
+        );
 
         const {
             alias,

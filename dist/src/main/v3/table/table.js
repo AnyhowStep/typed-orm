@@ -5,6 +5,7 @@ const column_map_1 = require("../column-map");
 const candidate_key_array_1 = require("../candidate-key-array");
 const column_1 = require("../column");
 const type_map_1 = require("../type-map");
+const string_array_1 = require("../string-array");
 class Table {
     constructor(data, __databaseName) {
         this.alias = data.alias;
@@ -278,9 +279,9 @@ exports.Table = Table;
         for (let candidateKeyColumn of candidateKeyColumns) {
             column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, candidateKeyColumn);
         }
-        const candidateKeys = table.candidateKeys.concat([
+        const candidateKeys = string_array_1.StringArrayUtil.uniqueStringArray(table.candidateKeys.concat([
             candidateKeyColumns.map(candidateKeyColumn => candidateKeyColumn.name)
-        ]);
+        ]));
         const { alias, name, autoIncrement, id, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
             alias,
@@ -313,17 +314,17 @@ exports.Table = Table;
             }
             column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, generatedColumn);
         }
-        const generated = [
+        const generated = string_array_1.StringArrayUtil.uniqueString([
             ...table.generated,
             ...generatedColumns.map(column => column.name),
-        ];
-        const hasExplicitDefaultValue = [
+        ]);
+        const hasExplicitDefaultValue = string_array_1.StringArrayUtil.uniqueString([
             ...table.hasExplicitDefaultValue,
             ...generatedColumns.map(column => column.name),
-        ];
-        const mutable = table.mutable.filter((columnName) => {
+        ]);
+        const mutable = string_array_1.StringArrayUtil.uniqueString(table.mutable.filter((columnName) => {
             return generatedColumns.every(column => column.name != columnName);
-        });
+        }));
         const { alias, name, autoIncrement, id, candidateKeys, isNullable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
             alias,
@@ -356,10 +357,10 @@ exports.Table = Table;
             }
             column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, hasExplicitDefaultValueColumn);
         }
-        const hasExplicitDefaultValue = [
+        const hasExplicitDefaultValue = string_array_1.StringArrayUtil.uniqueString([
             ...table.hasExplicitDefaultValue,
             ...hasExplicitDefaultValueColumns.map(column => column.name),
-        ];
+        ]);
         const { alias, name, autoIncrement, id, candidateKeys, generated, isNullable, mutable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
             alias,
@@ -413,8 +414,9 @@ exports.Table = Table;
             }
             column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, mutableColumn);
         }
-        const mutable = mutableColumns
-            .map(column => column.name);
+        //TODO Make other arrays of strings always
+        //have unique elements?
+        const mutable = (string_array_1.StringArrayUtil.uniqueString(mutableColumns.map(column => column.name)));
         const { alias, name, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
             alias,

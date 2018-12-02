@@ -10,7 +10,8 @@ tape(__filename, (t) => {
             y : sd.string(),
             z : sd.boolean(),
         }
-    ).setGenerated(c => [c.x, c.z, c.x, c.z]);
+    ).setImmutable()
+    .overwriteMutable(c => [c.x, c.z, c.x, c.z]);
 
     t.deepEqual(table.alias, "table");
     t.deepEqual(table.name, "table");
@@ -32,14 +33,11 @@ tape(__filename, (t) => {
     t.deepEqual(table.columns.z.assertDelegate("", false), false);
 
     t.deepEqual(table.autoIncrement, undefined);
-    t.deepEqual(table.generated.length, 2);
-    t.true(table.generated.indexOf("x") >= 0);
-    t.true(table.generated.indexOf("z") >= 0);
-    t.deepEqual(table.hasExplicitDefaultValue.length, 2);
-    t.true(table.hasExplicitDefaultValue.indexOf("x") >= 0);
-    t.true(table.hasExplicitDefaultValue.indexOf("z") >= 0);
-    t.deepEqual(table.mutable.length, 1);
-    t.true(table.mutable.indexOf("y") >= 0);
+    t.deepEqual(table.generated.length, 0);
+    t.deepEqual(table.hasExplicitDefaultValue.length, 0);
+    t.deepEqual(table.mutable.length, 2);
+    t.true(table.mutable.indexOf("x") >= 0);
+    t.true(table.mutable.indexOf("z") >= 0);
     t.deepEqual(table.id, undefined);
     t.deepEqual(table.candidateKeys.length, 0);
     t.deepEqual(table.parents.length, 0);

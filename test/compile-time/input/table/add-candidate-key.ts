@@ -12,9 +12,16 @@ export const table = o.table(
 ).addCandidateKey(c => [
     c.x,
     c.y,
+    c.x,
+    c.y,
 ]).addCandidateKey(c => [
     c.y,
     c.z,
+    c.z,
+]).addCandidateKey(c => [
+    c.x,
+    c.y,
+    c.y,
 ]);
 
 export declare const ck : o.Table.CandidateKey<typeof table>;
