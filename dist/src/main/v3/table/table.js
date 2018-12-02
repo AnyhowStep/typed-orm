@@ -313,14 +313,14 @@ exports.Table = Table;
             }
             column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, generatedColumn);
         }
-        const generated = {
+        const generated = [
             ...table.generated,
             ...generatedColumns.map(column => column.name),
-        };
-        const hasExplicitDefaultValue = {
+        ];
+        const hasExplicitDefaultValue = [
             ...table.hasExplicitDefaultValue,
             ...generatedColumns.map(column => column.name),
-        };
+        ];
         const mutable = table.mutable.filter((columnName) => {
             return generatedColumns.every(column => column.name != columnName);
         });
@@ -356,10 +356,10 @@ exports.Table = Table;
             }
             column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, hasExplicitDefaultValueColumn);
         }
-        const hasExplicitDefaultValue = {
+        const hasExplicitDefaultValue = [
             ...table.hasExplicitDefaultValue,
             ...hasExplicitDefaultValueColumns.map(column => column.name),
-        };
+        ];
         const { alias, name, autoIncrement, id, candidateKeys, generated, isNullable, mutable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
             alias,

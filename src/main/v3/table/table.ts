@@ -1103,17 +1103,17 @@ export namespace Table {
         const generated : (
             TableT["generated"][number] |
             ReturnType<DelegateT>[number]["name"]
-        )[] = {
+        )[] = [
             ...table.generated,
             ...generatedColumns.map(column => column.name),
-        };
+        ];
         const hasExplicitDefaultValue : (
             TableT["hasExplicitDefaultValue"][number] |
             ReturnType<DelegateT>[number]["name"]
-        )[] = {
+        )[] = [
             ...table.hasExplicitDefaultValue,
             ...generatedColumns.map(column => column.name),
-        };
+        ];
         const mutable : Exclude<
             TableT["mutable"][number],
             ReturnType<DelegateT>[number]["name"]
@@ -1238,10 +1238,10 @@ export namespace Table {
         const hasExplicitDefaultValue : (
             TableT["hasExplicitDefaultValue"][number] |
             ReturnType<DelegateT>[number]["name"]
-        )[] = {
+        )[] = [
             ...table.hasExplicitDefaultValue,
             ...hasExplicitDefaultValueColumns.map(column => column.name),
-        };
+        ];
 
         const {
             alias,
