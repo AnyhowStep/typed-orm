@@ -5,10 +5,10 @@ import {AliasedTableData, AliasedTable} from "../aliased-table";
 import {ColumnMapUtil} from "../column-map";
 import {ColumnMap} from "../column-map";
 import {CandidateKeyArrayUtil} from "../candidate-key-array";
-import {SuperKeyArrayUtil} from "../super-key-array";
 import {ToUnknownIfAllFieldsNever} from "../type";
 import {AssertMap} from "../assert-map";
 import {Column} from "../column";
+import {TypeMapUtil} from "../type-map";
 
 export interface TableData extends AliasedTableData {
     //The maximum value `UNSIGNED BIGINT` can have is
@@ -172,13 +172,31 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
         return Table.as(this, newAlias);
     }
 
-    //TODO Maybe cache the assert delegate
-    getCandidateKeyAssertDelegate () : Table.CandidateKeyAssertDelegate<this> {
-        return Table.getCandidateKeyAssertDelegate(this);
+    //A cache to re-use the assert delegate
+    private cachedCandidateKeyAssertDelegate : (
+        undefined |
+        Table.CandidateKeyAssertDelegate<this>
+    );
+    candidateKeyAssertDelegate () : Table.CandidateKeyAssertDelegate<this> {
+        if (this.cachedCandidateKeyAssertDelegate == undefined) {
+            this.cachedCandidateKeyAssertDelegate = (
+                Table.candidateKeyAssertDelegate(this)
+            );
+        }
+        return this.cachedCandidateKeyAssertDelegate;
     }
-    //TODO Maybe cache the assert delegate
-    getSuperKeyAssertDelegate () : Table.SuperKeyAssertDelegate<this> {
-        return Table.getSuperKeyAssertDelegate(this);
+    //A cache to re-use the assert delegate
+    private cachedSuperKeyAssertDelegate : (
+        undefined |
+        Table.SuperKeyAssertDelegate<this>
+    );
+    superKeyAssertDelegate () : Table.SuperKeyAssertDelegate<this> {
+        if (this.cachedSuperKeyAssertDelegate == undefined) {
+            this.cachedSuperKeyAssertDelegate = (
+                Table.superKeyAssertDelegate(this)
+            );
+        }
+        return this.cachedSuperKeyAssertDelegate;
     }
 
     setName<NewNameT extends string>(
@@ -612,18 +630,18 @@ export namespace Table {
 }
 export namespace Table {
     export type CandidateKey<TableT extends ITable> = (
-        CandidateKeyArrayUtil.ToTypeMapUnion<
+        TypeMapUtil.UnionFromCandidateKeyArray<
             TableT["candidateKeys"],
             TableT["columns"]
         >
     );
     export type CandidateKeyAssertDelegate<TableT extends ITable> = (
-        CandidateKeyArrayUtil.ToUnionAssertDelegate<
+        TypeMapUtil.AssertDelegateFromCandidateKeyArray<
             TableT["candidateKeys"],
             TableT["columns"]
         >
     );
-    export function getCandidateKeyAssertDelegate<TableT extends ITable> (
+    export function candidateKeyAssertDelegate<TableT extends ITable> (
         table : TableT
     ) : (
         CandidateKeyAssertDelegate<TableT>
@@ -631,24 +649,24 @@ export namespace Table {
         //https://github.com/Microsoft/TypeScript/issues/28592
         const candidateKeys : TableT["candidateKeys"] = table.candidateKeys;
         const columns : TableT["columns"] = table.columns;
-        return CandidateKeyArrayUtil.toUnionAssertDelegate(
+        return TypeMapUtil.assertDelegateFromCandidateKeyArray(
             candidateKeys,
             columns
         );
     }
     export type SuperKey<TableT extends ITable> = (
-        SuperKeyArrayUtil.ToTypeMapUnion<
+        TypeMapUtil.SuperKeyUnionFromCandidateKeyArray<
             TableT["candidateKeys"],
             TableT["columns"]
         >
     );
     export type SuperKeyAssertDelegate<TableT extends ITable> = (
-        SuperKeyArrayUtil.ToUnionAssertDelegate<
+        TypeMapUtil.SuperKeyAssertDelegateFromCandidateKeyArray<
             TableT["candidateKeys"],
             TableT["columns"]
         >
     );
-    export function getSuperKeyAssertDelegate<TableT extends ITable> (
+    export function superKeyAssertDelegate<TableT extends ITable> (
         table : TableT
     ) : (
         SuperKeyAssertDelegate<TableT>
@@ -656,7 +674,7 @@ export namespace Table {
         //https://github.com/Microsoft/TypeScript/issues/28592
         const candidateKeys : TableT["candidateKeys"] = table.candidateKeys;
         const columns : TableT["columns"] = table.columns;
-        return SuperKeyArrayUtil.toUnionAssertDelegate(
+        return TypeMapUtil.superKeyAssertDelegateFromCandidateKeyArray(
             candidateKeys,
             columns
         );

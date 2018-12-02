@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const aliased_table_1 = require("../aliased-table");
 const column_map_1 = require("../column-map");
 const candidate_key_array_1 = require("../candidate-key-array");
-const super_key_array_1 = require("../super-key-array");
 const column_1 = require("../column");
+const type_map_1 = require("../type-map");
 class Table {
     constructor(data, __databaseName) {
         this.alias = data.alias;
@@ -28,13 +28,17 @@ class Table {
     as(newAlias) {
         return Table.as(this, newAlias);
     }
-    //TODO Maybe cache the assert delegate
-    getCandidateKeyAssertDelegate() {
-        return Table.getCandidateKeyAssertDelegate(this);
+    candidateKeyAssertDelegate() {
+        if (this.cachedCandidateKeyAssertDelegate == undefined) {
+            this.cachedCandidateKeyAssertDelegate = (Table.candidateKeyAssertDelegate(this));
+        }
+        return this.cachedCandidateKeyAssertDelegate;
     }
-    //TODO Maybe cache the assert delegate
-    getSuperKeyAssertDelegate() {
-        return Table.getSuperKeyAssertDelegate(this);
+    superKeyAssertDelegate() {
+        if (this.cachedSuperKeyAssertDelegate == undefined) {
+            this.cachedSuperKeyAssertDelegate = (Table.superKeyAssertDelegate(this));
+        }
+        return this.cachedSuperKeyAssertDelegate;
     }
     setName(newName) {
         return Table.setName(this, newName);
@@ -175,20 +179,20 @@ exports.Table = Table;
     Table.addColumns = addColumns;
 })(Table = exports.Table || (exports.Table = {}));
 (function (Table) {
-    function getCandidateKeyAssertDelegate(table) {
+    function candidateKeyAssertDelegate(table) {
         //https://github.com/Microsoft/TypeScript/issues/28592
         const candidateKeys = table.candidateKeys;
         const columns = table.columns;
-        return candidate_key_array_1.CandidateKeyArrayUtil.toUnionAssertDelegate(candidateKeys, columns);
+        return type_map_1.TypeMapUtil.assertDelegateFromCandidateKeyArray(candidateKeys, columns);
     }
-    Table.getCandidateKeyAssertDelegate = getCandidateKeyAssertDelegate;
-    function getSuperKeyAssertDelegate(table) {
+    Table.candidateKeyAssertDelegate = candidateKeyAssertDelegate;
+    function superKeyAssertDelegate(table) {
         //https://github.com/Microsoft/TypeScript/issues/28592
         const candidateKeys = table.candidateKeys;
         const columns = table.columns;
-        return super_key_array_1.SuperKeyArrayUtil.toUnionAssertDelegate(candidateKeys, columns);
+        return type_map_1.TypeMapUtil.superKeyAssertDelegateFromCandidateKeyArray(candidateKeys, columns);
     }
-    Table.getSuperKeyAssertDelegate = getSuperKeyAssertDelegate;
+    Table.superKeyAssertDelegate = superKeyAssertDelegate;
 })(Table = exports.Table || (exports.Table = {}));
 (function (Table) {
     function setAutoIncrement(table, delegate) {

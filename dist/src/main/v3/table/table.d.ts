@@ -5,10 +5,10 @@ import { AliasedTableData, AliasedTable } from "../aliased-table";
 import { ColumnMapUtil } from "../column-map";
 import { ColumnMap } from "../column-map";
 import { CandidateKeyArrayUtil } from "../candidate-key-array";
-import { SuperKeyArrayUtil } from "../super-key-array";
 import { ToUnknownIfAllFieldsNever } from "../type";
 import { AssertMap } from "../assert-map";
 import { Column } from "../column";
+import { TypeMapUtil } from "../type-map";
 export interface TableData extends AliasedTableData {
     readonly autoIncrement: undefined | string;
     readonly id: undefined | string;
@@ -55,8 +55,10 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     constructor(data: DataT, __databaseName?: string | undefined);
     queryStringTree(): string;
     as<NewAliasT extends string>(newAlias: NewAliasT): Table.As<this, NewAliasT>;
-    getCandidateKeyAssertDelegate(): Table.CandidateKeyAssertDelegate<this>;
-    getSuperKeyAssertDelegate(): Table.SuperKeyAssertDelegate<this>;
+    private cachedCandidateKeyAssertDelegate;
+    candidateKeyAssertDelegate(): Table.CandidateKeyAssertDelegate<this>;
+    private cachedSuperKeyAssertDelegate;
+    superKeyAssertDelegate(): Table.SuperKeyAssertDelegate<this>;
     setName<NewNameT extends string>(newName: NewNameT): Table.SetName<this, NewNameT>;
     addColumns<FieldsT extends sd.AnyField[]>(fields: FieldsT): (Table.AddColumnsFromFieldTuple<this, FieldsT>);
     addColumns<AssertMapT extends AssertMap>(assertMap: AssertMapT): (Table.AddColumnsFromAssertMap<this, AssertMapT>);
@@ -142,12 +144,12 @@ export declare namespace Table {
     function addColumns<TableT extends ITable, AssertMapT extends AssertMap>(table: TableT, assertMap: AssertMapT): (AddColumnsFromAssertMap<TableT, AssertMapT>);
 }
 export declare namespace Table {
-    type CandidateKey<TableT extends ITable> = (CandidateKeyArrayUtil.ToTypeMapUnion<TableT["candidateKeys"], TableT["columns"]>);
-    type CandidateKeyAssertDelegate<TableT extends ITable> = (CandidateKeyArrayUtil.ToUnionAssertDelegate<TableT["candidateKeys"], TableT["columns"]>);
-    function getCandidateKeyAssertDelegate<TableT extends ITable>(table: TableT): (CandidateKeyAssertDelegate<TableT>);
-    type SuperKey<TableT extends ITable> = (SuperKeyArrayUtil.ToTypeMapUnion<TableT["candidateKeys"], TableT["columns"]>);
-    type SuperKeyAssertDelegate<TableT extends ITable> = (SuperKeyArrayUtil.ToUnionAssertDelegate<TableT["candidateKeys"], TableT["columns"]>);
-    function getSuperKeyAssertDelegate<TableT extends ITable>(table: TableT): (SuperKeyAssertDelegate<TableT>);
+    type CandidateKey<TableT extends ITable> = (TypeMapUtil.UnionFromCandidateKeyArray<TableT["candidateKeys"], TableT["columns"]>);
+    type CandidateKeyAssertDelegate<TableT extends ITable> = (TypeMapUtil.AssertDelegateFromCandidateKeyArray<TableT["candidateKeys"], TableT["columns"]>);
+    function candidateKeyAssertDelegate<TableT extends ITable>(table: TableT): (CandidateKeyAssertDelegate<TableT>);
+    type SuperKey<TableT extends ITable> = (TypeMapUtil.SuperKeyUnionFromCandidateKeyArray<TableT["candidateKeys"], TableT["columns"]>);
+    type SuperKeyAssertDelegate<TableT extends ITable> = (TypeMapUtil.SuperKeyAssertDelegateFromCandidateKeyArray<TableT["candidateKeys"], TableT["columns"]>);
+    function superKeyAssertDelegate<TableT extends ITable>(table: TableT): (SuperKeyAssertDelegate<TableT>);
 }
 export declare namespace Table {
     type AutoIncrementColumnMap<ColumnMapT extends ColumnMap> = ({
