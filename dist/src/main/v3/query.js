@@ -305,9 +305,9 @@ exports.Query = Query;
                 .map((from, index) => {
                 const to = join.to[index];
                 return [
-                    column_1.Column.queryTree(from),
+                    column_1.Column.queryTree(to),
                     "=",
-                    column_1.Column.queryTree(to)
+                    column_1.Column.queryTree(from),
                 ].join(" ");
             })
                 .join(" AND "));

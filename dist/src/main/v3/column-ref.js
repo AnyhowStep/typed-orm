@@ -14,6 +14,10 @@ var ColumnRefUtil;
         }, {});
     }
     ColumnRefUtil.fromJoinArray = fromJoinArray;
+    function hasOneTable(columnRef) {
+        return (Object.keys(columnRef).length == 1);
+    }
+    ColumnRefUtil.hasOneTable = hasOneTable;
     function toConvenient(columnRef) {
         const keys = Object.keys(columnRef);
         if (keys.length == 1) {

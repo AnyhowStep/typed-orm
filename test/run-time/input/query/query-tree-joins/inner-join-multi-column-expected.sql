@@ -2,5 +2,5 @@
 INNER JOIN
   `joined1`
 ON
-  `table`.`y` = `joined1`.`c` AND
-  `table`.`y` = `joined1`.`c`
+  `joined1`.`c` = `table`.`y` AND
+  `joined1`.`c` = `table`.`y`

@@ -71,19 +71,19 @@ export class Query<DataT extends QueryData> {
     public from<
         AliasedTableT extends IAliasedTable
     > (
-        this : this & Query.BeforeFromClause,
+        this : Extract<this, Query.BeforeFromClause>,
         aliasedTable : Query.AssertUniqueJoinTarget<
-            this & Query.BeforeFromClause,
+            Extract<this, Query.BeforeFromClause>,
             AliasedTableT
         >
     ) : (
         Query.From<
-            this & Query.BeforeFromClause,
+            Extract<this, Query.BeforeFromClause>,
             AliasedTableT
         >
     ) {
         return Query.from<
-            this & Query.BeforeFromClause,
+            Extract<this, Query.BeforeFromClause>,
             AliasedTableT
         >(
             this,
@@ -94,28 +94,28 @@ export class Query<DataT extends QueryData> {
     public innerJoin<
         AliasedTableT extends IAliasedTable,
         FromDelegateT extends Query.JoinFromDelegate<
-            (this & Query.AfterFromClause)["joins"]
+            Extract<this, Query.AfterFromClause>["joins"]
         >
     > (
-        this : this & Query.AfterFromClause,
+        this : Extract<this, Query.AfterFromClause>,
         aliasedTable : Query.AssertUniqueJoinTarget<
-            this & Query.AfterFromClause,
+            Extract<this, Query.AfterFromClause>,
             AliasedTableT
         >,
         fromDelegate : FromDelegateT,
         toDelegate : Query.JoinToDelegate<
-            this & Query.AfterFromClause,
+            Extract<this, Query.AfterFromClause>,
             AliasedTableT,
             FromDelegateT
         >
     ) : (
         Query.InnerJoin<
-            this & Query.AfterFromClause,
+            Extract<this, Query.AfterFromClause>,
             AliasedTableT
         >
     ) {
         return Query.innerJoin<
-            this & Query.AfterFromClause,
+            Extract<this, Query.AfterFromClause>,
             AliasedTableT,
             FromDelegateT
         >(
@@ -1012,9 +1012,9 @@ export namespace Query {
                 .map((from, index) => {
                     const to = join.to[index];
                     return [
-                        Column.queryTree(from),
+                        Column.queryTree(to),
                         "=",
-                        Column.queryTree(to)
+                        Column.queryTree(from),
                     ].join(" ");
                 })
                 .join(" AND ")
