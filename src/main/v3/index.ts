@@ -1,5 +1,6 @@
 export * from "./aliased-table";
 export * from "./column-map";
+export * from "./formatter";
 export * from "./table";
 
 export * from "./assert-map";
