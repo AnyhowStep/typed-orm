@@ -5,6 +5,8 @@ import {SingleValueSelectItem} from "./select-item";
 import {IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 import {ColumnMap} from "./column-map";
 import {ColumnIdentifierUtil} from "./column-identifier";
+import {ColumnRef} from "./column-ref";
+import { StringArrayUtil } from "./string-array";
 
 export interface ColumnData {
     readonly tableAlias : string;
@@ -400,6 +402,36 @@ export namespace Column {
         //Technically, this could be wrong.
         //But it shouldn't be wrong, in general.
         return Object.keys(columnMap) as NameUnionFromColumnMap<ColumnMapT>[];
+    }
+
+    //Technically, this could be wrong.
+    //But it shouldn't be wrong, in general.
+    export type NameUnionFromColumnRef<ColumnRefT extends ColumnRef> = (
+        ColumnRefT extends ColumnRef ?
+        NameUnionFromColumnMap<ColumnRefT[string]> :
+        never
+    );
+    //TODO Figure out naming convention
+    export function nameArrayFromColumnRef<ColumnRefT extends ColumnRef> (
+        columnRef : ColumnRefT
+    ) : NameUnionFromColumnRef<ColumnRefT>[] {
+        const tableAliases = (
+            Object.keys(columnRef) as Extract<keyof ColumnRefT, string>[]
+        );
+        const columnNames = tableAliases
+            .reduce<NameUnionFromColumnRef<ColumnRefT>[]>(
+                (memo, tableAlias) => {
+                    const arr = (
+                        nameArrayFromColumnMap(columnRef[tableAlias]) as unknown[] as NameUnionFromColumnRef<ColumnRefT>[]
+                    );
+                    memo.push(...arr);
+                    return memo;
+                },
+                []
+            );
+        //Technically, this could be wrong.
+        //But it shouldn't be wrong, in general.
+        return StringArrayUtil.uniqueString(columnNames);
     }
 
     export type NullableNameUnionFromColumnMap<ColumnMapT extends ColumnMap> = (

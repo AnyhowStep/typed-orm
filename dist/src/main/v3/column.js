@@ -4,6 +4,7 @@ const sqlstring_1 = require("sqlstring");
 const sd = require("schema-decorator");
 const constants_1 = require("./constants");
 const expr_select_item_1 = require("./expr-select-item");
+const string_array_1 = require("./string-array");
 class Column {
     constructor(data, __subTableName, __isInSelectClause) {
         this.tableAlias = data.tableAlias;
@@ -162,6 +163,20 @@ exports.Column = Column;
         return Object.keys(columnMap);
     }
     Column.nameArrayFromColumnMap = nameArrayFromColumnMap;
+    //TODO Figure out naming convention
+    function nameArrayFromColumnRef(columnRef) {
+        const tableAliases = Object.keys(columnRef);
+        const columnNames = tableAliases
+            .reduce((memo, tableAlias) => {
+            const arr = nameArrayFromColumnMap(columnRef[tableAlias]);
+            memo.push(...arr);
+            return memo;
+        }, []);
+        //Technically, this could be wrong.
+        //But it shouldn't be wrong, in general.
+        return string_array_1.StringArrayUtil.uniqueString(columnNames);
+    }
+    Column.nameArrayFromColumnRef = nameArrayFromColumnRef;
     function nullableNameArrayFromColumnMap(columnMap) {
         const columnNames = Object.keys(columnMap);
         return columnNames.filter(columnName => sd.isNullable(columnMap[columnName].assertDelegate));

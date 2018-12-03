@@ -6,6 +6,7 @@ const column_1 = require("./column");
 const expr_1 = require("./expr");
 const column_ref_1 = require("./column-ref");
 const join_array_1 = require("./join-array");
+const column_map_1 = require("./column-map");
 const select_item_array_1 = require("./select-item-array");
 class Query {
     constructor(data, extraData) {
@@ -197,11 +198,14 @@ exports.Query = Query;
         }
         assertUniqueJoinTarget(query, aliasedTable);
         const joins = query.joins;
-        const from = fromDelegate(column_ref_1.ColumnRefUtil.toConvenient(column_ref_1.ColumnRefUtil.fromJoinArray(joins)));
+        const fromRef = column_ref_1.ColumnRefUtil.fromJoinArray(joins);
+        const from = fromDelegate(column_ref_1.ColumnRefUtil.toConvenient(fromRef));
         const to = toDelegate(aliasedTable.columns);
         if (from.length != to.length) {
             throw new Error(`Expected JOIN to have ${from.length} target columns`);
         }
+        column_ref_1.ColumnRefUtil.assertHasColumnIdentifiers(fromRef, from);
+        column_map_1.ColumnMapUtil.assertHasColumnIdentifiers(aliasedTable.columns, to);
         const { parentJoins, unions, selects, limit, unionLimit, extraData, } = query;
         return new Query({
             joins: [

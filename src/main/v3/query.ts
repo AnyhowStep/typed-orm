@@ -8,7 +8,7 @@ import {IExpr, Expr} from "./expr";
 import {ColumnRefUtil} from "./column-ref";
 import {JoinArrayUtil} from "./join-array";
 import {NonEmptyTuple, TupleUtil} from "./tuple";
-import {ColumnMap} from "./column-map";
+import {ColumnMap, ColumnMapUtil} from "./column-map";
 import {IExprSelectItem} from "./expr-select-item";
 import {ToUnknownIfAllFieldsNever} from "./type";
 import {ColumnIdentifierUtil} from "./column-identifier";
@@ -607,13 +607,22 @@ export namespace Query {
         assertUniqueJoinTarget(query, aliasedTable);
 
         const joins : QueryT["joins"] = query.joins;
-        const from = fromDelegate(ColumnRefUtil.toConvenient(
-            ColumnRefUtil.fromJoinArray(joins)
-        ));
+        const fromRef = ColumnRefUtil.fromJoinArray(joins);
+        const from = fromDelegate(
+            ColumnRefUtil.toConvenient(fromRef)
+        );
         const to = toDelegate(aliasedTable.columns);
         if (from.length != to.length) {
             throw new Error(`Expected JOIN to have ${from.length} target columns`);
         }
+        ColumnRefUtil.assertHasColumnIdentifiers(
+            fromRef,
+            from
+        );
+        ColumnMapUtil.assertHasColumnIdentifiers(
+            aliasedTable.columns,
+            to
+        );
 
         const {
             parentJoins,

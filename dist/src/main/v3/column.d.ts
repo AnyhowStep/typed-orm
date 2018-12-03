@@ -3,6 +3,7 @@ import { SingleValueSelectItem } from "./select-item";
 import { IExprSelectItem } from "./expr-select-item";
 import { ColumnMap } from "./column-map";
 import { ColumnIdentifierUtil } from "./column-identifier";
+import { ColumnRef } from "./column-ref";
 export interface ColumnData {
     readonly tableAlias: string;
     readonly name: string;
@@ -69,6 +70,8 @@ export declare namespace Column {
     type IsAssignableTo<A extends IColumn, B extends IColumn> = (boolean extends ColumnIdentifierUtil.IsEqual<A, B> ? (ReturnType<A["assertDelegate"]> extends ReturnType<B["assertDelegate"]> ? boolean : false) : ColumnIdentifierUtil.IsEqual<A, B> extends true ? (ReturnType<A["assertDelegate"]> extends ReturnType<B["assertDelegate"]> ? true : false) : false);
     type NameUnionFromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? Extract<keyof ColumnMapT, string> : never);
     function nameArrayFromColumnMap<ColumnMapT extends ColumnMap>(columnMap: ColumnMapT): NameUnionFromColumnMap<ColumnMapT>[];
+    type NameUnionFromColumnRef<ColumnRefT extends ColumnRef> = (ColumnRefT extends ColumnRef ? NameUnionFromColumnMap<ColumnRefT[string]> : never);
+    function nameArrayFromColumnRef<ColumnRefT extends ColumnRef>(columnRef: ColumnRefT): NameUnionFromColumnRef<ColumnRefT>[];
     type NullableNameUnionFromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? {
         [columnName in Extract<keyof ColumnMapT, string>]: (null extends ReturnType<ColumnMapT[columnName]["assertDelegate"]> ? columnName : never);
     }[Extract<keyof ColumnMapT, string>] : never);

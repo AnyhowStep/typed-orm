@@ -68,5 +68,25 @@ var ColumnRefUtil;
         }
     }
     ColumnRefUtil.assertIsSubset = assertIsSubset;
+    function hasColumnIdentifier(columnRef, columnIdentifier) {
+        if (!columnRef.hasOwnProperty(columnIdentifier.tableAlias)) {
+            return false;
+        }
+        const columnMap = columnRef[columnIdentifier.tableAlias];
+        return column_map_1.ColumnMapUtil.hasColumnIdentifier(columnMap, columnIdentifier);
+    }
+    ColumnRefUtil.hasColumnIdentifier = hasColumnIdentifier;
+    function assertHasColumnIdentifier(columnRef, columnIdentifier) {
+        if (!hasColumnIdentifier(columnRef, columnIdentifier)) {
+            throw new Error(`Column ${columnIdentifier.tableAlias}.${columnIdentifier.name} does not exist in column ref`);
+        }
+    }
+    ColumnRefUtil.assertHasColumnIdentifier = assertHasColumnIdentifier;
+    function assertHasColumnIdentifiers(columnRef, columnIdentifiers) {
+        for (let columnIdentifier of columnIdentifiers) {
+            assertHasColumnIdentifier(columnRef, columnIdentifier);
+        }
+    }
+    ColumnRefUtil.assertHasColumnIdentifiers = assertHasColumnIdentifiers;
 })(ColumnRefUtil = exports.ColumnRefUtil || (exports.ColumnRefUtil = {}));
 //# sourceMappingURL=column-ref.js.map

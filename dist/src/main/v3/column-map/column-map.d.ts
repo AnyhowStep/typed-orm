@@ -24,6 +24,7 @@ export declare namespace ColumnMapUtil {
     type HasColumnIdentifier<ColumnMapT extends ColumnMap, ColumnIdentifierT extends ColumnIdentifier> = (keyof ColumnMapT extends never ? false : ColumnMap extends ColumnMapT ? boolean : string extends ColumnIdentifierT["name"] ? (string extends ColumnIdentifierT["tableAlias"] ? boolean : ColumnIdentifierT["tableAlias"] extends Column.UnionFromColumnMap<ColumnMapT>["tableAlias"] ? boolean : false) : ColumnIdentifierT["name"] extends keyof ColumnMapT ? (string extends ColumnIdentifierT["tableAlias"] ? boolean : ColumnIdentifierT["tableAlias"] extends ColumnMapT[ColumnIdentifierT["name"]]["tableAlias"] ? (ColumnIdentifierT["name"] extends ColumnMapT[ColumnIdentifierT["name"]]["name"] ? true : false) : false) : false);
     function hasColumnIdentifier<ColumnMapT extends ColumnMap, ColumnIdentifierT extends ColumnIdentifier>(columnMap: ColumnMapT, columnIdentifier: ColumnIdentifierT): (HasColumnIdentifier<ColumnMapT, ColumnIdentifierT>);
     function assertHasColumnIdentifier(columnMap: ColumnMap, columnIdentifier: ColumnIdentifier): void;
+    function assertHasColumnIdentifiers(columnMap: ColumnMap, columnIdentifiers: ColumnIdentifier[]): void;
     type FromFieldArray<TableAliasT extends string, FieldsT extends sd.AnyField[]> = (FieldsT[number] extends never ? {} : {
         readonly [columnName in FieldsT[number]["name"]]: (Column<{
             tableAlias: TableAliasT;

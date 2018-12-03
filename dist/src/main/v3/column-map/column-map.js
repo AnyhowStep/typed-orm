@@ -61,6 +61,12 @@ var ColumnMapUtil;
         }
     }
     ColumnMapUtil.assertHasColumnIdentifier = assertHasColumnIdentifier;
+    function assertHasColumnIdentifiers(columnMap, columnIdentifiers) {
+        for (let columnIdentifier of columnIdentifiers) {
+            assertHasColumnIdentifier(columnMap, columnIdentifier);
+        }
+    }
+    ColumnMapUtil.assertHasColumnIdentifiers = assertHasColumnIdentifiers;
     function fromFieldArray(tableAlias, fields) {
         return fields.reduce((memo, field) => {
             const columnName = field.name;

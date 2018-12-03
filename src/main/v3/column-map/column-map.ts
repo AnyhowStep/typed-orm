@@ -217,6 +217,11 @@ export namespace ColumnMapUtil {
             throw new Error(`Column ${columnIdentifier.tableAlias}.${columnIdentifier.name} does not exist in column map`);
         }
     }
+    export function assertHasColumnIdentifiers (columnMap : ColumnMap, columnIdentifiers : ColumnIdentifier[]) {
+        for (let columnIdentifier of columnIdentifiers) {
+            assertHasColumnIdentifier(columnMap, columnIdentifier);
+        }
+    }
 
     export type FromFieldArray<
         TableAliasT extends string,

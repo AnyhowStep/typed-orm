@@ -4,6 +4,7 @@ import {JoinArrayUtil} from "./join-array";
 import {IColumn, Column} from "./column";
 import {IQuery} from "./query";
 import {ColumnIdentifierMapUtil} from "./column-identifier-map";
+import {ColumnIdentifier} from "./column-identifier";
 
 export type ColumnRef = {
     readonly [tableAlias : string] : ColumnMap
@@ -159,6 +160,53 @@ export namespace ColumnRefUtil {
             }
 
             ColumnIdentifierMapUtil.assertIsSubset(columnMapA, columnMapB);
+        }
+    }
+    export type HasColumnIdentifier<
+        ColumnRefT extends ColumnRef,
+        ColumnIdentifierT extends ColumnIdentifier
+    > = (
+        keyof ColumnRefT extends never ?
+        false :
+        ColumnRef extends ColumnRefT ?
+        boolean :
+        string extends ColumnIdentifierT["tableAlias"] ?
+        (
+            string extends ColumnIdentifierT["name"] ?
+            boolean :
+            ColumnIdentifierT["name"] extends Column.NameUnionFromColumnRef<ColumnRefT> ?
+            boolean :
+            false
+        ) :
+        ColumnIdentifierT["tableAlias"] extends keyof ColumnRefT ?
+        (
+            ColumnMapUtil.HasColumnIdentifier<
+                ColumnRefT[ColumnIdentifierT["tableAlias"]],
+                ColumnIdentifierT
+            >
+        ) :
+        false
+    );
+    export function hasColumnIdentifier<
+        ColumnRefT extends ColumnRef,
+        ColumnIdentifierT extends ColumnIdentifier
+    > (columnRef : ColumnRefT, columnIdentifier : ColumnIdentifierT) : (
+        HasColumnIdentifier<ColumnRefT, ColumnIdentifierT>
+    ) {
+        if (!columnRef.hasOwnProperty(columnIdentifier.tableAlias)) {
+            return false as any;
+        }
+        const columnMap = columnRef[columnIdentifier.tableAlias];
+        return ColumnMapUtil.hasColumnIdentifier(columnMap, columnIdentifier) as any;
+    }
+    export function assertHasColumnIdentifier (columnRef : ColumnRef, columnIdentifier : ColumnIdentifier) {
+        if (!hasColumnIdentifier(columnRef, columnIdentifier)) {
+            throw new Error(`Column ${columnIdentifier.tableAlias}.${columnIdentifier.name} does not exist in column ref`);
+        }
+    }
+    export function assertHasColumnIdentifiers (columnRef : ColumnRef, columnIdentifiers : ColumnIdentifier[]) {
+        for (let columnIdentifier of columnIdentifiers) {
+            assertHasColumnIdentifier(columnRef, columnIdentifier);
         }
     }
 }

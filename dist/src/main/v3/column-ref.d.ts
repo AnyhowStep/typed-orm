@@ -3,6 +3,7 @@ import { IJoin } from "./join";
 import { JoinArrayUtil } from "./join-array";
 import { IColumn, Column } from "./column";
 import { IQuery } from "./query";
+import { ColumnIdentifier } from "./column-identifier";
 export declare type ColumnRef = {
     readonly [tableAlias: string]: ColumnMap;
 };
@@ -25,5 +26,9 @@ export declare namespace ColumnRefUtil {
     type FromQuery<QueryT extends IQuery> = ((QueryT["joins"] extends IJoin[] ? FromJoinArray<QueryT["joins"]> : {}));
     function fromQuery<QueryT extends IQuery>(query: QueryT): FromQuery<QueryT>;
     function assertIsSubset(a: ColumnRef, b: ColumnRef): void;
+    type HasColumnIdentifier<ColumnRefT extends ColumnRef, ColumnIdentifierT extends ColumnIdentifier> = (keyof ColumnRefT extends never ? false : ColumnRef extends ColumnRefT ? boolean : string extends ColumnIdentifierT["tableAlias"] ? (string extends ColumnIdentifierT["name"] ? boolean : ColumnIdentifierT["name"] extends Column.NameUnionFromColumnRef<ColumnRefT> ? boolean : false) : ColumnIdentifierT["tableAlias"] extends keyof ColumnRefT ? (ColumnMapUtil.HasColumnIdentifier<ColumnRefT[ColumnIdentifierT["tableAlias"]], ColumnIdentifierT>) : false);
+    function hasColumnIdentifier<ColumnRefT extends ColumnRef, ColumnIdentifierT extends ColumnIdentifier>(columnRef: ColumnRefT, columnIdentifier: ColumnIdentifierT): (HasColumnIdentifier<ColumnRefT, ColumnIdentifierT>);
+    function assertHasColumnIdentifier(columnRef: ColumnRef, columnIdentifier: ColumnIdentifier): void;
+    function assertHasColumnIdentifiers(columnRef: ColumnRef, columnIdentifiers: ColumnIdentifier[]): void;
 }
 //# sourceMappingURL=column-ref.d.ts.map
