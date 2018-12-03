@@ -1,0 +1,9 @@
+[
+  {
+    "messageText": "Property 'doesNotExist' does not exist on type '{ readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | number | Date; }; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly c: Column<...>; }'.",
+    "code": 2339,
+    "category": 1,
+    "length": 12,
+    "start": 456
+  }
+]

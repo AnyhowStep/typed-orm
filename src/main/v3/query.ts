@@ -125,6 +125,40 @@ export class Query<DataT extends QueryData> {
             toDelegate
         );
     }
+    public leftJoin<
+        AliasedTableT extends IAliasedTable,
+        FromDelegateT extends Query.JoinFromDelegate<
+            Extract<this, Query.AfterFromClause>["joins"]
+        >
+    > (
+        this : Extract<this, Query.AfterFromClause>,
+        aliasedTable : Query.AssertUniqueJoinTarget<
+            Extract<this, Query.AfterFromClause>,
+            AliasedTableT
+        >,
+        fromDelegate : FromDelegateT,
+        toDelegate : Query.JoinToDelegate<
+            Extract<this, Query.AfterFromClause>,
+            AliasedTableT,
+            FromDelegateT
+        >
+    ) : (
+        Query.LeftJoin<
+            Extract<this, Query.AfterFromClause>,
+            AliasedTableT
+        >
+    ) {
+        return Query.leftJoin<
+            Extract<this, Query.AfterFromClause>,
+            AliasedTableT,
+            FromDelegateT
+        >(
+            this,
+            aliasedTable,
+            fromDelegate,
+            toDelegate
+        );
+    }
 }
 export namespace Query {
     export function isUnionQuery (raw : any) : raw is UnionQuery {
@@ -694,13 +728,22 @@ export namespace Query {
         assertUniqueJoinTarget(query, aliasedTable);
 
         const joins : QueryT["joins"] = query.joins;
-        const from = fromDelegate(ColumnRefUtil.toConvenient(
-            ColumnRefUtil.fromJoinArray(joins)
-        ));
+        const fromRef = ColumnRefUtil.fromJoinArray(joins);
+        const from = fromDelegate(
+            ColumnRefUtil.toConvenient(fromRef)
+        );
         const to = toDelegate(aliasedTable.columns);
         if (from.length != to.length) {
             throw new Error(`Expected JOIN to have ${from.length} target columns`);
         }
+        ColumnRefUtil.assertHasColumnIdentifiers(
+            fromRef,
+            from
+        );
+        ColumnMapUtil.assertHasColumnIdentifiers(
+            aliasedTable.columns,
+            to
+        );
 
         const {
             parentJoins,
@@ -1044,65 +1087,3 @@ export function from<AliasedTableT extends IAliasedTable> (
     return Query.newInstance()
         .from(aliasedTable);
 }
-
-/*
-import {table} from "./table";
-const t = table(
-    "test",
-    {
-        a : sd.number(),
-        b : sd.string(),
-        c : sd.boolean(),
-        d : sd.date(),
-        e : sd.buffer(),
-        f : sd.nullable(sd.number())
-    }
-)
-    .setId(c => c.c)
-    .setAutoIncrement(c => c.a)
-    .setGenerated(c => [
-        //c.a,
-        c.d
-    ])
-    .setHasExplicitDefaultValue(c => [
-        c.e
-    ])
-    .addCandidateKey(c => [
-        c.f,
-        c.e
-    ]);
-const t2 = t.setName("test2");
-const q = from(t)
-
-const q2 = Query.innerJoin(
-    q,
-    t2,
-    c => [c.a, c.d],
-    t => [t.a, t.d]
-);
-const s1 = Query.select(q2, c => [c.test.b]);
-s1.selects
-const s2 = Query.select(s1, c => [c.test2.b]);
-s2.selects
-const t3 = t.setName("test3");
-Query.select(s2, c => [c.test2.c, c.test2.c])
-/*
-Query.innerJoin(q2, t2);
-
-declare const a : never[];
-const arr : number[] = a;
-
-type fja = ColumnRefUtil.FromJoinArray<typeof q["joins"]>
-type wtf = ColumnMapUtil.FromJoin<typeof q["joins"][number]>
-
-type G<B extends boolean> = (
-    true extends B?
-    ["Actual", "true extends", B] :
-    "Expected"
-)
-
-//OK
-//Expected: "Expected"
-//Actual: "Expected"
-type g = G<false>;
-//*/

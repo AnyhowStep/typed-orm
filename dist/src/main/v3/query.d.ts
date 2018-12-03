@@ -52,6 +52,7 @@ export declare class Query<DataT extends QueryData> {
     constructor(data: DataT, extraData: ExtraQueryData);
     from<AliasedTableT extends IAliasedTable>(this: Extract<this, Query.BeforeFromClause>, aliasedTable: Query.AssertUniqueJoinTarget<Extract<this, Query.BeforeFromClause>, AliasedTableT>): (Query.From<Extract<this, Query.BeforeFromClause>, AliasedTableT>);
     innerJoin<AliasedTableT extends IAliasedTable, FromDelegateT extends Query.JoinFromDelegate<Extract<this, Query.AfterFromClause>["joins"]>>(this: Extract<this, Query.AfterFromClause>, aliasedTable: Query.AssertUniqueJoinTarget<Extract<this, Query.AfterFromClause>, AliasedTableT>, fromDelegate: FromDelegateT, toDelegate: Query.JoinToDelegate<Extract<this, Query.AfterFromClause>, AliasedTableT, FromDelegateT>): (Query.InnerJoin<Extract<this, Query.AfterFromClause>, AliasedTableT>);
+    leftJoin<AliasedTableT extends IAliasedTable, FromDelegateT extends Query.JoinFromDelegate<Extract<this, Query.AfterFromClause>["joins"]>>(this: Extract<this, Query.AfterFromClause>, aliasedTable: Query.AssertUniqueJoinTarget<Extract<this, Query.AfterFromClause>, AliasedTableT>, fromDelegate: FromDelegateT, toDelegate: Query.JoinToDelegate<Extract<this, Query.AfterFromClause>, AliasedTableT, FromDelegateT>): (Query.LeftJoin<Extract<this, Query.AfterFromClause>, AliasedTableT>);
 }
 export declare namespace Query {
     function isUnionQuery(raw: any): raw is UnionQuery;

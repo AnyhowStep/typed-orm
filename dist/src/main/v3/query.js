@@ -24,6 +24,9 @@ class Query {
     innerJoin(aliasedTable, fromDelegate, toDelegate) {
         return Query.innerJoin(this, aliasedTable, fromDelegate, toDelegate);
     }
+    leftJoin(aliasedTable, fromDelegate, toDelegate) {
+        return Query.leftJoin(this, aliasedTable, fromDelegate, toDelegate);
+    }
 }
 exports.Query = Query;
 (function (Query) {
@@ -230,11 +233,14 @@ exports.Query = Query;
         }
         assertUniqueJoinTarget(query, aliasedTable);
         const joins = query.joins;
-        const from = fromDelegate(column_ref_1.ColumnRefUtil.toConvenient(column_ref_1.ColumnRefUtil.fromJoinArray(joins)));
+        const fromRef = column_ref_1.ColumnRefUtil.fromJoinArray(joins);
+        const from = fromDelegate(column_ref_1.ColumnRefUtil.toConvenient(fromRef));
         const to = toDelegate(aliasedTable.columns);
         if (from.length != to.length) {
             throw new Error(`Expected JOIN to have ${from.length} target columns`);
         }
+        column_ref_1.ColumnRefUtil.assertHasColumnIdentifiers(fromRef, from);
+        column_map_1.ColumnMapUtil.assertHasColumnIdentifiers(aliasedTable.columns, to);
         const { parentJoins, unions, selects, limit, unionLimit, extraData, } = query;
         return new Query({
             joins: [
@@ -325,65 +331,4 @@ function from(aliasedTable) {
         .from(aliasedTable);
 }
 exports.from = from;
-/*
-import {table} from "./table";
-const t = table(
-    "test",
-    {
-        a : sd.number(),
-        b : sd.string(),
-        c : sd.boolean(),
-        d : sd.date(),
-        e : sd.buffer(),
-        f : sd.nullable(sd.number())
-    }
-)
-    .setId(c => c.c)
-    .setAutoIncrement(c => c.a)
-    .setGenerated(c => [
-        //c.a,
-        c.d
-    ])
-    .setHasExplicitDefaultValue(c => [
-        c.e
-    ])
-    .addCandidateKey(c => [
-        c.f,
-        c.e
-    ]);
-const t2 = t.setName("test2");
-const q = from(t)
-
-const q2 = Query.innerJoin(
-    q,
-    t2,
-    c => [c.a, c.d],
-    t => [t.a, t.d]
-);
-const s1 = Query.select(q2, c => [c.test.b]);
-s1.selects
-const s2 = Query.select(s1, c => [c.test2.b]);
-s2.selects
-const t3 = t.setName("test3");
-Query.select(s2, c => [c.test2.c, c.test2.c])
-/*
-Query.innerJoin(q2, t2);
-
-declare const a : never[];
-const arr : number[] = a;
-
-type fja = ColumnRefUtil.FromJoinArray<typeof q["joins"]>
-type wtf = ColumnMapUtil.FromJoin<typeof q["joins"][number]>
-
-type G<B extends boolean> = (
-    true extends B?
-    ["Actual", "true extends", B] :
-    "Expected"
-)
-
-//OK
-//Expected: "Expected"
-//Actual: "Expected"
-type g = G<false>;
-//*/ 
 //# sourceMappingURL=query.js.map

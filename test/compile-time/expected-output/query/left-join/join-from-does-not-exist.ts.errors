@@ -1,0 +1,9 @@
+[
+  {
+    "messageText": "Property 'w' does not exist on type '{ readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }'.",
+    "code": 2339,
+    "category": 1,
+    "length": 1,
+    "start": 436
+  }
+]
