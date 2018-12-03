@@ -53,9 +53,9 @@ var TableSubquery;
         }
     }
     TableSubquery.assertDelegate = assertDelegate;
-    function queryStringTree(_tableSubquery) {
+    function queryTree(_tableSubquery) {
         throw new Error(`Unimplemented`);
     }
-    TableSubquery.queryStringTree = queryStringTree;
+    TableSubquery.queryTree = queryTree;
 })(TableSubquery = exports.TableSubquery || (exports.TableSubquery = {}));
 //# sourceMappingURL=table-subquery.js.map

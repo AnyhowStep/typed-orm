@@ -4,7 +4,7 @@ import { IAliasedTable } from "./aliased-table";
 import { ColumnMapUtil } from "./column-map";
 import { IColumn } from "./column";
 import { IExprSelectItem } from "./expr-select-item";
-import { QueryStringTree } from "./query-string-tree";
+import { QueryTree } from "./query-tree";
 import { AnonymousTypedSingleValueSelectItem } from "./select-item";
 export interface TableSubqueryData {
     readonly query: Query.AfterSelectClause;
@@ -44,6 +44,6 @@ export declare namespace TableSubquery {
     type TypeOf<T extends SingleValueOrEmpty<any>> = ((T extends SingleValue<any> ? never : null) | (T["query"]["selects"]["0"] extends IColumn ? ReturnType<T["query"]["selects"]["0"]["assertDelegate"]> : T["query"]["selects"]["0"] extends IExprSelectItem ? ReturnType<T["query"]["selects"]["0"]["assertDelegate"]> : never));
     type AssertDelegate<T extends SingleValueOrEmpty<any>> = (sd.AssertDelegate<TypeOf<T>>);
     function assertDelegate<T extends SingleValueOrEmpty<any>>(t: T): (AssertDelegate<T>);
-    function queryStringTree(_tableSubquery: ITableSubquery | SingleValueOrEmpty<any>): QueryStringTree;
+    function queryTree(_tableSubquery: ITableSubquery | SingleValueOrEmpty<any>): QueryTree;
 }
 //# sourceMappingURL=table-subquery.d.ts.map

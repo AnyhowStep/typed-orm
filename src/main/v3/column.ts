@@ -52,8 +52,8 @@ export class Column<DataT extends ColumnData> implements IColumn<DataT> {
         this.__isInSelectClause = (__isInSelectClause === true);
     }
 
-    queryStringTree () {
-        return Column.queryStringTree(this);
+    queryTree () {
+        return Column.queryTree(this);
     }
     toNullable () : Column.ToNullable<this> {
         return Column.toNullable(this);
@@ -105,7 +105,7 @@ export class Column<DataT extends ColumnData> implements IColumn<DataT> {
     to be more consistent with other utility namespaces
 */
 export namespace Column {
-    export function queryStringTree (
+    export function queryTree (
         {
             tableAlias,
             name,

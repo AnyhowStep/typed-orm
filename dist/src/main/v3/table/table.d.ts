@@ -53,7 +53,7 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     readonly insertAllowed: DataT["insertAllowed"];
     readonly deleteAllowed: DataT["deleteAllowed"];
     constructor(data: DataT, __databaseName?: string | undefined);
-    queryStringTree(): string;
+    queryTree(): string;
     as<NewAliasT extends string>(newAlias: NewAliasT): Table.As<this, NewAliasT>;
     private cachedCandidateKeyAssertDelegate;
     candidateKeyAssertDelegate(): Table.CandidateKeyAssertDelegate<this>;

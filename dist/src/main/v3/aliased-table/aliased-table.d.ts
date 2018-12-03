@@ -16,10 +16,10 @@ export declare class AliasedTable<DataT extends AliasedTableData> implements IAl
     readonly columns: DataT["columns"];
     __databaseName?: string | undefined;
     constructor(data: DataT, __databaseName?: string | undefined);
-    queryStringTree(): string;
+    queryTree(): string;
 }
 export declare namespace AliasedTable {
-    function queryStringTree({ alias, name, __databaseName }: IAliasedTable): string;
+    function queryTree({ alias, name, __databaseName }: IAliasedTable): string;
     function isAliasedTable(raw: any): raw is IAliasedTable;
 }
 //# sourceMappingURL=aliased-table.d.ts.map

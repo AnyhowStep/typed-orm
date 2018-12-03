@@ -24,8 +24,8 @@ class Table {
         this.insertAllowed = data.insertAllowed;
         this.deleteAllowed = data.deleteAllowed;
     }
-    queryStringTree() {
-        return aliased_table_1.AliasedTable.queryStringTree(this);
+    queryTree() {
+        return aliased_table_1.AliasedTable.queryTree(this);
     }
     as(newAlias) {
         return Table.as(this, newAlias);

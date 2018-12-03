@@ -12,7 +12,7 @@ tape(__filename, (t) => {
             },
             undefined,
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`tableAlias`.`name`"
     );
     t.deepEqual(
@@ -24,7 +24,7 @@ tape(__filename, (t) => {
             },
             undefined,
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`tableAlias```.`name```"
     );
 
@@ -50,7 +50,7 @@ tape(__filename, (t) => {
             },
             undefined,
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`"+o.ALIASED+"--name```"
     );
 
@@ -66,7 +66,7 @@ tape(__filename + "-subtable-name", (t) => {
             },
             "subTable",
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`tableAlias`.`subTable--name`"
     );
     t.deepEqual(
@@ -78,7 +78,7 @@ tape(__filename + "-subtable-name", (t) => {
             },
             "subTable`",
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`tableAlias```.`subTable``--name```"
     );
     /*
@@ -94,7 +94,7 @@ tape(__filename + "-subtable-name", (t) => {
             },
             "subTable`",
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`"+o.ALIASED+"--name```"
     );
 
@@ -110,7 +110,7 @@ tape(__filename + "-is-in-select-clause", (t) => {
             },
             undefined,
             true
-        ).queryStringTree(),
+        ).queryTree(),
         "`tableAlias--name`"
     );
     t.deepEqual(
@@ -122,7 +122,7 @@ tape(__filename + "-is-in-select-clause", (t) => {
             },
             undefined,
             true
-        ).queryStringTree(),
+        ).queryTree(),
         "`tableAlias``--name```"
     );
     t.deepEqual(
@@ -134,7 +134,7 @@ tape(__filename + "-is-in-select-clause", (t) => {
             },
             undefined,
             true
-        ).queryStringTree(),
+        ).queryTree(),
         "`"+o.ALIASED+"--name```"
     );
 
@@ -150,7 +150,7 @@ tape(__filename + "-subtable-name-is-in-select-clause", (t) => {
             },
             "subTable",
             true
-        ).queryStringTree(),
+        ).queryTree(),
         "`tableAlias`.`subTable--name`"
     );
     t.deepEqual(
@@ -162,7 +162,7 @@ tape(__filename + "-subtable-name-is-in-select-clause", (t) => {
             },
             "subTable`",
             true
-        ).queryStringTree(),
+        ).queryTree(),
         "`tableAlias```.`subTable``--name```"
     );
     /*
@@ -178,7 +178,7 @@ tape(__filename + "-subtable-name-is-in-select-clause", (t) => {
             },
             "subTable`",
             true
-        ).queryStringTree(),
+        ).queryTree(),
         "`"+o.ALIASED+"--name```"
     );
 

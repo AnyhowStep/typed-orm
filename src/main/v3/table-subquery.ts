@@ -4,7 +4,7 @@ import {IAliasedTable, AliasedTable} from "./aliased-table";
 import {ColumnMapUtil} from "./column-map";
 import {IColumn, Column} from "./column";
 import {IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
-import {QueryStringTree} from "./query-string-tree";
+import {QueryTree} from "./query-tree";
 import {AnonymousTypedSingleValueSelectItem} from "./select-item";
 
 export interface TableSubqueryData {
@@ -190,7 +190,7 @@ export namespace TableSubquery {
         }
     }
 
-    export function queryStringTree (_tableSubquery : ITableSubquery|SingleValueOrEmpty<any>) : QueryStringTree {
+    export function queryTree (_tableSubquery : ITableSubquery|SingleValueOrEmpty<any>) : QueryTree {
         throw new Error(`Unimplemented`);
     }
 

@@ -14,8 +14,8 @@ class Column {
         //HACK
         this.__isInSelectClause = (__isInSelectClause === true);
     }
-    queryStringTree() {
-        return Column.queryStringTree(this);
+    queryTree() {
+        return Column.queryTree(this);
     }
     toNullable() {
         return Column.toNullable(this);
@@ -33,7 +33,7 @@ exports.Column = Column;
     to be more consistent with other utility namespaces
 */
 (function (Column) {
-    function queryStringTree({ tableAlias, name, __subTableName, __isInSelectClause, }) {
+    function queryTree({ tableAlias, name, __subTableName, __isInSelectClause, }) {
         if (tableAlias == constants_1.ALIASED) {
             /*
                 When you want to write,
@@ -95,7 +95,7 @@ exports.Column = Column;
             }
         }
     }
-    Column.queryStringTree = queryStringTree;
+    Column.queryTree = queryTree;
     function toNullable({ tableAlias, name, assertDelegate, __subTableName, __isInSelectClause, }) {
         return new Column({
             tableAlias,

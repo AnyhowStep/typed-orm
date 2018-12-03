@@ -165,8 +165,8 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
         this.deleteAllowed = data.deleteAllowed;
     }
 
-    queryStringTree () {
-        return AliasedTable.queryStringTree(this);
+    queryTree () {
+        return AliasedTable.queryTree(this);
     }
 
     as<NewAliasT extends string> (newAlias : NewAliasT) : Table.As<this, NewAliasT> {

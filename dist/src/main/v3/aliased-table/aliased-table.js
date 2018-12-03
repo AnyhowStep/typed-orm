@@ -9,13 +9,13 @@ class AliasedTable {
         this.columns = data.columns;
         this.__databaseName = __databaseName;
     }
-    queryStringTree() {
-        return AliasedTable.queryStringTree(this);
+    queryTree() {
+        return AliasedTable.queryTree(this);
     }
 }
 exports.AliasedTable = AliasedTable;
 (function (AliasedTable) {
-    function queryStringTree({ alias, name, __databaseName }) {
+    function queryTree({ alias, name, __databaseName }) {
         const result = [];
         if (__databaseName != undefined) {
             result.push(sqlstring_1.escapeId(__databaseName));
@@ -31,7 +31,7 @@ exports.AliasedTable = AliasedTable;
         }
         return result.join("");
     }
-    AliasedTable.queryStringTree = queryStringTree;
+    AliasedTable.queryTree = queryTree;
     function isAliasedTable(raw) {
         return (raw != undefined &&
             (raw instanceof Object) &&

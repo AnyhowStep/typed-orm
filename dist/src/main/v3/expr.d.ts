@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import { ColumnRef } from "./column-ref";
 import { RawExpr, RawExprUtil } from "./raw-expr";
-import { QueryStringTree } from "./query-string-tree";
+import { QueryTree } from "./query-tree";
 export interface ExprData {
     readonly usedRef: ColumnRef;
     readonly assertDelegate: sd.AssertDelegate<any>;
@@ -9,13 +9,13 @@ export interface ExprData {
 export interface IExpr<DataT extends ExprData = ExprData> {
     readonly usedRef: DataT["usedRef"];
     readonly assertDelegate: DataT["assertDelegate"];
-    readonly queryStringTree: QueryStringTree;
+    readonly queryTree: QueryTree;
 }
 export declare class Expr<DataT extends ExprData> implements IExpr<DataT> {
     readonly usedRef: DataT["usedRef"];
     readonly assertDelegate: DataT["assertDelegate"];
-    readonly queryStringTree: QueryStringTree;
-    constructor(data: DataT, queryStringTree: QueryStringTree);
+    readonly queryTree: QueryTree;
+    constructor(data: DataT, queryTree: QueryTree);
 }
 export declare type IAnonymousTypedExpr<TypeT> = (IExpr<{
     usedRef: ColumnRef;

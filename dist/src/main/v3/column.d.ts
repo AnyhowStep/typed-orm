@@ -27,13 +27,13 @@ export declare class Column<DataT extends ColumnData> implements IColumn<DataT> 
     readonly __subTableName: string | undefined;
     readonly __isInSelectClause: boolean;
     constructor(data: DataT, __subTableName?: string, __isInSelectClause?: boolean);
-    queryStringTree(): string;
+    queryTree(): string;
     toNullable(): Column.ToNullable<this>;
     withTableAlias<NewTableAliasT extends string>(newTableAlias: NewTableAliasT): (Column.WithTableAlias<this, NewTableAliasT>);
     withType<NewAssertFuncT extends sd.AnyAssertFunc>(newAssertFunc: NewAssertFuncT): (Column.WithType<this, NewAssertFuncT>);
 }
 export declare namespace Column {
-    function queryStringTree({ tableAlias, name, __subTableName, __isInSelectClause, }: IColumn): string;
+    function queryTree({ tableAlias, name, __subTableName, __isInSelectClause, }: IColumn): string;
     type ToNullable<ColumnT extends IColumn> = (Column<{
         readonly tableAlias: ColumnT["tableAlias"];
         readonly name: ColumnT["name"];

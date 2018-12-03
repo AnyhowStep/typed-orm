@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import {ColumnRef} from "./column-ref";
 import {RawExpr, RawExprUtil} from "./raw-expr";
-import {QueryStringTree, QueryStringTreeUtil} from "./query-string-tree";
+import {QueryTree, QueryTreeUtil} from "./query-tree";
 
 export interface ExprData {
     readonly usedRef : ColumnRef;
@@ -12,23 +12,23 @@ export interface IExpr<DataT extends ExprData=ExprData> {
     readonly usedRef : DataT["usedRef"];
     readonly assertDelegate : DataT["assertDelegate"];
 
-    readonly queryStringTree : QueryStringTree;
+    readonly queryTree : QueryTree;
 }
 
 export class Expr<DataT extends ExprData> implements IExpr<DataT> {
     readonly usedRef : DataT["usedRef"];
     readonly assertDelegate : DataT["assertDelegate"];
 
-    readonly queryStringTree : QueryStringTree;
+    readonly queryTree : QueryTree;
 
     public constructor (
         data : DataT,
-        queryStringTree : QueryStringTree
+        queryTree : QueryTree
     ) {
         this.usedRef = data.usedRef;
         this.assertDelegate = data.assertDelegate;
 
-        this.queryStringTree = queryStringTree;
+        this.queryTree = queryTree;
     }
 }
 
@@ -46,10 +46,10 @@ export namespace Expr {
             (raw instanceof Object) &&
             ("usedRef" in raw) &&
             ("assertDelegate" in raw) &&
-            ("queryStringTree" in raw) &&
+            ("queryTree" in raw) &&
             (raw.usedRef instanceof Object) &&
             (typeof raw.assertDelegate == "function") &&
-            (QueryStringTreeUtil.isQueryStringTree(raw.queryStringTree))
+            (QueryTreeUtil.isQueryTree(raw.queryTree))
         );
     }
 
@@ -66,13 +66,13 @@ export namespace Expr {
     ) : FromRawExpr<RawExprT> {
         const usedRef = RawExprUtil.usedRef(rawExpr);
         const assertDelegate = RawExprUtil.assertDelegate(rawExpr);
-        const queryStringTree = RawExprUtil.queryStringTree(rawExpr);
+        const queryTree = RawExprUtil.queryTree(rawExpr);
         return new Expr(
             {
                 usedRef,
                 assertDelegate,
             },
-            queryStringTree
+            queryTree
         );
     }
 }

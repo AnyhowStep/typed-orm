@@ -1,0 +1,76 @@
+-- phpMyAdmin SQL Dump
+-- version 4.5.4.1deb2ubuntu2.1
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Dec 03, 2018 at 02:18 AM
+-- Server version: 5.7.24-0ubuntu0.16.04.1
+-- PHP Version: 7.0.32-0ubuntu0.16.04.1
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Database: `payment-prototype-00`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `canadianBankAccountPayOutMethodVoidCheque`
+--
+
+CREATE TABLE `canadianBankAccountPayOutMethodVoidCheque` (
+  `appId` bigint(20) UNSIGNED NOT NULL,
+  `canadianBankAccountPayOutMethodVoidChequeId` bigint(20) UNSIGNED NOT NULL,
+  `awsS3PresignedUploadId` bigint(20) UNSIGNED NOT NULL,
+  `payOutMethodId` bigint(20) UNSIGNED NOT NULL,
+  `externalUserId` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `fileTypeId` bigint(20) UNSIGNED GENERATED ALWAYS AS (3) STORED NOT NULL,
+  `updatedAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updatedByExternalUserId` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `canadianBankAccountPayOutMethodVoidCheque`
+--
+
+INSERT INTO `canadianBankAccountPayOutMethodVoidCheque` (`appId`, `canadianBankAccountPayOutMethodVoidChequeId`, `awsS3PresignedUploadId`, `payOutMethodId`, `externalUserId`, `fileTypeId`, `updatedAt`, `updatedByExternalUserId`) VALUES
+(1, 1, 5, 13, 'justin7', 3, '2018-10-30 21:31:36', NULL);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `canadianBankAccountPayOutMethodVoidCheque`
+--
+ALTER TABLE `canadianBankAccountPayOutMethodVoidCheque`
+  ADD PRIMARY KEY (`canadianBankAccountPayOutMethodVoidChequeId`),
+  ADD KEY `canadianBankAcctPayOutMethodVoidCheque_payOutMethodBelongsToUser` (`appId`,`payOutMethodId`,`externalUserId`) USING BTREE,
+  ADD KEY `canadianBankAcctPayOutMethodVoidCheque_awsS3UploadBelongsToUser` (`appId`,`awsS3PresignedUploadId`,`externalUserId`) USING BTREE,
+  ADD KEY `canadianBankAcctPayOutMethodVoidCheque_updatedBy` (`appId`,`updatedByExternalUserId`) USING BTREE,
+  ADD KEY `canadianBankAcctPayOutMethodVoidCheque_isVoidCheque` (`awsS3PresignedUploadId`,`fileTypeId`) USING BTREE,
+  ADD KEY `belongsToCanadianBankAccountPayOutMethod` (`canadianBankAccountPayOutMethodVoidChequeId`,`payOutMethodId`) USING BTREE;
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `canadianBankAccountPayOutMethodVoidCheque`
+--
+ALTER TABLE `canadianBankAccountPayOutMethodVoidCheque`
+  MODIFY `canadianBankAccountPayOutMethodVoidChequeId` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `canadianBankAccountPayOutMethodVoidCheque`
+--
+ALTER TABLE `canadianBankAccountPayOutMethodVoidCheque`
+  ADD CONSTRAINT `canadianBankAcctPayOutMethodVoidCheque_awsS3UploadBelongsToUser` FOREIGN KEY (`appId`,`awsS3PresignedUploadId`,`externalUserId`) REFERENCES `awsS3PresignedUpload` (`appId`, `awsS3PresignedUploadId`, `externalUserId`),
+  ADD CONSTRAINT `canadianBankAcctPayOutMethodVoidCheque_isVoidCheque` FOREIGN KEY (`awsS3PresignedUploadId`,`fileTypeId`) REFERENCES `awsS3PresignedUpload` (`awsS3PresignedUploadId`, `fileTypeId`),
+  ADD CONSTRAINT `canadianBankAcctPayOutMethodVoidCheque_payOutMethodBelongsToUser` FOREIGN KEY (`appId`,`payOutMethodId`,`externalUserId`) REFERENCES `canadianBankAccountPayOutMethod` (`appId`, `payOutMethodId`, `externalUserId`),
+  ADD CONSTRAINT `canadianBankAcctPayOutMethodVoidCheque_updatedBy` FOREIGN KEY (`appId`,`updatedByExternalUserId`) REFERENCES `user` (`appId`, `externalUserId`);

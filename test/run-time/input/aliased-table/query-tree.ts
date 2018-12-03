@@ -14,7 +14,7 @@ tape(__filename + "-name", (t) => {
                 }),
             },
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`name`"
     );
     t.deepEqual(
@@ -28,7 +28,7 @@ tape(__filename + "-name", (t) => {
                 }),
             },
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`name```"
     );
     t.deepEqual(
@@ -42,7 +42,7 @@ tape(__filename + "-name", (t) => {
                 }),
             },
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`name``'`"
     );
     t.deepEqual(
@@ -56,7 +56,7 @@ tape(__filename + "-name", (t) => {
                 }),
             },
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`name``'\"`"
     );
     t.end();
@@ -73,7 +73,7 @@ tape(__filename + "-name-with-database", (t) => {
                 }),
             },
             "database"
-        ).queryStringTree(),
+        ).queryTree(),
         "`database`.`name`"
     );
     t.deepEqual(
@@ -87,7 +87,7 @@ tape(__filename + "-name-with-database", (t) => {
                 }),
             },
             "database`"
-        ).queryStringTree(),
+        ).queryTree(),
         "`database```.`name```"
     );
     t.deepEqual(
@@ -101,7 +101,7 @@ tape(__filename + "-name-with-database", (t) => {
                 }),
             },
             "database`'"
-        ).queryStringTree(),
+        ).queryTree(),
         "`database``'`.`name``'`"
     );
     t.deepEqual(
@@ -115,7 +115,7 @@ tape(__filename + "-name-with-database", (t) => {
                 }),
             },
             "database`'\""
-        ).queryStringTree(),
+        ).queryTree(),
         "`database``'\"`.`name``'\"`"
     );
     t.end();
@@ -132,7 +132,7 @@ tape(__filename + "-with-alias", (t) => {
                 }),
             },
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`name` AS `alias`"
     );
     t.deepEqual(
@@ -146,7 +146,7 @@ tape(__filename + "-with-alias", (t) => {
                 }),
             },
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`name` AS `alias```"
     );
     t.deepEqual(
@@ -160,7 +160,7 @@ tape(__filename + "-with-alias", (t) => {
                 }),
             },
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`name` AS `alias``'`"
     );
     t.deepEqual(
@@ -174,7 +174,7 @@ tape(__filename + "-with-alias", (t) => {
                 }),
             },
             undefined
-        ).queryStringTree(),
+        ).queryTree(),
         "`name` AS `alias``'\"`"
     );
     t.end();
@@ -191,7 +191,7 @@ tape(__filename + "-with-alias-with-database", (t) => {
                 }),
             },
             "database"
-        ).queryStringTree(),
+        ).queryTree(),
         "`database`.`name` AS `alias`"
     );
     t.deepEqual(
@@ -205,7 +205,7 @@ tape(__filename + "-with-alias-with-database", (t) => {
                 }),
             },
             "database`"
-        ).queryStringTree(),
+        ).queryTree(),
         "`database```.`name``` AS `alias```"
     );
     t.deepEqual(
@@ -219,7 +219,7 @@ tape(__filename + "-with-alias-with-database", (t) => {
                 }),
             },
             "database`'"
-        ).queryStringTree(),
+        ).queryTree(),
         "`database``'`.`name``'` AS `alias``'`"
     );
     t.deepEqual(
@@ -233,7 +233,7 @@ tape(__filename + "-with-alias-with-database", (t) => {
                 }),
             },
             "database`'\""
-        ).queryStringTree(),
+        ).queryTree(),
         "`database``'\"`.`name``'\"` AS `alias``'\"`"
     );
     t.end();

@@ -87,7 +87,7 @@ var RawExprUtil;
             return str;
         }
     }
-    function queryStringTree(rawExpr) {
+    function queryTree(rawExpr) {
         //Check primitive cases first
         if (typeof rawExpr == "number") {
             return sqlstring_1.escape(rawExpr);
@@ -116,16 +116,16 @@ var RawExprUtil;
             return sqlstring_1.escape(rawExpr);
         }
         if (expr_1.Expr.isExpr(rawExpr)) {
-            return rawExpr.queryStringTree;
+            return rawExpr.queryTree;
         }
         if (column_1.Column.isColumn(rawExpr)) {
-            return column_1.Column.queryStringTree(rawExpr);
+            return column_1.Column.queryTree(rawExpr);
         }
         if (table_subquery_1.TableSubquery.isSingleValueOrEmpty(rawExpr)) {
-            return table_subquery_1.TableSubquery.queryStringTree(rawExpr);
+            return table_subquery_1.TableSubquery.queryTree(rawExpr);
         }
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
-    RawExprUtil.queryStringTree = queryStringTree;
+    RawExprUtil.queryTree = queryTree;
 })(RawExprUtil = exports.RawExprUtil || (exports.RawExprUtil = {}));
 //# sourceMappingURL=raw-expr.js.map

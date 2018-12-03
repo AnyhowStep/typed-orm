@@ -36,12 +36,12 @@ export class AliasedTable<DataT extends AliasedTableData> implements IAliasedTab
         this.__databaseName = __databaseName;
     }
 
-    queryStringTree () {
-        return AliasedTable.queryStringTree(this);
+    queryTree () {
+        return AliasedTable.queryTree(this);
     }
 }
 export namespace AliasedTable {
-    export function queryStringTree (
+    export function queryTree (
         {
             alias,
             name,

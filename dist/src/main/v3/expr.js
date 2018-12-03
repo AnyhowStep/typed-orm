@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const raw_expr_1 = require("./raw-expr");
-const query_string_tree_1 = require("./query-string-tree");
+const query_tree_1 = require("./query-tree");
 class Expr {
-    constructor(data, queryStringTree) {
+    constructor(data, queryTree) {
         this.usedRef = data.usedRef;
         this.assertDelegate = data.assertDelegate;
-        this.queryStringTree = queryStringTree;
+        this.queryTree = queryTree;
     }
 }
 exports.Expr = Expr;
@@ -16,20 +16,20 @@ exports.Expr = Expr;
             (raw instanceof Object) &&
             ("usedRef" in raw) &&
             ("assertDelegate" in raw) &&
-            ("queryStringTree" in raw) &&
+            ("queryTree" in raw) &&
             (raw.usedRef instanceof Object) &&
             (typeof raw.assertDelegate == "function") &&
-            (query_string_tree_1.QueryStringTreeUtil.isQueryStringTree(raw.queryStringTree)));
+            (query_tree_1.QueryTreeUtil.isQueryTree(raw.queryTree)));
     }
     Expr.isExpr = isExpr;
     function fromRawExpr(rawExpr) {
         const usedRef = raw_expr_1.RawExprUtil.usedRef(rawExpr);
         const assertDelegate = raw_expr_1.RawExprUtil.assertDelegate(rawExpr);
-        const queryStringTree = raw_expr_1.RawExprUtil.queryStringTree(rawExpr);
+        const queryTree = raw_expr_1.RawExprUtil.queryTree(rawExpr);
         return new Expr({
             usedRef,
             assertDelegate,
-        }, queryStringTree);
+        }, queryTree);
     }
     Expr.fromRawExpr = fromRawExpr;
 })(Expr = exports.Expr || (exports.Expr = {}));

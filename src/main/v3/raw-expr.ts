@@ -5,7 +5,7 @@ import {IAnonymousTypedColumn, IColumn, Column} from "./column";
 import {TableSubquery} from "./table-subquery";
 import {ColumnRefUtil} from "./column-ref";
 import {escape} from "sqlstring";
-import {QueryStringTree} from "./query-string-tree";
+import {QueryTree} from "./query-tree";
 
 export type RawExpr<TypeT> = (
     (
@@ -138,7 +138,7 @@ export namespace RawExprUtil {
         }
     }
 
-    export function queryStringTree (rawExpr : RawExpr<any>) : QueryStringTree {
+    export function queryTree (rawExpr : RawExpr<any>) : QueryTree {
         //Check primitive cases first
         if (typeof rawExpr == "number") {
             return escape(rawExpr);
@@ -168,15 +168,15 @@ export namespace RawExprUtil {
         }
 
         if (Expr.isExpr(rawExpr)) {
-            return rawExpr.queryStringTree;
+            return rawExpr.queryTree;
         }
 
         if (Column.isColumn(rawExpr)) {
-            return Column.queryStringTree(rawExpr);
+            return Column.queryTree(rawExpr);
         }
 
         if (TableSubquery.isSingleValueOrEmpty(rawExpr)) {
-            return TableSubquery.queryStringTree(rawExpr);
+            return TableSubquery.queryTree(rawExpr);
         }
 
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
