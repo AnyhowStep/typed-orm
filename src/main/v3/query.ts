@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import {IJoin, Join, JoinType} from "./join";
-import {IAliasedTable} from "./aliased-table";
+import {IAliasedTable, AliasedTable} from "./aliased-table";
 import {IColumn, Column} from "./column";
 import {SelectItem} from "./select-item";
 import {RawExpr, RawExprUtil} from "./raw-expr";
@@ -13,6 +13,7 @@ import {IExprSelectItem} from "./expr-select-item";
 import {ToUnknownIfAllFieldsNever} from "./type";
 import {ColumnIdentifierUtil} from "./column-identifier";
 import {SelectItemArrayUtil} from "./select-item-array";
+import {QueryTreeArray} from "./query-tree";
 
 export interface UnionQuery {
     readonly distinct : boolean,
@@ -991,7 +992,38 @@ export namespace Query {
         );
     }
 }
+export namespace Query {
+    export function queryTreeJoins (query : IQuery) : QueryTreeArray {
+        const joins = query.joins;
+        if (joins == undefined || joins.length == 0) {
+            return [];
+        }
+        const result : QueryTreeArray = [];
+        result.push(AliasedTable.queryTree(joins[0].aliasedTable));
+        for (let i=1; i<joins.length; ++i) {
+            const join = joins[i];
+            result.push(`${join.joinType} JOIN`);
+            result.push(AliasedTable.queryTree(join.aliasedTable));
+            if (join.from.length == 0) {
+                continue;
+            }
+            result.push("ON");
+            result.push(join.from
+                .map((from, index) => {
+                    const to = join.to[index];
+                    return [
+                        Column.queryTree(from),
+                        "=",
+                        Column.queryTree(to)
+                    ].join(" ");
+                })
+                .join(" AND ")
+            );
+        }
 
+        return result;
+    }
+}
 export function from<AliasedTableT extends IAliasedTable> (
     aliasedTable : Query.AssertUniqueJoinTarget<
         Query.NewInstance,

@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const join_1 = require("./join");
+const aliased_table_1 = require("./aliased-table");
+const column_1 = require("./column");
 const expr_1 = require("./expr");
 const column_ref_1 = require("./column-ref");
 const join_array_1 = require("./join-array");
@@ -282,6 +284,37 @@ exports.Query = Query;
         }, extraData);
     }
     Query.select = select;
+})(Query = exports.Query || (exports.Query = {}));
+(function (Query) {
+    function queryTreeJoins(query) {
+        const joins = query.joins;
+        if (joins == undefined || joins.length == 0) {
+            return [];
+        }
+        const result = [];
+        result.push(aliased_table_1.AliasedTable.queryTree(joins[0].aliasedTable));
+        for (let i = 1; i < joins.length; ++i) {
+            const join = joins[i];
+            result.push(`${join.joinType} JOIN`);
+            result.push(aliased_table_1.AliasedTable.queryTree(join.aliasedTable));
+            if (join.from.length == 0) {
+                continue;
+            }
+            result.push("ON");
+            result.push(join.from
+                .map((from, index) => {
+                const to = join.to[index];
+                return [
+                    column_1.Column.queryTree(from),
+                    "=",
+                    column_1.Column.queryTree(to)
+                ].join(" ");
+            })
+                .join(" AND "));
+        }
+        return result;
+    }
+    Query.queryTreeJoins = queryTreeJoins;
 })(Query = exports.Query || (exports.Query = {}));
 function from(aliasedTable) {
     return Query.newInstance()

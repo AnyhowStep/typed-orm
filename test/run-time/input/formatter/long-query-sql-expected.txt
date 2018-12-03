@@ -60,7 +60,7 @@ FROM
 INNER JOIN
   `appPlatform`
 ON
-  `merchant`.`appId` = `appPlatform`.`appId`  AND
+  `merchant`.`appId` = `appPlatform`.`appId` AND
   `merchant`.`platformId` = `appPlatform`.`platformId`
 INNER JOIN
   `business`
@@ -69,12 +69,12 @@ ON
 INNER JOIN
   `user`
 ON
-  `business`.`appId` = `user`.`appId`  AND
+  `business`.`appId` = `user`.`appId` AND
   `business`.`externalUserId` = `user`.`externalUserId`
 INNER JOIN
   `businessPayOutMethod`
 ON
-  `merchant`.`businessId` = `businessPayOutMethod`.`businessId`  AND
+  `merchant`.`businessId` = `businessPayOutMethod`.`businessId` AND
   `merchant`.`payOutMethodId` = `businessPayOutMethod`.`payOutMethodId`
 INNER JOIN
   `payOutMethod`
@@ -98,7 +98,7 @@ WHERE
             )
           )
         )
-      )  AND
+      ) AND
       (
         EXISTS (
           SELECT
@@ -107,13 +107,13 @@ WHERE
             `personalInformation`
           WHERE
             (
-              (`personalInformation`.`appId` = `user`.`appId`)  AND
+              (`personalInformation`.`appId` = `user`.`appId`) AND
               (
                 `personalInformation`.`externalUserId` = `user`.`externalUserId`
               )
             )
         )
-      )  AND
+      ) AND
       (
         (
           COALESCE(
@@ -124,7 +124,7 @@ WHERE
                 `merchantEnabled`
               WHERE
                 (
-                  (`merchant`.`appId` = `merchantEnabled`.`appId`)  AND
+                  (`merchant`.`appId` = `merchantEnabled`.`appId`) AND
                   (
                     `merchant`.`merchantId` = `merchantEnabled`.`merchantId`
                   )
@@ -137,7 +137,7 @@ WHERE
             ),
             true
           )
-        )  AND
+        ) AND
         (
           (
             COALESCE(
@@ -148,7 +148,7 @@ WHERE
                   `businessEnabled`
                 WHERE
                   (
-                    (`business`.`appId` = `businessEnabled`.`appId`)  AND
+                    (`business`.`appId` = `businessEnabled`.`appId`) AND
                     (
                       `business`.`businessId` = `businessEnabled`.`businessId`
                     )
@@ -161,7 +161,7 @@ WHERE
               ),
               true
             )
-          )  AND
+          ) AND
           (
             EXISTS (
               SELECT
@@ -170,15 +170,15 @@ WHERE
                 `user`
               WHERE
                 (
-                  (`user`.`appId` = `business`.`appId`)  AND
+                  (`user`.`appId` = `business`.`appId`) AND
                   (
                     `user`.`externalUserId` = `business`.`externalUserId`
-                  )  AND
+                  ) AND
                   (NOT (`user`.`banned`))
                 )
             )
           )
-        )  AND
+        ) AND
         (
           (
             COALESCE(
@@ -201,7 +201,7 @@ WHERE
               ),
               true
             )
-          )  AND
+          ) AND
           (
             EXISTS (
               SELECT
@@ -210,15 +210,15 @@ WHERE
                 `user`
               WHERE
                 (
-                  (`user`.`appId` = `payOutMethod`.`appId`)  AND
+                  (`user`.`appId` = `payOutMethod`.`appId`) AND
                   (
                     `user`.`externalUserId` = `payOutMethod`.`externalUserId`
-                  )  AND
+                  ) AND
                   (NOT (`user`.`banned`))
                 )
             )
           )
-        )  AND
+        ) AND
         (
           COALESCE(
             (
@@ -230,7 +230,7 @@ WHERE
                 (
                   (
                     `appPlatform`.`appId` = `appPlatformEnabled`.`appId`
-                  )  AND
+                  ) AND
                   (
                     `appPlatform`.`platformId` = `appPlatformEnabled`.`platformId`
                   )
@@ -245,7 +245,7 @@ WHERE
           )
         )
       )
-    )  AND
+    ) AND
     (
       NOT (
         (
@@ -258,7 +258,7 @@ WHERE
               (
                 (
                   `merchantLock`.`merchantId` = `merchant`.`merchantId`
-                )  AND
+                ) AND
                 (
                   (
                     TIMESTAMPDIFF(SECOND, NOW(), `merchantLock`.`timeoutAt`)

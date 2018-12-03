@@ -12,6 +12,7 @@ import { ColumnMap } from "./column-map";
 import { IExprSelectItem } from "./expr-select-item";
 import { ToUnknownIfAllFieldsNever } from "./type";
 import { ColumnIdentifierUtil } from "./column-identifier";
+import { QueryTreeArray } from "./query-tree";
 export interface UnionQuery {
     readonly distinct: boolean;
     readonly query: IQuery;
@@ -181,6 +182,9 @@ export declare namespace Query {
     }> & ToUnknownIfAllFieldsNever<{
         [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends SelectItem ? (Extract<ColumnIdentifierUtil.UnionFromSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.UnionFromSelectItemArrayIgnoreIndex<ReturnType<SelectDelegateT>, index>> extends never ? never : ["Duplicate columns in SELECT clause", Extract<ColumnIdentifierUtil.UnionFromSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.UnionFromSelectItemArrayIgnoreIndex<ReturnType<SelectDelegateT>, index>>] | void) : never);
     }>) : unknown))): Select<QueryT, SelectDelegateT>;
+}
+export declare namespace Query {
+    function queryTreeJoins(query: IQuery): QueryTreeArray;
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: Query.AssertUniqueJoinTarget<Query.NewInstance, AliasedTableT>): (Query.From<Query.NewInstance, AliasedTableT>);
 //# sourceMappingURL=query.d.ts.map

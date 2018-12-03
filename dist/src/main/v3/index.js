@@ -16,6 +16,7 @@ __export(require("./column-identifier"));
 __export(require("./column"));
 __export(require("./constants"));
 __export(require("./join"));
+__export(require("./query-tree"));
 __export(require("./query"));
 __export(require("./select-item-array"));
 __export(require("./select-item"));

@@ -127,7 +127,10 @@ export class Formatter {
 
     formatNewlineReservedWord(token : Token, query : string) {
         //Different from original implementation. I think this looks nicer.
-        return this.addNewline(query + " " + this.equalizeWhitespace(token.value));
+        if (query.length > 0 && query[query.length-1] != " ") {
+            query += " ";
+        }
+        return this.addNewline(query + this.equalizeWhitespace(token.value));
     }
 
     // Replace any sequence of whitespace characters with single space
