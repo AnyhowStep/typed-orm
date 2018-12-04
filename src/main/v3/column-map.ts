@@ -14,17 +14,18 @@
     ColumnIdentifierArrayUtil.FromColumnMap<>
 */
 import * as sd from "schema-decorator";
-import {IColumn, Column} from "../column";
-import {IJoin} from "../join";
-import {SelectItem, SingleValueSelectItem} from "../select-item";
-import {ColumnIdentifier} from "../column-identifier";
-import {SelectItemArrayUtil} from "../select-item-array";
-import {IExprSelectItem, ExprSelectItemUtil} from "../expr-select-item";
+import {IColumn, Column} from "./column";
+import {IJoin} from "./join";
+import {SelectItem, SingleValueSelectItem} from "./select-item";
+import {ColumnIdentifier, ColumnIdentifierUtil} from "./column-identifier";
+import {SelectItemArrayUtil} from "./select-item-array";
+import {IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 
 export interface ColumnMap {
     readonly [columnName : string] : IColumn
 };
 
+//Predicates
 export namespace ColumnMapUtil {
     export function isColumnMap (raw : any) : raw is ColumnMap {
         if (!(raw instanceof Object)) {
@@ -68,58 +69,6 @@ export namespace ColumnMapUtil {
     ) : HasOneColumn<ColumnMapT> {
         return (Object.keys(columnMap).length == 1) as HasOneColumn<ColumnMapT>;
     }
-
-    export type WithTableAlias<
-        ColumnMapT extends ColumnMap,
-        NewTableAliasT extends string
-    > = (
-        {
-            readonly [columnName in Extract<keyof ColumnMapT, string>] : (
-                Column.WithTableAlias<
-                    ColumnMapT[columnName],
-                    NewTableAliasT
-                >
-            )
-        }
-    );
-    export function withTableAlias<
-        ColumnMapT extends ColumnMap,
-        NewTableAliasT extends string
-    > (
-        columnMap : ColumnMapT,
-        newTableAlias : NewTableAliasT
-    ) : (
-        WithTableAlias<ColumnMapT, NewTableAliasT>
-    ) {
-        return (Object.keys(columnMap) as Extract<keyof ColumnMapT, string>[])
-            .reduce<{
-                [columnName in Extract<keyof ColumnMapT, string>] : (
-                    Column.WithTableAlias<
-                        ColumnMapT[columnName],
-                        NewTableAliasT
-                    >
-                )
-            }>(
-                (memo, columnName : Extract<keyof ColumnMapT, string>) => {
-                    const column : Extract<
-                        ColumnMapT[Extract<keyof ColumnMapT, string>],
-                        IColumn
-                    > = (
-                        columnMap[columnName] as any
-                    );
-                    memo[columnName] = Column.withTableAlias<
-                        Extract<ColumnMapT[Extract<keyof ColumnMapT, string>], IColumn>,
-                        NewTableAliasT
-                    >(
-                        column,
-                        newTableAlias
-                    );
-                    return memo;
-                },
-                {} as any
-            );
-    }
-
     export type HasColumn<
         ColumnMapT extends ColumnMap,
         ColumnT extends IColumn
@@ -212,14 +161,14 @@ export namespace ColumnMapUtil {
     > (columnMap : ColumnMapT, columnIdentifier : ColumnIdentifierT) : (
         HasColumnIdentifier<ColumnMapT, ColumnIdentifierT>
     ) {
-        if (!columnMap.hasOwnProperty(columnIdentifier.name)) {
-            return false as any;
-        }
         const column = columnMap[columnIdentifier.name];
-        return (
-            column.tableAlias == columnIdentifier.tableAlias &&
-            column.name == columnIdentifier.name
-        ) as any;
+        if (!Column.isColumn(column)) {
+            return false as HasColumnIdentifier<ColumnMapT, ColumnIdentifierT>;
+        }
+        return ColumnIdentifierUtil.isEqual(
+            column,
+            columnIdentifier
+        ) as HasColumnIdentifier<ColumnMapT, ColumnIdentifierT>;
     }
     export function assertHasColumnIdentifier (columnMap : ColumnMap, columnIdentifier : ColumnIdentifier) {
         if (!hasColumnIdentifier(columnMap, columnIdentifier)) {
@@ -231,7 +180,210 @@ export namespace ColumnMapUtil {
             assertHasColumnIdentifier(columnMap, columnIdentifier);
         }
     }
+    /*
+        Checks if all of A's columns are assignable to
+        the corresponding columns in B
+    */
+    export type IsAssignableSubset<A extends ColumnMap, B extends ColumnMap> = (
+        Extract<keyof A, string> extends never ?
+        true :
+        string extends Extract<keyof A, string> ?
+        boolean :
+        string extends Extract<keyof B, string> ?
+        boolean :
+        Extract<keyof A, string> extends Extract<keyof B, string> ?
+        (
+            {
+                [columnName in Extract<keyof A, string>] : (
+                    Column.IsAssignableTo<
+                        A[columnName],
+                        B[columnName]
+                    >
+                )
+            }[Extract<keyof A, string>]
+        ) :
+        false
+    );
+}
+//Queries
+export namespace ColumnMapUtil {
+    /*
+        Used for unions of ColumnMap
 
+        (A|B)[columnName] will likely give you unknown or similar
+    */
+    export type FindWithColumnName<
+        ColumnMapT extends ColumnMap,
+        ColumnNameT extends string
+    > = (
+        ColumnMapT extends ColumnMap ?
+        (
+            ColumnNameT extends keyof ColumnMapT ?
+            ColumnMapT[ColumnNameT] :
+            never
+        ) :
+        never
+    );
+}
+//Operations
+export namespace ColumnMapUtil {
+    export type WithTableAlias<
+        ColumnMapT extends ColumnMap,
+        NewTableAliasT extends string
+    > = (
+        {
+            readonly [columnName in Extract<keyof ColumnMapT, string>] : (
+                Column.WithTableAlias<
+                    ColumnMapT[columnName],
+                    NewTableAliasT
+                >
+            )
+        }
+    );
+    export function withTableAlias<
+        ColumnMapT extends ColumnMap,
+        NewTableAliasT extends string
+    > (
+        columnMap : ColumnMapT,
+        newTableAlias : NewTableAliasT
+    ) : (
+        WithTableAlias<ColumnMapT, NewTableAliasT>
+    ) {
+        const result : ColumnMap = {};
+        for (let columnName in columnMap) {
+            result[columnName] = Column.withTableAlias(
+                columnMap[columnName],
+                newTableAlias
+            );
+        }
+        return result as WithTableAlias<ColumnMapT, NewTableAliasT>;
+    }
+    //Take the intersection and the "left" columnMap
+    export type LeftIntersect<
+        ColumnMapA extends ColumnMap,
+        ColumnMapB extends ColumnMap,
+    > = (
+        {
+            readonly [columnName in Extract<keyof ColumnMapA, string>] : (
+                columnName extends keyof ColumnMapB ?
+                IColumn<{
+                    readonly tableAlias : ColumnMapA[columnName]["tableAlias"],
+                    readonly name : ColumnMapA[columnName]["name"],
+                    readonly assertDelegate : sd.AssertDelegate<
+                        ReturnType<ColumnMapA[columnName]["assertDelegate"]> &
+                        ReturnType<ColumnMapB[columnName]["assertDelegate"]>
+                    >
+                }> :
+                ColumnMapA[columnName]
+            )
+        }
+    );
+    export function leftIntersect<
+        ColumnMapA extends ColumnMap,
+        ColumnMapB extends ColumnMap,
+    > (
+        columnMapA : ColumnMapA,
+        columnMapB : ColumnMapB
+    ) : (
+        LeftIntersect<ColumnMapA, ColumnMapB>
+    ) {
+        const result : ColumnMap = {};
+        for (let columnName in columnMapA) {
+            const columnA = columnMapA[columnName];
+            const columnB = columnMapB[columnName];
+            if (Column.isColumn(columnB)) {
+                result[columnName] = new Column(
+                    {
+                        tableAlias : columnA.tableAlias,
+                        name : columnA.name,
+                        assertDelegate : sd.and(
+                            columnA.assertDelegate,
+                            columnMapB[columnName].assertDelegate
+                        ),
+                    },
+                    columnA.__subTableName,
+                    columnA.__isInSelectClause
+                );
+            } else {
+                result[columnName] = columnA;
+            }
+        }
+        return result as LeftIntersect<ColumnMapA, ColumnMapB>;
+    };
+    export type Intersect<
+        ColumnMapA extends ColumnMap,
+        ColumnMapB extends ColumnMap,
+    > = (
+        LeftIntersect<ColumnMapA, ColumnMapB> &
+        {
+            readonly [columnName in Exclude<
+                Extract<keyof ColumnMapB, string>,
+                keyof ColumnMapA
+            >] : (
+                ColumnMapB[columnName]
+            )
+        }
+    );
+    export function intersect<
+        ColumnMapA extends ColumnMap,
+        ColumnMapB extends ColumnMap,
+    > (
+        columnMapA : ColumnMapA,
+        columnMapB : ColumnMapB
+    ) : (
+        Intersect<ColumnMapA, ColumnMapB>
+    ) {
+        const left : LeftIntersect<
+            ColumnMapA, ColumnMapB
+        > = leftIntersect(columnMapA, columnMapB);
+
+        const columnNames : Exclude<
+            Extract<keyof ColumnMapB, string>,
+            keyof ColumnMapA
+        >[] = Object.keys(columnMapB)
+            .filter(columnName =>
+                !columnMapA.hasOwnProperty(columnName)
+            ) as any;
+        const right = columnNames.reduce<{
+            [columnName in Exclude<
+                Extract<keyof ColumnMapB, string>,
+                keyof ColumnMapA
+            >] : (
+                ColumnMapB[columnName]
+            )
+        }>((memo, columnName) => {
+            memo[columnName] = columnMapB[columnName];
+            return memo;
+        }, {} as any);
+
+        return Object.assign(
+            {},
+            left,
+            right,
+        );
+    }
+    export type ToNullable<ColumnMapT extends ColumnMap> = (
+        {
+            readonly [columnName in keyof ColumnMapT] : (
+                Column.ToNullable<ColumnMapT[columnName]>
+            )
+        }
+    );
+    export function toNullable<ColumnMapT extends ColumnMap> (
+        columnMap : ColumnMapT
+    ) : ToNullable<ColumnMapT> {
+        return Object.keys(columnMap).reduce<{
+            [columnName in keyof ColumnMapT] : (
+                Column.ToNullable<ColumnMapT[columnName]>
+            )
+        }>((memo, columnName) => {
+            memo[columnName] = Column.toNullable(columnMap[columnName]);
+            return memo;
+        }, {} as any);
+    }
+}
+//Constructors
+export namespace ColumnMapUtil {
     export type FromFieldArray<
         TableAliasT extends string,
         FieldsT extends sd.AnyField[]
@@ -330,142 +482,7 @@ export namespace ColumnMapUtil {
         }, {} as any);
     }
 
-    //Take the intersection and the "left" columnMap
-    export type LeftIntersect<
-        ColumnMapA extends ColumnMap,
-        ColumnMapB extends ColumnMap,
-    > = (
-        {
-            readonly [columnName in Extract<keyof ColumnMapA, string>] : (
-                columnName extends keyof ColumnMapB ?
-                IColumn<{
-                    readonly tableAlias : ColumnMapA[columnName]["tableAlias"],
-                    readonly name : ColumnMapA[columnName]["name"],
-                    readonly assertDelegate : sd.AssertDelegate<
-                        ReturnType<ColumnMapA[columnName]["assertDelegate"]> &
-                        ReturnType<ColumnMapB[columnName]["assertDelegate"]>
-                    >
-                }> :
-                ColumnMapA[columnName]
-            )
-        }
-    );
-    export function leftIntersect<
-        ColumnMapA extends ColumnMap,
-        ColumnMapB extends ColumnMap,
-    > (
-        columnMapA : ColumnMapA,
-        columnMapB : ColumnMapB
-    ) : (
-        LeftIntersect<ColumnMapA, ColumnMapB>
-    ) {
-        const columnMapANames : Extract<keyof ColumnMapA, string>[] = Object.keys(columnMapA) as any;
-        return columnMapANames.reduce<{
-            [columnName in Extract<keyof ColumnMapA, string>] : (
-                columnName extends keyof ColumnMapB ?
-                Column<{
-                    readonly tableAlias : ColumnMapA[columnName]["tableAlias"],
-                    readonly name : ColumnMapA[columnName]["name"],
-                    readonly assertDelegate : sd.AssertDelegate<
-                        ReturnType<ColumnMapA[columnName]["assertDelegate"]> &
-                        ReturnType<ColumnMapB[columnName]["assertDelegate"]>
-                    >
-                }> :
-                ColumnMapA[columnName]
-            )
-        }>((memo, columnName) => {
-            const columnA = columnMapA[columnName];
-            if (columnMapB.hasOwnProperty(columnName)) {
-                memo[columnName] = new Column(
-                    {
-                        tableAlias : columnA.tableAlias,
-                        name : columnA.name,
-                        assertDelegate : sd.and(
-                            columnA.assertDelegate,
-                            columnMapB[columnName].assertDelegate
-                        ),
-                    },
-                    columnA.__subTableName,
-                    columnA.__isInSelectClause
-                ) as any;
-            } else {
-                memo[columnName] = columnA as any;
-            }
-            return memo;
-        }, {} as any);
-    };
-    export type Intersect<
-        ColumnMapA extends ColumnMap,
-        ColumnMapB extends ColumnMap,
-    > = (
-        LeftIntersect<ColumnMapA, ColumnMapB> &
-        {
-            readonly [columnName in Exclude<
-                Extract<keyof ColumnMapB, string>,
-                keyof ColumnMapA
-            >] : (
-                ColumnMapB[columnName]
-            )
-        }
-    );
-    export function intersect<
-        ColumnMapA extends ColumnMap,
-        ColumnMapB extends ColumnMap,
-    > (
-        columnMapA : ColumnMapA,
-        columnMapB : ColumnMapB
-    ) : (
-        Intersect<ColumnMapA, ColumnMapB>
-    ) {
-        const left : LeftIntersect<
-            ColumnMapA, ColumnMapB
-        > = leftIntersect(columnMapA, columnMapB);
 
-        const columnNames : Exclude<
-            Extract<keyof ColumnMapB, string>,
-            keyof ColumnMapA
-        >[] = Object.keys(columnMapB)
-            .filter(columnName =>
-                !columnMapA.hasOwnProperty(columnName)
-            ) as any;
-        const right = columnNames.reduce<{
-            [columnName in Exclude<
-                Extract<keyof ColumnMapB, string>,
-                keyof ColumnMapA
-            >] : (
-                ColumnMapB[columnName]
-            )
-        }>((memo, columnName) => {
-            memo[columnName] = columnMapB[columnName];
-            return memo;
-        }, {} as any);
-
-        return Object.assign(
-            {},
-            left,
-            right,
-        );
-    }
-
-    export type ToNullable<ColumnMapT extends ColumnMap> = (
-        {
-            readonly [columnName in keyof ColumnMapT] : (
-                Column.ToNullable<ColumnMapT[columnName]>
-            )
-        }
-    );
-    export function toNullable<ColumnMapT extends ColumnMap> (
-        columnMap : ColumnMapT
-    ) : ToNullable<ColumnMapT> {
-        return Object.keys(columnMap).reduce<{
-            [columnName in keyof ColumnMapT] : (
-                Column.ToNullable<ColumnMapT[columnName]>
-            )
-        }>((memo, columnName) => {
-            memo[columnName] = Column.toNullable(columnMap[columnName]);
-            return memo;
-        }, {} as any);
-    }
 
     export type FromJoin<JoinT extends IJoin> = (
         true extends JoinT["nullable"] ?
@@ -567,49 +584,7 @@ export namespace ColumnMapUtil {
         );
     }
 
-    /*
-        Checks if all of A's columns are assignable to
-        the corresponding columns in B
-    */
-    export type IsAssignableSubset<A extends ColumnMap, B extends ColumnMap> = (
-        Extract<keyof A, string> extends never ?
-        true :
-        string extends Extract<keyof A, string> ?
-        boolean :
-        string extends Extract<keyof B, string> ?
-        boolean :
-        Extract<keyof A, string> extends Extract<keyof B, string> ?
-        (
-            {
-                [columnName in Extract<keyof A, string>] : (
-                    Column.IsAssignableTo<
-                        A[columnName],
-                        B[columnName]
-                    >
-                )
-            }[Extract<keyof A, string>]
-        ) :
-        false
-    );
 
-
-    /*
-        Used for unions of ColumnMap
-
-        (A|B)[columnName] will likely give you unknown or similar
-    */
-    export type FindWithColumnName<
-        ColumnMapT extends ColumnMap,
-        ColumnNameT extends string
-    > = (
-        ColumnMapT extends ColumnMap ?
-        (
-            ColumnNameT extends keyof ColumnMapT ?
-            ColumnMapT[ColumnNameT] :
-            never
-        ) :
-        never
-    );
 
     export type FromColumnArray<ColumnsT extends IColumn[]> = (
         {
