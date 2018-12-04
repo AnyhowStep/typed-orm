@@ -1,4 +1,5 @@
 import * as sd from "schema-decorator";
+import {IColumn} from "./column";
 
 export type AssertMap = {
     readonly [columnName : string] : sd.AnyAssertFunc
@@ -26,4 +27,11 @@ export namespace AssertMapUtil {
             columnName => sd.isNullable(assertMap[columnName])
         ) as any;
     }
+    export type FromColumn<ColumnT extends IColumn> = (
+        ColumnT extends IColumn ?
+        {
+            [columnName in ColumnT["name"]] : ReturnType<ColumnT["assertDelegate"]>
+        } :
+        never
+    );
 }

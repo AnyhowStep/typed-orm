@@ -27,6 +27,9 @@ class Query {
     leftJoin(aliasedTable, fromDelegate, toDelegate) {
         return Query.leftJoin(this, aliasedTable, fromDelegate, toDelegate);
     }
+    rightJoin(aliasedTable, fromDelegate, toDelegate) {
+        return Query.rightJoin(this, aliasedTable, fromDelegate, toDelegate);
+    }
 }
 exports.Query = Query;
 (function (Query) {
@@ -227,6 +230,32 @@ exports.Query = Query;
         }, extraData);
     }
     Query.innerJoin = innerJoin;
+    function joinUsingColumns(columns, aliasedTable) {
+        //During run-time, we cannot actuall check if the assertDelegate
+        //of a column matches...
+        return columns.filter(column => column_map_1.ColumnMapUtil.hasColumnIdentifier(aliasedTable.columns, column));
+    }
+    Query.joinUsingColumns = joinUsingColumns;
+    function innerJoinUsing(_query, _aliasedTable, _usingDelegate) {
+        throw new Error("Not implemented");
+        /*const joins : QueryT["joins"] = query.joins;
+        const usingRef = ColumnRefUtil.fromJoinArray(joins);
+        const using = usingDelegate(
+            ColumnRefUtil.toConvenient(usingRef)
+        );
+
+        return innerJoin<
+            QueryT,
+            AliasedTableT,
+            () => ReturnType<UsingDelegateT>
+        >(
+            query,
+            aliasedTable,
+            (() => using) as any,
+            () => using.map(c => aliasedTable.columns[c.name]) as any
+        ) as any;*/
+    }
+    Query.innerJoinUsing = innerJoinUsing;
     function leftJoin(query, aliasedTable, fromDelegate, toDelegate) {
         if (query.joins == undefined) {
             throw new Error(`Cannot JOIN before FROM clause`);
@@ -259,6 +288,39 @@ exports.Query = Query;
         }, extraData);
     }
     Query.leftJoin = leftJoin;
+    function rightJoin(query, aliasedTable, fromDelegate, toDelegate) {
+        if (query.joins == undefined) {
+            throw new Error(`Cannot JOIN before FROM clause`);
+        }
+        assertUniqueJoinTarget(query, aliasedTable);
+        const joins = query.joins;
+        const fromRef = column_ref_1.ColumnRefUtil.fromJoinArray(joins);
+        const from = fromDelegate(column_ref_1.ColumnRefUtil.toConvenient(fromRef));
+        const to = toDelegate(aliasedTable.columns);
+        if (from.length != to.length) {
+            throw new Error(`Expected JOIN to have ${from.length} target columns`);
+        }
+        column_ref_1.ColumnRefUtil.assertHasColumnIdentifiers(fromRef, from);
+        column_map_1.ColumnMapUtil.assertHasColumnIdentifiers(aliasedTable.columns, to);
+        const { parentJoins, unions, selects, limit, unionLimit, extraData, } = query;
+        const newJoins = [
+            ...join_array_1.JoinArrayUtil.toNullable(joins),
+            new join_1.Join({
+                aliasedTable,
+                columns: aliasedTable.columns,
+                nullable: false,
+            }, join_1.JoinType.RIGHT, from, to),
+        ];
+        return new Query({
+            joins: newJoins,
+            parentJoins,
+            unions,
+            selects,
+            limit,
+            unionLimit,
+        }, extraData);
+    }
+    Query.rightJoin = rightJoin;
     //Must be called after `FROM` as per MySQL
     function where(query, delegate) {
         const queryRef = column_ref_1.ColumnRefUtil.fromQuery(query);

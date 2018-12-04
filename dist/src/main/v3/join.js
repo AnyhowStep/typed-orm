@@ -43,5 +43,15 @@ exports.Join = Join;
             column_array_1.ColumnArrayUtil.isColumnArray(raw.to));
     }
     Join.isJoin = isJoin;
+    function toNullable(join) {
+        const { aliasedTable, columns, } = join;
+        const result = new Join({
+            aliasedTable,
+            columns,
+            nullable: true,
+        }, join.joinType, join.from, join.to);
+        return result;
+    }
+    Join.toNullable = toNullable;
 })(Join = exports.Join || (exports.Join = {}));
 //# sourceMappingURL=join.js.map

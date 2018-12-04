@@ -53,6 +53,7 @@ export declare class Query<DataT extends QueryData> {
     from<AliasedTableT extends IAliasedTable>(this: Extract<this, Query.BeforeFromClause>, aliasedTable: Query.AssertUniqueJoinTarget<Extract<this, Query.BeforeFromClause>, AliasedTableT>): (Query.From<Extract<this, Query.BeforeFromClause>, AliasedTableT>);
     innerJoin<AliasedTableT extends IAliasedTable, FromDelegateT extends Query.JoinFromDelegate<Extract<this, Query.AfterFromClause>["joins"]>>(this: Extract<this, Query.AfterFromClause>, aliasedTable: Query.AssertUniqueJoinTarget<Extract<this, Query.AfterFromClause>, AliasedTableT>, fromDelegate: FromDelegateT, toDelegate: Query.JoinToDelegate<Extract<this, Query.AfterFromClause>, AliasedTableT, FromDelegateT>): (Query.InnerJoin<Extract<this, Query.AfterFromClause>, AliasedTableT>);
     leftJoin<AliasedTableT extends IAliasedTable, FromDelegateT extends Query.JoinFromDelegate<Extract<this, Query.AfterFromClause>["joins"]>>(this: Extract<this, Query.AfterFromClause>, aliasedTable: Query.AssertUniqueJoinTarget<Extract<this, Query.AfterFromClause>, AliasedTableT>, fromDelegate: FromDelegateT, toDelegate: Query.JoinToDelegate<Extract<this, Query.AfterFromClause>, AliasedTableT, FromDelegateT>): (Query.LeftJoin<Extract<this, Query.AfterFromClause>, AliasedTableT>);
+    rightJoin<AliasedTableT extends IAliasedTable, FromDelegateT extends Query.JoinFromDelegate<Extract<this, Query.AfterFromClause>["joins"]>>(this: Extract<this, Query.AfterFromClause>, aliasedTable: Query.AssertUniqueJoinTarget<Extract<this, Query.AfterFromClause>, AliasedTableT>, fromDelegate: FromDelegateT, toDelegate: Query.JoinToDelegate<Extract<this, Query.AfterFromClause>, AliasedTableT, FromDelegateT>): (Query.RightJoin<Extract<this, Query.AfterFromClause>, AliasedTableT>);
 }
 export declare namespace Query {
     function isUnionQuery(raw: any): raw is UnionQuery;
@@ -128,7 +129,7 @@ export declare namespace Query {
         readonly unionLimit: QueryT["unionLimit"];
     }>);
     function from<QueryT extends BeforeFromClause, AliasedTableT extends IAliasedTable>(query: QueryT, aliasedTable: AssertUniqueJoinTarget<QueryT, AliasedTableT>): (From<QueryT, AliasedTableT>);
-    type JoinFromDelegate<JoinsT extends IJoin[]> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromJoinArray<JoinsT>>) => (NonEmptyTuple<JoinArrayUtil.ToUnion<JoinsT>>));
+    type JoinFromDelegate<JoinsT extends IJoin[]> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromJoinArray<JoinsT>>) => (NonEmptyTuple<Column.UnionFromJoinArray<JoinsT>>));
     type JoinToColumn<AliasedTableT extends IAliasedTable, FromColumnT extends IColumn> = (IColumn<{
         tableAlias: AliasedTableT["alias"];
         name: Extract<keyof AliasedTableT["columns"], string>;
@@ -148,6 +149,10 @@ export declare namespace Query {
         readonly unionLimit: QueryT["unionLimit"];
     }>);
     function innerJoin<QueryT extends AfterFromClause, AliasedTableT extends IAliasedTable, FromDelegateT extends JoinFromDelegate<QueryT["joins"]>>(query: QueryT, aliasedTable: AssertUniqueJoinTarget<QueryT, AliasedTableT>, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>): (InnerJoin<QueryT, AliasedTableT>);
+    type JoinUsingColumnUnion<ColumnT extends IColumn, AliasedTableT extends IAliasedTable> = (ColumnT extends IColumn ? (Column.WithTableAlias<ColumnT, AliasedTableT["alias"]> extends Column.UnionFromColumnMap<AliasedTableT["columns"]> ? Extract<ColumnT, IColumn> : never) : never);
+    function joinUsingColumns<ColumnsT extends IColumn[], AliasedTableT extends IAliasedTable>(columns: ColumnsT, aliasedTable: AliasedTableT): JoinUsingColumnUnion<ColumnsT[number], AliasedTableT>[];
+    type JoinUsingDelegate<JoinsT extends IJoin[], AliasedTableT extends IAliasedTable> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromColumnArray<JoinUsingColumnUnion<Column.UnionFromJoinArray<JoinsT>, AliasedTableT>[]>>) => (NonEmptyTuple<(JoinUsingColumnUnion<Column.UnionFromJoinArray<JoinsT>, AliasedTableT>)>));
+    function innerJoinUsing<QueryT extends AfterFromClause, AliasedTableT extends IAliasedTable, UsingDelegateT extends JoinUsingDelegate<QueryT["joins"], AliasedTableT>>(_query: QueryT, _aliasedTable: AssertUniqueJoinTarget<QueryT, AliasedTableT>, _usingDelegate: (UsingDelegateT)): (InnerJoin<QueryT, AliasedTableT>);
     type LeftJoin<QueryT extends AfterFromClause, AliasedTableT extends IAliasedTable> = (Query<{
         readonly joins: (QueryT["joins"][number] | Join<{
             aliasedTable: AliasedTableT;
@@ -161,6 +166,19 @@ export declare namespace Query {
         readonly unionLimit: QueryT["unionLimit"];
     }>);
     function leftJoin<QueryT extends AfterFromClause, AliasedTableT extends IAliasedTable, FromDelegateT extends JoinFromDelegate<QueryT["joins"]>>(query: QueryT, aliasedTable: AssertUniqueJoinTarget<QueryT, AliasedTableT>, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>): (LeftJoin<QueryT, AliasedTableT>);
+    type RightJoin<QueryT extends AfterFromClause, AliasedTableT extends IAliasedTable> = (Query<{
+        readonly joins: (JoinArrayUtil.ToNullable<QueryT["joins"]>[number] | Join<{
+            aliasedTable: AliasedTableT;
+            columns: AliasedTableT["columns"];
+            nullable: false;
+        }>)[];
+        readonly parentJoins: QueryT["parentJoins"];
+        readonly unions: QueryT["unions"];
+        readonly selects: QueryT["selects"];
+        readonly limit: QueryT["limit"];
+        readonly unionLimit: QueryT["unionLimit"];
+    }>);
+    function rightJoin<QueryT extends AfterFromClause, AliasedTableT extends IAliasedTable, FromDelegateT extends JoinFromDelegate<QueryT["joins"]>>(query: QueryT, aliasedTable: AssertUniqueJoinTarget<QueryT, AliasedTableT>, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>): (RightJoin<QueryT, AliasedTableT>);
     type WhereDelegate<QueryT extends AfterFromClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>, query: QueryT) => RawExpr<boolean>);
     function where<QueryT extends AfterFromClause, WhereDelegateT extends WhereDelegate<QueryT>>(query: QueryT, delegate: (WhereDelegateT & (ColumnRefUtil.FromQuery<QueryT> extends RawExprUtil.UsedRef<ReturnType<WhereDelegateT>> ? unknown : ["WHERE expression contains some invalid columns; the following are not allowed:", Exclude<ColumnRefUtil.ToUnion<RawExprUtil.UsedRef<ReturnType<WhereDelegateT>>>, ColumnRefUtil.ToUnion<ColumnRefUtil.FromQuery<QueryT>>>] | void))): IQuery<QueryT>;
     type SelectDelegate<QueryT extends BeforeUnionClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>) => NonEmptyTuple<SelectItem>);

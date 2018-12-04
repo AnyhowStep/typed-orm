@@ -15,7 +15,7 @@ export declare namespace ColumnMapUtil {
     }[Extract<keyof ColumnMapT, string>]) extends never ? true : false);
     function hasOneColumn<ColumnMapT extends ColumnMap>(columnMap: ColumnMapT): HasOneColumn<ColumnMapT>;
     type WithTableAlias<ColumnMapT extends ColumnMap, NewTableAliasT extends string> = ({
-        readonly [columnName in keyof ColumnMapT]: (Column.WithTableAlias<ColumnMapT[columnName], NewTableAliasT>);
+        readonly [columnName in Extract<keyof ColumnMapT, string>]: (Column.WithTableAlias<ColumnMapT[columnName], NewTableAliasT>);
     });
     function withTableAlias<ColumnMapT extends ColumnMap, NewTableAliasT extends string>(columnMap: ColumnMapT, newTableAlias: NewTableAliasT): (WithTableAlias<ColumnMapT, NewTableAliasT>);
     type HasColumn<ColumnMapT extends ColumnMap, ColumnT extends IColumn> = (keyof ColumnMapT extends never ? false : ColumnMap extends ColumnMapT ? boolean : string extends ColumnT["name"] ? (string extends ColumnT["tableAlias"] ? (ReturnType<ColumnT["assertDelegate"]> extends ReturnType<Column.UnionFromColumnMap<ColumnMapT>["assertDelegate"]> ? boolean : false) : ColumnT["tableAlias"] extends Column.UnionFromColumnMap<ColumnMapT>["tableAlias"] ? (ReturnType<ColumnT["assertDelegate"]> extends ReturnType<{
@@ -85,5 +85,10 @@ export declare namespace ColumnMapUtil {
         [columnName in Extract<keyof A, string>]: (Column.IsAssignableTo<A[columnName], B[columnName]>);
     }[Extract<keyof A, string>]) : false);
     type FindWithColumnName<ColumnMapT extends ColumnMap, ColumnNameT extends string> = (ColumnMapT extends ColumnMap ? (ColumnNameT extends keyof ColumnMapT ? ColumnMapT[ColumnNameT] : never) : never);
+    type FromColumnArray<ColumnsT extends IColumn[]> = ({
+        readonly [columnName in ColumnsT[number]["name"]]: (Extract<ColumnsT[number], {
+            name: columnName;
+        }>);
+    });
 }
 //# sourceMappingURL=column-map.d.ts.map

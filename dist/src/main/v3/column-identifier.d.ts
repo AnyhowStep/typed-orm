@@ -7,14 +7,12 @@ export interface ColumnIdentifier {
     readonly name: string;
 }
 export declare namespace ColumnIdentifierUtil {
-    type FromColumn<ColumnT extends IColumn> = ({
+    type FromColumn<ColumnT extends IColumn> = (ColumnT extends IColumn ? {
         readonly tableAlias: ColumnT["tableAlias"];
         readonly name: ColumnT["name"];
-    });
+    } : never);
     function fromColumn<ColumnT extends IColumn>(column: ColumnT): FromColumn<ColumnT>;
-    type UnionFromColumnMap<ColumnMapT extends ColumnMap> = ({
-        [columnName in Extract<keyof ColumnMapT, string>]: (FromColumn<ColumnMapT[columnName]>);
-    }[Extract<keyof ColumnMapT, string>]);
+    type UnionFromColumnMap<ColumnMapT extends ColumnMap> = (FromColumn<ColumnMapT[Extract<keyof ColumnMapT, string>]>);
     type UnionFromSelectItem<SelectItemT extends SelectItem> = (SelectItemT extends IColumn ? ColumnIdentifierUtil.FromColumn<SelectItemT> : SelectItemT extends IExprSelectItem ? {
         readonly tableAlias: SelectItemT["tableAlias"];
         readonly name: SelectItemT["alias"];

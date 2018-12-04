@@ -13,9 +13,6 @@ export namespace JoinArrayUtil {
             IJoin & { aliasedTable : { alias : TableAliasT } }
         >
     );
-    export type ToUnion<JoinsT extends IJoin[]> = (
-        Join.ToUnion<JoinsT[number]>
-    );
     export function isJoinArray (raw : any) : raw is IJoin[] {
         if (!(raw instanceof Array)) {
             return false;
@@ -26,5 +23,16 @@ export namespace JoinArrayUtil {
             }
         }
         return true;
+    }
+
+    export type ToNullable<JoinsT extends IJoin[]> = (
+        Join.ToNullable<JoinsT[number]>[]
+    );
+    export function toNullable<JoinsT extends IJoin[]> (
+        joins : JoinsT
+    ) : ToNullable<JoinsT> {
+        return joins.map((join : JoinsT[number]) : Join.ToNullable<JoinsT[number]> => {
+            return Join.toNullable(join);
+        });
     }
 }

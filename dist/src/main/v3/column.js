@@ -106,11 +106,12 @@ exports.Column = Column;
     }
     Column.toNullable = toNullable;
     function withTableAlias({ name, assertDelegate, __subTableName, __isInSelectClause, }, newTableAlias) {
-        return new Column({
+        const result = new Column({
             tableAlias: newTableAlias,
             name,
             assertDelegate,
         }, __subTableName, __isInSelectClause);
+        return result;
     }
     Column.withTableAlias = withTableAlias;
     function withType({ tableAlias, name, __subTableName, __isInSelectClause, }, newAssertFunc) {

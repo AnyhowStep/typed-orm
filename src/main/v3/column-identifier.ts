@@ -10,26 +10,28 @@ export interface ColumnIdentifier {
 
 export namespace ColumnIdentifierUtil {
     export type FromColumn<ColumnT extends IColumn> = (
+        ColumnT extends IColumn ?
         {
             readonly tableAlias : ColumnT["tableAlias"],
             readonly name : ColumnT["name"],
-        }
+        } :
+        never
     );
     export function fromColumn<ColumnT extends IColumn> (
         column : ColumnT
     ) : FromColumn<ColumnT> {
-        return {
+        const result : {
+            readonly tableAlias : ColumnT["tableAlias"],
+            readonly name : ColumnT["name"],
+        } = {
             tableAlias : column.tableAlias,
             name : column.name,
         };
+        return result as any;
     }
 
     export type UnionFromColumnMap<ColumnMapT extends ColumnMap> = (
-        {
-            [columnName in Extract<keyof ColumnMapT, string>] : (
-                FromColumn<ColumnMapT[columnName]>
-            )
-        }[Extract<keyof ColumnMapT, string>]
+        FromColumn<ColumnMapT[Extract<keyof ColumnMapT, string>]>
     );
     export type UnionFromSelectItem<SelectItemT extends SelectItem> = (
         SelectItemT extends IColumn ?

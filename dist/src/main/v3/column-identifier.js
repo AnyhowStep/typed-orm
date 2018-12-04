@@ -3,10 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ColumnIdentifierUtil;
 (function (ColumnIdentifierUtil) {
     function fromColumn(column) {
-        return {
+        const result = {
             tableAlias: column.tableAlias,
             name: column.name,
         };
+        return result;
     }
     ColumnIdentifierUtil.fromColumn = fromColumn;
     function isEqual(a, b) {

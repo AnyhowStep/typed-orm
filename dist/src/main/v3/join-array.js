@@ -15,5 +15,11 @@ var JoinArrayUtil;
         return true;
     }
     JoinArrayUtil.isJoinArray = isJoinArray;
+    function toNullable(joins) {
+        return joins.map((join) => {
+            return join_1.Join.toNullable(join);
+        });
+    }
+    JoinArrayUtil.toNullable = toNullable;
 })(JoinArrayUtil = exports.JoinArrayUtil || (exports.JoinArrayUtil = {}));
 //# sourceMappingURL=join-array.js.map

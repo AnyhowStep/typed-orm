@@ -74,7 +74,7 @@ export namespace ColumnMapUtil {
         NewTableAliasT extends string
     > = (
         {
-            readonly [columnName in keyof ColumnMapT] : (
+            readonly [columnName in Extract<keyof ColumnMapT, string>] : (
                 Column.WithTableAlias<
                     ColumnMapT[columnName],
                     NewTableAliasT
@@ -91,18 +91,27 @@ export namespace ColumnMapUtil {
     ) : (
         WithTableAlias<ColumnMapT, NewTableAliasT>
     ) {
-        return Object.keys(columnMap)
+        return (Object.keys(columnMap) as Extract<keyof ColumnMapT, string>[])
             .reduce<{
-                [columnName in keyof ColumnMapT] : (
+                [columnName in Extract<keyof ColumnMapT, string>] : (
                     Column.WithTableAlias<
                         ColumnMapT[columnName],
                         NewTableAliasT
                     >
                 )
             }>(
-                (memo, columnName) => {
-                    memo[columnName] = Column.withTableAlias(
-                        columnMap[columnName],
+                (memo, columnName : Extract<keyof ColumnMapT, string>) => {
+                    const column : Extract<
+                        ColumnMapT[Extract<keyof ColumnMapT, string>],
+                        IColumn
+                    > = (
+                        columnMap[columnName] as any
+                    );
+                    memo[columnName] = Column.withTableAlias<
+                        Extract<ColumnMapT[Extract<keyof ColumnMapT, string>], IColumn>,
+                        NewTableAliasT
+                    >(
+                        column,
                         newTableAlias
                     );
                     return memo;
@@ -600,5 +609,13 @@ export namespace ColumnMapUtil {
             never
         ) :
         never
+    );
+
+    export type FromColumnArray<ColumnsT extends IColumn[]> = (
+        {
+            readonly [columnName in ColumnsT[number]["name"]] : (
+                Extract<ColumnsT[number], { name : columnName }>
+            )
+        }
     );
 }

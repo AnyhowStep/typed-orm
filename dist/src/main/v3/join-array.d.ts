@@ -6,7 +6,8 @@ export declare namespace JoinArrayUtil {
             alias: TableAliasT;
         };
     }>);
-    type ToUnion<JoinsT extends IJoin[]> = (Join.ToUnion<JoinsT[number]>);
     function isJoinArray(raw: any): raw is IJoin[];
+    type ToNullable<JoinsT extends IJoin[]> = (Join.ToNullable<JoinsT[number]>[]);
+    function toNullable<JoinsT extends IJoin[]>(joins: JoinsT): ToNullable<JoinsT>;
 }
 //# sourceMappingURL=join-array.d.ts.map

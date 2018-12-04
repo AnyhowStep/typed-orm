@@ -159,6 +159,40 @@ export class Query<DataT extends QueryData> {
             toDelegate
         );
     }
+    public rightJoin<
+        AliasedTableT extends IAliasedTable,
+        FromDelegateT extends Query.JoinFromDelegate<
+            Extract<this, Query.AfterFromClause>["joins"]
+        >
+    > (
+        this : Extract<this, Query.AfterFromClause>,
+        aliasedTable : Query.AssertUniqueJoinTarget<
+            Extract<this, Query.AfterFromClause>,
+            AliasedTableT
+        >,
+        fromDelegate : FromDelegateT,
+        toDelegate : Query.JoinToDelegate<
+            Extract<this, Query.AfterFromClause>,
+            AliasedTableT,
+            FromDelegateT
+        >
+    ) : (
+        Query.RightJoin<
+            Extract<this, Query.AfterFromClause>,
+            AliasedTableT
+        >
+    ) {
+        return Query.rightJoin<
+            Extract<this, Query.AfterFromClause>,
+            AliasedTableT,
+            FromDelegateT
+        >(
+            this,
+            aliasedTable,
+            fromDelegate,
+            toDelegate
+        );
+    }
 }
 export namespace Query {
     export function isUnionQuery (raw : any) : raw is UnionQuery {
@@ -476,7 +510,7 @@ export namespace Query {
 
     export type JoinFromDelegate<JoinsT extends IJoin[]> = (
         (columns : ColumnRefUtil.ToConvenient<ColumnRefUtil.FromJoinArray<JoinsT>>) => (
-            NonEmptyTuple<JoinArrayUtil.ToUnion<JoinsT>>
+            NonEmptyTuple<Column.UnionFromJoinArray<JoinsT>>
         )
     );
 
@@ -690,6 +724,122 @@ export namespace Query {
             extraData
         );
     }
+
+    export type JoinUsingColumnUnion<
+        ColumnT extends IColumn,
+        AliasedTableT extends IAliasedTable
+    > = (
+        ColumnT extends IColumn ?
+        (
+            Column.WithTableAlias<
+                ColumnT,
+                AliasedTableT["alias"]
+            > extends Column.UnionFromColumnMap<AliasedTableT["columns"]> ?
+            Extract<ColumnT, IColumn> :
+            never
+        ) :
+        never
+    );
+    export function joinUsingColumns<
+        ColumnsT extends IColumn[],
+        AliasedTableT extends IAliasedTable
+    > (
+        columns : ColumnsT,
+        aliasedTable : AliasedTableT
+    ) : JoinUsingColumnUnion<ColumnsT[number], AliasedTableT>[] {
+        //During run-time, we cannot actuall check if the assertDelegate
+        //of a column matches...
+        return columns.filter(column => ColumnMapUtil.hasColumnIdentifier(
+            aliasedTable.columns,
+            column
+        )) as any[];
+    }
+    export type JoinUsingDelegate<
+        JoinsT extends IJoin[],
+        AliasedTableT extends IAliasedTable
+    > = (
+        (columns : ColumnRefUtil.ToConvenient<
+            ColumnRefUtil.FromColumnArray<JoinUsingColumnUnion<Column.UnionFromJoinArray<JoinsT>, AliasedTableT>[]>
+        >) => (
+            NonEmptyTuple<(
+                JoinUsingColumnUnion<Column.UnionFromJoinArray<JoinsT>, AliasedTableT>
+            )>
+        )
+    );
+    export function innerJoinUsing<
+        QueryT extends AfterFromClause,
+        AliasedTableT extends IAliasedTable,
+        UsingDelegateT extends JoinUsingDelegate<QueryT["joins"], AliasedTableT>
+    > (
+        _query : QueryT,
+        _aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,
+        _usingDelegate : (
+            UsingDelegateT/* &
+            (
+                Extract<
+                    Column.WithTableAlias<
+                        ReturnType<UsingDelegateT>[number],
+                        AliasedTableT["alias"]
+                    >,
+                    {
+                        name : Column.NameUnionFromColumnMap<AliasedTableT["columns"]>
+                    }
+                > extends never ?
+                [
+                    "The following columns do not exist on",
+                    AliasedTableT["alias"],
+                    ":",
+                    ReturnType<UsingDelegateT>[number]["name"]
+                ] :
+                Extract<
+                    Column.WithTableAlias<
+                        ReturnType<UsingDelegateT>[number],
+                        AliasedTableT["alias"]
+                    >,
+                    {
+                        name : Column.NameUnionFromColumnMap<AliasedTableT["columns"]>
+                    }
+                > extends Column.UnionFromColumnMap<AliasedTableT["columns"]> ?
+                unknown :
+                [
+                    "The following columns do not exist on",
+                    AliasedTableT["alias"],
+                    ":",
+                    AssertMapUtil.FromColumn<
+                        Extract<
+                            Column.WithTableAlias<
+                                ReturnType<UsingDelegateT>[number],
+                                AliasedTableT["alias"]
+                            >,
+                            {
+                                name : Column.NameUnionFromColumnMap<AliasedTableT["columns"]>
+                            }
+                        >
+                    >
+                ]
+            )*/
+        )
+    ) : (
+        InnerJoin<QueryT, AliasedTableT>
+    ) {
+        throw new Error("Not implemented")
+        /*const joins : QueryT["joins"] = query.joins;
+        const usingRef = ColumnRefUtil.fromJoinArray(joins);
+        const using = usingDelegate(
+            ColumnRefUtil.toConvenient(usingRef)
+        );
+
+        return innerJoin<
+            QueryT,
+            AliasedTableT,
+            () => ReturnType<UsingDelegateT>
+        >(
+            query,
+            aliasedTable,
+            (() => using) as any,
+            () => using.map(c => aliasedTable.columns[c.name]) as any
+        ) as any;*/
+    }
     export type LeftJoin<
         QueryT extends AfterFromClause,
         AliasedTableT extends IAliasedTable
@@ -768,6 +918,103 @@ export namespace Query {
                         to,
                     ),
                 ],
+                parentJoins,
+                unions,
+                selects,
+                limit,
+                unionLimit,
+            },
+            extraData
+        );
+    }
+    export type RightJoin<
+        QueryT extends AfterFromClause,
+        AliasedTableT extends IAliasedTable
+    > = (
+        Query<{
+            readonly joins : (
+                JoinArrayUtil.ToNullable<QueryT["joins"]>[number] |
+                Join<{
+                    aliasedTable : AliasedTableT,
+                    columns : AliasedTableT["columns"],
+                    nullable : false,
+                }>
+            )[],
+            readonly parentJoins : QueryT["parentJoins"],
+            readonly unions : QueryT["unions"],
+            readonly selects : QueryT["selects"],
+            readonly limit : QueryT["limit"],
+            readonly unionLimit : QueryT["unionLimit"],
+        }>
+    );
+    export function rightJoin<
+        QueryT extends AfterFromClause,
+        AliasedTableT extends IAliasedTable,
+        FromDelegateT extends JoinFromDelegate<QueryT["joins"]>
+    > (
+        query : QueryT,
+        aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,
+        fromDelegate : FromDelegateT,
+        toDelegate : JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>
+    ) : (
+        RightJoin<QueryT, AliasedTableT>
+    ) {
+        if (query.joins == undefined) {
+            throw new Error(`Cannot JOIN before FROM clause`);
+        }
+        assertUniqueJoinTarget(query, aliasedTable);
+
+        const joins : QueryT["joins"] = query.joins;
+        const fromRef = ColumnRefUtil.fromJoinArray(joins);
+        const from = fromDelegate(
+            ColumnRefUtil.toConvenient(fromRef)
+        );
+        const to = toDelegate(aliasedTable.columns);
+        if (from.length != to.length) {
+            throw new Error(`Expected JOIN to have ${from.length} target columns`);
+        }
+        ColumnRefUtil.assertHasColumnIdentifiers(
+            fromRef,
+            from
+        );
+        ColumnMapUtil.assertHasColumnIdentifiers(
+            aliasedTable.columns,
+            to
+        );
+
+        const {
+            parentJoins,
+            unions,
+            selects,
+            limit,
+            unionLimit,
+            extraData,
+        } = query;
+
+        const newJoins : (
+            JoinArrayUtil.ToNullable<QueryT["joins"]>[number] |
+            Join<{
+                aliasedTable : AliasedTableT,
+                columns : AliasedTableT["columns"],
+                nullable : false,
+            }>
+        )[] = [
+            ...JoinArrayUtil.toNullable(joins),
+            new Join(
+                {
+                    aliasedTable,
+                    columns : aliasedTable.columns,
+                    nullable : false,
+                },
+                JoinType.RIGHT,
+                from,
+                to,
+            ),
+        ];
+
+        return new Query(
+            {
+                joins : newJoins,
                 parentJoins,
                 unions,
                 selects,

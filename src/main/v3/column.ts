@@ -6,7 +6,9 @@ import {IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 import {ColumnMap} from "./column-map";
 import {ColumnIdentifierUtil} from "./column-identifier";
 import {ColumnRef} from "./column-ref";
-import { StringArrayUtil } from "./string-array";
+import {StringArrayUtil} from "./string-array";
+import {IJoin} from "./join";
+import {ColumnMapUtil} from "./column-map";
 
 export interface ColumnData {
     readonly tableAlias : string;
@@ -228,11 +230,13 @@ export namespace Column {
         ColumnT extends IColumn,
         NewTableAliasT extends string
     > = (
+        ColumnT extends IColumn ?
         Column<{
             readonly tableAlias : NewTableAliasT,
             readonly name : ColumnT["name"],
             readonly assertDelegate : ColumnT["assertDelegate"],
-        }>
+        }> :
+        never
     );
     export function withTableAlias<
         ColumnT extends IColumn,
@@ -248,7 +252,11 @@ export namespace Column {
     ) : (
         WithTableAlias<ColumnT, NewTableAliasT>
     ) {
-        return new Column(
+        const result : Column<{
+            readonly tableAlias : NewTableAliasT,
+            readonly name : ColumnT["name"],
+            readonly assertDelegate : ColumnT["assertDelegate"],
+        }> = new Column(
             {
                 tableAlias : newTableAlias,
                 name,
@@ -257,6 +265,7 @@ export namespace Column {
             __subTableName,
             __isInSelectClause
         );
+        return result as any;
     }
 
     /*
@@ -453,6 +462,17 @@ export namespace Column {
             columnName => sd.isNullable(columnMap[columnName].assertDelegate)
         ) as any;
     }
+
+    export type UnionFromJoin<JoinT extends IJoin> = (
+        JoinT extends IJoin ?
+        UnionFromColumnMap<
+            ColumnMapUtil.FromJoin<JoinT>
+        > :
+        never
+    );
+    export type UnionFromJoinArray<JoinsT extends IJoin[]> = (
+        UnionFromJoin<JoinsT[number]>
+    );
 }
 
 export function column<

@@ -209,4 +209,14 @@ export namespace ColumnRefUtil {
             assertHasColumnIdentifier(columnRef, columnIdentifier);
         }
     }
+
+    export type FromColumnArray<ColumnsT extends IColumn[]> = (
+        {
+            readonly [tableAlias in ColumnsT[number]["tableAlias"]] : (
+                ColumnMapUtil.FromColumnArray<
+                    Extract<ColumnsT[number], { tableAlias : tableAlias }>[]
+                >
+            )
+        }
+    );
 }

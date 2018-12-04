@@ -41,7 +41,8 @@ var ColumnMapUtil;
     function withTableAlias(columnMap, newTableAlias) {
         return Object.keys(columnMap)
             .reduce((memo, columnName) => {
-            memo[columnName] = column_1.Column.withTableAlias(columnMap[columnName], newTableAlias);
+            const column = columnMap[columnName];
+            memo[columnName] = column_1.Column.withTableAlias(column, newTableAlias);
             return memo;
         }, {});
     }

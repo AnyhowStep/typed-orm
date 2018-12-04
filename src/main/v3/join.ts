@@ -1,6 +1,6 @@
 import {IAliasedTable, AliasedTable} from "./aliased-table";
 import {ColumnMap, ColumnMapUtil} from "./column-map";
-import {IColumn, Column} from "./column";
+import {IColumn} from "./column";
 import {ColumnArrayUtil} from "./column-array";
 import * as e from "enum-util";
 
@@ -64,11 +64,6 @@ export class Join<DataT extends JoinData> implements IJoin<DataT> {
     }
 }
 export namespace Join {
-    export type ToUnion<JoinT extends IJoin> = (
-        Column.UnionFromColumnMap<
-            ColumnMapUtil.FromJoin<JoinT>
-        >
-    );
     export function isJoin (raw : any) : raw is IJoin {
         return (
             raw != undefined &&
@@ -86,5 +81,37 @@ export namespace Join {
             ColumnArrayUtil.isColumnArray(raw.from) &&
             ColumnArrayUtil.isColumnArray(raw.to)
         );
+    }
+    export type ToNullable<JoinT extends IJoin> = (
+        JoinT extends IJoin ?
+        Join<{
+            aliasedTable : JoinT["aliasedTable"],
+            columns : JoinT["columns"],
+            nullable : true,
+        }> :
+        never
+    );
+    export function toNullable<JoinT extends IJoin> (
+        join : JoinT
+    ) : ToNullable<JoinT> {
+        const {
+            aliasedTable,
+            columns,
+        } = join;
+        const result : Join<{
+            aliasedTable : JoinT["aliasedTable"],
+            columns : JoinT["columns"],
+            nullable : true,
+        }> = new Join(
+            {
+                aliasedTable,
+                columns,
+                nullable : true as true,
+            },
+            join.joinType,
+            join.from,
+            join.to
+        );
+        return result as any;
     }
 }

@@ -1,0 +1,16 @@
+[
+  {
+    "messageText": "Property 'x' does not exist on type '{ readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string> & { __accepts: string; __canAccept: string; }; }>; }'.",
+    "code": 2339,
+    "category": 1,
+    "length": 1,
+    "start": 846
+  },
+  {
+    "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>' is not assignable to type 'never'.",
+    "code": 2322,
+    "category": 1,
+    "length": 15,
+    "start": 941
+  }
+]

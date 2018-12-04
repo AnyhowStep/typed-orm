@@ -30,5 +30,10 @@ export declare namespace ColumnRefUtil {
     function hasColumnIdentifier<ColumnRefT extends ColumnRef, ColumnIdentifierT extends ColumnIdentifier>(columnRef: ColumnRefT, columnIdentifier: ColumnIdentifierT): (HasColumnIdentifier<ColumnRefT, ColumnIdentifierT>);
     function assertHasColumnIdentifier(columnRef: ColumnRef, columnIdentifier: ColumnIdentifier): void;
     function assertHasColumnIdentifiers(columnRef: ColumnRef, columnIdentifiers: ColumnIdentifier[]): void;
+    type FromColumnArray<ColumnsT extends IColumn[]> = ({
+        readonly [tableAlias in ColumnsT[number]["tableAlias"]]: (ColumnMapUtil.FromColumnArray<Extract<ColumnsT[number], {
+            tableAlias: tableAlias;
+        }>[]>);
+    });
 }
 //# sourceMappingURL=column-ref.d.ts.map

@@ -4,6 +4,8 @@ import { IExprSelectItem } from "./expr-select-item";
 import { ColumnMap } from "./column-map";
 import { ColumnIdentifierUtil } from "./column-identifier";
 import { ColumnRef } from "./column-ref";
+import { IJoin } from "./join";
+import { ColumnMapUtil } from "./column-map";
 export interface ColumnData {
     readonly tableAlias: string;
     readonly name: string;
@@ -41,11 +43,11 @@ export declare namespace Column {
         readonly assertDelegate: sd.AssertDelegate<null | ReturnType<ColumnT["assertDelegate"]>>;
     }>);
     function toNullable<ColumnT extends IColumn>({ tableAlias, name, assertDelegate, __subTableName, __isInSelectClause, }: ColumnT): (ToNullable<ColumnT>);
-    type WithTableAlias<ColumnT extends IColumn, NewTableAliasT extends string> = (Column<{
+    type WithTableAlias<ColumnT extends IColumn, NewTableAliasT extends string> = (ColumnT extends IColumn ? Column<{
         readonly tableAlias: NewTableAliasT;
         readonly name: ColumnT["name"];
         readonly assertDelegate: ColumnT["assertDelegate"];
-    }>);
+    }> : never);
     function withTableAlias<ColumnT extends IColumn, NewTableAliasT extends string>({ name, assertDelegate, __subTableName, __isInSelectClause, }: ColumnT, newTableAlias: NewTableAliasT): (WithTableAlias<ColumnT, NewTableAliasT>);
     type WithType<ColumnT extends IColumn, NewAssertDelegateT extends sd.AnyAssertFunc> = (Column<{
         readonly tableAlias: ColumnT["tableAlias"];
@@ -76,6 +78,8 @@ export declare namespace Column {
         [columnName in Extract<keyof ColumnMapT, string>]: (null extends ReturnType<ColumnMapT[columnName]["assertDelegate"]> ? columnName : never);
     }[Extract<keyof ColumnMapT, string>] : never);
     function nullableNameArrayFromColumnMap<ColumnMapT extends ColumnMap>(columnMap: ColumnMapT): NullableNameUnionFromColumnMap<ColumnMapT>[];
+    type UnionFromJoin<JoinT extends IJoin> = (JoinT extends IJoin ? UnionFromColumnMap<ColumnMapUtil.FromJoin<JoinT>> : never);
+    type UnionFromJoinArray<JoinsT extends IJoin[]> = (UnionFromJoin<JoinsT[number]>);
 }
 export declare function column<TableAliasT extends string, NameT extends string, AssertFuncT extends sd.AnyAssertFunc>(tableAlias: TableAliasT, name: NameT, assertFunc: AssertFuncT): Column<{
     readonly tableAlias: TableAliasT;

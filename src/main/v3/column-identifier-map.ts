@@ -1,5 +1,6 @@
 import  {ColumnIdentifier, ColumnIdentifierUtil} from "./column-identifier";
 import  {ColumnMap} from "./column-map";
+import { IColumn } from "./column";
 
 export interface ColumnIdentifierMap {
     readonly [columnName : string] : ColumnIdentifier
@@ -22,8 +23,13 @@ export namespace ColumnIdentifierMapUtil {
                     ColumnIdentifierUtil.FromColumn<ColumnMapT[columnName]>
                 )
             }>((memo, columnName) => {
-                memo[columnName] = ColumnIdentifierUtil.fromColumn(
-                    columnMap[columnName]
+                memo[columnName] = ColumnIdentifierUtil.fromColumn<
+                    Extract<
+                        ColumnMapT[Extract<keyof ColumnMapT, string>],
+                        IColumn
+                    >
+                >(
+                    columnMap[columnName] as any
                 );
                 return memo;
             }, {} as any);
