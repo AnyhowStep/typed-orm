@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import {IJoin, Join, JoinType} from "./join";
 import {IAliasedTable, AliasedTable} from "./aliased-table";
-import {IColumn, Column} from "./column";
+import {IColumn, ColumnUtil} from "./column";
 import {SelectItem} from "./select-item";
 import {RawExpr, RawExprUtil} from "./raw-expr";
 import {IExpr, Expr} from "./expr";
@@ -510,7 +510,7 @@ export namespace Query {
 
     export type JoinFromDelegate<JoinsT extends IJoin[]> = (
         (columns : ColumnRefUtil.ToConvenient<ColumnRefUtil.FromJoinArray<JoinsT>>) => (
-            NonEmptyTuple<Column.UnionFromJoinArray<JoinsT>>
+            NonEmptyTuple<ColumnUtil.FromJoinArray<JoinsT>>
         )
     );
 
@@ -622,8 +622,8 @@ export namespace Query {
             //Turn off type-checking.
             //Surely a JOIN on anything more than 10 columns is a bit much...
             //Right?
-            Column.UnionFromColumnMap<AliasedTableT["columns"]>[]
-            /*Column.UnionFromColumnMap<AliasedTableT["columns"]>[] &
+            ColumnUtil.FromColumnMap<AliasedTableT["columns"]>[]
+            /*ColumnUtil.UnionFromColumnMap<AliasedTableT["columns"]>[] &
             { length : ReturnType<FromDelegateT>["length"] } &
             {
                 //Surely a JOIN on anything more than 10 columns is a bit much...
@@ -731,10 +731,10 @@ export namespace Query {
     > = (
         ColumnT extends IColumn ?
         (
-            Column.WithTableAlias<
+            ColumnUtil.WithTableAlias<
                 ColumnT,
                 AliasedTableT["alias"]
-            > extends Column.UnionFromColumnMap<AliasedTableT["columns"]> ?
+            > extends ColumnUtil.FromColumnMap<AliasedTableT["columns"]> ?
             Extract<ColumnT, IColumn> :
             never
         ) :
@@ -747,7 +747,7 @@ export namespace Query {
         columns : ColumnsT,
         aliasedTable : AliasedTableT
     ) : JoinUsingColumnUnion<ColumnsT[number], AliasedTableT>[] {
-        //During run-time, we cannot actuall check if the assertDelegate
+        //During run-time, we cannot actually check if the assertDelegate
         //of a column matches...
         return columns.filter(column => ColumnMapUtil.hasColumnIdentifier(
             aliasedTable.columns,
@@ -759,10 +759,15 @@ export namespace Query {
         AliasedTableT extends IAliasedTable
     > = (
         (columns : ColumnRefUtil.ToConvenient<
-            ColumnRefUtil.FromColumnArray<JoinUsingColumnUnion<Column.UnionFromJoinArray<JoinsT>, AliasedTableT>[]>
+            ColumnRefUtil.FromColumnArray<
+                JoinUsingColumnUnion<
+                    ColumnUtil.FromJoinArray<JoinsT>,
+                    AliasedTableT
+                >[]
+            >
         >) => (
             NonEmptyTuple<(
-                JoinUsingColumnUnion<Column.UnionFromJoinArray<JoinsT>, AliasedTableT>
+                JoinUsingColumnUnion<ColumnUtil.FromJoinArray<JoinsT>, AliasedTableT>
             )>
         )
     );
@@ -774,55 +779,14 @@ export namespace Query {
         _query : QueryT,
         _aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,
         _usingDelegate : (
-            UsingDelegateT/* &
-            (
-                Extract<
-                    Column.WithTableAlias<
-                        ReturnType<UsingDelegateT>[number],
-                        AliasedTableT["alias"]
-                    >,
-                    {
-                        name : Column.NameUnionFromColumnMap<AliasedTableT["columns"]>
-                    }
-                > extends never ?
-                [
-                    "The following columns do not exist on",
-                    AliasedTableT["alias"],
-                    ":",
-                    ReturnType<UsingDelegateT>[number]["name"]
-                ] :
-                Extract<
-                    Column.WithTableAlias<
-                        ReturnType<UsingDelegateT>[number],
-                        AliasedTableT["alias"]
-                    >,
-                    {
-                        name : Column.NameUnionFromColumnMap<AliasedTableT["columns"]>
-                    }
-                > extends Column.UnionFromColumnMap<AliasedTableT["columns"]> ?
-                unknown :
-                [
-                    "The following columns do not exist on",
-                    AliasedTableT["alias"],
-                    ":",
-                    AssertMapUtil.FromColumn<
-                        Extract<
-                            Column.WithTableAlias<
-                                ReturnType<UsingDelegateT>[number],
-                                AliasedTableT["alias"]
-                            >,
-                            {
-                                name : Column.NameUnionFromColumnMap<AliasedTableT["columns"]>
-                            }
-                        >
-                    >
-                ]
-            )*/
+            UsingDelegateT
         )
     ) : (
         InnerJoin<QueryT, AliasedTableT>
     ) {
-        throw new Error("Not implemented")
+        throw new Error("not implemented");
+        //const usingRef = ColumnRefUtil.from
+
         /*const joins : QueryT["joins"] = query.joins;
         const usingRef = ColumnRefUtil.fromJoinArray(joins);
         const using = usingDelegate(
@@ -1162,12 +1126,12 @@ export namespace Query {
                 [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
                     ReturnType<SelectDelegateT>[index] extends ColumnMap ?
                     (
-                        Column.UnionFromColumnMap<ReturnType<SelectDelegateT>[index]> extends ColumnRefUtil.ToUnion<ColumnRefUtil.FromQuery<QueryT>> ?
+                        ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]> extends ColumnRefUtil.ToUnion<ColumnRefUtil.FromQuery<QueryT>> ?
                         never :
                         [
                             "Invalid ColumnMap",
                             Exclude<
-                                Column.UnionFromColumnMap<ReturnType<SelectDelegateT>[index]>,
+                                ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]>,
                                 ColumnRefUtil.ToUnion<ColumnRefUtil.FromQuery<QueryT>>
                             >
                         ]|void
@@ -1311,9 +1275,9 @@ export namespace Query {
                 .map((from, index) => {
                     const to = join.to[index];
                     return [
-                        Column.queryTree(to),
+                        ColumnUtil.queryTree(to),
                         "=",
-                        Column.queryTree(from),
+                        ColumnUtil.queryTree(from),
                     ].join(" ");
                 })
                 .join(" AND ")

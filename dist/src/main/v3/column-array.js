@@ -15,7 +15,7 @@ var ColumnArrayUtil;
             return false;
         }
         for (let item of raw) {
-            if (!column_1.Column.isColumn(item)) {
+            if (!column_1.ColumnUtil.isColumn(item)) {
                 return false;
             }
         }

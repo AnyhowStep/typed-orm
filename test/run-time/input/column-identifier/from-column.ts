@@ -14,7 +14,7 @@ tape(__filename, (t) => {
     );
     const identifier = o.ColumnIdentifierUtil.fromColumn(c);
 
-    t.deepEqual(o.Column.isColumn(identifier), false);
+    t.deepEqual(o.ColumnUtil.isColumn(identifier), false);
     t.deepEqual(c.tableAlias, "tableAlias");
     t.deepEqual(c.name, "name");
 

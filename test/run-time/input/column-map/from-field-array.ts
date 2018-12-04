@@ -15,9 +15,9 @@ tape(__filename, (t) => {
     t.true(o.ColumnMapUtil.isColumnMap(columnMap));
     t.true(Object.keys(columnMap).length == 3);
 
-    t.true(o.Column.isColumn(columnMap.x));
-    t.true(o.Column.isColumn(columnMap.y));
-    t.true(o.Column.isColumn(columnMap.z));
+    t.true(o.ColumnUtil.isColumn(columnMap.x));
+    t.true(o.ColumnUtil.isColumn(columnMap.y));
+    t.true(o.ColumnUtil.isColumn(columnMap.z));
 
     t.deepEqual(columnMap.x.tableAlias, "someTable");
     t.deepEqual(columnMap.y.tableAlias, "someTable");

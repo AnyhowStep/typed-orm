@@ -22,12 +22,12 @@ export const unrelatedColumn2 = o.column("tableA", "nameB", sd.or(
 export declare const untypedColumn : o.IColumn;
 
 export declare const assignableTo : [
-    o.Column.IsAssignableTo<typeof column, typeof column>,
-    o.Column.IsAssignableTo<typeof column, typeof subTypeColumn>,
-    o.Column.IsAssignableTo<typeof column, typeof superTypeColumn>,
-    o.Column.IsAssignableTo<typeof column, typeof unrelatedColumn>,
-    o.Column.IsAssignableTo<typeof column, typeof unrelatedColumn2>,
-    o.Column.IsAssignableTo<typeof column, typeof untypedColumn>
+    o.ColumnUtil.IsAssignableTo<typeof column, typeof column>,
+    o.ColumnUtil.IsAssignableTo<typeof column, typeof subTypeColumn>,
+    o.ColumnUtil.IsAssignableTo<typeof column, typeof superTypeColumn>,
+    o.ColumnUtil.IsAssignableTo<typeof column, typeof unrelatedColumn>,
+    o.ColumnUtil.IsAssignableTo<typeof column, typeof unrelatedColumn2>,
+    o.ColumnUtil.IsAssignableTo<typeof column, typeof untypedColumn>
 ];
 export const assignableToCheck : [
     true,
@@ -40,12 +40,12 @@ export const assignableToCheck : [
 export const assignableToCheck2 : typeof assignableTo = assignableToCheck;
 
 export declare const subTypeAssignableTo : [
-    o.Column.IsAssignableTo<typeof subTypeColumn, typeof column>,
-    o.Column.IsAssignableTo<typeof subTypeColumn, typeof subTypeColumn>,
-    o.Column.IsAssignableTo<typeof subTypeColumn, typeof superTypeColumn>,
-    o.Column.IsAssignableTo<typeof subTypeColumn, typeof unrelatedColumn>,
-    o.Column.IsAssignableTo<typeof subTypeColumn, typeof unrelatedColumn2>,
-    o.Column.IsAssignableTo<typeof subTypeColumn, typeof untypedColumn>
+    o.ColumnUtil.IsAssignableTo<typeof subTypeColumn, typeof column>,
+    o.ColumnUtil.IsAssignableTo<typeof subTypeColumn, typeof subTypeColumn>,
+    o.ColumnUtil.IsAssignableTo<typeof subTypeColumn, typeof superTypeColumn>,
+    o.ColumnUtil.IsAssignableTo<typeof subTypeColumn, typeof unrelatedColumn>,
+    o.ColumnUtil.IsAssignableTo<typeof subTypeColumn, typeof unrelatedColumn2>,
+    o.ColumnUtil.IsAssignableTo<typeof subTypeColumn, typeof untypedColumn>
 ];
 export const subTypeAssignableToCheck : [
     true,
@@ -58,12 +58,12 @@ export const subTypeAssignableToCheck : [
 export const subTypeAssignableToCheck2 : typeof subTypeAssignableTo = subTypeAssignableToCheck;
 
 export declare const superTypeAssignableTo : [
-    o.Column.IsAssignableTo<typeof superTypeColumn, typeof column>,
-    o.Column.IsAssignableTo<typeof superTypeColumn, typeof subTypeColumn>,
-    o.Column.IsAssignableTo<typeof superTypeColumn, typeof superTypeColumn>,
-    o.Column.IsAssignableTo<typeof superTypeColumn, typeof unrelatedColumn>,
-    o.Column.IsAssignableTo<typeof superTypeColumn, typeof unrelatedColumn2>,
-    o.Column.IsAssignableTo<typeof superTypeColumn, typeof untypedColumn>
+    o.ColumnUtil.IsAssignableTo<typeof superTypeColumn, typeof column>,
+    o.ColumnUtil.IsAssignableTo<typeof superTypeColumn, typeof subTypeColumn>,
+    o.ColumnUtil.IsAssignableTo<typeof superTypeColumn, typeof superTypeColumn>,
+    o.ColumnUtil.IsAssignableTo<typeof superTypeColumn, typeof unrelatedColumn>,
+    o.ColumnUtil.IsAssignableTo<typeof superTypeColumn, typeof unrelatedColumn2>,
+    o.ColumnUtil.IsAssignableTo<typeof superTypeColumn, typeof untypedColumn>
 ];
 export const superTypeAssignableToCheck : [
     false,

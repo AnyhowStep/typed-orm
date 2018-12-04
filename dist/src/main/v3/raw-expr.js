@@ -31,7 +31,7 @@ var RawExprUtil;
         if (expr_1.Expr.isExpr(rawExpr)) {
             return rawExpr.usedRef;
         }
-        if (column_1.Column.isColumn(rawExpr)) {
+        if (column_1.ColumnUtil.isColumn(rawExpr)) {
             return column_ref_1.ColumnRefUtil.fromColumn(rawExpr);
         }
         if (table_subquery_1.TableSubquery.isSingleValueOrEmpty(rawExpr)) {
@@ -69,7 +69,7 @@ var RawExprUtil;
         if (expr_1.Expr.isExpr(rawExpr)) {
             return rawExpr.assertDelegate;
         }
-        if (column_1.Column.isColumn(rawExpr)) {
+        if (column_1.ColumnUtil.isColumn(rawExpr)) {
             return rawExpr.assertDelegate;
         }
         if (table_subquery_1.TableSubquery.isSingleValueOrEmpty(rawExpr)) {
@@ -118,8 +118,8 @@ var RawExprUtil;
         if (expr_1.Expr.isExpr(rawExpr)) {
             return rawExpr.queryTree;
         }
-        if (column_1.Column.isColumn(rawExpr)) {
-            return column_1.Column.queryTree(rawExpr);
+        if (column_1.ColumnUtil.isColumn(rawExpr)) {
+            return column_1.ColumnUtil.queryTree(rawExpr);
         }
         if (table_subquery_1.TableSubquery.isSingleValueOrEmpty(rawExpr)) {
             return table_subquery_1.TableSubquery.queryTree(rawExpr);

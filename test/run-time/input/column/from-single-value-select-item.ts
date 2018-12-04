@@ -37,7 +37,7 @@ tape(__filename, (t) => {
         alias : "someAlias",
         unaliasedQuery : "NOT IMPLEMENTED",
     };
-    const c = o.Column.fromSingleValueSelectItem(item);
+    const c = o.ColumnUtil.fromSingleValueSelectItem(item);
 
     t.deepEqual(
         c.tableAlias,
@@ -73,7 +73,7 @@ tape(__filename, (t) => {
         undefined,
         undefined
     );
-    const c3 = o.Column.fromSingleValueSelectItem(c2);
+    const c3 = o.ColumnUtil.fromSingleValueSelectItem(c2);
 
     t.deepEqual(
         c3.tableAlias,

@@ -13,8 +13,8 @@ tape(__filename, (t) => {
         undefined
     );
 
-    t.true(o.Column.isColumn(c));
-    t.true(o.Column.isColumn({
+    t.true(o.ColumnUtil.isColumn(c));
+    t.true(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         name : "name",
         assertDelegate : sd.naturalNumber(),
@@ -22,32 +22,32 @@ tape(__filename, (t) => {
         __isInSelectClause : true,
     }));
 
-    t.false(o.Column.isColumn({
+    t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         name : "name",
         assertDelegate : sd.naturalNumber(),
         __subTableName : undefined,
         __isInSelectClause : undefined,
     }));
-    t.false(o.Column.isColumn({
+    t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         name : "name",
         __subTableName : undefined,
         __isInSelectClause : true,
     }));
-    t.false(o.Column.isColumn({
+    t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         assertDelegate : sd.naturalNumber(),
         __subTableName : undefined,
         __isInSelectClause : true,
     }));
-    t.false(o.Column.isColumn({
+    t.false(o.ColumnUtil.isColumn({
         name : "name",
         assertDelegate : sd.naturalNumber(),
         __subTableName : undefined,
         __isInSelectClause : true,
     }));
-    t.false(o.Column.isColumn({
+    t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         name : "name",
         assertDelegate : sd.naturalNumber(),

@@ -231,13 +231,14 @@ exports.Query = Query;
     }
     Query.innerJoin = innerJoin;
     function joinUsingColumns(columns, aliasedTable) {
-        //During run-time, we cannot actuall check if the assertDelegate
+        //During run-time, we cannot actually check if the assertDelegate
         //of a column matches...
         return columns.filter(column => column_map_1.ColumnMapUtil.hasColumnIdentifier(aliasedTable.columns, column));
     }
     Query.joinUsingColumns = joinUsingColumns;
     function innerJoinUsing(_query, _aliasedTable, _usingDelegate) {
-        throw new Error("Not implemented");
+        throw new Error("not implemented");
+        //const usingRef = ColumnRefUtil.from
         /*const joins : QueryT["joins"] = query.joins;
         const usingRef = ColumnRefUtil.fromJoinArray(joins);
         const using = usingDelegate(
@@ -377,9 +378,9 @@ exports.Query = Query;
                 .map((from, index) => {
                 const to = join.to[index];
                 return [
-                    column_1.Column.queryTree(to),
+                    column_1.ColumnUtil.queryTree(to),
                     "=",
-                    column_1.Column.queryTree(from),
+                    column_1.ColumnUtil.queryTree(from),
                 ].join(" ");
             })
                 .join(" AND "));

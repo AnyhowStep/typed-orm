@@ -29,7 +29,7 @@ var ColumnMapUtil;
         }
         for (let columnName in raw) {
             const column = raw[columnName];
-            if (!column_1.Column.isColumn(column)) {
+            if (!column_1.ColumnUtil.isColumn(column)) {
                 return false;
             }
         }
@@ -42,7 +42,7 @@ var ColumnMapUtil;
     ColumnMapUtil.hasOneColumn = hasOneColumn;
     function hasColumnIdentifier(columnMap, columnIdentifier) {
         const column = columnMap[columnIdentifier.name];
-        if (!column_1.Column.isColumn(column)) {
+        if (!column_1.ColumnUtil.isColumn(column)) {
             return false;
         }
         return column_identifier_1.ColumnIdentifierUtil.isEqual(column, columnIdentifier);
@@ -66,7 +66,7 @@ var ColumnMapUtil;
     function withTableAlias(columnMap, newTableAlias) {
         const result = {};
         for (let columnName in columnMap) {
-            result[columnName] = column_1.Column.withTableAlias(columnMap[columnName], newTableAlias);
+            result[columnName] = column_1.ColumnUtil.withTableAlias(columnMap[columnName], newTableAlias);
         }
         return result;
     }
@@ -76,7 +76,7 @@ var ColumnMapUtil;
         for (let columnName in columnMapA) {
             const columnA = columnMapA[columnName];
             const columnB = columnMapB[columnName];
-            if (column_1.Column.isColumn(columnB)) {
+            if (column_1.ColumnUtil.isColumn(columnB)) {
                 result[columnName] = new column_1.Column({
                     tableAlias: columnA.tableAlias,
                     name: columnA.name,
@@ -109,7 +109,7 @@ var ColumnMapUtil;
     function toNullable(columnMap) {
         const result = {};
         for (let columnName in columnMap) {
-            result[columnName] = column_1.Column.toNullable(columnMap[columnName]);
+            result[columnName] = column_1.ColumnUtil.toNullable(columnMap[columnName]);
         }
         return result;
     }
@@ -161,11 +161,11 @@ var ColumnMapUtil;
     }
     ColumnMapUtil.fromColumn = fromColumn;
     function fromSingleValueSelectItem(selectItem) {
-        return fromColumn(column_1.Column.fromSingleValueSelectItem(selectItem));
+        return fromColumn(column_1.ColumnUtil.fromSingleValueSelectItem(selectItem));
     }
     ColumnMapUtil.fromSingleValueSelectItem = fromSingleValueSelectItem;
     function fromSelectItem(selectItem) {
-        if (column_1.Column.isColumn(selectItem)) {
+        if (column_1.ColumnUtil.isColumn(selectItem)) {
             return fromColumn(selectItem);
         }
         else if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(selectItem)) {

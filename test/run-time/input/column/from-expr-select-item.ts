@@ -37,7 +37,7 @@ tape(__filename, (t) => {
         alias : "someAlias",
         unaliasedQuery : "NOT IMPLEMENTED",
     };
-    const c = o.Column.fromExprSelectItem(item);
+    const c = o.ColumnUtil.fromExprSelectItem(item);
 
     t.deepEqual(
         c.tableAlias,

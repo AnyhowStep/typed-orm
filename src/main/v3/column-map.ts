@@ -14,7 +14,7 @@
     ColumnIdentifierArrayUtil.FromColumnMap<>
 */
 import * as sd from "schema-decorator";
-import {IColumn, Column} from "./column";
+import {IColumn, Column, ColumnUtil} from "./column";
 import {IJoin} from "./join";
 import {SelectItem, SingleValueSelectItem} from "./select-item";
 import {ColumnIdentifier, ColumnIdentifierUtil} from "./column-identifier";
@@ -33,7 +33,7 @@ export namespace ColumnMapUtil {
         }
         for (let columnName in raw) {
             const column = raw[columnName];
-            if (!Column.isColumn(column)) {
+            if (!ColumnUtil.isColumn(column)) {
                 return false;
             }
         }
@@ -82,11 +82,11 @@ export namespace ColumnMapUtil {
             string extends ColumnT["tableAlias"] ?
             (
                 //No run-time check for this
-                ReturnType<ColumnT["assertDelegate"]> extends ReturnType<Column.UnionFromColumnMap<ColumnMapT>["assertDelegate"]> ?
+                ReturnType<ColumnT["assertDelegate"]> extends ReturnType<ColumnUtil.FromColumnMap<ColumnMapT>["assertDelegate"]> ?
                 boolean :
                 false
             ) :
-            ColumnT["tableAlias"] extends Column.UnionFromColumnMap<ColumnMapT>["tableAlias"] ?
+            ColumnT["tableAlias"] extends ColumnUtil.FromColumnMap<ColumnMapT>["tableAlias"] ?
             (
                 //No run-time check for this
                 ReturnType<ColumnT["assertDelegate"]> extends ReturnType<{
@@ -137,7 +137,7 @@ export namespace ColumnMapUtil {
         (
             string extends ColumnIdentifierT["tableAlias"] ?
             boolean :
-            ColumnIdentifierT["tableAlias"] extends Column.UnionFromColumnMap<ColumnMapT>["tableAlias"] ?
+            ColumnIdentifierT["tableAlias"] extends ColumnUtil.FromColumnMap<ColumnMapT>["tableAlias"] ?
             boolean :
             false
         ) :
@@ -162,7 +162,7 @@ export namespace ColumnMapUtil {
         HasColumnIdentifier<ColumnMapT, ColumnIdentifierT>
     ) {
         const column = columnMap[columnIdentifier.name];
-        if (!Column.isColumn(column)) {
+        if (!ColumnUtil.isColumn(column)) {
             return false as HasColumnIdentifier<ColumnMapT, ColumnIdentifierT>;
         }
         return ColumnIdentifierUtil.isEqual(
@@ -195,7 +195,7 @@ export namespace ColumnMapUtil {
         (
             {
                 [columnName in Extract<keyof A, string>] : (
-                    Column.IsAssignableTo<
+                    ColumnUtil.IsAssignableTo<
                         A[columnName],
                         B[columnName]
                     >
@@ -233,7 +233,7 @@ export namespace ColumnMapUtil {
     > = (
         {
             readonly [columnName in Extract<keyof ColumnMapT, string>] : (
-                Column.WithTableAlias<
+                ColumnUtil.WithTableAlias<
                     ColumnMapT[columnName],
                     NewTableAliasT
                 >
@@ -251,7 +251,7 @@ export namespace ColumnMapUtil {
     ) {
         const result : ColumnMap = {};
         for (let columnName in columnMap) {
-            result[columnName] = Column.withTableAlias(
+            result[columnName] = ColumnUtil.withTableAlias(
                 columnMap[columnName],
                 newTableAlias
             );
@@ -291,7 +291,7 @@ export namespace ColumnMapUtil {
         for (let columnName in columnMapA) {
             const columnA = columnMapA[columnName];
             const columnB = columnMapB[columnName];
-            if (Column.isColumn(columnB)) {
+            if (ColumnUtil.isColumn(columnB)) {
                 result[columnName] = new Column(
                     {
                         tableAlias : columnA.tableAlias,
@@ -353,7 +353,7 @@ export namespace ColumnMapUtil {
     export type ToNullable<ColumnMapT extends ColumnMap> = (
         {
             readonly [columnName in keyof ColumnMapT] : (
-                Column.ToNullable<ColumnMapT[columnName]>
+                ColumnUtil.ToNullable<ColumnMapT[columnName]>
             )
         }
     );
@@ -362,7 +362,7 @@ export namespace ColumnMapUtil {
     ) : ToNullable<ColumnMapT> {
         const result : ColumnMap = {};
         for (let columnName in columnMap) {
-            result[columnName] = Column.toNullable(columnMap[columnName]);
+            result[columnName] = ColumnUtil.toNullable(columnMap[columnName]);
         }
         return result as ToNullable<ColumnMapT>;
     }
@@ -502,14 +502,14 @@ export namespace ColumnMapUtil {
     }
 
     export type FromSingleValueSelectItem<SelectItemT extends SingleValueSelectItem> = (
-        FromColumn<Column.FromSingleValueSelectItem<SelectItemT>>
+        FromColumn<ColumnUtil.FromSingleValueSelectItem<SelectItemT>>
     );
     export function fromSingleValueSelectItem<
         SelectItemT extends SingleValueSelectItem
     > (selectItem : SelectItemT) : (
         FromSingleValueSelectItem<SelectItemT>
     ) {
-        return fromColumn(Column.fromSingleValueSelectItem(selectItem));
+        return fromColumn(ColumnUtil.fromSingleValueSelectItem(selectItem));
     }
 
     export type FromSelectItem<SelectItemT extends SelectItem> = (
@@ -522,7 +522,7 @@ export namespace ColumnMapUtil {
     export function fromSelectItem<SelectItemT extends SelectItem> (
         selectItem : SelectItemT
     ) : FromSelectItem<SelectItemT> {
-        if (Column.isColumn(selectItem)) {
+        if (ColumnUtil.isColumn(selectItem)) {
             return fromColumn(selectItem) as any;
         } else if (ExprSelectItemUtil.isExprSelectItem(selectItem)) {
             return fromSingleValueSelectItem(selectItem) as any;
@@ -541,12 +541,12 @@ export namespace ColumnMapUtil {
         {
             readonly [columnName in SelectItemArrayUtil.ToColumnNameUnion<SelectsT>] : (
                 columnName extends Extract<SelectsT[number], IColumn>["name"] ?
-                Column.FromSingleValueSelectItem<Extract<SelectsT[number], { name : columnName }>> :
+                ColumnUtil.FromSingleValueSelectItem<Extract<SelectsT[number], { name : columnName }>> :
 
                 columnName extends Extract<SelectsT[number], IExprSelectItem>["alias"] ?
-                Column.FromSingleValueSelectItem<Extract<SelectsT[number], { alias : columnName }>> :
+                ColumnUtil.FromSingleValueSelectItem<Extract<SelectsT[number], { alias : columnName }>> :
 
-                columnName extends Column.NameUnionFromColumnMap<Extract<SelectsT[number], ColumnMap>> ?
+                columnName extends ColumnUtil.Name.FromColumnMap<Extract<SelectsT[number], ColumnMap>> ?
                 ColumnMapUtil.FindWithColumnName<
                     Extract<SelectsT[number], ColumnMap>,
                     columnName

@@ -25,8 +25,8 @@ tape(__filename, (t) => {
     t.true(o.ColumnMapUtil.isColumnMap(columnMap));
     t.true(Object.keys(columnMap).length == 2);
 
-    t.true(o.Column.isColumn(columnMap.x));
-    t.true(o.Column.isColumn(columnMap.y));
+    t.true(o.ColumnUtil.isColumn(columnMap.x));
+    t.true(o.ColumnUtil.isColumn(columnMap.y));
 
     t.deepEqual(columnMap.x.tableAlias, "t");
     t.deepEqual(columnMap.y.tableAlias, "t");
@@ -70,8 +70,8 @@ tape(__filename + "-nullable", (t) => {
     t.true(o.ColumnMapUtil.isColumnMap(columnMap));
     t.true(Object.keys(columnMap).length == 2);
 
-    t.true(o.Column.isColumn(columnMap.x));
-    t.true(o.Column.isColumn(columnMap.y));
+    t.true(o.ColumnUtil.isColumn(columnMap.x));
+    t.true(o.ColumnUtil.isColumn(columnMap.y));
 
     t.deepEqual(columnMap.x.tableAlias, "t");
     t.deepEqual(columnMap.y.tableAlias, "t");

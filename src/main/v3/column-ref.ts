@@ -1,7 +1,7 @@
 import {ColumnMap, ColumnMapUtil} from "./column-map";
 import {IJoin} from "./join";
 import {JoinArrayUtil} from "./join-array";
-import {IColumn, Column} from "./column";
+import {IColumn, ColumnUtil} from "./column";
 import {IQuery} from "./query";
 import {ColumnIdentifierMapUtil} from "./column-identifier-map";
 import {ColumnIdentifier} from "./column-identifier";
@@ -91,7 +91,7 @@ export namespace ColumnRefUtil {
     }
     export type ToUnion<ColumnRefT extends ColumnRef> = (
         ColumnRefT extends ColumnRef ?
-            Column.UnionFromColumnMap<ColumnRefT[keyof ColumnRefT]> :
+            ColumnUtil.FromColumnMap<ColumnRefT[keyof ColumnRefT]> :
             never
     );
 
@@ -174,7 +174,7 @@ export namespace ColumnRefUtil {
         (
             string extends ColumnIdentifierT["name"] ?
             boolean :
-            ColumnIdentifierT["name"] extends Column.NameUnionFromColumnRef<ColumnRefT> ?
+            ColumnIdentifierT["name"] extends ColumnUtil.Name.FromColumnRef<ColumnRefT> ?
             boolean :
             false
         ) :

@@ -1,7 +1,6 @@
 import {IAliasedTable, AliasedTable} from "./aliased-table";
 import {ColumnMap, ColumnMapUtil} from "./column-map";
-import {IColumn} from "./column";
-import {ColumnArrayUtil} from "./column-array";
+import {IColumn, ColumnUtil} from "./column";
 import * as e from "enum-util";
 
 export enum JoinType {
@@ -78,8 +77,8 @@ export namespace Join {
             ColumnMapUtil.isColumnMap(raw.columns) &&
             (typeof raw.nullable == "boolean") &&
             JoinTypeUtil.isValue(raw.joinType) &&
-            ColumnArrayUtil.isColumnArray(raw.from) &&
-            ColumnArrayUtil.isColumnArray(raw.to)
+            ColumnUtil.Array.isColumnArray(raw.from) &&
+            ColumnUtil.Array.isColumnArray(raw.to)
         );
     }
     export type ToNullable<JoinT extends IJoin> = (

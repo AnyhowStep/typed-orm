@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const aliased_table_1 = require("./aliased-table");
 const column_map_1 = require("./column-map");
-const column_array_1 = require("./column-array");
+const column_1 = require("./column");
 const e = require("enum-util");
 var JoinType;
 (function (JoinType) {
@@ -39,8 +39,8 @@ exports.Join = Join;
             column_map_1.ColumnMapUtil.isColumnMap(raw.columns) &&
             (typeof raw.nullable == "boolean") &&
             exports.JoinTypeUtil.isValue(raw.joinType) &&
-            column_array_1.ColumnArrayUtil.isColumnArray(raw.from) &&
-            column_array_1.ColumnArrayUtil.isColumnArray(raw.to));
+            column_1.ColumnUtil.Array.isColumnArray(raw.from) &&
+            column_1.ColumnUtil.Array.isColumnArray(raw.to));
     }
     Join.isJoin = isJoin;
     function toNullable(join) {

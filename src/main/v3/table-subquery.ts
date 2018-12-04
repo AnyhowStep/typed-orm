@@ -2,7 +2,7 @@ import * as sd from "schema-decorator";
 import {Query} from "./query";
 import {IAliasedTable, AliasedTable} from "./aliased-table";
 import {ColumnMapUtil} from "./column-map";
-import {IColumn, Column} from "./column";
+import {IColumn, ColumnUtil} from "./column";
 import {IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 import {QueryTree} from "./query-tree";
 import {AnonymousTypedSingleValueSelectItem} from "./select-item";
@@ -87,7 +87,7 @@ export namespace TableSubquery {
                 raw.query.selects != undefined &&
                 raw.query.selects.length == 1 &&
                 (
-                    Column.isColumn(raw.query.selects[0]) ||
+                    ColumnUtil.isColumn(raw.query.selects[0]) ||
                     ExprSelectItemUtil.isExprSelectItem(raw.query.selects[0])
                 )
             )
@@ -135,7 +135,7 @@ export namespace TableSubquery {
                 raw.query.selects != undefined &&
                 raw.query.selects.length == 1 &&
                 (
-                    Column.isColumn(raw.query.selects[0]) ||
+                    ColumnUtil.isColumn(raw.query.selects[0]) ||
                     ExprSelectItemUtil.isExprSelectItem(raw.query.selects[0])
                 )
             )
@@ -153,7 +153,7 @@ export namespace TableSubquery {
         t : T
     ) : ColumnName<T> {
         const selectItem = t.query.selects[0];
-        if (Column.isColumn(selectItem)) {
+        if (ColumnUtil.isColumn(selectItem)) {
             return selectItem.name as any;
         }
         if (ExprSelectItemUtil.isExprSelectItem(selectItem)) {

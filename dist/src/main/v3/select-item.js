@@ -6,7 +6,7 @@ const expr_select_item_1 = require("./expr-select-item");
 var SelectItemUtil;
 (function (SelectItemUtil) {
     function isSingleValueSelectItem(raw) {
-        return (column_1.Column.isColumn(raw) ||
+        return (column_1.ColumnUtil.isColumn(raw) ||
             expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(raw));
     }
     SelectItemUtil.isSingleValueSelectItem = isSingleValueSelectItem;

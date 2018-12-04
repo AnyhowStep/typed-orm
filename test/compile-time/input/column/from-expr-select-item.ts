@@ -16,4 +16,4 @@ export declare const item : o.IExprSelectItem<{
     readonly tableAlias : "someTableAlias";
     readonly alias : "someAlias";
 }>;
-export const c = o.Column.fromExprSelectItem(item);
+export const c = o.ColumnUtil.fromExprSelectItem(item);

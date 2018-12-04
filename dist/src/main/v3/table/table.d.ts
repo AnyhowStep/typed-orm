@@ -7,7 +7,7 @@ import { ColumnMap } from "../column-map";
 import { CandidateKeyArrayUtil } from "../candidate-key-array";
 import { ToUnknownIfAllFieldsNever } from "../type";
 import { AssertMap } from "../assert-map";
-import { Column } from "../column";
+import { ColumnUtil } from "../column";
 import { TypeMapUtil } from "../type-map";
 export interface TableData extends AliasedTableData {
     readonly autoIncrement: undefined | string;
@@ -112,7 +112,7 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: TableT["candidateKeys"];
         readonly generated: TableT["generated"];
-        readonly isNullable: Column.NullableNameUnionFromColumnMap<ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>>>[];
+        readonly isNullable: ColumnUtil.Name.NullableFromColumnMap<ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>>>[];
         readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
         readonly mutable: TableT["mutable"];
         readonly parents: TableT["parents"];
@@ -130,7 +130,7 @@ export declare namespace Table {
         readonly id: TableT["id"];
         readonly candidateKeys: TableT["candidateKeys"];
         readonly generated: TableT["generated"];
-        readonly isNullable: Column.NullableNameUnionFromColumnMap<ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>>>[];
+        readonly isNullable: ColumnUtil.Name.NullableFromColumnMap<ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>>>[];
         readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
         readonly mutable: TableT["mutable"];
         readonly parents: TableT["parents"];
@@ -357,7 +357,7 @@ export declare namespace Table {
     function disallowDelete<TableT extends ITable>(table: TableT): (DisallowDelete<TableT>);
 }
 export declare namespace Table {
-    type PolymorphicColumnNameUnion<TableT extends ITable> = ((Column.UnionFromColumnMap<TableT["columns"]>["name"]) | (Column.UnionFromColumnMap<TableT["parents"][number]["columns"]>["name"]));
+    type PolymorphicColumnNameUnion<TableT extends ITable> = ((ColumnUtil.FromColumnMap<TableT["columns"]>["name"]) | (ColumnUtil.FromColumnMap<TableT["parents"][number]["columns"]>["name"]));
     type PolymorphicGeneratedUnion<TableT extends ITable> = ((TableT["generated"][number]) | (TableT["parents"][number]["generated"][number]));
 }
 //# sourceMappingURL=table.d.ts.map

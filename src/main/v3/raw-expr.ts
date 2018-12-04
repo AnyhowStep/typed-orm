@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import {PrimitiveExpr} from "./primitive-expr";
 import {IAnonymousTypedExpr, IExpr, Expr} from "./expr";
-import {IAnonymousTypedColumn, IColumn, Column} from "./column";
+import {IAnonymousTypedColumn, IColumn, ColumnUtil} from "./column";
 import {TableSubquery} from "./table-subquery";
 import {ColumnRefUtil} from "./column-ref";
 import {escape} from "sqlstring";
@@ -63,7 +63,7 @@ export namespace RawExprUtil {
             return rawExpr.usedRef;
         }
 
-        if (Column.isColumn(rawExpr)) {
+        if (ColumnUtil.isColumn(rawExpr)) {
             return ColumnRefUtil.fromColumn(rawExpr) as any;
         }
 
@@ -118,7 +118,7 @@ export namespace RawExprUtil {
             return rawExpr.assertDelegate;
         }
 
-        if (Column.isColumn(rawExpr)) {
+        if (ColumnUtil.isColumn(rawExpr)) {
             return rawExpr.assertDelegate;
         }
 
@@ -171,8 +171,8 @@ export namespace RawExprUtil {
             return rawExpr.queryTree;
         }
 
-        if (Column.isColumn(rawExpr)) {
-            return Column.queryTree(rawExpr);
+        if (ColumnUtil.isColumn(rawExpr)) {
+            return ColumnUtil.queryTree(rawExpr);
         }
 
         if (TableSubquery.isSingleValueOrEmpty(rawExpr)) {

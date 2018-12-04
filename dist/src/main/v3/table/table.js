@@ -122,7 +122,7 @@ exports.Table = Table;
         //https://github.com/Microsoft/TypeScript/issues/28592
         const columnMapFromFieldArray = column_map_1.ColumnMapUtil.fromFieldArray(table.alias, fields);
         const columns = column_map_1.ColumnMapUtil.intersect(tableColumns, columnMapFromFieldArray);
-        const isNullable = column_1.Column.nullableNameArrayFromColumnMap(columns);
+        const isNullable = column_1.ColumnUtil.Name.Array.nullableFromColumnMap(columns);
         const { alias, name, autoIncrement, id, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
             alias,
@@ -148,7 +148,7 @@ exports.Table = Table;
         //https://github.com/Microsoft/TypeScript/issues/28592
         const tableColumns = table.columns;
         const columns = column_map_1.ColumnMapUtil.intersect(tableColumns, column_map_1.ColumnMapUtil.fromAssertMap(table.alias, assertMap));
-        const isNullable = column_1.Column.nullableNameArrayFromColumnMap(columns);
+        const isNullable = column_1.ColumnUtil.Name.Array.nullableFromColumnMap(columns);
         const { alias, name, autoIncrement, id, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
             alias,

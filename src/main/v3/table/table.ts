@@ -7,7 +7,7 @@ import {ColumnMap} from "../column-map";
 import {CandidateKeyArrayUtil} from "../candidate-key-array";
 import {ToUnknownIfAllFieldsNever} from "../type";
 import {AssertMap} from "../assert-map";
-import {Column} from "../column";
+import {ColumnUtil} from "../column";
 import {TypeMapUtil} from "../type-map";
 import {StringArrayUtil} from "../string-array";
 
@@ -424,7 +424,7 @@ export namespace Table {
             readonly candidateKeys : TableT["candidateKeys"];
 
             readonly generated : TableT["generated"];
-            readonly isNullable : Column.NullableNameUnionFromColumnMap<
+            readonly isNullable : ColumnUtil.Name.NullableFromColumnMap<
                 ColumnMapUtil.Intersect<
                     TableT["columns"],
                     ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>
@@ -463,7 +463,7 @@ export namespace Table {
             tableColumns,
             columnMapFromFieldArray
         );
-        const isNullable = Column.nullableNameArrayFromColumnMap(columns);
+        const isNullable = ColumnUtil.Name.Array.nullableFromColumnMap(columns);
 
         const {
             alias,
@@ -524,7 +524,7 @@ export namespace Table {
             readonly candidateKeys : TableT["candidateKeys"];
 
             readonly generated : TableT["generated"];
-            readonly isNullable : Column.NullableNameUnionFromColumnMap<
+            readonly isNullable : ColumnUtil.Name.NullableFromColumnMap<
                 ColumnMapUtil.Intersect<
                     TableT["columns"],
                     ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>
@@ -559,7 +559,7 @@ export namespace Table {
             tableColumns,
             ColumnMapUtil.fromAssertMap(table.alias, assertMap)
         );
-        const isNullable = Column.nullableNameArrayFromColumnMap(columns);
+        const isNullable = ColumnUtil.Name.Array.nullableFromColumnMap(columns);
 
         const {
             alias,
@@ -1781,8 +1781,8 @@ export namespace Table {
 export namespace Table {
     //TODO Find better names
     export type PolymorphicColumnNameUnion<TableT extends ITable> = (
-        (Column.UnionFromColumnMap<TableT["columns"]>["name"]) |
-        (Column.UnionFromColumnMap<TableT["parents"][number]["columns"]>["name"])
+        (ColumnUtil.FromColumnMap<TableT["columns"]>["name"]) |
+        (ColumnUtil.FromColumnMap<TableT["parents"][number]["columns"]>["name"])
     );
     export type PolymorphicGeneratedUnion<TableT extends ITable> = (
         (TableT["generated"][number])|

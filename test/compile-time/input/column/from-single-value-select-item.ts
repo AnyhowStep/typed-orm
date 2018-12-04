@@ -16,7 +16,7 @@ export declare const item : o.IExprSelectItem<{
     readonly tableAlias : "someTableAlias";
     readonly alias : "someAlias";
 }>;
-export const c = o.Column.fromSingleValueSelectItem(item);
+export const c = o.ColumnUtil.fromSingleValueSelectItem(item);
 
 export const c2 = o.column("tableAlias", "columnName", sd.varChar(255));
-export const c3 = o.Column.fromSingleValueSelectItem(c2);
+export const c3 = o.ColumnUtil.fromSingleValueSelectItem(c2);

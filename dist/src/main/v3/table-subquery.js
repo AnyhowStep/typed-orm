@@ -19,7 +19,7 @@ var TableSubquery;
             query_1.Query.isZeroOrOneRowQuery(raw.query) &&
             (raw.query.selects != undefined &&
                 raw.query.selects.length == 1 &&
-                (column_1.Column.isColumn(raw.query.selects[0]) ||
+                (column_1.ColumnUtil.isColumn(raw.query.selects[0]) ||
                     expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(raw.query.selects[0]))));
     }
     TableSubquery.isSingleValueOrEmpty = isSingleValueOrEmpty;
@@ -29,13 +29,13 @@ var TableSubquery;
             query_1.Query.isOneRowQuery(raw.query) &&
             (raw.query.selects != undefined &&
                 raw.query.selects.length == 1 &&
-                (column_1.Column.isColumn(raw.query.selects[0]) ||
+                (column_1.ColumnUtil.isColumn(raw.query.selects[0]) ||
                     expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(raw.query.selects[0]))));
     }
     TableSubquery.isSingleValue = isSingleValue;
     function columnName(t) {
         const selectItem = t.query.selects[0];
-        if (column_1.Column.isColumn(selectItem)) {
+        if (column_1.ColumnUtil.isColumn(selectItem)) {
             return selectItem.name;
         }
         if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(selectItem)) {

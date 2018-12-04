@@ -7,7 +7,7 @@ var TypeMapUtil;
         const fields = [];
         for (let columnName in columnMap) {
             /*
-                It's possible that this is not an IColumn.
+                It's possible that this is not an IColumnUtil.
                 But, in general, if we pass in candidateKey and columnMap
                 without any outside hack-ery, this should be correct.
             */
@@ -28,7 +28,7 @@ var TypeMapUtil;
         const fields = [];
         for (let columnName in columnMap) {
             /*
-                It's possible that this is not an IColumn.
+                It's possible that this is not an IColumnUtil.
                 But, in general, if we pass in candidateKey and columnMap
                 without any outside hack-ery, this should be correct.
             */
