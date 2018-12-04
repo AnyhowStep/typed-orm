@@ -337,30 +337,18 @@ export namespace ColumnMapUtil {
             ColumnMapA, ColumnMapB
         > = leftIntersect(columnMapA, columnMapB);
 
-        const columnNames : Exclude<
-            Extract<keyof ColumnMapB, string>,
-            keyof ColumnMapA
-        >[] = Object.keys(columnMapB)
-            .filter(columnName =>
-                !columnMapA.hasOwnProperty(columnName)
-            ) as any;
-        const right = columnNames.reduce<{
-            [columnName in Exclude<
-                Extract<keyof ColumnMapB, string>,
-                keyof ColumnMapA
-            >] : (
-                ColumnMapB[columnName]
-            )
-        }>((memo, columnName) => {
-            memo[columnName] = columnMapB[columnName];
-            return memo;
-        }, {} as any);
+        const right : ColumnMap = {};
+        for (let columnName in columnMapB) {
+            if (columnMapA.hasOwnProperty(columnName)) {
+                continue;
+            }
+            right[columnName] = columnMapB[columnName];
+        }
 
-        return Object.assign(
-            {},
-            left,
-            right,
-        );
+        return {
+            ...left,
+            ...right,
+        } as Intersect<ColumnMapA, ColumnMapB>;
     }
     export type ToNullable<ColumnMapT extends ColumnMap> = (
         {
@@ -372,14 +360,11 @@ export namespace ColumnMapUtil {
     export function toNullable<ColumnMapT extends ColumnMap> (
         columnMap : ColumnMapT
     ) : ToNullable<ColumnMapT> {
-        return Object.keys(columnMap).reduce<{
-            [columnName in keyof ColumnMapT] : (
-                Column.ToNullable<ColumnMapT[columnName]>
-            )
-        }>((memo, columnName) => {
-            memo[columnName] = Column.toNullable(columnMap[columnName]);
-            return memo;
-        }, {} as any);
+        const result : ColumnMap = {};
+        for (let columnName in columnMap) {
+            result[columnName] = Column.toNullable(columnMap[columnName]);
+        }
+        return result as ToNullable<ColumnMapT>;
     }
 }
 //Constructors

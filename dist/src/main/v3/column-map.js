@@ -93,20 +93,25 @@ var ColumnMapUtil;
     ;
     function intersect(columnMapA, columnMapB) {
         const left = leftIntersect(columnMapA, columnMapB);
-        const columnNames = Object.keys(columnMapB)
-            .filter(columnName => !columnMapA.hasOwnProperty(columnName));
-        const right = columnNames.reduce((memo, columnName) => {
-            memo[columnName] = columnMapB[columnName];
-            return memo;
-        }, {});
-        return Object.assign({}, left, right);
+        const right = {};
+        for (let columnName in columnMapB) {
+            if (columnMapA.hasOwnProperty(columnName)) {
+                continue;
+            }
+            right[columnName] = columnMapB[columnName];
+        }
+        return {
+            ...left,
+            ...right,
+        };
     }
     ColumnMapUtil.intersect = intersect;
     function toNullable(columnMap) {
-        return Object.keys(columnMap).reduce((memo, columnName) => {
-            memo[columnName] = column_1.Column.toNullable(columnMap[columnName]);
-            return memo;
-        }, {});
+        const result = {};
+        for (let columnName in columnMap) {
+            result[columnName] = column_1.Column.toNullable(columnMap[columnName]);
+        }
+        return result;
     }
     ColumnMapUtil.toNullable = toNullable;
 })(ColumnMapUtil = exports.ColumnMapUtil || (exports.ColumnMapUtil = {}));
