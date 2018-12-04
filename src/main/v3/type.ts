@@ -15,3 +15,6 @@ export type ToUnknownIfAllFieldsNever<T> = (
     unknown :
     T[keyof T]
 );
+export type Writable<T> = {
+    -readonly [k in keyof T] : T[k]
+};
