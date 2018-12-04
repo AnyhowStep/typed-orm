@@ -12,7 +12,7 @@ tape(__filename, (t) => {
         }
     );
 
-    const arr = o.ColumnIdentifierArrayUtil.fromColumnMap(columnMap);
+    const arr = o.ColumnIdentifierUtil.fromColumnMap(columnMap);
     t.deepEqual(arr.length, 3);
 
     t.deepEqual(
@@ -55,7 +55,7 @@ tape(__filename + "-empty", (t) => {
         {}
     );
 
-    const arr = o.ColumnIdentifierArrayUtil.fromColumnMap(columnMap);
+    const arr = o.ColumnIdentifierUtil.fromColumnMap(columnMap);
     t.deepEqual(arr.length, 0);
 
     t.end();
@@ -79,7 +79,7 @@ tape(__filename + "-mixed", (t) => {
         )
     );
 
-    const arr = o.ColumnIdentifierArrayUtil.fromColumnMap(columnMap);
+    const arr = o.ColumnIdentifierUtil.fromColumnMap(columnMap);
     t.deepEqual(arr.length, 4);
 
     t.deepEqual(

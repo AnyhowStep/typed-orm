@@ -1184,22 +1184,22 @@ export namespace Query {
                             ReturnType<SelectDelegateT>[index] extends SelectItem ?
                             (
                                 Extract<
-                                    ColumnIdentifierUtil.UnionFromSelectItem<
+                                    ColumnIdentifierUtil.FromSelectItem<
                                         ReturnType<SelectDelegateT>[index]
                                     >,
-                                    ColumnIdentifierUtil.UnionFromSelectItemArray<
-                                        QueryT["selects"]
+                                    ColumnIdentifierUtil.FromSelectItem<
+                                        QueryT["selects"][number]
                                     >
                                 > extends never ?
                                 never :
                                 [
                                     "Duplicate columns in SELECT clause; consider aliasing",
                                     Extract<
-                                        ColumnIdentifierUtil.UnionFromSelectItem<
+                                        ColumnIdentifierUtil.FromSelectItem<
                                             ReturnType<SelectDelegateT>[index]
                                         >,
-                                        ColumnIdentifierUtil.UnionFromSelectItemArray<
-                                            QueryT["selects"]
+                                        ColumnIdentifierUtil.FromSelectItem<
+                                            QueryT["selects"][number]
                                         >
                                     >
                                 ]|void
@@ -1213,10 +1213,10 @@ export namespace Query {
                             ReturnType<SelectDelegateT>[index] extends SelectItem ?
                             (
                                 Extract<
-                                    ColumnIdentifierUtil.UnionFromSelectItem<
+                                    ColumnIdentifierUtil.FromSelectItem<
                                         ReturnType<SelectDelegateT>[index]
                                     >,
-                                    ColumnIdentifierUtil.UnionFromSelectItemArrayIgnoreIndex<
+                                    ColumnIdentifierUtil.FromSelectItemArrayIgnoreIndex<
                                         ReturnType<SelectDelegateT>,
                                         index
                                     >
@@ -1225,10 +1225,10 @@ export namespace Query {
                                 [
                                     "Duplicate columns in SELECT clause",
                                     Extract<
-                                        ColumnIdentifierUtil.UnionFromSelectItem<
+                                        ColumnIdentifierUtil.FromSelectItem<
                                             ReturnType<SelectDelegateT>[index]
                                         >,
-                                        ColumnIdentifierUtil.UnionFromSelectItemArrayIgnoreIndex<
+                                        ColumnIdentifierUtil.FromSelectItemArrayIgnoreIndex<
                                             ReturnType<SelectDelegateT>,
                                             index
                                         >

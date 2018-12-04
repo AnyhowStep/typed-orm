@@ -10,7 +10,6 @@ __export(require("./table"));
 __export(require("./assert-map"));
 __export(require("./expr-select-item"));
 __export(require("./column-array"));
-__export(require("./column-identifier-array"));
 __export(require("./column-identifier-map"));
 __export(require("./column-identifier"));
 __export(require("./column-ref"));

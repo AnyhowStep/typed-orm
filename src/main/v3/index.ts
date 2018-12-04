@@ -6,7 +6,6 @@ export * from "./table";
 export * from "./assert-map";
 export * from "./expr-select-item";
 export * from "./column-array";
-export * from "./column-identifier-array";
 export * from "./column-identifier-map";
 export * from "./column-identifier";
 export * from "./column-ref";

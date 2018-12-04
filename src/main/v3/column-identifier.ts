@@ -1,7 +1,7 @@
-import {IColumn} from "./column";
-import {ColumnMap} from "./column-map";
+import {IColumn, Column} from "./column";
+import {ColumnMap, ColumnMapUtil} from "./column-map";
 import {SelectItem} from "./select-item";
-import {IExprSelectItem} from "./expr-select-item";
+import {IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 
 export interface ColumnIdentifier {
     readonly tableAlias : string;
@@ -27,43 +27,73 @@ export namespace ColumnIdentifierUtil {
             tableAlias : column.tableAlias,
             name : column.name,
         };
-        return result as any;
+        return result as FromColumn<ColumnT>;
     }
-
-    export type UnionFromColumnMap<ColumnMapT extends ColumnMap> = (
-        FromColumn<ColumnMapT[Extract<keyof ColumnMapT, string>]>
-    );
-    export type UnionFromSelectItem<SelectItemT extends SelectItem> = (
-        SelectItemT extends IColumn ?
-        ColumnIdentifierUtil.FromColumn<SelectItemT> :
-        SelectItemT extends IExprSelectItem ?
+    export type FromExprSelectItem<ExprSelectItemT extends IExprSelectItem> = (
+        ExprSelectItemT extends IExprSelectItem ?
         {
-            readonly tableAlias : SelectItemT["tableAlias"],
-            readonly name : SelectItemT["alias"],
+            readonly tableAlias : ExprSelectItemT["tableAlias"],
+            readonly name : ExprSelectItemT["alias"],
         } :
-        SelectItemT extends ColumnMap ?
-        UnionFromColumnMap<SelectItemT> :
         never
     );
-
-
-    export type UnionFromSelectItemArray<SelectsT extends SelectItem[]> = (
-        {
-            [index in keyof SelectsT] : (
-                SelectsT[index] extends SelectItem ?
-                UnionFromSelectItem<SelectsT[index]> :
-                never
-            )
-        }[keyof SelectsT]
+    export function fromExprSelectItem<ExprSelectItemT extends IExprSelectItem> (
+        exprSelectItem : ExprSelectItemT
+    ) : FromExprSelectItem<ExprSelectItemT> {
+        const result : {
+            readonly tableAlias : ExprSelectItemT["tableAlias"],
+            readonly name : ExprSelectItemT["alias"],
+        } = {
+            tableAlias : exprSelectItem.tableAlias,
+            name : exprSelectItem.alias,
+        };
+        return result as FromExprSelectItem<ExprSelectItemT>;
+    }
+    export type FromColumnMap<ColumnMapT extends ColumnMap> = (
+        ColumnMapT extends ColumnMap ?
+        FromColumn<ColumnMapT[Extract<keyof ColumnMapT, string>]> :
+        never
     );
-    export type UnionFromSelectItemArrayIgnoreIndex<
+    export function fromColumnMap<ColumnMapT extends ColumnMap> (
+        columnMap : ColumnMapT
+    ) : FromColumnMap<ColumnMapT>[] {
+        const result : ColumnIdentifier[] = [];
+        for (let columnName in columnMap) {
+            result.push(fromColumn(columnMap[columnName]));
+        }
+        return result as FromColumnMap<ColumnMapT>[];
+    }
+
+    export type FromSelectItem<SelectItemT extends SelectItem> = (
+        SelectItemT extends SelectItem ?
+        (
+            FromColumn<Extract<SelectItemT, IColumn>> |
+            FromExprSelectItem<Extract<SelectItemT, IExprSelectItem>> |
+            FromColumnMap<Extract<SelectItemT, ColumnMap>>
+        ) :
+        never
+    );
+    export function fromSelectItem<SelectItemT extends SelectItem> (
+        selectItem : SelectItemT
+    ) : FromSelectItem<SelectItemT>[] {
+        if (Column.isColumn(selectItem)) {
+            return [fromColumn(selectItem)] as any;
+        } else if (ExprSelectItemUtil.isExprSelectItem(selectItem)) {
+            return [fromExprSelectItem(selectItem)] as any;
+        } else if (ColumnMapUtil.isColumnMap(selectItem)) {
+            return fromColumnMap(selectItem) as any;
+        } else {
+            throw new Error(`Unknown select item`);
+        }
+    }
+    export type FromSelectItemArrayIgnoreIndex<
         SelectsT extends SelectItem[],
         IgnoreIndexT extends Extract<keyof SelectsT, string>
     > = (
         {
             [index in Exclude<Extract<keyof SelectsT, string>, IgnoreIndexT>] : (
                 SelectsT[index] extends SelectItem ?
-                UnionFromSelectItem<SelectsT[index]> :
+                FromSelectItem<SelectsT[index]> :
                 never
             )
         }[Exclude<Extract<keyof SelectsT, string>, IgnoreIndexT>]
