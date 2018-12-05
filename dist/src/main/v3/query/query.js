@@ -26,6 +26,9 @@ class Query {
     innerJoinUsing(aliasedTable, usingDelegate) {
         return QueryUtil.innerJoinUsing(this, aliasedTable, usingDelegate);
     }
+    leftJoinUsing(aliasedTable, usingDelegate) {
+        return QueryUtil.leftJoinUsing(this, aliasedTable, usingDelegate);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

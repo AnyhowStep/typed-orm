@@ -1,11 +1,11 @@
 import {AfterFromClause, AssertUniqueJoinTarget} from "../predicate";
 import {IAliasedTable} from "../../../aliased-table";
 import {JoinUsingDelegate, joinUsingColumns, JoinUsingColumnUnion} from "./join-using-delegate";
-import {InnerJoin, innerJoin} from "./inner-join";
+import {LeftJoin, leftJoin} from "./left-join";
 import {ColumnUtil} from "../../../column";
 import {ColumnRefUtil} from "../../../column-ref";
 
-export function innerJoinUsing<
+export function leftJoinUsing<
     QueryT extends AfterFromClause,
     AliasedTableT extends IAliasedTable,
     UsingDelegateT extends JoinUsingDelegate<QueryT["joins"], AliasedTableT>
@@ -14,7 +14,7 @@ export function innerJoinUsing<
     aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,
     usingDelegate : UsingDelegateT
 ) : (
-    InnerJoin<QueryT, AliasedTableT>
+    LeftJoin<QueryT, AliasedTableT>
 ) {
     const usingRef : ColumnRefUtil.FromColumnArray<
         JoinUsingColumnUnion<
@@ -28,7 +28,7 @@ export function innerJoinUsing<
         )
     );
     const using = usingDelegate(ColumnRefUtil.toConvenient(usingRef));
-    return innerJoin<
+    return leftJoin<
         QueryT,
         AliasedTableT,
         () => ReturnType<UsingDelegateT>

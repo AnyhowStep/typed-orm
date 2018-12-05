@@ -7,6 +7,7 @@ __export(require("./from"));
 __export(require("./inner-join-using"));
 __export(require("./inner-join"));
 __export(require("./join-using-delegate"));
+__export(require("./left-join-using"));
 __export(require("./left-join"));
 __export(require("./right-join"));
 __export(require("./select"));
