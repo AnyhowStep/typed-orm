@@ -13,4 +13,10 @@ function isColumnArray(raw) {
     return true;
 }
 exports.isColumnArray = isColumnArray;
+function assertIsColumnArray(raw) {
+    if (!isColumnArray(raw)) {
+        throw new Error(`Expected a column array`);
+    }
+}
+exports.assertIsColumnArray = assertIsColumnArray;
 //# sourceMappingURL=predicate.js.map

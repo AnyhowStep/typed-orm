@@ -1,7 +1,5 @@
 export namespace StringUtil {
     export type IsOneLiteralImpl<S extends string> = (
-        S extends never ?
-        string :
         string extends S ?
             string :
             {
@@ -13,7 +11,11 @@ export namespace StringUtil {
     //    "Multiple"|"String"|"Literals"|string
     export type IsOneLiteral<S extends string> = (
         IsOneLiteralImpl<S> extends never ?
-        true :
+        (
+            S extends never ?
+            false :
+            true
+        ) :
         false
     );
     /*

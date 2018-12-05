@@ -12,3 +12,9 @@ export function isColumnArray (raw : any) : raw is IColumn[] {
     }
     return true;
 }
+
+export function assertIsColumnArray (raw : any) {
+    if (!isColumnArray(raw)) {
+        throw new Error(`Expected a column array`);
+    }
+}

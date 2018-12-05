@@ -19,7 +19,7 @@ const joined1 = o.table(
 )
 
 export const query = o.QueryUtil.newInstance()
-    .innerJoinUsing(
+    .leftJoinUsing(
         joined1,
         () => [table.columns.y]
     );

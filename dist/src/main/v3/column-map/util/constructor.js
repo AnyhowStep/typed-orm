@@ -71,4 +71,12 @@ function fromSelectItemArray(selects) {
     return Object.assign({}, ...columnMaps);
 }
 exports.fromSelectItemArray = fromSelectItemArray;
+function fromColumnArray(columns) {
+    const result = {};
+    for (let column of columns) {
+        result[column.name] = column;
+    }
+    return result;
+}
+exports.fromColumnArray = fromColumnArray;
 //# sourceMappingURL=constructor.js.map

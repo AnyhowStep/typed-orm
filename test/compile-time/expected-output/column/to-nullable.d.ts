@@ -26,3 +26,12 @@ export declare const c4: o.Column<{
     readonly name: "columnName";
     readonly assertDelegate: sd.AssertDelegate<string | null>;
 }>;
+export declare const c6: o.Column<{
+    readonly tableAlias: "tableAliasA";
+    readonly name: "nameA";
+    readonly assertDelegate: sd.AssertDelegate<number | null>;
+}> | o.Column<{
+    readonly tableAlias: "tableAliasA";
+    readonly name: "nameA";
+    readonly assertDelegate: sd.AssertDelegate<string | null>;
+}>;

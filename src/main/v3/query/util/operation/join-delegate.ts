@@ -1,10 +1,11 @@
 import * as sd from "schema-decorator";
-import {AfterFromClause} from "../predicate";
+import {AfterFromClause, AssertUniqueJoinTarget, assertUniqueJoinTarget} from "../predicate";
 import {IJoin} from "../../../join";
 import {ColumnRefUtil} from "../../../column-ref";
 import {NonEmptyTuple} from "../../../tuple";
 import {IColumn, ColumnUtil} from "../../../column";
 import {IAliasedTable} from "../../../aliased-table";
+import {ColumnMapUtil} from "../../../column-map";
 
 export type JoinFromDelegate<JoinsT extends IJoin[]> = (
     (columns : ColumnRefUtil.ToConvenient<
@@ -125,3 +126,51 @@ export type JoinToDelegate<
         ColumnUtil.FromColumnMap<AliasedTableT["columns"]>[]
     )
 );
+
+export function invokeJoinDelegate<
+    QueryT extends AfterFromClause,
+    AliasedTableT extends IAliasedTable,
+    FromDelegateT extends JoinFromDelegate<QueryT["joins"]>
+> (
+    query : QueryT,
+    aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,
+    fromDelegate : FromDelegateT,
+    toDelegate : JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>
+) : (
+    {
+        from : ReturnType<FromDelegateT>,
+        to : ReturnType<JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>>
+    }
+) {
+    if (query.joins == undefined) {
+        throw new Error(`Cannot JOIN before FROM clause`);
+    }
+    assertUniqueJoinTarget(query, aliasedTable);
+
+    const joins : QueryT["joins"] = query.joins;
+    const fromRef = ColumnRefUtil.fromJoinArray(joins);
+    const from = fromDelegate(
+        ColumnRefUtil.toConvenient(fromRef)
+    );
+    ColumnUtil.Array.assertIsColumnArray(from);
+    const to = toDelegate(aliasedTable.columns);
+    ColumnUtil.Array.assertIsColumnArray(to);
+    if (from.length != to.length) {
+        throw new Error(`Expected JOIN to have ${from.length} target columns`);
+    }
+    if (from.length == 0) {
+        throw new Error(`Expected JOIN to have at least one column for ON clause`);
+    }
+    ColumnRefUtil.assertHasColumnIdentifiers(
+        fromRef,
+        from
+    );
+    ColumnMapUtil.assertHasColumnIdentifiers(
+        aliasedTable.columns,
+        to
+    );
+    return {
+        from : from as ReturnType<FromDelegateT>,
+        to : to,
+    };
+}

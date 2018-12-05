@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./from"));
 __export(require("./inner-join-using"));
 __export(require("./inner-join"));
+__export(require("./join-delegate"));
 __export(require("./join-using-delegate"));
 __export(require("./left-join-using"));
 __export(require("./left-join"));

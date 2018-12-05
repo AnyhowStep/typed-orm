@@ -9,6 +9,7 @@ import {IColumn, Column} from "../column";
     because the row may be missing.
 */
 export type ToNullable<ColumnT extends IColumn> = (
+    ColumnT extends IColumn ?
     Column<{
         readonly tableAlias : ColumnT["tableAlias"],
         readonly name : ColumnT["name"],
@@ -16,7 +17,8 @@ export type ToNullable<ColumnT extends IColumn> = (
             null|
             ReturnType<ColumnT["assertDelegate"]>
         >,
-    }>
+    }> :
+    never
 );
 export function toNullable<ColumnT extends IColumn> (
     {
@@ -37,7 +39,7 @@ export function toNullable<ColumnT extends IColumn> (
         },
         __subTableName,
         __isInSelectClause
-    );
+    ) as IColumn as ToNullable<ColumnT>;
 }
 
 /*
@@ -99,11 +101,13 @@ export type WithType<
     ColumnT extends IColumn,
     NewAssertDelegateT extends sd.AnyAssertFunc
 > = (
+    ColumnT extends IColumn ?
     Column<{
         readonly tableAlias : ColumnT["tableAlias"],
         readonly name : ColumnT["name"],
         readonly assertDelegate : sd.ToAssertDelegate<NewAssertDelegateT>,
-    }>
+    }> :
+    never
 );
 export function withType<
     ColumnT extends IColumn,
@@ -127,5 +131,5 @@ export function withType<
         },
         __subTableName,
         __isInSelectClause
-    );
+    ) as WithType<ColumnT, NewAssertFuncT>;
 }

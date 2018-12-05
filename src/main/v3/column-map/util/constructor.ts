@@ -197,3 +197,12 @@ export type FromColumnArray<ColumnsT extends IColumn[]> = (
         )
     }
 );
+export function fromColumnArray<ColumnsT extends IColumn[]> (
+    columns : ColumnsT
+) : FromColumnArray<ColumnsT> {
+    const result : Writable<ColumnMap> = {};
+    for (let column of columns) {
+        result[column.name] = column;
+    }
+    return result as FromColumnArray<ColumnsT>;
+}

@@ -1,10 +1,8 @@
 import {Query} from "../../query";
-import {AfterFromClause, AssertUniqueJoinTarget, assertUniqueJoinTarget} from "../predicate";
-import {JoinFromDelegate, JoinToDelegate} from "./join-delegate";
+import {AfterFromClause, AssertUniqueJoinTarget} from "../predicate";
+import {JoinFromDelegate, JoinToDelegate, invokeJoinDelegate} from "./join-delegate";
 import {IAliasedTable} from "../../../aliased-table";
 import {Join, JoinType} from "../../../join";
-import {ColumnRefUtil} from "../../../column-ref";
-import {ColumnMapUtil} from "../../../column-map";
 
 export type LeftJoin<
     QueryT extends AfterFromClause,
@@ -38,30 +36,11 @@ export function leftJoin<
 ) : (
     LeftJoin<QueryT, AliasedTableT>
 ) {
-    if (query.joins == undefined) {
-        throw new Error(`Cannot JOIN before FROM clause`);
-    }
-    assertUniqueJoinTarget(query, aliasedTable);
-
-    const joins : QueryT["joins"] = query.joins;
-    const fromRef = ColumnRefUtil.fromJoinArray(joins);
-    const from = fromDelegate(
-        ColumnRefUtil.toConvenient(fromRef)
-    );
-    const to = toDelegate(aliasedTable.columns);
-    if (from.length != to.length) {
-        throw new Error(`Expected JOIN to have ${from.length} target columns`);
-    }
-    if (from.length == 0) {
-        throw new Error(`Expected JOIN to have at least one column for ON clause`);
-    }
-    ColumnRefUtil.assertHasColumnIdentifiers(
-        fromRef,
-        from
-    );
-    ColumnMapUtil.assertHasColumnIdentifiers(
-        aliasedTable.columns,
-        to
+    const {from, to} = invokeJoinDelegate(
+        query,
+        aliasedTable,
+        fromDelegate,
+        toDelegate
     );
 
     const {
