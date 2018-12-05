@@ -95,11 +95,6 @@ export declare const fromSelects: {
             __canAccept: number;
         };
     }>;
-    readonly someAlias: o.Column<{
-        readonly tableAlias: "someTableAlias";
-        readonly name: "someAlias";
-        readonly assertDelegate: sd.AssertDelegate<Date>;
-    }>;
     readonly x: o.Column<{
         tableAlias: "someTable";
         name: "x";
@@ -155,5 +150,10 @@ export declare const fromSelects: {
             __accepts: Buffer;
             __canAccept: Buffer;
         };
+    }>;
+    readonly someAlias: o.Column<{
+        readonly tableAlias: "someTableAlias";
+        readonly name: "someAlias";
+        readonly assertDelegate: sd.AssertDelegate<Date>;
     }>;
 };

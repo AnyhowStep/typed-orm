@@ -35,5 +35,6 @@ export declare namespace ColumnRefUtil {
             tableAlias: tableAlias;
         }>[]>);
     });
+    function fromColumnArray<ColumnsT extends IColumn[]>(columns: ColumnsT): FromColumnArray<ColumnsT>;
 }
 //# sourceMappingURL=column-ref.d.ts.map

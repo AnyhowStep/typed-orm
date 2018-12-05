@@ -18,7 +18,7 @@ const joined1 = o.table(
     }
 )
 
-export const query = o.Query.newInstance()
+export const query = o.QueryUtil.newInstance()
     .rightJoin(
         joined1,
         () => [table.columns.y],

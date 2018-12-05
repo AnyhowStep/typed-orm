@@ -27,7 +27,7 @@ tape(__filename, (t) => {
             t => [t.c]
         );
 
-    t.true(o.Query.isQuery(query));
+    t.true(o.QueryUtil.isQuery(query));
 
     t.deepEqual(query.joins.length, 2);
 
@@ -109,7 +109,7 @@ tape(__filename, (t) => {
             t => [t.f, t.d, t.e]
         );
 
-    t.true(o.Query.isQuery(query));
+    t.true(o.QueryUtil.isQuery(query));
 
     t.deepEqual(query.joins.length, 4);
 

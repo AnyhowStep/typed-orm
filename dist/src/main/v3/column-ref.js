@@ -88,5 +88,18 @@ var ColumnRefUtil;
         }
     }
     ColumnRefUtil.assertHasColumnIdentifiers = assertHasColumnIdentifiers;
+    function fromColumnArray(columns) {
+        const result = {};
+        for (let column of columns) {
+            let columnMap = result[column.tableAlias];
+            if (columnMap == undefined) {
+                columnMap = {};
+                result[column.tableAlias] = columnMap;
+            }
+            columnMap[column.name] = column;
+        }
+        return result;
+    }
+    ColumnRefUtil.fromColumnArray = fromColumnArray;
 })(ColumnRefUtil = exports.ColumnRefUtil || (exports.ColumnRefUtil = {}));
 //# sourceMappingURL=column-ref.js.map

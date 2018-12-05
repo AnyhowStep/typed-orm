@@ -1,5 +1,5 @@
 import * as sd from "schema-decorator";
-import {Query} from "./query";
+import {QueryUtil} from "./query";
 import {IAliasedTable, AliasedTable} from "./aliased-table";
 import {ColumnMapUtil} from "./column-map";
 import {IColumn, ColumnUtil} from "./column";
@@ -8,7 +8,7 @@ import {QueryTree} from "./query-tree";
 import {AnonymousTypedSingleValueSelectItem} from "./select-item";
 
 export interface TableSubqueryData {
-    readonly query : Query.AfterSelectClause;
+    readonly query : QueryUtil.AfterSelectClause;
     readonly alias : string;
 }
 export interface ITableSubquery<
@@ -52,8 +52,8 @@ export namespace TableSubquery {
     export type SingleValueOrEmpty<TypeT> = (
         ITableSubquery<{
             readonly query : (
-                Query.AfterSelectClause &
-                Query.ZeroOrOneRowQuery &
+                QueryUtil.AfterSelectClause &
+                QueryUtil.ZeroOrOneRowQuery &
                 {
                     /*
                         Technically, one should be able to infinitely
@@ -81,8 +81,8 @@ export namespace TableSubquery {
     export function isSingleValueOrEmpty (raw : any) : raw is SingleValueOrEmpty<any> {
         return (
             isTableSubquery(raw) &&
-            Query.isAfterSelectClause(raw.query) &&
-            Query.isZeroOrOneRowQuery(raw.query) &&
+            QueryUtil.isAfterSelectClause(raw.query) &&
+            QueryUtil.isZeroOrOneRowQuery(raw.query) &&
             (
                 raw.query.selects != undefined &&
                 raw.query.selects.length == 1 &&
@@ -100,8 +100,8 @@ export namespace TableSubquery {
     export type SingleValue<TypeT> = (
         ITableSubquery<{
             readonly query : (
-                Query.AfterSelectClause &
-                Query.OneRowQuery &
+                QueryUtil.AfterSelectClause &
+                QueryUtil.OneRowQuery &
                 {
                     /*
                         Technically, one should be able to infinitely
@@ -129,8 +129,8 @@ export namespace TableSubquery {
     export function isSingleValue (raw : any) : raw is SingleValue<any> {
         return (
             isTableSubquery(raw) &&
-            Query.isAfterSelectClause(raw.query) &&
-            Query.isOneRowQuery(raw.query) &&
+            QueryUtil.isAfterSelectClause(raw.query) &&
+            QueryUtil.isOneRowQuery(raw.query) &&
             (
                 raw.query.selects != undefined &&
                 raw.query.selects.length == 1 &&

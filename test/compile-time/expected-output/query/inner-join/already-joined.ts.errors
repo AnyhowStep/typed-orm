@@ -5,7 +5,7 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly alias: \"joined1\"; readonly name: \"joined1\"; readonly columns: { readonly a: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column\").Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: import(\"/h...' is not assignable to type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly alias: \"joined1\"; readonly name: \"joined1\"; readonly columns: { readonly a: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column\").Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: import(\"/h...'. Two different types with this name exist, but they are unrelated.",
+        "messageText": "Type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly alias: \"joined1\"; readonly name: \"joined1\"; readonly columns: { readonly a: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column/column\").Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: imp...' is not assignable to type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly alias: \"joined1\"; readonly name: \"joined1\"; readonly columns: { readonly a: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column/column\").Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: imp...'. Two different types with this name exist, but they are unrelated.",
         "category": 1,
         "code": 2719,
         "next": {

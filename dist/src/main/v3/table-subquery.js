@@ -15,8 +15,8 @@ var TableSubquery;
     TableSubquery.isTableSubquery = isTableSubquery;
     function isSingleValueOrEmpty(raw) {
         return (isTableSubquery(raw) &&
-            query_1.Query.isAfterSelectClause(raw.query) &&
-            query_1.Query.isZeroOrOneRowQuery(raw.query) &&
+            query_1.QueryUtil.isAfterSelectClause(raw.query) &&
+            query_1.QueryUtil.isZeroOrOneRowQuery(raw.query) &&
             (raw.query.selects != undefined &&
                 raw.query.selects.length == 1 &&
                 (column_1.ColumnUtil.isColumn(raw.query.selects[0]) ||
@@ -25,8 +25,8 @@ var TableSubquery;
     TableSubquery.isSingleValueOrEmpty = isSingleValueOrEmpty;
     function isSingleValue(raw) {
         return (isTableSubquery(raw) &&
-            query_1.Query.isAfterSelectClause(raw.query) &&
-            query_1.Query.isOneRowQuery(raw.query) &&
+            query_1.QueryUtil.isAfterSelectClause(raw.query) &&
+            query_1.QueryUtil.isOneRowQuery(raw.query) &&
             (raw.query.selects != undefined &&
                 raw.query.selects.length == 1 &&
                 (column_1.ColumnUtil.isColumn(raw.query.selects[0]) ||

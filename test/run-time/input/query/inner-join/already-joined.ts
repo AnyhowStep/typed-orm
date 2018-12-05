@@ -29,7 +29,7 @@ tape(__filename, (t) => {
             )
             .innerJoin(
                 joined1 as any,
-                c => [c.y],
+                c => [c.table.y],
                 t => [t.c]
             );
     });

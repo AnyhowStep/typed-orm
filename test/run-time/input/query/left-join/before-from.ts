@@ -21,7 +21,7 @@ tape(__filename, (t) => {
     )
 
     t.throws(() => {
-        (o.Query.newInstance() as any)
+        (o.QueryUtil.newInstance() as any)
             .leftJoin(
                 joined1,
                 () => [table.columns.y],

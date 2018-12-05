@@ -56,7 +56,7 @@ tape(__filename, (t) => {
 
     const formatter = new o.SqlFormatter();
     const sql = o.QueryTreeUtil.toSql(
-        o.Query.queryTreeJoins(query)
+        o.QueryUtil.queryTreeJoins(query)
     );
     const actual = formatter.format(sql);
     t.deepEqual(

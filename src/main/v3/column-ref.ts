@@ -5,6 +5,7 @@ import {IColumn, ColumnUtil} from "./column";
 import {IQuery} from "./query";
 import {ColumnIdentifierMapUtil} from "./column-identifier-map";
 import {ColumnIdentifier} from "./column-identifier";
+import { Writable } from "./type";
 
 export type ColumnRef = {
     readonly [tableAlias : string] : ColumnMap
@@ -219,4 +220,18 @@ export namespace ColumnRefUtil {
             )
         }
     );
+    export function fromColumnArray<ColumnsT extends IColumn[]> (
+        columns : ColumnsT
+    ) : FromColumnArray<ColumnsT> {
+        const result : Writable<ColumnRef> = {};
+        for (let column of columns) {
+            let columnMap : undefined|Writable<ColumnMap> = result[column.tableAlias];
+            if (columnMap == undefined) {
+                columnMap = {};
+                result[column.tableAlias] = columnMap;
+            }
+            columnMap[column.name] = column;
+        }
+        return result as FromColumnArray<ColumnsT>;
+    }
 }
