@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "outDir": "./dist",
         "sourceMap": true,
 
 
@@ -34,5 +35,6 @@
 
     "include": [
         "./runner.ts",
+        "./input/**/*"
     ]
 }

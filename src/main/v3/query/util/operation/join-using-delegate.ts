@@ -1,7 +1,6 @@
 import {IAliasedTable} from "../../../aliased-table";
 import {IJoin} from "../../../join";
 import {ColumnRefUtil} from "../../../column-ref";
-import {ColumnMapUtil} from "../../../column-map";
 import {IColumn, ColumnUtil} from "../../../column";
 import {NonEmptyTuple} from "../../../tuple";
 
@@ -29,10 +28,9 @@ export function joinUsingColumns<
 ) : JoinUsingColumnUnion<ColumnsT[number], AliasedTableT>[] {
     //During run-time, we cannot actually check if the assertDelegate
     //of a column matches...
-    return columns.filter(column => ColumnMapUtil.hasColumnIdentifier(
-        aliasedTable.columns,
-        column
-    )) as any[];
+    return columns.filter(column => {
+        return aliasedTable.columns[column.name] != undefined;
+    }) as any[];
 }
 export type JoinUsingDelegate<
     JoinsT extends IJoin[],
