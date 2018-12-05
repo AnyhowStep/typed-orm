@@ -4,3 +4,4 @@ src/main/sandbox/*
 src/test/test.env
 src/v3
 test/compile-time/actual-output/*
+test/run-time/dist/*
