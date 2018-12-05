@@ -20,21 +20,11 @@ tape(__filename, (t) => {
         }
     )
 
-    /*
-        NOTICE THAT THIS *DOES NOT* THROW!
-        y is string
-        b is buffer
-
-        However, we can't have a reasonable run-time check
-        to see if they're assignable.
-        So, this *will* run.
-    */
-    t.doesNotThrow(() => {
+    t.throws(() => {
         o.from(table)
-            .rightJoin(
+            .innerJoinUsing(
                 joined1,
-                c => [c.y],
-                t => [t.b as any]
+                () => [] as any
             );
     });
 

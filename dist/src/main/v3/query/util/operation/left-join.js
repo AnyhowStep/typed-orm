@@ -17,6 +17,9 @@ function leftJoin(query, aliasedTable, fromDelegate, toDelegate) {
     if (from.length != to.length) {
         throw new Error(`Expected JOIN to have ${from.length} target columns`);
     }
+    if (from.length == 0) {
+        throw new Error(`Expected JOIN to have at least one column for ON clause`);
+    }
     column_ref_1.ColumnRefUtil.assertHasColumnIdentifiers(fromRef, from);
     column_map_1.ColumnMapUtil.assertHasColumnIdentifiers(aliasedTable.columns, to);
     const { parentJoins, unions, selects, limit, unionLimit, extraData, } = query;

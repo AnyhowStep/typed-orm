@@ -53,6 +53,9 @@ export function rightJoin<
     if (from.length != to.length) {
         throw new Error(`Expected JOIN to have ${from.length} target columns`);
     }
+    if (from.length == 0) {
+        throw new Error(`Expected JOIN to have at least one column for ON clause`);
+    }
     ColumnRefUtil.assertHasColumnIdentifiers(
         fromRef,
         from

@@ -26,7 +26,7 @@ tape(__filename, (t) => {
         b is buffer
 
         However, we can't have a reasonable run-time check
-        to see if they're assinable.
+        to see if they're assignable.
         So, this *will* run.
     */
     t.doesNotThrow(() => {

@@ -29,5 +29,14 @@ tape(__filename, (t) => {
             );
     });
 
+    t.throws(() => {
+        o.from(table)
+            .innerJoin(
+                joined1,
+                () => [] as any,
+                () => [] as any
+            );
+    });
+
     t.end();
 });

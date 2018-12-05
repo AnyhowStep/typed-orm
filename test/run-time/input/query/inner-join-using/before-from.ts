@@ -16,25 +16,15 @@ tape(__filename, (t) => {
         {
             a : sd.date(),
             b : sd.buffer(),
-            c : sd.string()
+            y : sd.string()
         }
     )
 
-    /*
-        NOTICE THAT THIS *DOES NOT* THROW!
-        y is string
-        b is buffer
-
-        However, we can't have a reasonable run-time check
-        to see if they're assignable.
-        So, this *will* run.
-    */
-    t.doesNotThrow(() => {
-        o.from(table)
-            .rightJoin(
+    t.throws(() => {
+        (o.QueryUtil.newInstance() as any)
+            .innerJoinUsing(
                 joined1,
-                c => [c.y],
-                t => [t.b as any]
+                () => [table.columns.y],
             );
     });
 

@@ -14,7 +14,7 @@ tape(__filename, (t) => {
     const joined1 = o.table(
         "joined1",
         {
-            a : sd.date(),
+            y : sd.date(),
             b : sd.buffer(),
             c : sd.string()
         }
@@ -22,8 +22,8 @@ tape(__filename, (t) => {
 
     /*
         NOTICE THAT THIS *DOES NOT* THROW!
-        y is string
-        b is buffer
+        table.y is string
+        table.y is Date
 
         However, we can't have a reasonable run-time check
         to see if they're assignable.
@@ -31,10 +31,9 @@ tape(__filename, (t) => {
     */
     t.doesNotThrow(() => {
         o.from(table)
-            .rightJoin(
+            .innerJoinUsing(
                 joined1,
-                c => [c.y],
-                t => [t.b as any]
+                c => [(c as any).y] as any
             );
     });
 
