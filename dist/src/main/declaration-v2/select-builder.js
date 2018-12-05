@@ -507,9 +507,11 @@ class SelectBuilder {
     }
     cursor() {
         //In case Symbol.asyncIterator is not defined
-        Symbol.asyncIterator = (Symbol.asyncIterator == undefined) ?
-            Symbol.for("Symbol.asyncIterator") :
-            Symbol.asyncIterator;
+        if (Symbol.asyncIterator == undefined) {
+            Object.defineProperty(Symbol, "asyncIterator", {
+                value: Symbol.for("Symbol.asyncIterator")
+            });
+        }
         let rowIndex = 0;
         let paginateResultCache = undefined;
         const getOrFetchPaginated = () => __awaiter(this, void 0, void 0, function* () {

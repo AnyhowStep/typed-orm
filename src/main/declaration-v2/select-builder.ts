@@ -1484,9 +1484,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>
     ) : AsyncIterableIterator<SelectBuilderUtil.AggregatedRow<this>> {
         //In case Symbol.asyncIterator is not defined
-        (<any>Symbol).asyncIterator = (Symbol.asyncIterator == undefined) ?
-            Symbol.for("Symbol.asyncIterator") :
-            Symbol.asyncIterator;
+        if (Symbol.asyncIterator == undefined) {
+            Object.defineProperty(Symbol, "asyncIterator", {
+                value : Symbol.for("Symbol.asyncIterator")
+            });
+        }
 
         let rowIndex = 0;
         let paginateResultCache : (
