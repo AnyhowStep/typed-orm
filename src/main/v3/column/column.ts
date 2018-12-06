@@ -68,32 +68,9 @@ export class Column<DataT extends ColumnData> implements IColumn<DataT> {
         return ColumnUtil.withType(this, newAssertFunc);
     }
 
-    /*as<AliasT extends string>(alias : AliasT) : AliasedExpr<
-        {
-            [tableAlias in TableAliasT] : {
-                [columnName in NameT] : Column<
-                    TableAliasT,
-                    NameT,
-                    TypeT
-                >
-            }
-        },
-        "__expr",
-        AliasT,
-        TypeT
-    > {
-        return new AliasedExpr(
-            {
-                [this.tableAlias] : {
-                    [this.name] : this
-                }
-            },
-            "__expr",
-            alias,
-            this.assertDelegate,
-            this.fullName
-        ) as any;
-    }*/
+    as<AliasT extends string> (alias : AliasT) : ColumnUtil.As<this, AliasT> {
+        return ColumnUtil.as(this, alias);
+    }
 }
 
 export function column<

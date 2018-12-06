@@ -1,5 +1,7 @@
 import * as sd from "schema-decorator";
 import { IColumn, Column } from "../column";
+import { IExprSelectItem } from "../../expr-select-item";
+import { ColumnRefUtil } from "../../column-ref";
 export declare type ToNullable<ColumnT extends IColumn> = (ColumnT extends IColumn ? Column<{
     readonly tableAlias: ColumnT["tableAlias"];
     readonly name: ColumnT["name"];
@@ -18,4 +20,16 @@ export declare type WithType<ColumnT extends IColumn, NewAssertDelegateT extends
     readonly assertDelegate: sd.ToAssertDelegate<NewAssertDelegateT>;
 }> : never);
 export declare function withType<ColumnT extends IColumn, NewAssertFuncT extends sd.AnyAssertFunc>({ tableAlias, name, __subTableName, __isInSelectClause, }: ColumnT, newAssertFunc: NewAssertFuncT): (WithType<ColumnT, NewAssertFuncT>);
+export declare type As<ColumnT extends IColumn, AliasT extends string> = (IExprSelectItem<{
+    readonly usedRef: ColumnRefUtil.FromColumn<ColumnT>;
+    readonly assertDelegate: ColumnT["assertDelegate"];
+    readonly tableAlias: ColumnT["tableAlias"];
+    readonly alias: AliasT;
+}>);
+export declare function as<ColumnT extends IColumn, AliasT extends string>(column: ColumnT, alias: AliasT): As<ColumnT, AliasT>;
+export declare type ToInterface<ColumnT extends IColumn> = (ColumnT extends IColumn ? IColumn<{
+    readonly tableAlias: ColumnT["tableAlias"];
+    readonly name: ColumnT["name"];
+    readonly assertDelegate: ColumnT["assertDelegate"];
+}> : never);
 //# sourceMappingURL=operation.d.ts.map

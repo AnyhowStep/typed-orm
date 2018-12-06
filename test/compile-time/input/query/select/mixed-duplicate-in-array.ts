@@ -9,18 +9,8 @@ const table = o.table(
         z : sd.boolean(),
     }
 );
-const joined1 = o.table(
-    "joined1",
-    {
-        a : sd.date(),
-        b : sd.buffer(),
-        y : sd.string()
-    }
+
+export const query = o.QueryUtil.select(
+    o.from(table),
+    c => [c, c.y]
 );
-
-export const query = o.from(table)
-    .innerJoinUsing(
-        joined1,
-        c => [c.y]
-    );
-

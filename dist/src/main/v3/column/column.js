@@ -24,6 +24,9 @@ class Column {
     withType(newAssertFunc) {
         return ColumnUtil.withType(this, newAssertFunc);
     }
+    as(alias) {
+        return ColumnUtil.as(this, alias);
+    }
 }
 exports.Column = Column;
 function column(tableAlias, name, assertFunc) {

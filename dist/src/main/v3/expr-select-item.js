@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const query_tree_1 = require("./query-tree");
+const sqlstring_1 = require("sqlstring");
 var ExprSelectItemUtil;
 (function (ExprSelectItemUtil) {
     function isExprSelectItem(raw) {
@@ -14,8 +16,16 @@ var ExprSelectItemUtil;
             (typeof raw.assertDelegate == "function") &&
             (typeof raw.tableAlias == "string") &&
             (typeof raw.alias == "string") &&
-            (typeof raw.unaliasedQuery == "string"));
+            (query_tree_1.QueryTreeUtil.isQueryTree(raw.unaliasedQuery)));
     }
     ExprSelectItemUtil.isExprSelectItem = isExprSelectItem;
+    function queryTree(exprSelectItem) {
+        return [
+            query_tree_1.Parentheses.Create(exprSelectItem.unaliasedQuery),
+            "AS",
+            sqlstring_1.escapeId(`${exprSelectItem.tableAlias}--${exprSelectItem.alias}`)
+        ];
+    }
+    ExprSelectItemUtil.queryTree = queryTree;
 })(ExprSelectItemUtil = exports.ExprSelectItemUtil || (exports.ExprSelectItemUtil = {}));
 //# sourceMappingURL=expr-select-item.js.map

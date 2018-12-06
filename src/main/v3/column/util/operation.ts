@@ -1,5 +1,8 @@
 import * as sd from "schema-decorator";
 import {IColumn, Column} from "../column";
+import {IExprSelectItem} from "../../expr-select-item";
+import {ColumnRefUtil} from "../../column-ref";
+import {queryTree} from "./query";
 
 /*
     Used to implement LEFT/RIGHT JOINs.
@@ -133,3 +136,37 @@ export function withType<
         __isInSelectClause
     ) as WithType<ColumnT, NewAssertFuncT>;
 }
+
+export type As<ColumnT extends IColumn, AliasT extends string> = (
+    IExprSelectItem<{
+        readonly usedRef : ColumnRefUtil.FromColumn<ColumnT>;
+        readonly assertDelegate : ColumnT["assertDelegate"];
+
+        //TODO Consider allowing tableAlias to change?
+        //There doesn't seem to be any harm in it.
+        readonly tableAlias : ColumnT["tableAlias"];
+        readonly alias : AliasT;
+    }>
+);
+export function as<ColumnT extends IColumn, AliasT extends string> (
+    column : ColumnT,
+    alias : AliasT
+) : As<ColumnT, AliasT> {
+    return {
+        usedRef : ColumnRefUtil.fromColumn(column),
+        assertDelegate : column.assertDelegate,
+        tableAlias : column.tableAlias,
+        alias : alias,
+        unaliasedQuery : queryTree(column),
+    };
+}
+//https://github.com/Microsoft/TypeScript/issues/28876
+export type ToInterface<ColumnT extends IColumn> = (
+    ColumnT extends IColumn ?
+    IColumn<{
+        readonly tableAlias : ColumnT["tableAlias"],
+        readonly name : ColumnT["name"],
+        readonly assertDelegate : ColumnT["assertDelegate"],
+    }> :
+    never
+);

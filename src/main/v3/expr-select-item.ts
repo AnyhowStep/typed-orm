@@ -1,5 +1,7 @@
 import * as sd from "schema-decorator";
 import {ColumnRef} from "./column-ref";
+import {QueryTreeArray, Parentheses, QueryTree, QueryTreeUtil} from "./query-tree";
+import {escapeId} from "sqlstring";
 
 export interface AliasedExprData {
     readonly usedRef : ColumnRef;
@@ -9,6 +11,7 @@ export interface AliasedExprData {
     readonly alias : string;
 }
 
+//There doesn't seem to be a point in making a class for this...
 export interface IExprSelectItem<DataT extends AliasedExprData=AliasedExprData> {
     readonly usedRef : DataT["usedRef"];
     readonly assertDelegate : DataT["assertDelegate"];
@@ -16,8 +19,9 @@ export interface IExprSelectItem<DataT extends AliasedExprData=AliasedExprData> 
     readonly tableAlias : DataT["tableAlias"];
     readonly alias : DataT["alias"];
 
-    readonly unaliasedQuery : string;
+    readonly unaliasedQuery : QueryTree;
 }
+
 
 export type IAnonymousTypedExprSelectItem<TypeT> = (
     IExprSelectItem<{
@@ -43,7 +47,14 @@ export namespace ExprSelectItemUtil {
             (typeof raw.assertDelegate == "function") &&
             (typeof raw.tableAlias == "string") &&
             (typeof raw.alias == "string") &&
-            (typeof raw.unaliasedQuery == "string")
+            (QueryTreeUtil.isQueryTree(raw.unaliasedQuery))
         );
+    }
+    export function queryTree (exprSelectItem : IExprSelectItem) : QueryTreeArray {
+        return [
+            Parentheses.Create(exprSelectItem.unaliasedQuery),
+            "AS",
+            escapeId(`${exprSelectItem.tableAlias}--${exprSelectItem.alias}`)
+        ];
     }
 }

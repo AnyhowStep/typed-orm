@@ -28,6 +28,7 @@ export declare class Column<DataT extends ColumnData> implements IColumn<DataT> 
     toNullable(): ColumnUtil.ToNullable<this>;
     withTableAlias<NewTableAliasT extends string>(newTableAlias: NewTableAliasT): (ColumnUtil.WithTableAlias<this, NewTableAliasT>);
     withType<NewAssertFuncT extends sd.AnyAssertFunc>(newAssertFunc: NewAssertFuncT): (ColumnUtil.WithType<this, NewAssertFuncT>);
+    as<AliasT extends string>(alias: AliasT): ColumnUtil.As<this, AliasT>;
 }
 export declare function column<TableAliasT extends string, NameT extends string, AssertFuncT extends sd.AnyAssertFunc>(tableAlias: TableAliasT, name: NameT, assertFunc: AssertFuncT): Column<{
     readonly tableAlias: TableAliasT;

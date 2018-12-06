@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 const column_1 = require("../column");
+const column_ref_1 = require("../../column-ref");
+const query_1 = require("./query");
 function toNullable({ tableAlias, name, assertDelegate, __subTableName, __isInSelectClause, }) {
     return new column_1.Column({
         tableAlias,
@@ -27,4 +29,14 @@ function withType({ tableAlias, name, __subTableName, __isInSelectClause, }, new
     }, __subTableName, __isInSelectClause);
 }
 exports.withType = withType;
+function as(column, alias) {
+    return {
+        usedRef: column_ref_1.ColumnRefUtil.fromColumn(column),
+        assertDelegate: column.assertDelegate,
+        tableAlias: column.tableAlias,
+        alias: alias,
+        unaliasedQuery: query_1.queryTree(column),
+    };
+}
+exports.as = as;
 //# sourceMappingURL=operation.js.map

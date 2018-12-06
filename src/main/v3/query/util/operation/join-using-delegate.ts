@@ -25,9 +25,10 @@ export type JoinUsingColumnUnion<
         //b.x : number
         //Given the above, we want to allow JOINs
         //on those two.
-        ColumnUtil.ToNullable<
+        //https://github.com/Microsoft/TypeScript/issues/28876
+        ColumnUtil.ToInterface<ColumnUtil.ToNullable<
             ColumnUtil.FromColumnMap<AliasedTableT["columns"]>
-        > ?
+        >> ?
         Extract<ColumnT, IColumn> :
         never
     ) :

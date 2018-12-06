@@ -71,7 +71,7 @@ export function select<
                                 ColumnRefUtil.FromQuery<QueryT>
                             >
                         >
-                    ]|void
+                    ]
                 ) :
                 never
             )
@@ -104,7 +104,38 @@ export function select<
                             ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]>,
                             ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>
                         >
-                    ]|void
+                    ]
+                ) :
+                never
+            )
+        }> &
+        //Duplicates not allowed with new selects
+        ToUnknownIfAllFieldsNever<{
+            [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
+                ReturnType<SelectDelegateT>[index] extends SelectItem ?
+                (
+                    Extract<
+                        ColumnIdentifierUtil.FromSelectItem<
+                            ReturnType<SelectDelegateT>[index]
+                        >,
+                        ColumnIdentifierUtil.FromSelectItemArrayIgnoreIndex<
+                            ReturnType<SelectDelegateT>,
+                            index
+                        >
+                    > extends never ?
+                    never :
+                    [
+                        "Duplicate columns in SELECT clause",
+                        Extract<
+                            ColumnIdentifierUtil.FromSelectItem<
+                                ReturnType<SelectDelegateT>[index]
+                            >,
+                            ColumnIdentifierUtil.FromSelectItemArrayIgnoreIndex<
+                                ReturnType<SelectDelegateT>,
+                                index
+                            >
+                        >
+                    ]
                 ) :
                 never
             )
@@ -136,38 +167,7 @@ export function select<
                                         QueryT["selects"][number]
                                     >
                                 >
-                            ]|void
-                        ) :
-                        never
-                    )
-                }> &
-                //Duplicates not allowed with new selects
-                ToUnknownIfAllFieldsNever<{
-                    [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
-                        ReturnType<SelectDelegateT>[index] extends SelectItem ?
-                        (
-                            Extract<
-                                ColumnIdentifierUtil.FromSelectItem<
-                                    ReturnType<SelectDelegateT>[index]
-                                >,
-                                ColumnIdentifierUtil.FromSelectItemArrayIgnoreIndex<
-                                    ReturnType<SelectDelegateT>,
-                                    index
-                                >
-                            > extends never ?
-                            never :
-                            [
-                                "Duplicate columns in SELECT clause",
-                                Extract<
-                                    ColumnIdentifierUtil.FromSelectItem<
-                                        ReturnType<SelectDelegateT>[index]
-                                    >,
-                                    ColumnIdentifierUtil.FromSelectItemArrayIgnoreIndex<
-                                        ReturnType<SelectDelegateT>,
-                                        index
-                                    >
-                                >
-                            ]|void
+                            ]
                         ) :
                         never
                     )
