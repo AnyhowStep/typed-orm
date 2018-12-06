@@ -18,12 +18,10 @@ const otherTable = o.table(
     }
 );
 
-export const query = o.QueryUtil.select(
-    o.from(table),
-    c => [
+export const query = o.from(table)
+    .select(c => [
         o.eq(
             c.x,
             otherTable.columns.x
         ).as("equal?")
-    ]
-);
+    ]);

@@ -11,4 +11,6 @@ const table = o.table(
 );
 
 export const query = o.from(table)
-    .select(c => [c]);
+    .select(c => [c.z])
+    .select(c => [c.x])
+    .select(c => [c.y]);

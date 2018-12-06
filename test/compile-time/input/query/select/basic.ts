@@ -10,7 +10,5 @@ const table = o.table(
     }
 );
 
-export const query = o.QueryUtil.select(
-    o.from(table),
-    c => [c.z, c.x, c.y]
-);
+export const query = o.from(table)
+    .select(c => [c.z, c.x, c.y]);

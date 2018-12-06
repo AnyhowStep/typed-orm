@@ -245,6 +245,31 @@ export class Query<DataT extends QueryData> {
             usingDelegate
         );
     }
+
+    select<
+        SelectDelegateT extends QueryUtil.SelectDelegate<
+            Extract<this, QueryUtil.BeforeUnionClause>
+        >
+    > (
+        this : Extract<this, QueryUtil.BeforeUnionClause>,
+        delegate : QueryUtil.AssertValidSelectDelegate<
+            Extract<this, QueryUtil.BeforeUnionClause>,
+            SelectDelegateT
+        >
+    ) : (
+        QueryUtil.Select<
+            Extract<this, QueryUtil.BeforeUnionClause>,
+            SelectDelegateT
+        >
+    ) {
+        return QueryUtil.select<
+            Extract<this, QueryUtil.BeforeUnionClause>,
+            SelectDelegateT
+        >(
+            this,
+            delegate
+        );
+    }
 }
 export function from<AliasedTableT extends IAliasedTable> (
     aliasedTable : QueryUtil.AssertUniqueJoinTarget<

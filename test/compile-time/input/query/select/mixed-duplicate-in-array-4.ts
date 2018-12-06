@@ -12,11 +12,9 @@ const table = o.table(
     }
 );
 
-export const query = o.QueryUtil.select(
-    o.from(table),
-    c => [
+export const query = o.from(table)
+    .select(c => [
         c.x,
         //Duplicate because tableAlias is __aliased
         o.eq(c.y, c.w).as("x")
-    ]
-);
+    ]);

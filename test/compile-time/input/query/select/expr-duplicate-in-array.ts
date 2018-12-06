@@ -10,10 +10,8 @@ const table = o.table(
         w : sd.naturalNumber(),
     }
 );
-export const query = o.QueryUtil.select(
-    o.from(table),
-    c => [
+export const query = o.from(table)
+    .select(c => [
         o.eq(c.x, c.w).as("duplicate"),
         o.eq(c.w, c.x).as("duplicate")
-    ]
-);
+    ]);

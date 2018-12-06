@@ -17,7 +17,7 @@ export declare type Select<QueryT extends BeforeUnionClause, SelectDelegateT ext
     readonly limit: QueryT["limit"];
     readonly unionLimit: QueryT["unionLimit"];
 }>);
-export declare function select<QueryT extends BeforeUnionClause, SelectDelegateT extends SelectDelegate<QueryT>>(query: QueryT, delegate: (SelectDelegateT & ToUnknownIfAllFieldsNever<{
+export declare type AssertValidSelectDelegate<QueryT extends BeforeUnionClause, SelectDelegateT extends SelectDelegate<QueryT>> = (SelectDelegateT & ToUnknownIfAllFieldsNever<{
     [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends IExprSelectItem ? (ColumnRefUtil.FromQuery<QueryT> extends ReturnType<SelectDelegateT>[index]["usedRef"] ? never : ["Invalid IExprSelectItem", Exclude<ColumnUtil.FromColumnRef<ReturnType<SelectDelegateT>[index]["usedRef"]>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>>]) : never);
 }> & ToUnknownIfAllFieldsNever<{
     [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends IColumn ? (ReturnType<SelectDelegateT>[index] extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> ? never : ["Invalid IColumn", ReturnType<SelectDelegateT>[index]]) : never);
@@ -27,5 +27,6 @@ export declare function select<QueryT extends BeforeUnionClause, SelectDelegateT
     [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends SelectItem ? (Extract<ColumnIdentifierUtil.FromSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.FromSelectItemArrayIgnoreIndex<ReturnType<SelectDelegateT>, index>> extends never ? never : ["Duplicate columns in SELECT clause", Extract<ColumnIdentifierUtil.FromSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.FromSelectItemArrayIgnoreIndex<ReturnType<SelectDelegateT>, index>>]) : never);
 }> & (QueryT["selects"] extends SelectItem[] ? (ToUnknownIfAllFieldsNever<{
     [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends SelectItem ? (Extract<ColumnIdentifierUtil.FromSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.FromSelectItem<QueryT["selects"][number]>> extends never ? never : ["Duplicate columns in SELECT clause; consider aliasing", Extract<ColumnIdentifierUtil.FromSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.FromSelectItem<QueryT["selects"][number]>>]) : never);
-}>) : unknown))): Select<QueryT, SelectDelegateT>;
+}>) : unknown));
+export declare function select<QueryT extends BeforeUnionClause, SelectDelegateT extends SelectDelegate<QueryT>>(query: QueryT, delegate: AssertValidSelectDelegate<QueryT, SelectDelegateT>): Select<QueryT, SelectDelegateT>;
 //# sourceMappingURL=select.d.ts.map

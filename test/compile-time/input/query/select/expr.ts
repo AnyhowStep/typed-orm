@@ -11,9 +11,6 @@ const table = o.table(
     }
 );
 
-export const query = o.QueryUtil.select(
-    o.from(table),
-    c => [
-        o.eq(c.x, c.w).as("equal?")
-    ]
-);
+export const query = o.from(table).select(c => [
+    o.eq(c.x, c.w).as("equal?")
+]);

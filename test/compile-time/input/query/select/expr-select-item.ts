@@ -9,7 +9,5 @@ const table = o.table(
         z : sd.boolean(),
     }
 );
-export const query = o.QueryUtil.select(
-    o.from(table),
-    c => [c.x.as("a"), c.y.as("b"), c.z.as("c")]
-);
+export const query = o.from(table)
+    .select(c => [c.x.as("a"), c.y.as("b"), c.z.as("c")]);

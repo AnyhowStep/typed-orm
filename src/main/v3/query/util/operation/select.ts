@@ -46,74 +46,84 @@ export type Select<
         readonly unionLimit : QueryT["unionLimit"],
     }>
 );
-export function select<
+export type AssertValidSelectDelegate<
     QueryT extends BeforeUnionClause,
     SelectDelegateT extends SelectDelegate<QueryT>
-> (
-    query : QueryT,
-    delegate : (
-        SelectDelegateT &
-        //If SelectItem is IExprSelectItem,
-        //the usedRef must be a subset of the queryRef
-        ToUnknownIfAllFieldsNever<{
-            [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
-                ReturnType<SelectDelegateT>[index] extends IExprSelectItem ?
-                (
-                    ColumnRefUtil.FromQuery<QueryT> extends ReturnType<SelectDelegateT>[index]["usedRef"] ?
-                    never :
-                    [
-                        "Invalid IExprSelectItem",
-                        Exclude<
-                            ColumnUtil.FromColumnRef<
-                                ReturnType<SelectDelegateT>[index]["usedRef"]
-                            >,
-                            ColumnUtil.FromColumnRef<
-                                ColumnRefUtil.FromQuery<QueryT>
-                            >
+> = (
+    SelectDelegateT &
+    //If SelectItem is IExprSelectItem,
+    //the usedRef must be a subset of the queryRef
+    ToUnknownIfAllFieldsNever<{
+        [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
+            ReturnType<SelectDelegateT>[index] extends IExprSelectItem ?
+            (
+                ColumnRefUtil.FromQuery<QueryT> extends ReturnType<SelectDelegateT>[index]["usedRef"] ?
+                never :
+                [
+                    "Invalid IExprSelectItem",
+                    Exclude<
+                        ColumnUtil.FromColumnRef<
+                            ReturnType<SelectDelegateT>[index]["usedRef"]
+                        >,
+                        ColumnUtil.FromColumnRef<
+                            ColumnRefUtil.FromQuery<QueryT>
                         >
-                    ]
-                ) :
-                never
-            )
-        }> &
-        //Columns selected must exist
-        ToUnknownIfAllFieldsNever<{
-            [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
-                ReturnType<SelectDelegateT>[index] extends IColumn ?
-                (
-                    ReturnType<SelectDelegateT>[index] extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> ?
-                    never :
-                    [
-                        "Invalid IColumn",
+                    >
+                ]
+            ) :
+            never
+        )
+    }> &
+    //Columns selected must exist
+    ToUnknownIfAllFieldsNever<{
+        [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
+            ReturnType<SelectDelegateT>[index] extends IColumn ?
+            (
+                ReturnType<SelectDelegateT>[index] extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> ?
+                never :
+                [
+                    "Invalid IColumn",
+                    ReturnType<SelectDelegateT>[index]
+                ]
+            ) :
+            never
+        )
+    }> &
+    //Columns selected must exist
+    ToUnknownIfAllFieldsNever<{
+        [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
+            ReturnType<SelectDelegateT>[index] extends ColumnMap ?
+            (
+                ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]> extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> ?
+                never :
+                [
+                    "Invalid ColumnMap",
+                    Exclude<
+                        ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]>,
+                        ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>
+                    >
+                ]
+            ) :
+            never
+        )
+    }> &
+    //Duplicates not allowed with new selects
+    ToUnknownIfAllFieldsNever<{
+        [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
+            ReturnType<SelectDelegateT>[index] extends SelectItem ?
+            (
+                Extract<
+                    ColumnIdentifierUtil.FromSelectItem<
                         ReturnType<SelectDelegateT>[index]
-                    ]
-                ) :
-                never
-            )
-        }> &
-        //Columns selected must exist
-        ToUnknownIfAllFieldsNever<{
-            [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
-                ReturnType<SelectDelegateT>[index] extends ColumnMap ?
-                (
-                    ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]> extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> ?
-                    never :
-                    [
-                        "Invalid ColumnMap",
-                        Exclude<
-                            ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]>,
-                            ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>
-                        >
-                    ]
-                ) :
-                never
-            )
-        }> &
-        //Duplicates not allowed with new selects
-        ToUnknownIfAllFieldsNever<{
-            [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
-                ReturnType<SelectDelegateT>[index] extends SelectItem ?
-                (
+                    >,
+                    ColumnIdentifierUtil.FromSelectItemArrayIgnoreIndex<
+                        ReturnType<SelectDelegateT>,
+                        index
+                    >
+                > extends never ?
+                never :
+                [
+                    "Duplicate columns in SELECT clause",
                     Extract<
                         ColumnIdentifierUtil.FromSelectItem<
                             ReturnType<SelectDelegateT>[index]
@@ -122,32 +132,31 @@ export function select<
                             ReturnType<SelectDelegateT>,
                             index
                         >
-                    > extends never ?
-                    never :
-                    [
-                        "Duplicate columns in SELECT clause",
+                    >
+                ]
+            ) :
+            never
+        )
+    }> &
+    (
+        QueryT["selects"] extends SelectItem[] ?
+        (
+            //Duplicates not allowed with existing selects
+            ToUnknownIfAllFieldsNever<{
+                [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
+                    ReturnType<SelectDelegateT>[index] extends SelectItem ?
+                    (
                         Extract<
                             ColumnIdentifierUtil.FromSelectItem<
                                 ReturnType<SelectDelegateT>[index]
                             >,
-                            ColumnIdentifierUtil.FromSelectItemArrayIgnoreIndex<
-                                ReturnType<SelectDelegateT>,
-                                index
+                            ColumnIdentifierUtil.FromSelectItem<
+                                QueryT["selects"][number]
                             >
-                        >
-                    ]
-                ) :
-                never
-            )
-        }> &
-        (
-            QueryT["selects"] extends SelectItem[] ?
-            (
-                //Duplicates not allowed with existing selects
-                ToUnknownIfAllFieldsNever<{
-                    [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
-                        ReturnType<SelectDelegateT>[index] extends SelectItem ?
-                        (
+                        > extends never ?
+                        never :
+                        [
+                            "Duplicate columns in SELECT clause; consider aliasing",
                             Extract<
                                 ColumnIdentifierUtil.FromSelectItem<
                                     ReturnType<SelectDelegateT>[index]
@@ -155,27 +164,22 @@ export function select<
                                 ColumnIdentifierUtil.FromSelectItem<
                                     QueryT["selects"][number]
                                 >
-                            > extends never ?
-                            never :
-                            [
-                                "Duplicate columns in SELECT clause; consider aliasing",
-                                Extract<
-                                    ColumnIdentifierUtil.FromSelectItem<
-                                        ReturnType<SelectDelegateT>[index]
-                                    >,
-                                    ColumnIdentifierUtil.FromSelectItem<
-                                        QueryT["selects"][number]
-                                    >
-                                >
-                            ]
-                        ) :
-                        never
-                    )
-                }>
-            ) :
-            unknown
-        )
+                            >
+                        ]
+                    ) :
+                    never
+                )
+            }>
+        ) :
+        unknown
     )
+);
+export function select<
+    QueryT extends BeforeUnionClause,
+    SelectDelegateT extends SelectDelegate<QueryT>
+> (
+    query : QueryT,
+    delegate : AssertValidSelectDelegate<QueryT, SelectDelegateT>
 ) : Select<QueryT, SelectDelegateT> {
     const queryRef = ColumnRefUtil.fromQuery(query);
     const selects = delegate(

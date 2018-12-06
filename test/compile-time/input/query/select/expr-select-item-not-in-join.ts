@@ -18,7 +18,5 @@ const otherTable = o.table(
     }
 );
 
-export const query = o.QueryUtil.select(
-    o.from(table),
-    () => [otherTable.columns.z.as("y")]
-);
+export const query = o.from(table)
+    .select(() => [otherTable.columns.z.as("y")]);
