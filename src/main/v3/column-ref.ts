@@ -90,11 +90,6 @@ export namespace ColumnRefUtil {
             return columnRef as any;
         }
     }
-    export type ToUnion<ColumnRefT extends ColumnRef> = (
-        ColumnRefT extends ColumnRef ?
-            ColumnUtil.FromColumnMap<ColumnRefT[keyof ColumnRefT]> :
-            never
-    );
 
     export type FromColumn<ColumnT extends IColumn> = (
         {

@@ -5,6 +5,7 @@ import {IExprSelectItem, ExprSelectItemUtil} from "../../expr-select-item";
 import {ColumnMap} from "../../column-map";
 import {IJoin} from "../../join";
 import {ColumnMapUtil} from "../../column-map";
+import {ColumnRef} from "../../column-ref";
 
 export type FromExprSelectItem<ItemT extends IExprSelectItem> = (
     Column<{
@@ -59,4 +60,10 @@ export type FromJoin<JoinT extends IJoin> = (
 );
 export type FromJoinArray<JoinsT extends IJoin[]> = (
     FromJoin<JoinsT[number]>
+);
+
+export type FromColumnRef<ColumnRefT extends ColumnRef> = (
+    ColumnRefT extends ColumnRef ?
+    FromColumnMap<ColumnRefT[keyof ColumnRefT]> :
+    never
 );

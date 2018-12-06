@@ -3,6 +3,7 @@ import {AfterFromClause} from "../predicate";
 import {ColumnRefUtil} from "../../../column-ref";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr} from "../../../expr";
+import {ColumnUtil} from "../../../column";
 
 export type WhereDelegate<
     QueryT extends AfterFromClause
@@ -27,10 +28,10 @@ export function where<
             [
                 "WHERE expression contains some invalid columns; the following are not allowed:",
                 Exclude<
-                    ColumnRefUtil.ToUnion<
+                    ColumnUtil.FromColumnRef<
                         RawExprUtil.UsedRef<ReturnType<WhereDelegateT>>
                     >,
-                    ColumnRefUtil.ToUnion<
+                    ColumnUtil.FromColumnRef<
                         ColumnRefUtil.FromQuery<QueryT>
                     >
                 >

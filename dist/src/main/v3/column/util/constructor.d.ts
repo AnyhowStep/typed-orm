@@ -4,6 +4,7 @@ import { IExprSelectItem } from "../../expr-select-item";
 import { ColumnMap } from "../../column-map";
 import { IJoin } from "../../join";
 import { ColumnMapUtil } from "../../column-map";
+import { ColumnRef } from "../../column-ref";
 export declare type FromExprSelectItem<ItemT extends IExprSelectItem> = (Column<{
     readonly tableAlias: ItemT["tableAlias"];
     readonly name: ItemT["alias"];
@@ -19,4 +20,5 @@ export declare function fromSingleValueSelectItem<ItemT extends SingleValueSelec
 export declare type FromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? ColumnMapT[Extract<keyof ColumnMapT, string>] : never);
 export declare type FromJoin<JoinT extends IJoin> = (JoinT extends IJoin ? FromColumnMap<ColumnMapUtil.FromJoin<JoinT>> : never);
 export declare type FromJoinArray<JoinsT extends IJoin[]> = (FromJoin<JoinsT[number]>);
+export declare type FromColumnRef<ColumnRefT extends ColumnRef> = (ColumnRefT extends ColumnRef ? FromColumnMap<ColumnRefT[keyof ColumnRefT]> : never);
 //# sourceMappingURL=constructor.d.ts.map

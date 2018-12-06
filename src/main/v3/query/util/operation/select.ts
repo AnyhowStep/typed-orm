@@ -64,10 +64,10 @@ export function select<
                     [
                         "Invalid IExprSelectItem",
                         Exclude<
-                            ColumnRefUtil.ToUnion<
+                            ColumnUtil.FromColumnRef<
                                 ReturnType<SelectDelegateT>[index]["usedRef"]
                             >,
-                            ColumnRefUtil.ToUnion<
+                            ColumnUtil.FromColumnRef<
                                 ColumnRefUtil.FromQuery<QueryT>
                             >
                         >
@@ -81,12 +81,12 @@ export function select<
             [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
                 ReturnType<SelectDelegateT>[index] extends IColumn ?
                 (
-                    ReturnType<SelectDelegateT>[index] extends ColumnRefUtil.ToUnion<ColumnRefUtil.FromQuery<QueryT>> ?
+                    ReturnType<SelectDelegateT>[index] extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> ?
                     never :
                     [
                         "Invalid IColumn",
                         ReturnType<SelectDelegateT>[index]
-                    ]|void
+                    ]
                 ) :
                 never
             )
@@ -96,13 +96,13 @@ export function select<
             [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
                 ReturnType<SelectDelegateT>[index] extends ColumnMap ?
                 (
-                    ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]> extends ColumnRefUtil.ToUnion<ColumnRefUtil.FromQuery<QueryT>> ?
+                    ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]> extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> ?
                     never :
                     [
                         "Invalid ColumnMap",
                         Exclude<
                             ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]>,
-                            ColumnRefUtil.ToUnion<ColumnRefUtil.FromQuery<QueryT>>
+                            ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>
                         >
                     ]|void
                 ) :
