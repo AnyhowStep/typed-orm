@@ -7,7 +7,7 @@ const expr_1 = require("../../../expr");
 function where(query, delegate) {
     const queryRef = column_ref_1.ColumnRefUtil.fromQuery(query);
     const rawExpr = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef), query);
-    const expr = expr_1.Expr.fromRawExpr(rawExpr);
+    const expr = expr_1.ExprUtil.fromRawExpr(rawExpr);
     column_ref_1.ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);
     return new query_1.Query(query, {
         ...query.extraData,

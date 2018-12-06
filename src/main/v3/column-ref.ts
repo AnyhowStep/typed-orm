@@ -229,4 +229,63 @@ export namespace ColumnRefUtil {
         }
         return result as FromColumnArray<ColumnsT>;
     }
+
+    //Take the intersection and the "left" columnRef
+    export type LeftIntersect<
+        ColumnRefA extends ColumnRef,
+        ColumnRefB extends ColumnRef
+    > = (
+        {
+            readonly [tableAlias in Extract<keyof ColumnRefA, string>] : (
+                tableAlias extends keyof ColumnRefB ?
+                ColumnMapUtil.Intersect<
+                    ColumnRefA[tableAlias],
+                    ColumnRefB[tableAlias]
+                > :
+                ColumnRefA[tableAlias]
+            )
+        }
+    );
+    export type Intersect<
+        ColumnRefA extends ColumnRef,
+        ColumnRefB extends ColumnRef
+    > = (
+        Extract<
+            LeftIntersect<ColumnRefA, ColumnRefB> &
+            {
+                readonly [tableAlias in Exclude<
+                    Extract<keyof ColumnRefB, string>,
+                    keyof ColumnRefA
+                >] : (
+                    ColumnRefB[tableAlias]
+                )
+            },
+            ColumnRef
+        >
+    );
+    export function intersect<
+        ColumnRefA extends ColumnRef,
+        ColumnRefB extends ColumnRef
+    > (
+        columnRefA : ColumnRefA,
+        columnRefB : ColumnRefB
+    ) : Intersect<ColumnRefA, ColumnRefB> {
+        const result : Writable<ColumnRef> = {};
+        for (let tableAlias in columnRefA) {
+            if (columnRefB.hasOwnProperty(tableAlias)) {
+                result[tableAlias] = ColumnMapUtil.intersect(
+                    columnRefA[tableAlias],
+                    columnRefB[tableAlias]
+                );
+            } else {
+                result[tableAlias] = columnRefA[tableAlias];
+            }
+        }
+        for (let tableAlias in columnRefB) {
+            if (!columnRefA.hasOwnProperty(tableAlias)) {
+                result[tableAlias] = columnRefB[tableAlias];
+            }
+        }
+        return result as Intersect<ColumnRefA, ColumnRefB>;
+    }
 }

@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import {PrimitiveExpr} from "./primitive-expr";
-import {IAnonymousTypedExpr, IExpr, Expr} from "./expr";
+import {IAnonymousTypedExpr, IExpr, ExprUtil} from "./expr";
 import {IAnonymousTypedColumn, IColumn, ColumnUtil} from "./column";
 import {TableSubquery} from "./table-subquery";
 import {ColumnRefUtil} from "./column-ref";
@@ -59,7 +59,7 @@ export namespace RawExprUtil {
             return {} as any;
         }
 
-        if (Expr.isExpr(rawExpr)) {
+        if (ExprUtil.isExpr(rawExpr)) {
             return rawExpr.usedRef;
         }
 
@@ -73,6 +73,17 @@ export namespace RawExprUtil {
 
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
+    export type TypeOf<RawExprT extends RawExpr<any>> = (
+        RawExprT extends PrimitiveExpr ?
+        RawExprT :
+        RawExprT extends IExpr ?
+        ReturnType<RawExprT["assertDelegate"]> :
+        RawExprT extends IColumn ?
+        ReturnType<RawExprT["assertDelegate"]> :
+        RawExprT extends TableSubquery.SingleValueOrEmpty<any> ?
+        TableSubquery.TypeOf<RawExprT> :
+        never
+    );
     export type AssertDelegate<RawExprT extends RawExpr<any>> = (
         RawExprT extends PrimitiveExpr ?
         sd.AssertDelegate<RawExprT> :
@@ -114,7 +125,7 @@ export namespace RawExprUtil {
             return sd.nil() as any;
         }
 
-        if (Expr.isExpr(rawExpr)) {
+        if (ExprUtil.isExpr(rawExpr)) {
             return rawExpr.assertDelegate;
         }
 
@@ -167,7 +178,7 @@ export namespace RawExprUtil {
             return escape(rawExpr);
         }
 
-        if (Expr.isExpr(rawExpr)) {
+        if (ExprUtil.isExpr(rawExpr)) {
             return rawExpr.queryTree;
         }
 

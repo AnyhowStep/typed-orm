@@ -2,15 +2,22 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const raw_expr_1 = require("./raw-expr");
 const query_tree_1 = require("./query-tree");
+const constants_1 = require("./constants");
 class Expr {
     constructor(data, queryTree) {
         this.usedRef = data.usedRef;
         this.assertDelegate = data.assertDelegate;
-        this.queryTree = queryTree;
+        //Gotta' play it safe.
+        //We want to preserve the order of operations.
+        this.queryTree = query_tree_1.Parentheses.Create(queryTree);
+    }
+    as(alias) {
+        return ExprUtil.as(this, alias);
     }
 }
 exports.Expr = Expr;
-(function (Expr) {
+var ExprUtil;
+(function (ExprUtil) {
     function isExpr(raw) {
         return ((raw != undefined) &&
             (raw instanceof Object) &&
@@ -21,7 +28,7 @@ exports.Expr = Expr;
             (typeof raw.assertDelegate == "function") &&
             (query_tree_1.QueryTreeUtil.isQueryTree(raw.queryTree)));
     }
-    Expr.isExpr = isExpr;
+    ExprUtil.isExpr = isExpr;
     function fromRawExpr(rawExpr) {
         const usedRef = raw_expr_1.RawExprUtil.usedRef(rawExpr);
         const assertDelegate = raw_expr_1.RawExprUtil.assertDelegate(rawExpr);
@@ -31,6 +38,16 @@ exports.Expr = Expr;
             assertDelegate,
         }, queryTree);
     }
-    Expr.fromRawExpr = fromRawExpr;
-})(Expr = exports.Expr || (exports.Expr = {}));
+    ExprUtil.fromRawExpr = fromRawExpr;
+    function as(expr, alias) {
+        return {
+            usedRef: expr.usedRef,
+            assertDelegate: expr.assertDelegate,
+            tableAlias: constants_1.ALIASED,
+            alias: alias,
+            unaliasedQuery: expr.queryTree,
+        };
+    }
+    ExprUtil.as = as;
+})(ExprUtil = exports.ExprUtil || (exports.ExprUtil = {}));
 //# sourceMappingURL=expr.js.map

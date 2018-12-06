@@ -1,0 +1,18 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type '() => [IExprSelectItem<{ readonly usedRef: { readonly otherTable: { readonly z: Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>; }; }; readonly assertDelegate: AssertDelegate<...> & { ...; }; readonly tableAlias: \"otherTable\"; ...' is not assignable to parameter of type '(() => [IExprSelectItem<{ readonly usedRef: { readonly otherTable: { readonly z: Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>; }; }; readonly assertDelegate: AssertDelegate<...> & { ...; }; readonly tableAlias: \"otherTable\";...'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type '() => [IExprSelectItem<{ readonly usedRef: { readonly otherTable: { readonly z: Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>; }; }; readonly assertDelegate: AssertDelegate<...> & { ...; }; readonly tableAlias: \"otherTable\"; ...' is missing the following properties from type '[\"Invalid IExprSelectItem\", Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>]': 0, 1, pop, push, and 29 more.",
+        "category": 1,
+        "code": 2740
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 36,
+    "start": 435
+  }
+]

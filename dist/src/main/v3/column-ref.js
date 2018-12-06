@@ -101,5 +101,23 @@ var ColumnRefUtil;
         return result;
     }
     ColumnRefUtil.fromColumnArray = fromColumnArray;
+    function intersect(columnRefA, columnRefB) {
+        const result = {};
+        for (let tableAlias in columnRefA) {
+            if (columnRefB.hasOwnProperty(tableAlias)) {
+                result[tableAlias] = column_map_1.ColumnMapUtil.intersect(columnRefA[tableAlias], columnRefB[tableAlias]);
+            }
+            else {
+                result[tableAlias] = columnRefA[tableAlias];
+            }
+        }
+        for (let tableAlias in columnRefB) {
+            if (!columnRefA.hasOwnProperty(tableAlias)) {
+                result[tableAlias] = columnRefB[tableAlias];
+            }
+        }
+        return result;
+    }
+    ColumnRefUtil.intersect = intersect;
 })(ColumnRefUtil = exports.ColumnRefUtil || (exports.ColumnRefUtil = {}));
 //# sourceMappingURL=column-ref.js.map

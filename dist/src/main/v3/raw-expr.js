@@ -28,7 +28,7 @@ var RawExprUtil;
         if (rawExpr === null) {
             return {};
         }
-        if (expr_1.Expr.isExpr(rawExpr)) {
+        if (expr_1.ExprUtil.isExpr(rawExpr)) {
             return rawExpr.usedRef;
         }
         if (column_1.ColumnUtil.isColumn(rawExpr)) {
@@ -66,7 +66,7 @@ var RawExprUtil;
         if (rawExpr === null) {
             return sd.nil();
         }
-        if (expr_1.Expr.isExpr(rawExpr)) {
+        if (expr_1.ExprUtil.isExpr(rawExpr)) {
             return rawExpr.assertDelegate;
         }
         if (column_1.ColumnUtil.isColumn(rawExpr)) {
@@ -115,7 +115,7 @@ var RawExprUtil;
         if (rawExpr === null) {
             return sqlstring_1.escape(rawExpr);
         }
-        if (expr_1.Expr.isExpr(rawExpr)) {
+        if (expr_1.ExprUtil.isExpr(rawExpr)) {
             return rawExpr.queryTree;
         }
         if (column_1.ColumnUtil.isColumn(rawExpr)) {

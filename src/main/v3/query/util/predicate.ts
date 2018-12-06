@@ -5,7 +5,7 @@ import {
     IQuery,
     QueryData,
 } from "../query";
-import {Expr} from "../../expr";
+import {ExprUtil} from "../../expr";
 import {JoinArrayUtil} from "../../join-array";
 import {SelectItemArrayUtil} from "../../select-item-array";
 import {IJoin} from "../../join";
@@ -50,7 +50,7 @@ export function isExtraQueryData (raw : any) : raw is ExtraQueryData {
         ("where" in raw) &&
         (
             raw.where == undefined ||
-            Expr.isExpr(raw.where)
+            ExprUtil.isExpr(raw.where)
         )
     );
 }

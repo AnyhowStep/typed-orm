@@ -4,3 +4,4 @@
 //undefined IS NOT ALLOWED
 //TODO bigint?
 export type PrimitiveExpr = bigint|number|string|boolean|Date|Buffer|null;
+export type NonNullPrimitiveExpr = Exclude<PrimitiveExpr, null>;

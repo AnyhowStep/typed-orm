@@ -2,6 +2,8 @@ import * as sd from "schema-decorator";
 import { ColumnRef } from "./column-ref";
 import { RawExpr, RawExprUtil } from "./raw-expr";
 import { QueryTree } from "./query-tree";
+import { IExprSelectItem } from "./expr-select-item";
+import { ALIASED } from "./constants";
 export interface ExprData {
     readonly usedRef: ColumnRef;
     readonly assertDelegate: sd.AssertDelegate<any>;
@@ -16,17 +18,25 @@ export declare class Expr<DataT extends ExprData> implements IExpr<DataT> {
     readonly assertDelegate: DataT["assertDelegate"];
     readonly queryTree: QueryTree;
     constructor(data: DataT, queryTree: QueryTree);
+    as<AliasT extends string>(alias: AliasT): ExprUtil.As<this, AliasT>;
 }
 export declare type IAnonymousTypedExpr<TypeT> = (IExpr<{
     usedRef: ColumnRef;
     assertDelegate: sd.AssertDelegate<TypeT>;
 }>);
-export declare namespace Expr {
+export declare namespace ExprUtil {
     function isExpr(raw: any): raw is IExpr;
     type FromRawExpr<RawExprT extends RawExpr<any>> = (Expr<{
         usedRef: RawExprUtil.UsedRef<RawExprT>;
         assertDelegate: RawExprUtil.AssertDelegate<RawExprT>;
     }>);
     function fromRawExpr<RawExprT extends RawExpr<any>>(rawExpr: RawExprT): FromRawExpr<RawExprT>;
+    type As<ExprT extends IExpr, AliasT extends string> = (IExprSelectItem<{
+        readonly usedRef: ExprT["usedRef"];
+        readonly assertDelegate: ExprT["assertDelegate"];
+        readonly tableAlias: typeof ALIASED;
+        readonly alias: AliasT;
+    }>);
+    function as<ExprT extends IExpr, AliasT extends string>(expr: ExprT, alias: AliasT): As<ExprT, AliasT>;
 }
 //# sourceMappingURL=expr.d.ts.map

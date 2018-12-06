@@ -2,7 +2,7 @@ import {Query} from "../../query";
 import {AfterFromClause} from "../predicate";
 import {ColumnRefUtil} from "../../../column-ref";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
-import {Expr} from "../../../expr";
+import {ExprUtil} from "../../../expr";
 import {ColumnUtil} from "../../../column";
 
 export type WhereDelegate<
@@ -44,7 +44,7 @@ export function where<
         ColumnRefUtil.toConvenient(queryRef),
         query
     );
-    const expr = Expr.fromRawExpr(rawExpr);
+    const expr = ExprUtil.fromRawExpr(rawExpr);
 
     ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);
 

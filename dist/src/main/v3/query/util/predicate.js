@@ -38,7 +38,7 @@ function isExtraQueryData(raw) {
         (raw instanceof Object) &&
         ("where" in raw) &&
         (raw.where == undefined ||
-            expr_1.Expr.isExpr(raw.where)));
+            expr_1.ExprUtil.isExpr(raw.where)));
 }
 exports.isExtraQueryData = isExtraQueryData;
 function isQuery(raw) {
