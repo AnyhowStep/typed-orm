@@ -183,7 +183,7 @@ export class Query<DataT extends QueryData> {
         );
     }
 
-    innerJoinUsing<
+    public innerJoinUsing<
         AliasedTableT extends IAliasedTable,
         UsingDelegateT extends QueryUtil.JoinUsingDelegate<Extract<this, QueryUtil.AfterFromClause>["joins"], AliasedTableT>
     > (
@@ -204,7 +204,7 @@ export class Query<DataT extends QueryData> {
         );
     }
 
-    leftJoinUsing<
+    public leftJoinUsing<
         AliasedTableT extends IAliasedTable,
         UsingDelegateT extends QueryUtil.JoinUsingDelegate<Extract<this, QueryUtil.AfterFromClause>["joins"], AliasedTableT>
     > (
@@ -215,6 +215,27 @@ export class Query<DataT extends QueryData> {
         QueryUtil.LeftJoin<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>
     ) {
         return QueryUtil.leftJoinUsing<
+            Extract<this, QueryUtil.AfterFromClause>,
+            AliasedTableT,
+            UsingDelegateT
+        >(
+            this,
+            aliasedTable,
+            usingDelegate
+        );
+    }
+
+    public rightJoinUsing<
+        AliasedTableT extends IAliasedTable,
+        UsingDelegateT extends QueryUtil.JoinUsingDelegate<Extract<this, QueryUtil.AfterFromClause>["joins"], AliasedTableT>
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        aliasedTable : QueryUtil.AssertUniqueJoinTarget<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>,
+        usingDelegate : UsingDelegateT
+    ) : (
+        QueryUtil.RightJoin<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>
+    ) {
+        return QueryUtil.rightJoinUsing<
             Extract<this, QueryUtil.AfterFromClause>,
             AliasedTableT,
             UsingDelegateT

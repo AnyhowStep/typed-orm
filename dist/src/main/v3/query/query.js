@@ -29,6 +29,9 @@ class Query {
     leftJoinUsing(aliasedTable, usingDelegate) {
         return QueryUtil.leftJoinUsing(this, aliasedTable, usingDelegate);
     }
+    rightJoinUsing(aliasedTable, usingDelegate) {
+        return QueryUtil.rightJoinUsing(this, aliasedTable, usingDelegate);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

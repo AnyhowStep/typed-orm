@@ -10,6 +10,7 @@ __export(require("./join-delegate"));
 __export(require("./join-using-delegate"));
 __export(require("./left-join-using"));
 __export(require("./left-join"));
+__export(require("./right-join-using"));
 __export(require("./right-join"));
 __export(require("./select"));
 __export(require("./where"));

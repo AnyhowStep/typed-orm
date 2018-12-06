@@ -5,6 +5,7 @@ export * from "./join-delegate";
 export * from "./join-using-delegate";
 export * from "./left-join-using";
 export * from "./left-join";
+export * from "./right-join-using";
 export * from "./right-join";
 export * from "./select";
 export * from "./where";
