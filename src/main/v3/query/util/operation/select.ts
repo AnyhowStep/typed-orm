@@ -17,7 +17,9 @@ export type SelectDelegate<
     //If expression, must have proper usedRef
     //If columnMap, must be columnMaps in args given
     (
-        columns : ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>
+        columns : ColumnRefUtil.ToConvenient<
+            ColumnRefUtil.FromQuery<QueryT>
+        >
     ) => NonEmptyTuple<SelectItem>
 );
 

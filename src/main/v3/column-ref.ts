@@ -118,12 +118,12 @@ export namespace ColumnRefUtil {
             QueryT["joins"] extends IJoin[] ?
             FromJoinArray<QueryT["joins"]> :
             {}
-        )/* &
+        ) &
         (
             QueryT["parentJoins"] extends IJoin[] ?
             FromJoinArray<QueryT["parentJoins"]> :
             {}
-        )*/
+        )
     );
     function fromQueryJoins (query : IQuery) {
         if (query.joins == undefined) {
