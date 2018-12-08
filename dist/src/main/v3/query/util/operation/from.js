@@ -6,25 +6,33 @@ const predicate_1 = require("../predicate");
 //Must be done before any JOINs, as per MySQL
 //TODO The aliasedTable must not be in parentJoins
 function from(query, aliasedTable) {
-    if (query.joins != undefined) {
+    if (query._joins != undefined) {
         throw new Error(`FROM clause not allowed more than once`);
     }
     predicate_1.assertUniqueJoinTarget(query, aliasedTable);
-    const { parentJoins, unions, selects, limit, unionLimit, extraData, } = query;
+    const { _distinct, _sqlCalcFoundRows, _parentJoins, _selects, _where, _grouped, _having, _orders, _limit, _unions, _unionOrders, _unionLimit, _mapDelegate, } = query;
     return new query_1.Query({
-        joins: [
+        _distinct,
+        _sqlCalcFoundRows,
+        _joins: [
             new join_1.Join({
                 aliasedTable,
                 columns: aliasedTable.columns,
                 nullable: false,
             }, join_1.JoinType.FROM, [], []),
         ],
-        parentJoins,
-        unions,
-        selects,
-        limit,
-        unionLimit,
-    }, extraData);
+        _parentJoins,
+        _selects,
+        _where,
+        _grouped,
+        _having,
+        _orders,
+        _limit,
+        _unions,
+        _unionOrders,
+        _unionLimit,
+        _mapDelegate,
+    });
 }
 exports.from = from;
 //# sourceMappingURL=from.js.map

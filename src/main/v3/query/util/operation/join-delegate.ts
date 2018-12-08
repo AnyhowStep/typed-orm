@@ -29,10 +29,14 @@ export type JoinToColumn<
     }>
 );
 
+/*
+    TODO Consider allowing JOIN'ing on parent query columns?
+    What's the use-case?
+*/
 export type JoinToDelegate<
     QueryT extends AfterFromClause,
     AliasedTableT extends IAliasedTable,
-    FromDelegateT extends JoinFromDelegate<QueryT["joins"]>
+    FromDelegateT extends JoinFromDelegate<QueryT["_joins"]>
 > = (
     (columns : AliasedTableT["columns"]) => (
         ReturnType<FromDelegateT> extends [infer C0] ?
@@ -130,7 +134,7 @@ export type JoinToDelegate<
 export function invokeJoinDelegate<
     QueryT extends AfterFromClause,
     AliasedTableT extends IAliasedTable,
-    FromDelegateT extends JoinFromDelegate<QueryT["joins"]>
+    FromDelegateT extends JoinFromDelegate<QueryT["_joins"]>
 > (
     query : QueryT,
     aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,
@@ -142,12 +146,12 @@ export function invokeJoinDelegate<
         to : ReturnType<JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>>
     }
 ) {
-    if (query.joins == undefined) {
+    if (query._joins == undefined) {
         throw new Error(`Cannot JOIN before FROM clause`);
     }
     assertUniqueJoinTarget(query, aliasedTable);
 
-    const joins : QueryT["joins"] = query.joins;
+    const joins : QueryT["_joins"] = query._joins;
     const fromRef = ColumnRefUtil.fromJoinArray(joins);
     const from = fromDelegate(
         ColumnRefUtil.toConvenient(fromRef)

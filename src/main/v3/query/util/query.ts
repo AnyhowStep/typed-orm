@@ -4,7 +4,7 @@ import {AliasedTable} from "../../aliased-table";
 import {ColumnUtil} from "../../column";
 
 export function queryTreeJoins (query : IQuery) : QueryTreeArray {
-    const joins = query.joins;
+    const joins = query._joins;
     if (joins == undefined || joins.length == 0) {
         return [];
     }

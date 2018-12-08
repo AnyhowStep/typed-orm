@@ -38,7 +38,7 @@ export function where<
             ]|void
         )
     )
-) : Query<QueryT> {
+) : /*TODO Implement actual return type*/Query<QueryT> {
     const queryRef = ColumnRefUtil.fromQuery(query);
     const rawExpr = delegate(
         ColumnRefUtil.toConvenient(queryRef),
@@ -49,10 +49,10 @@ export function where<
     ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);
 
     return new Query(
-        query,
         {
-            ...query.extraData,
-            where : expr,
+            ...query,
+            //TODO This should be (query._where AND expr)
+            where : expr
         }
     );
 }

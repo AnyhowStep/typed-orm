@@ -16,21 +16,21 @@ tape(__filename, (t) => {
 
     t.true(o.QueryUtil.isQuery(query));
 
-    t.deepEqual(query.joins.length, 1);
-    t.equal(query.joins[0].aliasedTable, table);
-    t.equal(query.joins[0].columns, table.columns);
-    t.deepEqual(query.joins[0].nullable, false);
-    t.deepEqual(query.joins[0].joinType, o.JoinType.FROM);
-    t.deepEqual(query.joins[0].from.length, 0);
-    t.deepEqual(query.joins[0].to.length, 0);
+    t.deepEqual(query._joins.length, 1);
+    t.equal(query._joins[0].aliasedTable, table);
+    t.equal(query._joins[0].columns, table.columns);
+    t.deepEqual(query._joins[0].nullable, false);
+    t.deepEqual(query._joins[0].joinType, o.JoinType.FROM);
+    t.deepEqual(query._joins[0].from.length, 0);
+    t.deepEqual(query._joins[0].to.length, 0);
 
-    t.deepEqual(query.parentJoins, undefined);
-    t.deepEqual(query.unions, undefined);
-    t.deepEqual(query.selects, undefined);
-    t.deepEqual(query.limit, undefined);
-    t.deepEqual(query.unionLimit, undefined);
+    t.deepEqual(query._parentJoins, undefined);
+    t.deepEqual(query._unions, undefined);
+    t.deepEqual(query._selects, undefined);
+    t.deepEqual(query._limit, undefined);
+    t.deepEqual(query._unionLimit, undefined);
 
-    t.deepEqual(query.extraData.where, undefined);
+    t.deepEqual(query._where, undefined);
 
     t.end();
 });

@@ -2,7 +2,9 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 export declare const query: o.Query<{
-    readonly joins: (o.Join<{
+    readonly _distinct: false;
+    readonly _sqlCalcFoundRows: false;
+    readonly _joins: (o.Join<{
         aliasedTable: o.Table<{
             readonly alias: "table";
             readonly name: "table";
@@ -139,9 +141,15 @@ export declare const query: o.Query<{
         };
         nullable: false;
     }>)[];
-    readonly parentJoins: undefined;
-    readonly unions: undefined;
-    readonly selects: undefined;
-    readonly limit: undefined;
-    readonly unionLimit: undefined;
+    readonly _parentJoins: undefined;
+    readonly _selects: undefined;
+    readonly _where: undefined;
+    readonly _grouped: undefined;
+    readonly _having: undefined;
+    readonly _orders: undefined;
+    readonly _limit: undefined;
+    readonly _unions: undefined;
+    readonly _unionOrders: undefined;
+    readonly _unionLimit: undefined;
+    readonly _mapDelegate: undefined;
 }>;

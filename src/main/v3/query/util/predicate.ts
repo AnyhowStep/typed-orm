@@ -1,7 +1,6 @@
 import {
     UnionQuery,
     Limit,
-    ExtraQueryData,
     IQuery,
     QueryData,
 } from "../query";
@@ -11,6 +10,9 @@ import {SelectItemArrayUtil} from "../../select-item-array";
 import {IJoin} from "../../join";
 import {SelectItem} from "../../select-item";
 import {IAliasedTable} from "../../aliased-table";
+import {isObjectWithKeys} from "../../type";
+import {ColumnIdentifierUtil} from "../../column-identifier";
+import {OrderUtil} from "../../order";
 
 export function isUnionQuery (raw : any) : raw is UnionQuery {
     return (
@@ -37,82 +39,107 @@ export function isLimit (raw : any) : raw is Limit {
     return (
         raw != undefined &&
         (raw instanceof Object) &&
-        ("rowCount" in raw) &&
+        ("maxRowCount" in raw) &&
         ("offset" in raw) &&
-        (typeof raw.rowCount == "number") &&
+        (typeof raw.maxRowCount == "number") &&
         (typeof raw.offset == "number")
     );
 }
-export function isExtraQueryData (raw : any) : raw is ExtraQueryData {
-    return (
-        raw != undefined &&
-        (raw instanceof Object) &&
-        ("where" in raw) &&
-        (
-            raw.where == undefined ||
-            ExprUtil.isExpr(raw.where)
-        )
-    );
-}
 export function isQuery (raw : any) : raw is IQuery {
+    if (!isObjectWithKeys<IQuery>(raw, [
+        "_distinct",
+        "_sqlCalcFoundRows",
+        "_joins",
+        "_parentJoins",
+        "_selects",
+        "_where",
+        "_grouped",
+        "_having",
+        "_orders",
+        "_limit",
+        "_unions",
+        "_unionOrders",
+        "_unionLimit",
+        "_mapDelegate"
+    ])) {
+        return false;
+    }
     return (
-        raw != undefined &&
-        (raw instanceof Object) &&
-        ("joins" in raw) &&
-        ("parentJoins" in raw) &&
-        ("unions" in raw) &&
-        ("selects" in raw) &&
-        ("limit" in raw) &&
-        ("unionLimit" in raw) &&
-        ("extraData" in raw) &&
+        (typeof raw._distinct == "boolean") &&
+        (typeof raw._sqlCalcFoundRows == "boolean") &&
         (
-            raw.joins == undefined ||
-            JoinArrayUtil.isJoinArray(raw.joins)
+            raw._joins == undefined ||
+            JoinArrayUtil.isJoinArray(raw._joins)
         ) &&
         (
-            raw.parentJoins == undefined ||
-            JoinArrayUtil.isJoinArray(raw.parentJoins)
+            raw._parentJoins == undefined ||
+            JoinArrayUtil.isJoinArray(raw._parentJoins)
         ) &&
         (
-            raw.unions == undefined ||
-            isUnionQueryArray(raw.unions)
+            raw._selects == undefined ||
+            SelectItemArrayUtil.isSelectItemArray(raw._selects)
         ) &&
         (
-            raw.selects == undefined ||
-            SelectItemArrayUtil.isSelectItemArray(raw.selects)
+            //TODO Check if boolean expr
+            raw._where == undefined ||
+            ExprUtil.isExpr(raw._where)
         ) &&
         (
-            raw.limit == undefined ||
-            isLimit(raw.limit)
+            raw._grouped == undefined ||
+            ColumnIdentifierUtil.Array.isColumnIdentifierArray(raw._grouped)
         ) &&
         (
-            raw.unionLimit == undefined ||
-            isLimit(raw.unionLimit)
+            //TODO Check if boolean expr
+            raw._having == undefined ||
+            ExprUtil.isExpr(raw._having)
         ) &&
-        isExtraQueryData(raw.extraData)
-    );
+        (
+            raw._orders == undefined ||
+            OrderUtil.Array.isOrderArray(raw._orders)
+        ) &&
+        (
+            raw._limit == undefined ||
+            isLimit(raw._limit)
+        ) &&
+        (
+            raw._unions == undefined ||
+            isUnionQueryArray(raw._unions)
+        ) &&
+        (
+            raw._unionOrders == undefined ||
+            OrderUtil.Array.isOrderArray(raw._unionOrders)
+        ) &&
+        (
+            raw._unionLimit == undefined ||
+            isLimit(raw._unionLimit)
+        ) &&
+        (
+            raw._mapDelegate == undefined ||
+            (typeof raw._mapDelegate == "function")
+        )
+    )
 }
 
-export type BeforeFromClause = IQuery<QueryData & { joins : undefined }>;
-export type AfterFromClause = IQuery<QueryData & { joins : IJoin[] }>;
-export type BeforeUnionClause = IQuery<QueryData & { unions : undefined }>;
-export type AfterUnionClause = IQuery<QueryData & { unions : UnionQuery[] }>;
-export type BeforeSelectClause = IQuery<QueryData & { selects : undefined }>;
-export type AfterSelectClause = IQuery<QueryData & { selects : SelectItem[] }>;
+export type BeforeFromClause = IQuery<QueryData & { _joins : undefined }>;
+export type AfterFromClause = IQuery<QueryData & { _joins : IJoin[] }>;
+export type BeforeUnionClause = IQuery<QueryData & { _unions : undefined }>;
+export type AfterUnionClause = IQuery<QueryData & { _unions : UnionQuery[] }>;
+export type BeforeSelectClause = IQuery<QueryData & { _selects : undefined }>;
+export type AfterSelectClause = IQuery<QueryData & { _selects : SelectItem[] }>;
 export type OneRowQuery = (
     BeforeFromClause &
     BeforeUnionClause
 );
 export type ZeroOrOneRowUnionQuery = (
     AfterUnionClause &
-    { unionLimit : { rowCount : 0|1 } }
+    { _unionLimit : { maxRowCount : 0|1 } }
 );
 export type ZeroOrOneRowFromQuery = (
     AfterFromClause &
     BeforeUnionClause &
     (
-        { limit : { rowCount : 0|1 } } |
-        { unionLimit : { rowCount : 0|1 } }
+        { _limit : { maxRowCount : 0|1 } } |
+        { _unionLimit : { maxRowCount : 0|1 } }
     )
 );
 export type ZeroOrOneRowQuery = (
@@ -122,22 +149,22 @@ export type ZeroOrOneRowQuery = (
 );
 
 export function isBeforeFromClause (query : IQuery) : query is BeforeFromClause {
-    return query.joins == undefined;
+    return query._joins == undefined;
 }
 export function isAfterFromClause (query : IQuery) : query is AfterFromClause {
-    return query.joins != undefined;
+    return query._joins != undefined;
 }
 export function isBeforeUnionClause (query : IQuery) : query is BeforeUnionClause {
-    return query.unions == undefined;
+    return query._unions == undefined;
 }
 export function isAfterUnionClause (query : IQuery) : query is AfterUnionClause {
-    return query.unions != undefined;
+    return query._unions != undefined;
 }
 export function isBeforeSelectClause (query : IQuery) : query is BeforeSelectClause {
-    return query.selects == undefined;
+    return query._selects == undefined;
 }
 export function isAfterSelectClause (query : IQuery) : query is AfterSelectClause {
-    return query.selects != undefined;
+    return query._selects != undefined;
 }
 export function isOneRowQuery (query : IQuery) : query is OneRowQuery {
     return isBeforeFromClause(query) && isBeforeUnionClause(query);
@@ -145,10 +172,10 @@ export function isOneRowQuery (query : IQuery) : query is OneRowQuery {
 export function isZeroOrOneRowUnionQuery (query : IQuery) : query is ZeroOrOneRowUnionQuery {
     return (
         isAfterUnionClause(query) &&
-        query.unionLimit != undefined &&
+        query._unionLimit != undefined &&
         (
-            query.unionLimit.rowCount == 0 ||
-            query.unionLimit.rowCount == 1
+            query._unionLimit.maxRowCount == 0 ||
+            query._unionLimit.maxRowCount == 1
         )
     )
 }
@@ -158,17 +185,17 @@ export function isZeroOrOneRowFromQuery (query : IQuery) : query is ZeroOrOneRow
         isBeforeUnionClause(query) &&
         (
             (
-                query.limit != undefined &&
+                query._limit != undefined &&
                 (
-                    query.limit.rowCount == 0 ||
-                    query.limit.rowCount == 1
+                    query._limit.maxRowCount == 0 ||
+                    query._limit.maxRowCount == 1
                 )
             ) ||
             (
-                query.unionLimit != undefined &&
+                query._unionLimit != undefined &&
                 (
-                    query.unionLimit.rowCount == 0 ||
-                    query.unionLimit.rowCount == 1
+                    query._unionLimit.maxRowCount == 0 ||
+                    query._unionLimit.maxRowCount == 1
                 )
             )
         )
@@ -192,28 +219,28 @@ export type AssertUniqueJoinTarget<
 > = (
     AliasedTableT &
     (
-        QueryT["joins"] extends IJoin[] ?
+        QueryT["_joins"] extends IJoin[] ?
         (
-            AliasedTableT["alias"] extends JoinArrayUtil.ToTableAliasUnion<QueryT["joins"]> ?
+            AliasedTableT["alias"] extends JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]> ?
             [
                 "Alias",
                 AliasedTableT["alias"],
                 "already used in previous JOINs",
-                JoinArrayUtil.ToTableAliasUnion<QueryT["joins"]>
+                JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>
             ]|void :
             unknown
         ) :
         unknown
     ) &
     (
-        QueryT["parentJoins"] extends IJoin[] ?
+        QueryT["_parentJoins"] extends IJoin[] ?
         (
-            AliasedTableT["alias"] extends JoinArrayUtil.ToTableAliasUnion<QueryT["parentJoins"]> ?
+            AliasedTableT["alias"] extends JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]> ?
             [
                 "Alias",
                 AliasedTableT["alias"],
                 "already used in parent JOINs",
-                JoinArrayUtil.ToTableAliasUnion<QueryT["parentJoins"]>
+                JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>
             ]|void :
             unknown
         ) :
@@ -224,13 +251,13 @@ export function assertUniqueJoinTarget (
     query : IQuery,
     aliasedTable : IAliasedTable
 ) {
-    if (query.joins != undefined) {
-        if (query.joins.some(j => j.aliasedTable.alias == aliasedTable.alias)) {
+    if (query._joins != undefined) {
+        if (query._joins.some(j => j.aliasedTable.alias == aliasedTable.alias)) {
             throw new Error(`Alias ${aliasedTable.alias} already used in previous JOINs`);
         }
     }
-    if (query.parentJoins != undefined) {
-        if (query.parentJoins.some(j => j.aliasedTable.alias == aliasedTable.alias)) {
+    if (query._parentJoins != undefined) {
+        if (query._parentJoins.some(j => j.aliasedTable.alias == aliasedTable.alias)) {
             throw new Error(`Alias ${aliasedTable.alias} already used in parent JOINs`);
         }
     }

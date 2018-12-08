@@ -17,12 +17,12 @@ tape(__filename, (t) => {
         .select(c => [c.x])
         .select(c => [c.y]);
 
-    t.true(o.SelectItemArrayUtil.isSelectItemArray(query.selects));
-    t.deepEqual(query.selects.length, 3);
+    t.true(o.SelectItemArrayUtil.isSelectItemArray(query._selects));
+    t.deepEqual(query._selects.length, 3);
 
-    t.deepEqual(query.selects[0], table.columns.z);
-    t.deepEqual(query.selects[1], table.columns.x);
-    t.deepEqual(query.selects[2], table.columns.y);
+    t.deepEqual(query._selects[0], table.columns.z);
+    t.deepEqual(query._selects[1], table.columns.x);
+    t.deepEqual(query._selects[2], table.columns.y);
 
     t.end();
 });

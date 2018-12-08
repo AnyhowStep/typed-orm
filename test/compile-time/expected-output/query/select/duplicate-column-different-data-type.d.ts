@@ -4,7 +4,9 @@ export declare const query: any;
 export declare const query2: any;
 export declare const query3: any;
 export declare const query4: o.Query<{
-    readonly joins: (o.Join<{
+    readonly _distinct: false;
+    readonly _sqlCalcFoundRows: false;
+    readonly _joins: (o.Join<{
         aliasedTable: o.Table<{
             readonly alias: "table";
             readonly name: "table";
@@ -141,13 +143,19 @@ export declare const query4: o.Query<{
         };
         nullable: false;
     }>)[];
-    readonly parentJoins: undefined;
-    readonly unions: undefined;
-    readonly selects: [o.Column<{
+    readonly _parentJoins: undefined;
+    readonly _selects: [o.Column<{
         readonly tableAlias: "table";
         readonly name: "x";
         readonly assertDelegate: sd.AssertDelegate<number | null>;
     }>];
-    readonly limit: undefined;
-    readonly unionLimit: undefined;
+    readonly _where: undefined;
+    readonly _grouped: undefined;
+    readonly _having: undefined;
+    readonly _orders: undefined;
+    readonly _limit: undefined;
+    readonly _unions: undefined;
+    readonly _unionOrders: undefined;
+    readonly _unionLimit: undefined;
+    readonly _mapDelegate: undefined;
 }>;

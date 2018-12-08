@@ -5,11 +5,11 @@ const column_ref_1 = require("../../../column-ref");
 const column_1 = require("../../../column");
 const column_map_1 = require("../../../column-map");
 function invokeJoinDelegate(query, aliasedTable, fromDelegate, toDelegate) {
-    if (query.joins == undefined) {
+    if (query._joins == undefined) {
         throw new Error(`Cannot JOIN before FROM clause`);
     }
     predicate_1.assertUniqueJoinTarget(query, aliasedTable);
-    const joins = query.joins;
+    const joins = query._joins;
     const fromRef = column_ref_1.ColumnRefUtil.fromJoinArray(joins);
     const from = fromDelegate(column_ref_1.ColumnRefUtil.toConvenient(fromRef));
     column_1.ColumnUtil.Array.assertIsColumnArray(from);

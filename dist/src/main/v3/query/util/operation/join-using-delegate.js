@@ -13,12 +13,12 @@ function joinUsingColumns(columns, aliasedTable) {
 }
 exports.joinUsingColumns = joinUsingColumns;
 function invokeJoinUsingDelegate(query, aliasedTable, usingDelegate) {
-    if (query.joins == undefined) {
+    if (query._joins == undefined) {
         throw new Error(`Cannot JOIN before FROM clause`);
     }
     predicate_1.assertUniqueJoinTarget(query, aliasedTable);
-    const usingColumns = joinUsingColumns(column_1.ColumnUtil.Array.fromJoinArray(query.joins), aliasedTable);
-    const using = usingDelegate((query.joins.length == 1 ?
+    const usingColumns = joinUsingColumns(column_1.ColumnUtil.Array.fromJoinArray(query._joins), aliasedTable);
+    const using = usingDelegate((query._joins.length == 1 ?
         column_map_1.ColumnMapUtil.fromColumnArray(usingColumns) :
         column_ref_1.ColumnRefUtil.fromColumnArray(usingColumns)));
     column_1.ColumnUtil.Array.assertIsColumnArray(using);

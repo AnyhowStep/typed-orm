@@ -18,3 +18,23 @@ export type ToUnknownIfAllFieldsNever<T> = (
 export type Writable<T> = {
     -readonly [k in keyof T] : T[k]
 };
+
+export function isObjectWithKeys<T> (
+    raw : any,
+    keys : Extract<keyof T, string>[]
+) : raw is {
+    [k in Extract<keyof T, string>] : any
+} {
+    if (raw == undefined) {
+        return false;
+    }
+    if (!(raw instanceof Object)) {
+        return false;
+    }
+    for (let k of keys) {
+        if (!(k in raw)) {
+            return false;
+        }
+    }
+    return true;
+}

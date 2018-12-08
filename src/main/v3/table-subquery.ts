@@ -16,7 +16,7 @@ export interface ITableSubquery<
 > extends IAliasedTable<{
     readonly alias : DataT["alias"];
     readonly name  : DataT["alias"];
-    readonly columns : ColumnMapUtil.FromSelectItemArray<DataT["query"]["selects"]>;
+    readonly columns : ColumnMapUtil.FromSelectItemArray<DataT["query"]["_selects"]>;
 }> {
     readonly query : DataT["query"];
     readonly alias : DataT["alias"];
@@ -70,7 +70,7 @@ export namespace TableSubquery {
 
                         In general, such nesting isn't desired, anyway.
                     */
-                    selects : [
+                    _selects : [
                         AnonymousTypedSingleValueSelectItem<TypeT>
                     ]
                 }
@@ -84,11 +84,11 @@ export namespace TableSubquery {
             QueryUtil.isAfterSelectClause(raw.query) &&
             QueryUtil.isZeroOrOneRowQuery(raw.query) &&
             (
-                raw.query.selects != undefined &&
-                raw.query.selects.length == 1 &&
+                raw.query._selects != undefined &&
+                raw.query._selects.length == 1 &&
                 (
-                    ColumnUtil.isColumn(raw.query.selects[0]) ||
-                    ExprSelectItemUtil.isExprSelectItem(raw.query.selects[0])
+                    ColumnUtil.isColumn(raw.query._selects[0]) ||
+                    ExprSelectItemUtil.isExprSelectItem(raw.query._selects[0])
                 )
             )
         );
@@ -118,7 +118,7 @@ export namespace TableSubquery {
 
                         In general, such nesting isn't desired, anyway.
                     */
-                    selects : [
+                    _selects : [
                         AnonymousTypedSingleValueSelectItem<TypeT>
                     ]
                 }
@@ -132,27 +132,27 @@ export namespace TableSubquery {
             QueryUtil.isAfterSelectClause(raw.query) &&
             QueryUtil.isOneRowQuery(raw.query) &&
             (
-                raw.query.selects != undefined &&
-                raw.query.selects.length == 1 &&
+                raw.query._selects != undefined &&
+                raw.query._selects.length == 1 &&
                 (
-                    ColumnUtil.isColumn(raw.query.selects[0]) ||
-                    ExprSelectItemUtil.isExprSelectItem(raw.query.selects[0])
+                    ColumnUtil.isColumn(raw.query._selects[0]) ||
+                    ExprSelectItemUtil.isExprSelectItem(raw.query._selects[0])
                 )
             )
         );
     }
 
     export type ColumnName<T extends SingleValueOrEmpty<any>> = (
-        T["query"]["selects"]["0"] extends IColumn ?
-        Extract<T["query"]["selects"]["0"], IColumn>["name"] :
-        T["query"]["selects"]["0"] extends IExprSelectItem ?
-        Extract<T["query"]["selects"]["0"], IExprSelectItem>["alias"] :
+        T["query"]["_selects"]["0"] extends IColumn ?
+        Extract<T["query"]["_selects"]["0"], IColumn>["name"] :
+        T["query"]["_selects"]["0"] extends IExprSelectItem ?
+        Extract<T["query"]["_selects"]["0"], IExprSelectItem>["alias"] :
         never
     );
     export function columnName<T extends SingleValueOrEmpty<any>> (
         t : T
     ) : ColumnName<T> {
-        const selectItem = t.query.selects[0];
+        const selectItem = t.query._selects[0];
         if (ColumnUtil.isColumn(selectItem)) {
             return selectItem.name as any;
         }
@@ -168,10 +168,10 @@ export namespace TableSubquery {
             null
         ) |
         (
-            T["query"]["selects"]["0"] extends IColumn ?
-            ReturnType<T["query"]["selects"]["0"]["assertDelegate"]> :
-            T["query"]["selects"]["0"] extends IExprSelectItem ?
-            ReturnType<T["query"]["selects"]["0"]["assertDelegate"]> :
+            T["query"]["_selects"]["0"] extends IColumn ?
+            ReturnType<T["query"]["_selects"]["0"]["assertDelegate"]> :
+            T["query"]["_selects"]["0"] extends IExprSelectItem ?
+            ReturnType<T["query"]["_selects"]["0"]["assertDelegate"]> :
             never
         )
     );
@@ -184,9 +184,9 @@ export namespace TableSubquery {
         AssertDelegate<T>
     ) {
         if (isSingleValue(t)) {
-            return t.query.selects[0].assertDelegate;
+            return t.query._selects[0].assertDelegate;
         } else {
-            return sd.nullable(t.query.selects[0].assertDelegate);
+            return sd.nullable(t.query._selects[0].assertDelegate);
         }
     }
 

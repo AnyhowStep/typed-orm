@@ -11,18 +11,26 @@ function select(query, delegate) {
     //+ Selected columns/columnMaps must exist.
     //+ Duplicates not allowed with existing selects
     //+ Duplicates not allowed with new selects
-    const newSelects = ((query.selects == undefined) ?
+    const newSelects = ((query._selects == undefined) ?
         selects :
-        [...query.selects, ...selects]);
-    const { joins, parentJoins, unions, limit, unionLimit, extraData, } = query;
+        [...query._selects, ...selects]);
+    const { _distinct, _sqlCalcFoundRows, _joins, _parentJoins, _where, _grouped, _having, _orders, _limit, _unions, _unionOrders, _unionLimit, _mapDelegate, } = query;
     return new query_1.Query({
-        joins,
-        parentJoins,
-        unions,
-        selects: newSelects,
-        limit,
-        unionLimit,
-    }, extraData);
+        _distinct,
+        _sqlCalcFoundRows,
+        _joins,
+        _parentJoins,
+        _selects: newSelects,
+        _where,
+        _grouped,
+        _having,
+        _orders,
+        _limit,
+        _unions,
+        _unionOrders,
+        _unionLimit,
+        _mapDelegate,
+    });
 }
 exports.select = select;
 //# sourceMappingURL=select.js.map

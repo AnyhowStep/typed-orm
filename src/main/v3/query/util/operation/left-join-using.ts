@@ -6,7 +6,7 @@ import {LeftJoin, leftJoin} from "./left-join";
 export function leftJoinUsing<
     QueryT extends AfterFromClause,
     AliasedTableT extends IAliasedTable,
-    UsingDelegateT extends JoinUsingDelegate<QueryT["joins"], AliasedTableT>
+    UsingDelegateT extends JoinUsingDelegate<QueryT["_joins"], AliasedTableT>
 > (
     query : QueryT,
     aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,

@@ -2,14 +2,21 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const QueryUtil = require("./util");
 class Query {
-    constructor(data, extraData) {
-        this.joins = data.joins;
-        this.parentJoins = data.parentJoins;
-        this.unions = data.unions;
-        this.selects = data.selects;
-        this.limit = data.limit;
-        this.unionLimit = data.unionLimit;
-        this.extraData = extraData;
+    constructor(data) {
+        this._distinct = data._distinct;
+        this._sqlCalcFoundRows = data._sqlCalcFoundRows;
+        this._joins = data._joins;
+        this._parentJoins = data._parentJoins;
+        this._selects = data._selects;
+        this._where = data._where;
+        this._grouped = data._grouped;
+        this._having = data._having;
+        this._orders = data._orders;
+        this._limit = data._limit;
+        this._unions = data._unions;
+        this._unionOrders = data._unionOrders;
+        this._unionLimit = data._unionLimit;
+        this._mapDelegate = data._mapDelegate;
     }
     from(aliasedTable) {
         return QueryUtil.from(this, aliasedTable);

@@ -1,25 +1,46 @@
 import {Query} from "../query";
 
 export type NewInstance = Query<{
-    readonly joins : undefined,
-    readonly parentJoins : undefined,
-    readonly unions : undefined,
-    readonly selects : undefined,
-    readonly limit : undefined,
-    readonly unionLimit : undefined,
+    readonly _distinct : false;
+    readonly _sqlCalcFoundRows : false;
+
+    readonly _joins : undefined;
+    readonly _parentJoins : undefined;
+    readonly _selects : undefined;
+    readonly _where : undefined;
+
+    readonly _grouped : undefined;
+    readonly _having : undefined;
+
+    readonly _orders : undefined;
+    readonly _limit : undefined;
+
+    readonly _unions : undefined;
+    readonly _unionOrders : undefined;
+    readonly _unionLimit : undefined;
+
+    readonly _mapDelegate : undefined;
 }>;
 export function newInstance () : NewInstance {
-    return new Query(
-        {
-            joins : undefined,
-            parentJoins : undefined,
-            unions : undefined,
-            selects : undefined,
-            limit : undefined,
-            unionLimit : undefined,
-        },
-        {
-            where : undefined,
-        }
-    );
+    return new Query({
+        _distinct : false,
+        _sqlCalcFoundRows : false,
+
+        _joins : undefined,
+        _parentJoins : undefined,
+        _selects : undefined,
+        _where : undefined,
+
+        _grouped : undefined,
+        _having : undefined,
+
+        _orders : undefined,
+        _limit : undefined,
+
+        _unions : undefined,
+        _unionOrders : undefined,
+        _unionLimit : undefined,
+
+        _mapDelegate : undefined,
+    });
 }

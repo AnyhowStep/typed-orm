@@ -79,27 +79,27 @@ export type JoinUsingDelegate<
 export function invokeJoinUsingDelegate<
     QueryT extends AfterFromClause,
     AliasedTableT extends IAliasedTable,
-    UsingDelegateT extends JoinUsingDelegate<QueryT["joins"], AliasedTableT>
+    UsingDelegateT extends JoinUsingDelegate<QueryT["_joins"], AliasedTableT>
 >(
     query : QueryT,
     aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,
     usingDelegate : UsingDelegateT
 ) : ReturnType<UsingDelegateT> {
-    if (query.joins == undefined) {
+    if (query._joins == undefined) {
         throw new Error(`Cannot JOIN before FROM clause`);
     }
     assertUniqueJoinTarget(query, aliasedTable);
 
     const usingColumns : JoinUsingColumnUnion<
-        ColumnUtil.FromJoinArray<QueryT["joins"]>,
+        ColumnUtil.FromJoinArray<QueryT["_joins"]>,
         AliasedTableT
     >[] = joinUsingColumns(
-        ColumnUtil.Array.fromJoinArray(query.joins as QueryT["joins"]),
+        ColumnUtil.Array.fromJoinArray(query._joins as QueryT["_joins"]),
         aliasedTable as AliasedTableT
     );
     const using = usingDelegate(
         (
-            query.joins.length == 1 ?
+            query._joins.length == 1 ?
             ColumnMapUtil.fromColumnArray(usingColumns) :
             ColumnRefUtil.fromColumnArray(usingColumns)
         ) as any

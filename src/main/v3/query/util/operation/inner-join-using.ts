@@ -6,7 +6,7 @@ import {InnerJoin, innerJoin} from "./inner-join";
 export function innerJoinUsing<
     QueryT extends AfterFromClause,
     AliasedTableT extends IAliasedTable,
-    UsingDelegateT extends JoinUsingDelegate<QueryT["joins"], AliasedTableT>
+    UsingDelegateT extends JoinUsingDelegate<QueryT["_joins"], AliasedTableT>
 > (
     query : QueryT,
     aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,

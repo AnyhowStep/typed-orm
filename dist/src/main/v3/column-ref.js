@@ -36,19 +36,19 @@ var ColumnRefUtil;
     }
     ColumnRefUtil.fromColumn = fromColumn;
     function fromQueryJoins(query) {
-        if (query.joins == undefined) {
+        if (query._joins == undefined) {
             return {};
         }
         else {
-            return fromJoinArray(query.joins);
+            return fromJoinArray(query._joins);
         }
     }
     function fromQueryParentJoins(query) {
-        if (query.parentJoins == undefined) {
+        if (query._parentJoins == undefined) {
             return {};
         }
         else {
-            return fromJoinArray(query.parentJoins);
+            return fromJoinArray(query._parentJoins);
         }
     }
     function fromQuery(query) {
@@ -119,5 +119,13 @@ var ColumnRefUtil;
         return result;
     }
     ColumnRefUtil.intersect = intersect;
+    function intersectTuple(...arr) {
+        let result = {};
+        for (let columnRef of arr) {
+            result = intersect(result, columnRef);
+        }
+        return result;
+    }
+    ColumnRefUtil.intersectTuple = intersectTuple;
 })(ColumnRefUtil = exports.ColumnRefUtil || (exports.ColumnRefUtil = {}));
 //# sourceMappingURL=column-ref.js.map

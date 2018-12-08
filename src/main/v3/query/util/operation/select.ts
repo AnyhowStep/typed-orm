@@ -31,19 +31,32 @@ export type Select<
     SelectDelegateT extends SelectDelegate<QueryT>
 > = (
     Query<{
-        readonly joins : QueryT["joins"],
-        readonly parentJoins : QueryT["parentJoins"],
-        readonly unions : QueryT["unions"],
-        readonly selects : (
-            QueryT["selects"] extends SelectItem[] ?
+        readonly _distinct : QueryT["_distinct"];
+        readonly _sqlCalcFoundRows : QueryT["_sqlCalcFoundRows"];
+
+        readonly _joins : QueryT["_joins"],
+        readonly _parentJoins : QueryT["_parentJoins"],
+        readonly _selects : (
+            QueryT["_selects"] extends SelectItem[] ?
             TupleUtil.Concat<
-                QueryT["selects"],
+                QueryT["_selects"],
                 ReturnType<SelectDelegateT>
             > :
             ReturnType<SelectDelegateT>
         ),
-        readonly limit : QueryT["limit"],
-        readonly unionLimit : QueryT["unionLimit"],
+        readonly _where : QueryT["_where"],
+
+        readonly _grouped : QueryT["_grouped"],
+        readonly _having : QueryT["_having"],
+
+        readonly _orders : QueryT["_orders"],
+        readonly _limit : QueryT["_limit"],
+
+        readonly _unions : QueryT["_unions"],
+        readonly _unionOrders : QueryT["_unionOrders"],
+        readonly _unionLimit : QueryT["_unionLimit"],
+
+        readonly _mapDelegate : QueryT["_mapDelegate"],
     }>
 );
 export type AssertValidSelectDelegate<
@@ -139,7 +152,7 @@ export type AssertValidSelectDelegate<
         )
     }> &
     (
-        QueryT["selects"] extends SelectItem[] ?
+        QueryT["_selects"] extends SelectItem[] ?
         (
             //Duplicates not allowed with existing selects
             ToUnknownIfAllFieldsNever<{
@@ -151,7 +164,7 @@ export type AssertValidSelectDelegate<
                                 ReturnType<SelectDelegateT>[index]
                             >,
                             ColumnIdentifierUtil.FromSelectItem<
-                                QueryT["selects"][number]
+                                QueryT["_selects"][number]
                             >
                         > extends never ?
                         never :
@@ -162,7 +175,7 @@ export type AssertValidSelectDelegate<
                                     ReturnType<SelectDelegateT>[index]
                                 >,
                                 ColumnIdentifierUtil.FromSelectItem<
-                                    QueryT["selects"][number]
+                                    QueryT["_selects"][number]
                                 >
                             >
                         ]
@@ -195,36 +208,58 @@ export function select<
 
 
     const newSelects : (
-        QueryT["selects"] extends SelectItem[] ?
+        QueryT["_selects"] extends SelectItem[] ?
         TupleUtil.Concat<
-            QueryT["selects"],
+            QueryT["_selects"],
             ReturnType<SelectDelegateT>
         > :
         ReturnType<SelectDelegateT>
     ) = (
-        (query.selects == undefined) ?
+        (query._selects == undefined) ?
             selects :
-            [...query.selects, ...selects]
+            [...query._selects, ...selects]
     ) as any;
 
     const {
-        joins,
-        parentJoins,
-        unions,
-        limit,
-        unionLimit,
-        extraData,
+        _distinct,
+        _sqlCalcFoundRows,
+
+        _joins,
+        _parentJoins,
+        _where,
+
+        _grouped,
+        _having,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
     } = query;
 
-    return new Query(
-        {
-            joins,
-            parentJoins,
-            unions,
-            selects : newSelects,
-            limit,
-            unionLimit,
-        },
-        extraData
-    );
+    return new Query({
+        _distinct,
+        _sqlCalcFoundRows,
+
+        _joins,
+        _parentJoins,
+        _selects : newSelects,
+        _where,
+
+        _grouped,
+        _having,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
+    });
 }

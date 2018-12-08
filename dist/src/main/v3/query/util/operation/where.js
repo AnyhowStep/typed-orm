@@ -9,9 +9,10 @@ function where(query, delegate) {
     const rawExpr = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef), query);
     const expr = expr_1.ExprUtil.fromRawExpr(rawExpr);
     column_ref_1.ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);
-    return new query_1.Query(query, {
-        ...query.extraData,
-        where: expr,
+    return new query_1.Query({
+        ...query,
+        //TODO This should be (query._where AND expr)
+        where: expr
     });
 }
 exports.where = where;

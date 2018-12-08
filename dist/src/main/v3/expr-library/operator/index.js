@@ -4,4 +4,5 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./comparison"));
+__export(require("./logical"));
 //# sourceMappingURL=index.js.map

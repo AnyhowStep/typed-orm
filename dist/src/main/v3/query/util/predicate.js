@@ -3,6 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const expr_1 = require("../../expr");
 const join_array_1 = require("../../join-array");
 const select_item_array_1 = require("../../select-item-array");
+const type_1 = require("../../type");
+const column_identifier_1 = require("../../column-identifier");
+const order_1 = require("../../order");
 function isUnionQuery(raw) {
     return (raw != undefined &&
         (raw instanceof Object) &&
@@ -27,67 +30,85 @@ exports.isUnionQueryArray = isUnionQueryArray;
 function isLimit(raw) {
     return (raw != undefined &&
         (raw instanceof Object) &&
-        ("rowCount" in raw) &&
+        ("maxRowCount" in raw) &&
         ("offset" in raw) &&
-        (typeof raw.rowCount == "number") &&
+        (typeof raw.maxRowCount == "number") &&
         (typeof raw.offset == "number"));
 }
 exports.isLimit = isLimit;
-function isExtraQueryData(raw) {
-    return (raw != undefined &&
-        (raw instanceof Object) &&
-        ("where" in raw) &&
-        (raw.where == undefined ||
-            expr_1.ExprUtil.isExpr(raw.where)));
-}
-exports.isExtraQueryData = isExtraQueryData;
 function isQuery(raw) {
-    return (raw != undefined &&
-        (raw instanceof Object) &&
-        ("joins" in raw) &&
-        ("parentJoins" in raw) &&
-        ("unions" in raw) &&
-        ("selects" in raw) &&
-        ("limit" in raw) &&
-        ("unionLimit" in raw) &&
-        ("extraData" in raw) &&
-        (raw.joins == undefined ||
-            join_array_1.JoinArrayUtil.isJoinArray(raw.joins)) &&
-        (raw.parentJoins == undefined ||
-            join_array_1.JoinArrayUtil.isJoinArray(raw.parentJoins)) &&
-        (raw.unions == undefined ||
-            isUnionQueryArray(raw.unions)) &&
-        (raw.selects == undefined ||
-            select_item_array_1.SelectItemArrayUtil.isSelectItemArray(raw.selects)) &&
-        (raw.limit == undefined ||
-            isLimit(raw.limit)) &&
-        (raw.unionLimit == undefined ||
-            isLimit(raw.unionLimit)) &&
-        isExtraQueryData(raw.extraData));
+    if (!type_1.isObjectWithKeys(raw, [
+        "_distinct",
+        "_sqlCalcFoundRows",
+        "_joins",
+        "_parentJoins",
+        "_selects",
+        "_where",
+        "_grouped",
+        "_having",
+        "_orders",
+        "_limit",
+        "_unions",
+        "_unionOrders",
+        "_unionLimit",
+        "_mapDelegate"
+    ])) {
+        return false;
+    }
+    return ((typeof raw._distinct == "boolean") &&
+        (typeof raw._sqlCalcFoundRows == "boolean") &&
+        (raw._joins == undefined ||
+            join_array_1.JoinArrayUtil.isJoinArray(raw._joins)) &&
+        (raw._parentJoins == undefined ||
+            join_array_1.JoinArrayUtil.isJoinArray(raw._parentJoins)) &&
+        (raw._selects == undefined ||
+            select_item_array_1.SelectItemArrayUtil.isSelectItemArray(raw._selects)) &&
+        (
+        //TODO Check if boolean expr
+        raw._where == undefined ||
+            expr_1.ExprUtil.isExpr(raw._where)) &&
+        (raw._grouped == undefined ||
+            column_identifier_1.ColumnIdentifierUtil.Array.isColumnIdentifierArray(raw._grouped)) &&
+        (
+        //TODO Check if boolean expr
+        raw._having == undefined ||
+            expr_1.ExprUtil.isExpr(raw._having)) &&
+        (raw._orders == undefined ||
+            order_1.OrderUtil.Array.isOrderArray(raw._orders)) &&
+        (raw._limit == undefined ||
+            isLimit(raw._limit)) &&
+        (raw._unions == undefined ||
+            isUnionQueryArray(raw._unions)) &&
+        (raw._unionOrders == undefined ||
+            order_1.OrderUtil.Array.isOrderArray(raw._unionOrders)) &&
+        (raw._unionLimit == undefined ||
+            isLimit(raw._unionLimit)) &&
+        (raw._mapDelegate == undefined ||
+            (typeof raw._mapDelegate == "function")));
 }
 exports.isQuery = isQuery;
 function isBeforeFromClause(query) {
-    return query.joins == undefined;
+    return query._joins == undefined;
 }
 exports.isBeforeFromClause = isBeforeFromClause;
 function isAfterFromClause(query) {
-    return query.joins != undefined;
+    return query._joins != undefined;
 }
 exports.isAfterFromClause = isAfterFromClause;
 function isBeforeUnionClause(query) {
-    return query.unions == undefined;
+    return query._unions == undefined;
 }
 exports.isBeforeUnionClause = isBeforeUnionClause;
 function isAfterUnionClause(query) {
-    return query.unions != undefined;
+    return query._unions != undefined;
 }
 exports.isAfterUnionClause = isAfterUnionClause;
 function isBeforeSelectClause(query) {
-    return query.selects == undefined;
+    return query._selects == undefined;
 }
 exports.isBeforeSelectClause = isBeforeSelectClause;
 function isAfterSelectClause(query) {
-    return query.selects != undefined;
+    return query._selects != undefined;
 }
 exports.isAfterSelectClause = isAfterSelectClause;
 function isOneRowQuery(query) {
@@ -96,20 +117,20 @@ function isOneRowQuery(query) {
 exports.isOneRowQuery = isOneRowQuery;
 function isZeroOrOneRowUnionQuery(query) {
     return (isAfterUnionClause(query) &&
-        query.unionLimit != undefined &&
-        (query.unionLimit.rowCount == 0 ||
-            query.unionLimit.rowCount == 1));
+        query._unionLimit != undefined &&
+        (query._unionLimit.maxRowCount == 0 ||
+            query._unionLimit.maxRowCount == 1));
 }
 exports.isZeroOrOneRowUnionQuery = isZeroOrOneRowUnionQuery;
 function isZeroOrOneRowFromQuery(query) {
     return (isAfterFromClause(query) &&
         isBeforeUnionClause(query) &&
-        ((query.limit != undefined &&
-            (query.limit.rowCount == 0 ||
-                query.limit.rowCount == 1)) ||
-            (query.unionLimit != undefined &&
-                (query.unionLimit.rowCount == 0 ||
-                    query.unionLimit.rowCount == 1))));
+        ((query._limit != undefined &&
+            (query._limit.maxRowCount == 0 ||
+                query._limit.maxRowCount == 1)) ||
+            (query._unionLimit != undefined &&
+                (query._unionLimit.maxRowCount == 0 ||
+                    query._unionLimit.maxRowCount == 1))));
 }
 exports.isZeroOrOneRowFromQuery = isZeroOrOneRowFromQuery;
 function isZeroOrOneRowQuery(query) {
@@ -119,13 +140,13 @@ function isZeroOrOneRowQuery(query) {
 }
 exports.isZeroOrOneRowQuery = isZeroOrOneRowQuery;
 function assertUniqueJoinTarget(query, aliasedTable) {
-    if (query.joins != undefined) {
-        if (query.joins.some(j => j.aliasedTable.alias == aliasedTable.alias)) {
+    if (query._joins != undefined) {
+        if (query._joins.some(j => j.aliasedTable.alias == aliasedTable.alias)) {
             throw new Error(`Alias ${aliasedTable.alias} already used in previous JOINs`);
         }
     }
-    if (query.parentJoins != undefined) {
-        if (query.parentJoins.some(j => j.aliasedTable.alias == aliasedTable.alias)) {
+    if (query._parentJoins != undefined) {
+        if (query._parentJoins.some(j => j.aliasedTable.alias == aliasedTable.alias)) {
             throw new Error(`Alias ${aliasedTable.alias} already used in parent JOINs`);
         }
     }

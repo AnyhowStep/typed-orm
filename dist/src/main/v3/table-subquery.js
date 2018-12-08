@@ -17,24 +17,24 @@ var TableSubquery;
         return (isTableSubquery(raw) &&
             query_1.QueryUtil.isAfterSelectClause(raw.query) &&
             query_1.QueryUtil.isZeroOrOneRowQuery(raw.query) &&
-            (raw.query.selects != undefined &&
-                raw.query.selects.length == 1 &&
-                (column_1.ColumnUtil.isColumn(raw.query.selects[0]) ||
-                    expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(raw.query.selects[0]))));
+            (raw.query._selects != undefined &&
+                raw.query._selects.length == 1 &&
+                (column_1.ColumnUtil.isColumn(raw.query._selects[0]) ||
+                    expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(raw.query._selects[0]))));
     }
     TableSubquery.isSingleValueOrEmpty = isSingleValueOrEmpty;
     function isSingleValue(raw) {
         return (isTableSubquery(raw) &&
             query_1.QueryUtil.isAfterSelectClause(raw.query) &&
             query_1.QueryUtil.isOneRowQuery(raw.query) &&
-            (raw.query.selects != undefined &&
-                raw.query.selects.length == 1 &&
-                (column_1.ColumnUtil.isColumn(raw.query.selects[0]) ||
-                    expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(raw.query.selects[0]))));
+            (raw.query._selects != undefined &&
+                raw.query._selects.length == 1 &&
+                (column_1.ColumnUtil.isColumn(raw.query._selects[0]) ||
+                    expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(raw.query._selects[0]))));
     }
     TableSubquery.isSingleValue = isSingleValue;
     function columnName(t) {
-        const selectItem = t.query.selects[0];
+        const selectItem = t.query._selects[0];
         if (column_1.ColumnUtil.isColumn(selectItem)) {
             return selectItem.name;
         }
@@ -46,10 +46,10 @@ var TableSubquery;
     TableSubquery.columnName = columnName;
     function assertDelegate(t) {
         if (isSingleValue(t)) {
-            return t.query.selects[0].assertDelegate;
+            return t.query._selects[0].assertDelegate;
         }
         else {
-            return sd.nullable(t.query.selects[0].assertDelegate);
+            return sd.nullable(t.query._selects[0].assertDelegate);
         }
     }
     TableSubquery.assertDelegate = assertDelegate;

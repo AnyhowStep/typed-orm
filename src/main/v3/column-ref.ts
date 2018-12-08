@@ -5,7 +5,8 @@ import {IColumn, ColumnUtil} from "./column";
 import {IQuery} from "./query";
 import {ColumnIdentifierMapUtil} from "./column-identifier-map";
 import {ColumnIdentifier} from "./column-identifier";
-import { Writable } from "./type";
+import {Writable} from "./type";
+import {NonEmptyTuple} from "./tuple";
 
 export type ColumnRef = {
     readonly [tableAlias : string] : ColumnMap
@@ -110,28 +111,28 @@ export namespace ColumnRefUtil {
         QueryT extends IQuery
     > = (
         (
-            QueryT["joins"] extends IJoin[] ?
-            FromJoinArray<QueryT["joins"]> :
+            QueryT["_joins"] extends IJoin[] ?
+            FromJoinArray<QueryT["_joins"]> :
             {}
         ) &
         (
-            QueryT["parentJoins"] extends IJoin[] ?
-            FromJoinArray<QueryT["parentJoins"]> :
+            QueryT["_parentJoins"] extends IJoin[] ?
+            FromJoinArray<QueryT["_parentJoins"]> :
             {}
         )
     );
     function fromQueryJoins (query : IQuery) {
-        if (query.joins == undefined) {
+        if (query._joins == undefined) {
             return {};
         } else {
-            return fromJoinArray(query.joins);
+            return fromJoinArray(query._joins);
         }
     }
     function fromQueryParentJoins (query : IQuery) {
-        if (query.parentJoins == undefined) {
+        if (query._parentJoins == undefined) {
             return {};
         } else {
-            return fromJoinArray(query.parentJoins);
+            return fromJoinArray(query._parentJoins);
         }
     }
     export function fromQuery<
@@ -287,5 +288,90 @@ export namespace ColumnRefUtil {
             }
         }
         return result as Intersect<ColumnRefA, ColumnRefB>;
+    }
+    /*
+        s = `ArrT[0]`
+        arr = [];
+        arr.push(s);
+        for (let i=1; i<5; ++i) {
+            s = `Intersect<${s}, ArrT[${i}]>`;
+            arr.push(s);
+        }
+
+        arr2 = [];
+        for (let i=0; i<arr.length; ++i) {
+            arr2.push(`ArrT["length"] extends ${i+1} ?\n        ${arr[i]} :`);
+        }
+        arr2.join("\n        ")
+
+        The above crashes tsc, so, use the below
+
+        s = `ArrT[0]`
+        arr = [];
+        arr.push(s);
+        for (let i=1; i<5; ++i) {
+            s = `${s} & ArrT[${i}]`;
+            arr.push(s);
+        }
+
+        arr2 = [];
+        for (let i=0; i<arr.length; ++i) {
+            arr2.push(`ArrT["length"] extends ${i+1} ?\n        ${arr[i]} :`);
+        }
+        arr2.join("\n        ")
+    */
+    export type IntersectTuple<ArrT extends NonEmptyTuple<ColumnRef>> = (
+        ArrT["length"] extends 1 ?
+        ArrT[0] :
+        ArrT["length"] extends 2 ?
+        ArrT[0] & ArrT[1] :
+        ArrT["length"] extends 3 ?
+        ArrT[0] & ArrT[1] & ArrT[2] :
+        ArrT["length"] extends 4 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] :
+        ArrT["length"] extends 5 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] :
+        ArrT["length"] extends 6 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] :
+        ArrT["length"] extends 7 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] :
+        ArrT["length"] extends 8 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] :
+        ArrT["length"] extends 9 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] & ArrT[8] :
+        ArrT["length"] extends 10 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] & ArrT[8] & ArrT[9] :
+        ArrT["length"] extends 11 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] & ArrT[8] & ArrT[9] & ArrT[10] :
+        ArrT["length"] extends 12 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] & ArrT[8] & ArrT[9] & ArrT[10] & ArrT[11] :
+        ArrT["length"] extends 13 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] & ArrT[8] & ArrT[9] & ArrT[10] & ArrT[11] & ArrT[12] :
+        ArrT["length"] extends 14 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] & ArrT[8] & ArrT[9] & ArrT[10] & ArrT[11] & ArrT[12] & ArrT[13] :
+        ArrT["length"] extends 15 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] & ArrT[8] & ArrT[9] & ArrT[10] & ArrT[11] & ArrT[12] & ArrT[13] & ArrT[14] :
+        ArrT["length"] extends 16 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] & ArrT[8] & ArrT[9] & ArrT[10] & ArrT[11] & ArrT[12] & ArrT[13] & ArrT[14] & ArrT[15] :
+        ArrT["length"] extends 17 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] & ArrT[8] & ArrT[9] & ArrT[10] & ArrT[11] & ArrT[12] & ArrT[13] & ArrT[14] & ArrT[15] & ArrT[16] :
+        ArrT["length"] extends 18 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] & ArrT[8] & ArrT[9] & ArrT[10] & ArrT[11] & ArrT[12] & ArrT[13] & ArrT[14] & ArrT[15] & ArrT[16] & ArrT[17] :
+        ArrT["length"] extends 19 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] & ArrT[8] & ArrT[9] & ArrT[10] & ArrT[11] & ArrT[12] & ArrT[13] & ArrT[14] & ArrT[15] & ArrT[16] & ArrT[17] & ArrT[18] :
+        ArrT["length"] extends 20 ?
+        ArrT[0] & ArrT[1] & ArrT[2] & ArrT[3] & ArrT[4] & ArrT[5] & ArrT[6] & ArrT[7] & ArrT[8] & ArrT[9] & ArrT[10] & ArrT[11] & ArrT[12] & ArrT[13] & ArrT[14] & ArrT[15] & ArrT[16] & ArrT[17] & ArrT[18] & ArrT[19] :
+        //add more lengths
+        //Too many to handle...
+        ColumnRef
+    );
+    export function intersectTuple<ArrT extends NonEmptyTuple<ColumnRef>> (
+        ...arr : ArrT
+    ) : IntersectTuple<ArrT> {
+        let result : ColumnRef = {};
+        for (let columnRef of arr) {
+            result = intersect(result, columnRef);
+        }
+        return result as IntersectTuple<ArrT>;
     }
 }
