@@ -5,21 +5,29 @@ export type IsEqual<
     A extends ColumnIdentifier,
     B extends ColumnIdentifier
 > = (
-    string extends A["tableAlias"] ?
-    boolean :
-    string extends B["tableAlias"] ?
-    boolean :
-    A["tableAlias"] extends B["tableAlias"] ?
+    A extends ColumnIdentifier ?
     (
-        string extends A["name"] ?
-        boolean :
-        string extends B["name"] ?
-        boolean :
-        A["name"] extends B["name"] ?
-        true :
-        false
+        B extends ColumnIdentifier ?
+        (
+            string extends A["tableAlias"] ?
+            boolean :
+            string extends B["tableAlias"] ?
+            boolean :
+            A["tableAlias"] extends B["tableAlias"] ?
+            (
+                string extends A["name"] ?
+                boolean :
+                string extends B["name"] ?
+                boolean :
+                A["name"] extends B["name"] ?
+                true :
+                false
+            ) :
+            false
+        ) :
+        never
     ) :
-    false
+    never
 );
 export function isEqual<
     A extends ColumnIdentifier,

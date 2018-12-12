@@ -2,6 +2,7 @@ import { IColumn } from "../../column";
 import { ColumnMap } from "../../column-map";
 import { SelectItem } from "../../select-item";
 import { IExprSelectItem } from "../../expr-select-item";
+import { ColumnRef } from "../../column-ref";
 export declare type FromColumn<ColumnT extends IColumn> = (ColumnT extends IColumn ? {
     readonly tableAlias: ColumnT["tableAlias"];
     readonly name: ColumnT["name"];
@@ -17,4 +18,5 @@ export declare type FromSelectItem<SelectItemT extends SelectItem> = (SelectItem
 export declare type FromSelectItemArrayIgnoreIndex<SelectsT extends SelectItem[], IgnoreIndexT extends Extract<keyof SelectsT, string>> = ({
     [index in Exclude<Extract<keyof SelectsT, string>, IgnoreIndexT>]: (SelectsT[index] extends SelectItem ? FromSelectItem<SelectsT[index]> : never);
 }[Exclude<Extract<keyof SelectsT, string>, IgnoreIndexT>]);
+export declare type FromColumnRef<ColumnRefT extends ColumnRef> = (ColumnRefT extends ColumnRef ? FromColumnMap<ColumnRefT[Extract<keyof ColumnRefT, string>]> : never);
 //# sourceMappingURL=constructor.d.ts.map

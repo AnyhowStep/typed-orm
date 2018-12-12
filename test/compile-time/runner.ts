@@ -69,7 +69,9 @@ for (let d of allDiagnostics) {
         console.error(d);
         throw new Error(`Unexpected diagnostic error`);
     }
-    d.file.fileName.startsWith(inputRoot);
+    if (!d.file.fileName.startsWith(inputRoot)) {
+        continue;
+    }
     const fileName = d.file.fileName.substr(inputRoot.length);
 
     let errors = errorDict[fileName];
@@ -93,7 +95,6 @@ for (let d of allDiagnostics) {
         start,
     });
 }
-
 Object.keys(errorDict).forEach((fileName) => {
     fs.writeFileSync(
         actualOutputRoot + "/" + fileName + ".errors",

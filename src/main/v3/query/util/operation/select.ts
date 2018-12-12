@@ -2,7 +2,7 @@ import {ToUnknownIfAllFieldsNever} from "../../../type";
 import {Query} from "../../query";
 import {BeforeUnionClause} from "../predicate";
 import {ColumnRefUtil} from "../../../column-ref";
-import {ColumnMap} from "../../../column-map";
+import {ColumnMap, ColumnMapUtil} from "../../../column-map";
 import {NonEmptyTuple, TupleUtil} from "../../../tuple";
 import {SelectItem} from "../../../select-item";
 import {IExprSelectItem} from "../../../expr-select-item";
@@ -199,12 +199,48 @@ export function select<
         ColumnRefUtil.toConvenient(queryRef)
     );
 
+    //const queryColumnIdentifiers = ColumnIdentifierUtil.Array.fromColumnRef(queryRef);
+
     //TODO
+    for (let selectItem of selects) {
+        if (ColumnMapUtil.isColumnMap(selectItem)) {
+            //+ columnMaps must exist
+            let hasColumnMap = false;
+            for (let tableAlias in queryRef) {
+                const columnMap = (queryRef as any)[tableAlias];
+                if (columnMap === selectItem) {
+                    hasColumnMap = true;
+                    break;
+                }
+            }
+            if (!hasColumnMap) {
+                throw new Error(`Invalid column map in SELECT clause`);
+            }
+        }
+    }
     //+ If SelectItem is IExprSelectItem,
-    //  the usedRef must be a subset of the queryRef.
-    //+ Selected columns/columnMaps must exist.
-    //+ Duplicates not allowed with existing selects
+    //  the usedRef must be a subset of the queryRef
+    //+ Selected columns must exist
+
+
+    const selectColumnIdentifiers = ColumnIdentifierUtil.Array
+        .fromSelectItemArray(selects);
     //+ Duplicates not allowed with new selects
+    ColumnIdentifierUtil.Array.assertNoDuplicate(
+        selectColumnIdentifiers
+    );
+    if (query._selects != undefined) {
+        //+ Duplicates not allowed with existing selects
+        const querySelectColumnIdentifiers = ColumnIdentifierUtil.Array
+            .fromSelectItemArray(query._selects);
+        ColumnIdentifierUtil.Array.assertNoOverlap(
+            selectColumnIdentifiers,
+            querySelectColumnIdentifiers
+        );
+    }
+
+
+
 
 
     const newSelects : (

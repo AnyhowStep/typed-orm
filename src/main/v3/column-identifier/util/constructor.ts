@@ -2,6 +2,7 @@ import {IColumn} from "../../column";
 import {ColumnMap} from "../../column-map";
 import {SelectItem} from "../../select-item";
 import {IExprSelectItem} from "../../expr-select-item";
+import {ColumnRef} from "../../column-ref";
 
 export type FromColumn<ColumnT extends IColumn> = (
     ColumnT extends IColumn ?
@@ -68,4 +69,9 @@ export type FromSelectItemArrayIgnoreIndex<
             never
         )
     }[Exclude<Extract<keyof SelectsT, string>, IgnoreIndexT>]
+);
+export type FromColumnRef<ColumnRefT extends ColumnRef> = (
+    ColumnRefT extends ColumnRef ?
+    FromColumnMap<ColumnRefT[Extract<keyof ColumnRefT, string>]> :
+    never
 );

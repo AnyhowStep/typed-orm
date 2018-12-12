@@ -106,29 +106,39 @@ export type HasColumnIdentifier<
 > = (
     keyof ColumnMapT extends never ?
     false :
-    ColumnMap extends ColumnMapT ?
-    boolean :
-    string extends ColumnIdentifierT["name"] ?
+    ColumnMapT extends ColumnMap ?
     (
-        string extends ColumnIdentifierT["tableAlias"] ?
-        boolean :
-        ColumnIdentifierT["tableAlias"] extends ColumnUtil.FromColumnMap<ColumnMapT>["tableAlias"] ?
-        boolean :
-        false
-    ) :
-    ColumnIdentifierT["name"] extends keyof ColumnMapT ?
-    (
-        string extends ColumnIdentifierT["tableAlias"] ?
-        boolean :
-        ColumnIdentifierT["tableAlias"] extends ColumnMapT[ColumnIdentifierT["name"]]["tableAlias"] ?
+        ColumnIdentifierT extends ColumnIdentifier ?
         (
-            ColumnIdentifierT["name"] extends ColumnMapT[ColumnIdentifierT["name"]]["name"] ?
-            true :
+            ColumnMap extends ColumnMapT ?
+            boolean :
+            ColumnIdentifier extends ColumnIdentifierT ?
+            boolean :
+            string extends ColumnIdentifierT["name"] ?
+            (
+                string extends ColumnIdentifierT["tableAlias"] ?
+                boolean :
+                ColumnIdentifierT["tableAlias"] extends ColumnUtil.FromColumnMap<ColumnMapT>["tableAlias"] ?
+                boolean :
+                false
+            ) :
+            ColumnIdentifierT["name"] extends keyof ColumnMapT ?
+            (
+                string extends ColumnIdentifierT["tableAlias"] ?
+                boolean :
+                ColumnIdentifierT["tableAlias"] extends ColumnMapT[ColumnIdentifierT["name"]]["tableAlias"] ?
+                (
+                    ColumnIdentifierT["name"] extends ColumnMapT[ColumnIdentifierT["name"]]["name"] ?
+                    true :
+                    false
+                ) :
+                false
+            ) :
             false
         ) :
-        false
+        never
     ) :
-    false
+    never
 );
 export function hasColumnIdentifier<
     ColumnMapT extends ColumnMap,
@@ -143,7 +153,7 @@ export function hasColumnIdentifier<
     return ColumnIdentifierUtil.isEqual(
         column,
         columnIdentifier
-    ) as HasColumnIdentifier<ColumnMapT, ColumnIdentifierT>;
+    ) as boolean as HasColumnIdentifier<ColumnMapT, ColumnIdentifierT>;
 }
 export function assertHasColumnIdentifier (columnMap : ColumnMap, columnIdentifier : ColumnIdentifier) {
     if (!hasColumnIdentifier(columnMap, columnIdentifier)) {

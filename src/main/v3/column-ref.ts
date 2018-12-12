@@ -165,24 +165,32 @@ export namespace ColumnRefUtil {
     > = (
         keyof ColumnRefT extends never ?
         false :
-        ColumnRef extends ColumnRefT ?
-        boolean :
-        string extends ColumnIdentifierT["tableAlias"] ?
+        ColumnRefT extends ColumnRef ?
         (
-            string extends ColumnIdentifierT["name"] ?
-            boolean :
-            ColumnIdentifierT["name"] extends ColumnUtil.Name.FromColumnRef<ColumnRefT> ?
-            boolean :
-            false
+            ColumnIdentifierT extends ColumnIdentifier ?
+            (
+                ColumnRef extends ColumnRefT ?
+                boolean :
+                string extends ColumnIdentifierT["tableAlias"] ?
+                (
+                    string extends ColumnIdentifierT["name"] ?
+                    boolean :
+                    ColumnIdentifierT["name"] extends ColumnUtil.Name.FromColumnRef<ColumnRefT> ?
+                    boolean :
+                    false
+                ) :
+                ColumnIdentifierT["tableAlias"] extends keyof ColumnRefT ?
+                (
+                    ColumnMapUtil.HasColumnIdentifier<
+                        ColumnRefT[ColumnIdentifierT["tableAlias"]],
+                        ColumnIdentifierT
+                    >
+                ) :
+                false
+            ) :
+            never
         ) :
-        ColumnIdentifierT["tableAlias"] extends keyof ColumnRefT ?
-        (
-            ColumnMapUtil.HasColumnIdentifier<
-                ColumnRefT[ColumnIdentifierT["tableAlias"]],
-                ColumnIdentifierT
-            >
-        ) :
-        false
+        never
     );
     export function hasColumnIdentifier<
         ColumnRefT extends ColumnRef,

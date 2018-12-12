@@ -27,4 +27,20 @@ function fromSelectItem(selectItem) {
     }
 }
 exports.fromSelectItem = fromSelectItem;
+function fromSelectItemArray(arr) {
+    const result = [];
+    for (let item of arr) {
+        result.push(...fromSelectItem(item));
+    }
+    return result;
+}
+exports.fromSelectItemArray = fromSelectItemArray;
+function fromColumnRef(columnRef) {
+    const result = [];
+    for (let tableAlias in columnRef) {
+        result.push(...fromColumnMap(columnRef[tableAlias]));
+    }
+    return result;
+}
+exports.fromColumnRef = fromColumnRef;
 //# sourceMappingURL=constructor.js.map
