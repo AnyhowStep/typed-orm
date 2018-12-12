@@ -6,7 +6,7 @@ import {ColumnRef, ColumnRefUtil} from "../../../column-ref";
 import {ColumnMap, ColumnMapUtil} from "../../../column-map";
 import {NonEmptyTuple, TupleUtil} from "../../../tuple";
 import {SelectItem} from "../../../select-item";
-import {IExprSelectItem} from "../../../expr-select-item";
+import {IExprSelectItem, ExprSelectItemUtil} from "../../../expr-select-item";
 import {IColumn, ColumnUtil} from "../../../column";
 import {ColumnIdentifierUtil} from "../../../column-identifier";
 
@@ -200,11 +200,12 @@ export function select<
         ColumnRefUtil.toConvenient(queryRef)
     );
 
-    //const queryColumnIdentifiers = ColumnIdentifierUtil.Array.fromColumnRef(queryRef);
-
-    //TODO
     for (let selectItem of selects) {
-        if (ColumnUtil.isColumn(selectItem)) {
+        if (ExprSelectItemUtil.isExprSelectItem(selectItem)) {
+            //+ If SelectItem is IExprSelectItem,
+            //  the usedRef must be a subset of the queryRef
+            ColumnRefUtil.assertIsSubset(selectItem.usedRef, queryRef);
+        } else if (ColumnUtil.isColumn(selectItem)) {
             //+ Selected columns must exist
             const columnMap = (queryRef as ColumnRef)[selectItem.tableAlias];
             if (columnMap == undefined) {
@@ -232,10 +233,6 @@ export function select<
             }
         }
     }
-    //+ If SelectItem is IExprSelectItem,
-    //  the usedRef must be a subset of the queryRef
-
-
 
     const selectColumnIdentifiers = ColumnIdentifierUtil.Array
         .fromSelectItemArray(selects);
@@ -252,10 +249,6 @@ export function select<
             querySelectColumnIdentifiers
         );
     }
-
-
-
-
 
     const newSelects : (
         QueryT["_selects"] extends SelectItem[] ?

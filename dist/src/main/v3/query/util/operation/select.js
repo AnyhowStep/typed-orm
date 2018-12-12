@@ -4,15 +4,19 @@ const sd = require("schema-decorator");
 const query_1 = require("../../query");
 const column_ref_1 = require("../../../column-ref");
 const column_map_1 = require("../../../column-map");
+const expr_select_item_1 = require("../../../expr-select-item");
 const column_1 = require("../../../column");
 const column_identifier_1 = require("../../../column-identifier");
 function select(query, delegate) {
     const queryRef = column_ref_1.ColumnRefUtil.fromQuery(query);
     const selects = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef));
-    //const queryColumnIdentifiers = ColumnIdentifierUtil.Array.fromColumnRef(queryRef);
-    //TODO
     for (let selectItem of selects) {
-        if (column_1.ColumnUtil.isColumn(selectItem)) {
+        if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(selectItem)) {
+            //+ If SelectItem is IExprSelectItem,
+            //  the usedRef must be a subset of the queryRef
+            column_ref_1.ColumnRefUtil.assertIsSubset(selectItem.usedRef, queryRef);
+        }
+        else if (column_1.ColumnUtil.isColumn(selectItem)) {
             //+ Selected columns must exist
             const columnMap = queryRef[selectItem.tableAlias];
             if (columnMap == undefined) {
@@ -41,8 +45,6 @@ function select(query, delegate) {
             }
         }
     }
-    //+ If SelectItem is IExprSelectItem,
-    //  the usedRef must be a subset of the queryRef
     const selectColumnIdentifiers = column_identifier_1.ColumnIdentifierUtil.Array
         .fromSelectItemArray(selects);
     //+ Duplicates not allowed with new selects
