@@ -127,5 +127,9 @@ var RawExprUtil;
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
     RawExprUtil.queryTree = queryTree;
+    function intersectUsedRefTuple(...arr) {
+        return column_ref_1.ColumnRefUtil.intersectTuple(...arr.map(usedRef));
+    }
+    RawExprUtil.intersectUsedRefTuple = intersectUsedRefTuple;
 })(RawExprUtil = exports.RawExprUtil || (exports.RawExprUtil = {}));
 //# sourceMappingURL=raw-expr.js.map

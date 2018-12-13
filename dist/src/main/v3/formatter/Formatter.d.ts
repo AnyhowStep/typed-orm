@@ -45,7 +45,9 @@ export declare class Formatter {
     formatWithSpaces(token: Token, query: string): string;
     addNewline(query: string): string;
     trimTrailingWhitespace(query: string): string;
+    hasPreviousNonWhitespaceToken(): boolean;
     previousNonWhitespaceToken(): Token;
+    hasPreviousToken(offset?: number): boolean;
     previousToken(offset?: number): Token;
 }
 //# sourceMappingURL=Formatter.d.ts.map

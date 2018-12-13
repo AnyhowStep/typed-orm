@@ -6,6 +6,8 @@ import {TableSubquery} from "./table-subquery";
 import {ColumnRefUtil} from "./column-ref";
 import {escape} from "sqlstring";
 import {QueryTree} from "./query-tree";
+import {Tuple} from "./tuple";
+import {ColumnRef} from "./column-ref";
 
 export type RawExpr<TypeT> = (
     (
@@ -191,5 +193,92 @@ export namespace RawExprUtil {
         }
 
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
+    }
+
+    /*
+        //This is if we want to get a Tuple of UsedRef
+        items = [];
+        arr = [];
+        for (let i=0; i<21; ++i) {
+            arr.push(`[${items.join(", ")}]`);
+            items.push(`UsedRef<ArrT[${i}]>`);
+        }
+
+        arr2 = [];
+        for (let i=0; i<arr.length; ++i) {
+            arr2.push(`ArrT["length"] extends ${i} ?\n        ${arr[i]} :`);
+        }
+        arr2.join("\n        ")
+
+        //However, the current use-case only covers merging the UsedRef
+        items = [];
+        arr = [];
+        for (let i=0; i<21; ++i) {
+            if (i == 0) {
+                arr.push("{}");
+            } else {
+                arr.push(items.join(" & "));
+            }
+            items.push(`UsedRef<ArrT[${i}]>`);
+        }
+
+        arr2 = [];
+        for (let i=0; i<arr.length; ++i) {
+            arr2.push(`ArrT["length"] extends ${i} ?\n        ${arr[i]} :`);
+        }
+        arr2.join("\n        ")
+    */
+    export type IntersectUsedRefTuple<ArrT extends Tuple<RawExpr<any>>> = (
+        ArrT["length"] extends 0 ?
+        {} :
+        ArrT["length"] extends 1 ?
+        UsedRef<ArrT[0]> :
+        ArrT["length"] extends 2 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> :
+        ArrT["length"] extends 3 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> :
+        ArrT["length"] extends 4 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> :
+        ArrT["length"] extends 5 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> :
+        ArrT["length"] extends 6 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> :
+        ArrT["length"] extends 7 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> :
+        ArrT["length"] extends 8 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> :
+        ArrT["length"] extends 9 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> & UsedRef<ArrT[8]> :
+        ArrT["length"] extends 10 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> & UsedRef<ArrT[8]> & UsedRef<ArrT[9]> :
+        ArrT["length"] extends 11 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> & UsedRef<ArrT[8]> & UsedRef<ArrT[9]> & UsedRef<ArrT[10]> :
+        ArrT["length"] extends 12 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> & UsedRef<ArrT[8]> & UsedRef<ArrT[9]> & UsedRef<ArrT[10]> & UsedRef<ArrT[11]> :
+        ArrT["length"] extends 13 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> & UsedRef<ArrT[8]> & UsedRef<ArrT[9]> & UsedRef<ArrT[10]> & UsedRef<ArrT[11]> & UsedRef<ArrT[12]> :
+        ArrT["length"] extends 14 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> & UsedRef<ArrT[8]> & UsedRef<ArrT[9]> & UsedRef<ArrT[10]> & UsedRef<ArrT[11]> & UsedRef<ArrT[12]> & UsedRef<ArrT[13]> :
+        ArrT["length"] extends 15 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> & UsedRef<ArrT[8]> & UsedRef<ArrT[9]> & UsedRef<ArrT[10]> & UsedRef<ArrT[11]> & UsedRef<ArrT[12]> & UsedRef<ArrT[13]> & UsedRef<ArrT[14]> :
+        ArrT["length"] extends 16 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> & UsedRef<ArrT[8]> & UsedRef<ArrT[9]> & UsedRef<ArrT[10]> & UsedRef<ArrT[11]> & UsedRef<ArrT[12]> & UsedRef<ArrT[13]> & UsedRef<ArrT[14]> & UsedRef<ArrT[15]> :
+        ArrT["length"] extends 17 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> & UsedRef<ArrT[8]> & UsedRef<ArrT[9]> & UsedRef<ArrT[10]> & UsedRef<ArrT[11]> & UsedRef<ArrT[12]> & UsedRef<ArrT[13]> & UsedRef<ArrT[14]> & UsedRef<ArrT[15]> & UsedRef<ArrT[16]> :
+        ArrT["length"] extends 18 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> & UsedRef<ArrT[8]> & UsedRef<ArrT[9]> & UsedRef<ArrT[10]> & UsedRef<ArrT[11]> & UsedRef<ArrT[12]> & UsedRef<ArrT[13]> & UsedRef<ArrT[14]> & UsedRef<ArrT[15]> & UsedRef<ArrT[16]> & UsedRef<ArrT[17]> :
+        ArrT["length"] extends 19 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> & UsedRef<ArrT[8]> & UsedRef<ArrT[9]> & UsedRef<ArrT[10]> & UsedRef<ArrT[11]> & UsedRef<ArrT[12]> & UsedRef<ArrT[13]> & UsedRef<ArrT[14]> & UsedRef<ArrT[15]> & UsedRef<ArrT[16]> & UsedRef<ArrT[17]> & UsedRef<ArrT[18]> :
+        ArrT["length"] extends 20 ?
+        UsedRef<ArrT[0]> & UsedRef<ArrT[1]> & UsedRef<ArrT[2]> & UsedRef<ArrT[3]> & UsedRef<ArrT[4]> & UsedRef<ArrT[5]> & UsedRef<ArrT[6]> & UsedRef<ArrT[7]> & UsedRef<ArrT[8]> & UsedRef<ArrT[9]> & UsedRef<ArrT[10]> & UsedRef<ArrT[11]> & UsedRef<ArrT[12]> & UsedRef<ArrT[13]> & UsedRef<ArrT[14]> & UsedRef<ArrT[15]> & UsedRef<ArrT[16]> & UsedRef<ArrT[17]> & UsedRef<ArrT[18]> & UsedRef<ArrT[19]> :
+        //Add more lengths
+        //Too many to handle...
+        ColumnRef
+    );
+
+    export function intersectUsedRefTuple<ArrT extends Tuple<RawExpr<any>>> (
+        ...arr : ArrT
+    ) : IntersectUsedRefTuple<ArrT> {
+        return ColumnRefUtil.intersectTuple(...(arr.map(usedRef) as any));
     }
 }

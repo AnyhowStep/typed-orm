@@ -147,7 +147,8 @@ export class Formatter {
             TokenType.OPEN_PAREN,
             TokenType.LINE_COMMENT,
         ];
-        if (!preserveWhitespaceFor.includes(this.previousToken().type)) {
+
+        if (!this.hasPreviousToken() || !preserveWhitespaceFor.includes(this.previousToken().type)) {
             query = trimEnd(query);
         }
         query += token.value;
@@ -209,7 +210,7 @@ export class Formatter {
     }
 
     trimTrailingWhitespace(query : string) {
-        if (this.previousNonWhitespaceToken().type === TokenType.LINE_COMMENT) {
+        if (this.hasPreviousNonWhitespaceToken() && this.previousNonWhitespaceToken().type === TokenType.LINE_COMMENT) {
             return trimEnd(query) + "\n";
         }
         else {
@@ -217,6 +218,13 @@ export class Formatter {
         }
     }
 
+    hasPreviousNonWhitespaceToken () : boolean {
+        let n = 1;
+        while (this.hasPreviousToken(n) && this.previousToken(n).type === TokenType.WHITESPACE) {
+            n++;
+        }
+        return this.hasPreviousToken(n);
+    }
     previousNonWhitespaceToken() {
         let n = 1;
         while (this.previousToken(n).type === TokenType.WHITESPACE) {
@@ -225,10 +233,13 @@ export class Formatter {
         return this.previousToken(n);
     }
 
+    hasPreviousToken (offset = 1) : boolean {
+        return (this.index - offset) >= 0;
+    }
     previousToken(offset = 1) : Token {
         const result = this.tokens[this.index - offset];
         if (result == undefined) {
-            throw new Error(`No previous token`);
+            throw new Error(`No previous token. index ${this.index}, offset ${offset}`);
         }
         return result;
     }

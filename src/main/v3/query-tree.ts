@@ -24,6 +24,18 @@ export class Parentheses {
         } else if (tree instanceof FunctionCall) {
             //We don't need to have parentheses around function calls
             return tree;
+        } else if (tree instanceof Array) {
+            if (tree.length == 0) {
+                throw new Error(`Attempt to add parentheses around empty query tree`);
+            } else if (tree.length == 1) {
+                //No need to wrap parentheses against unit expressions
+                return tree;
+            } else {
+                return new Parentheses(tree);
+            }
+        } else if (typeof tree == "string") {
+            //No need to wrap parentheses against unit expressions
+            return tree;
         } else {
             return new Parentheses(tree);
         }

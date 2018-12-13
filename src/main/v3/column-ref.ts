@@ -6,7 +6,7 @@ import {IQuery} from "./query";
 import {ColumnIdentifierMapUtil} from "./column-identifier-map";
 import {ColumnIdentifier} from "./column-identifier";
 import {Writable} from "./type";
-import {NonEmptyTuple} from "./tuple";
+import {Tuple} from "./tuple";
 
 export type ColumnRef = {
     readonly [tableAlias : string] : ColumnMap
@@ -328,7 +328,9 @@ export namespace ColumnRefUtil {
         }
         arr2.join("\n        ")
     */
-    export type IntersectTuple<ArrT extends NonEmptyTuple<ColumnRef>> = (
+    export type IntersectTuple<ArrT extends Tuple<ColumnRef>> = (
+        ArrT["length"] extends 0 ?
+        {} :
         ArrT["length"] extends 1 ?
         ArrT[0] :
         ArrT["length"] extends 2 ?
@@ -373,7 +375,7 @@ export namespace ColumnRefUtil {
         //Too many to handle...
         ColumnRef
     );
-    export function intersectTuple<ArrT extends NonEmptyTuple<ColumnRef>> (
+    export function intersectTuple<ArrT extends Tuple<ColumnRef>> (
         ...arr : ArrT
     ) : IntersectTuple<ArrT> {
         let result : ColumnRef = {};
