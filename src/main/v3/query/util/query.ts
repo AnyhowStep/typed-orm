@@ -54,3 +54,11 @@ export function queryTreeJoins (query : IQuery) : QueryTreeArray {
 
     return result;
 }
+export function queryTreeWhere (query : IQuery) : QueryTreeArray {
+    const where = query._where;
+    if (where == undefined) {
+        return [];
+    } else {
+        return ["WHERE", where.queryTree];
+    }
+}

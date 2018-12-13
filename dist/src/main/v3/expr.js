@@ -30,6 +30,9 @@ var ExprUtil;
     }
     ExprUtil.isExpr = isExpr;
     function fromRawExpr(rawExpr) {
+        if (rawExpr instanceof Expr) {
+            return rawExpr;
+        }
         const usedRef = raw_expr_1.RawExprUtil.usedRef(rawExpr);
         const assertDelegate = raw_expr_1.RawExprUtil.assertDelegate(rawExpr);
         const queryTree = raw_expr_1.RawExprUtil.queryTree(rawExpr);

@@ -74,6 +74,9 @@ export namespace ExprUtil {
     > (
         rawExpr : RawExprT
     ) : FromRawExpr<RawExprT> {
+        if (rawExpr instanceof Expr) {
+            return rawExpr;
+        }
         const usedRef = RawExprUtil.usedRef(rawExpr);
         const assertDelegate = RawExprUtil.assertDelegate(rawExpr);
         const queryTree = RawExprUtil.queryTree(rawExpr);

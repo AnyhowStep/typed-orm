@@ -1,0 +1,2 @@
+WHERE
+  `table`.`z`

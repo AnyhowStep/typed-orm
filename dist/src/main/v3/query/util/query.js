@@ -54,4 +54,14 @@ function queryTreeJoins(query) {
     return result;
 }
 exports.queryTreeJoins = queryTreeJoins;
+function queryTreeWhere(query) {
+    const where = query._where;
+    if (where == undefined) {
+        return [];
+    }
+    else {
+        return ["WHERE", where.queryTree];
+    }
+}
+exports.queryTreeWhere = queryTreeWhere;
 //# sourceMappingURL=query.js.map
