@@ -1,4 +1,6 @@
 import {ColumnMap} from "../column-map";
+import {QueryTreeArray} from "../../query-tree";
+import { ColumnUtil } from "../../column";
 
 /*
     Used for unions of ColumnMap
@@ -17,3 +19,16 @@ export type FindWithColumnName<
    ) :
    never
 );
+
+export function queryTree (columnMap : ColumnMap) : QueryTreeArray {
+    const columnNames = Object.keys(columnMap);
+    columnNames.sort();
+    const result : QueryTreeArray = [];
+    for (let columnName of columnNames) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        result.push(ColumnUtil.queryTree(columnMap[columnName]));
+    }
+    return result;
+}

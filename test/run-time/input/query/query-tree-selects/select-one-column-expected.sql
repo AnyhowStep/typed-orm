@@ -1,0 +1,2 @@
+SELECT
+  `table`.`x`
