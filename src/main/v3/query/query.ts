@@ -404,6 +404,23 @@ export class Query<DataT extends QueryData> {
             delegate
         );
     }
+
+    andWhere<
+        AndWhereDelegateT extends QueryUtil.AndWhereDelegate<
+            Extract<this, QueryUtil.AfterFromClause>
+        >
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        delegate : QueryUtil.AssertValidAndWhereDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            AndWhereDelegateT
+        >
+    ) : QueryUtil.AndWhere<Extract<this, QueryUtil.AfterFromClause>> {
+        return QueryUtil.andWhere<
+            Extract<this, QueryUtil.AfterFromClause>,
+            AndWhereDelegateT
+        >(this, delegate);
+    }
 }
 export function from<AliasedTableT extends IAliasedTable> (
     aliasedTable : QueryUtil.AssertUniqueJoinTarget<

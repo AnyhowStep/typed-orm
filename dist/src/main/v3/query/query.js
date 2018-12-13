@@ -42,6 +42,9 @@ class Query {
     select(delegate) {
         return QueryUtil.select(this, delegate);
     }
+    andWhere(delegate) {
+        return QueryUtil.andWhere(this, delegate);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

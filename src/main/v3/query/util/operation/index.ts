@@ -1,3 +1,4 @@
+export * from "./and-where";
 export * from "./from";
 export * from "./inner-join-using";
 export * from "./inner-join";
@@ -8,4 +9,3 @@ export * from "./left-join";
 export * from "./right-join-using";
 export * from "./right-join";
 export * from "./select";
-export * from "./where";
