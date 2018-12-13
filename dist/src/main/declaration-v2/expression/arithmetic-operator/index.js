@@ -4,6 +4,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./add"));
+__export(require("./mul"));
 __export(require("./neg"));
 __export(require("./sub"));
 //# sourceMappingURL=index.js.map
