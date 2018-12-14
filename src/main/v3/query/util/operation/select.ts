@@ -13,10 +13,6 @@ import {ColumnIdentifierUtil} from "../../../column-identifier";
 export type SelectDelegate<
     QueryT extends BeforeUnionClause
 > = (
-    //TODO Proper return type
-    //If Column, must be columns in args given
-    //If expression, must have proper usedRef
-    //If columnMap, must be columnMaps in args given
     (
         columns : ColumnRefUtil.ToConvenient<
             ColumnRefUtil.FromQuery<QueryT>

@@ -26,6 +26,54 @@ export interface Limit {
     Supporting it will increase compile-time safety for queries.
     I don't know enough to implement this at the moment.
 
+    Reject queries for which the
+
+    + select list,
+    + HAVING condition, or
+    + ORDER BY list
+
+    refer to nonaggregated columns that are neither
+
+    1. named in the GROUP BY clause nor are
+    2. functionally dependent on (uniquely determined by) GROUP BY columns.
+
+    Part 1 seems "easy" enough.
+    Part 2 is the challenging part.
+    I *think* I have to look at the GROUP BY columns
+    and also look at the candidate keys of the tables.
+
+    1. If the GROUP BY columns are a super-set of any candidate key of a table,
+    then we can refer to any column of the table.
+
+    2. If the GROUP BY columns are used in the ON clause of a JOIN,
+    then the columns they are equal to are also part of the GROUP BY columns.
+
+    SELECT
+        app.name
+    FROM
+        app
+    JOIN
+        user
+    ON
+        app.appId = user.appId
+    GROUP BY
+        user.appId
+
+    In the above example, user.appId is in the GROUP BY columns.
+    But we also have app.appId = user.appId in the ON clause.
+
+    So, app.appId is implicitly part of the GROUP BY columns.
+
+    And because app.appId is a super-set of a candidate key of the table app,
+    then we can refer to any column of the app table.
+
+    It seems like if I want to implement ONLY_FULL_GROUP_BY support,
+    I'll need to also strongly type the ON clause of IJoin.
+
+    My life is not going to be easy =/
+
+    -----
+
     TODO Disable aggregate functions in WHERE clause
     This can probably be achieved by tagging certain interfaces with
     a `usesAggregateFunction` field.

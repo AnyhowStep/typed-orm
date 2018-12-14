@@ -1,5 +1,26 @@
 import {ColumnIdentifier, ColumnIdentifierUtil} from "../../column-identifier";
 import {ColumnMap} from "../../column-map";
+import {IColumn} from "../../column";
+import {IExprSelectItem} from "../../expr-select-item";
+
+export type FromColumn<ColumnT extends IColumn> = (
+    ColumnT extends IColumn ?
+    {
+        readonly [columnName in ColumnT["name"]] : (
+            ColumnIdentifierUtil.FromColumn<ColumnT>
+        )
+    } :
+    never
+);
+export type FromExprSelectItem<ExprSelectItemT extends IExprSelectItem> = (
+    ExprSelectItemT extends IExprSelectItem ?
+    {
+        readonly [columnName in ExprSelectItemT["alias"]] : (
+            ColumnIdentifierUtil.FromExprSelectItem<ExprSelectItemT>
+        )
+    } :
+    never
+);
 
 export type FromColumnMap<ColumnMapT extends ColumnMap> = (
     {
