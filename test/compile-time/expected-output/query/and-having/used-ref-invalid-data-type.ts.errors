@@ -1,0 +1,18 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type '() => Expr<{ usedRef: { readonly table: { readonly x: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<Date>; }>; } & {}; } & {}; assertDelegate: AssertDelegate<...>; }>' is not assignable to parameter of type '(() => Expr<{ usedRef: { readonly table: { readonly x: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<Date>; }>; } & {}; } & {}; assertDelegate: AssertDelegate<...>; }>) & [...]'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type '() => Expr<{ usedRef: { readonly table: { readonly x: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<Date>; }>; } & {}; } & {}; assertDelegate: AssertDelegate<...>; }>' is missing the following properties from type '[\"HAVING expression contains some invalid columns; the following are not allowed:\", IColumn<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<Date>; }>]': 0, 1, pop, push, and 29 more.",
+        "category": 1,
+        "code": 2740
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 72,
+    "start": 352
+  }
+]
