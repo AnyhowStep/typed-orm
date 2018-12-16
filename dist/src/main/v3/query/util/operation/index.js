@@ -5,6 +5,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./and-where"));
 __export(require("./from"));
+__export(require("./group-by"));
 __export(require("./inner-join-using"));
 __export(require("./inner-join"));
 __export(require("./join-delegate"));

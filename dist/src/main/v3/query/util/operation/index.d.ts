@@ -1,5 +1,6 @@
 export * from "./and-where";
 export * from "./from";
+export * from "./group-by";
 export * from "./inner-join-using";
 export * from "./inner-join";
 export * from "./join-delegate";

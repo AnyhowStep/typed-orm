@@ -11,7 +11,7 @@ export type GroupByDelegate<
         columns : ColumnIdentifierRefUtil.ToConvenient<
             ColumnIdentifierRefUtil.FromQuery<QueryT>
         >
-    ) => NonEmptyTuple<ColumnIdentifier>
+    ) => NonEmptyTuple<ColumnIdentifierUtil.FromQuery<QueryT>>
 );
 export type GroupBy<
     QueryT extends AfterFromClause,
@@ -53,6 +53,8 @@ export type AssertValidGroupByDelegate<
         unknown :
         [
             "Invalid GROUP BY columns",
+            ReturnType<GroupByDelegateT>,
+            ColumnIdentifierUtil.FromQuery<QueryT>,
             Exclude<
                 ReturnType<GroupByDelegateT>[number],
                 ColumnIdentifierUtil.FromQuery<QueryT>
@@ -72,7 +74,7 @@ export function groupBy<
         ColumnIdentifierRefUtil.toConvenient(queryRef)
     );
 
-    ColumnIdentifierRefUtil.assertHasColumnIdentifiers(queryRef, grouped);
+    ColumnIdentifierRefUtil.assertHasColumnIdentifiers(queryRef, grouped as ColumnIdentifier[]);
 
     const newGrouped : ColumnIdentifier[] = (
         (query._grouped == undefined) ?

@@ -45,6 +45,9 @@ class Query {
     andWhere(delegate) {
         return QueryUtil.andWhere(this, delegate);
     }
+    groupBy(delegate) {
+        return QueryUtil.groupBy(this, delegate);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {
