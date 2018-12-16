@@ -6,6 +6,7 @@ const expr_select_item_1 = require("../../expr-select-item");
 const column_map_1 = require("../../column-map");
 const constants_1 = require("../../constants");
 const sqlstring_1 = require("sqlstring");
+const column_identifier_ref_1 = require("../../column-identifier-ref");
 function queryTreeSelectItem_Column(column) {
     const result = [];
     result.push(column_1.ColumnUtil.queryTree(column));
@@ -26,9 +27,8 @@ function queryTreeSelectItem_ColumnMap(columnMap) {
 function queryTreeSelects(query) {
     const selects = query._selects;
     const result = [];
-    result.push("SELECT");
     for (let item of selects) {
-        if (result.length > 1) {
+        if (result.length > 0) {
             result.push(",");
         }
         if (column_1.ColumnUtil.isColumn(item)) {
@@ -41,7 +41,7 @@ function queryTreeSelects(query) {
             result.push(queryTreeSelectItem_ColumnMap(item));
         }
     }
-    return result;
+    return ["SELECT", result];
 }
 exports.queryTreeSelects = queryTreeSelects;
 function queryTreeJoins(query) {
@@ -83,4 +83,30 @@ function queryTreeWhere(query) {
     }
 }
 exports.queryTreeWhere = queryTreeWhere;
+function queryTreeGroupBy(query) {
+    const grouped = query._grouped;
+    if (grouped == undefined) {
+        return [];
+    }
+    const selectsRef = column_identifier_ref_1.ColumnIdentifierRefUtil.fromSelectItemArray(query._selects == undefined ?
+        [] :
+        query._selects);
+    const result = [];
+    for (let item of grouped) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        if (column_identifier_ref_1.ColumnIdentifierRefUtil.hasColumnIdentifier(selectsRef, item)) {
+            result.push(sqlstring_1.escapeId(`${item.tableAlias}${constants_1.SEPARATOR}${item.name}`));
+        }
+        else {
+            //Probably from a JOIN'd table
+            result.push(sqlstring_1.escapeId(item.tableAlias));
+            result.push(".");
+            result.push(sqlstring_1.escapeId(item.name));
+        }
+    }
+    return ["GROUP BY", result];
+}
+exports.queryTreeGroupBy = queryTreeGroupBy;
 //# sourceMappingURL=query.js.map

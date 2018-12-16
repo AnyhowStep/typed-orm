@@ -4,4 +4,5 @@ import { AfterSelectClause } from "./predicate";
 export declare function queryTreeSelects(query: AfterSelectClause): QueryTreeArray;
 export declare function queryTreeJoins(query: IQuery): QueryTreeArray;
 export declare function queryTreeWhere(query: IQuery): QueryTreeArray;
+export declare function queryTreeGroupBy(query: IQuery): QueryTreeArray;
 //# sourceMappingURL=query.d.ts.map

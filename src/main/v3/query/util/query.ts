@@ -7,6 +7,7 @@ import {ExprSelectItemUtil} from "../../expr-select-item";
 import {ColumnMap, ColumnMapUtil} from "../../column-map";
 import {SEPARATOR} from "../../constants";
 import {escapeId} from "sqlstring";
+import {ColumnIdentifierRefUtil} from "../../column-identifier-ref";
 
 function queryTreeSelectItem_Column (column : IColumn) : QueryTreeArray {
     const result : QueryTreeArray = [];
@@ -29,9 +30,8 @@ function queryTreeSelectItem_ColumnMap (columnMap : ColumnMap) : QueryTreeArray 
 export function queryTreeSelects (query : AfterSelectClause) : QueryTreeArray {
     const selects = query._selects;
     const result : QueryTreeArray = [];
-    result.push("SELECT");
     for (let item of selects) {
-        if (result.length > 1) {
+        if (result.length > 0) {
             result.push(",");
         }
         if (ColumnUtil.isColumn(item)) {
@@ -42,7 +42,7 @@ export function queryTreeSelects (query : AfterSelectClause) : QueryTreeArray {
             result.push(queryTreeSelectItem_ColumnMap(item));
         }
     }
-    return result;
+    return ["SELECT", result];
 }
 export function queryTreeJoins (query : IQuery) : QueryTreeArray {
     const joins = query._joins;
@@ -81,4 +81,31 @@ export function queryTreeWhere (query : IQuery) : QueryTreeArray {
     } else {
         return ["WHERE", where.queryTree];
     }
+}
+export function queryTreeGroupBy (query : IQuery) : QueryTreeArray {
+    const grouped = query._grouped;
+    if (grouped == undefined) {
+        return [];
+    }
+    const selectsRef = ColumnIdentifierRefUtil.fromSelectItemArray(
+        query._selects == undefined ?
+        [] :
+        query._selects
+    );
+
+    const result : QueryTreeArray = [];
+    for (let item of grouped) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        if (ColumnIdentifierRefUtil.hasColumnIdentifier(selectsRef, item)) {
+            result.push(escapeId(`${item.tableAlias}${SEPARATOR}${item.name}`));
+        } else {
+            //Probably from a JOIN'd table
+            result.push(escapeId(item.tableAlias));
+            result.push(".");
+            result.push(escapeId(item.name));
+        }
+    }
+    return ["GROUP BY", result];
 }
