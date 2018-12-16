@@ -69,6 +69,9 @@ export function groupBy<
     query : QueryT,
     delegate : AssertValidGroupByDelegate<QueryT, GroupByDelegateT>
 ) : GroupBy<QueryT> {
+    if (query._joins == undefined) {
+        throw new Error(`Cannot use GROUP BY before FROM clause`);
+    }
     const queryRef = ColumnIdentifierRefUtil.fromQuery(query);
     const grouped = delegate(
         ColumnIdentifierRefUtil.toConvenient(queryRef)

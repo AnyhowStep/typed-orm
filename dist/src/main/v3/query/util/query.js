@@ -7,6 +7,7 @@ const column_map_1 = require("../../column-map");
 const constants_1 = require("../../constants");
 const sqlstring_1 = require("sqlstring");
 const column_identifier_ref_1 = require("../../column-identifier-ref");
+const expr_1 = require("../../expr");
 function queryTreeSelectItem_Column(column) {
     const result = [];
     result.push(column_1.ColumnUtil.queryTree(column));
@@ -119,4 +120,29 @@ function queryTreeHaving(query) {
     }
 }
 exports.queryTreeHaving = queryTreeHaving;
+function queryTreeOrderBy(query) {
+    const orders = query._orders;
+    if (orders == undefined) {
+        return [];
+    }
+    const result = [];
+    for (let order of orders) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        const orderExpr = order[0];
+        if (column_1.ColumnUtil.isColumn(orderExpr)) {
+            result.push(column_1.ColumnUtil.queryTree(orderExpr));
+        }
+        else if (expr_1.ExprUtil.isExpr(orderExpr)) {
+            result.push(orderExpr.queryTree);
+        }
+        else {
+            throw new Error(`Unknown OrderExpr`);
+        }
+        result.push(order[1]);
+    }
+    return ["ORDER BY", result];
+}
+exports.queryTreeOrderBy = queryTreeOrderBy;
 //# sourceMappingURL=query.js.map

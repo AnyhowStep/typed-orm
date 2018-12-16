@@ -503,6 +503,23 @@ export class Query<DataT extends QueryData> {
             AndHavingDelegateT
         >(this, delegate);
     }
+
+    orderBy<
+        OrderByDelegateT extends QueryUtil.OrderByDelegate<
+            Extract<this, QueryUtil.AfterFromClause>
+        >
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        delegate : QueryUtil.AssertValidOrderByDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            OrderByDelegateT
+        >
+    ) : QueryUtil.OrderBy<Extract<this, QueryUtil.AfterFromClause>> {
+        return QueryUtil.orderBy<
+            Extract<this, QueryUtil.AfterFromClause>,
+            OrderByDelegateT
+        >(this, delegate);
+    }
 }
 export function from<AliasedTableT extends IAliasedTable> (
     aliasedTable : QueryUtil.AssertUniqueJoinTarget<

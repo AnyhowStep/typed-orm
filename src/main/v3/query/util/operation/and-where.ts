@@ -73,6 +73,9 @@ export function andWhere<
     query : QueryT,
     delegate : AssertValidAndWhereDelegate<QueryT, AndWhereDelegateT>
 ) : AndWhere<QueryT> {
+    if (query._joins == undefined) {
+        throw new Error(`Cannot use WHERE before FROM clause`);
+    }
     const queryRef = ColumnRefUtil.fromQueryJoins(query);
     const rawExpr = delegate(
         ColumnRefUtil.toConvenient(queryRef),

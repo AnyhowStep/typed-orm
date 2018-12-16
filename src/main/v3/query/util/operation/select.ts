@@ -191,6 +191,9 @@ export function select<
     query : QueryT,
     delegate : AssertValidSelectDelegate<QueryT, SelectDelegateT>
 ) : Select<QueryT, SelectDelegateT> {
+    if (query._unions != undefined) {
+        throw new Error(`Cannot use SELECT after UNION clause`);
+    }
     const queryRef = ColumnRefUtil.fromQueryJoins(query);
     const selects = delegate(
         ColumnRefUtil.toConvenient(queryRef)

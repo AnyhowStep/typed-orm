@@ -26,7 +26,6 @@ export type AndHaving<
         readonly _joins : QueryT["_joins"],
         readonly _parentJoins : QueryT["_parentJoins"],
         readonly _selects : QueryT["_selects"],
-        //TODO See if this needs to be more strongly typed
         readonly _where : QueryT["_where"],
 
         readonly _grouped : QueryT["_grouped"],
@@ -76,6 +75,9 @@ export function andHaving<
     query : QueryT,
     delegate : AssertValidAndHavingDelegate<QueryT, AndHavingDelegateT>
 ) : AndHaving<QueryT> {
+    if (query._joins == undefined) {
+        throw new Error(`Cannot use HAVING before FROM clause`);
+    }
     const queryRef = ColumnRefUtil.fromQuery(query);
     const rawExpr = delegate(
         ColumnRefUtil.toConvenient(queryRef),

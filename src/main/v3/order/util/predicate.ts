@@ -1,11 +1,17 @@
-import {Sort, Order, ASC, DESC} from "../order";
-import {ColumnIdentifierUtil} from "../../column-identifier";
+import {Sort, OrderExpr, Order, ASC, DESC} from "../order";
+import {ColumnUtil} from "../../column";
 import {ExprUtil} from "../../expr";
 
 export function isSort (raw : any) : raw is Sort {
     return (
         raw === ASC ||
         raw === DESC
+    );
+}
+export function isOrderExpr (raw : any) : raw is OrderExpr {
+    return (
+        ColumnUtil.isColumn(raw) ||
+        ExprUtil.isExpr(raw)
     );
 }
 export function isOrder (raw : any) : raw is Order {
@@ -18,10 +24,7 @@ export function isOrder (raw : any) : raw is Order {
     if (!isSort(raw[1])) {
         return false;
     }
-    if (
-        !ColumnIdentifierUtil.isColumnIdentifier(raw[0]) &&
-        !ExprUtil.isExpr(raw[0])
-    ) {
+    if (!isOrderExpr(raw[0])) {
         return false;
     }
     return true;

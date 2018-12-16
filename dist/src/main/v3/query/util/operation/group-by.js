@@ -3,6 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const query_1 = require("../../query");
 const column_identifier_ref_1 = require("../../../column-identifier-ref");
 function groupBy(query, delegate) {
+    if (query._joins == undefined) {
+        throw new Error(`Cannot use GROUP BY before FROM clause`);
+    }
     const queryRef = column_identifier_ref_1.ColumnIdentifierRefUtil.fromQuery(query);
     const grouped = delegate(column_identifier_ref_1.ColumnIdentifierRefUtil.toConvenient(queryRef));
     column_identifier_ref_1.ColumnIdentifierRefUtil.assertHasColumnIdentifiers(queryRef, grouped);

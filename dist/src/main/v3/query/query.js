@@ -51,6 +51,9 @@ class Query {
     andHaving(delegate) {
         return QueryUtil.andHaving(this, delegate);
     }
+    orderBy(delegate) {
+        return QueryUtil.orderBy(this, delegate);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

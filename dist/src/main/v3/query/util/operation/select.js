@@ -8,6 +8,9 @@ const expr_select_item_1 = require("../../../expr-select-item");
 const column_1 = require("../../../column");
 const column_identifier_1 = require("../../../column-identifier");
 function select(query, delegate) {
+    if (query._unions != undefined) {
+        throw new Error(`Cannot use SELECT after UNION clause`);
+    }
     const queryRef = column_ref_1.ColumnRefUtil.fromQueryJoins(query);
     const selects = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef));
     for (let selectItem of selects) {

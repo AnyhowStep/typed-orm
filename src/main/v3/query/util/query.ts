@@ -8,6 +8,7 @@ import {ColumnMap, ColumnMapUtil} from "../../column-map";
 import {SEPARATOR} from "../../constants";
 import {escapeId} from "sqlstring";
 import {ColumnIdentifierRefUtil} from "../../column-identifier-ref";
+import {ExprUtil} from "../../expr";
 
 function queryTreeSelectItem_Column (column : IColumn) : QueryTreeArray {
     const result : QueryTreeArray = [];
@@ -116,4 +117,27 @@ export function queryTreeHaving (query : IQuery) : QueryTreeArray {
     } else {
         return ["HAVING", having.queryTree];
     }
+}
+export function queryTreeOrderBy (query : IQuery) : QueryTreeArray {
+    const orders = query._orders;
+    if (orders == undefined) {
+        return [];
+    }
+    const result : QueryTreeArray = [];
+    for (let order of orders) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        const orderExpr = order[0];
+        if (ColumnUtil.isColumn(orderExpr)) {
+            result.push(ColumnUtil.queryTree(orderExpr));
+        } else if (ExprUtil.isExpr(orderExpr)) {
+            result.push(orderExpr.queryTree);
+        } else {
+            throw new Error(`Unknown OrderExpr`);
+        }
+
+        result.push(order[1]);
+    }
+    return ["ORDER BY", result];
 }

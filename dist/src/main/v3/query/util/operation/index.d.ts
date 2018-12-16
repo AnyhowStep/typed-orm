@@ -8,6 +8,7 @@ export * from "./join-delegate";
 export * from "./join-using-delegate";
 export * from "./left-join-using";
 export * from "./left-join";
+export * from "./order-by";
 export * from "./right-join-using";
 export * from "./right-join";
 export * from "./select";
