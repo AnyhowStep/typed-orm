@@ -1,0 +1,2 @@
+GROUP BY
+  `table--x`
