@@ -27,7 +27,7 @@ function isUnionQueryArray(raw) {
     return true;
 }
 exports.isUnionQueryArray = isUnionQueryArray;
-function isLimit(raw) {
+function isLimitData(raw) {
     return (raw != undefined &&
         (raw instanceof Object) &&
         ("maxRowCount" in raw) &&
@@ -35,7 +35,7 @@ function isLimit(raw) {
         (typeof raw.maxRowCount == "number") &&
         (typeof raw.offset == "number"));
 }
-exports.isLimit = isLimit;
+exports.isLimitData = isLimitData;
 function isQuery(raw) {
     if (!type_1.isObjectWithKeys(raw, [
         "_distinct",
@@ -76,13 +76,13 @@ function isQuery(raw) {
         (raw._orders == undefined ||
             order_1.OrderUtil.Array.isOrderArray(raw._orders)) &&
         (raw._limit == undefined ||
-            isLimit(raw._limit)) &&
+            isLimitData(raw._limit)) &&
         (raw._unions == undefined ||
             isUnionQueryArray(raw._unions)) &&
         (raw._unionOrders == undefined ||
             order_1.OrderUtil.Array.isOrderArray(raw._unionOrders)) &&
         (raw._unionLimit == undefined ||
-            isLimit(raw._unionLimit)) &&
+            isLimitData(raw._unionLimit)) &&
         (raw._mapDelegate == undefined ||
             (typeof raw._mapDelegate == "function")));
 }

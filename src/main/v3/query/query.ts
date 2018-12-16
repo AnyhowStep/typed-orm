@@ -13,7 +13,7 @@ export interface UnionQuery {
 }
 //TODO consider allowing this to be bigint?
 //A maxRowCount/offset of 3.141 would be weird
-export interface Limit {
+export interface LimitData {
     //This is called "max"RowCount and not rowCount
     //(like MySQL calls it) because we can say
     //we want a maxRowCount of 10 and only get 3 rows.
@@ -167,11 +167,11 @@ export interface QueryData {
     readonly _having : IAnonymousTypedExpr<boolean>|undefined;
 
     readonly _orders : Order[]|undefined;
-    readonly _limit : Limit|undefined;
+    readonly _limit : LimitData|undefined;
 
     readonly _unions : UnionQuery[]|undefined;
     readonly _unionOrders : Order[]|undefined;
-    readonly _unionLimit : Limit|undefined;
+    readonly _unionLimit : LimitData|undefined;
 
     readonly _mapDelegate : MapDelegate|undefined;
 }
@@ -519,6 +519,17 @@ export class Query<DataT extends QueryData> {
             Extract<this, QueryUtil.AfterFromClause>,
             OrderByDelegateT
         >(this, delegate);
+    }
+
+    limit<MaxRowCountT extends number> (
+        maxRowCount : MaxRowCountT
+    ) : QueryUtil.Limit<this, MaxRowCountT> {
+        return QueryUtil.limit(this, maxRowCount);
+    }
+    offset<OffsetT extends number> (
+        offset : OffsetT
+    ) : QueryUtil.Offset<this, OffsetT> {
+        return QueryUtil.offset(this, offset);
     }
 }
 export function from<AliasedTableT extends IAliasedTable> (

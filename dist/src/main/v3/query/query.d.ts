@@ -10,7 +10,7 @@ export interface UnionQuery {
     readonly distinct: boolean;
     readonly query: IQuery;
 }
-export interface Limit {
+export interface LimitData {
     readonly maxRowCount: number;
     readonly offset: number;
 }
@@ -24,10 +24,10 @@ export interface QueryData {
     readonly _grouped: ColumnIdentifier[] | undefined;
     readonly _having: IAnonymousTypedExpr<boolean> | undefined;
     readonly _orders: Order[] | undefined;
-    readonly _limit: Limit | undefined;
+    readonly _limit: LimitData | undefined;
     readonly _unions: UnionQuery[] | undefined;
     readonly _unionOrders: Order[] | undefined;
-    readonly _unionLimit: Limit | undefined;
+    readonly _unionLimit: LimitData | undefined;
     readonly _mapDelegate: MapDelegate | undefined;
 }
 export interface IQuery<DataT extends QueryData = QueryData> {
@@ -74,6 +74,8 @@ export declare class Query<DataT extends QueryData> {
     groupBy<GroupByDelegateT extends QueryUtil.GroupByDelegate<Extract<this, QueryUtil.AfterFromClause>>>(this: Extract<this, QueryUtil.AfterFromClause>, delegate: QueryUtil.AssertValidGroupByDelegate<Extract<this, QueryUtil.AfterFromClause>, GroupByDelegateT>): QueryUtil.GroupBy<Extract<this, QueryUtil.AfterFromClause>>;
     andHaving<AndHavingDelegateT extends QueryUtil.AndHavingDelegate<Extract<this, QueryUtil.AfterFromClause>>>(this: Extract<this, QueryUtil.AfterFromClause>, delegate: QueryUtil.AssertValidAndHavingDelegate<Extract<this, QueryUtil.AfterFromClause>, AndHavingDelegateT>): QueryUtil.AndHaving<Extract<this, QueryUtil.AfterFromClause>>;
     orderBy<OrderByDelegateT extends QueryUtil.OrderByDelegate<Extract<this, QueryUtil.AfterFromClause>>>(this: Extract<this, QueryUtil.AfterFromClause>, delegate: QueryUtil.AssertValidOrderByDelegate<Extract<this, QueryUtil.AfterFromClause>, OrderByDelegateT>): QueryUtil.OrderBy<Extract<this, QueryUtil.AfterFromClause>>;
+    limit<MaxRowCountT extends number>(maxRowCount: MaxRowCountT): QueryUtil.Limit<this, MaxRowCountT>;
+    offset<OffsetT extends number>(offset: OffsetT): QueryUtil.Offset<this, OffsetT>;
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertUniqueJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 //# sourceMappingURL=query.d.ts.map

@@ -6,4 +6,6 @@ export declare type Writable<T> = {
 export declare function isObjectWithKeys<T>(raw: any, keys: Extract<keyof T, string>[]): raw is {
     [k in Extract<keyof T, string>]: any;
 };
+export declare type MAX_SAFE_INTEGER = 9007199254740991;
+export declare const MAX_SAFE_INTEGER: MAX_SAFE_INTEGER;
 //# sourceMappingURL=type.d.ts.map

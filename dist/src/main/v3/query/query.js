@@ -54,6 +54,12 @@ class Query {
     orderBy(delegate) {
         return QueryUtil.orderBy(this, delegate);
     }
+    limit(maxRowCount) {
+        return QueryUtil.limit(this, maxRowCount);
+    }
+    offset(offset) {
+        return QueryUtil.offset(this, offset);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

@@ -15,4 +15,5 @@ function isObjectWithKeys(raw, keys) {
     return true;
 }
 exports.isObjectWithKeys = isObjectWithKeys;
+exports.MAX_SAFE_INTEGER = 9007199254740991;
 //# sourceMappingURL=type.js.map

@@ -1,6 +1,6 @@
 import {
     UnionQuery,
-    Limit,
+    LimitData,
     IQuery,
     QueryData,
 } from "../query";
@@ -35,7 +35,7 @@ export function isUnionQueryArray (raw : any) : raw is UnionQuery[] {
     }
     return true;
 }
-export function isLimit (raw : any) : raw is Limit {
+export function isLimitData (raw : any) : raw is LimitData {
     return (
         raw != undefined &&
         (raw instanceof Object) &&
@@ -99,7 +99,7 @@ export function isQuery (raw : any) : raw is IQuery {
         ) &&
         (
             raw._limit == undefined ||
-            isLimit(raw._limit)
+            isLimitData(raw._limit)
         ) &&
         (
             raw._unions == undefined ||
@@ -111,7 +111,7 @@ export function isQuery (raw : any) : raw is IQuery {
         ) &&
         (
             raw._unionLimit == undefined ||
-            isLimit(raw._unionLimit)
+            isLimitData(raw._unionLimit)
         ) &&
         (
             raw._mapDelegate == undefined ||

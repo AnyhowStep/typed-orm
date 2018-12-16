@@ -1,11 +1,11 @@
-import { UnionQuery, Limit, IQuery, QueryData } from "../query";
+import { UnionQuery, LimitData, IQuery, QueryData } from "../query";
 import { JoinArrayUtil } from "../../join-array";
 import { IJoin } from "../../join";
 import { SelectItem } from "../../select-item";
 import { IAliasedTable } from "../../aliased-table";
 export declare function isUnionQuery(raw: any): raw is UnionQuery;
 export declare function isUnionQueryArray(raw: any): raw is UnionQuery[];
-export declare function isLimit(raw: any): raw is Limit;
+export declare function isLimitData(raw: any): raw is LimitData;
 export declare function isQuery(raw: any): raw is IQuery;
 export declare type BeforeFromClause = IQuery<QueryData & {
     _joins: undefined;
