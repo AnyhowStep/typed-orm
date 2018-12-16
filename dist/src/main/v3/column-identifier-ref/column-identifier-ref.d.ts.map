@@ -1,0 +1,1 @@
+{"version":3,"file":"column-identifier-ref.d.ts","sourceRoot":"","sources":["../../../../../src/main/v3/column-identifier-ref/column-identifier-ref.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,mBAAmB,EAAC,MAAM,0BAA0B,CAAC;AAE7D,MAAM,WAAW,mBAAmB;IAChC,QAAQ,EAAE,UAAU,EAAG,MAAM,GAAI,mBAAmB,CAAA;CACvD"}

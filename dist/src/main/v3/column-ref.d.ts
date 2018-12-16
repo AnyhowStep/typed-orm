@@ -1,10 +1,11 @@
 import { ColumnMap, ColumnMapUtil } from "./column-map";
 import { IJoin } from "./join";
 import { JoinArrayUtil } from "./join-array";
-import { IColumn, ColumnUtil } from "./column";
+import { IColumn } from "./column";
 import { IQuery } from "./query";
 import { ColumnIdentifier } from "./column-identifier";
 import { Tuple } from "./tuple";
+import { ColumnIdentifierRefUtil } from "./column-identifier-ref";
 export declare type ColumnRef = {
     readonly [tableAlias: string]: ColumnMap;
 };
@@ -23,10 +24,10 @@ export declare namespace ColumnRefUtil {
         readonly [tableAlias in ColumnT["tableAlias"]]: (ColumnMapUtil.FromColumn<ColumnT>);
     });
     function fromColumn<ColumnT extends IColumn>(column: ColumnT): FromColumn<ColumnT>;
-    type FromQuery<QueryT extends IQuery> = ((QueryT["_joins"] extends IJoin[] ? FromJoinArray<QueryT["_joins"]> : {}) & (QueryT["_parentJoins"] extends IJoin[] ? FromJoinArray<QueryT["_parentJoins"]> : {}));
-    function fromQuery<QueryT extends IQuery>(query: QueryT): FromQuery<QueryT>;
+    type FromQueryJoins<QueryT extends IQuery> = ((QueryT["_joins"] extends IJoin[] ? FromJoinArray<QueryT["_joins"]> : {}) & (QueryT["_parentJoins"] extends IJoin[] ? FromJoinArray<QueryT["_parentJoins"]> : {}));
+    function fromQueryJoins<QueryT extends IQuery>(query: QueryT): FromQueryJoins<QueryT>;
     function assertIsSubset(a: ColumnRef, b: ColumnRef): void;
-    type HasColumnIdentifier<ColumnRefT extends ColumnRef, ColumnIdentifierT extends ColumnIdentifier> = (keyof ColumnRefT extends never ? false : ColumnRefT extends ColumnRef ? (ColumnIdentifierT extends ColumnIdentifier ? (ColumnRef extends ColumnRefT ? boolean : string extends ColumnIdentifierT["tableAlias"] ? (string extends ColumnIdentifierT["name"] ? boolean : ColumnIdentifierT["name"] extends ColumnUtil.Name.FromColumnRef<ColumnRefT> ? boolean : false) : ColumnIdentifierT["tableAlias"] extends keyof ColumnRefT ? (ColumnMapUtil.HasColumnIdentifier<ColumnRefT[ColumnIdentifierT["tableAlias"]], ColumnIdentifierT>) : false) : never) : never);
+    type HasColumnIdentifier<ColumnRefT extends ColumnRef, ColumnIdentifierT extends ColumnIdentifier> = (ColumnIdentifierRefUtil.HasColumnIdentifier<ColumnRefT, ColumnIdentifierT>);
     function hasColumnIdentifier<ColumnRefT extends ColumnRef, ColumnIdentifierT extends ColumnIdentifier>(columnRef: ColumnRefT, columnIdentifier: ColumnIdentifierT): (HasColumnIdentifier<ColumnRefT, ColumnIdentifierT>);
     function assertHasColumnIdentifier(columnRef: ColumnRef, columnIdentifier: ColumnIdentifier): void;
     function assertHasColumnIdentifiers(columnRef: ColumnRef, columnIdentifiers: ColumnIdentifier[]): void;

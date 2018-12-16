@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const column_map_1 = require("./column-map");
 const column_identifier_map_1 = require("./column-identifier-map");
+const column_identifier_ref_1 = require("./column-identifier-ref");
 var ColumnRefUtil;
 (function (ColumnRefUtil) {
     function fromJoinArray(joins) {
@@ -35,7 +36,7 @@ var ColumnRefUtil;
         };
     }
     ColumnRefUtil.fromColumn = fromColumn;
-    function fromQueryJoins(query) {
+    function fromQuerySelfJoins(query) {
         if (query._joins == undefined) {
             return {};
         }
@@ -51,12 +52,12 @@ var ColumnRefUtil;
             return fromJoinArray(query._parentJoins);
         }
     }
-    function fromQuery(query) {
-        const joinRef = fromQueryJoins(query);
+    function fromQueryJoins(query) {
+        const selfJoinRef = fromQuerySelfJoins(query);
         const parentJoinRef = fromQueryParentJoins(query);
-        return Object.assign({}, joinRef, parentJoinRef);
+        return Object.assign({}, selfJoinRef, parentJoinRef);
     }
-    ColumnRefUtil.fromQuery = fromQuery;
+    ColumnRefUtil.fromQueryJoins = fromQueryJoins;
     function assertIsSubset(a, b) {
         for (let tableAliasA in a) {
             const columnMapA = a[tableAliasA];
@@ -69,23 +70,15 @@ var ColumnRefUtil;
     }
     ColumnRefUtil.assertIsSubset = assertIsSubset;
     function hasColumnIdentifier(columnRef, columnIdentifier) {
-        if (!columnRef.hasOwnProperty(columnIdentifier.tableAlias)) {
-            return false;
-        }
-        const columnMap = columnRef[columnIdentifier.tableAlias];
-        return column_map_1.ColumnMapUtil.hasColumnIdentifier(columnMap, columnIdentifier);
+        return column_identifier_ref_1.ColumnIdentifierRefUtil.hasColumnIdentifier(columnRef, columnIdentifier);
     }
     ColumnRefUtil.hasColumnIdentifier = hasColumnIdentifier;
     function assertHasColumnIdentifier(columnRef, columnIdentifier) {
-        if (!hasColumnIdentifier(columnRef, columnIdentifier)) {
-            throw new Error(`Column ${columnIdentifier.tableAlias}.${columnIdentifier.name} does not exist in column ref`);
-        }
+        column_identifier_ref_1.ColumnIdentifierRefUtil.assertHasColumnIdentifier(columnRef, columnIdentifier);
     }
     ColumnRefUtil.assertHasColumnIdentifier = assertHasColumnIdentifier;
     function assertHasColumnIdentifiers(columnRef, columnIdentifiers) {
-        for (let columnIdentifier of columnIdentifiers) {
-            assertHasColumnIdentifier(columnRef, columnIdentifier);
-        }
+        column_identifier_ref_1.ColumnIdentifierRefUtil.assertHasColumnIdentifiers(columnRef, columnIdentifiers);
     }
     ColumnRefUtil.assertHasColumnIdentifiers = assertHasColumnIdentifiers;
     function fromColumnArray(columns) {

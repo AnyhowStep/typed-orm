@@ -12,7 +12,8 @@ export type HasColumnIdentifier<
     (
         ColumnIdentifierT extends ColumnIdentifier ?
         (
-            ColumnIdentifierRef extends ColumnIdentifierRefT ?
+            //ColumnIdentifierRef extends ColumnIdentifierRefT ?
+            string extends keyof ColumnIdentifierRefT ?
             boolean :
             string extends ColumnIdentifierT["tableAlias"] ?
             (

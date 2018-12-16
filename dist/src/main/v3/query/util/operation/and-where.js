@@ -6,7 +6,7 @@ const expr_1 = require("../../../expr");
 const expr_library_1 = require("../../../expr-library");
 //Must be called after `FROM` as per MySQL
 function andWhere(query, delegate) {
-    const queryRef = column_ref_1.ColumnRefUtil.fromQuery(query);
+    const queryRef = column_ref_1.ColumnRefUtil.fromQueryJoins(query);
     const rawExpr = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef), query);
     const expr = expr_1.ExprUtil.fromRawExpr(rawExpr);
     column_ref_1.ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);

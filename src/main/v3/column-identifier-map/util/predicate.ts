@@ -64,7 +64,8 @@ export type HasColumnIdentifier<
     (
         ColumnIdentifierT extends ColumnIdentifier ?
         (
-            ColumnIdentifierMap extends ColumnMapT ?
+            //ColumnIdentifierMap extends ColumnMapT ?
+            string extends keyof ColumnMapT ?
             boolean :
             ColumnIdentifier extends ColumnIdentifierT ?
             boolean :

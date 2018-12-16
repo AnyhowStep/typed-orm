@@ -7,4 +7,6 @@ __export(require("./constructor"));
 __export(require("./predicate"));
 const Array = require("./array");
 exports.Array = Array;
+const Name = require("./name");
+exports.Name = Name;
 //# sourceMappingURL=index.js.map

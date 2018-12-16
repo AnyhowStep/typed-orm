@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const column_1 = require("../../column");
-const column_identifier_1 = require("../../column-identifier");
+const column_identifier_map_1 = require("../../column-identifier-map");
 function isColumnMap(raw) {
     if (!(raw instanceof Object)) {
         return false;
@@ -20,23 +20,15 @@ function hasOneColumn(columnMap) {
 }
 exports.hasOneColumn = hasOneColumn;
 function hasColumnIdentifier(columnMap, columnIdentifier) {
-    const column = columnMap[columnIdentifier.name];
-    if (!column_1.ColumnUtil.isColumn(column)) {
-        return false;
-    }
-    return column_identifier_1.ColumnIdentifierUtil.isEqual(column, columnIdentifier);
+    return column_identifier_map_1.ColumnIdentifierMapUtil.hasColumnIdentifier(columnMap, columnIdentifier);
 }
 exports.hasColumnIdentifier = hasColumnIdentifier;
 function assertHasColumnIdentifier(columnMap, columnIdentifier) {
-    if (!hasColumnIdentifier(columnMap, columnIdentifier)) {
-        throw new Error(`Column ${columnIdentifier.tableAlias}.${columnIdentifier.name} does not exist in column map`);
-    }
+    column_identifier_map_1.ColumnIdentifierMapUtil.assertHasColumnIdentifier(columnMap, columnIdentifier);
 }
 exports.assertHasColumnIdentifier = assertHasColumnIdentifier;
 function assertHasColumnIdentifiers(columnMap, columnIdentifiers) {
-    for (let columnIdentifier of columnIdentifiers) {
-        assertHasColumnIdentifier(columnMap, columnIdentifier);
-    }
+    column_identifier_map_1.ColumnIdentifierMapUtil.assertHasColumnIdentifiers(columnMap, columnIdentifiers);
 }
 exports.assertHasColumnIdentifiers = assertHasColumnIdentifiers;
 //# sourceMappingURL=predicate.js.map

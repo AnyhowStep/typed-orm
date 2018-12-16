@@ -26,4 +26,24 @@ function assertIsSubset(a, b) {
     }
 }
 exports.assertIsSubset = assertIsSubset;
+function hasColumnIdentifier(columnMap, columnIdentifier) {
+    const column = columnMap[columnIdentifier.name];
+    if (!column_identifier_1.ColumnIdentifierUtil.isColumnIdentifier(column)) {
+        return false;
+    }
+    return column_identifier_1.ColumnIdentifierUtil.isEqual(column, columnIdentifier);
+}
+exports.hasColumnIdentifier = hasColumnIdentifier;
+function assertHasColumnIdentifier(columnMap, columnIdentifier) {
+    if (!hasColumnIdentifier(columnMap, columnIdentifier)) {
+        throw new Error(`Column ${columnIdentifier.tableAlias}.${columnIdentifier.name} does not exist in column identifier map`);
+    }
+}
+exports.assertHasColumnIdentifier = assertHasColumnIdentifier;
+function assertHasColumnIdentifiers(columnMap, columnIdentifiers) {
+    for (let columnIdentifier of columnIdentifiers) {
+        assertHasColumnIdentifier(columnMap, columnIdentifier);
+    }
+}
+exports.assertHasColumnIdentifiers = assertHasColumnIdentifiers;
 //# sourceMappingURL=predicate.js.map
