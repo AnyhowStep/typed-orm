@@ -15,7 +15,7 @@ export type SelectDelegate<
 > = (
     (
         columns : ColumnRefUtil.ToConvenient<
-            ColumnRefUtil.FromQuery<QueryT>
+            ColumnRefUtil.FromQueryJoins<QueryT>
         >
     ) => NonEmptyTuple<SelectItem>
 );
@@ -67,7 +67,7 @@ export type AssertValidSelectDelegate<
         [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
             ReturnType<SelectDelegateT>[index] extends IExprSelectItem ?
             (
-                ColumnRefUtil.FromQuery<QueryT> extends ReturnType<SelectDelegateT>[index]["usedRef"] ?
+                ColumnRefUtil.FromQueryJoins<QueryT> extends ReturnType<SelectDelegateT>[index]["usedRef"] ?
                 never :
                 [
                     "Invalid IExprSelectItem",
@@ -76,7 +76,7 @@ export type AssertValidSelectDelegate<
                             ReturnType<SelectDelegateT>[index]["usedRef"]
                         >,
                         ColumnUtil.FromColumnRef<
-                            ColumnRefUtil.FromQuery<QueryT>
+                            ColumnRefUtil.FromQueryJoins<QueryT>
                         >
                     >
                 ]
@@ -89,7 +89,7 @@ export type AssertValidSelectDelegate<
         [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
             ReturnType<SelectDelegateT>[index] extends IColumn ?
             (
-                ReturnType<SelectDelegateT>[index] extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> ?
+                ReturnType<SelectDelegateT>[index] extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>> ?
                 never :
                 [
                     "Invalid IColumn",
@@ -104,13 +104,13 @@ export type AssertValidSelectDelegate<
         [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
             ReturnType<SelectDelegateT>[index] extends ColumnMap ?
             (
-                ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]> extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> ?
+                ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]> extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>> ?
                 never :
                 [
                     "Invalid ColumnMap",
                     Exclude<
                         ColumnUtil.FromColumnMap<ReturnType<SelectDelegateT>[index]>,
-                        ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>
+                        ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>>
                     >
                 ]
             ) :
@@ -191,7 +191,7 @@ export function select<
     query : QueryT,
     delegate : AssertValidSelectDelegate<QueryT, SelectDelegateT>
 ) : Select<QueryT, SelectDelegateT> {
-    const queryRef = ColumnRefUtil.fromQuery(query);
+    const queryRef = ColumnRefUtil.fromQueryJoins(query);
     const selects = delegate(
         ColumnRefUtil.toConvenient(queryRef)
     );

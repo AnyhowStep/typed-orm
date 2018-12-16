@@ -1,13 +1,6 @@
-import * as sd from "schema-decorator";
-import {ToUnknownIfAllFieldsNever} from "../../../type";
 import {Query} from "../../query";
 import {AfterFromClause} from "../predicate";
-import {ColumnRef, ColumnRefUtil} from "../../../column-ref";
-import {ColumnMap, ColumnMapUtil} from "../../../column-map";
-import {NonEmptyTuple, TupleUtil} from "../../../tuple";
-import {SelectItem} from "../../../select-item";
-import {IExprSelectItem, ExprSelectItemUtil} from "../../../expr-select-item";
-import {IColumn, ColumnUtil} from "../../../column";
+import {NonEmptyTuple} from "../../../tuple";
 import {ColumnIdentifier, ColumnIdentifierUtil} from "../../../column-identifier";
 import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
 
@@ -18,11 +11,12 @@ export type GroupByDelegate<
         columns : ColumnIdentifierRefUtil.ToConvenient<
             ColumnIdentifierRefUtil.FromQuery<QueryT>
         >
-    ) => NonEmptyTuple<SelectItem>
+    ) => NonEmptyTuple<ColumnIdentifier>
 );
 export type GroupBy<
     QueryT extends AfterFromClause,
-    GroupByDelegateT extends GroupByDelegate<QueryT>
+    //This will only be used when pursuing ONLY_FULL_GROUP_BY support
+    //GroupByDelegateT extends GroupByDelegate<QueryT>
 > = (
     Query<{
         readonly _distinct : QueryT["_distinct"];
@@ -48,3 +42,84 @@ export type GroupBy<
         readonly _mapDelegate : QueryT["_mapDelegate"],
     }>
 );
+export type AssertValidGroupByDelegate<
+    QueryT extends AfterFromClause,
+    GroupByDelegateT extends GroupByDelegate<QueryT>
+> = (
+    GroupByDelegateT &
+    (
+        //Column identifiers to group by must exist
+        ReturnType<GroupByDelegateT>[number] extends ColumnIdentifierUtil.FromQuery<QueryT> ?
+        unknown :
+        [
+            "Invalid GROUP BY columns",
+            Exclude<
+                ReturnType<GroupByDelegateT>[number],
+                ColumnIdentifierUtil.FromQuery<QueryT>
+            >
+        ]
+    )
+);
+export function groupBy<
+    QueryT extends AfterFromClause,
+    GroupByDelegateT extends GroupByDelegate<QueryT>
+> (
+    query : QueryT,
+    delegate : AssertValidGroupByDelegate<QueryT, GroupByDelegateT>
+) : GroupBy<QueryT> {
+    const queryRef = ColumnIdentifierRefUtil.fromQuery(query);
+    const grouped = delegate(
+        ColumnIdentifierRefUtil.toConvenient(queryRef)
+    );
+
+    ColumnIdentifierRefUtil.assertHasColumnIdentifiers(queryRef, grouped);
+
+    const newGrouped : ColumnIdentifier[] = (
+        (query._grouped == undefined) ?
+            grouped :
+            [...query._grouped, ...grouped]
+    ) as any;
+
+    const {
+        _distinct,
+        _sqlCalcFoundRows,
+
+        _joins,
+        _parentJoins,
+        _selects,
+        _where,
+
+        _having,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
+    } = query;
+
+    return new Query({
+        _distinct,
+        _sqlCalcFoundRows,
+
+        _joins,
+        _parentJoins,
+        _selects,
+        _where,
+
+        _grouped : newGrouped,
+        _having,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
+    });
+}

@@ -32,3 +32,18 @@ export function queryTree (columnMap : ColumnMap) : QueryTreeArray {
     }
     return result;
 }
+
+export type TableAlias<ColumnMapT extends ColumnMap> = (
+    ColumnMapT extends ColumnMap ?
+    ColumnMapT[Extract<keyof ColumnMapT, string>]["tableAlias"] :
+    never
+);
+
+export type FindWithTableAlias<ColumnMapT extends ColumnMap, TableAliasT extends string> = (
+    ColumnMapT extends ColumnMap ?
+    Extract<
+        ColumnMapT[Extract<keyof ColumnMapT, string>],
+        { tableAlias : TableAliasT }
+    > :
+    never
+);

@@ -16,7 +16,7 @@ export type ToUnknownIfAllFieldsNever<T> = (
     T[keyof T]
 );
 export type Writable<T> = {
-    -readonly [k in keyof T] : T[k]
+    -readonly [k in keyof T] : Writable<T[k]>
 };
 
 export function isObjectWithKeys<T> (

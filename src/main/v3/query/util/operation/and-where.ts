@@ -11,7 +11,7 @@ export type AndWhereDelegate<
     QueryT extends AfterFromClause
 > = (
     (
-        columns : ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>,
+        columns : ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQueryJoins<QueryT>>,
         query : QueryT,
     ) => RawExpr<boolean>
 );
@@ -49,7 +49,7 @@ export type AssertValidAndWhereDelegate<
 > = (
     AndWhereDelegateT &
     (
-        ColumnRefUtil.FromQuery<QueryT> extends RawExprUtil.UsedRef<ReturnType<AndWhereDelegateT>> ?
+        ColumnRefUtil.FromQueryJoins<QueryT> extends RawExprUtil.UsedRef<ReturnType<AndWhereDelegateT>> ?
         unknown :
         [
             "WHERE expression contains some invalid columns; the following are not allowed:",
@@ -58,7 +58,7 @@ export type AssertValidAndWhereDelegate<
                     RawExprUtil.UsedRef<ReturnType<AndWhereDelegateT>>
                 >,
                 ColumnUtil.FromColumnRef<
-                    ColumnRefUtil.FromQuery<QueryT>
+                    ColumnRefUtil.FromQueryJoins<QueryT>
                 >
             >
         ]
@@ -73,7 +73,7 @@ export function andWhere<
     query : QueryT,
     delegate : AssertValidAndWhereDelegate<QueryT, AndWhereDelegateT>
 ) : AndWhere<QueryT> {
-    const queryRef = ColumnRefUtil.fromQuery(query);
+    const queryRef = ColumnRefUtil.fromQueryJoins(query);
     const rawExpr = delegate(
         ColumnRefUtil.toConvenient(queryRef),
         query

@@ -1,12 +1,13 @@
 import {ColumnMap, ColumnMapUtil} from "./column-map";
 import {IJoin} from "./join";
 import {JoinArrayUtil} from "./join-array";
-import {IColumn, ColumnUtil} from "./column";
+import {IColumn} from "./column";
 import {IQuery} from "./query";
 import {ColumnIdentifierMapUtil} from "./column-identifier-map";
 import {ColumnIdentifier} from "./column-identifier";
 import {Writable} from "./type";
 import {Tuple} from "./tuple";
+import {ColumnIdentifierRefUtil} from "./column-identifier-ref";
 
 export type ColumnRef = {
     readonly [tableAlias : string] : ColumnMap
@@ -107,7 +108,7 @@ export namespace ColumnRefUtil {
         } as any;
     }
 
-    export type FromQuery<
+    export type FromQueryJoins<
         QueryT extends IQuery
     > = (
         (
@@ -121,7 +122,7 @@ export namespace ColumnRefUtil {
             {}
         )
     );
-    function fromQueryJoins (query : IQuery) {
+    function fromQuerySelfJoins (query : IQuery) {
         if (query._joins == undefined) {
             return {};
         } else {
@@ -135,14 +136,14 @@ export namespace ColumnRefUtil {
             return fromJoinArray(query._parentJoins);
         }
     }
-    export function fromQuery<
+    export function fromQueryJoins<
         QueryT extends IQuery
-    > (query : QueryT) : FromQuery<QueryT> {
-        const joinRef = fromQueryJoins(query);
+    > (query : QueryT) : FromQueryJoins<QueryT> {
+        const selfJoinRef = fromQuerySelfJoins(query);
         const parentJoinRef = fromQueryParentJoins(query);
         return Object.assign(
             {},
-            joinRef,
+            selfJoinRef,
             parentJoinRef
         ) as any;
     }
@@ -163,34 +164,7 @@ export namespace ColumnRefUtil {
         ColumnRefT extends ColumnRef,
         ColumnIdentifierT extends ColumnIdentifier
     > = (
-        keyof ColumnRefT extends never ?
-        false :
-        ColumnRefT extends ColumnRef ?
-        (
-            ColumnIdentifierT extends ColumnIdentifier ?
-            (
-                ColumnRef extends ColumnRefT ?
-                boolean :
-                string extends ColumnIdentifierT["tableAlias"] ?
-                (
-                    string extends ColumnIdentifierT["name"] ?
-                    boolean :
-                    ColumnIdentifierT["name"] extends ColumnUtil.Name.FromColumnRef<ColumnRefT> ?
-                    boolean :
-                    false
-                ) :
-                ColumnIdentifierT["tableAlias"] extends keyof ColumnRefT ?
-                (
-                    ColumnMapUtil.HasColumnIdentifier<
-                        ColumnRefT[ColumnIdentifierT["tableAlias"]],
-                        ColumnIdentifierT
-                    >
-                ) :
-                false
-            ) :
-            never
-        ) :
-        never
+        ColumnIdentifierRefUtil.HasColumnIdentifier<ColumnRefT, ColumnIdentifierT>
     );
     export function hasColumnIdentifier<
         ColumnRefT extends ColumnRef,
@@ -198,21 +172,13 @@ export namespace ColumnRefUtil {
     > (columnRef : ColumnRefT, columnIdentifier : ColumnIdentifierT) : (
         HasColumnIdentifier<ColumnRefT, ColumnIdentifierT>
     ) {
-        if (!columnRef.hasOwnProperty(columnIdentifier.tableAlias)) {
-            return false as any;
-        }
-        const columnMap = columnRef[columnIdentifier.tableAlias];
-        return ColumnMapUtil.hasColumnIdentifier(columnMap, columnIdentifier) as any;
+        return ColumnIdentifierRefUtil.hasColumnIdentifier(columnRef, columnIdentifier);
     }
     export function assertHasColumnIdentifier (columnRef : ColumnRef, columnIdentifier : ColumnIdentifier) {
-        if (!hasColumnIdentifier(columnRef, columnIdentifier)) {
-            throw new Error(`Column ${columnIdentifier.tableAlias}.${columnIdentifier.name} does not exist in column ref`);
-        }
+        ColumnIdentifierRefUtil.assertHasColumnIdentifier(columnRef, columnIdentifier);
     }
     export function assertHasColumnIdentifiers (columnRef : ColumnRef, columnIdentifiers : ColumnIdentifier[]) {
-        for (let columnIdentifier of columnIdentifiers) {
-            assertHasColumnIdentifier(columnRef, columnIdentifier);
-        }
+        ColumnIdentifierRefUtil.assertHasColumnIdentifiers(columnRef, columnIdentifiers);
     }
 
     export type FromColumnArray<ColumnsT extends IColumn[]> = (
