@@ -484,4 +484,14 @@ export namespace ColumnRefUtil {
         }
         return result as IntersectTuple<ArrT>;
     }
+
+    export type ToPartial<RefT extends ColumnRef> = (
+        {
+            readonly [tableAlias in Extract<keyof RefT, string>]? : {
+                readonly [columnName in Extract<keyof RefT[tableAlias], string>]? : (
+                    RefT[tableAlias][columnName]
+                )
+            }
+        }
+    );
 }

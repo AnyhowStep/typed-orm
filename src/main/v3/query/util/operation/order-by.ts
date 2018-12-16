@@ -4,7 +4,7 @@ import {ColumnRefUtil} from "../../../column-ref";
 import {IExpr, ExprUtil} from "../../../expr";
 import {ColumnUtil} from "../../../column";
 import {NonEmptyTuple} from "../../../tuple";
-import {RawOrder, Order, OrderUtil} from "../../../order";
+import {RawOrder, Order, OrderUtil, Sort} from "../../../order";
 import {ToUnknownIfAllFieldsNever} from "../../../type";
 
 export type OrderByDelegate<
@@ -13,7 +13,22 @@ export type OrderByDelegate<
     (
         columns : ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>,
         query : QueryT,
-    ) => NonEmptyTuple<RawOrder>
+    ) => NonEmptyTuple<
+        ColumnUtil.FromColumnRef<
+            ColumnRefUtil.FromQuery<QueryT>
+        > |
+        [
+            ColumnUtil.FromColumnRef<
+                ColumnRefUtil.FromQuery<QueryT>
+            >,
+            Sort
+        ] |
+        IExpr |
+        [
+            IExpr,
+            Sort
+        ]
+    >
 );
 
 export type OrderBy<
@@ -54,25 +69,26 @@ export type AssertValidOrderByDelegate<
             (
                 OrderUtil.ExtractExpr<
                     ReturnType<OrderByDelegateT>[index]
-                > extends IExpr ?
+                > extends never ?
+                never :
                 (
-                    ColumnRefUtil.FromQueryJoins<QueryT> extends OrderUtil.ExtractExpr<
+                    ColumnRefUtil.FromQuery<QueryT> extends OrderUtil.ExtractExpr<
                         ReturnType<OrderByDelegateT>[index]
                     >["usedRef"] ?
                     never :
                     [
                         "Invalid IExpr",
+                        index,
                         Exclude<
                             ColumnUtil.FromColumnRef<
                                 OrderUtil.ExtractExpr<ReturnType<OrderByDelegateT>[index]>["usedRef"]
                             >,
                             ColumnUtil.FromColumnRef<
-                                ColumnRefUtil.FromQueryJoins<QueryT>
+                                ColumnRefUtil.FromQuery<QueryT>
                             >
                         >
                     ]
-                ) :
-                never
+                )
             ) :
             never
         )
@@ -85,17 +101,18 @@ export type AssertValidOrderByDelegate<
                 OrderUtil.ExtractColumn<
                     ReturnType<OrderByDelegateT>[index]
                 > extends ColumnUtil.FromColumnRef<
-                    ColumnRefUtil.FromQueryJoins<QueryT>
+                    ColumnRefUtil.FromQuery<QueryT>
                 > ?
                 never :
                 [
                     "Invalid IColumn",
+                    index,
                     Exclude<
                         OrderUtil.ExtractColumn<
                             ReturnType<OrderByDelegateT>[index]
                         >,
                         ColumnUtil.FromColumnRef<
-                            ColumnRefUtil.FromQueryJoins<QueryT>
+                            ColumnRefUtil.FromQuery<QueryT>
                         >
                     >
                 ]

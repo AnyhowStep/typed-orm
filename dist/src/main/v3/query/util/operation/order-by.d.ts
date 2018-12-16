@@ -4,9 +4,9 @@ import { ColumnRefUtil } from "../../../column-ref";
 import { IExpr } from "../../../expr";
 import { ColumnUtil } from "../../../column";
 import { NonEmptyTuple } from "../../../tuple";
-import { RawOrder, Order, OrderUtil } from "../../../order";
+import { RawOrder, Order, OrderUtil, Sort } from "../../../order";
 import { ToUnknownIfAllFieldsNever } from "../../../type";
-export declare type OrderByDelegate<QueryT extends AfterFromClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>, query: QueryT) => NonEmptyTuple<RawOrder>);
+export declare type OrderByDelegate<QueryT extends AfterFromClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>, query: QueryT) => NonEmptyTuple<ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> | [ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>, Sort] | IExpr | [IExpr, Sort]>);
 export declare type OrderBy<QueryT extends AfterFromClause> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];
@@ -24,9 +24,9 @@ export declare type OrderBy<QueryT extends AfterFromClause> = (Query<{
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare type AssertValidOrderByDelegate<QueryT extends AfterFromClause, OrderByDelegateT extends OrderByDelegate<QueryT>> = (OrderByDelegateT & ToUnknownIfAllFieldsNever<{
-    [index in Extract<keyof ReturnType<OrderByDelegateT>, string>]: (ReturnType<OrderByDelegateT>[index] extends RawOrder ? (OrderUtil.ExtractExpr<ReturnType<OrderByDelegateT>[index]> extends IExpr ? (ColumnRefUtil.FromQueryJoins<QueryT> extends OrderUtil.ExtractExpr<ReturnType<OrderByDelegateT>[index]>["usedRef"] ? never : ["Invalid IExpr", Exclude<ColumnUtil.FromColumnRef<OrderUtil.ExtractExpr<ReturnType<OrderByDelegateT>[index]>["usedRef"]>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>>>]) : never) : never);
+    [index in Extract<keyof ReturnType<OrderByDelegateT>, string>]: (ReturnType<OrderByDelegateT>[index] extends RawOrder ? (OrderUtil.ExtractExpr<ReturnType<OrderByDelegateT>[index]> extends never ? never : (ColumnRefUtil.FromQuery<QueryT> extends OrderUtil.ExtractExpr<ReturnType<OrderByDelegateT>[index]>["usedRef"] ? never : ["Invalid IExpr", index, Exclude<ColumnUtil.FromColumnRef<OrderUtil.ExtractExpr<ReturnType<OrderByDelegateT>[index]>["usedRef"]>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>>])) : never);
 }> & ToUnknownIfAllFieldsNever<{
-    [index in Extract<keyof ReturnType<OrderByDelegateT>, string>]: (ReturnType<OrderByDelegateT>[index] extends RawOrder ? (OrderUtil.ExtractColumn<ReturnType<OrderByDelegateT>[index]> extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>> ? never : ["Invalid IColumn", Exclude<OrderUtil.ExtractColumn<ReturnType<OrderByDelegateT>[index]>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>>>]) : never);
+    [index in Extract<keyof ReturnType<OrderByDelegateT>, string>]: (ReturnType<OrderByDelegateT>[index] extends RawOrder ? (OrderUtil.ExtractColumn<ReturnType<OrderByDelegateT>[index]> extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> ? never : ["Invalid IColumn", index, Exclude<OrderUtil.ExtractColumn<ReturnType<OrderByDelegateT>[index]>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>>]) : never);
 }>);
 export declare function orderBy<QueryT extends AfterFromClause, OrderByDelegateT extends OrderByDelegate<QueryT>>(query: QueryT, delegate: AssertValidOrderByDelegate<QueryT, OrderByDelegateT>): OrderBy<QueryT>;
 //# sourceMappingURL=order-by.d.ts.map

@@ -9,6 +9,8 @@ __export(require("./column-identifier"));
 __export(require("./column-map"));
 __export(require("./expr-library"));
 __export(require("./formatter"));
+__export(require("./order"));
+__export(require("./query"));
 __export(require("./table"));
 __export(require("./assert-map"));
 __export(require("./expr-select-item"));
@@ -18,7 +20,6 @@ __export(require("./constants"));
 __export(require("./join-array"));
 __export(require("./join"));
 __export(require("./query-tree"));
-__export(require("./query"));
 __export(require("./select-item-array"));
 __export(require("./select-item"));
 //# sourceMappingURL=index.js.map
