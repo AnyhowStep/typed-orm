@@ -109,4 +109,14 @@ function queryTreeGroupBy(query) {
     return ["GROUP BY", result];
 }
 exports.queryTreeGroupBy = queryTreeGroupBy;
+function queryTreeHaving(query) {
+    const having = query._having;
+    if (having == undefined) {
+        return [];
+    }
+    else {
+        return ["HAVING", having.queryTree];
+    }
+}
+exports.queryTreeHaving = queryTreeHaving;
 //# sourceMappingURL=query.js.map

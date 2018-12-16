@@ -7,16 +7,16 @@ import {ColumnUtil} from "../../../column";
 import {IAnonymousTypedExpr} from "../../../expr";
 import {and} from "../../../expr-library";
 
-export type AndWhereDelegate<
+export type AndHavingDelegate<
     QueryT extends AfterFromClause
 > = (
     (
-        columns : ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQueryJoins<QueryT>>,
+        columns : ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>,
         query : QueryT,
     ) => RawExpr<boolean>
 );
 
-export type AndWhere<
+export type AndHaving<
     QueryT extends AfterFromClause
 > = (
     Query<{
@@ -27,10 +27,11 @@ export type AndWhere<
         readonly _parentJoins : QueryT["_parentJoins"],
         readonly _selects : QueryT["_selects"],
         //TODO See if this needs to be more strongly typed
-        readonly _where : IAnonymousTypedExpr<boolean>,
+        readonly _where : QueryT["_where"],
 
         readonly _grouped : QueryT["_grouped"],
-        readonly _having : QueryT["_having"],
+        //TODO See if this needs to be more strongly typed
+        readonly _having : IAnonymousTypedExpr<boolean>,
 
         readonly _orders : QueryT["_orders"],
         readonly _limit : QueryT["_limit"],
@@ -43,22 +44,24 @@ export type AndWhere<
     }>
 );
 
-export type AssertValidAndWhereDelegate<
+export type AssertValidAndHavingDelegate<
     QueryT extends AfterFromClause,
-    AndWhereDelegateT extends AndWhereDelegate<QueryT>
+    AndHavingDelegateT extends AndHavingDelegate<QueryT>
 > = (
-    AndWhereDelegateT &
+    AndHavingDelegateT &
     (
-        ColumnRefUtil.FromQueryJoins<QueryT> extends RawExprUtil.UsedRef<ReturnType<AndWhereDelegateT>> ?
+        //TODO Safer to convert both to union of columns and check if used columns extends query columns
+        //I think
+        ColumnRefUtil.FromQuery<QueryT> extends RawExprUtil.UsedRef<ReturnType<AndHavingDelegateT>> ?
         unknown :
         [
-            "WHERE expression contains some invalid columns; the following are not allowed:",
+            "HAVING expression contains some invalid columns; the following are not allowed:",
             Exclude<
                 ColumnUtil.FromColumnRef<
-                    RawExprUtil.UsedRef<ReturnType<AndWhereDelegateT>>
+                    RawExprUtil.UsedRef<ReturnType<AndHavingDelegateT>>
                 >,
                 ColumnUtil.FromColumnRef<
-                    ColumnRefUtil.FromQueryJoins<QueryT>
+                    ColumnRefUtil.FromQuery<QueryT>
                 >
             >
         ]
@@ -66,14 +69,14 @@ export type AssertValidAndWhereDelegate<
 );
 
 //Must be called after `FROM` as per MySQL
-export function andWhere<
+export function andHaving<
     QueryT extends AfterFromClause,
-    AndWhereDelegateT extends AndWhereDelegate<QueryT>
+    AndHavingDelegateT extends AndHavingDelegate<QueryT>
 > (
     query : QueryT,
-    delegate : AssertValidAndWhereDelegate<QueryT, AndWhereDelegateT>
-) : AndWhere<QueryT> {
-    const queryRef = ColumnRefUtil.fromQueryJoins(query);
+    delegate : AssertValidAndHavingDelegate<QueryT, AndHavingDelegateT>
+) : AndHaving<QueryT> {
+    const queryRef = ColumnRefUtil.fromQuery(query);
     const rawExpr = delegate(
         ColumnRefUtil.toConvenient(queryRef),
         query
@@ -85,10 +88,10 @@ export function andWhere<
     return new Query(
         {
             ...query,
-            _where : (
-                query._where == undefined ?
+            _having : (
+                query._having == undefined ?
                 expr :
-                and(query._where, expr)
+                and(query._having, expr)
             )
         }
     );

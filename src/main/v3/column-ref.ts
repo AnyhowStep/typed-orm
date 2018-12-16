@@ -1,13 +1,15 @@
 import {ColumnMap, ColumnMapUtil} from "./column-map";
 import {IJoin} from "./join";
 import {JoinArrayUtil} from "./join-array";
-import {IColumn} from "./column";
+import {IColumn, ColumnUtil} from "./column";
 import {IQuery} from "./query";
 import {ColumnIdentifierMapUtil} from "./column-identifier-map";
 import {ColumnIdentifier} from "./column-identifier";
 import {Writable} from "./type";
 import {Tuple} from "./tuple";
 import {ColumnIdentifierRefUtil} from "./column-identifier-ref";
+import {SelectItem} from "./select-item";
+import {IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 
 export type ColumnRef = {
     readonly [tableAlias : string] : ColumnMap
@@ -22,27 +24,28 @@ export namespace ColumnRefUtil {
             )
         }
     );
+    function appendJoin(
+        ref : Writable<ColumnRef>,
+        join : IJoin
+    ) {
+        appendColumnMap(ref, ColumnMapUtil.fromJoin(join));
+        return ref;
+    }
+    function appendJoinArray(
+        ref : Writable<ColumnRef>,
+        arr : IJoin[]
+    ) {
+        for (let join of arr) {
+            appendJoin(ref, join);
+        }
+        return ref;
+    }
     export function fromJoinArray<JoinsT extends IJoin[]> (
         joins : JoinsT
     ) : (
         FromJoinArray<JoinsT>
     ) {
-        return joins.reduce<{
-            [tableAlias in JoinArrayUtil.ToTableAliasUnion<JoinsT>] : (
-                ColumnMapUtil.FromJoin<
-                    JoinArrayUtil.FindWithTableAlias<JoinsT, tableAlias>
-                >
-            )
-        }>((memo, join) => {
-            const tableAlias : JoinArrayUtil.ToTableAliasUnion<JoinsT> = join.aliasedTable.alias;
-            const j : JoinArrayUtil.FindWithTableAlias<JoinsT, typeof tableAlias> = join as any;
-            const columnMap : ColumnMapUtil.FromJoin<
-                JoinArrayUtil.FindWithTableAlias<JoinsT, typeof tableAlias>
-            > = ColumnMapUtil.fromJoin(j);
-
-            memo[tableAlias] = columnMap;
-            return memo;
-        }, {} as any);
+        return appendJoinArray({}, joins) as FromJoinArray<JoinsT>;
     }
     //HasOneTable<ColumnRefT> extends true ?
     //    true :
@@ -100,12 +103,43 @@ export namespace ColumnRefUtil {
             )
         }
     );
+    function appendColumn (
+        ref : Writable<ColumnRef>,
+        column : IColumn
+    ) {
+        let map = ref[column.tableAlias];
+        if (map == undefined) {
+            map = {};
+            ref[column.tableAlias] = map;
+        }
+        map[column.name] = column;
+        return ref;
+    }
     export function fromColumn<ColumnT extends IColumn> (
         column : ColumnT
     ) : FromColumn<ColumnT> {
-        return {
-            [column.tableAlias] : ColumnMapUtil.fromColumn(column)
-        } as any;
+        return appendColumn({}, column) as FromColumn<ColumnT>;
+    }
+    function appendExprSelectItem (
+        ref : Writable<ColumnRef>,
+        item : IExprSelectItem
+    ) {
+        let map = ref[item.tableAlias];
+        if (map == undefined) {
+            map = {};
+            ref[item.tableAlias] = map;
+        }
+        map[item.alias] = ColumnUtil.fromExprSelectItem(item);
+        return ref;
+    }
+    function appendColumnMap (
+        ref : Writable<ColumnRef>,
+        columnMap : ColumnMap
+    ) {
+        for (let columnName in columnMap) {
+            appendColumn(ref, columnMap[columnName]);
+        }
+        return ref;
     }
 
     export type FromQueryJoins<
@@ -122,30 +156,130 @@ export namespace ColumnRefUtil {
             {}
         )
     );
-    function fromQuerySelfJoins (query : IQuery) {
+    function appendQuerySelfJoins (ref : Writable<ColumnRef>, query : IQuery) {
         if (query._joins == undefined) {
-            return {};
+            return ref;
         } else {
-            return fromJoinArray(query._joins);
+            return appendJoinArray(ref, query._joins);
         }
     }
-    function fromQueryParentJoins (query : IQuery) {
+    function appendQueryParentJoins (ref : Writable<ColumnRef>, query : IQuery) {
         if (query._parentJoins == undefined) {
-            return {};
+            return ref;
         } else {
-            return fromJoinArray(query._parentJoins);
+            return appendJoinArray(ref, query._parentJoins);
         }
+    }
+    function appendQueryJoins (ref : Writable<ColumnRef>, query : IQuery) {
+        appendQuerySelfJoins(ref, query);
+        appendQueryParentJoins(ref, query);
     }
     export function fromQueryJoins<
         QueryT extends IQuery
     > (query : QueryT) : FromQueryJoins<QueryT> {
-        const selfJoinRef = fromQuerySelfJoins(query);
-        const parentJoinRef = fromQueryParentJoins(query);
-        return Object.assign(
-            {},
-            selfJoinRef,
-            parentJoinRef
-        ) as any;
+        const result : Writable<ColumnRef> = {};
+        appendQueryJoins(result, query);
+        return result as FromQueryJoins<QueryT>;
+    }
+    export type FromSelectItemArray_ColumnElement<ColumnT extends IColumn> = (
+        {
+            readonly [tableAlias in ColumnT["tableAlias"]] : {
+                readonly [columnName in ColumnT["name"]] : (
+                    Extract<ColumnT, { tableAlias : tableAlias }>
+                )
+            }
+        }
+    );
+    export type FromSelectItemArray_ExprSelectItemElement<ExprSelectItemT extends IExprSelectItem> = (
+        {
+            readonly [tableAlias in ExprSelectItemT["tableAlias"]] : {
+                readonly [columnName in ExprSelectItemT["alias"]] : (
+                    ColumnUtil.FromExprSelectItem<Extract<
+                        ExprSelectItemT,
+                        {
+                            tableAlias : tableAlias,
+                            alias : columnName,
+                        }
+                    >>
+                )
+            }
+        }
+    );
+    export type FromSelectItemArray_ColumnMapElement<ColumnMapT extends ColumnMap> = (
+        {
+            readonly [tableAlias in ColumnMapUtil.TableAlias<ColumnMapT>] : {
+                readonly [columnName in ColumnMapUtil.FindWithTableAlias<
+                    ColumnMapT,
+                    tableAlias
+                >["name"]] : (
+                    Extract<ColumnMapT, { [k in columnName] : IColumn }>[columnName]
+                )
+            }
+        }
+    );
+    export type FromSelectItemArray<ArrT extends SelectItem[]> = (
+        ArrT[number] extends never ?
+        {} :
+        (
+            FromSelectItemArray_ColumnElement<
+                Extract<ArrT[number], IColumn>
+            > &
+            FromSelectItemArray_ExprSelectItemElement<
+                Extract<ArrT[number], IExprSelectItem>
+            > &
+            FromSelectItemArray_ColumnMapElement<
+                Extract<ArrT[number], ColumnMap>
+            >
+        )
+    );
+    function appendSelectItem (
+        ref : Writable<ColumnRef>,
+        item : SelectItem
+    ) {
+        if (ColumnUtil.isColumn(item)) {
+            appendColumn(ref, item);
+        } else if (ExprSelectItemUtil.isExprSelectItem(item)) {
+            appendExprSelectItem(ref, item);
+        } else if (ColumnMapUtil.isColumnMap(item)) {
+            appendColumnMap(ref, item);
+        } else {
+            throw new Error(`Unknown select item`);
+        }
+        return ref;
+    }
+    function appendSelectItemArray(
+        ref : Writable<ColumnRef>,
+        arr : SelectItem[]
+    ) {
+        for (let item of arr) {
+            appendSelectItem(ref, item);
+        }
+        return ref;
+    }
+    export function fromSelectItemArray<ArrT extends SelectItem[]> (
+        arr : ArrT
+    ) : FromSelectItemArray<ArrT> {
+        const result : Writable<ColumnRef> = {};
+        appendSelectItemArray(result, arr);
+        return result as FromSelectItemArray<ArrT>;
+    }
+    export type FromQuery<QueryT extends IQuery> = (
+        FromQueryJoins<QueryT> &
+        (
+            QueryT["_selects"] extends SelectItem[] ?
+            FromSelectItemArray<QueryT["_selects"]> :
+            {}
+        )
+    );
+    export function fromQuery<QueryT extends IQuery> (
+        query : QueryT
+    ) : FromQuery<QueryT> {
+        const result : ColumnRef = {};
+        appendQueryJoins(result, query);
+        if (query._selects != undefined) {
+            appendSelectItemArray(result, query._selects);
+        }
+        return result as FromQuery<QueryT>;
     }
 
     export function assertIsSubset (a : ColumnRef, b : ColumnRef) {

@@ -5,17 +5,17 @@ const column_ref_1 = require("../../../column-ref");
 const expr_1 = require("../../../expr");
 const expr_library_1 = require("../../../expr-library");
 //Must be called after `FROM` as per MySQL
-function andWhere(query, delegate) {
-    const queryRef = column_ref_1.ColumnRefUtil.fromQueryJoins(query);
+function andHaving(query, delegate) {
+    const queryRef = column_ref_1.ColumnRefUtil.fromQuery(query);
     const rawExpr = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef), query);
     const expr = expr_1.ExprUtil.fromRawExpr(rawExpr);
     column_ref_1.ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);
     return new query_1.Query({
         ...query,
-        _where: (query._where == undefined ?
+        _having: (query._having == undefined ?
             expr :
-            expr_library_1.and(query._where, expr))
+            expr_library_1.and(query._having, expr))
     });
 }
-exports.andWhere = andWhere;
-//# sourceMappingURL=and-where.js.map
+exports.andHaving = andHaving;
+//# sourceMappingURL=and-having.js.map

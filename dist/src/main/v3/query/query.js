@@ -48,6 +48,9 @@ class Query {
     groupBy(delegate) {
         return QueryUtil.groupBy(this, delegate);
     }
+    andHaving(delegate) {
+        return QueryUtil.andHaving(this, delegate);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

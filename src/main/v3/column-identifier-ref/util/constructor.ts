@@ -19,16 +19,16 @@ export type FromColumn<ColumnT extends IColumn> = (
     never
 );
 function appendColumn (
-    columnIdentifierRef : Writable<ColumnIdentifierRef>,
+    ref : Writable<ColumnIdentifierRef>,
     column : IColumn
 ) {
-    let columnIdentifierMap = columnIdentifierRef[column.tableAlias];
-    if (columnIdentifierMap == undefined) {
-        columnIdentifierMap = {};
-        columnIdentifierRef[column.tableAlias] = columnIdentifierMap;
+    let map = ref[column.tableAlias];
+    if (map == undefined) {
+        map = {};
+        ref[column.tableAlias] = map;
     }
-    columnIdentifierMap[column.name] = ColumnIdentifierUtil.fromColumn(column);
-    return columnIdentifierRef;
+    map[column.name] = ColumnIdentifierUtil.fromColumn(column);
+    return ref;
 }
 export type FromExprSelectItem<ExprSelectItemT extends IExprSelectItem> = (
     ExprSelectItemT extends IExprSelectItem ?
@@ -40,16 +40,16 @@ export type FromExprSelectItem<ExprSelectItemT extends IExprSelectItem> = (
     never
 );
 function appendExprSelectItem (
-    columnIdentifierRef : Writable<ColumnIdentifierRef>,
+    ref : Writable<ColumnIdentifierRef>,
     item : IExprSelectItem
 ) {
-    let columnIdentifierMap = columnIdentifierRef[item.tableAlias];
-    if (columnIdentifierMap == undefined) {
-        columnIdentifierMap = {};
-        columnIdentifierRef[item.tableAlias] = columnIdentifierMap;
+    let map = ref[item.tableAlias];
+    if (map == undefined) {
+        map = {};
+        ref[item.tableAlias] = map;
     }
-    columnIdentifierMap[item.alias] = ColumnIdentifierUtil.fromExprSelectItem(item);
-    return columnIdentifierRef;
+    map[item.alias] = ColumnIdentifierUtil.fromExprSelectItem(item);
+    return ref;
 }
 export type FromColumnMap<ColumnMapT extends ColumnMap> = (
     ColumnMapT extends ColumnMap ?
@@ -68,13 +68,13 @@ export type FromColumnMap<ColumnMapT extends ColumnMap> = (
     never
 );
 function appendColumnMap (
-    columnIdentifierRef : Writable<ColumnIdentifierRef>,
+    ref : Writable<ColumnIdentifierRef>,
     columnMap : ColumnMap
 ) {
     for (let columnName in columnMap) {
-        appendColumn(columnIdentifierRef, columnMap[columnName]);
+        appendColumn(ref, columnMap[columnName]);
     }
-    return columnIdentifierRef;
+    return ref;
 }
 export function fromColumnMap<ColumnMapT extends ColumnMap> (
     columnMap : ColumnMapT
@@ -147,28 +147,28 @@ export type FromSelectItemArray<ArrT extends SelectItem[]> = (
     )
 );
 function appendSelectItem (
-    columnIdentifierRef : Writable<ColumnIdentifierRef>,
+    ref : Writable<ColumnIdentifierRef>,
     item : SelectItem
 ) {
     if (ColumnUtil.isColumn(item)) {
-        appendColumn(columnIdentifierRef, item);
+        appendColumn(ref, item);
     } else if (ExprSelectItemUtil.isExprSelectItem(item)) {
-        appendExprSelectItem(columnIdentifierRef, item);
+        appendExprSelectItem(ref, item);
     } else if (ColumnMapUtil.isColumnMap(item)) {
-        appendColumnMap(columnIdentifierRef, item);
+        appendColumnMap(ref, item);
     } else {
         throw new Error(`Unknown select item`);
     }
-    return columnIdentifierRef;
+    return ref;
 }
 function appendSelectItemArray(
-    columnIdentifierRef : Writable<ColumnIdentifierRef>,
+    ref : Writable<ColumnIdentifierRef>,
     arr : SelectItem[]
 ) {
     for (let item of arr) {
-        appendSelectItem(columnIdentifierRef, item);
+        appendSelectItem(ref, item);
     }
-    return columnIdentifierRef;
+    return ref;
 }
 export function fromSelectItemArray<ArrT extends SelectItem[]> (
     arr : ArrT
@@ -185,20 +185,20 @@ export type FromJoinArray<ArrT extends IJoin[]> = (
     >
 );
 function appendJoin(
-    columnIdentifierRef : Writable<ColumnIdentifierRef>,
+    ref : Writable<ColumnIdentifierRef>,
     join : IJoin
 ) {
-    appendColumnMap(columnIdentifierRef, join.columns);
-    return columnIdentifierRef;
+    appendColumnMap(ref, join.columns);
+    return ref;
 }
 function appendJoinArray(
-    columnIdentifierRef : Writable<ColumnIdentifierRef>,
+    ref : Writable<ColumnIdentifierRef>,
     arr : IJoin[]
 ) {
     for (let join of arr) {
-        appendJoin(columnIdentifierRef, join);
+        appendJoin(ref, join);
     }
-    return columnIdentifierRef;
+    return ref;
 }
 export function fromJoinArray<ArrT extends IJoin[]> (
     arr : ArrT

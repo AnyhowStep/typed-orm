@@ -5,4 +5,5 @@ export declare function queryTreeSelects(query: AfterSelectClause): QueryTreeArr
 export declare function queryTreeJoins(query: IQuery): QueryTreeArray;
 export declare function queryTreeWhere(query: IQuery): QueryTreeArray;
 export declare function queryTreeGroupBy(query: IQuery): QueryTreeArray;
+export declare function queryTreeHaving(query: IQuery): QueryTreeArray;
 //# sourceMappingURL=query.d.ts.map

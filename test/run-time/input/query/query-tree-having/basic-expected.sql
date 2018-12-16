@@ -1,0 +1,2 @@
+HAVING
+  `table`.`z`

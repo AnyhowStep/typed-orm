@@ -486,6 +486,23 @@ export class Query<DataT extends QueryData> {
             GroupByDelegateT
         >(this, delegate);
     }
+
+    andHaving<
+        AndHavingDelegateT extends QueryUtil.AndHavingDelegate<
+            Extract<this, QueryUtil.AfterFromClause>
+        >
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        delegate : QueryUtil.AssertValidAndHavingDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            AndHavingDelegateT
+        >
+    ) : QueryUtil.AndHaving<Extract<this, QueryUtil.AfterFromClause>> {
+        return QueryUtil.andHaving<
+            Extract<this, QueryUtil.AfterFromClause>,
+            AndHavingDelegateT
+        >(this, delegate);
+    }
 }
 export function from<AliasedTableT extends IAliasedTable> (
     aliasedTable : QueryUtil.AssertUniqueJoinTarget<

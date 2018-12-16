@@ -1,11 +1,13 @@
 import { ColumnMap, ColumnMapUtil } from "./column-map";
 import { IJoin } from "./join";
 import { JoinArrayUtil } from "./join-array";
-import { IColumn } from "./column";
+import { IColumn, ColumnUtil } from "./column";
 import { IQuery } from "./query";
 import { ColumnIdentifier } from "./column-identifier";
 import { Tuple } from "./tuple";
 import { ColumnIdentifierRefUtil } from "./column-identifier-ref";
+import { SelectItem } from "./select-item";
+import { IExprSelectItem } from "./expr-select-item";
 export declare type ColumnRef = {
     readonly [tableAlias: string]: ColumnMap;
 };
@@ -26,6 +28,32 @@ export declare namespace ColumnRefUtil {
     function fromColumn<ColumnT extends IColumn>(column: ColumnT): FromColumn<ColumnT>;
     type FromQueryJoins<QueryT extends IQuery> = ((QueryT["_joins"] extends IJoin[] ? FromJoinArray<QueryT["_joins"]> : {}) & (QueryT["_parentJoins"] extends IJoin[] ? FromJoinArray<QueryT["_parentJoins"]> : {}));
     function fromQueryJoins<QueryT extends IQuery>(query: QueryT): FromQueryJoins<QueryT>;
+    type FromSelectItemArray_ColumnElement<ColumnT extends IColumn> = ({
+        readonly [tableAlias in ColumnT["tableAlias"]]: {
+            readonly [columnName in ColumnT["name"]]: (Extract<ColumnT, {
+                tableAlias: tableAlias;
+            }>);
+        };
+    });
+    type FromSelectItemArray_ExprSelectItemElement<ExprSelectItemT extends IExprSelectItem> = ({
+        readonly [tableAlias in ExprSelectItemT["tableAlias"]]: {
+            readonly [columnName in ExprSelectItemT["alias"]]: (ColumnUtil.FromExprSelectItem<Extract<ExprSelectItemT, {
+                tableAlias: tableAlias;
+                alias: columnName;
+            }>>);
+        };
+    });
+    type FromSelectItemArray_ColumnMapElement<ColumnMapT extends ColumnMap> = ({
+        readonly [tableAlias in ColumnMapUtil.TableAlias<ColumnMapT>]: {
+            readonly [columnName in ColumnMapUtil.FindWithTableAlias<ColumnMapT, tableAlias>["name"]]: (Extract<ColumnMapT, {
+                [k in columnName]: IColumn;
+            }>[columnName]);
+        };
+    });
+    type FromSelectItemArray<ArrT extends SelectItem[]> = (ArrT[number] extends never ? {} : (FromSelectItemArray_ColumnElement<Extract<ArrT[number], IColumn>> & FromSelectItemArray_ExprSelectItemElement<Extract<ArrT[number], IExprSelectItem>> & FromSelectItemArray_ColumnMapElement<Extract<ArrT[number], ColumnMap>>));
+    function fromSelectItemArray<ArrT extends SelectItem[]>(arr: ArrT): FromSelectItemArray<ArrT>;
+    type FromQuery<QueryT extends IQuery> = (FromQueryJoins<QueryT> & (QueryT["_selects"] extends SelectItem[] ? FromSelectItemArray<QueryT["_selects"]> : {}));
+    function fromQuery<QueryT extends IQuery>(query: QueryT): FromQuery<QueryT>;
     function assertIsSubset(a: ColumnRef, b: ColumnRef): void;
     type HasColumnIdentifier<ColumnRefT extends ColumnRef, ColumnIdentifierT extends ColumnIdentifier> = (ColumnIdentifierRefUtil.HasColumnIdentifier<ColumnRefT, ColumnIdentifierT>);
     function hasColumnIdentifier<ColumnRefT extends ColumnRef, ColumnIdentifierT extends ColumnIdentifier>(columnRef: ColumnRefT, columnIdentifier: ColumnIdentifierT): (HasColumnIdentifier<ColumnRefT, ColumnIdentifierT>);

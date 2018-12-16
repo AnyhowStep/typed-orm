@@ -3,6 +3,7 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
+__export(require("./and-having"));
 __export(require("./and-where"));
 __export(require("./from"));
 __export(require("./group-by"));

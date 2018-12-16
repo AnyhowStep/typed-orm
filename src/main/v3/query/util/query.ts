@@ -109,3 +109,11 @@ export function queryTreeGroupBy (query : IQuery) : QueryTreeArray {
     }
     return ["GROUP BY", result];
 }
+export function queryTreeHaving (query : IQuery) : QueryTreeArray {
+    const having = query._having;
+    if (having == undefined) {
+        return [];
+    } else {
+        return ["HAVING", having.queryTree];
+    }
+}

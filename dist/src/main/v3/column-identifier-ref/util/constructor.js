@@ -4,55 +4,55 @@ const column_1 = require("../../column");
 const expr_select_item_1 = require("../../expr-select-item");
 const column_map_1 = require("../../column-map");
 const column_identifier_1 = require("../../column-identifier");
-function appendColumn(columnIdentifierRef, column) {
-    let columnIdentifierMap = columnIdentifierRef[column.tableAlias];
-    if (columnIdentifierMap == undefined) {
-        columnIdentifierMap = {};
-        columnIdentifierRef[column.tableAlias] = columnIdentifierMap;
+function appendColumn(ref, column) {
+    let map = ref[column.tableAlias];
+    if (map == undefined) {
+        map = {};
+        ref[column.tableAlias] = map;
     }
-    columnIdentifierMap[column.name] = column_identifier_1.ColumnIdentifierUtil.fromColumn(column);
-    return columnIdentifierRef;
+    map[column.name] = column_identifier_1.ColumnIdentifierUtil.fromColumn(column);
+    return ref;
 }
-function appendExprSelectItem(columnIdentifierRef, item) {
-    let columnIdentifierMap = columnIdentifierRef[item.tableAlias];
-    if (columnIdentifierMap == undefined) {
-        columnIdentifierMap = {};
-        columnIdentifierRef[item.tableAlias] = columnIdentifierMap;
+function appendExprSelectItem(ref, item) {
+    let map = ref[item.tableAlias];
+    if (map == undefined) {
+        map = {};
+        ref[item.tableAlias] = map;
     }
-    columnIdentifierMap[item.alias] = column_identifier_1.ColumnIdentifierUtil.fromExprSelectItem(item);
-    return columnIdentifierRef;
+    map[item.alias] = column_identifier_1.ColumnIdentifierUtil.fromExprSelectItem(item);
+    return ref;
 }
-function appendColumnMap(columnIdentifierRef, columnMap) {
+function appendColumnMap(ref, columnMap) {
     for (let columnName in columnMap) {
-        appendColumn(columnIdentifierRef, columnMap[columnName]);
+        appendColumn(ref, columnMap[columnName]);
     }
-    return columnIdentifierRef;
+    return ref;
 }
 function fromColumnMap(columnMap) {
     const result = appendColumnMap({}, columnMap);
     return result;
 }
 exports.fromColumnMap = fromColumnMap;
-function appendSelectItem(columnIdentifierRef, item) {
+function appendSelectItem(ref, item) {
     if (column_1.ColumnUtil.isColumn(item)) {
-        appendColumn(columnIdentifierRef, item);
+        appendColumn(ref, item);
     }
     else if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(item)) {
-        appendExprSelectItem(columnIdentifierRef, item);
+        appendExprSelectItem(ref, item);
     }
     else if (column_map_1.ColumnMapUtil.isColumnMap(item)) {
-        appendColumnMap(columnIdentifierRef, item);
+        appendColumnMap(ref, item);
     }
     else {
         throw new Error(`Unknown select item`);
     }
-    return columnIdentifierRef;
+    return ref;
 }
-function appendSelectItemArray(columnIdentifierRef, arr) {
+function appendSelectItemArray(ref, arr) {
     for (let item of arr) {
-        appendSelectItem(columnIdentifierRef, item);
+        appendSelectItem(ref, item);
     }
-    return columnIdentifierRef;
+    return ref;
 }
 function fromSelectItemArray(arr) {
     const result = {};
@@ -60,15 +60,15 @@ function fromSelectItemArray(arr) {
     return result;
 }
 exports.fromSelectItemArray = fromSelectItemArray;
-function appendJoin(columnIdentifierRef, join) {
-    appendColumnMap(columnIdentifierRef, join.columns);
-    return columnIdentifierRef;
+function appendJoin(ref, join) {
+    appendColumnMap(ref, join.columns);
+    return ref;
 }
-function appendJoinArray(columnIdentifierRef, arr) {
+function appendJoinArray(ref, arr) {
     for (let join of arr) {
-        appendJoin(columnIdentifierRef, join);
+        appendJoin(ref, join);
     }
-    return columnIdentifierRef;
+    return ref;
 }
 function fromJoinArray(arr) {
     const result = {};
