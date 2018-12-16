@@ -14,14 +14,19 @@ export type FromExprSelectItem<ItemT extends IExprSelectItem> = (
         readonly assertDelegate : ItemT["assertDelegate"],
     }>
 );
+//TODO Find some way to not need this hack
 export function fromExprSelectItem<ItemT extends IExprSelectItem> (
     item : ItemT
 ) : FromExprSelectItem<ItemT> {
-    return new Column({
-        tableAlias : item.tableAlias,
-        name : item.alias,
-        assertDelegate : item.assertDelegate,
-    });
+    return new Column(
+        {
+            tableAlias : item.tableAlias,
+            name : item.alias,
+            assertDelegate : item.assertDelegate,
+        },
+        undefined,
+        true
+    );
 }
 export type FromSingleValueSelectItem<ItemT extends SingleValueSelectItem> = (
     ItemT extends IColumn ?
