@@ -4,6 +4,25 @@ const aliased_table_1 = require("../../aliased-table");
 const column_1 = require("../../column");
 const expr_select_item_1 = require("../../expr-select-item");
 const column_map_1 = require("../../column-map");
+const constants_1 = require("../../constants");
+const sqlstring_1 = require("sqlstring");
+function queryTreeSelectItem_Column(column) {
+    const result = [];
+    result.push(column_1.ColumnUtil.queryTree(column));
+    result.push("AS");
+    result.push(sqlstring_1.escapeId(`${column.tableAlias}${constants_1.SEPARATOR}${column.name}`));
+    return result;
+}
+function queryTreeSelectItem_ColumnMap(columnMap) {
+    const result = [];
+    for (let column of column_map_1.ColumnMapUtil.getSortedColumnArray(columnMap)) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        result.push(queryTreeSelectItem_Column(column));
+    }
+    return result;
+}
 function queryTreeSelects(query) {
     const selects = query._selects;
     const result = [];
@@ -13,13 +32,13 @@ function queryTreeSelects(query) {
             result.push(",");
         }
         if (column_1.ColumnUtil.isColumn(item)) {
-            result.push(column_1.ColumnUtil.queryTree(item));
+            result.push(queryTreeSelectItem_Column(item));
         }
         else if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(item)) {
             result.push(expr_select_item_1.ExprSelectItemUtil.queryTree(item));
         }
         else if (column_map_1.ColumnMapUtil.isColumnMap(item)) {
-            result.push(column_map_1.ColumnMapUtil.queryTree(item));
+            result.push(queryTreeSelectItem_ColumnMap(item));
         }
     }
     return result;

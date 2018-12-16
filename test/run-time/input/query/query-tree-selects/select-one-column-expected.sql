@@ -1,2 +1,2 @@
 SELECT
-  `table`.`x`
+  `table`.`x` AS `table--x`

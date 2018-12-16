@@ -1,6 +1,6 @@
 import {escapeId} from "sqlstring";
 import {IColumn} from "../column";
-import {ALIASED} from "../../constants";
+import {ALIASED, SEPARATOR} from "../../constants";
 
 export function queryTree (
     {
@@ -24,11 +24,11 @@ export function queryTree (
             So, this library makes up a table alias that is very
             unlikely to be used naturally by others.
         */
-        return escapeId(`${tableAlias}--${name}`);
+        return escapeId(`${tableAlias}${SEPARATOR}${name}`);
     } else {
         if (__subTableName == undefined) {
             if (__isInSelectClause) {
-                return escapeId(`${tableAlias}--${name}`);
+                return escapeId(`${tableAlias}${SEPARATOR}${name}`);
             } else {
                 /*
                     The most common case, I think.
@@ -67,7 +67,7 @@ export function queryTree (
             return (
                 escapeId(tableAlias) +
                 "." +
-                escapeId(`${__subTableName}--${name}`)
+                escapeId(`${__subTableName}${SEPARATOR}${name}`)
             );
         }
     }

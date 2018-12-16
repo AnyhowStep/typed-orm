@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const query_tree_1 = require("./query-tree");
 const sqlstring_1 = require("sqlstring");
+const constants_1 = require("./constants");
 var ExprSelectItemUtil;
 (function (ExprSelectItemUtil) {
     function isExprSelectItem(raw) {
@@ -23,7 +24,7 @@ var ExprSelectItemUtil;
         return [
             query_tree_1.Parentheses.Create(exprSelectItem.unaliasedQuery),
             "AS",
-            sqlstring_1.escapeId(`${exprSelectItem.tableAlias}--${exprSelectItem.alias}`)
+            sqlstring_1.escapeId(`${exprSelectItem.tableAlias}${constants_1.SEPARATOR}${exprSelectItem.alias}`)
         ];
     }
     ExprSelectItemUtil.queryTree = queryTree;

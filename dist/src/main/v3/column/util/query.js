@@ -17,12 +17,12 @@ function queryTree({ tableAlias, name, __subTableName, __isInSelectClause, }) {
             So, this library makes up a table alias that is very
             unlikely to be used naturally by others.
         */
-        return sqlstring_1.escapeId(`${tableAlias}--${name}`);
+        return sqlstring_1.escapeId(`${tableAlias}${constants_1.SEPARATOR}${name}`);
     }
     else {
         if (__subTableName == undefined) {
             if (__isInSelectClause) {
-                return sqlstring_1.escapeId(`${tableAlias}--${name}`);
+                return sqlstring_1.escapeId(`${tableAlias}${constants_1.SEPARATOR}${name}`);
             }
             else {
                 /*
@@ -60,7 +60,7 @@ function queryTree({ tableAlias, name, __subTableName, __isInSelectClause, }) {
             */
             return (sqlstring_1.escapeId(tableAlias) +
                 "." +
-                sqlstring_1.escapeId(`${__subTableName}--${name}`));
+                sqlstring_1.escapeId(`${__subTableName}${constants_1.SEPARATOR}${name}`));
         }
     }
 }

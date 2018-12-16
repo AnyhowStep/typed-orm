@@ -2,6 +2,7 @@ import * as sd from "schema-decorator";
 import {ColumnRef} from "./column-ref";
 import {QueryTreeArray, Parentheses, QueryTree, QueryTreeUtil} from "./query-tree";
 import {escapeId} from "sqlstring";
+import {SEPARATOR} from "./constants";
 
 export interface AliasedExprData {
     readonly usedRef : ColumnRef;
@@ -54,7 +55,7 @@ export namespace ExprSelectItemUtil {
         return [
             Parentheses.Create(exprSelectItem.unaliasedQuery),
             "AS",
-            escapeId(`${exprSelectItem.tableAlias}--${exprSelectItem.alias}`)
+            escapeId(`${exprSelectItem.tableAlias}${SEPARATOR}${exprSelectItem.alias}`)
         ];
     }
 }

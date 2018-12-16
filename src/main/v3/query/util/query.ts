@@ -1,10 +1,30 @@
 import {IQuery} from "../query";
 import {QueryTreeArray} from "../../query-tree";
 import {AliasedTable} from "../../aliased-table";
-import {ColumnUtil} from "../../column";
+import {IColumn, ColumnUtil} from "../../column";
 import {AfterSelectClause} from "./predicate";
 import {ExprSelectItemUtil} from "../../expr-select-item";
-import {ColumnMapUtil} from "../../column-map";
+import {ColumnMap, ColumnMapUtil} from "../../column-map";
+import {SEPARATOR} from "../../constants";
+import {escapeId} from "sqlstring";
+
+function queryTreeSelectItem_Column (column : IColumn) : QueryTreeArray {
+    const result : QueryTreeArray = [];
+    result.push(ColumnUtil.queryTree(column));
+    result.push("AS");
+    result.push(escapeId(`${column.tableAlias}${SEPARATOR}${column.name}`));
+    return result;
+}
+function queryTreeSelectItem_ColumnMap (columnMap : ColumnMap) : QueryTreeArray {
+    const result : QueryTreeArray = [];
+    for (let column of ColumnMapUtil.getSortedColumnArray(columnMap)) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        result.push(queryTreeSelectItem_Column(column));
+    }
+    return result;
+}
 
 export function queryTreeSelects (query : AfterSelectClause) : QueryTreeArray {
     const selects = query._selects;
@@ -15,11 +35,11 @@ export function queryTreeSelects (query : AfterSelectClause) : QueryTreeArray {
             result.push(",");
         }
         if (ColumnUtil.isColumn(item)) {
-            result.push(ColumnUtil.queryTree(item));
+            result.push(queryTreeSelectItem_Column(item));
         } else if (ExprSelectItemUtil.isExprSelectItem(item)) {
             result.push(ExprSelectItemUtil.queryTree(item));
         } else if (ColumnMapUtil.isColumnMap(item)) {
-            result.push(ColumnMapUtil.queryTree(item));
+            result.push(queryTreeSelectItem_ColumnMap(item));
         }
     }
     return result;

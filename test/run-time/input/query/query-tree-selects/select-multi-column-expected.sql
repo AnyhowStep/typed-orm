@@ -1,4 +1,4 @@
 SELECT
-  `table`.`z`,
-  `table`.`x`,
-  `table`.`y`
+  `table`.`z` AS `table--z`,
+  `table`.`x` AS `table--x`,
+  `table`.`y` AS `table--y`
