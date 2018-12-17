@@ -64,7 +64,22 @@ export type AssertUnionCompatibleSelectArray<
                         >
                     } ?
                     never :
-                    ["Invalid SELECT item data-type", index, B[index], "not assignable to", A[index]]
+                    B[index] extends { assertDelegate : any } ?
+                    [
+                        "Invalid SELECT item data-type",
+                        index,
+                        B[index]["assertDelegate"],
+                        "not assignable to",
+                        sd.AssertDelegate<
+                            ReturnType<A[index]["assertDelegate"]>
+                        >
+                    ] :
+                    [
+                        "Invalid SELECT item",
+                        index,
+                        B[index],
+                        "does not have an assertDelegate"
+                    ]
                 ) :
                 A[index] extends IExprSelectItem ?
                 (
@@ -74,7 +89,22 @@ export type AssertUnionCompatibleSelectArray<
                         >
                     } ?
                     never :
-                    ["Invalid SELECT item data-type", index, B[index], "not assignable to", A[index]]
+                    B[index] extends { assertDelegate : any } ?
+                    [
+                        "Invalid SELECT item data-type",
+                        index,
+                        B[index]["assertDelegate"],
+                        "not assignable to",
+                        sd.AssertDelegate<
+                            ReturnType<A[index]["assertDelegate"]>
+                        >
+                    ] :
+                    [
+                        "Invalid SELECT item",
+                        index,
+                        B[index],
+                        "does not have an assertDelegate"
+                    ]
                 ) :
                 A[index] extends ColumnMap ?
                 (

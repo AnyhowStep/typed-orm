@@ -29,9 +29,13 @@ export declare type AssertUnionCompatibleSelectArray<A extends SelectItem[], B e
         [k in Extract<keyof (A | B), string>]: ((A | B)[k] extends SelectItem ? k : never);
     }[Extract<keyof (A | B), string>]]: (A[index] extends IColumn ? (B[index] extends {
         assertDelegate: sd.AssertDelegate<ReturnType<A[index]["assertDelegate"]>>;
-    } ? never : ["Invalid SELECT item data-type", index, B[index], "not assignable to", A[index]]) : A[index] extends IExprSelectItem ? (B[index] extends {
+    } ? never : B[index] extends {
+        assertDelegate: any;
+    } ? ["Invalid SELECT item data-type", index, B[index]["assertDelegate"], "not assignable to", sd.AssertDelegate<ReturnType<A[index]["assertDelegate"]>>] : ["Invalid SELECT item", index, B[index], "does not have an assertDelegate"]) : A[index] extends IExprSelectItem ? (B[index] extends {
         assertDelegate: sd.AssertDelegate<ReturnType<A[index]["assertDelegate"]>>;
-    } ? never : ["Invalid SELECT item data-type", index, B[index], "not assignable to", A[index]]) : A[index] extends ColumnMap ? (string extends Extract<keyof A[index], string> ? ["Invalid SELECT item columnMap", index, Extract<keyof A[index], string>] : string extends Extract<keyof B[index], string> ? ["Invalid SELECT item columnMap", index, Extract<keyof B[index], string>] : Extract<keyof A[index], string> extends Extract<keyof B[index], string> ? (Extract<keyof B[index], string> extends Extract<keyof A[index], string> ? (B[index] extends {
+    } ? never : B[index] extends {
+        assertDelegate: any;
+    } ? ["Invalid SELECT item data-type", index, B[index]["assertDelegate"], "not assignable to", sd.AssertDelegate<ReturnType<A[index]["assertDelegate"]>>] : ["Invalid SELECT item", index, B[index], "does not have an assertDelegate"]) : A[index] extends ColumnMap ? (string extends Extract<keyof A[index], string> ? ["Invalid SELECT item columnMap", index, Extract<keyof A[index], string>] : string extends Extract<keyof B[index], string> ? ["Invalid SELECT item columnMap", index, Extract<keyof B[index], string>] : Extract<keyof A[index], string> extends Extract<keyof B[index], string> ? (Extract<keyof B[index], string> extends Extract<keyof A[index], string> ? (B[index] extends {
         [columnName in Extract<keyof A[index], string>]: ({
             assertDelegate: sd.AssertDelegate<ReturnType<A[index][columnName]["assertDelegate"]>>;
         });
