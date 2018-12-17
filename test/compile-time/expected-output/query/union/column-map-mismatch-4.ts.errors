@@ -1,0 +1,18 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/query/query\").Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join\").Join<{ aliasedTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/sr...' is not assignable to parameter of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/query/query\").Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join\").Join<{ aliasedTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/sr...'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly alias: \"other\"; readonly name: \"other\"; readonly columns: { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly b: Column<...>; re...' is missing the following properties from type '[\"Invalid SELECT item columnMap\", \"0\", \"a\" | \"b\" | \"x\" | \"y\" | \"z\" | \"c\", \"not assignable to\", \"name\" | \"assertDelegate\" | \"tableAlias\" | \"__subTableName\" | \"__isInSelectClause\" | ... 4 more ... | \"withType\"]': 0, 1, 2, 3, and 33 more.",
+        "category": 1,
+        "code": 2740
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 45,
+    "start": 632
+  }
+]

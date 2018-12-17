@@ -17,19 +17,5 @@ export const query = o.from(table)
     .select(c => [c.z, c.x, c.y])
     .union(
         o.from(table)
-            .select(c => [c.z, c.x, c.y])
-    )
-    .union(
-        o.from(table)
-            .select(c => [c.c, c.a, c.b])
-    )
-    .union(
-        o.DISTINCT,
-        o.from(table)
-            .select(c => [c.c, c.a, c.b])
-    )
-    .union(
-        o.ALL,
-        o.from(table)
-            .select(c => [c.c, c.a, c.b])
+            .select(c => [c.z, c.x, c.x])
     );

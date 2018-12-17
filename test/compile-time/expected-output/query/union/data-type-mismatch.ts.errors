@@ -1,0 +1,18 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type '(c: { readonly a: Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly b: Column<{ tableAlias: \"table\"; name: \"b\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly x: Column<...>; readonly y: Column<...>; readonly z: C...' is not assignable to parameter of type '((c: { readonly a: Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly b: Column<{ tableAlias: \"table\"; name: \"b\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly x: Column<...>; readonly y: Column<...>; readonly z: ...'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type '(c: { readonly a: Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly b: Column<{ tableAlias: \"table\"; name: \"b\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly x: Column<...>; readonly y: Column<...>; readonly z: C...' is missing the following properties from type '[\"Duplicate columns in SELECT clause\", { readonly tableAlias: \"table\"; readonly name: \"x\"; }]': 0, 1, pop, push, and 29 more.",
+        "category": 1,
+        "code": 2740
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 20,
+    "start": 432
+  }
+]
