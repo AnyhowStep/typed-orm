@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const QueryUtil = require("./util");
+const constants_1 = require("../constants");
 class Query {
     constructor(data) {
         this._distinct = data._distinct;
@@ -54,11 +55,39 @@ class Query {
     orderBy(delegate) {
         return QueryUtil.orderBy(this, delegate);
     }
+    /*
+        One should be careful about using LIMIT, OFFSET
+        without an ORDER BY clause.
+
+        In general, if your WHERE condition uniquely identifies
+        the row, then LIMIT and OFFSET are not required
+        and can be safely used without an ORDER BY.
+
+        The problem is when the WHERE condition *does not*
+        uniquely identify a row.
+
+        Then, LIMIT and OFFSET can return inconsistent results.
+    */
     limit(maxRowCount) {
         return QueryUtil.limit(this, maxRowCount);
     }
     offset(offset) {
         return QueryUtil.offset(this, offset);
+    }
+    union(arg0, arg1) {
+        if (arg1 == undefined) {
+            //Only two args
+            const other = arg0;
+            return QueryUtil.union(this, other, constants_1.DISTINCT);
+        }
+        else {
+            //Three args
+            //Yeap, it's arg*1*, then arg*0*.
+            //Confusing. I know. I'm sorry.
+            const other = arg1;
+            const unionType = arg0;
+            return QueryUtil.union(this, other, unionType);
+        }
     }
 }
 exports.Query = Query;

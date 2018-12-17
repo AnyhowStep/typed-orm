@@ -75,6 +75,16 @@ function queryTreeJoins(query) {
     return result;
 }
 exports.queryTreeJoins = queryTreeJoins;
+function queryTreeFrom(query) {
+    const result = queryTreeJoins(query);
+    if (result.length == 0) {
+        return result;
+    }
+    else {
+        return ["FROM", result];
+    }
+}
+exports.queryTreeFrom = queryTreeFrom;
 function queryTreeWhere(query) {
     const where = query._where;
     if (where == undefined) {
@@ -172,4 +182,34 @@ function queryTreeLimit(query) {
     }
 }
 exports.queryTreeLimit = queryTreeLimit;
+function queryTree(query) {
+    return [
+        queryTreeSelects(query),
+        queryTreeFrom(query),
+        queryTreeWhere(query),
+        queryTreeGroupBy(query),
+        queryTreeHaving(query),
+        queryTreeOrderBy(query),
+        queryTreeLimit(query),
+        queryUnion(query),
+    ];
+}
+exports.queryTree = queryTree;
+function queryUnion(query) {
+    const unions = query._unions;
+    if (unions == undefined) {
+        return [];
+    }
+    const result = [];
+    for (let union of unions) {
+        result.push("UNION");
+        //I think making this explicit is less confusing
+        result.push(union.distinct ? "DISTINCT" : "ALL");
+        result.push("(");
+        result.push(queryTree(union.query));
+        result.push(")");
+    }
+    return result;
+}
+exports.queryUnion = queryUnion;
 //# sourceMappingURL=query.js.map

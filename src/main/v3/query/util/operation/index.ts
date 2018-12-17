@@ -14,3 +14,4 @@ export * from "./order-by";
 export * from "./right-join-using";
 export * from "./right-join";
 export * from "./select";
+export * from "./union";

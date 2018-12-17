@@ -76,6 +76,14 @@ export function queryTreeJoins (query : IQuery) : QueryTreeArray {
 
     return result;
 }
+export function queryTreeFrom (query : IQuery) : QueryTreeArray {
+    const result = queryTreeJoins(query);
+    if (result.length == 0) {
+        return result;
+    } else {
+        return ["FROM", result];
+    }
+}
 export function queryTreeWhere (query : IQuery) : QueryTreeArray {
     const where = query._where;
     if (where == undefined) {
@@ -165,4 +173,36 @@ export function queryTreeLimit (query : IQuery) : QueryTreeArray {
             "OFFSET", RawExprUtil.queryTree(limit.offset),
         ];
     }
+}
+
+export function queryTree (query : AfterSelectClause) : QueryTreeArray {
+    return [
+        queryTreeSelects(query),
+        queryTreeFrom(query),
+        queryTreeWhere(query),
+        queryTreeGroupBy(query),
+        queryTreeHaving(query),
+        queryTreeOrderBy(query),
+        queryTreeLimit(query),
+        queryUnion(query),
+        //TODO Union Order By
+        //TODO Union Limit
+    ];
+}
+
+export function queryUnion (query : IQuery) : QueryTreeArray {
+    const unions = query._unions;
+    if (unions == undefined) {
+        return [];
+    }
+    const result : QueryTreeArray = [];
+    for (let union of unions) {
+        result.push("UNION");
+        //I think making this explicit is less confusing
+        result.push(union.distinct ? "DISTINCT" : "ALL");
+        result.push("(");
+        result.push(queryTree(union.query))
+        result.push(")");
+    }
+    return result;
 }

@@ -6,10 +6,12 @@ import * as QueryUtil from "./util";
 import {ColumnIdentifier} from "../column-identifier";
 import {Order} from "../order";
 import {MapDelegate} from "../map-delegate";
+import { DISTINCT } from "../constants";
 
 export interface UnionQuery {
+    //Defaults to true
     readonly distinct : boolean,
-    readonly query : IQuery,
+    readonly query : QueryUtil.AfterSelectClause,
 }
 //TODO consider allowing this to be bigint?
 //A maxRowCount/offset of 3.141 would be weird
@@ -543,6 +545,48 @@ export class Query<DataT extends QueryData> {
         offset : OffsetT
     ) : QueryUtil.Offset<this, OffsetT> {
         return QueryUtil.offset(this, offset);
+    }
+
+    union<OtherT extends QueryUtil.AfterSelectClause>(
+        this : Extract<this, QueryUtil.AfterSelectClause>,
+        other : QueryUtil.AssertUnionCompatibleQuery<
+            Extract<this, QueryUtil.AfterSelectClause>,
+            OtherT
+        >
+    ) : QueryUtil.Union<Extract<this, QueryUtil.AfterSelectClause>>;
+    union<OtherT extends QueryUtil.AfterSelectClause>(
+        this : Extract<this, QueryUtil.AfterSelectClause>,
+        unionType : QueryUtil.UnionType,
+        other : QueryUtil.AssertUnionCompatibleQuery<
+            Extract<this, QueryUtil.AfterSelectClause>,
+            OtherT
+        >
+    ) : QueryUtil.Union<Extract<this, QueryUtil.AfterSelectClause>>;
+    union<OtherT extends QueryUtil.AfterSelectClause> (this : Extract<this, QueryUtil.AfterSelectClause>, arg0 : any, arg1? : any) {
+        if (arg1 == undefined) {
+            //Only two args
+            const other : QueryUtil.AssertUnionCompatibleQuery<
+                Extract<this, QueryUtil.AfterSelectClause>,
+                OtherT
+            > = arg0;
+            return QueryUtil.union<
+                Extract<this, QueryUtil.AfterSelectClause>,
+                OtherT
+            >(this, other, DISTINCT);
+        } else {
+            //Three args
+            //Yeap, it's arg*1*, then arg*0*.
+            //Confusing. I know. I'm sorry.
+            const other : QueryUtil.AssertUnionCompatibleQuery<
+                Extract<this, QueryUtil.AfterSelectClause>,
+                OtherT
+            > = arg1;
+            const unionType : QueryUtil.UnionType = arg0;
+            return QueryUtil.union<
+                Extract<this, QueryUtil.AfterSelectClause>,
+                OtherT
+            >(this, other, unionType);
+        }
     }
 }
 export function from<AliasedTableT extends IAliasedTable> (

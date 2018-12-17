@@ -8,7 +8,7 @@ import { Order } from "../order";
 import { MapDelegate } from "../map-delegate";
 export interface UnionQuery {
     readonly distinct: boolean;
-    readonly query: IQuery;
+    readonly query: QueryUtil.AfterSelectClause;
 }
 export interface LimitData {
     readonly maxRowCount: number;
@@ -76,6 +76,8 @@ export declare class Query<DataT extends QueryData> {
     orderBy<OrderByDelegateT extends QueryUtil.OrderByDelegate<Extract<this, QueryUtil.AfterFromClause>>>(this: Extract<this, QueryUtil.AfterFromClause>, delegate: QueryUtil.AssertValidOrderByDelegate<Extract<this, QueryUtil.AfterFromClause>, OrderByDelegateT>): QueryUtil.OrderBy<Extract<this, QueryUtil.AfterFromClause>>;
     limit<MaxRowCountT extends number>(maxRowCount: MaxRowCountT): QueryUtil.Limit<this, MaxRowCountT>;
     offset<OffsetT extends number>(offset: OffsetT): QueryUtil.Offset<this, OffsetT>;
+    union<OtherT extends QueryUtil.AfterSelectClause>(this: Extract<this, QueryUtil.AfterSelectClause>, other: QueryUtil.AssertUnionCompatibleQuery<Extract<this, QueryUtil.AfterSelectClause>, OtherT>): QueryUtil.Union<Extract<this, QueryUtil.AfterSelectClause>>;
+    union<OtherT extends QueryUtil.AfterSelectClause>(this: Extract<this, QueryUtil.AfterSelectClause>, unionType: QueryUtil.UnionType, other: QueryUtil.AssertUnionCompatibleQuery<Extract<this, QueryUtil.AfterSelectClause>, OtherT>): QueryUtil.Union<Extract<this, QueryUtil.AfterSelectClause>>;
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertUniqueJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 //# sourceMappingURL=query.d.ts.map
