@@ -44,6 +44,12 @@ export function limit<
     query : QueryT,
     maxRowCount : MaxRowCountT
 ) : Limit<QueryT, MaxRowCountT> {
+    if (maxRowCount < 0) {
+        throw new Error(`maxRowCount cannot be negative`);
+    }
+    if (maxRowCount !== Math.floor(maxRowCount)) {
+        throw new Error(`maxRowCount must be an integer`);
+    }
     return new Query(
         {
             ...query,

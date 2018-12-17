@@ -45,6 +45,12 @@ export function offset<
     query : QueryT,
     offset : OffsetT
 ) : Offset<QueryT, OffsetT> {
+    if (offset < 0) {
+        throw new Error(`offset cannot be negative`);
+    }
+    if (offset !== Math.floor(offset)) {
+        throw new Error(`offset must be an integer`);
+    }
     return new Query(
         {
             ...query,

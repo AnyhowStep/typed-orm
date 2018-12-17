@@ -23,7 +23,7 @@ const reservedWords = [
     "MAX_QUERIES_PER_HOUR", "MAX_ROWS", "MAX_UPDATES_PER_HOUR", "MAX_USER_CONNECTIONS", "MEDIUM", "MERGE", "MINUTE", "MINUTE_SECOND",
     "MIN_ROWS", "MODE", "MODIFY", "MONTH", "MRG_MYISAM", "MYISAM",
     "NAMES", "NATURAL", "NOT", "NOW()", "NULL",
-    "OFFSET", "ON DELETE", "ON UPDATE", "ONLY", "OPEN", "OPTIMIZE", "OPTION", "OPTIONALLY", "OUTFILE",
+    "ON DELETE", "ON UPDATE", "ONLY", "OPEN", "OPTIMIZE", "OPTION", "OPTIONALLY", "OUTFILE",
     "PACK_KEYS", "PAGE", "PARTIAL", "PARTITION", "PARTITIONS", "PASSWORD", "PRIMARY", "PRIVILEGES", "PROCEDURE", "PROCESS", "PROCESSLIST",
     "PURGE",
     "QUICK",
@@ -67,6 +67,7 @@ const reservedToplevelWords = [
     //Originally in reservedWords
     //But I think this is better to me
     "ON",
+    "OFFSET",
 ];
 
 const reservedNewlineWords = [

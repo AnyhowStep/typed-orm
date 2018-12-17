@@ -8,6 +8,7 @@ const constants_1 = require("../../constants");
 const sqlstring_1 = require("sqlstring");
 const column_identifier_ref_1 = require("../../column-identifier-ref");
 const expr_1 = require("../../expr");
+const raw_expr_1 = require("../../raw-expr");
 function queryTreeSelectItem_Column(column) {
     const result = [];
     result.push(column_1.ColumnUtil.queryTree(column));
@@ -145,4 +146,30 @@ function queryTreeOrderBy(query) {
     return ["ORDER BY", result];
 }
 exports.queryTreeOrderBy = queryTreeOrderBy;
+/*
+    The syntax is one of:
+
+    + LIMIT maxRowCount
+    + LIMIT maxRowCount OFFSET offset
+
+    And,
+    `LIMIT maxRowCount` is a synonym of
+    `LIMIT maxRowCount OFFSET 0`
+*/
+function queryTreeLimit(query) {
+    const limit = query._limit;
+    if (limit == undefined) {
+        return [];
+    }
+    if (limit.offset == 0) {
+        return ["LIMIT", raw_expr_1.RawExprUtil.queryTree(limit.maxRowCount)];
+    }
+    else {
+        return [
+            "LIMIT", raw_expr_1.RawExprUtil.queryTree(limit.maxRowCount),
+            "OFFSET", raw_expr_1.RawExprUtil.queryTree(limit.offset),
+        ];
+    }
+}
+exports.queryTreeLimit = queryTreeLimit;
 //# sourceMappingURL=query.js.map

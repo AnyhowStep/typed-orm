@@ -521,6 +521,19 @@ export class Query<DataT extends QueryData> {
         >(this, delegate);
     }
 
+    /*
+        One should be careful about using LIMIT, OFFSET
+        without an ORDER BY clause.
+
+        In general, if your WHERE condition uniquely identifies
+        the row, then LIMIT and OFFSET are not required
+        and can be safely used without an ORDER BY.
+
+        The problem is when the WHERE condition *does not*
+        uniquely identify a row.
+
+        Then, LIMIT and OFFSET can return inconsistent results.
+    */
     limit<MaxRowCountT extends number> (
         maxRowCount : MaxRowCountT
     ) : QueryUtil.Limit<this, MaxRowCountT> {

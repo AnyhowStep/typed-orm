@@ -9,6 +9,7 @@ import {SEPARATOR} from "../../constants";
 import {escapeId} from "sqlstring";
 import {ColumnIdentifierRefUtil} from "../../column-identifier-ref";
 import {ExprUtil} from "../../expr";
+import {RawExprUtil} from "../../raw-expr";
 
 function queryTreeSelectItem_Column (column : IColumn) : QueryTreeArray {
     const result : QueryTreeArray = [];
@@ -140,4 +141,28 @@ export function queryTreeOrderBy (query : IQuery) : QueryTreeArray {
         result.push(order[1]);
     }
     return ["ORDER BY", result];
+}
+/*
+    The syntax is one of:
+
+    + LIMIT maxRowCount
+    + LIMIT maxRowCount OFFSET offset
+
+    And,
+    `LIMIT maxRowCount` is a synonym of
+    `LIMIT maxRowCount OFFSET 0`
+*/
+export function queryTreeLimit (query : IQuery) : QueryTreeArray {
+    const limit = query._limit;
+    if (limit == undefined) {
+        return [];
+    }
+    if (limit.offset == 0) {
+        return ["LIMIT", RawExprUtil.queryTree(limit.maxRowCount)];
+    } else {
+        return [
+            "LIMIT", RawExprUtil.queryTree(limit.maxRowCount),
+            "OFFSET", RawExprUtil.queryTree(limit.offset),
+        ];
+    }
 }

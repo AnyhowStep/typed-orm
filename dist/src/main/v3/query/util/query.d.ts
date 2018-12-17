@@ -7,4 +7,5 @@ export declare function queryTreeWhere(query: IQuery): QueryTreeArray;
 export declare function queryTreeGroupBy(query: IQuery): QueryTreeArray;
 export declare function queryTreeHaving(query: IQuery): QueryTreeArray;
 export declare function queryTreeOrderBy(query: IQuery): QueryTreeArray;
+export declare function queryTreeLimit(query: IQuery): QueryTreeArray;
 //# sourceMappingURL=query.d.ts.map
