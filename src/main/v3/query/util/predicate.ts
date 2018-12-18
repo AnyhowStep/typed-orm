@@ -209,7 +209,6 @@ export function isZeroOrOneRowQuery (query : IQuery) : query is ZeroOrOneRowQuer
     );
 }
 
-//TODO Better naming?
 //AliasedTableT["alias"] must not already be in
 //QueryT["joins"] or
 //QueryT["parentJoins"]

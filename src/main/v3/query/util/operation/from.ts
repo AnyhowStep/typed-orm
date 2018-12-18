@@ -34,7 +34,6 @@ export type From<
     }>
 );
 //Must be done before any JOINs, as per MySQL
-//TODO The aliasedTable must not be in parentJoins
 export function from<
     QueryT extends BeforeFromClause,
     AliasedTableT extends IAliasedTable

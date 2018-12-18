@@ -4,6 +4,13 @@ import {JoinFromDelegate, JoinToDelegate, invokeJoinDelegate} from "./join-deleg
 import {IAliasedTable} from "../../../aliased-table";
 import {Join, JoinType} from "../../../join";
 
+/*
+    TODO Implement innerJoinCandidateKey() and innerJoinUsingCandidateKey()
+
+    This will force the "to-columns" to be a
+    candidate key of the target table.
+    No more, no less.
+*/
 export type InnerJoin<
     QueryT extends AfterFromClause,
     AliasedTableT extends IAliasedTable

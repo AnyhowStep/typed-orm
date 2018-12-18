@@ -241,6 +241,13 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     ) {
         return Table.setId(this, delegate);
     }
+    /*
+        TODO Adding a candidate key that is a super-set of
+        an existing candidate key should throw an error,
+        both during compile-time and run-time.
+
+        Candidate keys should be as small as possible.
+    */
     addCandidateKey<
         DelegateT extends Table.CandidateKeyDelegate<this>
     > (
