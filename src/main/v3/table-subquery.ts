@@ -7,6 +7,31 @@ import {IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 import {QueryTree} from "./query-tree";
 import {AnonymousTypedSingleValueSelectItem} from "./select-item";
 
+/*
+    TODO Table sub queries also have a usedExpr part!
+
+    From V2 code:
+
+    createSubQuery(t.tentativeContributorNegotiation)
+        .from(t.tentativeContribution)
+        .groupBy(c => [
+            c.appId,
+            c.tentativeContributorNegotiationId,
+            c.invoiceId,
+            c.externalUserId
+        ])
+        .select(c => [
+            c.tentativeContribution.appId,
+            c.tentativeContribution.tentativeContributorNegotiationId,
+            c.tentativeContribution.invoiceId,
+            c.tentativeContribution.externalUserId,
+            o.max(c.tentativeContribution.updatedAt).as("updatedAt"),
+        ])
+        .where(c => o.eq(
+            c.tentativeContribution.tentativeContributorNegotiationId,
+            c.tentativeContributorNegotiation.tentativeContributorNegotiationId
+        ))
+*/
 export interface TableSubqueryData {
     readonly query : QueryUtil.AfterSelectClause;
     readonly alias : string;
