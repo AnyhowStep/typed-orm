@@ -9,7 +9,7 @@ import {SelectItem} from "../../../select-item";
 import {IExprSelectItem, ExprSelectItemUtil} from "../../../expr-select-item";
 import {IColumn, ColumnUtil} from "../../../column";
 import {ColumnIdentifierUtil} from "../../../column-identifier";
-import { ColumnIdentifierRefUtil } from "../../../column-identifier-ref";
+import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
 
 export type SelectDelegate<
     QueryT extends BeforeUnionClause
@@ -57,11 +57,10 @@ export type Select<
         readonly _mapDelegate : QueryT["_mapDelegate"],
     }>
 );
-export type AssertValidSelectDelegate<
+export type AssertValidSelectDelegateImpl<
     QueryT extends BeforeUnionClause,
     SelectDelegateT extends SelectDelegate<QueryT>
 > = (
-    SelectDelegateT &
     //If SelectItem is IExprSelectItem,
     //the usedRef must be a subset of the queryRef
     ToUnknownIfAllFieldsNever<{
@@ -202,6 +201,13 @@ export type AssertValidSelectDelegate<
             never
         )
     }>
+);
+export type AssertValidSelectDelegate<
+    QueryT extends BeforeUnionClause,
+    SelectDelegateT extends SelectDelegate<QueryT>
+> = (
+    SelectDelegateT &
+    AssertValidSelectDelegateImpl<QueryT, SelectDelegateT>
 );
 export function select<
     QueryT extends BeforeUnionClause,

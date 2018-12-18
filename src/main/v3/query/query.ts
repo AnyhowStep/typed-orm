@@ -455,6 +455,31 @@ export class Query<DataT extends QueryData> {
         );
     }
 
+    selectExpr<
+        SelectDelegateT extends QueryUtil.SelectExprDelegate<
+            Extract<this, QueryUtil.BeforeUnionClause & QueryUtil.BeforeSelectClause>
+        >
+    > (
+        this : Extract<this, QueryUtil.BeforeUnionClause & QueryUtil.BeforeSelectClause>,
+        delegate : QueryUtil.AssertValidSelectExprDelegate<
+            Extract<this, QueryUtil.BeforeUnionClause & QueryUtil.BeforeSelectClause>,
+            SelectDelegateT
+        >
+    ) : (
+        QueryUtil.SelectExpr<
+            Extract<this, QueryUtil.BeforeUnionClause & QueryUtil.BeforeSelectClause>,
+            SelectDelegateT
+        >
+    ) {
+        return QueryUtil.selectExpr<
+            Extract<this, QueryUtil.BeforeUnionClause & QueryUtil.BeforeSelectClause>,
+            SelectDelegateT
+        >(
+            this,
+            delegate
+        );
+    }
+
     andWhere<
         AndWhereDelegateT extends QueryUtil.AndWhereDelegate<
             Extract<this, QueryUtil.AfterFromClause>
@@ -651,4 +676,22 @@ export function select<
 ) {
     return QueryUtil.newInstance()
         .select(delegate);
+}
+export function selectExpr<
+    SelectDelegateT extends QueryUtil.SelectExprDelegate<
+        QueryUtil.NewInstance
+    >
+> (
+    delegate : QueryUtil.AssertValidSelectExprDelegate<
+        QueryUtil.NewInstance,
+        SelectDelegateT
+    >
+) : (
+    QueryUtil.SelectExpr<
+        QueryUtil.NewInstance,
+        SelectDelegateT
+    >
+) {
+    return QueryUtil.newInstance()
+        .selectExpr(delegate);
 }

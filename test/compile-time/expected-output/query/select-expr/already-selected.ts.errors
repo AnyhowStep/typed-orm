@@ -1,0 +1,16 @@
+[
+  {
+    "messageText": "The 'this' context of type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly alias: \"table\"; readonly name: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly y: Column<...>; re...' is not assignable to method's 'this' of type 'never'.",
+    "code": 2684,
+    "category": 1,
+    "length": 50,
+    "start": 247
+  },
+  {
+    "messageText": "Parameter 'c' implicitly has an 'any' type.",
+    "code": 7006,
+    "category": 1,
+    "length": 1,
+    "start": 314
+  }
+]

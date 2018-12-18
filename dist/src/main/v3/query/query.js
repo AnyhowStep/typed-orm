@@ -43,6 +43,9 @@ class Query {
     select(delegate) {
         return QueryUtil.select(this, delegate);
     }
+    selectExpr(delegate) {
+        return QueryUtil.selectExpr(this, delegate);
+    }
     andWhere(delegate) {
         return QueryUtil.andWhere(this, delegate);
     }
@@ -114,4 +117,9 @@ function select(delegate) {
         .select(delegate);
 }
 exports.select = select;
+function selectExpr(delegate) {
+    return QueryUtil.newInstance()
+        .selectExpr(delegate);
+}
+exports.selectExpr = selectExpr;
 //# sourceMappingURL=query.js.map
