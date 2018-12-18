@@ -4,9 +4,10 @@ import {AfterSelectClause} from "../predicate";
 import {DISTINCT, ALL} from "../../../constants";
 import {SelectItem} from "../../../select-item";
 import {IColumn} from "../../../column";
-import { IExprSelectItem } from "../../../expr-select-item";
-import { ColumnMap } from "../../../column-map";
-import { ToUnknownIfAllFieldsNever } from "../../../type";
+import {IExprSelectItem} from "../../../expr-select-item";
+import {ColumnMap, ColumnMapUtil} from "../../../column-map";
+import {ToUnknownIfAllFieldsNever} from "../../../type";
+import {ColumnIdentifierMapUtil} from "../../../column-identifier-map";
 
 export type Union<
     QueryT extends AfterSelectClause
@@ -172,7 +173,32 @@ export function union<
     if (query._selects == undefined) {
         throw new Error(`Cannot use UNION before SELECT clause`);
     }
-    //TODO Run-time union compatibility checks
+    if (other._selects == undefined) {
+        throw new Error(`Cannot use query as UNION target before SELECT clause`);
+    }
+    /*
+        We can't really have many run-time checks.
+        We can't check that the assert delegates are compatible.
+    */
+    if (query._selects.length != other._selects.length) {
+        throw new Error(`UNION target must have ${query._selects.length} select items; found ${other._selects.length}`);
+    }
+    for (let i=0; i<query._selects.length; ++i) {
+        const itemA = query._selects[i];
+        const itemB = other._selects[i];
+        if (ColumnMapUtil.isColumnMap(itemA)) {
+            if (ColumnMapUtil.isColumnMap(itemB)) {
+                ColumnIdentifierMapUtil.assertIsSubset(itemA, itemB);
+                ColumnIdentifierMapUtil.assertIsSubset(itemB, itemA);
+            } else {
+                throw new Error(`UNION target must have a column map for select item ${i}`);
+            }
+        } else {
+            if (ColumnMapUtil.isColumnMap(itemB)) {
+                throw new Error(`UNION target cannot have a column map for select item ${i}`);
+            }
+        }
+    }
 
     const unionQuery = {
         distinct : (unionType == DISTINCT),

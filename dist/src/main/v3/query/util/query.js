@@ -191,11 +191,11 @@ function queryTree(query) {
         queryTreeHaving(query),
         queryTreeOrderBy(query),
         queryTreeLimit(query),
-        queryUnion(query),
+        queryTreeUnion(query),
     ];
 }
 exports.queryTree = queryTree;
-function queryUnion(query) {
+function queryTreeUnion(query) {
     const unions = query._unions;
     if (unions == undefined) {
         return [];
@@ -211,5 +211,5 @@ function queryUnion(query) {
     }
     return result;
 }
-exports.queryUnion = queryUnion;
+exports.queryTreeUnion = queryTreeUnion;
 //# sourceMappingURL=query.js.map

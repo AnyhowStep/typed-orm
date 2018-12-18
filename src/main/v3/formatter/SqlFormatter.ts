@@ -53,7 +53,7 @@ const reservedToplevelWords = [
     "MODIFY",
     "ORDER BY",
     "SELECT", "SET CURRENT SCHEMA", "SET SCHEMA", "SET",
-    "UNION ALL", "UNION", "UPDATE",
+    "UNION ALL", /*New reserved top-level word*/"UNION DISTINCT", "UNION", "UPDATE",
     "VALUES",
     "WHERE",
     //Originally in reservedNewlineWords

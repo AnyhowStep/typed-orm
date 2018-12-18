@@ -184,13 +184,13 @@ export function queryTree (query : AfterSelectClause) : QueryTreeArray {
         queryTreeHaving(query),
         queryTreeOrderBy(query),
         queryTreeLimit(query),
-        queryUnion(query),
+        queryTreeUnion(query),
         //TODO Union Order By
         //TODO Union Limit
     ];
 }
 
-export function queryUnion (query : IQuery) : QueryTreeArray {
+export function queryTreeUnion (query : IQuery) : QueryTreeArray {
     const unions = query._unions;
     if (unions == undefined) {
         return [];

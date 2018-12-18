@@ -142,8 +142,29 @@ export type As<ColumnT extends IColumn, AliasT extends string> = (
         readonly usedRef : ColumnRefUtil.FromColumn<ColumnT>;
         readonly assertDelegate : ColumnT["assertDelegate"];
 
-        //TODO Consider allowing tableAlias to change?
-        //There doesn't seem to be any harm in it.
+        /*
+            Consider the following.
+
+            const table = o.table(
+                "table",
+                {
+                    x : sd.boolean(),
+                    y : sd.string(),
+                    z : sd.boolean(),
+                }
+            );
+
+            o.from(table)
+                .select(c => [c.z.as("x")])
+                .andHaving(c => c.x)
+
+            c.x in the HAVING clause is now ambiguous!
+
+            Is it c.z AS x? Or regular c.x?
+
+            Because of this, you cannot alias to something that hides
+            a column in the FROM/JOIN clauses.
+        */
         readonly tableAlias : ColumnT["tableAlias"];
         readonly alias : AliasT;
     }>
