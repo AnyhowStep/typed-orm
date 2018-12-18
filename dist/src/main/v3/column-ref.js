@@ -218,5 +218,15 @@ var ColumnRefUtil;
         return true;
     }
     ColumnRefUtil.isColumnRef = isColumnRef;
+    function getSortedColumnArray(columnRef) {
+        const tableAliases = Object.keys(columnRef);
+        tableAliases.sort();
+        const result = [];
+        for (let tableAlias of tableAliases) {
+            result.push(...column_map_1.ColumnMapUtil.getSortedColumnArray(columnRef[tableAlias]));
+        }
+        return result;
+    }
+    ColumnRefUtil.getSortedColumnArray = getSortedColumnArray;
 })(ColumnRefUtil = exports.ColumnRefUtil || (exports.ColumnRefUtil = {}));
 //# sourceMappingURL=column-ref.js.map

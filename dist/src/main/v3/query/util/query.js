@@ -9,6 +9,7 @@ const sqlstring_1 = require("sqlstring");
 const column_identifier_ref_1 = require("../../column-identifier-ref");
 const expr_1 = require("../../expr");
 const raw_expr_1 = require("../../raw-expr");
+const column_ref_1 = require("../../column-ref");
 function queryTreeSelectItem_Column(column) {
     const result = [];
     result.push(column_1.ColumnUtil.queryTree(column));
@@ -19,6 +20,16 @@ function queryTreeSelectItem_Column(column) {
 function queryTreeSelectItem_ColumnMap(columnMap) {
     const result = [];
     for (let column of column_map_1.ColumnMapUtil.getSortedColumnArray(columnMap)) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        result.push(queryTreeSelectItem_Column(column));
+    }
+    return result;
+}
+function queryTreeSelectItem_ColumnRef(columnRef) {
+    const result = [];
+    for (let column of column_ref_1.ColumnRefUtil.getSortedColumnArray(columnRef)) {
         if (result.length > 0) {
             result.push(",");
         }
@@ -41,6 +52,12 @@ function queryTreeSelects(query) {
         }
         else if (column_map_1.ColumnMapUtil.isColumnMap(item)) {
             result.push(queryTreeSelectItem_ColumnMap(item));
+        }
+        else if (column_ref_1.ColumnRefUtil.isColumnRef(item)) {
+            result.push(queryTreeSelectItem_ColumnRef(item));
+        }
+        else {
+            throw new Error(`Unknown select item`);
         }
     }
     return ["SELECT", result];

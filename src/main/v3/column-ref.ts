@@ -569,4 +569,14 @@ export namespace ColumnRefUtil {
         > :
         never
     );
+
+    export function getSortedColumnArray (columnRef : ColumnRef) : IColumn[] {
+        const tableAliases = Object.keys(columnRef);
+        tableAliases.sort();
+        const result : IColumn[] = [];
+        for (let tableAlias of tableAliases) {
+            result.push(...ColumnMapUtil.getSortedColumnArray(columnRef[tableAlias]));
+        }
+        return result;
+    }
 }

@@ -94,5 +94,6 @@ export declare namespace ColumnRefUtil {
     type TableAlias<RefT extends ColumnRef> = (RefT extends ColumnRef ? Extract<keyof RefT, string> : never);
     type FindWithTableAlias<RefT extends ColumnRef, TableAliasT extends string> = (RefT extends ColumnRef ? ColumnMapUtil.FindWithTableAlias<RefT[Extract<keyof RefT, string>], TableAliasT> : never);
     type FindWithColumnName<RefT extends ColumnRef, ColumnNameT extends string> = (RefT extends ColumnRef ? ColumnMapUtil.FindWithColumnName<RefT[Extract<keyof RefT, string>], ColumnNameT> : never);
+    function getSortedColumnArray(columnRef: ColumnRef): IColumn[];
 }
 //# sourceMappingURL=column-ref.d.ts.map

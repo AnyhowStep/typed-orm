@@ -10,6 +10,7 @@ import {escapeId} from "sqlstring";
 import {ColumnIdentifierRefUtil} from "../../column-identifier-ref";
 import {ExprUtil} from "../../expr";
 import {RawExprUtil} from "../../raw-expr";
+import {ColumnRef, ColumnRefUtil} from "../../column-ref";
 
 function queryTreeSelectItem_Column (column : IColumn) : QueryTreeArray {
     const result : QueryTreeArray = [];
@@ -21,6 +22,16 @@ function queryTreeSelectItem_Column (column : IColumn) : QueryTreeArray {
 function queryTreeSelectItem_ColumnMap (columnMap : ColumnMap) : QueryTreeArray {
     const result : QueryTreeArray = [];
     for (let column of ColumnMapUtil.getSortedColumnArray(columnMap)) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        result.push(queryTreeSelectItem_Column(column));
+    }
+    return result;
+}
+function queryTreeSelectItem_ColumnRef (columnRef : ColumnRef) : QueryTreeArray {
+    const result : QueryTreeArray = [];
+    for (let column of ColumnRefUtil.getSortedColumnArray(columnRef)) {
         if (result.length > 0) {
             result.push(",");
         }
@@ -42,6 +53,10 @@ export function queryTreeSelects (query : AfterSelectClause) : QueryTreeArray {
             result.push(ExprSelectItemUtil.queryTree(item));
         } else if (ColumnMapUtil.isColumnMap(item)) {
             result.push(queryTreeSelectItem_ColumnMap(item));
+        } else if (ColumnRefUtil.isColumnRef(item)) {
+            result.push(queryTreeSelectItem_ColumnRef(item));
+        } else {
+            throw new Error(`Unknown select item`);
         }
     }
     return ["SELECT", result];

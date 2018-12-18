@@ -8,6 +8,13 @@ import {QueryTree} from "./query-tree";
 import {AnonymousTypedSingleValueSelectItem} from "./select-item";
 
 /*
+    TODO Find a way to make single value subqueries extend
+    IExprSelectItem
+
+    TODO Find a way to make single value queries extend
+    IExpr
+*/
+/*
     TODO Table sub queries also have a usedExpr part!
 
     From V2 code:
