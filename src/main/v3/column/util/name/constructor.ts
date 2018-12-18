@@ -12,7 +12,7 @@ export type FromColumnMap<ColumnMapT extends ColumnMap> = (
 //But it shouldn't be wrong, in general.
 export type FromColumnRef<ColumnRefT extends ColumnRef> = (
     ColumnRefT extends ColumnRef ?
-    FromColumnMap<ColumnRefT[string]> :
+    FromColumnMap<ColumnRefT[Extract<keyof ColumnRefT, string>]> :
     never
 );
 export type NullableFromColumnMap<ColumnMapT extends ColumnMap> = (

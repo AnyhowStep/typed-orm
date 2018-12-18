@@ -4,7 +4,7 @@ import {ColumnUtil} from "../../../column";
 import {ExprSelectItemUtil} from "../../../expr-select-item";
 import {ColumnMap, ColumnMapUtil} from "../../../column-map";
 import {SelectItem} from "../../../select-item";
-import {ColumnRef} from "../../../column-ref";
+import {ColumnRef, ColumnRefUtil} from "../../../column-ref";
 
 export type FromColumnMap<ColumnMapT extends ColumnMap> = (
     ColumnMapT extends ColumnMap ?
@@ -34,6 +34,8 @@ export function fromSelectItem<SelectItemT extends SelectItem> (
         return [Ctor.fromExprSelectItem(selectItem)] as any;
     } else if (ColumnMapUtil.isColumnMap(selectItem)) {
         return fromColumnMap(selectItem) as any;
+    } else if (ColumnRefUtil.isColumnRef(selectItem)) {
+        return fromColumnRef(selectItem) as any;
     } else {
         throw new Error(`Unknown select item`);
     }

@@ -41,6 +41,13 @@ export interface ITableSubquery<
 > extends IAliasedTable<{
     readonly alias : DataT["alias"];
     readonly name  : DataT["alias"];
+    /*
+        TODO ITableSubquery should only be allowed if
+        there are no duplicate column names in selects.
+
+        So, selecting both tableA.x and tableB.x is not allowed.
+        You would have to alias one of the columns.
+    */
     readonly columns : ColumnMapUtil.FromSelectItemArray<DataT["query"]["_selects"]>;
 }> {
     readonly query : DataT["query"];

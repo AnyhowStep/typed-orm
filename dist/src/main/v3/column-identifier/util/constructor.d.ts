@@ -18,7 +18,7 @@ export declare type FromExprSelectItem<ExprSelectItemT extends IExprSelectItem> 
 export declare function fromExprSelectItem<ExprSelectItemT extends IExprSelectItem>(exprSelectItem: ExprSelectItemT): FromExprSelectItem<ExprSelectItemT>;
 export declare type FromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? FromColumn<ColumnMapT[Extract<keyof ColumnMapT, string>]> : never);
 export declare type FromColumnIdentifierMap<ColumnMapT extends ColumnIdentifierMap> = (ColumnMapT extends ColumnIdentifierMap ? ColumnMapT[Extract<keyof ColumnMapT, string>] : never);
-export declare type FromSelectItem<SelectItemT extends SelectItem> = (SelectItemT extends SelectItem ? (FromColumn<Extract<SelectItemT, IColumn>> | FromExprSelectItem<Extract<SelectItemT, IExprSelectItem>> | FromColumnMap<Extract<SelectItemT, ColumnMap>>) : never);
+export declare type FromSelectItem<SelectItemT extends SelectItem> = (SelectItemT extends SelectItem ? (FromColumn<Extract<SelectItemT, IColumn>> | FromExprSelectItem<Extract<SelectItemT, IExprSelectItem>> | FromColumnMap<Extract<SelectItemT, ColumnMap>> | FromColumnRef<Extract<SelectItemT, ColumnRef>>) : never);
 export declare type FromSelectItemArrayIgnoreIndex<SelectsT extends SelectItem[], IgnoreIndexT extends Extract<keyof SelectsT, string>> = ({
     [index in Exclude<Extract<keyof SelectsT, string>, IgnoreIndexT>]: (SelectsT[index] extends SelectItem ? FromSelectItem<SelectsT[index]> : never);
 }[Exclude<Extract<keyof SelectsT, string>, IgnoreIndexT>]);

@@ -52,6 +52,19 @@ function select(query, delegate) {
                 throw new Error(`Invalid column map in SELECT clause`);
             }
         }
+        else if (column_ref_1.ColumnRefUtil.isColumnRef(selectItem)) {
+            //+ columnRefs must exist
+            for (let tableAlias in selectItem) {
+                const selectItemMap = selectItem[tableAlias];
+                const queryMap = queryRef[tableAlias];
+                if (selectItemMap !== queryMap) {
+                    throw new Error(`Invalid column ref in SELECT clause`);
+                }
+            }
+        }
+        else {
+            throw new Error(`Unknown select item`);
+        }
     }
     const selectColumnIdentifiers = column_identifier_1.ColumnIdentifierUtil.Array
         .fromSelectItemArray(selects);

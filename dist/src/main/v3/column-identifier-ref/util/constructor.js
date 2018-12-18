@@ -4,6 +4,7 @@ const column_1 = require("../../column");
 const expr_select_item_1 = require("../../expr-select-item");
 const column_map_1 = require("../../column-map");
 const column_identifier_1 = require("../../column-identifier");
+const column_ref_1 = require("../../column-ref");
 function appendColumn(ref, column) {
     let map = ref[column.tableAlias];
     if (map == undefined) {
@@ -33,6 +34,17 @@ function fromColumnMap(columnMap) {
     return result;
 }
 exports.fromColumnMap = fromColumnMap;
+function appendColumnRef(ref, columnRef) {
+    for (let tableAlias in columnRef) {
+        appendColumnMap(ref, columnRef[tableAlias]);
+    }
+    return ref;
+}
+function fromColumnRef(columnRef) {
+    const result = appendColumnRef({}, columnRef);
+    return result;
+}
+exports.fromColumnRef = fromColumnRef;
 function appendSelectItem(ref, item) {
     if (column_1.ColumnUtil.isColumn(item)) {
         appendColumn(ref, item);
@@ -42,6 +54,9 @@ function appendSelectItem(ref, item) {
     }
     else if (column_map_1.ColumnMapUtil.isColumnMap(item)) {
         appendColumnMap(ref, item);
+    }
+    else if (column_ref_1.ColumnRefUtil.isColumnRef(item)) {
+        appendColumnRef(ref, item);
     }
     else {
         throw new Error(`Unknown select item`);

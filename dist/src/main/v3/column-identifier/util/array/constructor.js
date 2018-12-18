@@ -4,6 +4,7 @@ const Ctor = require("../constructor");
 const column_1 = require("../../../column");
 const expr_select_item_1 = require("../../../expr-select-item");
 const column_map_1 = require("../../../column-map");
+const column_ref_1 = require("../../../column-ref");
 function fromColumnMap(columnMap) {
     const result = [];
     for (let columnName in columnMap) {
@@ -21,6 +22,9 @@ function fromSelectItem(selectItem) {
     }
     else if (column_map_1.ColumnMapUtil.isColumnMap(selectItem)) {
         return fromColumnMap(selectItem);
+    }
+    else if (column_ref_1.ColumnRefUtil.isColumnRef(selectItem)) {
+        return fromColumnRef(selectItem);
     }
     else {
         throw new Error(`Unknown select item`);

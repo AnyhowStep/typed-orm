@@ -64,6 +64,12 @@ var ColumnRefUtil;
         }
         return ref;
     }
+    function appendColumnRef(ref, columnRef) {
+        for (let tableAlias in columnRef) {
+            appendColumnMap(ref, columnRef[tableAlias]);
+        }
+        return ref;
+    }
     function appendQuerySelfJoins(ref, query) {
         if (query._joins == undefined) {
             return ref;
@@ -99,6 +105,9 @@ var ColumnRefUtil;
         }
         else if (column_map_1.ColumnMapUtil.isColumnMap(item)) {
             appendColumnMap(ref, item);
+        }
+        else if (ColumnRefUtil.isColumnRef(item)) {
+            appendColumnRef(ref, item);
         }
         else {
             throw new Error(`Unknown select item`);
@@ -196,5 +205,18 @@ var ColumnRefUtil;
         return result;
     }
     ColumnRefUtil.intersectTuple = intersectTuple;
+    function isColumnRef(raw) {
+        if (!(raw instanceof Object)) {
+            return false;
+        }
+        for (let tableAlias in raw) {
+            const columnMap = raw[tableAlias];
+            if (!column_map_1.ColumnMapUtil.isColumnMap(columnMap)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    ColumnRefUtil.isColumnRef = isColumnRef;
 })(ColumnRefUtil = exports.ColumnRefUtil || (exports.ColumnRefUtil = {}));
 //# sourceMappingURL=column-ref.js.map

@@ -8,6 +8,7 @@ import {IJoin} from "../../join";
 import {IQuery} from "../../query";
 import {ColumnIdentifierRef} from "../column-identifier-ref";
 import {Writable} from  "../../type";
+import {ColumnRef, ColumnRefUtil} from "../../column-ref";
 
 export type FromColumn<ColumnT extends IColumn> = (
     ColumnT extends IColumn ?
@@ -82,6 +83,34 @@ export function fromColumnMap<ColumnMapT extends ColumnMap> (
     const result = appendColumnMap({}, columnMap);
     return result as FromColumnMap<ColumnMapT>;
 }
+export type FromColumnRef<ColumnRefT extends ColumnRef> = (
+    ColumnRefT extends ColumnRef ?
+    {
+        readonly [tableAlias in Extract<keyof ColumnRefT, string>] : (
+            {
+                readonly [columnName in Extract<keyof ColumnRefT[tableAlias], string>] : (
+                    ColumnIdentifierUtil.FromColumn<ColumnRefT[tableAlias][columnName]>
+                )
+            }
+        )
+    } :
+    never
+);
+function appendColumnRef (
+    ref : Writable<ColumnIdentifierRef>,
+    columnRef : ColumnRef
+) {
+    for (let tableAlias in columnRef) {
+        appendColumnMap(ref, columnRef[tableAlias]);
+    }
+    return ref;
+}
+export function fromColumnRef<ColumnRefT extends ColumnRef> (
+    columnRef : ColumnRefT
+) : FromColumnRef<ColumnRefT> {
+    const result = appendColumnRef({}, columnRef);
+    return result as FromColumnRef<ColumnRefT>;
+}
 export type FromSelectItem<SelectItemT extends SelectItem> = (
     SelectItemT extends IColumn ?
     FromColumn<SelectItemT> :
@@ -89,6 +118,8 @@ export type FromSelectItem<SelectItemT extends SelectItem> = (
     FromExprSelectItem<SelectItemT> :
     SelectItemT extends ColumnMap ?
     FromColumnMap<SelectItemT> :
+    SelectItemT extends ColumnRef ?
+    FromColumnRef<SelectItemT> :
     never
 );
 
@@ -131,6 +162,21 @@ export type FromSelectItemArray_ColumnMapElement<ColumnMapT extends ColumnMap> =
         }
     }
 );
+export type FromSelectItemArray_ColumnRefElement<ColumnRefT extends ColumnRef> = (
+    {
+        readonly [tableAlias in ColumnRefUtil.TableAlias<ColumnRefT>] : {
+            readonly [columnName in ColumnRefUtil.FindWithTableAlias<
+                ColumnRefT,
+                tableAlias
+            >["name"]] : (
+                {
+                    readonly tableAlias : tableAlias,
+                    readonly name : columnName,
+                }
+            )
+        }
+    }
+);
 export type FromSelectItemArray<ArrT extends SelectItem[]> = (
     ArrT[number] extends never ?
     {} :
@@ -143,6 +189,9 @@ export type FromSelectItemArray<ArrT extends SelectItem[]> = (
         > &
         FromSelectItemArray_ColumnMapElement<
             Extract<ArrT[number], ColumnMap>
+        > &
+        FromSelectItemArray_ColumnRefElement<
+            Extract<ArrT[number], ColumnRef>
         >
     )
 );
@@ -156,6 +205,8 @@ function appendSelectItem (
         appendExprSelectItem(ref, item);
     } else if (ColumnMapUtil.isColumnMap(item)) {
         appendColumnMap(ref, item);
+    } else if (ColumnRefUtil.isColumnRef(item)) {
+        appendColumnRef(ref, item);
     } else {
         throw new Error(`Unknown select item`);
     }

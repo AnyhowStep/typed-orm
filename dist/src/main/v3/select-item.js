@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const column_1 = require("./column");
 const column_map_1 = require("./column-map");
 const expr_select_item_1 = require("./expr-select-item");
+const column_ref_1 = require("./column-ref");
 var SelectItemUtil;
 (function (SelectItemUtil) {
     function isSingleValueSelectItem(raw) {
@@ -15,7 +16,7 @@ var SelectItemUtil;
             return true;
         }
         else {
-            return column_map_1.ColumnMapUtil.isColumnMap(raw);
+            return column_map_1.ColumnMapUtil.isColumnMap(raw) || column_ref_1.ColumnRefUtil.isColumnRef(raw);
         }
     }
     SelectItemUtil.isSelectItem = isSelectItem;

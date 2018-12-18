@@ -99,7 +99,7 @@ export type AssertValidSelectDelegateImpl<
             never
         )
     }> &
-    //Columns selected must exist
+    //Columns of ColumnMap selected must exist
     ToUnknownIfAllFieldsNever<{
         [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
             ReturnType<SelectDelegateT>[index] extends ColumnMap ?
@@ -200,6 +200,24 @@ export type AssertValidSelectDelegateImpl<
             ) :
             never
         )
+    }> &
+    //Columns of ColumnRef selected must exist
+    ToUnknownIfAllFieldsNever<{
+        [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
+            ReturnType<SelectDelegateT>[index] extends ColumnRef ?
+            (
+                ColumnUtil.FromColumnRef<ReturnType<SelectDelegateT>[index]> extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>> ?
+                never :
+                [
+                    "Invalid ColumnRef",
+                    Exclude<
+                        ColumnUtil.FromColumnRef<ReturnType<SelectDelegateT>[index]>,
+                        ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>>
+                    >
+                ]
+            ) :
+            never
+        )
     }>
 );
 export type AssertValidSelectDelegate<
@@ -262,6 +280,17 @@ export function select<
             if (!hasColumnMap) {
                 throw new Error(`Invalid column map in SELECT clause`);
             }
+        } else if (ColumnRefUtil.isColumnRef(selectItem)) {
+            //+ columnRefs must exist
+            for (let tableAlias in selectItem) {
+                const selectItemMap : ColumnMap = selectItem[tableAlias];
+                const queryMap : ColumnMap = (queryRef as ColumnRef)[tableAlias];
+                if (selectItemMap !== queryMap) {
+                    throw new Error(`Invalid column ref in SELECT clause`);
+                }
+            }
+        } else {
+            throw new Error(`Unknown select item`);
         }
     }
 

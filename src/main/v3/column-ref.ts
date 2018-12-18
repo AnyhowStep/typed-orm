@@ -141,6 +141,15 @@ export namespace ColumnRefUtil {
         }
         return ref;
     }
+    function appendColumnRef (
+        ref : Writable<ColumnRef>,
+        columnRef : ColumnRef
+    ) {
+        for (let tableAlias in columnRef) {
+            appendColumnMap(ref, columnRef[tableAlias]);
+        }
+        return ref;
+    }
 
     export type FromQueryJoins<
         QueryT extends IQuery
@@ -217,6 +226,21 @@ export namespace ColumnRefUtil {
             }
         }
     );
+    export type FromSelectItemArray_ColumnRefElement<ColumnRefT extends ColumnRef> = (
+        {
+            readonly [tableAlias in ColumnRefUtil.TableAlias<ColumnRefT>] : {
+                readonly [columnName in ColumnRefUtil.FindWithTableAlias<
+                    ColumnRefT,
+                    tableAlias
+                >["name"]] : (
+                    Extract<
+                        ColumnRefT,
+                        { [ta in tableAlias] : { [cn in columnName] : IColumn } }
+                    >[tableAlias][columnName]
+                )
+            }
+        }
+    );
     export type FromSelectItemArray<ArrT extends SelectItem[]> = (
         ArrT[number] extends never ?
         {} :
@@ -229,6 +253,9 @@ export namespace ColumnRefUtil {
             > &
             FromSelectItemArray_ColumnMapElement<
                 Extract<ArrT[number], ColumnMap>
+            > &
+            FromSelectItemArray_ColumnRefElement<
+                Extract<ArrT[number], ColumnRef>
             >
         )
     );
@@ -242,6 +269,8 @@ export namespace ColumnRefUtil {
             appendExprSelectItem(ref, item);
         } else if (ColumnMapUtil.isColumnMap(item)) {
             appendColumnMap(ref, item);
+        } else if (ColumnRefUtil.isColumnRef(item)) {
+            appendColumnRef(ref, item);
         } else {
             throw new Error(`Unknown select item`);
         }
@@ -503,5 +532,41 @@ export namespace ColumnRefUtil {
                 )
             }
         }
+    );
+
+    export function isColumnRef (raw : any) : raw is ColumnRef {
+        if (!(raw instanceof Object)) {
+            return false;
+        }
+        for (let tableAlias in raw) {
+            const columnMap = raw[tableAlias];
+            if (!ColumnMapUtil.isColumnMap(columnMap)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    export type TableAlias<RefT extends ColumnRef> = (
+        RefT extends ColumnRef ?
+        Extract<keyof RefT, string> :
+        never
+    );
+    export type FindWithTableAlias<RefT extends ColumnRef, TableAliasT extends string> = (
+        RefT extends ColumnRef ?
+        ColumnMapUtil.FindWithTableAlias<
+            RefT[Extract<keyof RefT, string>],
+            TableAliasT
+        > :
+        never
+    );
+
+    export type FindWithColumnName<RefT extends ColumnRef, ColumnNameT extends string> = (
+        RefT extends ColumnRef ?
+        ColumnMapUtil.FindWithColumnName<
+            RefT[Extract<keyof RefT, string>],
+            ColumnNameT
+        > :
+        never
     );
 }

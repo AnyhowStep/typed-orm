@@ -50,7 +50,16 @@ export declare namespace ColumnRefUtil {
             }>[columnName]);
         };
     });
-    type FromSelectItemArray<ArrT extends SelectItem[]> = (ArrT[number] extends never ? {} : (FromSelectItemArray_ColumnElement<Extract<ArrT[number], IColumn>> & FromSelectItemArray_ExprSelectItemElement<Extract<ArrT[number], IExprSelectItem>> & FromSelectItemArray_ColumnMapElement<Extract<ArrT[number], ColumnMap>>));
+    type FromSelectItemArray_ColumnRefElement<ColumnRefT extends ColumnRef> = ({
+        readonly [tableAlias in ColumnRefUtil.TableAlias<ColumnRefT>]: {
+            readonly [columnName in ColumnRefUtil.FindWithTableAlias<ColumnRefT, tableAlias>["name"]]: (Extract<ColumnRefT, {
+                [ta in tableAlias]: {
+                    [cn in columnName]: IColumn;
+                };
+            }>[tableAlias][columnName]);
+        };
+    });
+    type FromSelectItemArray<ArrT extends SelectItem[]> = (ArrT[number] extends never ? {} : (FromSelectItemArray_ColumnElement<Extract<ArrT[number], IColumn>> & FromSelectItemArray_ExprSelectItemElement<Extract<ArrT[number], IExprSelectItem>> & FromSelectItemArray_ColumnMapElement<Extract<ArrT[number], ColumnMap>> & FromSelectItemArray_ColumnRefElement<Extract<ArrT[number], ColumnRef>>));
     function fromSelectItemArray<ArrT extends SelectItem[]>(arr: ArrT): FromSelectItemArray<ArrT>;
     type FromQuerySelects<QueryT extends IQuery> = (QueryT["_selects"] extends SelectItem[] ? FromSelectItemArray<QueryT["_selects"]> : {});
     function fromQuerySelects<QueryT extends IQuery>(query: QueryT): FromQuerySelects<QueryT>;
@@ -81,5 +90,9 @@ export declare namespace ColumnRefUtil {
             readonly [columnName in Extract<keyof RefT[tableAlias], string>]?: (RefT[tableAlias][columnName]);
         };
     });
+    function isColumnRef(raw: any): raw is ColumnRef;
+    type TableAlias<RefT extends ColumnRef> = (RefT extends ColumnRef ? Extract<keyof RefT, string> : never);
+    type FindWithTableAlias<RefT extends ColumnRef, TableAliasT extends string> = (RefT extends ColumnRef ? ColumnMapUtil.FindWithTableAlias<RefT[Extract<keyof RefT, string>], TableAliasT> : never);
+    type FindWithColumnName<RefT extends ColumnRef, ColumnNameT extends string> = (RefT extends ColumnRef ? ColumnMapUtil.FindWithColumnName<RefT[Extract<keyof RefT, string>], ColumnNameT> : never);
 }
 //# sourceMappingURL=column-ref.d.ts.map

@@ -62,7 +62,8 @@ export type FromSelectItem<SelectItemT extends SelectItem> = (
     (
         FromColumn<Extract<SelectItemT, IColumn>> |
         FromExprSelectItem<Extract<SelectItemT, IExprSelectItem>> |
-        FromColumnMap<Extract<SelectItemT, ColumnMap>>
+        FromColumnMap<Extract<SelectItemT, ColumnMap>> |
+        FromColumnRef<Extract<SelectItemT, ColumnRef>>
     ) :
     never
 );

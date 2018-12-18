@@ -1,6 +1,7 @@
 import {IColumn, ColumnUtil, IAnonymousTypedColumn} from "./column";
 import {ColumnMap, ColumnMapUtil} from "./column-map";
 import {IExprSelectItem, IAnonymousTypedExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
+import {ColumnRef, ColumnRefUtil} from "./column-ref";
 
 export type SingleValueSelectItem = (
     IColumn |
@@ -14,7 +15,8 @@ export type AnonymousTypedSingleValueSelectItem<TypeT> = (
 
 export type SelectItem = (
     SingleValueSelectItem |
-    ColumnMap
+    ColumnMap |
+    ColumnRef
 );
 
 export namespace SelectItemUtil {
@@ -25,6 +27,8 @@ export namespace SelectItemUtil {
         SelectItemT["alias"] :
         SelectItemT extends ColumnMap ?
         ColumnUtil.Name.FromColumnMap<SelectItemT> :
+        SelectItemT extends ColumnRef ?
+        ColumnUtil.Name.FromColumnRef<SelectItemT> :
         never
     );
     export function isSingleValueSelectItem (raw : any) : raw is SingleValueSelectItem {
@@ -37,7 +41,7 @@ export namespace SelectItemUtil {
         if (isSingleValueSelectItem(raw)) {
             return true;
         } else {
-            return ColumnMapUtil.isColumnMap(raw);
+            return ColumnMapUtil.isColumnMap(raw) || ColumnRefUtil.isColumnRef(raw);
         }
     }
 }

@@ -1,7 +1,7 @@
 import { ToUnknownIfAllFieldsNever } from "../../../type";
 import { Query } from "../../query";
 import { BeforeUnionClause } from "../predicate";
-import { ColumnRefUtil } from "../../../column-ref";
+import { ColumnRef, ColumnRefUtil } from "../../../column-ref";
 import { ColumnMap } from "../../../column-map";
 import { NonEmptyTuple, TupleUtil } from "../../../tuple";
 import { SelectItem } from "../../../select-item";
@@ -37,6 +37,8 @@ export declare type AssertValidSelectDelegateImpl<QueryT extends BeforeUnionClau
     [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends SelectItem ? (Extract<ColumnIdentifierUtil.FromSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.FromSelectItem<QueryT["_selects"][number]>> extends never ? never : ["Duplicate columns in SELECT clause; consider aliasing", Extract<ColumnIdentifierUtil.FromSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.FromSelectItem<QueryT["_selects"][number]>>]) : never);
 }>) : unknown) & ToUnknownIfAllFieldsNever<{
     [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends IExprSelectItem ? (ColumnUtil.FromExprSelectItem<ReturnType<SelectDelegateT>[index]> extends ColumnIdentifierUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>> ? ["IExprSelectItem cannot hide columns in FROM/JOIN clause", Extract<ColumnUtil.FromExprSelectItem<ReturnType<SelectDelegateT>[index]>, ColumnIdentifierUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>>>] : never) : never);
+}> & ToUnknownIfAllFieldsNever<{
+    [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends ColumnRef ? (ColumnUtil.FromColumnRef<ReturnType<SelectDelegateT>[index]> extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>> ? never : ["Invalid ColumnRef", Exclude<ColumnUtil.FromColumnRef<ReturnType<SelectDelegateT>[index]>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>>>]) : never);
 }>);
 export declare type AssertValidSelectDelegate<QueryT extends BeforeUnionClause, SelectDelegateT extends SelectDelegate<QueryT>> = (SelectDelegateT & AssertValidSelectDelegateImpl<QueryT, SelectDelegateT>);
 export declare function select<QueryT extends BeforeUnionClause, SelectDelegateT extends SelectDelegate<QueryT>>(query: QueryT, delegate: AssertValidSelectDelegate<QueryT, SelectDelegateT>): Select<QueryT, SelectDelegateT>;

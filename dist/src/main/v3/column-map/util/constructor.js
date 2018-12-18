@@ -5,6 +5,7 @@ const operation_1 = require("./operation");
 const predicate_1 = require("./predicate");
 const column_1 = require("../../column");
 const expr_select_item_1 = require("../../expr-select-item");
+const column_ref_1 = require("../../column-ref");
 function fromFieldArray(tableAlias, fields) {
     const result = {};
     for (let field of fields) {
@@ -48,6 +49,7 @@ function fromSingleValueSelectItem(selectItem) {
     return fromColumn(column_1.ColumnUtil.fromSingleValueSelectItem(selectItem));
 }
 exports.fromSingleValueSelectItem = fromSingleValueSelectItem;
+//Assumes no duplicate columnName in SelectsT
 function fromSelectItem(selectItem) {
     if (column_1.ColumnUtil.isColumn(selectItem)) {
         return fromColumn(selectItem);
@@ -57,6 +59,17 @@ function fromSelectItem(selectItem) {
     }
     else if (predicate_1.isColumnMap(selectItem)) {
         return selectItem;
+    }
+    else if (column_ref_1.ColumnRefUtil.isColumnRef(selectItem)) {
+        const result = {};
+        for (let tableAlias in selectItem) {
+            const columnMap = selectItem[tableAlias];
+            for (let columnName in columnMap) {
+                const column = columnMap[columnName];
+                result[column.name] = column;
+            }
+        }
+        return result;
     }
     else {
         throw new Error(`Unknown select item`);

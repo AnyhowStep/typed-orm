@@ -6,6 +6,7 @@ import { ColumnIdentifierUtil } from "../../column-identifier";
 import { SelectItem } from "../../select-item";
 import { IJoin } from "../../join";
 import { IQuery } from "../../query";
+import { ColumnRef, ColumnRefUtil } from "../../column-ref";
 export declare type FromColumn<ColumnT extends IColumn> = (ColumnT extends IColumn ? {
     readonly [tableAlias in ColumnT["tableAlias"]]: (ColumnIdentifierMapUtil.FromColumn<ColumnT>);
 } : never);
@@ -18,7 +19,13 @@ export declare type FromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT ex
     });
 } : never);
 export declare function fromColumnMap<ColumnMapT extends ColumnMap>(columnMap: ColumnMapT): FromColumnMap<ColumnMapT>;
-export declare type FromSelectItem<SelectItemT extends SelectItem> = (SelectItemT extends IColumn ? FromColumn<SelectItemT> : SelectItemT extends IExprSelectItem ? FromExprSelectItem<SelectItemT> : SelectItemT extends ColumnMap ? FromColumnMap<SelectItemT> : never);
+export declare type FromColumnRef<ColumnRefT extends ColumnRef> = (ColumnRefT extends ColumnRef ? {
+    readonly [tableAlias in Extract<keyof ColumnRefT, string>]: ({
+        readonly [columnName in Extract<keyof ColumnRefT[tableAlias], string>]: (ColumnIdentifierUtil.FromColumn<ColumnRefT[tableAlias][columnName]>);
+    });
+} : never);
+export declare function fromColumnRef<ColumnRefT extends ColumnRef>(columnRef: ColumnRefT): FromColumnRef<ColumnRefT>;
+export declare type FromSelectItem<SelectItemT extends SelectItem> = (SelectItemT extends IColumn ? FromColumn<SelectItemT> : SelectItemT extends IExprSelectItem ? FromExprSelectItem<SelectItemT> : SelectItemT extends ColumnMap ? FromColumnMap<SelectItemT> : SelectItemT extends ColumnRef ? FromColumnRef<SelectItemT> : never);
 export declare type FromSelectItemArray_ColumnElement<ColumnT extends IColumn> = ({
     readonly [tableAlias in ColumnT["tableAlias"]]: {
         readonly [columnName in ColumnT["name"]]: ({
@@ -43,7 +50,15 @@ export declare type FromSelectItemArray_ColumnMapElement<ColumnMapT extends Colu
         });
     };
 });
-export declare type FromSelectItemArray<ArrT extends SelectItem[]> = (ArrT[number] extends never ? {} : (FromSelectItemArray_ColumnElement<Extract<ArrT[number], IColumn>> & FromSelectItemArray_ExprSelectItemElement<Extract<ArrT[number], IExprSelectItem>> & FromSelectItemArray_ColumnMapElement<Extract<ArrT[number], ColumnMap>>));
+export declare type FromSelectItemArray_ColumnRefElement<ColumnRefT extends ColumnRef> = ({
+    readonly [tableAlias in ColumnRefUtil.TableAlias<ColumnRefT>]: {
+        readonly [columnName in ColumnRefUtil.FindWithTableAlias<ColumnRefT, tableAlias>["name"]]: ({
+            readonly tableAlias: tableAlias;
+            readonly name: columnName;
+        });
+    };
+});
+export declare type FromSelectItemArray<ArrT extends SelectItem[]> = (ArrT[number] extends never ? {} : (FromSelectItemArray_ColumnElement<Extract<ArrT[number], IColumn>> & FromSelectItemArray_ExprSelectItemElement<Extract<ArrT[number], IExprSelectItem>> & FromSelectItemArray_ColumnMapElement<Extract<ArrT[number], ColumnMap>> & FromSelectItemArray_ColumnRefElement<Extract<ArrT[number], ColumnRef>>));
 export declare function fromSelectItemArray<ArrT extends SelectItem[]>(arr: ArrT): FromSelectItemArray<ArrT>;
 export declare type FromJoinArray<ArrT extends IJoin[]> = (ArrT[number] extends never ? {} : FromSelectItemArray_ColumnMapElement<ArrT[number]["columns"]>);
 export declare function fromJoinArray<ArrT extends IJoin[]>(arr: ArrT): FromJoinArray<ArrT>;

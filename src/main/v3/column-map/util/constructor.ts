@@ -10,6 +10,8 @@ import {SelectItem, SingleValueSelectItem} from "../../select-item";
 import {SelectItemArrayUtil} from "../../select-item-array";
 import {IExprSelectItem, ExprSelectItemUtil} from "../../expr-select-item";
 import {AssertMap} from "../../assert-map";
+import {ColumnRef, ColumnRefUtil} from "../../column-ref";
+
 /*
     In general, having any[] -> {} conversions
     requires more care.
@@ -133,13 +135,24 @@ export function fromSingleValueSelectItem<
     return fromColumn(ColumnUtil.fromSingleValueSelectItem(selectItem));
 }
 
+//Assumes no duplicate columnName in SelectsT
 export type FromSelectItem<SelectItemT extends SelectItem> = (
     SelectItemT extends SingleValueSelectItem ?
     FromSingleValueSelectItem<SelectItemT> :
     SelectItemT extends ColumnMap ?
     SelectItemT :
+    SelectItemT extends ColumnRef ?
+    {
+        [columnName in ColumnUtil.Name.FromColumnRef<SelectItemT>] : (
+            ColumnRefUtil.FindWithColumnName<
+                SelectItemT,
+                columnName
+            >
+        )
+    } :
     never
 );
+//Assumes no duplicate columnName in SelectsT
 export function fromSelectItem<SelectItemT extends SelectItem> (
     selectItem : SelectItemT
 ) : FromSelectItem<SelectItemT> {
@@ -149,11 +162,20 @@ export function fromSelectItem<SelectItemT extends SelectItem> (
         return fromSingleValueSelectItem(selectItem) as any;
     } else if (isColumnMap(selectItem)) {
         return selectItem as any;
+    } else if (ColumnRefUtil.isColumnRef(selectItem)) {
+        const result : Writable<ColumnMap> = {};
+        for (let tableAlias in selectItem) {
+            const columnMap = selectItem[tableAlias];
+            for (let columnName in columnMap) {
+                const column = columnMap[columnName];
+                result[column.name] = column;
+            }
+        }
+        return result as any;
     } else {
         throw new Error(`Unknown select item`);
     }
 }
-
 
 //Assumes no duplicate columnName in SelectsT
 export type FromSelectItemArray<SelectsT extends SelectItem[]> = (
@@ -170,6 +192,12 @@ export type FromSelectItemArray<SelectsT extends SelectItem[]> = (
             columnName extends ColumnUtil.Name.FromColumnMap<Extract<SelectsT[number], ColumnMap>> ?
             FindWithColumnName<
                 Extract<SelectsT[number], ColumnMap>,
+                columnName
+            > :
+
+            columnName extends ColumnUtil.Name.FromColumnRef<Extract<SelectsT[number], ColumnRef>> ?
+            ColumnRefUtil.FindWithColumnName<
+                Extract<SelectsT[number], ColumnRef>,
                 columnName
             > :
 
