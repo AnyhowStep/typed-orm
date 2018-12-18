@@ -1,0 +1,18 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/query/query\").Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join\").Join<{ aliasedTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/sr...' is not assignable to parameter of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/query/query\").Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join\").Join<{ aliasedTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/sr...'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly alias: \"table\"; readonly name: \"table\"; readonly columns: { readonly a: Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; ... 4 more ...; readonly c:...' is missing the following properties from type '[\"SELECT clause length mismatch\", 3, \"!=\", 4]': 0, 1, 2, 3, and 32 more.",
+        "category": 1,
+        "code": 2740
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 60,
+    "start": 398
+  }
+]
