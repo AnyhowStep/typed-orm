@@ -1,0 +1,28 @@
+[
+  {
+    "messageText": {
+      "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to type 'IExpr<ExprData> | [IExpr<ExprData>, Sort] | Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string> & { __accepts: string; __canAccept: string; }; }> | [...]'.",
+      "category": 1,
+      "code": 2322,
+      "next": {
+        "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to type 'Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string> & { __accepts: string; __canAccept: string; }; }>'.",
+        "category": 1,
+        "code": 2322,
+        "next": {
+          "messageText": "Types of property 'name' are incompatible.",
+          "category": 1,
+          "code": 2326,
+          "next": {
+            "messageText": "Type '\"z\"' is not assignable to type '\"y\"'.",
+            "category": 1,
+            "code": 2322
+          }
+        }
+      }
+    },
+    "code": 2322,
+    "category": 1,
+    "length": 15,
+    "start": 322
+  }
+]

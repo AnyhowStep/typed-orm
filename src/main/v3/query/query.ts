@@ -591,17 +591,19 @@ export class Query<DataT extends QueryData> {
 
     unionOrderBy<
         UnionOrderByDelegateT extends QueryUtil.UnionOrderByDelegate<
-            Extract<this, QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause>
+            Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause)>
         >
     > (
-        this : Extract<this, QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause>,
+        this : Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause)>,
         delegate : QueryUtil.AssertValidUnionOrderByDelegate<
-            Extract<this, QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause>,
+            Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause)>,
             UnionOrderByDelegateT
         >
-    ) : QueryUtil.UnionOrderBy<Extract<this, QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause>> {
+    ) : QueryUtil.UnionOrderBy<
+    Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause)>
+    > {
         return QueryUtil.unionOrderBy<
-            Extract<this, QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause>,
+            Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause)>,
             UnionOrderByDelegateT
         >(this, delegate);
     }

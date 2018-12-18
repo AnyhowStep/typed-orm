@@ -1,5 +1,5 @@
 import {Query} from "../../query";
-import {AfterFromClause, AfterUnionClause} from "../predicate";
+import {AfterSelectClause, AfterFromClause, AfterUnionClause} from "../predicate";
 import {ColumnRefUtil} from "../../../column-ref";
 import {IExpr, ExprUtil} from "../../../expr";
 import {ColumnUtil} from "../../../column";
@@ -8,7 +8,7 @@ import {RawOrder, Order, OrderUtil, Sort} from "../../../order";
 import {ToUnknownIfAllFieldsNever} from "../../../type";
 
 export type UnionOrderByDelegate<
-    QueryT extends AfterFromClause|AfterUnionClause
+    QueryT extends AfterSelectClause & (AfterFromClause|AfterUnionClause)
 > = (
     (
         columns : ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuerySelects<QueryT>>,
@@ -32,7 +32,7 @@ export type UnionOrderByDelegate<
 );
 
 export type UnionOrderBy<
-    QueryT extends AfterFromClause|AfterUnionClause
+    QueryT extends AfterSelectClause & (AfterFromClause|AfterUnionClause)
 > = (
     Query<{
         readonly _distinct : QueryT["_distinct"];
@@ -58,7 +58,7 @@ export type UnionOrderBy<
 );
 
 export type AssertValidUnionOrderByDelegate<
-    QueryT extends AfterFromClause|AfterUnionClause,
+    QueryT extends AfterSelectClause & (AfterFromClause|AfterUnionClause),
     UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>
 > = (
     UnionOrderByDelegateT &
@@ -124,13 +124,19 @@ export type AssertValidUnionOrderByDelegate<
 
 //Must be called after `FROM` or `UNION`, because there's little point
 //in ordering one row
+//Must be called after `SELECT` because the only
+//other viable SortExpr/OrderExpr is RAND()
+//but you usually aren't interested in that
 export function unionOrderBy<
-    QueryT extends AfterFromClause|AfterUnionClause,
+    QueryT extends AfterSelectClause & (AfterFromClause|AfterUnionClause),
     UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>
 > (
     query : QueryT,
     delegate : AssertValidUnionOrderByDelegate<QueryT, UnionOrderByDelegateT>
 ) : UnionOrderBy<QueryT> {
+    if (query._selects == undefined) {
+        throw new Error(`Can only use UNION ORDER BY after SELECT clause`);
+    }
     if (query._joins == undefined && query._unions == undefined) {
         throw new Error(`Can only use UNION ORDER BY after FROM or UNION clause`);
     }

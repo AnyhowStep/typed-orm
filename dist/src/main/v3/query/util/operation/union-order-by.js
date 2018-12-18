@@ -7,7 +7,13 @@ const column_1 = require("../../../column");
 const order_1 = require("../../../order");
 //Must be called after `FROM` or `UNION`, because there's little point
 //in ordering one row
+//Must be called after `SELECT` because the only
+//other viable SortExpr/OrderExpr is RAND()
+//but you usually aren't interested in that
 function unionOrderBy(query, delegate) {
+    if (query._selects == undefined) {
+        throw new Error(`Can only use UNION ORDER BY after SELECT clause`);
+    }
     if (query._joins == undefined && query._unions == undefined) {
         throw new Error(`Can only use UNION ORDER BY after FROM or UNION clause`);
     }
