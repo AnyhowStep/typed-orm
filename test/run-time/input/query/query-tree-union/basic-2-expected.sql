@@ -1,11 +1,13 @@
 UNION DISTINCT
   (
-    SELECT
-      `table`.`z` AS `table--z`,
-      `table`.`x` AS `table--x`,
-      `table`.`y` AS `table--y`
-    FROM
-      `table`
+    (
+      SELECT
+        `table`.`z` AS `table--z`,
+        `table`.`x` AS `table--x`,
+        `table`.`y` AS `table--y`
+      FROM
+        `table`
+    )
     UNION ALL
       (
         SELECT
