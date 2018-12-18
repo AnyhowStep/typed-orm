@@ -109,4 +109,9 @@ function from(aliasedTable) {
         .from(aliasedTable);
 }
 exports.from = from;
+function select(delegate) {
+    return QueryUtil.newInstance()
+        .select(delegate);
+}
+exports.select = select;
 //# sourceMappingURL=query.js.map

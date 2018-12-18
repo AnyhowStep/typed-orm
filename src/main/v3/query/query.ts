@@ -634,3 +634,21 @@ export function from<AliasedTableT extends IAliasedTable> (
     return QueryUtil.newInstance()
         .from(aliasedTable);
 }
+export function select<
+    SelectDelegateT extends QueryUtil.SelectDelegate<
+        QueryUtil.NewInstance
+    >
+> (
+    delegate : QueryUtil.AssertValidSelectDelegate<
+        QueryUtil.NewInstance,
+        SelectDelegateT
+    >
+) : (
+    QueryUtil.Select<
+        QueryUtil.NewInstance,
+        SelectDelegateT
+    >
+) {
+    return QueryUtil.newInstance()
+        .select(delegate);
+}
