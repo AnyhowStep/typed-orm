@@ -26,6 +26,16 @@ function assertIsSubset(a, b) {
     }
 }
 exports.assertIsSubset = assertIsSubset;
+//Only checks column.name, not column.tableAlias
+function assertIsColumnNameSubset(a, b) {
+    for (let columnNameA in a) {
+        const columnB = b[columnNameA];
+        if (columnB == undefined) {
+            throw new Error(`Column ${columnNameA} is not allowed`);
+        }
+    }
+}
+exports.assertIsColumnNameSubset = assertIsColumnNameSubset;
 function hasColumnIdentifier(columnMap, columnIdentifier) {
     const column = columnMap[columnIdentifier.name];
     if (!column_identifier_1.ColumnIdentifierUtil.isColumnIdentifier(column)) {

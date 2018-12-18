@@ -9,6 +9,7 @@ import {SelectItem} from "../../../select-item";
 import {IExprSelectItem, ExprSelectItemUtil} from "../../../expr-select-item";
 import {IColumn, ColumnUtil} from "../../../column";
 import {ColumnIdentifierUtil} from "../../../column-identifier";
+import { ColumnIdentifierRefUtil } from "../../../column-identifier-ref";
 
 export type SelectDelegate<
     QueryT extends BeforeUnionClause
@@ -182,7 +183,25 @@ export type AssertValidSelectDelegate<
             }>
         ) :
         unknown
-    )
+    ) &
+    //ExprSelectItem *must not* shadow columns in FROM/JOIN clause
+    ToUnknownIfAllFieldsNever<{
+        [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
+            ReturnType<SelectDelegateT>[index] extends IExprSelectItem ?
+            (
+                ColumnUtil.FromExprSelectItem<ReturnType<SelectDelegateT>[index]> extends ColumnIdentifierUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>> ?
+                [
+                    "IExprSelectItem cannot hide columns in FROM/JOIN clause",
+                    Extract<
+                        ColumnUtil.FromExprSelectItem<ReturnType<SelectDelegateT>[index]>,
+                        ColumnIdentifierUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>>
+                    >
+                ] :
+                never
+            ) :
+            never
+        )
+    }>
 );
 export function select<
     QueryT extends BeforeUnionClause,
@@ -204,6 +223,13 @@ export function select<
             //+ If SelectItem is IExprSelectItem,
             //  the usedRef must be a subset of the queryRef
             ColumnRefUtil.assertIsSubset(selectItem.usedRef, queryRef);
+            //ExprSelectItem *must not* shadow columns in FROM/JOIN clause
+            if (ColumnIdentifierRefUtil.hasColumnIdentifier(
+                queryRef,
+                ColumnIdentifierUtil.fromExprSelectItem(selectItem)
+            )) {
+                throw new Error(`IExprSelectItem ${selectItem.tableAlias}.${selectItem.alias} cannot hide columns in FROM/JOIN clause`);
+            }
         } else if (ColumnUtil.isColumn(selectItem)) {
             //+ Selected columns must exist
             const columnMap = (queryRef as ColumnRef)[selectItem.tableAlias];

@@ -188,8 +188,8 @@ export function union<
         const itemB = other._selects[i];
         if (ColumnMapUtil.isColumnMap(itemA)) {
             if (ColumnMapUtil.isColumnMap(itemB)) {
-                ColumnIdentifierMapUtil.assertIsSubset(itemA, itemB);
-                ColumnIdentifierMapUtil.assertIsSubset(itemB, itemA);
+                ColumnIdentifierMapUtil.assertIsColumnNameSubset(itemA, itemB);
+                ColumnIdentifierMapUtil.assertIsColumnNameSubset(itemB, itemA);
             } else {
                 throw new Error(`UNION target must have a column map for select item ${i}`);
             }

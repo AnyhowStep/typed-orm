@@ -7,6 +7,7 @@ const column_map_1 = require("../../../column-map");
 const expr_select_item_1 = require("../../../expr-select-item");
 const column_1 = require("../../../column");
 const column_identifier_1 = require("../../../column-identifier");
+const column_identifier_ref_1 = require("../../../column-identifier-ref");
 function select(query, delegate) {
     if (query._unions != undefined) {
         throw new Error(`Cannot use SELECT after UNION clause`);
@@ -18,6 +19,10 @@ function select(query, delegate) {
             //+ If SelectItem is IExprSelectItem,
             //  the usedRef must be a subset of the queryRef
             column_ref_1.ColumnRefUtil.assertIsSubset(selectItem.usedRef, queryRef);
+            //ExprSelectItem *must not* shadow columns in FROM/JOIN clause
+            if (column_identifier_ref_1.ColumnIdentifierRefUtil.hasColumnIdentifier(queryRef, column_identifier_1.ColumnIdentifierUtil.fromExprSelectItem(selectItem))) {
+                throw new Error(`IExprSelectItem ${selectItem.tableAlias}.${selectItem.alias} cannot hide columns in FROM/JOIN clause`);
+            }
         }
         else if (column_1.ColumnUtil.isColumn(selectItem)) {
             //+ Selected columns must exist

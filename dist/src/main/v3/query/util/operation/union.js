@@ -23,8 +23,8 @@ function union(query, other, unionType = constants_1.DISTINCT) {
         const itemB = other._selects[i];
         if (column_map_1.ColumnMapUtil.isColumnMap(itemA)) {
             if (column_map_1.ColumnMapUtil.isColumnMap(itemB)) {
-                column_identifier_map_1.ColumnIdentifierMapUtil.assertIsSubset(itemA, itemB);
-                column_identifier_map_1.ColumnIdentifierMapUtil.assertIsSubset(itemB, itemA);
+                column_identifier_map_1.ColumnIdentifierMapUtil.assertIsColumnNameSubset(itemA, itemB);
+                column_identifier_map_1.ColumnIdentifierMapUtil.assertIsColumnNameSubset(itemB, itemA);
             }
             else {
                 throw new Error(`UNION target must have a column map for select item ${i}`);
