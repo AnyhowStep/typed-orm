@@ -263,13 +263,23 @@ export namespace ColumnRefUtil {
         appendSelectItemArray(result, arr);
         return result as FromSelectItemArray<ArrT>;
     }
+    export type FromQuerySelects<QueryT extends IQuery> = (
+        QueryT["_selects"] extends SelectItem[] ?
+        FromSelectItemArray<QueryT["_selects"]> :
+        {}
+    );
+    export function fromQuerySelects<QueryT extends IQuery> (
+        query : QueryT
+    ) : FromQuerySelects<QueryT> {
+        const result : ColumnRef = {};
+        if (query._selects != undefined) {
+            appendSelectItemArray(result, query._selects);
+        }
+        return result as FromQuerySelects<QueryT>;
+    }
     export type FromQuery<QueryT extends IQuery> = (
         FromQueryJoins<QueryT> &
-        (
-            QueryT["_selects"] extends SelectItem[] ?
-            FromSelectItemArray<QueryT["_selects"]> :
-            {}
-        )
+        FromQuerySelects<QueryT>
     );
     export function fromQuery<QueryT extends IQuery> (
         query : QueryT

@@ -52,7 +52,9 @@ export declare namespace ColumnRefUtil {
     });
     type FromSelectItemArray<ArrT extends SelectItem[]> = (ArrT[number] extends never ? {} : (FromSelectItemArray_ColumnElement<Extract<ArrT[number], IColumn>> & FromSelectItemArray_ExprSelectItemElement<Extract<ArrT[number], IExprSelectItem>> & FromSelectItemArray_ColumnMapElement<Extract<ArrT[number], ColumnMap>>));
     function fromSelectItemArray<ArrT extends SelectItem[]>(arr: ArrT): FromSelectItemArray<ArrT>;
-    type FromQuery<QueryT extends IQuery> = (FromQueryJoins<QueryT> & (QueryT["_selects"] extends SelectItem[] ? FromSelectItemArray<QueryT["_selects"]> : {}));
+    type FromQuerySelects<QueryT extends IQuery> = (QueryT["_selects"] extends SelectItem[] ? FromSelectItemArray<QueryT["_selects"]> : {});
+    function fromQuerySelects<QueryT extends IQuery>(query: QueryT): FromQuerySelects<QueryT>;
+    type FromQuery<QueryT extends IQuery> = (FromQueryJoins<QueryT> & FromQuerySelects<QueryT>);
     function fromQuery<QueryT extends IQuery>(query: QueryT): FromQuery<QueryT>;
     function assertIsSubset(a: ColumnRef, b: ColumnRef): void;
     type HasColumnIdentifier<ColumnRefT extends ColumnRef, ColumnIdentifierT extends ColumnIdentifier> = (ColumnIdentifierRefUtil.HasColumnIdentifier<ColumnRefT, ColumnIdentifierT>);

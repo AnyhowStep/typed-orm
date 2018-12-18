@@ -117,6 +117,14 @@ var ColumnRefUtil;
         return result;
     }
     ColumnRefUtil.fromSelectItemArray = fromSelectItemArray;
+    function fromQuerySelects(query) {
+        const result = {};
+        if (query._selects != undefined) {
+            appendSelectItemArray(result, query._selects);
+        }
+        return result;
+    }
+    ColumnRefUtil.fromQuerySelects = fromQuerySelects;
     function fromQuery(query) {
         const result = {};
         appendQueryJoins(result, query);

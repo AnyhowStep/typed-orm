@@ -14,4 +14,7 @@ export * from "./order-by";
 export * from "./right-join-using";
 export * from "./right-join";
 export * from "./select";
+export * from "./union-limit";
+export * from "./union-offset";
+export * from "./union-order-by";
 export * from "./union";

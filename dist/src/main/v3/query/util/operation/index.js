@@ -19,5 +19,8 @@ __export(require("./order-by"));
 __export(require("./right-join-using"));
 __export(require("./right-join"));
 __export(require("./select"));
+__export(require("./union-limit"));
+__export(require("./union-offset"));
+__export(require("./union-order-by"));
 __export(require("./union"));
 //# sourceMappingURL=index.js.map

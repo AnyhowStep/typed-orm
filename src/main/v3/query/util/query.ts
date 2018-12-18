@@ -176,18 +176,37 @@ export function queryTreeLimit (query : IQuery) : QueryTreeArray {
 }
 
 export function queryTree (query : AfterSelectClause) : QueryTreeArray {
-    return [
-        queryTreeSelects(query),
-        queryTreeFrom(query),
-        queryTreeWhere(query),
-        queryTreeGroupBy(query),
-        queryTreeHaving(query),
-        queryTreeOrderBy(query),
-        queryTreeLimit(query),
-        queryTreeUnion(query),
-        //TODO Union Order By
-        //TODO Union Limit
-    ];
+    if (
+        query._unions != undefined ||
+        query._unionOrders != undefined ||
+        query._unionLimit != undefined
+    ) {
+        return [
+            "(",
+            queryTreeSelects(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+            ")",
+            queryTreeUnion(query),
+            queryTreeUnionOrderBy(query),
+            queryTreeUnionLimit(query),
+        ];
+    } else {
+        //No UNION-related clauses
+        return [
+            queryTreeSelects(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+        ];
+    }
 }
 
 export function queryTreeUnion (query : IQuery) : QueryTreeArray {
@@ -205,4 +224,53 @@ export function queryTreeUnion (query : IQuery) : QueryTreeArray {
         result.push(")");
     }
     return result;
+}
+
+export function queryTreeUnionOrderBy (query : IQuery) : QueryTreeArray {
+    const orders = query._unionOrders;
+    if (orders == undefined) {
+        return [];
+    }
+    const result : QueryTreeArray = [];
+    for (let order of orders) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        const orderExpr = order[0];
+        if (ColumnUtil.isColumn(orderExpr)) {
+            result.push(ColumnUtil.queryTree(orderExpr));
+        } else if (ExprUtil.isExpr(orderExpr)) {
+            result.push(orderExpr.queryTree);
+        } else {
+            throw new Error(`Unknown OrderExpr`);
+        }
+
+        result.push(order[1]);
+    }
+    return ["ORDER BY", result];
+}
+
+/*
+    The syntax is one of:
+
+    + LIMIT maxRowCount
+    + LIMIT maxRowCount OFFSET offset
+
+    And,
+    `LIMIT maxRowCount` is a synonym of
+    `LIMIT maxRowCount OFFSET 0`
+*/
+export function queryTreeUnionLimit (query : IQuery) : QueryTreeArray {
+    const limit = query._unionLimit;
+    if (limit == undefined) {
+        return [];
+    }
+    if (limit.offset == 0) {
+        return ["LIMIT", RawExprUtil.queryTree(limit.maxRowCount)];
+    } else {
+        return [
+            "LIMIT", RawExprUtil.queryTree(limit.maxRowCount),
+            "OFFSET", RawExprUtil.queryTree(limit.offset),
+        ];
+    }
 }

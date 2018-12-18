@@ -89,6 +89,19 @@ class Query {
             return QueryUtil.union(this, other, unionType);
         }
     }
+    unionOrderBy(delegate) {
+        return QueryUtil.unionOrderBy(this, delegate);
+    }
+    /*
+        One should be careful about using UNION LIMIT, OFFSET
+        without the UNION ORDER BY clause.
+    */
+    unionLimit(maxRowCount) {
+        return QueryUtil.unionLimit(this, maxRowCount);
+    }
+    unionOffset(offset) {
+        return QueryUtil.unionOffset(this, offset);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

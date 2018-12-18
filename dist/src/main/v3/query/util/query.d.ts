@@ -11,4 +11,6 @@ export declare function queryTreeOrderBy(query: IQuery): QueryTreeArray;
 export declare function queryTreeLimit(query: IQuery): QueryTreeArray;
 export declare function queryTree(query: AfterSelectClause): QueryTreeArray;
 export declare function queryTreeUnion(query: IQuery): QueryTreeArray;
+export declare function queryTreeUnionOrderBy(query: IQuery): QueryTreeArray;
+export declare function queryTreeUnionLimit(query: IQuery): QueryTreeArray;
 //# sourceMappingURL=query.d.ts.map

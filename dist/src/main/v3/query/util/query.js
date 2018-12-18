@@ -183,16 +183,36 @@ function queryTreeLimit(query) {
 }
 exports.queryTreeLimit = queryTreeLimit;
 function queryTree(query) {
-    return [
-        queryTreeSelects(query),
-        queryTreeFrom(query),
-        queryTreeWhere(query),
-        queryTreeGroupBy(query),
-        queryTreeHaving(query),
-        queryTreeOrderBy(query),
-        queryTreeLimit(query),
-        queryTreeUnion(query),
-    ];
+    if (query._unions != undefined ||
+        query._unionOrders != undefined ||
+        query._unionLimit != undefined) {
+        return [
+            "(",
+            queryTreeSelects(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+            ")",
+            queryTreeUnion(query),
+            queryTreeUnionOrderBy(query),
+            queryTreeUnionLimit(query),
+        ];
+    }
+    else {
+        //No UNION-related clauses
+        return [
+            queryTreeSelects(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+        ];
+    }
 }
 exports.queryTree = queryTree;
 function queryTreeUnion(query) {
@@ -212,4 +232,55 @@ function queryTreeUnion(query) {
     return result;
 }
 exports.queryTreeUnion = queryTreeUnion;
+function queryTreeUnionOrderBy(query) {
+    const orders = query._unionOrders;
+    if (orders == undefined) {
+        return [];
+    }
+    const result = [];
+    for (let order of orders) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        const orderExpr = order[0];
+        if (column_1.ColumnUtil.isColumn(orderExpr)) {
+            result.push(column_1.ColumnUtil.queryTree(orderExpr));
+        }
+        else if (expr_1.ExprUtil.isExpr(orderExpr)) {
+            result.push(orderExpr.queryTree);
+        }
+        else {
+            throw new Error(`Unknown OrderExpr`);
+        }
+        result.push(order[1]);
+    }
+    return ["ORDER BY", result];
+}
+exports.queryTreeUnionOrderBy = queryTreeUnionOrderBy;
+/*
+    The syntax is one of:
+
+    + LIMIT maxRowCount
+    + LIMIT maxRowCount OFFSET offset
+
+    And,
+    `LIMIT maxRowCount` is a synonym of
+    `LIMIT maxRowCount OFFSET 0`
+*/
+function queryTreeUnionLimit(query) {
+    const limit = query._unionLimit;
+    if (limit == undefined) {
+        return [];
+    }
+    if (limit.offset == 0) {
+        return ["LIMIT", raw_expr_1.RawExprUtil.queryTree(limit.maxRowCount)];
+    }
+    else {
+        return [
+            "LIMIT", raw_expr_1.RawExprUtil.queryTree(limit.maxRowCount),
+            "OFFSET", raw_expr_1.RawExprUtil.queryTree(limit.offset),
+        ];
+    }
+}
+exports.queryTreeUnionLimit = queryTreeUnionLimit;
 //# sourceMappingURL=query.js.map

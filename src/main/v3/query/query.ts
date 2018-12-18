@@ -588,6 +588,38 @@ export class Query<DataT extends QueryData> {
             >(this, other, unionType);
         }
     }
+
+    unionOrderBy<
+        UnionOrderByDelegateT extends QueryUtil.UnionOrderByDelegate<
+            Extract<this, QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause>
+        >
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause>,
+        delegate : QueryUtil.AssertValidUnionOrderByDelegate<
+            Extract<this, QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause>,
+            UnionOrderByDelegateT
+        >
+    ) : QueryUtil.UnionOrderBy<Extract<this, QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause>> {
+        return QueryUtil.unionOrderBy<
+            Extract<this, QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause>,
+            UnionOrderByDelegateT
+        >(this, delegate);
+    }
+
+    /*
+        One should be careful about using UNION LIMIT, OFFSET
+        without the UNION ORDER BY clause.
+    */
+    unionLimit<MaxRowCountT extends number> (
+        maxRowCount : MaxRowCountT
+    ) : QueryUtil.UnionLimit<this, MaxRowCountT> {
+        return QueryUtil.unionLimit(this, maxRowCount);
+    }
+    unionOffset<OffsetT extends number> (
+        offset : OffsetT
+    ) : QueryUtil.UnionOffset<this, OffsetT> {
+        return QueryUtil.unionOffset(this, offset);
+    }
 }
 export function from<AliasedTableT extends IAliasedTable> (
     aliasedTable : QueryUtil.AssertUniqueJoinTarget<
