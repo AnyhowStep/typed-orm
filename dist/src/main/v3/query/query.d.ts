@@ -82,6 +82,7 @@ export declare class Query<DataT extends QueryData> {
     unionOrderBy<UnionOrderByDelegateT extends QueryUtil.UnionOrderByDelegate<Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause | QueryUtil.AfterUnionClause)>>>(this: Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause | QueryUtil.AfterUnionClause)>, delegate: QueryUtil.AssertValidUnionOrderByDelegate<Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause | QueryUtil.AfterUnionClause)>, UnionOrderByDelegateT>): QueryUtil.UnionOrderBy<Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause | QueryUtil.AfterUnionClause)>>;
     unionLimit<MaxRowCountT extends number>(maxRowCount: MaxRowCountT): QueryUtil.UnionLimit<this, MaxRowCountT>;
     unionOffset<OffsetT extends number>(offset: OffsetT): QueryUtil.UnionOffset<this, OffsetT>;
+    distinct(this: Extract<this, QueryUtil.AfterSelectClause>): QueryUtil.Distinct<Extract<this, QueryUtil.AfterSelectClause>>;
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertUniqueJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 export declare function select<SelectDelegateT extends QueryUtil.SelectDelegate<QueryUtil.NewInstance>>(delegate: QueryUtil.AssertValidSelectDelegate<QueryUtil.NewInstance, SelectDelegateT>): (QueryUtil.Select<QueryUtil.NewInstance, SelectDelegateT>);

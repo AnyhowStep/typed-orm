@@ -59,7 +59,11 @@ export function queryTreeSelects (query : AfterSelectClause) : QueryTreeArray {
             throw new Error(`Unknown select item`);
         }
     }
-    return ["SELECT", result];
+    return [
+        "SELECT",
+        (query._distinct ? "DISTINCT" : ""),
+        result
+    ];
 }
 export function queryTreeJoins (query : IQuery) : QueryTreeArray {
     const joins = query._joins;

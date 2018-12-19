@@ -9,7 +9,9 @@ function fromExprSelectItem(item) {
         tableAlias: item.tableAlias,
         name: item.alias,
         assertDelegate: item.assertDelegate,
-    }, undefined, true);
+    }, undefined, 
+    //TODO Find some way to not need this hack
+    true);
 }
 exports.fromExprSelectItem = fromExprSelectItem;
 function fromSingleValueSelectItem(item) {

@@ -4,7 +4,6 @@ const query_1 = require("../../query");
 const join_1 = require("../../../join");
 const predicate_1 = require("../predicate");
 //Must be done before any JOINs, as per MySQL
-//TODO The aliasedTable must not be in parentJoins
 function from(query, aliasedTable) {
     if (query._joins != undefined) {
         throw new Error(`FROM clause not allowed more than once`);

@@ -60,7 +60,11 @@ function queryTreeSelects(query) {
             throw new Error(`Unknown select item`);
         }
     }
-    return ["SELECT", result];
+    return [
+        "SELECT",
+        (query._distinct ? "DISTINCT" : ""),
+        result
+    ];
 }
 exports.queryTreeSelects = queryTreeSelects;
 function queryTreeJoins(query) {

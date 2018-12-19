@@ -105,6 +105,9 @@ class Query {
     unionOffset(offset) {
         return QueryUtil.unionOffset(this, offset);
     }
+    distinct() {
+        return QueryUtil.distinct(this);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

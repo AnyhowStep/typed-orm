@@ -647,6 +647,12 @@ export class Query<DataT extends QueryData> {
     ) : QueryUtil.UnionOffset<this, OffsetT> {
         return QueryUtil.unionOffset(this, offset);
     }
+
+    distinct (
+        this : Extract<this, QueryUtil.AfterSelectClause>
+    ) : QueryUtil.Distinct<Extract<this, QueryUtil.AfterSelectClause>> {
+        return QueryUtil.distinct(this);
+    }
 }
 export function from<AliasedTableT extends IAliasedTable> (
     aliasedTable : QueryUtil.AssertUniqueJoinTarget<

@@ -54,6 +54,13 @@ class Table {
     setId(delegate) {
         return Table.setId(this, delegate);
     }
+    /*
+        TODO Adding a candidate key that is a super-set of
+        an existing candidate key should throw an error,
+        both during compile-time and run-time.
+
+        Candidate keys should be as small as possible.
+    */
     addCandidateKey(delegate) {
         return Table.addCandidateKey(this, delegate);
     }

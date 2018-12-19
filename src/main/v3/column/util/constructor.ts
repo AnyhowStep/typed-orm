@@ -25,6 +25,7 @@ export function fromExprSelectItem<ItemT extends IExprSelectItem> (
             assertDelegate : item.assertDelegate,
         },
         undefined,
+        //TODO Find some way to not need this hack
         true
     );
 }

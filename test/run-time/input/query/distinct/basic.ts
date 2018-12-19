@@ -13,7 +13,8 @@ tape(__filename, (t) => {
     );
 
     const query = o.from(table)
-        .select(c => [c.z, c.x, c.y]);
+        .select(c => [c.z, c.x, c.y])
+        .distinct();
 
     t.true(o.SelectItemArrayUtil.isSelectItemArray(query._selects));
     t.deepEqual(query._selects.length, 3);
@@ -22,7 +23,7 @@ tape(__filename, (t) => {
     t.deepEqual(query._selects[1], table.columns.x);
     t.deepEqual(query._selects[2], table.columns.y);
 
-    t.deepEqual(query._distinct, false);
+    t.deepEqual(query._distinct, true);
 
     t.end();
 });

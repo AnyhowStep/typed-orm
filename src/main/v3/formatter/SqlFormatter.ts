@@ -52,7 +52,7 @@ const reservedToplevelWords = [
     "LIMIT",
     "MODIFY",
     "ORDER BY",
-    "SELECT", "SET CURRENT SCHEMA", "SET SCHEMA", "SET",
+    /*New reserved top-level word*/"SELECT DISTINCT", "SELECT", "SET CURRENT SCHEMA", "SET SCHEMA", "SET",
     "UNION ALL", /*New reserved top-level word*/"UNION DISTINCT", "UNION", "UPDATE",
     "VALUES",
     "WHERE",
