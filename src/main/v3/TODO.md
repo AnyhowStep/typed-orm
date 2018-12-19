@@ -76,3 +76,18 @@ from(t.tentativeContribution)
     ]
   )
 ```
+
+```ts
+TODO Implement a "defaultAlias" for expressions.
+This way, we can just write,
+function isConfirmed () {
+    o.exists(
+        //snip
+    ).defaultAlias("isConfirmed")
+}
+//Snip
+.selectExpr(
+    sql.tentativeContributorNegotiation
+        .isConfirmed()
+)
+```

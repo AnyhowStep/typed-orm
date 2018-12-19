@@ -18,6 +18,7 @@ __export(require("./left-join"));
 __export(require("./limit"));
 __export(require("./offset"));
 __export(require("./order-by"));
+__export(require("./require-parent-joins"));
 __export(require("./right-join-using"));
 __export(require("./right-join"));
 __export(require("./select-expr"));

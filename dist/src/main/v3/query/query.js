@@ -114,6 +114,16 @@ class Query {
     crossJoin(aliasedTable) {
         return QueryUtil.crossJoin(this, aliasedTable);
     }
+    requireParentJoins(...arr) {
+        return QueryUtil.requireParentJoins(this, false, 
+        //TODO Figure out what's wrong
+        ...arr);
+    }
+    requireNullableParentJoins(...arr) {
+        return QueryUtil.requireParentJoins(this, true, 
+        //TODO Figure out what's wrong
+        ...arr);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {
@@ -131,4 +141,14 @@ function selectExpr(delegate) {
         .selectExpr(delegate);
 }
 exports.selectExpr = selectExpr;
+function requireParentJoins(...arr) {
+    return QueryUtil.newInstance()
+        .requireParentJoins(...arr);
+}
+exports.requireParentJoins = requireParentJoins;
+function requireNullableParentJoins(...arr) {
+    return QueryUtil.newInstance()
+        .requireNullableParentJoins(...arr);
+}
+exports.requireNullableParentJoins = requireNullableParentJoins;
 //# sourceMappingURL=query.js.map

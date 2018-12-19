@@ -13,6 +13,7 @@ export * from "./left-join";
 export * from "./limit";
 export * from "./offset";
 export * from "./order-by";
+export * from "./require-parent-joins";
 export * from "./right-join-using";
 export * from "./right-join";
 export * from "./select-expr";

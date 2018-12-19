@@ -209,46 +209,62 @@ export function isZeroOrOneRowQuery (query : IQuery) : query is ZeroOrOneRowQuer
     );
 }
 
+export type AssertUniqueJoinTargetImpl<
+    QueryT extends IQuery,
+    AliasedTableT extends IAliasedTable
+> = (
+    (
+        QueryT["_joins"] extends IJoin[] ?
+        (
+            Extract<
+                AliasedTableT["alias"],
+                JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>
+            > extends never ?
+            unknown :
+            //TODO remove the |void?
+            [
+                "Alias",
+                Extract<
+                    AliasedTableT["alias"],
+                    JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>
+                >,
+                "already used in previous JOINs",
+                JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>
+            ]|void
+        ) :
+        unknown
+    ) &
+    (
+        QueryT["_parentJoins"] extends IJoin[] ?
+        (
+            Extract<
+                AliasedTableT["alias"],
+                JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>
+            > extends never ?
+            unknown :
+            //TODO remove the |void?
+            [
+                "Alias",
+                Extract<
+                    AliasedTableT["alias"],
+                    JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>
+                >,
+                "already used in parent JOINs",
+                JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>
+            ]|void
+        ) :
+        unknown
+    )
+);
 //AliasedTableT["alias"] must not already be in
 //QueryT["joins"] or
 //QueryT["parentJoins"]
 export type AssertUniqueJoinTarget<
-    QueryT extends IQuery<QueryData>,
+    QueryT extends IQuery,
     AliasedTableT extends IAliasedTable
 > = (
-    AliasedTableT extends IAliasedTable ?
-    (
-        AliasedTableT &
-        (
-            QueryT["_joins"] extends IJoin[] ?
-            (
-                AliasedTableT["alias"] extends JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]> ?
-                [
-                    "Alias",
-                    AliasedTableT["alias"],
-                    "already used in previous JOINs",
-                    JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>
-                ]|void :
-                unknown
-            ) :
-            unknown
-        ) &
-        (
-            QueryT["_parentJoins"] extends IJoin[] ?
-            (
-                AliasedTableT["alias"] extends JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]> ?
-                [
-                    "Alias",
-                    AliasedTableT["alias"],
-                    "already used in parent JOINs",
-                    JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>
-                ]|void :
-                unknown
-            ) :
-            unknown
-        )
-    ) :
-    never
+    AliasedTableT &
+    AssertUniqueJoinTargetImpl<QueryT, AliasedTableT>
 );
 export function assertUniqueJoinTarget (
     query : IQuery,

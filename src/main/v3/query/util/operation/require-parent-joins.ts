@@ -1,7 +1,8 @@
-/*import {IQuery, Query} from "../../query";
+import {IQuery, Query} from "../../query";
 import {IAliasedTable} from "../../../aliased-table";
-import {IJoin} from "../../../join";
-import {AssertUniqueJoinTarget} from "../predicate";
+import {IJoin, Join, JoinType} from "../../../join";
+import {AssertUniqueJoinTargetImpl, assertUniqueJoinTarget} from "../predicate";
+import {NonEmptyTuple} from "../../../tuple";
 
 export type ToParentJoins<
     NullableT extends boolean,
@@ -19,7 +20,7 @@ export type ToParentJoins<
 export type RequireParentJoins<
     QueryT extends IQuery,
     NullableT extends boolean,
-    ArrT extends IAliasedTable[]
+    ArrT extends NonEmptyTuple<IAliasedTable>
 > = (
     Query<{
         readonly _distinct : QueryT["_distinct"];
@@ -51,16 +52,60 @@ export type RequireParentJoins<
     }>
 );
 
+export type AssertValidParentJoins<
+    QueryT extends IQuery,
+    ArrT extends NonEmptyTuple<IAliasedTable>
+> = (
+    ArrT &
+    AssertUniqueJoinTargetImpl<QueryT, ArrT[number]>
+);
+
+/*
+    Although not necessary, prevent duplicates in this ArrT?
+*/
 export function requireParentJoins<
     QueryT extends IQuery,
     NullableT extends boolean,
-    ArrT extends IAliasedTable[],
+    ArrT extends NonEmptyTuple<IAliasedTable>
 > (
     query : QueryT,
     nullable : NullableT,
-    ...arr : AssertUniqueJoinTarget<QueryT, ArrT[number]>[]
+    ...arr : AssertValidParentJoins<QueryT, ArrT>
 ) : (
-
+    RequireParentJoins<
+        QueryT,
+        NullableT,
+        ArrT
+    >
 ) {
-
-}*/
+    for (let aliasedTable of arr) {
+        assertUniqueJoinTarget(query, aliasedTable);
+    }
+    const parentJoins = arr.map(aliasedTable => new Join(
+        {
+            aliasedTable,
+            columns : aliasedTable.columns,
+            nullable,
+        },
+        //It doesn't matter what type of Join this is.
+        //It should never affect output.
+        JoinType.INNER,
+        [],
+        []
+    ));
+    return new Query({
+        ...query,
+        _parentJoins : (
+            (query._parentJoins == undefined) ?
+            parentJoins :
+            [...query._parentJoins, ...parentJoins]
+        ) as (
+            QueryT["_parentJoins"] extends IJoin[] ?
+            (
+                QueryT["_parentJoins"][number] |
+                ToParentJoins<NullableT, ArrT[number]>
+            )[] :
+            ToParentJoins<NullableT, ArrT[number]>[]
+        )
+    });
+}

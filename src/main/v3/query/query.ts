@@ -7,6 +7,7 @@ import {ColumnIdentifier} from "../column-identifier";
 import {Order} from "../order";
 import {MapDelegate} from "../map-delegate";
 import { DISTINCT } from "../constants";
+import {NonEmptyTuple} from "../tuple";
 
 export interface UnionQuery {
     //Defaults to true
@@ -681,6 +682,51 @@ export class Query<DataT extends QueryData> {
             aliasedTable
         );
     }
+
+    requireParentJoins<
+        ArrT extends NonEmptyTuple<IAliasedTable>
+    > (
+        ...arr : QueryUtil.AssertValidParentJoins<this, ArrT>
+    ) : (
+        QueryUtil.RequireParentJoins<
+            this,
+            false,
+            ArrT
+        >
+    ) {
+        return QueryUtil.requireParentJoins<
+            this,
+            false,
+            ArrT
+        >(
+            this,
+            false,
+            //TODO Figure out what's wrong
+            ...(arr as any)
+        );
+    }
+    requireNullableParentJoins<
+        ArrT extends NonEmptyTuple<IAliasedTable>
+    > (
+        ...arr : QueryUtil.AssertValidParentJoins<this, ArrT>
+    ) : (
+        QueryUtil.RequireParentJoins<
+            this,
+            true,
+            ArrT
+        >
+    ) {
+        return QueryUtil.requireParentJoins<
+            this,
+            true,
+            ArrT
+        >(
+            this,
+            true,
+            //TODO Figure out what's wrong
+            ...(arr as any)
+        );
+    }
 }
 export function from<AliasedTableT extends IAliasedTable> (
     aliasedTable : QueryUtil.AssertUniqueJoinTarget<
@@ -728,4 +774,32 @@ export function selectExpr<
 ) {
     return QueryUtil.newInstance()
         .selectExpr(delegate);
+}
+export function requireParentJoins<
+    ArrT extends NonEmptyTuple<IAliasedTable>
+> (
+    ...arr : QueryUtil.AssertValidParentJoins<QueryUtil.NewInstance, ArrT>
+) : (
+    QueryUtil.RequireParentJoins<
+        QueryUtil.NewInstance,
+        false,
+        ArrT
+    >
+) {
+    return QueryUtil.newInstance()
+        .requireParentJoins<ArrT>(...(arr as any));
+}
+export function requireNullableParentJoins<
+    ArrT extends NonEmptyTuple<IAliasedTable>
+> (
+    ...arr : QueryUtil.AssertValidParentJoins<QueryUtil.NewInstance, ArrT>
+) : (
+    QueryUtil.RequireParentJoins<
+        QueryUtil.NewInstance,
+        true,
+        ArrT
+    >
+) {
+    return QueryUtil.newInstance()
+        .requireNullableParentJoins<ArrT>(...(arr as any));
 }
