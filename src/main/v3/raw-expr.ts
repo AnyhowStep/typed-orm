@@ -32,8 +32,8 @@ export namespace RawExprUtil {
         RawExprT["usedRef"] :
         RawExprT extends IColumn ?
         ColumnRefUtil.FromColumn<RawExprT> :
-        //TableSubquery do not use any outside references...
-        //I think
+        //TableSubquery have parentJoins as usedRef
+        //Query, too
         RawExprT extends TableSubquery.SingleValueOrEmpty<any> ?
         {} :
         never

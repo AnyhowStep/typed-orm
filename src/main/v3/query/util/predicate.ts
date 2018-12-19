@@ -216,35 +216,39 @@ export type AssertUniqueJoinTarget<
     QueryT extends IQuery<QueryData>,
     AliasedTableT extends IAliasedTable
 > = (
-    AliasedTableT &
+    AliasedTableT extends IAliasedTable ?
     (
-        QueryT["_joins"] extends IJoin[] ?
+        AliasedTableT &
         (
-            AliasedTableT["alias"] extends JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]> ?
-            [
-                "Alias",
-                AliasedTableT["alias"],
-                "already used in previous JOINs",
-                JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>
-            ]|void :
+            QueryT["_joins"] extends IJoin[] ?
+            (
+                AliasedTableT["alias"] extends JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]> ?
+                [
+                    "Alias",
+                    AliasedTableT["alias"],
+                    "already used in previous JOINs",
+                    JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>
+                ]|void :
+                unknown
+            ) :
             unknown
-        ) :
-        unknown
-    ) &
-    (
-        QueryT["_parentJoins"] extends IJoin[] ?
+        ) &
         (
-            AliasedTableT["alias"] extends JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]> ?
-            [
-                "Alias",
-                AliasedTableT["alias"],
-                "already used in parent JOINs",
-                JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>
-            ]|void :
+            QueryT["_parentJoins"] extends IJoin[] ?
+            (
+                AliasedTableT["alias"] extends JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]> ?
+                [
+                    "Alias",
+                    AliasedTableT["alias"],
+                    "already used in parent JOINs",
+                    JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>
+                ]|void :
+                unknown
+            ) :
             unknown
-        ) :
-        unknown
-    )
+        )
+    ) :
+    never
 );
 export function assertUniqueJoinTarget (
     query : IQuery,

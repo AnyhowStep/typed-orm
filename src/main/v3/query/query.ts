@@ -92,7 +92,7 @@ export interface LimitData {
     JOIN
         + Tight type
         + Must be done after FROM clause
-        + Uses joins (TODO Consider allowing parentJoins? What's the use-case?)
+        + Uses joins
     SELECT
         + Tight type
         + Must be done after FROM clause

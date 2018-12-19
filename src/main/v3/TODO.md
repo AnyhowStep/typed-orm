@@ -23,3 +23,56 @@
   + andWhereIsNotNull
   + andWhereIsEqual
 + Implement `Query.useJoins()`
++ Implement `requireParentJoins()`
++ Implement `Query.flatten()`
+  + It'll be a convenience method for,
+  ```ts
+  Query.transform(row => {
+    //Confirm `row` is a nested object, with multiple tableAliases
+    //Confirm `row` has no duplicate columnNames,
+    //we do not want to overwrite values.
+    const result = {};
+    for (let tableAlias of Object.keys(row)) {
+      for (let columnName of Object.keys(row[tableAlias])) {
+        result[columnName] = row[tableAlias][columnName];
+      }
+    }
+    return result;
+  })
+  ```
+
+```ts
+/*
+  This entire query should have t.tentativeContributorNegotiation
+  in its parentJoins
+*/
+from(t.tentativeContribution)
+  .joinUsing(
+    from(t.tentativeContribution)
+      .groupBy(c => [
+        c.appId,
+        c.tentativeContributorNegotiationId,
+        c.invoiceId,
+        c.externalUserId
+      ])
+      .select(c => [
+        c.tentativeContributorNegotiationId,
+        c.invoiceId,
+        c.externalUserId,
+        o.max(c.updatedAt).as("updatedAt"),
+      ])
+      //This is important
+      .requireParentJoins(t.tentativeContributorNegotiation)
+      .where(c => o.eq(
+        c.tentativeContribution.tentativeContributorNegotiationId,
+        c.tentativeContributorNegotiation.tentativeContributorNegotiationId
+      ))
+      .as("latests"),
+    c => [
+      c.tentativeContributorNegotiationId,
+      c.invoiceId,
+      c.externalUserId,
+      c.updatedAt
+    ]
+  )
+```

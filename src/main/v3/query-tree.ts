@@ -1,4 +1,3 @@
-//TODO better naming
 export class Parentheses {
     private readonly tree : QueryTree;
     private constructor (tree : QueryTree) {

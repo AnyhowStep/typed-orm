@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-//TODO better naming
 class Parentheses {
     constructor(tree) {
         this.cachedSql = undefined;
