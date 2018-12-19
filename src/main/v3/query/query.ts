@@ -653,6 +653,11 @@ export class Query<DataT extends QueryData> {
     ) : QueryUtil.Distinct<Extract<this, QueryUtil.AfterSelectClause>> {
         return QueryUtil.distinct(this);
     }
+    sqlCalcFoundRows (
+        this : Extract<this, QueryUtil.AfterSelectClause>
+    ) : QueryUtil.SqlCalcFoundRows<Extract<this, QueryUtil.AfterSelectClause>> {
+        return QueryUtil.sqlCalcFoundRows(this);
+    }
 }
 export function from<AliasedTableT extends IAliasedTable> (
     aliasedTable : QueryUtil.AssertUniqueJoinTarget<

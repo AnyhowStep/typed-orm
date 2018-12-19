@@ -16,6 +16,7 @@ export * from "./right-join-using";
 export * from "./right-join";
 export * from "./select-expr";
 export * from "./select";
+export * from "./sql-calc-found-rows";
 export * from "./union-limit";
 export * from "./union-offset";
 export * from "./union-order-by";

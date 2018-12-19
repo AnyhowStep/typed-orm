@@ -108,6 +108,9 @@ class Query {
     distinct() {
         return QueryUtil.distinct(this);
     }
+    sqlCalcFoundRows() {
+        return QueryUtil.sqlCalcFoundRows(this);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

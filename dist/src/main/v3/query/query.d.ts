@@ -83,6 +83,7 @@ export declare class Query<DataT extends QueryData> {
     unionLimit<MaxRowCountT extends number>(maxRowCount: MaxRowCountT): QueryUtil.UnionLimit<this, MaxRowCountT>;
     unionOffset<OffsetT extends number>(offset: OffsetT): QueryUtil.UnionOffset<this, OffsetT>;
     distinct(this: Extract<this, QueryUtil.AfterSelectClause>): QueryUtil.Distinct<Extract<this, QueryUtil.AfterSelectClause>>;
+    sqlCalcFoundRows(this: Extract<this, QueryUtil.AfterSelectClause>): QueryUtil.SqlCalcFoundRows<Extract<this, QueryUtil.AfterSelectClause>>;
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertUniqueJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 export declare function select<SelectDelegateT extends QueryUtil.SelectDelegate<QueryUtil.NewInstance>>(delegate: QueryUtil.AssertValidSelectDelegate<QueryUtil.NewInstance, SelectDelegateT>): (QueryUtil.Select<QueryUtil.NewInstance, SelectDelegateT>);

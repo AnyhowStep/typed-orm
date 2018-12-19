@@ -62,6 +62,7 @@ export function queryTreeSelects (query : AfterSelectClause) : QueryTreeArray {
     return [
         "SELECT",
         (query._distinct ? "DISTINCT" : ""),
+        (query._sqlCalcFoundRows ? "SQL_CALC_FOUND_ROWS" : ""),
         result
     ];
 }

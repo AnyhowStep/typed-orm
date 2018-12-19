@@ -63,6 +63,7 @@ function queryTreeSelects(query) {
     return [
         "SELECT",
         (query._distinct ? "DISTINCT" : ""),
+        (query._sqlCalcFoundRows ? "SQL_CALC_FOUND_ROWS" : ""),
         result
     ];
 }

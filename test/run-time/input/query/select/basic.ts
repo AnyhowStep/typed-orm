@@ -23,6 +23,7 @@ tape(__filename, (t) => {
     t.deepEqual(query._selects[2], table.columns.y);
 
     t.deepEqual(query._distinct, false);
+    t.deepEqual(query._sqlCalcFoundRows, false);
 
     t.end();
 });
