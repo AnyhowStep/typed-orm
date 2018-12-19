@@ -658,6 +658,29 @@ export class Query<DataT extends QueryData> {
     ) : QueryUtil.SqlCalcFoundRows<Extract<this, QueryUtil.AfterSelectClause>> {
         return QueryUtil.sqlCalcFoundRows(this);
     }
+
+    crossJoin<
+        AliasedTableT extends IAliasedTable
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        aliasedTable : QueryUtil.AssertUniqueJoinTarget<
+            Extract<this, QueryUtil.AfterFromClause>,
+            AliasedTableT
+        >
+    ) : (
+        QueryUtil.CrossJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            AliasedTableT
+        >
+    ) {
+        return QueryUtil.crossJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            AliasedTableT
+        >(
+            this,
+            aliasedTable
+        );
+    }
 }
 export function from<AliasedTableT extends IAliasedTable> (
     aliasedTable : QueryUtil.AssertUniqueJoinTarget<

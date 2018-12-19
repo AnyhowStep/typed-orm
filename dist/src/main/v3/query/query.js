@@ -111,6 +111,9 @@ class Query {
     sqlCalcFoundRows() {
         return QueryUtil.sqlCalcFoundRows(this);
     }
+    crossJoin(aliasedTable) {
+        return QueryUtil.crossJoin(this, aliasedTable);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {
