@@ -1,8 +1,8 @@
 import {IQuery} from "../query";
-import {QueryTreeArray} from "../../query-tree";
+import {QueryTreeArray, QueryTree} from "../../query-tree";
 import {AliasedTable} from "../../aliased-table";
 import {IColumn, ColumnUtil} from "../../column";
-import {AfterSelectClause} from "./predicate";
+import {AfterSelectClause, OneSelectItemQuery} from "./predicate";
 import {ExprSelectItemUtil} from "../../expr-select-item";
 import {ColumnMap, ColumnMapUtil} from "../../column-map";
 import {SEPARATOR} from "../../constants";
@@ -58,6 +58,23 @@ export function queryTreeSelects (query : AfterSelectClause) : QueryTreeArray {
         } else {
             throw new Error(`Unknown select item`);
         }
+    }
+    return [
+        "SELECT",
+        (query._distinct ? "DISTINCT" : ""),
+        (query._sqlCalcFoundRows ? "SQL_CALC_FOUND_ROWS" : ""),
+        result
+    ];
+}
+export function queryTreeSelects_RawExpr (query : OneSelectItemQuery<any>) : QueryTreeArray {
+    let result : QueryTree|undefined = undefined;
+    const item = query._selects[0];
+    if (ColumnUtil.isColumn(item)) {
+        result = ColumnUtil.queryTree(item);
+    } else if (ExprSelectItemUtil.isExprSelectItem(item)) {
+        result = item.unaliasedQuery;
+    } else {
+        throw new Error(`Unknown select item`);
     }
     return [
         "SELECT",
@@ -191,6 +208,40 @@ export function queryTreeLimit (query : IQuery) : QueryTreeArray {
         return [
             "LIMIT", RawExprUtil.queryTree(limit.maxRowCount),
             "OFFSET", RawExprUtil.queryTree(limit.offset),
+        ];
+    }
+}
+
+export function queryTree_RawExpr (query : OneSelectItemQuery<any>) : QueryTreeArray {
+    if (
+        query._unions != undefined ||
+        query._unionOrders != undefined ||
+        query._unionLimit != undefined
+    ) {
+        return [
+            "(",
+            queryTreeSelects_RawExpr(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+            ")",
+            queryTreeUnion(query),
+            queryTreeUnionOrderBy(query),
+            queryTreeUnionLimit(query),
+        ];
+    } else {
+        //No UNION-related clauses
+        return [
+            queryTreeSelects_RawExpr(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
         ];
     }
 }

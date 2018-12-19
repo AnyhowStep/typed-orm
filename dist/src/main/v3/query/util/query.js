@@ -68,6 +68,26 @@ function queryTreeSelects(query) {
     ];
 }
 exports.queryTreeSelects = queryTreeSelects;
+function queryTreeSelects_RawExpr(query) {
+    let result = undefined;
+    const item = query._selects[0];
+    if (column_1.ColumnUtil.isColumn(item)) {
+        result = column_1.ColumnUtil.queryTree(item);
+    }
+    else if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(item)) {
+        result = item.unaliasedQuery;
+    }
+    else {
+        throw new Error(`Unknown select item`);
+    }
+    return [
+        "SELECT",
+        (query._distinct ? "DISTINCT" : ""),
+        (query._sqlCalcFoundRows ? "SQL_CALC_FOUND_ROWS" : ""),
+        result
+    ];
+}
+exports.queryTreeSelects_RawExpr = queryTreeSelects_RawExpr;
 function queryTreeJoins(query) {
     const joins = query._joins;
     if (joins == undefined || joins.length == 0) {
@@ -204,6 +224,39 @@ function queryTreeLimit(query) {
     }
 }
 exports.queryTreeLimit = queryTreeLimit;
+function queryTree_RawExpr(query) {
+    if (query._unions != undefined ||
+        query._unionOrders != undefined ||
+        query._unionLimit != undefined) {
+        return [
+            "(",
+            queryTreeSelects_RawExpr(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+            ")",
+            queryTreeUnion(query),
+            queryTreeUnionOrderBy(query),
+            queryTreeUnionLimit(query),
+        ];
+    }
+    else {
+        //No UNION-related clauses
+        return [
+            queryTreeSelects_RawExpr(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+        ];
+    }
+}
+exports.queryTree_RawExpr = queryTree_RawExpr;
 function queryTree(query) {
     if (query._unions != undefined ||
         query._unionOrders != undefined ||

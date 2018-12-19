@@ -6,6 +6,7 @@ const column_1 = require("./column");
 const table_subquery_1 = require("./table-subquery");
 const column_ref_1 = require("./column-ref");
 const sqlstring_1 = require("sqlstring");
+const query_tree_1 = require("./query-tree");
 const query_1 = require("./query");
 var RawExprUtil;
 (function (RawExprUtil) {
@@ -139,7 +140,7 @@ var RawExprUtil;
             return column_1.ColumnUtil.queryTree(rawExpr);
         }
         if (query_1.QueryUtil.isQuery(rawExpr) && query_1.QueryUtil.isOneSelectItemQuery(rawExpr)) {
-            return query_1.QueryUtil.queryTree(rawExpr);
+            return query_tree_1.Parentheses.Create(query_1.QueryUtil.queryTree_RawExpr(rawExpr));
         }
         if (table_subquery_1.TableSubquery.isSingleValueOrEmpty(rawExpr)) {
             return table_subquery_1.TableSubquery.queryTree(rawExpr);
