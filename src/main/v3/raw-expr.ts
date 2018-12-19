@@ -8,6 +8,10 @@ import {escape} from "sqlstring";
 import {QueryTree} from "./query-tree";
 import {Tuple} from "./tuple";
 import {ColumnRef} from "./column-ref";
+import {OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery} from "./query/util";
+import { IQuery, QueryUtil } from "./query";
+import { IJoin } from "./join";
+import {SelectItemUtil} from "./select-item";
 
 export type RawExpr<TypeT> = (
     (
@@ -17,6 +21,11 @@ export type RawExpr<TypeT> = (
     ) |
     IAnonymousTypedExpr<TypeT> |
     IAnonymousTypedColumn<TypeT> |
+    (
+        null extends TypeT ?
+        (OneSelectItemQuery<TypeT> & ZeroOrOneRowQuery) :
+        (OneSelectItemQuery<TypeT> & OneRowQuery)
+    ) |
     (
         null extends TypeT ?
         TableSubquery.SingleValueOrEmpty<TypeT> :
@@ -32,6 +41,12 @@ export namespace RawExprUtil {
         RawExprT["usedRef"] :
         RawExprT extends IColumn ?
         ColumnRefUtil.FromColumn<RawExprT> :
+        RawExprT extends IQuery ?
+        (
+            RawExprT["_parentJoins"] extends IJoin[] ?
+            ColumnRefUtil.FromJoinArray<RawExprT["_parentJoins"]> :
+            {}
+        ) :
         //TableSubquery have parentJoins as usedRef
         //Query, too
         RawExprT extends TableSubquery.SingleValueOrEmpty<any> ?
@@ -69,6 +84,14 @@ export namespace RawExprUtil {
             return ColumnRefUtil.fromColumn(rawExpr) as any;
         }
 
+        if (QueryUtil.isQuery(rawExpr)) {
+            if (rawExpr._parentJoins == undefined) {
+                return {} as any;
+            } else {
+                return ColumnRefUtil.fromJoinArray(rawExpr._parentJoins) as any;
+            }
+        }
+
         if (TableSubquery.isSingleValueOrEmpty(rawExpr)) {
             return {} as any;
         }
@@ -82,6 +105,12 @@ export namespace RawExprUtil {
         ReturnType<RawExprT["assertDelegate"]> :
         RawExprT extends IColumn ?
         ReturnType<RawExprT["assertDelegate"]> :
+        RawExprT extends OneSelectItemQuery<any> ?
+        (
+            RawExprT extends OneRowQuery ?
+            SelectItemUtil.TypeOf<RawExprT["_selects"][0]> :
+            null|SelectItemUtil.TypeOf<RawExprT["_selects"][0]>
+        ) :
         RawExprT extends TableSubquery.SingleValueOrEmpty<any> ?
         TableSubquery.TypeOf<RawExprT> :
         never
@@ -93,6 +122,17 @@ export namespace RawExprUtil {
         RawExprT["assertDelegate"] :
         RawExprT extends IColumn ?
         RawExprT["assertDelegate"] :
+        RawExprT extends OneSelectItemQuery<any> ?
+        (
+            RawExprT extends OneRowQuery ?
+            sd.AssertDelegate<
+                SelectItemUtil.TypeOf<RawExprT["_selects"][0]>
+            > :
+            sd.AssertDelegate<
+                null|
+                SelectItemUtil.TypeOf<RawExprT["_selects"][0]>
+            >
+        ) :
         RawExprT extends TableSubquery.SingleValueOrEmpty<any> ?
         TableSubquery.AssertDelegate<RawExprT> :
         never
@@ -133,6 +173,14 @@ export namespace RawExprUtil {
 
         if (ColumnUtil.isColumn(rawExpr)) {
             return rawExpr.assertDelegate;
+        }
+
+        if (QueryUtil.isQuery(rawExpr) && QueryUtil.isOneSelectItemQuery(rawExpr)) {
+            if (QueryUtil.isOneRowQuery(rawExpr)) {
+                return rawExpr._selects[0].assertDelegate;
+            } else {
+                return sd.nullable(rawExpr._selects[0].assertDelegate) as any;
+            }
         }
 
         if (TableSubquery.isSingleValueOrEmpty(rawExpr)) {
@@ -186,6 +234,10 @@ export namespace RawExprUtil {
 
         if (ColumnUtil.isColumn(rawExpr)) {
             return ColumnUtil.queryTree(rawExpr);
+        }
+
+        if (QueryUtil.isQuery(rawExpr) && QueryUtil.isOneSelectItemQuery(rawExpr)) {
+            return QueryUtil.queryTree(rawExpr);
         }
 
         if (TableSubquery.isSingleValueOrEmpty(rawExpr)) {

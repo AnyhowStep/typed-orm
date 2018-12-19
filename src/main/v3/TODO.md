@@ -43,8 +43,9 @@
 
 ```ts
 /*
-  This entire query should have t.tentativeContributorNegotiation
-  in its parentJoins
+  This should not be allowed unless
+  `tentativeContributorNegotiation`
+  is in the parent joins of the outer query
 */
 from(t.tentativeContribution)
   .joinUsing(

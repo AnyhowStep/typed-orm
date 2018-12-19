@@ -44,4 +44,11 @@ export namespace SelectItemUtil {
             return ColumnMapUtil.isColumnMap(raw) || ColumnRefUtil.isColumnRef(raw);
         }
     }
+    export type TypeOf<ItemT extends SingleValueSelectItem> = (
+        ItemT extends IExprSelectItem ?
+        ReturnType<ItemT["assertDelegate"]> :
+        ItemT extends IColumn ?
+        ReturnType<ItemT["assertDelegate"]> :
+        never
+    );
 }

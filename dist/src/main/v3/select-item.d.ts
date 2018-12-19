@@ -9,5 +9,6 @@ export declare namespace SelectItemUtil {
     type ToColumnNameUnion<SelectItemT extends SelectItem> = (SelectItemT extends IColumn ? SelectItemT["name"] : SelectItemT extends IExprSelectItem ? SelectItemT["alias"] : SelectItemT extends ColumnMap ? ColumnUtil.Name.FromColumnMap<SelectItemT> : SelectItemT extends ColumnRef ? ColumnUtil.Name.FromColumnRef<SelectItemT> : never);
     function isSingleValueSelectItem(raw: any): raw is SingleValueSelectItem;
     function isSelectItem(raw: any): raw is SelectItem;
+    type TypeOf<ItemT extends SingleValueSelectItem> = (ItemT extends IExprSelectItem ? ReturnType<ItemT["assertDelegate"]> : ItemT extends IColumn ? ReturnType<ItemT["assertDelegate"]> : never);
 }
 //# sourceMappingURL=select-item.d.ts.map

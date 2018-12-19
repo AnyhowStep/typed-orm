@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const expr_1 = require("../../expr");
 const join_array_1 = require("../../join-array");
 const select_item_array_1 = require("../../select-item-array");
+const select_item_1 = require("../../select-item");
 const type_1 = require("../../type");
 const column_identifier_1 = require("../../column-identifier");
 const order_1 = require("../../order");
@@ -139,6 +140,12 @@ function isZeroOrOneRowQuery(query) {
         isZeroOrOneRowFromQuery(query));
 }
 exports.isZeroOrOneRowQuery = isZeroOrOneRowQuery;
+function isOneSelectItemQuery(query) {
+    return (isAfterSelectClause(query) &&
+        query._selects.length == 1 &&
+        select_item_1.SelectItemUtil.isSingleValueSelectItem(query._selects[0]));
+}
+exports.isOneSelectItemQuery = isOneSelectItemQuery;
 function assertUniqueJoinTarget(query, aliasedTable) {
     if (query._joins != undefined) {
         if (query._joins.some(j => j.aliasedTable.alias == aliasedTable.alias)) {

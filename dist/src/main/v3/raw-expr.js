@@ -6,6 +6,7 @@ const column_1 = require("./column");
 const table_subquery_1 = require("./table-subquery");
 const column_ref_1 = require("./column-ref");
 const sqlstring_1 = require("sqlstring");
+const query_1 = require("./query");
 var RawExprUtil;
 (function (RawExprUtil) {
     function usedRef(rawExpr) {
@@ -33,6 +34,14 @@ var RawExprUtil;
         }
         if (column_1.ColumnUtil.isColumn(rawExpr)) {
             return column_ref_1.ColumnRefUtil.fromColumn(rawExpr);
+        }
+        if (query_1.QueryUtil.isQuery(rawExpr)) {
+            if (rawExpr._parentJoins == undefined) {
+                return {};
+            }
+            else {
+                return column_ref_1.ColumnRefUtil.fromJoinArray(rawExpr._parentJoins);
+            }
         }
         if (table_subquery_1.TableSubquery.isSingleValueOrEmpty(rawExpr)) {
             return {};
@@ -71,6 +80,14 @@ var RawExprUtil;
         }
         if (column_1.ColumnUtil.isColumn(rawExpr)) {
             return rawExpr.assertDelegate;
+        }
+        if (query_1.QueryUtil.isQuery(rawExpr) && query_1.QueryUtil.isOneSelectItemQuery(rawExpr)) {
+            if (query_1.QueryUtil.isOneRowQuery(rawExpr)) {
+                return rawExpr._selects[0].assertDelegate;
+            }
+            else {
+                return sd.nullable(rawExpr._selects[0].assertDelegate);
+            }
         }
         if (table_subquery_1.TableSubquery.isSingleValueOrEmpty(rawExpr)) {
             return table_subquery_1.TableSubquery.assertDelegate(rawExpr);
@@ -120,6 +137,9 @@ var RawExprUtil;
         }
         if (column_1.ColumnUtil.isColumn(rawExpr)) {
             return column_1.ColumnUtil.queryTree(rawExpr);
+        }
+        if (query_1.QueryUtil.isQuery(rawExpr) && query_1.QueryUtil.isOneSelectItemQuery(rawExpr)) {
+            return query_1.QueryUtil.queryTree(rawExpr);
         }
         if (table_subquery_1.TableSubquery.isSingleValueOrEmpty(rawExpr)) {
             return table_subquery_1.TableSubquery.queryTree(rawExpr);

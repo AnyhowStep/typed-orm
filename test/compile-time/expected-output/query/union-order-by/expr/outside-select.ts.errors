@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '(c: { readonly z: Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>; }) => [any]' is not assignable to parameter of type '((c: { readonly z: Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>; }) => [any]) & [\"Invalid IColumn\", \"0\", any]'.",
+      "messageText": "Argument of type '(c: { readonly z: Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<string> & { __accepts: string; __canAccept: string; }; }>; }) => [Expr<{ usedRef: { readonly table: { readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; } & { ...; }; } & {}...' is not assignable to parameter of type '((c: { readonly z: Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<string> & { __accepts: string; __canAccept: string; }; }>; }) => [Expr<{ usedRef: { readonly table: { readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; } & { ...; }; } & {...'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly z: Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>; }) => [any]' is missing the following properties from type '[\"Invalid IColumn\", \"0\", any]': 0, 1, 2, pop, and 30 more.",
+        "messageText": "Type '(c: { readonly z: Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<string> & { __accepts: string; __canAccept: string; }; }>; }) => [Expr<{ usedRef: { readonly table: { readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; } & { ...; }; } & {}...' is missing the following properties from type '[\"Invalid IExpr\", \"0\", Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string> & { __accepts: string; __canAccept: string; }; }>]': 0, 1, 2, pop, and 30 more.",
         "category": 1,
         "code": 2740
       }
@@ -13,32 +13,6 @@
     "code": 2345,
     "category": 1,
     "length": 47,
-    "start": 306
-  },
-  {
-    "messageText": {
-      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to parameter of type 'string | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<string>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<string>; }> | ITableSubquery<...>'.",
-      "category": 1,
-      "code": 2345,
-      "next": {
-        "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to type 'IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<string>; }>'.",
-        "category": 1,
-        "code": 2322,
-        "next": {
-          "messageText": "Types of property 'assertDelegate' are incompatible.",
-          "category": 1,
-          "code": 2326,
-          "next": {
-            "messageText": "Type 'AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }' is not assignable to type 'AssertDelegate<string>'.",
-            "category": 1,
-            "code": 2322
-          }
-        }
-      }
-    },
-    "code": 2345,
-    "category": 1,
-    "length": 3,
-    "start": 343
+    "start": 305
   }
 ]

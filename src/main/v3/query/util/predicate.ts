@@ -8,7 +8,7 @@ import {ExprUtil} from "../../expr";
 import {JoinArrayUtil} from "../../join-array";
 import {SelectItemArrayUtil} from "../../select-item-array";
 import {IJoin} from "../../join";
-import {SelectItem} from "../../select-item";
+import {SelectItem, AnonymousTypedSingleValueSelectItem, SelectItemUtil} from "../../select-item";
 import {IAliasedTable} from "../../aliased-table";
 import {isObjectWithKeys} from "../../type";
 import {ColumnIdentifierUtil} from "../../column-identifier";
@@ -147,6 +147,10 @@ export type ZeroOrOneRowQuery = (
     ZeroOrOneRowUnionQuery |
     ZeroOrOneRowFromQuery
 );
+export type OneSelectItemQuery<TypeT> = (
+    AfterSelectClause &
+    { _selects : [AnonymousTypedSingleValueSelectItem<TypeT>] }
+);
 
 export function isBeforeFromClause (query : IQuery) : query is BeforeFromClause {
     return query._joins == undefined;
@@ -206,6 +210,14 @@ export function isZeroOrOneRowQuery (query : IQuery) : query is ZeroOrOneRowQuer
         isOneRowQuery(query) ||
         isZeroOrOneRowUnionQuery(query) ||
         isZeroOrOneRowFromQuery(query)
+    );
+}
+
+export function isOneSelectItemQuery (query : IQuery) : query is OneSelectItemQuery<any> {
+    return (
+        isAfterSelectClause(query) &&
+        query._selects.length == 1 &&
+        SelectItemUtil.isSingleValueSelectItem(query._selects[0])
     );
 }
 

@@ -5,7 +5,7 @@ const table = o.table(
     {
         x : sd.naturalNumber(),
         y : sd.string(),
-        z : sd.boolean(),
+        z : sd.string(),
     }
 );
 
