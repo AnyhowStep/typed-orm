@@ -7,6 +7,7 @@ import {CaseValue} from "./value";
 export * from "./condition";
 export * from "./value";
 
+//https://dev.mysql.com/doc/refman/8.0/en/control-flow-functions.html#operator_case
 function CaseConditionConstructor () : (
     CaseCondition<{
         usedRef : {},
@@ -23,6 +24,7 @@ function CaseConditionConstructor () : (
         ]
     );
 }
+//https://dev.mysql.com/doc/refman/8.0/en/control-flow-functions.html#operator_case
 function CaseValueConstructor<
     ValueT extends RawExpr<NonNullPrimitiveExpr>
 >(
