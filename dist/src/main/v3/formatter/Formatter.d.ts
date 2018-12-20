@@ -35,6 +35,7 @@ export declare class Formatter {
     indentComment(comment: string): string;
     formatToplevelReservedWord(token: Token, query: string): string;
     formatNewlineReservedWord(token: Token, query: string): string;
+    formatPreNewlineReservedWord(token: Token, query: string): string;
     equalizeWhitespace(string: string): string;
     formatOpeningParentheses(token: Token, query: string): string;
     formatClosingParentheses(token: Token, query: string): string;

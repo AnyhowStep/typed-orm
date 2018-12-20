@@ -87,6 +87,7 @@ export class InlineBlock {
     isForbiddenToken({type, value} : Token) {
         return type === TokenType.RESERVED_TOPLEVEL ||
             type === TokenType.RESERVED_NEWLINE ||
+            type === TokenType.RESERVED_PRE_NEWLINE ||
             //TokenType.COMMENT does not exist.
             //This is effectively, type === undefined
             //This is why plain JS sucks.

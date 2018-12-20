@@ -8,6 +8,7 @@ export declare class Tokenizer {
     private readonly LINE_COMMENT_REGEX;
     private readonly RESERVED_TOPLEVEL_REGEX;
     private readonly RESERVED_NEWLINE_REGEX;
+    private readonly RESERVED_PRE_NEWLINE_REGEX;
     private readonly RESERVED_PLAIN_REGEX;
     private readonly WORD_REGEX;
     private readonly STRING_REGEX;
@@ -33,6 +34,7 @@ export declare class Tokenizer {
         reservedWords: string[];
         reservedToplevelWords: string[];
         reservedNewlineWords: string[];
+        reservedPreNewlineWords: string[];
         stringTypes: ("``" | "[]" | "\"\"" | "''" | "N''")[];
         openParens: string[];
         closeParens: string[];
@@ -85,6 +87,7 @@ export declare class Tokenizer {
     getReservedWordToken(input: string, previousToken: Token | undefined): Token | undefined;
     getToplevelReservedToken(input: string): Token | undefined;
     getNewlineReservedToken(input: string): Token | undefined;
+    getPreNewlineReservedToken(input: string): Token | undefined;
     getPlainReservedToken(input: string): Token | undefined;
     getWordToken(input: string): Token | undefined;
     getTokenOnFirstMatch({ input, type, regex }: {

@@ -73,6 +73,10 @@ export class Formatter {
                 formattedQuery = this.formatNewlineReservedWord(token, formattedQuery);
                 this.previousReservedWord = token;
             }
+            else if (token.type === TokenType.RESERVED_PRE_NEWLINE) {
+                formattedQuery = this.formatPreNewlineReservedWord(token, formattedQuery);
+                this.previousReservedWord = token;
+            }
             else if (token.type === TokenType.RESERVED) {
                 formattedQuery = this.formatWithSpaces(token, formattedQuery);
                 this.previousReservedWord = token;
@@ -131,6 +135,12 @@ export class Formatter {
             query += " ";
         }
         return this.addNewline(query + this.equalizeWhitespace(token.value));
+    }
+
+    formatPreNewlineReservedWord(token : Token, query : string) {
+        //The original formatNewlineReservedWord() implementation
+        //Useful for WHEN clause of CASE
+        return this.addNewline(query) + this.equalizeWhitespace(token.value) + " ";
     }
 
     // Replace any sequence of whitespace characters with single space

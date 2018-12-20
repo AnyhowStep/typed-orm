@@ -8,6 +8,7 @@ var TokenType;
     TokenType["RESERVED"] = "reserved";
     TokenType["RESERVED_TOPLEVEL"] = "reserved-toplevel";
     TokenType["RESERVED_NEWLINE"] = "reserved-newline";
+    TokenType["RESERVED_PRE_NEWLINE"] = "reserved-pre-newline";
     TokenType["OPERATOR"] = "operator";
     TokenType["OPEN_PAREN"] = "open-paren";
     TokenType["CLOSE_PAREN"] = "close-paren";

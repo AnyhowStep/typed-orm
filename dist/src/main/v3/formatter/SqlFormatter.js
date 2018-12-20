@@ -11,7 +11,7 @@ const reservedWords = [
     "CURRENT_TIMESTAMP",
     "DATABASE", "DATABASES", "DAY", "DAY_HOUR", "DAY_MINUTE", "DAY_SECOND", "DEFAULT", "DEFINER", "DELAYED", "DELETE", "DESC", "DESCRIBE",
     "DETERMINISTIC", "DISTINCT", "DISTINCTROW", "DIV", "DO", "DROP", "DUMPFILE", "DUPLICATE", "DYNAMIC",
-    "ELSE", "ENCLOSED", "END", "ENGINE", "ENGINES", "ENGINE_TYPE", "ESCAPE", "ESCAPED", "EVENTS", "EXEC", "EXECUTE", "EXISTS", "EXPLAIN",
+    "ENCLOSED", "END", "ENGINE", "ENGINES", "ENGINE_TYPE", "ESCAPE", "ESCAPED", "EVENTS", "EXEC", "EXECUTE", "EXISTS", "EXPLAIN",
     "EXTENDED",
     "FAST", "FETCH", "FIELDS", "FILE", "FIRST", "FIXED", "FLUSH", "FOR", "FORCE", "FOREIGN", "FULL", "FULLTEXT", "FUNCTION",
     "GLOBAL", "GRANT", "GRANTS", "GROUP_CONCAT",
@@ -38,7 +38,7 @@ const reservedWords = [
     "START", "STARTING", "STATUS", "STOP", "STORAGE", "STRAIGHT_JOIN", "STRING", "STRIPED", "SUPER",
     "TABLE", "TABLES", "TEMPORARY", "TERMINATED", "THEN", "TO", "TRAILING", "TRANSACTIONAL", "TRUE", "TRUNCATE", "TYPE", "TYPES",
     "UNCOMMITTED", "UNIQUE", "UNLOCK", "UNSIGNED", "USAGE", "USE", "USING",
-    "VARIABLES", "VIEW", "WHEN", "WITH", "WORK", "WRITE",
+    "VARIABLES", "VIEW", "WITH", "WORK", "WRITE",
     "YEAR_MONTH",
     //This will be rendered as `AND` but without a new line
     "HACKED_AND_NO_NEW_LINE"
@@ -76,10 +76,12 @@ const reservedToplevelWords = [
 ];
 const reservedNewlineWords = [
     "AND",
-    "ELSE",
     "OR",
-    "WHEN",
     "XOR"
+];
+const reservedPreNewlineWords = [
+    "WHEN",
+    "ELSE",
 ];
 let tokenizer;
 class SqlFormatter {
@@ -101,6 +103,7 @@ class SqlFormatter {
                 reservedWords,
                 reservedToplevelWords,
                 reservedNewlineWords,
+                reservedPreNewlineWords,
                 stringTypes: [`""`, "N''", "''", "``", "[]"],
                 openParens: ["(", "CASE"],
                 closeParens: [")", "END"],

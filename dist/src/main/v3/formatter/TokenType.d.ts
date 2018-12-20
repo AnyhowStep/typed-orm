@@ -5,6 +5,7 @@ export declare enum TokenType {
     RESERVED = "reserved",
     RESERVED_TOPLEVEL = "reserved-toplevel",
     RESERVED_NEWLINE = "reserved-newline",
+    RESERVED_PRE_NEWLINE = "reserved-pre-newline",
     OPERATOR = "operator",
     OPEN_PAREN = "open-paren",
     CLOSE_PAREN = "close-paren",

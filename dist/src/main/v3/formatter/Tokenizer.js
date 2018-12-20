@@ -30,6 +30,7 @@ class Tokenizer {
         this.LINE_COMMENT_REGEX = this.createLineCommentRegex(cfg.lineCommentTypes);
         this.RESERVED_TOPLEVEL_REGEX = this.createReservedWordRegex(cfg.reservedToplevelWords);
         this.RESERVED_NEWLINE_REGEX = this.createReservedWordRegex(cfg.reservedNewlineWords);
+        this.RESERVED_PRE_NEWLINE_REGEX = this.createReservedWordRegex(cfg.reservedPreNewlineWords);
         this.RESERVED_PLAIN_REGEX = this.createReservedWordRegex(cfg.reservedWords);
         this.WORD_REGEX = this.createWordRegex(cfg.specialWordChars);
         this.STRING_REGEX = this.createStringRegex(cfg.stringTypes);
@@ -229,7 +230,10 @@ class Tokenizer {
         if (previousToken && previousToken.value && previousToken.value === ".") {
             return;
         }
-        return this.getToplevelReservedToken(input) || this.getNewlineReservedToken(input) || this.getPlainReservedToken(input);
+        return (this.getToplevelReservedToken(input) ||
+            this.getNewlineReservedToken(input) ||
+            this.getPreNewlineReservedToken(input) ||
+            this.getPlainReservedToken(input));
     }
     getToplevelReservedToken(input) {
         return this.getTokenOnFirstMatch({
@@ -243,6 +247,13 @@ class Tokenizer {
             input,
             type: TokenType_1.TokenType.RESERVED_NEWLINE,
             regex: this.RESERVED_NEWLINE_REGEX
+        });
+    }
+    getPreNewlineReservedToken(input) {
+        return this.getTokenOnFirstMatch({
+            input,
+            type: TokenType_1.TokenType.RESERVED_PRE_NEWLINE,
+            regex: this.RESERVED_PRE_NEWLINE_REGEX
         });
     }
     getPlainReservedToken(input) {

@@ -13,6 +13,7 @@ export class Tokenizer {
 
     private readonly RESERVED_TOPLEVEL_REGEX : RegExp;
     private readonly RESERVED_NEWLINE_REGEX : RegExp;
+    private readonly RESERVED_PRE_NEWLINE_REGEX : RegExp;
     private readonly RESERVED_PLAIN_REGEX : RegExp;
 
     private readonly WORD_REGEX : RegExp;
@@ -41,6 +42,7 @@ export class Tokenizer {
         reservedWords : string[],
         reservedToplevelWords : string[],
         reservedNewlineWords : string[],
+        reservedPreNewlineWords : string[],
         stringTypes : ("``"|"[]"|"\"\""|"''"|"N''")[],
         openParens : string[],
         closeParens : string[],
@@ -59,6 +61,7 @@ export class Tokenizer {
 
         this.RESERVED_TOPLEVEL_REGEX = this.createReservedWordRegex(cfg.reservedToplevelWords);
         this.RESERVED_NEWLINE_REGEX = this.createReservedWordRegex(cfg.reservedNewlineWords);
+        this.RESERVED_PRE_NEWLINE_REGEX = this.createReservedWordRegex(cfg.reservedPreNewlineWords);
         this.RESERVED_PLAIN_REGEX = this.createReservedWordRegex(cfg.reservedWords);
 
         this.WORD_REGEX = this.createWordRegex(cfg.specialWordChars);
@@ -299,7 +302,12 @@ export class Tokenizer {
         if (previousToken && previousToken.value && previousToken.value === ".") {
             return;
         }
-        return this.getToplevelReservedToken(input) || this.getNewlineReservedToken(input) || this.getPlainReservedToken(input);
+        return (
+            this.getToplevelReservedToken(input) ||
+            this.getNewlineReservedToken(input) ||
+            this.getPreNewlineReservedToken(input) ||
+            this.getPlainReservedToken(input)
+        );
     }
 
     getToplevelReservedToken(input : string) {
@@ -315,6 +323,14 @@ export class Tokenizer {
             input,
             type: TokenType.RESERVED_NEWLINE,
             regex: this.RESERVED_NEWLINE_REGEX
+        });
+    }
+
+    getPreNewlineReservedToken(input : string) {
+        return this.getTokenOnFirstMatch({
+            input,
+            type: TokenType.RESERVED_PRE_NEWLINE,
+            regex: this.RESERVED_PRE_NEWLINE_REGEX
         });
     }
 
