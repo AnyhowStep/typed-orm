@@ -4,7 +4,7 @@ export declare function now(fractionalSecondsPrecision?: 0 | 1 | 2 | 3 | 4 | 5 |
     usedRef: {};
     assertDelegate: sd.AssertDelegate<import("../../../data-type").MySqlDateTime> & {
         __accepts: string | Date | import("../../../data-type").MySqlDateTime;
-        __canAccept: string | number | Date | import("../../../data-type").MySqlDateTime;
+        __canAccept: string | Date | import("../../../data-type").MySqlDateTime;
     };
 }>;
 //# sourceMappingURL=now.d.ts.map

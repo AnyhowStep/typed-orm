@@ -14,10 +14,11 @@ export declare class MySqlDateTime {
     jsDate(timezoneMinuteOffset?: number): Date;
     microsecondPart(): number;
     mySqlString(): string;
+    toJSON(): string;
     static FromJsDate(jsDate: Date): MySqlDateTime;
 }
 export declare function dateTime(): sd.AssertDelegate<MySqlDateTime> & {
     __accepts: string | Date | MySqlDateTime;
-    __canAccept: string | number | Date | MySqlDateTime;
+    __canAccept: string | Date | MySqlDateTime;
 };
 //# sourceMappingURL=mysql-date-time.d.ts.map

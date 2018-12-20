@@ -8,7 +8,7 @@ export declare const query: o.Query<{
         readonly usedRef: {};
         readonly assertDelegate: import("schema-decorator").AssertDelegate<o.MySqlDateTime> & {
             __accepts: string | Date | o.MySqlDateTime;
-            __canAccept: string | number | Date | o.MySqlDateTime;
+            __canAccept: string | Date | o.MySqlDateTime;
         };
         readonly tableAlias: "__aliased";
         readonly alias: "value";

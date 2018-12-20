@@ -20,7 +20,7 @@ function zeroPad({ value, length, }) {
         return "0".repeat(length - str.length) + str;
     }
 }
-function toMySqlDateTimeString(args) {
+function toMySqlDateString(args) {
     const year = zeroPad({
         value: args.year,
         length: 4,
@@ -33,6 +33,9 @@ function toMySqlDateTimeString(args) {
         value: args.dayOfMonth,
         length: 2,
     });
+    return `${year}-${month}-${dayOfMonth}`;
+}
+function toMySqlTimeString(args) {
     const hour = zeroPad({
         value: args.hour,
         length: 2,
@@ -49,7 +52,12 @@ function toMySqlDateTimeString(args) {
         value: args.microsecondPart,
         length: 6,
     });
-    return `${year}-${month}-${dayOfMonth} ${hour}:${minute}:${second}.${microsecondPart}`;
+    return `${hour}:${minute}:${second}.${microsecondPart}`;
+}
+function toMySqlDateTimeString(args) {
+    const dateString = toMySqlDateString(args);
+    const timeString = toMySqlTimeString(args);
+    return `${dateString} ${timeString}`;
 }
 /*
     A wrapper for MySQL's DateTime, which is notorious for not having timezones
@@ -114,6 +122,12 @@ class MySqlDateTime {
         If this represents a time in GMT -5, you would call,
 
         mySqlDateTime.unixMillisecondTimestamp(-400);
+
+        -----
+
+        This is only an approximation of timezone offsets!
+        Use a *real* timezone library if you need offsets
+        for whatever reason.
     */
     unixMillisecondTimestamp(timezoneMinuteOffset = 0) {
         const timezoneMillisecondOffset = timezoneMinuteOffset * 60 * 1000;
@@ -142,6 +156,22 @@ class MySqlDateTime {
             second: this.second,
             microsecondPart: this.microsecondPart(),
         });
+    }
+    toJSON() {
+        const args = {
+            year: this.year,
+            month: this.month,
+            dayOfMonth: this.dayOfMonth,
+            hour: this.hour,
+            minute: this.minute,
+            second: this.second,
+            microsecondPart: this.microsecondPart(),
+        };
+        const dateString = toMySqlDateString(args);
+        const timeString = toMySqlTimeString(args);
+        //Like Date.toJSON() but has 6 fractional second parts
+        //instead of 3
+        return `${dateString}T${timeString}Z`;
     }
     /*
         JS `Date`s only have millisecond precision.
@@ -187,7 +217,7 @@ function dateTime() {
         catch (err) {
             throw new Error(`Could not parse ${name}: ${err.message}`);
         }
-    }), sd.chain(sd.dateTime(), (name, jsDate) => {
+    }), sd.chain(sd.validDate(), (name, jsDate) => {
         try {
             const result = MySqlDateTime.FromJsDate(jsDate);
             return result;
