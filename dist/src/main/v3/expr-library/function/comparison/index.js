@@ -5,4 +5,5 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./coalesce"));
 __export(require("./greatest"));
+__export(require("./interval"));
 //# sourceMappingURL=index.js.map
