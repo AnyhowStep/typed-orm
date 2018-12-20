@@ -5,7 +5,7 @@ import {IAnonymousTypedColumn, IColumn, ColumnUtil} from "./column";
 import {TableSubquery} from "./table-subquery";
 import {ColumnRefUtil} from "./column-ref";
 import {escape} from "sqlstring";
-import {QueryTree, Parentheses} from "./query-tree";
+import {QueryTree} from "./query-tree";
 import {Tuple} from "./tuple";
 import {ColumnRef} from "./column-ref";
 import {OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery} from "./query/util";
@@ -268,7 +268,7 @@ export namespace RawExprUtil {
         }
 
         if (QueryUtil.isQuery(rawExpr) && QueryUtil.isOneSelectItemQuery(rawExpr)) {
-            return Parentheses.Create(QueryUtil.queryTree_RawExpr(rawExpr));
+            return QueryUtil.queryTree_RawExpr(rawExpr);
         }
 
         if (TableSubquery.isSingleValueOrEmpty(rawExpr)) {

@@ -1,3 +1,3 @@
-import { UnaryComparison } from "./unary-comparison";
-export declare const isTrue: UnaryComparison;
+import { NullSafeUnaryComparison } from "./null-safe-unary-comparison";
+export declare const isTrue: NullSafeUnaryComparison;
 //# sourceMappingURL=is-true.d.ts.map

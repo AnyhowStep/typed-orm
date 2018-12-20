@@ -8,6 +8,7 @@ __export(require("./comparison"));
 __export(require("./eq"));
 __export(require("./gt-eq"));
 __export(require("./gt"));
+__export(require("./in"));
 __export(require("./is-false"));
 __export(require("./is-not-false"));
 __export(require("./is-not-null"));
@@ -21,6 +22,7 @@ __export(require("./not-eq"));
 __export(require("./null-safe-comparison"));
 __export(require("./null-safe-eq"));
 __export(require("./null-safe-not-eq"));
+__export(require("./null-safe-unary-comparison"));
 __export(require("./ternary-comparison"));
 __export(require("./unary-comparison"));
 //# sourceMappingURL=index.js.map

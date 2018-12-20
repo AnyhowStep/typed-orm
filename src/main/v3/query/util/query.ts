@@ -220,6 +220,7 @@ export function queryTree_RawExpr (query : OneSelectItemQuery<any>) : QueryTreeA
     ) {
         return [
             "(",
+            "(",
             queryTreeSelects_RawExpr(query),
             queryTreeFrom(query),
             queryTreeWhere(query),
@@ -231,10 +232,12 @@ export function queryTree_RawExpr (query : OneSelectItemQuery<any>) : QueryTreeA
             queryTreeUnion(query),
             queryTreeUnionOrderBy(query),
             queryTreeUnionLimit(query),
+            ")",
         ];
     } else {
         //No UNION-related clauses
         return [
+            "(",
             queryTreeSelects_RawExpr(query),
             queryTreeFrom(query),
             queryTreeWhere(query),
@@ -242,6 +245,7 @@ export function queryTree_RawExpr (query : OneSelectItemQuery<any>) : QueryTreeA
             queryTreeHaving(query),
             queryTreeOrderBy(query),
             queryTreeLimit(query),
+            ")",
         ];
     }
 }

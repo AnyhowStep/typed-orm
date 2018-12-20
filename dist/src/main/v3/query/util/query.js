@@ -230,6 +230,7 @@ function queryTree_RawExpr(query) {
         query._unionLimit != undefined) {
         return [
             "(",
+            "(",
             queryTreeSelects_RawExpr(query),
             queryTreeFrom(query),
             queryTreeWhere(query),
@@ -241,11 +242,13 @@ function queryTree_RawExpr(query) {
             queryTreeUnion(query),
             queryTreeUnionOrderBy(query),
             queryTreeUnionLimit(query),
+            ")",
         ];
     }
     else {
         //No UNION-related clauses
         return [
+            "(",
             queryTreeSelects_RawExpr(query),
             queryTreeFrom(query),
             queryTreeWhere(query),
@@ -253,6 +256,7 @@ function queryTree_RawExpr(query) {
             queryTreeHaving(query),
             queryTreeOrderBy(query),
             queryTreeLimit(query),
+            ")",
         ];
     }
 }
