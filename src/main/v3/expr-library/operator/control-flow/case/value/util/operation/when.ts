@@ -1,17 +1,17 @@
 import * as sd from "schema-decorator";
-import {RawExpr} from "../../../../../../raw-expr";
-import {PrimitiveExpr} from "../../../../../../primitive-expr";
-import {RawExprUtil} from "../../../../../../raw-expr";
-import {ColumnRefUtil} from "../../../../../../column-ref";
+import {RawExpr} from "../../../../../../../raw-expr";
+import {NonNullPrimitiveExpr} from "../../../../../../../primitive-expr";
+import {RawExprUtil} from "../../../../../../../raw-expr";
+import {ColumnRefUtil} from "../../../../../../../column-ref";
 import {ICase, Case} from "../../case";
 
-export type NullableWhen<
+export type When<
     BuilderT extends ICase,
     WhenT extends RawExpr<ReturnType<BuilderT["value"]>>,
     ThenT extends RawExpr<
         BuilderT["result"] extends sd.AssertDelegate<any> ?
-        ReturnType<BuilderT["result"]>|null :
-        PrimitiveExpr
+        ReturnType<BuilderT["result"]> :
+        NonNullPrimitiveExpr
     >
 > = (
     Case<{
@@ -23,25 +23,26 @@ export type NullableWhen<
         value : BuilderT["value"],
         result : (
             BuilderT["result"] extends sd.AssertDelegate<any> ?
-            sd.AssertDelegate<
-                ReturnType<BuilderT["result"]> |
-                RawExprUtil.TypeOf<ThenT>
-            > :
+            BuilderT["result"] :
             sd.AssertDelegate<RawExprUtil.TypeOf<ThenT>>
         ),
     }>
 );
-export function nullableWhen<
+export function when<
     BuilderT extends ICase,
     WhenT extends RawExpr<ReturnType<BuilderT["value"]>>,
     ThenT extends RawExpr<
         BuilderT["result"] extends sd.AssertDelegate<any> ?
-        ReturnType<BuilderT["result"]>|null :
-        PrimitiveExpr
+        ReturnType<BuilderT["result"]> :
+        NonNullPrimitiveExpr
     >
 >(builder : BuilderT, whenExpr : WhenT, thenExpr : ThenT) : (
-    NullableWhen<BuilderT, WhenT, ThenT>
+    When<BuilderT, WhenT, ThenT>
 ) {
+    const thenAssertDelegate = RawExprUtil.assertDelegate(thenExpr);
+    if (sd.isNullable(thenAssertDelegate)) {
+        throw new Error(`Nullable expression not allowed, try calling .nullableWhen()`);
+    }
     return new Case(
         {
             usedRef : ColumnRefUtil.intersect(
@@ -54,10 +55,10 @@ export function nullableWhen<
             value : builder.value,
             result : (
                 builder.result == undefined ?
-                    RawExprUtil.assertDelegate(thenExpr) :
+                    thenAssertDelegate :
                     sd.or(
                         builder.result,
-                        RawExprUtil.assertDelegate(thenExpr)
+                        thenAssertDelegate
                     )
             ),
         },

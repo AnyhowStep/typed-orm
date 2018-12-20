@@ -92,3 +92,5 @@ function isConfirmed () {
         .isConfirmed()
 )
 ```
+
++ Implement `Column.asc()/.desc()`, `Expr.asc()/.desc()` convenience methods

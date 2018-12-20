@@ -1,9 +1,8 @@
 import * as sd from "schema-decorator";
-import {RawExpr} from "../../../../raw-expr";
-import {PrimitiveExpr, NonNullPrimitiveExpr} from "../../../../primitive-expr";
-import {RawExprUtil} from "../../../../raw-expr";
-import {ColumnRef} from "../../../../column-ref";
-import {QueryTreeArray} from "../../../../query-tree";
+import {RawExpr} from "../../../../../raw-expr";
+import {PrimitiveExpr, NonNullPrimitiveExpr} from "../../../../../primitive-expr";
+import {ColumnRef} from "../../../../../column-ref";
+import {QueryTreeArray} from "../../../../../query-tree";
 import * as CaseUtil from "./util";
 
 /*
@@ -101,28 +100,3 @@ export class Case<DataT extends CaseData> implements ICase<DataT> {
         return CaseUtil.end(this);
     }
 }
-
-export function CaseConstructor<
-    ValueT extends RawExpr<NonNullPrimitiveExpr>
->(
-    valueExpr : ValueT
-) : (
-    Case<{
-        usedRef : RawExprUtil.UsedRef<ValueT>,
-        value : RawExprUtil.AssertDelegate<ValueT>,
-        result : undefined,
-    }>
-) {
-    return new Case(
-        {
-            usedRef : RawExprUtil.usedRef(valueExpr),
-            value : RawExprUtil.assertDelegate(valueExpr),
-            result : undefined,
-        },
-        [
-            "CASE",
-            RawExprUtil.queryTree(valueExpr),
-        ]
-    );
-}
-export {CaseConstructor as case};

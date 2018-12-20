@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import {ICase} from "../../case";
-import {Expr} from "../../../../../../expr";
+import {Expr} from "../../../../../../../expr";
 import {AfterWhenCase} from "./after-when-case";
 
 export type End<

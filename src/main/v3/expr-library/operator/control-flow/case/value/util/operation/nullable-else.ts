@@ -1,19 +1,19 @@
 import * as sd from "schema-decorator";
-import {RawExpr} from "../../../../../../raw-expr";
-import {RawExprUtil} from "../../../../../../raw-expr";
-import {ColumnRefUtil} from "../../../../../../column-ref";
+import {RawExpr} from "../../../../../../../raw-expr";
+import {RawExprUtil} from "../../../../../../../raw-expr";
+import {ColumnRefUtil} from "../../../../../../../column-ref";
 import {ICase} from "../../case";
-import {Expr} from "../../../../../../expr";
+import {Expr} from "../../../../../../../expr";
 import {AfterWhenCase} from "./after-when-case";
 
-export type Else<
+export type NullableElse<
     BuilderT extends ICase<{
         usedRef : {},
         value : any,
         result : sd.AssertDelegate<any>,
     }>,
     ElseT extends RawExpr<
-        Exclude<ReturnType<BuilderT["result"]>, null>
+        ReturnType<BuilderT["result"]>|null
     >
 > = (
     Expr<{
@@ -21,25 +21,23 @@ export type Else<
             BuilderT["usedRef"] &
             RawExprUtil.UsedRef<ElseT>
         ),
-        assertDelegate : BuilderT["result"],
+        assertDelegate : sd.AssertDelegate<
+            ReturnType<BuilderT["result"]> |
+            RawExprUtil.TypeOf<ElseT>
+        >,
     }>
 );
-function ElseFunction<
+function NullableElseFunction<
     BuilderT extends AfterWhenCase,
     ElseT extends RawExpr<
-        Exclude<ReturnType<BuilderT["result"]>, null>
+        ReturnType<BuilderT["result"]>|null
     >
 > (
     builder : BuilderT,
     elseExpr : ElseT
 ) : (
-    Else<BuilderT, ElseT>
+    NullableElse<BuilderT, ElseT>
 ) {
-    const elseAssertDelegate = RawExprUtil.assertDelegate(elseExpr);
-    if (sd.isNullable(elseAssertDelegate)) {
-        throw new Error(`Nullable expression not allowed, try calling .nullableElse()`);
-    }
-
     return new Expr(
         {
             usedRef : ColumnRefUtil.intersect(
@@ -48,7 +46,7 @@ function ElseFunction<
             ),
             assertDelegate : sd.or(
                 builder.result,
-                elseAssertDelegate
+                RawExprUtil.assertDelegate(elseExpr)
             ),
         },
         [
@@ -59,4 +57,4 @@ function ElseFunction<
         ]
     ) as any;
 }
-export {ElseFunction as else};
+export {NullableElseFunction as nullableElse};
