@@ -27,4 +27,4 @@ export declare class CaseValue<DataT extends CaseValueData> implements ICaseValu
     nullableElse<ElseT extends RawExpr<ReturnType<Extract<this, CaseValueUtil.AfterWhenCase>["result"]> | null>>(this: Extract<this, CaseValueUtil.AfterWhenCase>, elseExpr: ElseT): (CaseValueUtil.NullableElse<Extract<this, CaseValueUtil.AfterWhenCase>, ElseT>);
     end(this: Extract<this, CaseValueUtil.AfterWhenCase>): (CaseValueUtil.End<Extract<this, CaseValueUtil.AfterWhenCase>>);
 }
-//# sourceMappingURL=case.d.ts.map
+//# sourceMappingURL=case-value.d.ts.map

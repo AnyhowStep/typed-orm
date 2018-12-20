@@ -7,7 +7,7 @@ const raw_expr_1 = require("../../../../raw-expr");
 const value_1 = require("./value");
 __export(require("./value"));
 function CaseConstructor(valueExpr) {
-    return new value_1.Case({
+    return new value_1.CaseValue({
         usedRef: raw_expr_1.RawExprUtil.usedRef(valueExpr),
         value: raw_expr_1.RawExprUtil.assertDelegate(valueExpr),
         result: undefined,

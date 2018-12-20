@@ -1,7 +1,7 @@
 import {RawExpr} from "../../../../raw-expr";
 import {NonNullPrimitiveExpr} from "../../../../primitive-expr";
 import {RawExprUtil} from "../../../../raw-expr";
-import {Case} from "./value";
+import {CaseValue} from "./value";
 
 export * from "./value";
 
@@ -10,13 +10,13 @@ export function CaseConstructor<
 >(
     valueExpr : ValueT
 ) : (
-    Case<{
+    CaseValue<{
         usedRef : RawExprUtil.UsedRef<ValueT>,
         value : RawExprUtil.AssertDelegate<ValueT>,
         result : undefined,
     }>
 ) {
-    return new Case(
+    return new CaseValue(
         {
             usedRef : RawExprUtil.usedRef(valueExpr),
             value : RawExprUtil.assertDelegate(valueExpr),

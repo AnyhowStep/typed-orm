@@ -3,13 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 const raw_expr_1 = require("../../../../../../../raw-expr");
 const column_ref_1 = require("../../../../../../../column-ref");
-const case_1 = require("../../case");
+const case_value_1 = require("../../case-value");
 function when(builder, whenExpr, thenExpr) {
     const thenAssertDelegate = raw_expr_1.RawExprUtil.assertDelegate(thenExpr);
     if (sd.isNullable(thenAssertDelegate)) {
         throw new Error(`Nullable expression not allowed, try calling .nullableWhen()`);
     }
-    return new case_1.Case({
+    return new case_value_1.CaseValue({
         usedRef: column_ref_1.ColumnRefUtil.intersect(builder.usedRef, column_ref_1.ColumnRefUtil.intersect(raw_expr_1.RawExprUtil.usedRef(whenExpr), raw_expr_1.RawExprUtil.usedRef(thenExpr))),
         value: builder.value,
         result: (builder.result == undefined ?

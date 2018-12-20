@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
-import {ICase} from "../../case";
+import {ICaseValue} from "../../case-value";
 
-export type AfterWhenCase = ICase<{
+export type AfterWhenCase = ICaseValue<{
     usedRef : {},
     value : any,
     result : sd.AssertDelegate<any>,

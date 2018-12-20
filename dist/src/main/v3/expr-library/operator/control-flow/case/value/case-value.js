@@ -26,4 +26,4 @@ class CaseValue {
     }
 }
 exports.CaseValue = CaseValue;
-//# sourceMappingURL=case.js.map
+//# sourceMappingURL=case-value.js.map

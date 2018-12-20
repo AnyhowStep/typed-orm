@@ -2,12 +2,12 @@ import * as sd from "schema-decorator";
 import {RawExpr} from "../../../../../../../raw-expr";
 import {RawExprUtil} from "../../../../../../../raw-expr";
 import {ColumnRefUtil} from "../../../../../../../column-ref";
-import {ICase} from "../../case";
+import {ICaseValue} from "../../case-value";
 import {Expr} from "../../../../../../../expr";
 import {AfterWhenCase} from "./after-when-case";
 
 export type NullableElse<
-    BuilderT extends ICase<{
+    BuilderT extends ICaseValue<{
         usedRef : {},
         value : any,
         result : sd.AssertDelegate<any>,

@@ -1,4 +1,4 @@
-export * from "./case";
+export * from "./case-value";
 
-import * as CaseUtil from "./util";
-export {CaseUtil};
+import * as CaseValueUtil from "./util";
+export {CaseValueUtil};

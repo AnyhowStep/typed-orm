@@ -3,10 +3,10 @@ import {RawExpr} from "../../../../../../../raw-expr";
 import {PrimitiveExpr} from "../../../../../../../primitive-expr";
 import {RawExprUtil} from "../../../../../../../raw-expr";
 import {ColumnRefUtil} from "../../../../../../../column-ref";
-import {ICase, Case} from "../../case";
+import {ICaseValue, CaseValue} from "../../case-value";
 
 export type NullableWhen<
-    BuilderT extends ICase,
+    BuilderT extends ICaseValue,
     WhenT extends RawExpr<ReturnType<BuilderT["value"]>>,
     ThenT extends RawExpr<
         BuilderT["result"] extends sd.AssertDelegate<any> ?
@@ -14,7 +14,7 @@ export type NullableWhen<
         PrimitiveExpr
     >
 > = (
-    Case<{
+    CaseValue<{
         usedRef : (
             BuilderT["usedRef"] &
             RawExprUtil.UsedRef<WhenT> &
@@ -32,7 +32,7 @@ export type NullableWhen<
     }>
 );
 export function nullableWhen<
-    BuilderT extends ICase,
+    BuilderT extends ICaseValue,
     WhenT extends RawExpr<ReturnType<BuilderT["value"]>>,
     ThenT extends RawExpr<
         BuilderT["result"] extends sd.AssertDelegate<any> ?
@@ -42,7 +42,7 @@ export function nullableWhen<
 >(builder : BuilderT, whenExpr : WhenT, thenExpr : ThenT) : (
     NullableWhen<BuilderT, WhenT, ThenT>
 ) {
-    return new Case(
+    return new CaseValue(
         {
             usedRef : ColumnRefUtil.intersect(
                 builder.usedRef,

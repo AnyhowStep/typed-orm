@@ -1,4 +1,4 @@
-export * from "./case";
-import * as CaseUtil from "./util";
-export { CaseUtil };
+export * from "./case-value";
+import * as CaseValueUtil from "./util";
+export { CaseValueUtil };
 //# sourceMappingURL=index.d.ts.map

@@ -1,10 +1,10 @@
 import * as sd from "schema-decorator";
-import {ICase} from "../../case";
+import {ICaseValue} from "../../case-value";
 import {Expr} from "../../../../../../../expr";
 import {AfterWhenCase} from "./after-when-case";
 
 export type End<
-    BuilderT extends ICase<{
+    BuilderT extends ICaseValue<{
         usedRef : {},
         value : any,
         result : sd.AssertDelegate<any>,

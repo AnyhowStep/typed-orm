@@ -3,7 +3,7 @@ import {RawExpr} from "../../../../../raw-expr";
 import {PrimitiveExpr, NonNullPrimitiveExpr} from "../../../../../primitive-expr";
 import {ColumnRef} from "../../../../../column-ref";
 import {QueryTreeArray} from "../../../../../query-tree";
-import * as CaseUtil from "./util";
+import * as CaseValueUtil from "./util";
 
 /*
     case(value)
@@ -16,19 +16,19 @@ import * as CaseUtil from "./util";
         .when(compareValue, result)
         .end()
 */
-export interface CaseData {
+export interface CaseValueData {
     readonly usedRef : ColumnRef,
     readonly value : sd.AssertDelegate<any>,
     readonly result : sd.AssertDelegate<any>|undefined,
 }
-export interface ICase<DataT extends CaseData=CaseData> {
+export interface ICaseValue<DataT extends CaseValueData=CaseValueData> {
     readonly usedRef : DataT["usedRef"];
     readonly value : DataT["value"];
     readonly result : DataT["result"];
     readonly queryTree : QueryTreeArray;
 }
 
-export class Case<DataT extends CaseData> implements ICase<DataT> {
+export class CaseValue<DataT extends CaseValueData> implements ICaseValue<DataT> {
     readonly usedRef : DataT["usedRef"];
     readonly value : DataT["value"];
     readonly result : DataT["result"];
@@ -52,9 +52,9 @@ export class Case<DataT extends CaseData> implements ICase<DataT> {
             NonNullPrimitiveExpr
         >
     >(whenExpr : WhenT, thenExpr : ThenT) : (
-        CaseUtil.When<this, WhenT, ThenT>
+        CaseValueUtil.When<this, WhenT, ThenT>
     ) {
-        return CaseUtil.when(this, whenExpr, thenExpr);
+        return CaseValueUtil.when(this, whenExpr, thenExpr);
     }
     nullableWhen<
         WhenT extends RawExpr<ReturnType<this["value"]>>,
@@ -64,39 +64,39 @@ export class Case<DataT extends CaseData> implements ICase<DataT> {
             PrimitiveExpr
         >
     >(whenExpr : WhenT, thenExpr : ThenT) : (
-        CaseUtil.NullableWhen<this, WhenT, ThenT>
+        CaseValueUtil.NullableWhen<this, WhenT, ThenT>
     ) {
-        return CaseUtil.nullableWhen(this, whenExpr, thenExpr);
+        return CaseValueUtil.nullableWhen(this, whenExpr, thenExpr);
     }
     else<
         ElseT extends RawExpr<
-            Exclude<ReturnType<Extract<this, CaseUtil.AfterWhenCase>["result"]>, null>
+            Exclude<ReturnType<Extract<this, CaseValueUtil.AfterWhenCase>["result"]>, null>
         >
     > (
-        this : Extract<this, CaseUtil.AfterWhenCase>,
+        this : Extract<this, CaseValueUtil.AfterWhenCase>,
         elseExpr : ElseT
     ) : (
-        CaseUtil.Else<Extract<this, CaseUtil.AfterWhenCase>, ElseT>
+        CaseValueUtil.Else<Extract<this, CaseValueUtil.AfterWhenCase>, ElseT>
     ) {
-        return CaseUtil.else(this, elseExpr);
+        return CaseValueUtil.else(this, elseExpr);
     }
     nullableElse<
         ElseT extends RawExpr<
-            ReturnType<Extract<this, CaseUtil.AfterWhenCase>["result"]>|null
+            ReturnType<Extract<this, CaseValueUtil.AfterWhenCase>["result"]>|null
         >
     > (
-        this : Extract<this, CaseUtil.AfterWhenCase>,
+        this : Extract<this, CaseValueUtil.AfterWhenCase>,
         elseExpr : ElseT
     ) : (
-        CaseUtil.NullableElse<Extract<this, CaseUtil.AfterWhenCase>, ElseT>
+        CaseValueUtil.NullableElse<Extract<this, CaseValueUtil.AfterWhenCase>, ElseT>
     ) {
-        return CaseUtil.nullableElse(this, elseExpr);
+        return CaseValueUtil.nullableElse(this, elseExpr);
     };
     end (
-        this : Extract<this, CaseUtil.AfterWhenCase>
+        this : Extract<this, CaseValueUtil.AfterWhenCase>
     ) : (
-        CaseUtil.End<Extract<this, CaseUtil.AfterWhenCase>>
+        CaseValueUtil.End<Extract<this, CaseValueUtil.AfterWhenCase>>
     ) {
-        return CaseUtil.end(this);
+        return CaseValueUtil.end(this);
     }
 }
