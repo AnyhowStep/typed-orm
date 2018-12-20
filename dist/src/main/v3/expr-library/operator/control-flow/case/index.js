@@ -4,9 +4,19 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 const raw_expr_1 = require("../../../../raw-expr");
+const condition_1 = require("./condition");
 const value_1 = require("./value");
+__export(require("./condition"));
 __export(require("./value"));
-function CaseConstructor(valueExpr) {
+function CaseConditionConstructor() {
+    return new condition_1.CaseCondition({
+        usedRef: {},
+        result: undefined,
+    }, [
+        "CASE",
+    ]);
+}
+function CaseValueConstructor(valueExpr) {
     return new value_1.CaseValue({
         usedRef: raw_expr_1.RawExprUtil.usedRef(valueExpr),
         value: raw_expr_1.RawExprUtil.assertDelegate(valueExpr),
@@ -15,6 +25,14 @@ function CaseConstructor(valueExpr) {
         "CASE",
         raw_expr_1.RawExprUtil.queryTree(valueExpr),
     ]);
+}
+function CaseConstructor(arg0) {
+    if (arg0 == undefined) {
+        return CaseConditionConstructor();
+    }
+    else {
+        return CaseValueConstructor(arg0);
+    }
 }
 exports.CaseConstructor = CaseConstructor;
 exports.case = CaseConstructor;
