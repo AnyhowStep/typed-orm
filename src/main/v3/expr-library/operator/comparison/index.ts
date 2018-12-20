@@ -1,3 +1,5 @@
+export * from "./string";
+
 export * from "./between";
 export * from "./comparison";
 export * from "./eq";
