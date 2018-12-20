@@ -129,7 +129,8 @@ export namespace RawExprUtil {
         never
     );
     export type AssertDelegate<RawExprT extends RawExpr<any>> = (
-        RawExprT extends PrimitiveExpr ?
+        sd.AssertDelegate<TypeOf<RawExprT>>
+        /*RawExprT extends PrimitiveExpr ?
         sd.AssertDelegate<RawExprT> :
         RawExprT extends IExpr ?
         RawExprT["assertDelegate"] :
@@ -148,7 +149,7 @@ export namespace RawExprUtil {
         ) :
         RawExprT extends TableSubquery.SingleValueOrEmpty<any> ?
         TableSubquery.AssertDelegate<RawExprT> :
-        never
+        never*/
     );
     export function assertDelegate<RawExprT extends RawExpr<any>> (
         rawExpr : RawExprT
