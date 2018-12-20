@@ -4,6 +4,7 @@ export * from "./column";
 export * from "./column-identifier";
 
 export * from "./column-map";
+export * from "./data-type";
 export * from "./expr-library";
 export * from "./formatter";
 export * from "./order";

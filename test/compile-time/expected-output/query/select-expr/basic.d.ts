@@ -6,9 +6,9 @@ export declare const query: o.Query<{
     readonly _parentJoins: undefined;
     readonly _selects: [o.IExprSelectItem<{
         readonly usedRef: {};
-        readonly assertDelegate: import("schema-decorator").AssertDelegate<import("../../../../../dist/src/main/v3/data-type").MySqlDateTime> & {
-            __accepts: string | Date | import("../../../../../dist/src/main/v3/data-type").MySqlDateTime;
-            __canAccept: string | number | Date | import("../../../../../dist/src/main/v3/data-type").MySqlDateTime;
+        readonly assertDelegate: import("schema-decorator").AssertDelegate<o.MySqlDateTime> & {
+            __accepts: string | Date | o.MySqlDateTime;
+            __canAccept: string | number | Date | o.MySqlDateTime;
         };
         readonly tableAlias: "__aliased";
         readonly alias: "value";

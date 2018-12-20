@@ -8,6 +8,7 @@ const column_ref_1 = require("./column-ref");
 const sqlstring_1 = require("sqlstring");
 const query_tree_1 = require("./query-tree");
 const query_1 = require("./query");
+const data_type_1 = require("./data-type");
 var RawExprUtil;
 (function (RawExprUtil) {
     function usedRef(rawExpr) {
@@ -28,6 +29,9 @@ var RawExprUtil;
             return {};
         }
         if (rawExpr === null) {
+            return {};
+        }
+        if (rawExpr instanceof data_type_1.MySqlDateTime) {
             return {};
         }
         if (expr_1.ExprUtil.isExpr(rawExpr)) {
@@ -75,6 +79,9 @@ var RawExprUtil;
         }
         if (rawExpr === null) {
             return sd.nil();
+        }
+        if (rawExpr instanceof data_type_1.MySqlDateTime) {
+            return data_type_1.dateTime;
         }
         if (expr_1.ExprUtil.isExpr(rawExpr)) {
             return rawExpr.assertDelegate;
@@ -132,6 +139,9 @@ var RawExprUtil;
         }
         if (rawExpr === null) {
             return sqlstring_1.escape(rawExpr);
+        }
+        if (rawExpr instanceof data_type_1.MySqlDateTime) {
+            return sqlstring_1.escape(rawExpr.mySqlString());
         }
         if (expr_1.ExprUtil.isExpr(rawExpr)) {
             return rawExpr.queryTree;

@@ -7,6 +7,7 @@ __export(require("./aliased-table"));
 __export(require("./column"));
 __export(require("./column-identifier"));
 __export(require("./column-map"));
+__export(require("./data-type"));
 __export(require("./expr-library"));
 __export(require("./formatter"));
 __export(require("./order"));

@@ -3,14 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 const expr_1 = require("../../../expr");
 const data_type_1 = require("../../../data-type");
-const now = [
+const nowArr = [
     new expr_1.Expr({
         usedRef: {},
         assertDelegate: data_type_1.dateTime(),
     }, "NOW()"),
 ];
 for (let i = 1; i <= 6; ++i) {
-    now.push(new expr_1.Expr({
+    nowArr.push(new expr_1.Expr({
         usedRef: {},
         assertDelegate: data_type_1.dateTime(),
     }, `NOW(${i})`));
@@ -22,10 +22,10 @@ for (let i = 1; i <= 6; ++i) {
     However, MySQL has up to 6 fractional seconds precision.
     This is equivalent to microsecond precision.
 */
-function NOW(fractionalSecondsPrecision = 0) {
+function now(fractionalSecondsPrecision = 0) {
     //Run-time check. To be safe.
     sd.literal(0, 1, 2, 3, 4, 5, 6)("fractionalSecondsPrecision", fractionalSecondsPrecision);
-    return now[fractionalSecondsPrecision];
+    return nowArr[fractionalSecondsPrecision];
 }
-exports.NOW = NOW;
+exports.now = now;
 //# sourceMappingURL=now.js.map

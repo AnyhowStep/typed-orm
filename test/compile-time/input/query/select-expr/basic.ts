@@ -1,3 +1,3 @@
 import * as o from "../../../../../dist/src/main";
 
-export const query = o.selectExpr(() => o.NOW());
+export const query = o.selectExpr(() => o.now());

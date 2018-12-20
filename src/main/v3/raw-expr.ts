@@ -12,6 +12,7 @@ import {OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery} from "./query/util";
 import { IQuery, QueryUtil } from "./query";
 import { IJoin } from "./join";
 import {SelectItemUtil} from "./select-item";
+import {MySqlDateTime, dateTime} from "./data-type";
 
 export type RawExpr<TypeT> = (
     (
@@ -73,6 +74,9 @@ export namespace RawExprUtil {
             return {} as any;
         }
         if (rawExpr === null) {
+            return {} as any;
+        }
+        if (rawExpr instanceof MySqlDateTime) {
             return {} as any;
         }
 
@@ -166,6 +170,9 @@ export namespace RawExprUtil {
         if (rawExpr === null) {
             return sd.nil() as any;
         }
+        if (rawExpr instanceof MySqlDateTime) {
+            return dateTime as any;
+        }
 
         if (ExprUtil.isExpr(rawExpr)) {
             return rawExpr.assertDelegate;
@@ -226,6 +233,9 @@ export namespace RawExprUtil {
         }
         if (rawExpr === null) {
             return escape(rawExpr);
+        }
+        if (rawExpr instanceof MySqlDateTime) {
+            return escape(rawExpr.mySqlString());
         }
 
         if (ExprUtil.isExpr(rawExpr)) {
