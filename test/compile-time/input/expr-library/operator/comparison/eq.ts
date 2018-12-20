@@ -56,3 +56,8 @@ export const eq9 = o.eq(
     t.columns.i,
     t.columns.h
 );
+
+export const eq10 = o.eq(
+    t.columns.x,
+    t.columns.a
+);

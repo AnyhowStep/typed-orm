@@ -84,5 +84,36 @@
     "category": 1,
     "length": 11,
     "start": 868
+  },
+  {
+    "messageText": {
+      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to parameter of type 'number | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<number>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<number>; }> | (IQuery<...> & ... 2 more ... & IQuery<...>) | ITableSubquery<...>'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to type 'IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<number>; }>'.",
+        "category": 1,
+        "code": 2322,
+        "next": {
+          "messageText": "Types of property 'assertDelegate' are incompatible.",
+          "category": 1,
+          "code": 2326,
+          "next": {
+            "messageText": "Type 'AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }' is not assignable to type 'AssertDelegate<number>'.",
+            "category": 1,
+            "code": 2322,
+            "next": {
+              "messageText": "Type 'boolean' is not assignable to type 'number'.",
+              "category": 1,
+              "code": 2322
+            }
+          }
+        }
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 11,
+    "start": 931
   }
 ]

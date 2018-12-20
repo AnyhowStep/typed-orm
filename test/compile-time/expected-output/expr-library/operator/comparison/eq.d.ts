@@ -147,3 +147,4 @@ export declare const eq6: any;
 export declare const eq7: any;
 export declare const eq8: any;
 export declare const eq9: any;
+export declare const eq10: any;
