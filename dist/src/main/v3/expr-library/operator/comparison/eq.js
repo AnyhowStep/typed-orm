@@ -1,18 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
-const expr_1 = require("../../../expr");
-const raw_expr_1 = require("../../../raw-expr");
-const column_ref_1 = require("../../../column-ref");
-function eq(left, right) {
-    return new expr_1.Expr({
-        usedRef: column_ref_1.ColumnRefUtil.intersect(raw_expr_1.RawExprUtil.usedRef(left), raw_expr_1.RawExprUtil.usedRef(right)),
-        assertDelegate: sd.numberToBoolean(),
-    }, [
-        raw_expr_1.RawExprUtil.queryTree(left),
-        "=",
-        raw_expr_1.RawExprUtil.queryTree(right),
-    ]);
-}
-exports.eq = eq;
+const comparison_1 = require("./comparison");
+//Interestingly enough, if I remove the `Comparison` explicit type annotation,
+//TS takes *much* longer to compile.
+//https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_equal
+exports.eq = comparison_1.comparison("=");
 //# sourceMappingURL=eq.js.map
