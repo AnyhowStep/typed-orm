@@ -12,7 +12,11 @@ function convert(rawExpr, transcodingName) {
         usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
         assertDelegate: sd.string(),
     }, new query_tree_1.FunctionCall("CONVERT", [
-        raw_expr_1.RawExprUtil.queryTree(rawExpr) + ` USING ${transcodingName}`
+        [
+            raw_expr_1.RawExprUtil.queryTree(rawExpr),
+            "USING",
+            transcodingName
+        ]
     ]));
 }
 exports.convert = convert;

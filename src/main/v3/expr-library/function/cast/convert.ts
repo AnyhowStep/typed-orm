@@ -24,7 +24,11 @@ export function convert<
             assertDelegate : sd.string(),
         },
         new FunctionCall("CONVERT", [
-            RawExprUtil.queryTree(rawExpr) + ` USING ${transcodingName}`
+            [
+                RawExprUtil.queryTree(rawExpr),
+                "USING",
+                transcodingName
+            ]
         ])
     );
 }
