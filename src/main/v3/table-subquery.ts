@@ -5,7 +5,6 @@ import {ColumnMapUtil} from "./column-map";
 import {IColumn, ColumnUtil} from "./column";
 import {IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 import {QueryTree} from "./query-tree";
-import {AnonymousTypedSingleValueSelectItem} from "./select-item";
 
 /*
     TODO Find a way to make single value subqueries extend
@@ -91,28 +90,8 @@ export namespace TableSubquery {
     export type SingleValueOrEmpty<TypeT> = (
         ITableSubquery<{
             readonly query : (
-                QueryUtil.AfterSelectClause &
-                QueryUtil.ZeroOrOneRowQuery &
-                {
-                    /*
-                        Technically, one should be able to infinitely
-                        nest SingleValueOrEmpty table subqueries,
-
-                        SELECT (
-                            SELECT (
-                                SELECT appId FROM app WHERE appId=0
-                            ) AS a
-                        ) AS b
-
-                        But we explicitly disallow it in this library
-                        for simplicity.
-
-                        In general, such nesting isn't desired, anyway.
-                    */
-                    _selects : [
-                        AnonymousTypedSingleValueSelectItem<TypeT>
-                    ]
-                }
+                QueryUtil.OneSelectItemQuery<TypeT> &
+                QueryUtil.ZeroOrOneRowQuery
             ),
             readonly alias : string,
         }>
@@ -139,28 +118,8 @@ export namespace TableSubquery {
     export type SingleValue<TypeT> = (
         ITableSubquery<{
             readonly query : (
-                QueryUtil.AfterSelectClause &
-                QueryUtil.OneRowQuery &
-                {
-                    /*
-                        Technically, one should be able to infinitely
-                        nest SingleValue table subqueries,
-
-                        SELECT (
-                            SELECT (
-                                SELECT NOW()
-                            ) AS a
-                        ) AS b
-
-                        But we explicitly disallow it in this library
-                        for simplicity.
-
-                        In general, such nesting isn't desired, anyway.
-                    */
-                    _selects : [
-                        AnonymousTypedSingleValueSelectItem<TypeT>
-                    ]
-                }
+                QueryUtil.OneSelectItemQuery<TypeT> &
+                QueryUtil.OneRowQuery
             ),
             readonly alias : string,
         }>

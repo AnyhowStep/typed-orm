@@ -38,7 +38,9 @@ const reservedWords = [
     "TABLE", "TABLES", "TEMPORARY", "TERMINATED", "THEN", "TO", "TRAILING", "TRANSACTIONAL", "TRUE", "TRUNCATE", "TYPE", "TYPES",
     "UNCOMMITTED", "UNIQUE", "UNLOCK", "UNSIGNED", "USAGE", "USE", "USING",
     "VARIABLES", "VIEW", "WHEN", "WITH", "WORK", "WRITE",
-    "YEAR_MONTH"
+    "YEAR_MONTH",
+    //This will be rendered as `AND` but without a new line
+    "HACKED_AND_NO_NEW_LINE"
 ];
 
 const reservedToplevelWords = [

@@ -77,10 +77,10 @@ export function andWhere<
         throw new Error(`Cannot use WHERE before FROM clause`);
     }
     const queryRef = ColumnRefUtil.fromQueryJoins(query);
-    const rawExpr = delegate(
+    const rawExpr : ReturnType<AndWhereDelegateT> = delegate(
         ColumnRefUtil.toConvenient(queryRef),
         query
-    );
+    ) as ReturnType<AndWhereDelegateT>;
     const expr = ExprUtil.fromRawExpr(rawExpr);
 
     ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);

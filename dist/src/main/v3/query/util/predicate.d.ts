@@ -41,7 +41,7 @@ export declare type ZeroOrOneRowFromQuery = (AfterFromClause & BeforeUnionClause
     };
 }));
 export declare type ZeroOrOneRowQuery = (OneRowQuery | ZeroOrOneRowUnionQuery | ZeroOrOneRowFromQuery);
-export declare type OneSelectItemQuery<TypeT> = (AfterSelectClause & {
+export declare type OneSelectItemQuery<TypeT> = (QueryData & {
     _selects: [AnonymousTypedSingleValueSelectItem<TypeT>];
 });
 export declare function isBeforeFromClause(query: IQuery): query is BeforeFromClause;

@@ -1,4 +1,4 @@
 import {ternaryComparison, TernaryComparison} from "./ternary-comparison";
 
 //https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_not-between
-export const notBetween : TernaryComparison = ternaryComparison("NOT BETWEEN", "AND");
+export const notBetween : TernaryComparison = ternaryComparison("NOT BETWEEN", "HACKED_AND_NO_NEW_LINE");

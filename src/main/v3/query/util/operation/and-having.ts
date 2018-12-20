@@ -82,7 +82,7 @@ export function andHaving<
     const rawExpr = delegate(
         ColumnRefUtil.toConvenient(queryRef),
         query
-    );
+    ) as ReturnType<AndHavingDelegateT>;
     const expr = ExprUtil.fromRawExpr(rawExpr);
 
     ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);

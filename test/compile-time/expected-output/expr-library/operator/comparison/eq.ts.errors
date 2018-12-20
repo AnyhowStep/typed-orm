@@ -15,7 +15,7 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to parameter of type 'string | number | bigint | boolean | Date | Buffer | MySqlDateTime | MySqlDate | MySqlTime | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<string | number | bigint | boolean | ... 4 more ... | MySqlTime>; }> | IColumn<...> | (IQuery<...> & ... 2 more ... & IQuery<...>) | ITableSubquery<...>'.",
+      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to parameter of type 'string | number | bigint | boolean | Date | Buffer | MySqlDateTime | MySqlDate | MySqlTime | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<string | number | bigint | boolean | ... 4 more ... | MySqlTime>; }> | IColumn<...> | (QueryData & ... 2 more ... & IQuery<...>) | ITableSubquery<...>'.",
       "category": 1,
       "code": 2345,
       "next": {
@@ -51,7 +51,7 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to parameter of type 'string | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<string>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<string>; }> | (IQuery<...> & ... 2 more ... & IQuery<...>) | ITableSubquery<...>'.",
+      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to parameter of type 'string | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<string>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<string>; }> | (QueryData & ... 2 more ... & IQuery<...>) | ITableSubquery<...>'.",
       "category": 1,
       "code": 2345,
       "next": {
@@ -87,7 +87,7 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to parameter of type 'number | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<number>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<number>; }> | (IQuery<...> & ... 2 more ... & IQuery<...>) | ITableSubquery<...>'.",
+      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to parameter of type 'number | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<number>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<number>; }> | (QueryData & ... 2 more ... & IQuery<...>) | ITableSubquery<...>'.",
       "category": 1,
       "code": 2345,
       "next": {

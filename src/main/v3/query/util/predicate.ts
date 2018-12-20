@@ -148,7 +148,7 @@ export type ZeroOrOneRowQuery = (
     ZeroOrOneRowFromQuery
 );
 export type OneSelectItemQuery<TypeT> = (
-    AfterSelectClause &
+    QueryData &
     { _selects : [AnonymousTypedSingleValueSelectItem<TypeT>] }
 );
 

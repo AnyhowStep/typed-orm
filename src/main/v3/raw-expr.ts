@@ -45,7 +45,10 @@ export namespace RawExprUtil {
         RawExprT extends IQuery ?
         (
             RawExprT["_parentJoins"] extends IJoin[] ?
-            ColumnRefUtil.FromJoinArray<RawExprT["_parentJoins"]> :
+            ColumnRefUtil.FromJoinArray<Extract<
+                RawExprT["_parentJoins"],
+                IJoin[]
+            >> :
             {}
         ) :
         //TableSubquery have parentJoins as usedRef
@@ -87,7 +90,7 @@ export namespace RawExprUtil {
         }
 
         if (ExprUtil.isExpr(rawExpr)) {
-            return rawExpr.usedRef;
+            return rawExpr.usedRef as any;
         }
 
         if (ColumnUtil.isColumn(rawExpr)) {
@@ -187,16 +190,16 @@ export namespace RawExprUtil {
         }
 
         if (ExprUtil.isExpr(rawExpr)) {
-            return rawExpr.assertDelegate;
+            return rawExpr.assertDelegate as any;
         }
 
         if (ColumnUtil.isColumn(rawExpr)) {
-            return rawExpr.assertDelegate;
+            return rawExpr.assertDelegate as any;
         }
 
         if (QueryUtil.isQuery(rawExpr) && QueryUtil.isOneSelectItemQuery(rawExpr)) {
             if (QueryUtil.isOneRowQuery(rawExpr)) {
-                return rawExpr._selects[0].assertDelegate;
+                return rawExpr._selects[0].assertDelegate as any;
             } else {
                 return sd.nullable(rawExpr._selects[0].assertDelegate) as any;
             }

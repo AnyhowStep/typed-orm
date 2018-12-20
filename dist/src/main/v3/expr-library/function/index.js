@@ -4,5 +4,6 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./cast"));
+__export(require("./comparison"));
 __export(require("./date-time"));
 //# sourceMappingURL=index.js.map

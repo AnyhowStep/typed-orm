@@ -9,7 +9,7 @@ const raw_expr_1 = require("../../../raw-expr");
 function ternaryComparison(leftOperator, rightOperator) {
     const result = (left, mid, right) => {
         return new expr_1.Expr({
-            usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple([left, mid, right]),
+            usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple(left, mid, right),
             assertDelegate: sd.numberToBoolean(),
         }, [
             raw_expr_1.RawExprUtil.queryTree(left),

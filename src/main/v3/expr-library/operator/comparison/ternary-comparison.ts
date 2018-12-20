@@ -31,7 +31,7 @@ export function ternaryComparison (leftOperator : string, rightOperator : string
         return new Expr(
             {
                 usedRef : RawExprUtil.intersectUsedRefTuple(
-                    [left, mid, right]
+                    left, mid, right
                 ),
                 assertDelegate : sd.numberToBoolean(),
             },

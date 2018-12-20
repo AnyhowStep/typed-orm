@@ -4,6 +4,7 @@ import { RawExpr, RawExprUtil } from "./raw-expr";
 import { QueryTree } from "./query-tree";
 import { IExprSelectItem } from "./expr-select-item";
 import { ALIASED } from "./constants";
+import { PrimitiveExpr } from "./primitive-expr";
 export interface ExprData {
     readonly usedRef: ColumnRef;
     readonly assertDelegate: sd.AssertDelegate<any>;
@@ -26,11 +27,11 @@ export declare type IAnonymousTypedExpr<TypeT> = (IExpr<{
 }>);
 export declare namespace ExprUtil {
     function isExpr(raw: any): raw is IExpr;
-    type FromRawExpr<RawExprT extends RawExpr<any>> = (Expr<{
+    type FromRawExpr<RawExprT extends RawExpr<PrimitiveExpr>> = (Expr<{
         usedRef: RawExprUtil.UsedRef<RawExprT>;
         assertDelegate: RawExprUtil.AssertDelegate<RawExprT>;
     }>);
-    function fromRawExpr<RawExprT extends RawExpr<any>>(rawExpr: RawExprT): FromRawExpr<RawExprT>;
+    function fromRawExpr<RawExprT extends RawExpr<PrimitiveExpr>>(rawExpr: RawExprT): FromRawExpr<RawExprT>;
     type As<ExprT extends IExpr, AliasT extends string> = (IExprSelectItem<{
         readonly usedRef: ExprT["usedRef"];
         readonly assertDelegate: ExprT["assertDelegate"];

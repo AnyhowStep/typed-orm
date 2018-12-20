@@ -5,7 +5,6 @@ import { ColumnMapUtil } from "./column-map";
 import { IColumn } from "./column";
 import { IExprSelectItem } from "./expr-select-item";
 import { QueryTree } from "./query-tree";
-import { AnonymousTypedSingleValueSelectItem } from "./select-item";
 export interface TableSubqueryData {
     readonly query: QueryUtil.AfterSelectClause;
     readonly alias: string;
@@ -26,16 +25,12 @@ export declare namespace TableSubquery {
     }>);
     function isTableSubquery(raw: any): raw is ITableSubquery;
     type SingleValueOrEmpty<TypeT> = (ITableSubquery<{
-        readonly query: (QueryUtil.AfterSelectClause & QueryUtil.ZeroOrOneRowQuery & {
-            _selects: [AnonymousTypedSingleValueSelectItem<TypeT>];
-        });
+        readonly query: (QueryUtil.OneSelectItemQuery<TypeT> & QueryUtil.ZeroOrOneRowQuery);
         readonly alias: string;
     }>);
     function isSingleValueOrEmpty(raw: any): raw is SingleValueOrEmpty<any>;
     type SingleValue<TypeT> = (ITableSubquery<{
-        readonly query: (QueryUtil.AfterSelectClause & QueryUtil.OneRowQuery & {
-            _selects: [AnonymousTypedSingleValueSelectItem<TypeT>];
-        });
+        readonly query: (QueryUtil.OneSelectItemQuery<TypeT> & QueryUtil.OneRowQuery);
         readonly alias: string;
     }>);
     function isSingleValue(raw: any): raw is SingleValue<any>;

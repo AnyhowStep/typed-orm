@@ -2,8 +2,9 @@ import * as sd from "schema-decorator";
 import {ColumnRef} from "./column-ref";
 import {RawExpr, RawExprUtil} from "./raw-expr";
 import {QueryTree, QueryTreeUtil, Parentheses} from "./query-tree";
-import { IExprSelectItem } from "./expr-select-item";
-import { ALIASED } from "./constants";
+import {IExprSelectItem} from "./expr-select-item";
+import {ALIASED} from "./constants";
+import {PrimitiveExpr} from "./primitive-expr";
 
 export interface ExprData {
     readonly usedRef : ColumnRef;
@@ -63,14 +64,14 @@ export namespace ExprUtil {
         );
     }
 
-    export type FromRawExpr<RawExprT extends RawExpr<any>> = (
+    export type FromRawExpr<RawExprT extends RawExpr<PrimitiveExpr>> = (
         Expr<{
             usedRef : RawExprUtil.UsedRef<RawExprT>,
             assertDelegate : RawExprUtil.AssertDelegate<RawExprT>
         }>
     );
     export function fromRawExpr<
-        RawExprT extends RawExpr<any>
+        RawExprT extends RawExpr<PrimitiveExpr>
     > (
         rawExpr : RawExprT
     ) : FromRawExpr<RawExprT> {

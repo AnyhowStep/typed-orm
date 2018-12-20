@@ -202,6 +202,9 @@ export class Formatter {
     }
 
     formatWithSpaces(token : Token, query : string) {
+        if (token.value == "HACKED_AND_NO_NEW_LINE") {
+            return query + "AND" + " ";
+        }
         return query + token.value + " ";
     }
 
