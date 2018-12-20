@@ -1,0 +1,88 @@
+[
+  {
+    "messageText": "Expected 2 arguments, but got 1.",
+    "code": 2554,
+    "category": 1,
+    "length": 23,
+    "start": 705
+  },
+  {
+    "messageText": "Expected 2 arguments, but got 0.",
+    "code": 2554,
+    "category": 1,
+    "length": 7,
+    "start": 750
+  },
+  {
+    "messageText": {
+      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to parameter of type 'string | number | bigint | boolean | Date | Buffer | MySqlDateTime | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<string | number | bigint | boolean | Date | Buffer | MySqlDateTime>; }> | IColumn<...> | (IQuery<...> & ... 2 more ... & IQuery<...>) | ITableSubquery<...>'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to type 'IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<string | number | bigint | boolean | Date | Buffer | MySqlDateTime>; }>'.",
+        "category": 1,
+        "code": 2322,
+        "next": {
+          "messageText": "Types of property 'assertDelegate' are incompatible.",
+          "category": 1,
+          "code": 2326,
+          "next": {
+            "messageText": "Type 'AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }' is not assignable to type 'AssertDelegate<string | number | bigint | boolean | Date | Buffer | MySqlDateTime>'.",
+            "category": 1,
+            "code": 2322,
+            "next": {
+              "messageText": "Type 'string | null' is not assignable to type 'string | number | bigint | boolean | Date | Buffer | MySqlDateTime'.",
+              "category": 1,
+              "code": 2322,
+              "next": {
+                "messageText": "Type 'null' is not assignable to type 'string | number | bigint | boolean | Date | Buffer | MySqlDateTime'.",
+                "category": 1,
+                "code": 2322
+              }
+            }
+          }
+        }
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 11,
+    "start": 789
+  },
+  {
+    "messageText": {
+      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to parameter of type 'string | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<string>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<string>; }> | (IQuery<...> & ... 2 more ... & IQuery<...>) | ITableSubquery<...>'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to type 'IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<string>; }>'.",
+        "category": 1,
+        "code": 2322,
+        "next": {
+          "messageText": "Types of property 'assertDelegate' are incompatible.",
+          "category": 1,
+          "code": 2326,
+          "next": {
+            "messageText": "Type 'AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }' is not assignable to type 'AssertDelegate<string>'.",
+            "category": 1,
+            "code": 2322,
+            "next": {
+              "messageText": "Type 'string | null' is not assignable to type 'string'.",
+              "category": 1,
+              "code": 2322,
+              "next": {
+                "messageText": "Type 'null' is not assignable to type 'string'.",
+                "category": 1,
+                "code": 2322
+              }
+            }
+          }
+        }
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 11,
+    "start": 868
+  }
+]
