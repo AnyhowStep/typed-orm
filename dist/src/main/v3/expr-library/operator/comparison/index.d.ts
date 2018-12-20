@@ -14,6 +14,7 @@ export * from "./lt-eq";
 export * from "./lt";
 export * from "./not-between";
 export * from "./not-eq";
+export * from "./not-in";
 export * from "./null-safe-comparison";
 export * from "./null-safe-eq";
 export * from "./null-safe-not-eq";

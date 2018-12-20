@@ -19,6 +19,7 @@ __export(require("./lt-eq"));
 __export(require("./lt"));
 __export(require("./not-between"));
 __export(require("./not-eq"));
+__export(require("./not-in"));
 __export(require("./null-safe-comparison"));
 __export(require("./null-safe-eq"));
 __export(require("./null-safe-not-eq"));
