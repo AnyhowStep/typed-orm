@@ -101,12 +101,7 @@
           "next": {
             "messageText": "Type 'AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }' is not assignable to type 'AssertDelegate<number>'.",
             "category": 1,
-            "code": 2322,
-            "next": {
-              "messageText": "Type 'boolean' is not assignable to type 'number'.",
-              "category": 1,
-              "code": 2322
-            }
+            "code": 2322
           }
         }
       }
