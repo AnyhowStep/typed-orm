@@ -1,0 +1,1 @@
+Move these to `schema-decorator`?

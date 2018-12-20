@@ -34,6 +34,12 @@ var RawExprUtil;
         if (rawExpr instanceof data_type_1.MySqlDateTime) {
             return {};
         }
+        if (rawExpr instanceof data_type_1.MySqlDate) {
+            return {};
+        }
+        if (rawExpr instanceof data_type_1.MySqlTime) {
+            return {};
+        }
         if (expr_1.ExprUtil.isExpr(rawExpr)) {
             return rawExpr.usedRef;
         }
@@ -82,6 +88,12 @@ var RawExprUtil;
         }
         if (rawExpr instanceof data_type_1.MySqlDateTime) {
             return data_type_1.dateTime;
+        }
+        if (rawExpr instanceof data_type_1.MySqlDate) {
+            return data_type_1.date;
+        }
+        if (rawExpr instanceof data_type_1.MySqlTime) {
+            return data_type_1.time;
         }
         if (expr_1.ExprUtil.isExpr(rawExpr)) {
             return rawExpr.assertDelegate;
@@ -141,6 +153,12 @@ var RawExprUtil;
             return sqlstring_1.escape(rawExpr);
         }
         if (rawExpr instanceof data_type_1.MySqlDateTime) {
+            return sqlstring_1.escape(rawExpr.mySqlString());
+        }
+        if (rawExpr instanceof data_type_1.MySqlDate) {
+            return sqlstring_1.escape(rawExpr.mySqlString());
+        }
+        if (rawExpr instanceof data_type_1.MySqlTime) {
             return sqlstring_1.escape(rawExpr.mySqlString());
         }
         if (expr_1.ExprUtil.isExpr(rawExpr)) {

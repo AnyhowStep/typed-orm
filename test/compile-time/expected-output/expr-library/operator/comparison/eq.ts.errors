@@ -15,11 +15,11 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to parameter of type 'string | number | bigint | boolean | Date | Buffer | MySqlDateTime | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<string | number | bigint | boolean | Date | Buffer | MySqlDateTime>; }> | IColumn<...> | (IQuery<...> & ... 2 more ... & IQuery<...>) | ITableSubquery<...>'.",
+      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to parameter of type 'string | number | bigint | boolean | Date | Buffer | MySqlDateTime | MySqlDate | MySqlTime | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<string | number | bigint | boolean | ... 4 more ... | MySqlTime>; }> | IColumn<...> | (IQuery<...> & ... 2 more ... & IQuery<...>) | ITableSubquery<...>'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to type 'IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<string | number | bigint | boolean | Date | Buffer | MySqlDateTime>; }>'.",
+        "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to type 'IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<string | number | bigint | boolean | Date | Buffer | MySqlDateTime | MySqlDate | MySqlTime>; }>'.",
         "category": 1,
         "code": 2322,
         "next": {
@@ -27,15 +27,15 @@
           "category": 1,
           "code": 2326,
           "next": {
-            "messageText": "Type 'AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }' is not assignable to type 'AssertDelegate<string | number | bigint | boolean | Date | Buffer | MySqlDateTime>'.",
+            "messageText": "Type 'AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }' is not assignable to type 'AssertDelegate<string | number | bigint | boolean | Date | Buffer | MySqlDateTime | MySqlDate | MySqlTime>'.",
             "category": 1,
             "code": 2322,
             "next": {
-              "messageText": "Type 'string | null' is not assignable to type 'string | number | bigint | boolean | Date | Buffer | MySqlDateTime'.",
+              "messageText": "Type 'string | null' is not assignable to type 'string | number | bigint | boolean | Date | Buffer | MySqlDateTime | MySqlDate | MySqlTime'.",
               "category": 1,
               "code": 2322,
               "next": {
-                "messageText": "Type 'null' is not assignable to type 'string | number | bigint | boolean | Date | Buffer | MySqlDateTime'.",
+                "messageText": "Type 'null' is not assignable to type 'string | number | bigint | boolean | Date | Buffer | MySqlDateTime | MySqlDate | MySqlTime'.",
                 "category": 1,
                 "code": 2322
               }

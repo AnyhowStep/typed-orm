@@ -5,4 +5,6 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./and"));
 __export(require("./not"));
+__export(require("./or"));
+__export(require("./xor"));
 //# sourceMappingURL=index.js.map
