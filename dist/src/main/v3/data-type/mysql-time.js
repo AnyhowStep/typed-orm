@@ -158,6 +158,14 @@ function time() {
         catch (err) {
             throw new Error(`Could not parse ${name}: ${err.message}`);
         }
+    }), sd.chain(sd.string(), sd.dateTime(), (name, jsDate) => {
+        try {
+            const result = MySqlTime.FromJsDate(jsDate);
+            return result;
+        }
+        catch (err) {
+            throw new Error(`Could not convert jsDate ${name}: ${err.message}`);
+        }
     }), sd.chain(sd.validDate(), (name, jsDate) => {
         try {
             const result = MySqlTime.FromJsDate(jsDate);

@@ -204,6 +204,18 @@ export function time () {
             }
         ),
         sd.chain(
+            sd.string(),
+            sd.dateTime(),
+            (name : string, jsDate : Date) => {
+                try {
+                    const result = MySqlTime.FromJsDate(jsDate);
+                    return result;
+                } catch (err) {
+                    throw new Error(`Could not convert jsDate ${name}: ${err.message}`);
+                }
+            }
+        ),
+        sd.chain(
             sd.validDate(),
             (name : string, jsDate : Date) => {
                 try {

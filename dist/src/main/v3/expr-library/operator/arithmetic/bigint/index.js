@@ -8,5 +8,6 @@ __export(require("./div"));
 __export(require("./integer-div"));
 __export(require("./mod"));
 __export(require("./mul"));
+__export(require("./neg"));
 __export(require("./sub"));
 //# sourceMappingURL=index.js.map
