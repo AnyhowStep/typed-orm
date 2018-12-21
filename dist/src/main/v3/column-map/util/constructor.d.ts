@@ -41,14 +41,14 @@ export declare type FromSelectItem<SelectItemT extends SelectItem> = (SelectItem
     [columnName in ColumnUtil.Name.FromColumnRef<SelectItemT>]: (ColumnRefUtil.FindWithColumnName<SelectItemT, columnName>);
 } : never);
 export declare function fromSelectItem<SelectItemT extends SelectItem>(selectItem: SelectItemT): FromSelectItem<SelectItemT>;
-export declare type FromSelectItemArray<SelectsT extends SelectItem[]> = (SelectsT[number] extends never ? {} : {
-    readonly [columnName in SelectItemArrayUtil.ToColumnNameUnion<SelectsT>]: (columnName extends Extract<SelectsT[number], IColumn>["name"] ? ColumnUtil.FromSingleValueSelectItem<Extract<SelectsT[number], {
+export declare type FromSelectItemArray<SelectsT extends SelectItem[], TableAliasT extends string> = (SelectsT[number] extends never ? {} : {
+    readonly [columnName in SelectItemArrayUtil.ToColumnNameUnion<SelectsT>]: (columnName extends Extract<SelectsT[number], IColumn>["name"] ? ColumnUtil.WithTableAlias<ColumnUtil.FromSingleValueSelectItem<Extract<SelectsT[number], {
         name: columnName;
-    }>> : columnName extends Extract<SelectsT[number], IExprSelectItem>["alias"] ? ColumnUtil.FromSingleValueSelectItem<Extract<SelectsT[number], {
+    }>>, TableAliasT> : columnName extends Extract<SelectsT[number], IExprSelectItem>["alias"] ? ColumnUtil.WithTableAlias<ColumnUtil.FromSingleValueSelectItem<Extract<SelectsT[number], {
         alias: columnName;
-    }>> : columnName extends ColumnUtil.Name.FromColumnMap<Extract<SelectsT[number], ColumnMap>> ? FindWithColumnName<Extract<SelectsT[number], ColumnMap>, columnName> : columnName extends ColumnUtil.Name.FromColumnRef<Extract<SelectsT[number], ColumnRef>> ? ColumnRefUtil.FindWithColumnName<Extract<SelectsT[number], ColumnRef>, columnName> : never);
+    }>>, TableAliasT> : columnName extends ColumnUtil.Name.FromColumnMap<Extract<SelectsT[number], ColumnMap>> ? ColumnUtil.WithTableAlias<FindWithColumnName<Extract<SelectsT[number], ColumnMap>, columnName>, TableAliasT> : columnName extends ColumnUtil.Name.FromColumnRef<Extract<SelectsT[number], ColumnRef>> ? ColumnUtil.WithTableAlias<ColumnRefUtil.FindWithColumnName<Extract<SelectsT[number], ColumnRef>, columnName>, TableAliasT> : never);
 });
-export declare function fromSelectItemArray<SelectsT extends SelectItem[]>(selects: SelectsT): FromSelectItemArray<SelectsT>;
+export declare function fromSelectItemArray<SelectsT extends SelectItem[], TableAliasT extends string>(selects: SelectsT, tableAlias: TableAliasT): FromSelectItemArray<SelectsT, TableAliasT>;
 export declare type FromColumnArray<ColumnsT extends IColumn[]> = ({
     readonly [columnName in ColumnsT[number]["name"]]: (Extract<ColumnsT[number], {
         name: columnName;

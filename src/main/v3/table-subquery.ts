@@ -55,7 +55,7 @@ export interface ITableSubquery<
         So, selecting both tableA.x and tableB.x is not allowed.
         You would have to alias one of the columns.
     */
-    readonly columns : ColumnMapUtil.FromSelectItemArray<DataT["query"]["_selects"]>;
+    readonly columns : ColumnMapUtil.FromSelectItemArray<DataT["query"]["_selects"], "TO DELETE">;
 }> {
     readonly query : DataT["query"];
     readonly alias : DataT["alias"];

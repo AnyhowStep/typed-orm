@@ -13,7 +13,7 @@ export interface ITableSubquery<DataT extends TableSubqueryData = TableSubqueryD
     readonly usedRef: {};
     readonly alias: DataT["alias"];
     readonly name: DataT["alias"];
-    readonly columns: ColumnMapUtil.FromSelectItemArray<DataT["query"]["_selects"]>;
+    readonly columns: ColumnMapUtil.FromSelectItemArray<DataT["query"]["_selects"], "TO DELETE">;
 }> {
     readonly query: DataT["query"];
     readonly alias: DataT["alias"];

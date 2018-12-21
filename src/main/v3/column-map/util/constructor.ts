@@ -178,27 +178,39 @@ export function fromSelectItem<SelectItemT extends SelectItem> (
 }
 
 //Assumes no duplicate columnName in SelectsT
-export type FromSelectItemArray<SelectsT extends SelectItem[]> = (
+export type FromSelectItemArray<SelectsT extends SelectItem[], TableAliasT extends string> = (
     SelectsT[number] extends never ?
     {} :
     {
         readonly [columnName in SelectItemArrayUtil.ToColumnNameUnion<SelectsT>] : (
             columnName extends Extract<SelectsT[number], IColumn>["name"] ?
-            ColumnUtil.FromSingleValueSelectItem<Extract<SelectsT[number], { name : columnName }>> :
+            ColumnUtil.WithTableAlias<
+                ColumnUtil.FromSingleValueSelectItem<Extract<SelectsT[number], { name : columnName }>>,
+                TableAliasT
+            > :
 
             columnName extends Extract<SelectsT[number], IExprSelectItem>["alias"] ?
-            ColumnUtil.FromSingleValueSelectItem<Extract<SelectsT[number], { alias : columnName }>> :
+            ColumnUtil.WithTableAlias<
+                ColumnUtil.FromSingleValueSelectItem<Extract<SelectsT[number], { alias : columnName }>>,
+                TableAliasT
+            > :
 
             columnName extends ColumnUtil.Name.FromColumnMap<Extract<SelectsT[number], ColumnMap>> ?
-            FindWithColumnName<
-                Extract<SelectsT[number], ColumnMap>,
-                columnName
+            ColumnUtil.WithTableAlias<
+                FindWithColumnName<
+                    Extract<SelectsT[number], ColumnMap>,
+                    columnName
+                >,
+                TableAliasT
             > :
 
             columnName extends ColumnUtil.Name.FromColumnRef<Extract<SelectsT[number], ColumnRef>> ?
-            ColumnRefUtil.FindWithColumnName<
-                Extract<SelectsT[number], ColumnRef>,
-                columnName
+            ColumnUtil.WithTableAlias<
+                ColumnRefUtil.FindWithColumnName<
+                    Extract<SelectsT[number], ColumnRef>,
+                    columnName
+                >,
+                TableAliasT
             > :
 
             never
@@ -206,16 +218,21 @@ export type FromSelectItemArray<SelectsT extends SelectItem[]> = (
     }
 );
 //Assumes no duplicate columnName in SelectsT
-export function fromSelectItemArray<SelectsT extends SelectItem[]> (
-    selects : SelectsT
-) : FromSelectItemArray<SelectsT> {
-    const columnMaps = selects.map((selectItem) : ColumnMap => {
-        return fromSelectItem(selectItem);
-    });
-    return Object.assign(
-        {},
-        ...columnMaps
-    );
+export function fromSelectItemArray<SelectsT extends SelectItem[], TableAliasT extends string> (
+    selects : SelectsT,
+    tableAlias : TableAliasT
+) : FromSelectItemArray<SelectsT, TableAliasT> {
+    const result : Writable<ColumnMap> = {};
+    for (let item of selects) {
+        const map = fromSelectItem(item);
+        for (let columnName in map) {
+            result[columnName] = ColumnUtil.withTableAlias(
+                map[columnName],
+                tableAlias
+            );
+        }
+    }
+    return result as FromSelectItemArray<SelectsT, TableAliasT>;
 }
 
 export type FromColumnArray<ColumnsT extends IColumn[]> = (

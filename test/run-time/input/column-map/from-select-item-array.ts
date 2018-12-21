@@ -81,45 +81,45 @@ tape(__filename, (t) => {
         mixedColumnMap
     ];
 
-    const fromSelects = o.ColumnMapUtil.fromSelectItemArray(selectItemArray);
+    const fromSelects = o.ColumnMapUtil.fromSelectItemArray(selectItemArray, "test");
 
     t.true(o.ColumnMapUtil.isColumnMap(fromSelects));
     t.deepEqual(Object.keys(fromSelects).length, 9);
 
-    t.deepEqual(fromSelects.name.tableAlias, "tableAlias");
+    t.deepEqual(fromSelects.name.tableAlias, "test");
     t.deepEqual(fromSelects.name.name, "name");
     t.deepEqual(fromSelects.name.assertDelegate("", 89), 89);
 
-    t.deepEqual(fromSelects.someAlias.tableAlias, "someTableAlias");
+    t.deepEqual(fromSelects.someAlias.tableAlias, "test");
     t.deepEqual(fromSelects.someAlias.name, "someAlias");
     t.deepEqual(fromSelects.someAlias.assertDelegate("", new Date("9999-01-01")), new Date("9999-01-01"));
 
-    t.deepEqual(fromSelects.x.tableAlias, "someTable");
+    t.deepEqual(fromSelects.x.tableAlias, "test");
     t.deepEqual(fromSelects.x.name, "x");
     t.deepEqual(fromSelects.x.assertDelegate("", 33), 33);
 
-    t.deepEqual(fromSelects.y.tableAlias, "someTable");
+    t.deepEqual(fromSelects.y.tableAlias, "test");
     t.deepEqual(fromSelects.y.name, "y");
     t.deepEqual(fromSelects.y.assertDelegate("", new Date(9999999)), new Date(9999999));
 
-    t.deepEqual(fromSelects.z.tableAlias, "someTable");
+    t.deepEqual(fromSelects.z.tableAlias, "test");
     t.deepEqual(fromSelects.z.name, "z");
     t.deepEqual(fromSelects.z.assertDelegate("", Buffer.from("test")), Buffer.from("test"));
 
-    t.deepEqual(fromSelects.ax.tableAlias, "tableA");
+    t.deepEqual(fromSelects.ax.tableAlias, "test");
     t.deepEqual(fromSelects.ax.name, "ax");
     t.deepEqual(fromSelects.ax.assertDelegate("", 87), 87);
 
-    t.deepEqual(fromSelects.ay.tableAlias, "tableA");
+    t.deepEqual(fromSelects.ay.tableAlias, "test");
     t.deepEqual(fromSelects.ay.name, "ay");
     t.deepEqual(fromSelects.ay.assertDelegate("", "-----"), "-----");
 
-    t.deepEqual(fromSelects.bx.tableAlias, "tableB");
+    t.deepEqual(fromSelects.bx.tableAlias, "test");
     t.deepEqual(fromSelects.bx.name, "bx");
     t.deepEqual(fromSelects.bx.assertDelegate("", true), true);
     t.deepEqual(fromSelects.bx.assertDelegate("", false), false);
 
-    t.deepEqual(fromSelects.by.tableAlias, "tableB");
+    t.deepEqual(fromSelects.by.tableAlias, "test");
     t.deepEqual(fromSelects.by.name, "by");
     t.deepEqual(fromSelects.by.assertDelegate("", Buffer.from("whatisthis")), Buffer.from("whatisthis"));
 

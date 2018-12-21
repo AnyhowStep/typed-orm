@@ -53,4 +53,4 @@ export declare const selectItemArray : [
     typeof emptyColumnMap,
     typeof mixedColumnMap
 ];
-export const fromSelects = o.ColumnMapUtil.fromSelectItemArray(selectItemArray);
+export const fromSelects = o.ColumnMapUtil.fromSelectItemArray(selectItemArray, "test");

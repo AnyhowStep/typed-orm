@@ -77,11 +77,15 @@ function fromSelectItem(selectItem) {
 }
 exports.fromSelectItem = fromSelectItem;
 //Assumes no duplicate columnName in SelectsT
-function fromSelectItemArray(selects) {
-    const columnMaps = selects.map((selectItem) => {
-        return fromSelectItem(selectItem);
-    });
-    return Object.assign({}, ...columnMaps);
+function fromSelectItemArray(selects, tableAlias) {
+    const result = {};
+    for (let item of selects) {
+        const map = fromSelectItem(item);
+        for (let columnName in map) {
+            result[columnName] = column_1.ColumnUtil.withTableAlias(map[columnName], tableAlias);
+        }
+    }
+    return result;
 }
 exports.fromSelectItemArray = fromSelectItemArray;
 function fromColumnArray(columns) {

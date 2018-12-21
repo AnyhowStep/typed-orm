@@ -12,7 +12,7 @@ function as(query, alias) {
             {} :
             column_ref_1.ColumnRefUtil.fromJoinArray(query._parentJoins)),
         alias,
-        columns: column_map_1.ColumnMapUtil.fromSelectItemArray(query._selects),
+        columns: column_map_1.ColumnMapUtil.fromSelectItemArray(query._selects, alias),
     }, {
         unaliasedQuery: query_1.queryTree_As(query),
     });

@@ -68,7 +68,7 @@ export type As<
             {}
         ),
         alias : AliasT,
-        columns : ColumnMapUtil.FromSelectItemArray<QueryT["_selects"]>,
+        columns : ColumnMapUtil.FromSelectItemArray<QueryT["_selects"], AliasT>,
     }>
 );
 
@@ -103,7 +103,7 @@ export function as<
                 ColumnRefUtil.fromJoinArray(query._parentJoins)
             ),
             alias,
-            columns : ColumnMapUtil.fromSelectItemArray(query._selects),
+            columns : ColumnMapUtil.fromSelectItemArray(query._selects, alias),
         },
         {
             unaliasedQuery : queryTree_As(query),
