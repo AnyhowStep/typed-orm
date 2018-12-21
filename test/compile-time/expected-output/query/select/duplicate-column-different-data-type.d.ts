@@ -8,6 +8,7 @@ export declare const query4: o.Query<{
     readonly _sqlCalcFoundRows: false;
     readonly _joins: (o.Join<{
         aliasedTable: o.Table<{
+            readonly usedRef: {};
             readonly alias: "table";
             readonly name: "table";
             readonly columns: {
@@ -76,6 +77,7 @@ export declare const query4: o.Query<{
         nullable: true;
     }> | o.Join<{
         aliasedTable: o.Table<{
+            readonly usedRef: {};
             readonly alias: "table3";
             readonly name: "table3";
             readonly columns: {

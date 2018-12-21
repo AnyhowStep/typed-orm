@@ -1,6 +1,7 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../dist/src/main";
 export declare const renamed: o.Table<{
+    readonly usedRef: {};
     readonly alias: "renamed";
     readonly name: "renamed";
     readonly columns: {
@@ -41,6 +42,7 @@ export declare const renamed: o.Table<{
     readonly deleteAllowed: true;
 }>;
 export declare const emptyRenamed: o.Table<{
+    readonly usedRef: {};
     readonly alias: "emptyRenamed";
     readonly name: "emptyRenamed";
     readonly columns: {};

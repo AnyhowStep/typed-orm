@@ -5,6 +5,7 @@ export declare const query: o.Query<{
     readonly _sqlCalcFoundRows: true;
     readonly _joins: o.Join<{
         aliasedTable: o.Table<{
+            readonly usedRef: {};
             readonly alias: "table";
             readonly name: "table";
             readonly columns: {

@@ -101,6 +101,7 @@ export interface TableData extends AliasedTableData {
 }
 
 export interface ITable<DataT extends TableData=TableData> {
+    readonly usedRef : DataT["usedRef"];
     readonly alias : DataT["alias"];
     readonly name  : DataT["name"];
     readonly columns : DataT["columns"];
@@ -122,6 +123,7 @@ export interface ITable<DataT extends TableData=TableData> {
 }
 
 export class Table<DataT extends TableData> implements ITable<DataT> {
+    readonly usedRef : DataT["usedRef"];
     readonly alias : DataT["alias"];
     readonly name  : DataT["name"];
     readonly columns : DataT["columns"];
@@ -145,6 +147,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
         data : DataT,
         __databaseName? : string|undefined
     ) {
+        this.usedRef = data.usedRef;
         this.alias = data.alias;
         this.name = data.name;
         this.columns = data.columns;
@@ -306,6 +309,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
 export namespace Table {
     export type As<TableT extends ITable, NewAliasT extends string> = (
         AliasedTable<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : NewAliasT;
             readonly name  : TableT["name"];
             readonly columns : ColumnMapUtil.WithTableAlias<
@@ -316,6 +320,7 @@ export namespace Table {
     );
     export function as<TableT extends ITable, NewAliasT extends string> (
         {
+            usedRef,
             name,
             columns,
             __databaseName,
@@ -328,6 +333,7 @@ export namespace Table {
         const columns2 : TableT["columns"] = columns;
         return new AliasedTable(
             {
+                usedRef : usedRef,
                 alias : newAlias,
                 name,
                 columns : ColumnMapUtil.withTableAlias(
@@ -342,6 +348,7 @@ export namespace Table {
 export namespace Table {
     export type SetName<TableT extends ITable, NewNameT extends string> = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : NewNameT;
             readonly name  : NewNameT;
             readonly columns : ColumnMapUtil.WithTableAlias<
@@ -373,6 +380,7 @@ export namespace Table {
         const columns : TableT["columns"] = table.columns;
 
         const {
+            usedRef,
             autoIncrement,
             id,
             candidateKeys,
@@ -389,6 +397,7 @@ export namespace Table {
 
         return new Table(
             {
+                usedRef,
                 alias : newName,
                 name : newName,
                 columns : ColumnMapUtil.withTableAlias(
@@ -419,6 +428,7 @@ export namespace Table {
         FieldsT extends sd.AnyField[]
     > = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
             readonly name  : TableT["name"];
             readonly columns : ColumnMapUtil.Intersect<
@@ -473,6 +483,7 @@ export namespace Table {
         const isNullable = ColumnUtil.Name.Array.nullableFromColumnMap(columns);
 
         const {
+            usedRef,
             alias,
             name,
 
@@ -491,6 +502,7 @@ export namespace Table {
 
         const result : AddColumnsFromFieldTuple<TableT, FieldsT> = new Table(
             {
+                usedRef,
                 alias,
                 name,
                 columns,
@@ -519,6 +531,7 @@ export namespace Table {
         AssertMapT extends AssertMap
     > = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
             readonly name  : TableT["name"];
             readonly columns : ColumnMapUtil.Intersect<
@@ -569,6 +582,7 @@ export namespace Table {
         const isNullable = ColumnUtil.Name.Array.nullableFromColumnMap(columns);
 
         const {
+            usedRef,
             alias,
             name,
 
@@ -587,6 +601,7 @@ export namespace Table {
 
         const result : AddColumnsFromAssertMap<TableT, AssertMapT> = new Table(
             {
+                usedRef,
                 alias,
                 name,
                 columns,
@@ -719,6 +734,7 @@ export namespace Table {
         DelegateT extends AutoIncrementDelegate<TableT["columns"]>
     > = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
             readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
@@ -804,6 +820,7 @@ export namespace Table {
             }
         );
         const {
+            usedRef,
             alias,
             name,
             isNullable,
@@ -814,6 +831,7 @@ export namespace Table {
 
         const result : SetAutoIncrement<TableT, DelegateT> = new Table(
             {
+                usedRef,
                 alias,
                 name,
                 columns,
@@ -851,6 +869,7 @@ export namespace Table {
         DelegateT extends IdDelegate<TableT["columns"]>
     > = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
             readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
@@ -895,6 +914,7 @@ export namespace Table {
         ]);
 
         const {
+            usedRef,
             alias,
             name,
             autoIncrement,
@@ -909,6 +929,7 @@ export namespace Table {
 
         const result : SetId<TableT, DelegateT> = new Table(
             {
+                usedRef,
                 alias,
                 name,
                 columns,
@@ -946,6 +967,7 @@ export namespace Table {
         DelegateT extends CandidateKeyDelegate<TableT>
     > = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
             readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
@@ -997,6 +1019,7 @@ export namespace Table {
         );
 
         const {
+            usedRef,
             alias,
             name,
 
@@ -1015,6 +1038,7 @@ export namespace Table {
 
         const result : AddCandidateKey<TableT, DelegateT> = new Table(
             {
+                usedRef,
                 alias,
                 name,
                 columns,
@@ -1064,6 +1088,7 @@ export namespace Table {
         DelegateT extends GeneratedDelegate<TableT>
     > = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
             readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
@@ -1147,6 +1172,7 @@ export namespace Table {
         );
 
         const {
+            usedRef,
             alias,
             name,
 
@@ -1163,6 +1189,7 @@ export namespace Table {
 
         const result : SetGenerated<TableT, DelegateT> = new Table(
             {
+                usedRef,
                 alias,
                 name,
                 columns,
@@ -1212,6 +1239,7 @@ export namespace Table {
         DelegateT extends HasExplicitDefaultValueDelegate<TableT>
     > = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
             readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
@@ -1264,6 +1292,7 @@ export namespace Table {
         );
 
         const {
+            usedRef,
             alias,
             name,
 
@@ -1282,6 +1311,7 @@ export namespace Table {
 
         const result : SetHasExplicitDefaultValue<TableT, DelegateT> = new Table(
             {
+                usedRef,
                 alias,
                 name,
                 columns,
@@ -1307,6 +1337,7 @@ export namespace Table {
 export namespace Table {
     export type SetImmutable<TableT extends ITable> = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
             readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
@@ -1329,6 +1360,7 @@ export namespace Table {
         SetImmutable<TableT>
     ) {
         const {
+            usedRef,
             alias,
             name,
             columns,
@@ -1348,6 +1380,7 @@ export namespace Table {
 
         return new Table(
             {
+                usedRef,
                 alias,
                 name,
                 columns,
@@ -1400,6 +1433,7 @@ export namespace Table {
         DelegateT extends MutableDelegate<TableT>
     > = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
             readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
@@ -1448,6 +1482,7 @@ export namespace Table {
         );
 
         const {
+            usedRef,
             alias,
             name,
 
@@ -1466,6 +1501,7 @@ export namespace Table {
 
         const result : OverwriteMutable<TableT, DelegateT> = new Table(
             {
+                usedRef,
                 alias,
                 name,
                 columns,
@@ -1546,6 +1582,7 @@ export namespace Table {
         ParentT extends ITable
     > = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
             readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
@@ -1620,6 +1657,7 @@ export namespace Table {
         ];
 
         const {
+            usedRef,
             alias,
             name,
             columns,
@@ -1638,6 +1676,7 @@ export namespace Table {
         } = table;
 
         return new Table({
+            usedRef,
             alias,
             name,
             columns,
@@ -1660,6 +1699,7 @@ export namespace Table {
 export namespace Table {
     export type DisallowInsert<TableT extends ITable> = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
             readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
@@ -1682,6 +1722,7 @@ export namespace Table {
         DisallowInsert<TableT>
     ) {
         const {
+            usedRef,
             alias,
             name,
             columns,
@@ -1701,6 +1742,7 @@ export namespace Table {
 
         return new Table(
             {
+                usedRef,
                 alias,
                 name,
                 columns,
@@ -1723,6 +1765,7 @@ export namespace Table {
     }
     export type DisallowDelete<TableT extends ITable> = (
         Table<{
+            readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
             readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
@@ -1745,6 +1788,7 @@ export namespace Table {
         DisallowDelete<TableT>
     ) {
         const {
+            usedRef,
             alias,
             name,
             columns,
@@ -1764,6 +1808,7 @@ export namespace Table {
 
         return new Table(
             {
+                usedRef,
                 alias,
                 name,
                 columns,

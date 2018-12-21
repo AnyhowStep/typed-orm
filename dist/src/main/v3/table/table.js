@@ -9,6 +9,7 @@ const type_map_1 = require("../type-map");
 const string_array_1 = require("../string-array");
 class Table {
     constructor(data, __databaseName) {
+        this.usedRef = data.usedRef;
         this.alias = data.alias;
         this.name = data.name;
         this.columns = data.columns;
@@ -88,10 +89,11 @@ class Table {
 }
 exports.Table = Table;
 (function (Table) {
-    function as({ name, columns, __databaseName, }, newAlias) {
+    function as({ usedRef, name, columns, __databaseName, }, newAlias) {
         //https://github.com/Microsoft/TypeScript/issues/28592
         const columns2 = columns;
         return new aliased_table_1.AliasedTable({
+            usedRef: usedRef,
             alias: newAlias,
             name,
             columns: column_map_1.ColumnMapUtil.withTableAlias(columns2, newAlias),
@@ -103,8 +105,9 @@ exports.Table = Table;
     function setName(table, newName) {
         //https://github.com/Microsoft/TypeScript/issues/28592
         const columns = table.columns;
-        const { autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
+        const { usedRef, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
         return new Table({
+            usedRef,
             alias: newName,
             name: newName,
             columns: column_map_1.ColumnMapUtil.withTableAlias(columns, newName),
@@ -130,8 +133,9 @@ exports.Table = Table;
         const columnMapFromFieldArray = column_map_1.ColumnMapUtil.fromFieldArray(table.alias, fields);
         const columns = column_map_1.ColumnMapUtil.intersect(tableColumns, columnMapFromFieldArray);
         const isNullable = column_1.ColumnUtil.Name.Array.nullableFromColumnMap(columns);
-        const { alias, name, autoIncrement, id, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
+        const { usedRef, alias, name, autoIncrement, id, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
+            usedRef,
             alias,
             name,
             columns,
@@ -156,8 +160,9 @@ exports.Table = Table;
         const tableColumns = table.columns;
         const columns = column_map_1.ColumnMapUtil.intersect(tableColumns, column_map_1.ColumnMapUtil.fromAssertMap(table.alias, assertMap));
         const isNullable = column_1.ColumnUtil.Name.Array.nullableFromColumnMap(columns);
-        const { alias, name, autoIncrement, id, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
+        const { usedRef, alias, name, autoIncrement, id, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
+            usedRef,
             alias,
             name,
             columns,
@@ -228,8 +233,9 @@ exports.Table = Table;
         const mutable = table.mutable.filter((columnName) => {
             return (columnName != autoIncrement.name);
         });
-        const { alias, name, isNullable, parents, insertAllowed, deleteAllowed, } = table;
+        const { usedRef, alias, name, isNullable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
+            usedRef,
             alias,
             name,
             columns,
@@ -258,8 +264,9 @@ exports.Table = Table;
         const candidateKeys = table.candidateKeys.concat([
             [id.name]
         ]);
-        const { alias, name, autoIncrement, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
+        const { usedRef, alias, name, autoIncrement, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
+            usedRef,
             alias,
             name,
             columns,
@@ -290,8 +297,9 @@ exports.Table = Table;
         const candidateKeys = string_array_1.StringArrayUtil.uniqueStringArray(table.candidateKeys.concat([
             candidateKeyColumns.map(candidateKeyColumn => candidateKeyColumn.name)
         ]));
-        const { alias, name, autoIncrement, id, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
+        const { usedRef, alias, name, autoIncrement, id, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
+            usedRef,
             alias,
             name,
             columns,
@@ -333,8 +341,9 @@ exports.Table = Table;
         const mutable = string_array_1.StringArrayUtil.uniqueString(table.mutable.filter((columnName) => {
             return generatedColumns.every(column => column.name != columnName);
         }));
-        const { alias, name, autoIncrement, id, candidateKeys, isNullable, parents, insertAllowed, deleteAllowed, } = table;
+        const { usedRef, alias, name, autoIncrement, id, candidateKeys, isNullable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
+            usedRef,
             alias,
             name,
             columns,
@@ -369,8 +378,9 @@ exports.Table = Table;
             ...table.hasExplicitDefaultValue,
             ...hasExplicitDefaultValueColumns.map(column => column.name),
         ]);
-        const { alias, name, autoIncrement, id, candidateKeys, generated, isNullable, mutable, parents, insertAllowed, deleteAllowed, } = table;
+        const { usedRef, alias, name, autoIncrement, id, candidateKeys, generated, isNullable, mutable, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
+            usedRef,
             alias,
             name,
             columns,
@@ -391,8 +401,9 @@ exports.Table = Table;
 })(Table = exports.Table || (exports.Table = {}));
 (function (Table) {
     function setImmutable(table) {
-        const { alias, name, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, parents, insertAllowed, deleteAllowed, } = table;
+        const { usedRef, alias, name, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, parents, insertAllowed, deleteAllowed, } = table;
         return new Table({
+            usedRef,
             alias,
             name,
             columns,
@@ -425,8 +436,9 @@ exports.Table = Table;
         //TODO Make other arrays of strings always
         //have unique elements?
         const mutable = (string_array_1.StringArrayUtil.uniqueString(mutableColumns.map(column => column.name)));
-        const { alias, name, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, parents, insertAllowed, deleteAllowed, } = table;
+        const { usedRef, alias, name, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, parents, insertAllowed, deleteAllowed, } = table;
         const result = new Table({
+            usedRef,
             alias,
             name,
             columns,
@@ -479,8 +491,9 @@ exports.Table = Table;
             ...parent.parents,
             parent
         ];
-        const { alias, name, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, insertAllowed, deleteAllowed, } = table;
+        const { usedRef, alias, name, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, insertAllowed, deleteAllowed, } = table;
         return new Table({
+            usedRef,
             alias,
             name,
             columns,
@@ -500,8 +513,9 @@ exports.Table = Table;
 })(Table = exports.Table || (exports.Table = {}));
 (function (Table) {
     function disallowInsert(table) {
-        const { alias, name, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, deleteAllowed, } = table;
+        const { usedRef, alias, name, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, deleteAllowed, } = table;
         return new Table({
+            usedRef,
             alias,
             name,
             columns,
@@ -519,8 +533,9 @@ exports.Table = Table;
     }
     Table.disallowInsert = disallowInsert;
     function disallowDelete(table) {
-        const { alias, name, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, } = table;
+        const { usedRef, alias, name, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, } = table;
         return new Table({
+            usedRef,
             alias,
             name,
             columns,

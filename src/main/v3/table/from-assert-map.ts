@@ -10,6 +10,7 @@ export function tableFromAssertMap<
     assertMap : AssertMapT
 ) : (
     Table<{
+        readonly usedRef : {};
         readonly alias : NameT;
         readonly name  : NameT;
         readonly columns : ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
@@ -38,6 +39,7 @@ export function tableFromAssertMap<
 
     return new Table(
         {
+            usedRef : {},
             alias : name,
             name  : name,
             columns,

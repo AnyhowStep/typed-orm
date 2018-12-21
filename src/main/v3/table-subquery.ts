@@ -45,6 +45,7 @@ export interface TableSubqueryData {
 export interface ITableSubquery<
     DataT extends TableSubqueryData=TableSubqueryData
 > extends IAliasedTable<{
+    readonly usedRef : {}; //TODO
     readonly alias : DataT["alias"];
     readonly name  : DataT["alias"];
     /*

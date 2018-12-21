@@ -4,6 +4,7 @@ export function tableFromTable<TableT extends ITable> (
     table : TableT
 ) : (
     Table<{
+        readonly usedRef : {};
         readonly alias : TableT["alias"];
         readonly name  : TableT["name"];
         readonly columns : TableT["columns"];
@@ -21,6 +22,7 @@ export function tableFromTable<TableT extends ITable> (
     }>
 ) {
     const {
+        usedRef,
         alias,
         name,
         columns,
@@ -38,6 +40,7 @@ export function tableFromTable<TableT extends ITable> (
     } = table;
     return new Table(
         {
+            usedRef,
             alias,
             name,
             columns,

@@ -8,6 +8,7 @@ function tableFromFieldTuple(name, fields) {
     const isNullable = field_array_1.FieldArrayUtil.nullableNames(fields);
     const mutable = fields.map(field => field.name);
     return new table_1.Table({
+        usedRef: {},
         alias: name,
         name: name,
         columns,

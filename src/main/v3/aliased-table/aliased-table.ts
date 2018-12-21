@@ -1,13 +1,16 @@
 import {ColumnMap, ColumnMapUtil} from "../column-map";
 import {escapeId} from "sqlstring";
+import {ColumnRefUtil, ColumnRef} from "../column-ref";
 
 export interface AliasedTableData {
+    readonly usedRef : ColumnRef;
     readonly alias : string;
     readonly name  : string;
     readonly columns : ColumnMap;
 }
 
 export interface IAliasedTable<DataT extends AliasedTableData=AliasedTableData> {
+    readonly usedRef : DataT["usedRef"];
     readonly alias : DataT["alias"];
     readonly name  : DataT["name"];
     readonly columns : DataT["columns"];
@@ -19,6 +22,7 @@ export interface IAliasedTable<DataT extends AliasedTableData=AliasedTableData> 
 }
 
 export class AliasedTable<DataT extends AliasedTableData> implements IAliasedTable<DataT> {
+    readonly usedRef : DataT["usedRef"];
     readonly alias : DataT["alias"];
     readonly name  : DataT["name"];
     readonly columns : DataT["columns"];
@@ -29,6 +33,7 @@ export class AliasedTable<DataT extends AliasedTableData> implements IAliasedTab
         data : DataT,
         __databaseName? : string|undefined
     ) {
+        this.usedRef = data.usedRef;
         this.alias = data.alias;
         this.name = data.name;
         this.columns = data.columns;
@@ -66,11 +71,14 @@ export namespace AliasedTable {
         return (
             raw != undefined &&
             (raw instanceof Object) &&
+            ("usedRef" in raw) &&
             ("alias" in raw) &&
             ("name" in raw) &&
             ("columns" in raw) &&
+            (raw.usedRef instanceof Object) &&
             (typeof raw.alias == "string") &&
             (typeof raw.name == "string") &&
+            ColumnRefUtil.isColumnRef(raw.usedRef) &&
             ColumnMapUtil.isColumnMap(raw.columns) &&
             (
                 raw.__databaseName === undefined ||

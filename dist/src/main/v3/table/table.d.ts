@@ -22,6 +22,7 @@ export interface TableData extends AliasedTableData {
     readonly deleteAllowed: boolean;
 }
 export interface ITable<DataT extends TableData = TableData> {
+    readonly usedRef: DataT["usedRef"];
     readonly alias: DataT["alias"];
     readonly name: DataT["name"];
     readonly columns: DataT["columns"];
@@ -38,6 +39,7 @@ export interface ITable<DataT extends TableData = TableData> {
     readonly deleteAllowed: DataT["deleteAllowed"];
 }
 export declare class Table<DataT extends TableData> implements ITable<DataT> {
+    readonly usedRef: DataT["usedRef"];
     readonly alias: DataT["alias"];
     readonly name: DataT["name"];
     readonly columns: DataT["columns"];
@@ -79,14 +81,16 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
 }
 export declare namespace Table {
     type As<TableT extends ITable, NewAliasT extends string> = (AliasedTable<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: NewAliasT;
         readonly name: TableT["name"];
         readonly columns: ColumnMapUtil.WithTableAlias<TableT["columns"], NewAliasT>;
     }>);
-    function as<TableT extends ITable, NewAliasT extends string>({ name, columns, __databaseName, }: TableT, newAlias: NewAliasT): (As<TableT, NewAliasT>);
+    function as<TableT extends ITable, NewAliasT extends string>({ usedRef, name, columns, __databaseName, }: TableT, newAlias: NewAliasT): (As<TableT, NewAliasT>);
 }
 export declare namespace Table {
     type SetName<TableT extends ITable, NewNameT extends string> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: NewNameT;
         readonly name: NewNameT;
         readonly columns: ColumnMapUtil.WithTableAlias<TableT["columns"], NewNameT>;
@@ -105,6 +109,7 @@ export declare namespace Table {
 }
 export declare namespace Table {
     type AddColumnsFromFieldTuple<TableT extends ITable, FieldsT extends sd.AnyField[]> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>>;
@@ -123,6 +128,7 @@ export declare namespace Table {
 }
 export declare namespace Table {
     type AddColumnsFromAssertMap<TableT extends ITable, AssertMapT extends AssertMap> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>>;
@@ -159,6 +165,7 @@ export declare namespace Table {
     });
     type AutoIncrementDelegate<ColumnMapT extends ColumnMap> = ((columnMap: AutoIncrementColumnMap<ColumnMapT>) => (AutoIncrementColumnMap<ColumnMapT>[keyof AutoIncrementColumnMap<ColumnMapT>]));
     type SetAutoIncrement<TableT extends ITable, DelegateT extends AutoIncrementDelegate<TableT["columns"]>> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: TableT["columns"];
@@ -180,6 +187,7 @@ export declare namespace Table {
     type SetId<TableT extends ITable<TableData & {
         id: undefined;
     }>, DelegateT extends IdDelegate<TableT["columns"]>> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: TableT["columns"];
@@ -201,6 +209,7 @@ export declare namespace Table {
 export declare namespace Table {
     type CandidateKeyDelegate<TableT extends ITable> = ((columnMap: TableT["columns"]) => (TableT["columns"][string][]));
     type AddCandidateKey<TableT extends ITable, DelegateT extends CandidateKeyDelegate<TableT>> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: TableT["columns"];
@@ -223,6 +232,7 @@ export declare namespace Table {
     });
     type GeneratedDelegate<TableT extends ITable> = ((columnMap: GeneratedColumnMap<TableT["columns"], TableT["generated"]>) => (GeneratedColumnMap<TableT["columns"], TableT["generated"]>[keyof GeneratedColumnMap<TableT["columns"], TableT["generated"]>][]));
     type SetGenerated<TableT extends ITable, DelegateT extends GeneratedDelegate<TableT>> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: TableT["columns"];
@@ -245,6 +255,7 @@ export declare namespace Table {
     });
     type HasExplicitDefaultValueDelegate<TableT extends ITable> = ((columnMap: HasExplicitDefaultValueColumnMap<TableT["columns"], TableT["hasExplicitDefaultValue"]>) => (HasExplicitDefaultValueColumnMap<TableT["columns"], TableT["hasExplicitDefaultValue"]>[keyof HasExplicitDefaultValueColumnMap<TableT["columns"], TableT["hasExplicitDefaultValue"]>][]));
     type SetHasExplicitDefaultValue<TableT extends ITable, DelegateT extends HasExplicitDefaultValueDelegate<TableT>> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: TableT["columns"];
@@ -263,6 +274,7 @@ export declare namespace Table {
 }
 export declare namespace Table {
     type SetImmutable<TableT extends ITable> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: TableT["columns"];
@@ -285,6 +297,7 @@ export declare namespace Table {
     });
     type MutableDelegate<TableT extends ITable> = ((columnMap: MutableColumnMap<TableT["columns"], TableT["generated"]>) => (MutableColumnMap<TableT["columns"], TableT["generated"]>[keyof MutableColumnMap<TableT["columns"], TableT["generated"]>][]));
     type OverwriteMutable<TableT extends ITable, DelegateT extends MutableDelegate<TableT>> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: TableT["columns"];
@@ -306,6 +319,7 @@ export declare namespace Table {
         [columnName in Extract<keyof TableT["columns"], keyof ParentT["columns"]>]: (ReturnType<TableT["columns"][columnName]["assertDelegate"]> extends ReturnType<ParentT["columns"][columnName]["assertDelegate"]> ? never : ["Column", columnName, "has incompatible types", ReturnType<TableT["columns"][columnName]["assertDelegate"]>, ReturnType<ParentT["columns"][columnName]["assertDelegate"]>] | void);
     }>) & (ParentT["name"] extends TableT["name"] ? "Parent cannot have same name as table" | void : unknown) & (ParentT["name"] extends TableT["parents"][number]["name"] ? "Parent already added to table" | void : unknown));
     type AddParent<TableT extends ITable, ParentT extends ITable> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: TableT["columns"];
@@ -324,6 +338,7 @@ export declare namespace Table {
 }
 export declare namespace Table {
     type DisallowInsert<TableT extends ITable> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: TableT["columns"];
@@ -340,6 +355,7 @@ export declare namespace Table {
     }>);
     function disallowInsert<TableT extends ITable>(table: TableT): (DisallowInsert<TableT>);
     type DisallowDelete<TableT extends ITable> = (Table<{
+        readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly name: TableT["name"];
         readonly columns: TableT["columns"];

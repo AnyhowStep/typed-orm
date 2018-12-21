@@ -2,8 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const table_1 = require("./table");
 function tableFromTable(table) {
-    const { alias, name, columns, autoIncrement, generated, isNullable, hasExplicitDefaultValue, mutable, id, candidateKeys, parents, insertAllowed, deleteAllowed, } = table;
+    const { usedRef, alias, name, columns, autoIncrement, generated, isNullable, hasExplicitDefaultValue, mutable, id, candidateKeys, parents, insertAllowed, deleteAllowed, } = table;
     return new table_1.Table({
+        usedRef,
         alias,
         name,
         columns,

@@ -2,6 +2,7 @@ import { Table } from "./table";
 import { ColumnMapUtil } from "../column-map";
 import { AssertMap, AssertMapUtil } from "../assert-map";
 export declare function tableFromAssertMap<NameT extends string, AssertMapT extends AssertMap>(name: NameT, assertMap: AssertMapT): (Table<{
+    readonly usedRef: {};
     readonly alias: NameT;
     readonly name: NameT;
     readonly columns: ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;

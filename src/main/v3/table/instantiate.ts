@@ -16,6 +16,7 @@ export function table<
     assertMap : AssertMapT
 ) : (
     Table<{
+        readonly usedRef : {};
         readonly alias : NameT;
         readonly name  : NameT;
         readonly columns : ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
@@ -40,6 +41,7 @@ export function table<
     fields : FieldsT
 ) : (
     Table<{
+        readonly usedRef : {};
         readonly alias : NameT;
         readonly name  : NameT;
         readonly columns : ColumnMapUtil.FromFieldArray<NameT, FieldsT>;
@@ -60,6 +62,7 @@ export function table<TableT extends ITable> (
     table : TableT
 ) : (
     Table<{
+        readonly usedRef : TableT["usedRef"];
         readonly alias : TableT["alias"];
         readonly name  : TableT["name"];
         readonly columns : TableT["columns"];

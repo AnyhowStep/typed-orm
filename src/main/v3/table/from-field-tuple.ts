@@ -12,6 +12,7 @@ export function tableFromFieldTuple<
     fields : FieldsT
 ) : (
     Table<{
+        readonly usedRef : {};
         readonly alias : NameT;
         readonly name  : NameT;
         readonly columns : ColumnMapUtil.FromFieldArray<NameT, FieldsT>;
@@ -36,6 +37,7 @@ export function tableFromFieldTuple<
 
     return new Table(
         {
+            usedRef : {},
             alias : name,
             name  : name,
             columns,

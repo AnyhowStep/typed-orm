@@ -10,6 +10,7 @@ export interface TableSubqueryData {
     readonly alias: string;
 }
 export interface ITableSubquery<DataT extends TableSubqueryData = TableSubqueryData> extends IAliasedTable<{
+    readonly usedRef: {};
     readonly alias: DataT["alias"];
     readonly name: DataT["alias"];
     readonly columns: ColumnMapUtil.FromSelectItemArray<DataT["query"]["_selects"]>;

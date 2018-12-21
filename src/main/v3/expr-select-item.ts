@@ -4,6 +4,9 @@ import {QueryTreeArray, Parentheses, QueryTree, QueryTreeUtil} from "./query-tre
 import {escapeId} from "sqlstring";
 import {SEPARATOR} from "./constants";
 
+//TODO
+//Rename to IExprSelectItemData?
+//Or rename IExprSelectItem to IAliasedExpr?
 export interface AliasedExprData {
     readonly usedRef : ColumnRef;
     readonly assertDelegate : sd.AssertDelegate<any>;

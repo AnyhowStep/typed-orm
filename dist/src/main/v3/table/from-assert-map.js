@@ -13,6 +13,7 @@ function tableFromAssertMap(name, assertMap) {
     const isNullable = assert_map_1.AssertMapUtil.nullableNames(assertMap);
     const mutable = columnNames;
     return new table_1.Table({
+        usedRef: {},
         alias: name,
         name: name,
         columns,

@@ -5,6 +5,7 @@ import { ColumnMapUtil } from "../column-map";
 import { FieldArrayUtil } from "../field-array";
 import { AssertMap, AssertMapUtil } from "../assert-map";
 export declare function table<NameT extends string, AssertMapT extends AssertMap>(name: NameT, assertMap: AssertMapT): (Table<{
+    readonly usedRef: {};
     readonly alias: NameT;
     readonly name: NameT;
     readonly columns: ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
@@ -20,6 +21,7 @@ export declare function table<NameT extends string, AssertMapT extends AssertMap
     readonly deleteAllowed: true;
 }>);
 export declare function table<NameT extends string, FieldsT extends Tuple<sd.AnyField>>(name: NameT, fields: FieldsT): (Table<{
+    readonly usedRef: {};
     readonly alias: NameT;
     readonly name: NameT;
     readonly columns: ColumnMapUtil.FromFieldArray<NameT, FieldsT>;
@@ -35,6 +37,7 @@ export declare function table<NameT extends string, FieldsT extends Tuple<sd.Any
     readonly deleteAllowed: true;
 }>);
 export declare function table<TableT extends ITable>(table: TableT): (Table<{
+    readonly usedRef: TableT["usedRef"];
     readonly alias: TableT["alias"];
     readonly name: TableT["name"];
     readonly columns: TableT["columns"];
