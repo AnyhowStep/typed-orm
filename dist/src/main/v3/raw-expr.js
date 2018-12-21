@@ -15,6 +15,9 @@ var RawExprUtil;
         if (typeof rawExpr == "number") {
             return {};
         }
+        if (typeof rawExpr == "bigint") {
+            return {};
+        }
         if (typeof rawExpr == "string") {
             return {};
         }
@@ -63,6 +66,14 @@ var RawExprUtil;
         //Check primitive cases first
         if (typeof rawExpr == "number") {
             return sd.literal(rawExpr);
+        }
+        if (typeof rawExpr == "bigint") {
+            return ((name, raw) => {
+                if (typeof raw == "bigint") {
+                    return raw;
+                }
+                throw new Error(`Expected ${name} to be of type bigint, received ${sd.toTypeStr(raw)}`);
+            });
         }
         if (typeof rawExpr == "string") {
             return sd.literal(rawExpr);
@@ -127,6 +138,9 @@ var RawExprUtil;
         //Check primitive cases first
         if (typeof rawExpr == "number") {
             return sqlstring_1.escape(rawExpr);
+        }
+        if (typeof rawExpr == "bigint") {
+            return rawExpr.toString();
         }
         if (typeof rawExpr == "string") {
             return sqlstring_1.escape(rawExpr);

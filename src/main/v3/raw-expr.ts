@@ -64,6 +64,9 @@ export namespace RawExprUtil {
         if (typeof rawExpr == "number") {
             return {} as any;
         }
+        if (typeof rawExpr == "bigint") {
+            return {} as any;
+        }
         if (typeof rawExpr == "string") {
             return {} as any;
         }
@@ -158,6 +161,14 @@ export namespace RawExprUtil {
         if (typeof rawExpr == "number") {
             return sd.literal(rawExpr) as any;
         }
+        if (typeof rawExpr == "bigint") {
+            return ((name : string, raw : unknown) => {
+                if (typeof raw == "bigint") {
+                    return raw;
+                }
+                throw new Error(`Expected ${name} to be of type bigint, received ${sd.toTypeStr(raw)}`);
+            }) as any;
+        }
         if (typeof rawExpr == "string") {
             return sd.literal(rawExpr) as any;
         }
@@ -226,6 +237,9 @@ export namespace RawExprUtil {
         //Check primitive cases first
         if (typeof rawExpr == "number") {
             return escape(rawExpr);
+        }
+        if (typeof rawExpr == "bigint") {
+            return rawExpr.toString();
         }
         if (typeof rawExpr == "string") {
             return escape(rawExpr);

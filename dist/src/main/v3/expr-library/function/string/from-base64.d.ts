@@ -2,8 +2,8 @@ import * as sd from "schema-decorator";
 import { Expr } from "../../../expr";
 import { RawExpr } from "../../../raw-expr";
 import { RawExprUtil } from "../../../raw-expr";
-export declare function bin<RawExprT extends RawExpr<bigint | number>>(rawExpr: RawExprT): (Expr<{
-    usedRef: RawExprUtil.UsedRef<RawExprT>;
+export declare function fromBase64<StrExprT extends RawExpr<string>>(strExpr: StrExprT): (Expr<{
+    usedRef: RawExprUtil.UsedRef<StrExprT>;
     assertDelegate: sd.AssertDelegate<string>;
 }>);
-//# sourceMappingURL=bin.d.ts.map
+//# sourceMappingURL=from-base64.d.ts.map

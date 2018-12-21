@@ -4,13 +4,13 @@ import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
 import {FunctionCall} from "../../../query-tree";
 
-//https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_bin
-//TODO Debate if should only allow bigint?
-//Returns a string representation of the binary value of N,
-//where N is a longlong (BIGINT) number.
-//This is equivalent to CONV(N,10,2).
-//Returns NULL if N is NULL.
-export function bin<RawExprT extends RawExpr<bigint|number>>(
+//https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_hex
+//TODO Debate if number should not be allowed?
+//For a numeric argument N,
+//HEX() returns a hexadecimal string representation
+//of the value of N treated as a longlong (BIGINT) number.
+//NOTE: HEX('') gives you an empty string!
+export function hex<RawExprT extends RawExpr<bigint|number|string>>(
     rawExpr : RawExprT
 ) : (
     Expr<{
@@ -21,10 +21,10 @@ export function bin<RawExprT extends RawExpr<bigint|number>>(
     const result = new Expr(
         {
             usedRef : RawExprUtil.usedRef(rawExpr),
-            assertDelegate : sd.match(/^(1|0)+$/, name => `${name} must be a non-empty binary string`),
+            assertDelegate : sd.match(/^[0-9A-F]*$/, name => `${name} must be a hexadecimal string, with uppercase A-F`),
         },
         new FunctionCall(
-            "BIN",
+            "HEX",
             [
                 RawExprUtil.queryTree(rawExpr)
             ]

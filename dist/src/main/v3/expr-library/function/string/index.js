@@ -15,4 +15,6 @@ __export(require("./export-set"));
 __export(require("./field"));
 __export(require("./find-in-set"));
 __export(require("./format"));
+__export(require("./from-base64"));
+__export(require("./hex"));
 //# sourceMappingURL=index.js.map
