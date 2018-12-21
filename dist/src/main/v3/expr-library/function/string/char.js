@@ -4,7 +4,7 @@ const sd = require("schema-decorator");
 const expr_1 = require("../../../expr");
 const raw_expr_1 = require("../../../raw-expr");
 const query_tree_1 = require("../../../query-tree");
-const cast_1 = require("../cast");
+const constant_1 = require("../../constant");
 //https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_char
 function char(arg0, ...args) {
     const result = new expr_1.Expr({
@@ -16,7 +16,7 @@ function char(arg0, ...args) {
     ]));
     result.using = (transcodingName) => {
         //Defend ourself against invalid values during run-time.
-        sd.enumeration(cast_1.TranscodingName)("transcodingName", transcodingName);
+        sd.enumeration(constant_1.TranscodingName)("transcodingName", transcodingName);
         const arr = [arg0, ...args];
         return new expr_1.Expr({
             usedRef: result.usedRef,

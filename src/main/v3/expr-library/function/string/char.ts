@@ -4,7 +4,7 @@ import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
 import {FunctionCall} from "../../../query-tree";
 import {Tuple} from "../../../tuple";
-import { TranscodingName } from "../cast";
+import {TranscodingName} from "../../constant";
 
 //https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_char
 export function char<

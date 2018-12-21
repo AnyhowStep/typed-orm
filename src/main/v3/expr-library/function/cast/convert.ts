@@ -2,7 +2,7 @@ import * as sd from "schema-decorator";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
-import {TranscodingName} from "./transcoding-name";
+import {TranscodingName} from "../../constant";
 import { FunctionCall } from "../../../query-tree";
 
 export function convert<

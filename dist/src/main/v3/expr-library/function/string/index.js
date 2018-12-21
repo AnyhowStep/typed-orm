@@ -12,4 +12,7 @@ __export(require("./concat-ws"));
 __export(require("./concat"));
 __export(require("./elt"));
 __export(require("./export-set"));
+__export(require("./field"));
+__export(require("./find-in-set"));
+__export(require("./format"));
 //# sourceMappingURL=index.js.map
