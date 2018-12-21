@@ -55,4 +55,9 @@ function isIn(left, ...rightArr) {
     return boolean_expr_1.booleanExpr(q.used, `${q.leftQuery} IN(${q.rightQueries.join(",")})`);
 }
 exports.isIn = isIn;
+function nullSafeEq(left, right) {
+    const result = boolean_expr_1.booleanExpr(column_references_1.ColumnReferencesUtil.merge(raw_expr_1.RawExprUtil.usedReferences(left), raw_expr_1.RawExprUtil.usedReferences(right)), `${raw_expr_1.RawExprUtil.querify(left)} <=> ${raw_expr_1.RawExprUtil.querify(right)}`);
+    return result;
+}
+exports.nullSafeEq = nullSafeEq;
 //# sourceMappingURL=type-check.js.map

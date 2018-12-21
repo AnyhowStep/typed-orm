@@ -149,3 +149,25 @@ export function isIn<
         `${q.leftQuery} IN(${q.rightQueries.join(",")})`
     ) as any;
 }
+
+export function nullSafeEq<
+    LeftT extends AnyRawExpr,
+    RightT extends AnyRawExpr
+> (left : LeftT, right : RightT) : (
+    Expr<
+        ColumnReferencesUtil.Merge<
+            RawExprUtil.UsedReferences<LeftT>,
+            RawExprUtil.UsedReferences<RightT>
+        >,
+        boolean
+    >
+) {
+    const result : Expr<any, boolean> = booleanExpr(
+        ColumnReferencesUtil.merge(
+            RawExprUtil.usedReferences(left),
+            RawExprUtil.usedReferences(right)
+        ),
+        `${RawExprUtil.querify(left)} <=> ${RawExprUtil.querify(right)}`
+    );
+    return result;
+}
