@@ -43,7 +43,7 @@
     -----
 
     IAliasedTable
-    TODO readonly usedRef : DataT["usedRef"]; = from _parentJoins
+    readonly usedRef : DataT["usedRef"]; = from _parentJoins
 
     --> readonly alias : DataT["alias"]; = <alias>
     readonly name  : DataT["name"];      = "" <- Empty string

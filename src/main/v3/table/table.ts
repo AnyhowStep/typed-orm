@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import {IAnonymousTypedColumn} from "../column";
 import {CandidateKey} from "../candidate-key";
-import {AliasedTableData, AliasedTable} from "../aliased-table";
+import {AliasedTableData, AliasedTable, IAliasedTable} from "../aliased-table";
 import {ColumnMapUtil} from "../column-map";
 import {ColumnMap} from "../column-map";
 import {CandidateKeyArrayUtil} from "../candidate-key-array";
@@ -100,7 +100,7 @@ export interface TableData extends AliasedTableData {
     readonly deleteAllowed : boolean;
 }
 
-export interface ITable<DataT extends TableData=TableData> {
+export interface ITable<DataT extends TableData=TableData> extends IAliasedTable<DataT> {
     readonly usedRef : DataT["usedRef"];
     readonly alias : DataT["alias"];
     readonly name  : DataT["name"];
