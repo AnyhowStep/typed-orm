@@ -13,6 +13,7 @@ import { IQuery, QueryUtil } from "./query";
 import { IJoin } from "./join";
 import {SelectItemUtil} from "./select-item";
 import {MySqlDateTime, dateTime, MySqlDate, MySqlTime, date, time} from "./data-type";
+import * as dataType from "./data-type";
 
 export type RawExpr<TypeT> = (
     (
@@ -162,12 +163,7 @@ export namespace RawExprUtil {
             return sd.literal(rawExpr) as any;
         }
         if (typeof rawExpr == "bigint") {
-            return ((name : string, raw : unknown) => {
-                if (typeof raw == "bigint") {
-                    return raw;
-                }
-                throw new Error(`Expected ${name} to be of type bigint, received ${sd.toTypeStr(raw)}`);
-            }) as any;
+            return dataType.bigint as any;
         }
         if (typeof rawExpr == "string") {
             return sd.literal(rawExpr) as any;

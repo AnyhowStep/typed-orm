@@ -8,6 +8,7 @@ const column_ref_1 = require("./column-ref");
 const sqlstring_1 = require("sqlstring");
 const query_1 = require("./query");
 const data_type_1 = require("./data-type");
+const dataType = require("./data-type");
 var RawExprUtil;
 (function (RawExprUtil) {
     function usedRef(rawExpr) {
@@ -68,12 +69,7 @@ var RawExprUtil;
             return sd.literal(rawExpr);
         }
         if (typeof rawExpr == "bigint") {
-            return ((name, raw) => {
-                if (typeof raw == "bigint") {
-                    return raw;
-                }
-                throw new Error(`Expected ${name} to be of type bigint, received ${sd.toTypeStr(raw)}`);
-            });
+            return dataType.bigint;
         }
         if (typeof rawExpr == "string") {
             return sd.literal(rawExpr);
