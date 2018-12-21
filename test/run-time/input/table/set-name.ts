@@ -15,7 +15,6 @@ tape(__filename, (t) => {
 
     t.true(o.AliasedTable.isAliasedTable(table));
     t.deepEqual(table.alias, "renamed");
-    t.deepEqual(table.name, "renamed");
 
     t.true(o.ColumnMapUtil.isColumnMap(table.columns));
     t.deepEqual(Object.keys(table.columns).length, 3);
@@ -45,7 +44,6 @@ tape(__filename, (t) => {
 
     t.true(o.AliasedTable.isAliasedTable(table));
     t.deepEqual(table.alias, "emptyRenamed");
-    t.deepEqual(table.name, "emptyRenamed");
 
     t.true(o.ColumnMapUtil.isColumnMap(table.columns));
     t.deepEqual(Object.keys(table.columns).length, 0);

@@ -1,4 +1,5 @@
 import * as sd from "schema-decorator";
+import {escapeId} from "sqlstring";
 import {IAnonymousTypedColumn} from "../column";
 import {CandidateKey} from "../candidate-key";
 import {AliasedTableData, AliasedTable, IAliasedTable} from "../aliased-table";
@@ -104,7 +105,6 @@ export interface TableData extends AliasedTableData {
 export interface ITable<DataT extends TableData=TableData> extends IAliasedTable<DataT> {
     readonly usedRef : DataT["usedRef"];
     readonly alias : DataT["alias"];
-    readonly name  : DataT["name"];
     readonly columns : DataT["columns"];
 
     readonly unaliasedQuery : QueryTree;
@@ -126,7 +126,6 @@ export interface ITable<DataT extends TableData=TableData> extends IAliasedTable
 export class Table<DataT extends TableData> implements ITable<DataT> {
     readonly usedRef : DataT["usedRef"];
     readonly alias : DataT["alias"];
-    readonly name  : DataT["name"];
     readonly columns : DataT["columns"];
 
     readonly unaliasedQuery : QueryTree;
@@ -155,7 +154,6 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     ) {
         this.usedRef = data.usedRef;
         this.alias = data.alias;
-        this.name = data.name;
         this.columns = data.columns;
 
         this.unaliasedQuery = unaliasedQuery;
@@ -313,7 +311,6 @@ export namespace Table {
         AliasedTable<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : NewAliasT;
-            readonly name  : TableT["name"];
             readonly columns : ColumnMapUtil.WithTableAlias<
                 TableT["columns"],
                 NewAliasT
@@ -323,7 +320,6 @@ export namespace Table {
     export function as<TableT extends ITable, NewAliasT extends string> (
         {
             usedRef,
-            name,
             columns,
             unaliasedQuery,
         } : TableT,
@@ -337,7 +333,6 @@ export namespace Table {
             {
                 usedRef : usedRef,
                 alias : newAlias,
-                name,
                 columns : ColumnMapUtil.withTableAlias(
                     columns2,
                     newAlias
@@ -352,7 +347,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : NewNameT;
-            readonly name  : NewNameT;
             readonly columns : ColumnMapUtil.WithTableAlias<
                 TableT["columns"],
                 NewNameT
@@ -372,6 +366,7 @@ export namespace Table {
             readonly deleteAllowed : TableT["deleteAllowed"];
         }>
     );
+    //TODO Change this to setAlias?
     export function setName<TableT extends ITable, NewNameT extends string> (
         table : TableT,
         newName : NewNameT
@@ -395,15 +390,12 @@ export namespace Table {
             parents,
             insertAllowed,
             deleteAllowed,
-
-            unaliasedQuery,
         } = table;
 
         return new Table(
             {
                 usedRef,
                 alias : newName,
-                name : newName,
                 columns : ColumnMapUtil.withTableAlias(
                     columns,
                     newName
@@ -422,7 +414,9 @@ export namespace Table {
                 insertAllowed,
                 deleteAllowed,
             },
-            {unaliasedQuery}
+            {
+                unaliasedQuery : escapeId(newName),
+            }
         );
     }
 }
@@ -434,7 +428,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
-            readonly name  : TableT["name"];
             readonly columns : ColumnMapUtil.Intersect<
                 TableT["columns"],
                 ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>
@@ -489,7 +482,6 @@ export namespace Table {
         const {
             usedRef,
             alias,
-            name,
 
             autoIncrement,
             id,
@@ -510,7 +502,6 @@ export namespace Table {
             {
                 usedRef,
                 alias,
-                name,
                 columns,
 
                 autoIncrement,
@@ -539,7 +530,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
-            readonly name  : TableT["name"];
             readonly columns : ColumnMapUtil.Intersect<
                 TableT["columns"],
                 ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>
@@ -590,7 +580,6 @@ export namespace Table {
         const {
             usedRef,
             alias,
-            name,
 
             autoIncrement,
             id,
@@ -611,7 +600,6 @@ export namespace Table {
             {
                 usedRef,
                 alias,
-                name,
                 columns,
 
                 autoIncrement,
@@ -744,7 +732,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
-            readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
 
             readonly autoIncrement : ReturnType<DelegateT>["name"];
@@ -830,7 +817,6 @@ export namespace Table {
         const {
             usedRef,
             alias,
-            name,
             isNullable,
             parents,
             insertAllowed,
@@ -843,7 +829,6 @@ export namespace Table {
             {
                 usedRef,
                 alias,
-                name,
                 columns,
 
                 autoIncrement : autoIncrement.name,
@@ -881,7 +866,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
-            readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
 
             readonly autoIncrement : TableT["autoIncrement"];
@@ -926,7 +910,6 @@ export namespace Table {
         const {
             usedRef,
             alias,
-            name,
             autoIncrement,
             generated,
             isNullable,
@@ -943,7 +926,6 @@ export namespace Table {
             {
                 usedRef,
                 alias,
-                name,
                 columns,
 
                 autoIncrement,
@@ -981,7 +963,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
-            readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
 
             readonly autoIncrement : TableT["autoIncrement"];
@@ -1033,7 +1014,6 @@ export namespace Table {
         const {
             usedRef,
             alias,
-            name,
 
             autoIncrement,
             id,
@@ -1054,7 +1034,6 @@ export namespace Table {
             {
                 usedRef,
                 alias,
-                name,
                 columns,
 
                 autoIncrement,
@@ -1104,7 +1083,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
-            readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
 
             readonly autoIncrement : TableT["autoIncrement"];
@@ -1147,7 +1125,7 @@ export namespace Table {
 
         for (let generatedColumn of generatedColumns) {
             if (table.generated.indexOf(generatedColumn.name) >= 0) {
-                throw new Error(`Column ${table.name}.${generatedColumn.name} already declared generated`);
+                throw new Error(`Column ${table.alias}.${generatedColumn.name} already declared generated`);
             }
             ColumnMapUtil.assertHasColumnIdentifier(table.columns, generatedColumn);
         }
@@ -1188,7 +1166,6 @@ export namespace Table {
         const {
             usedRef,
             alias,
-            name,
 
             autoIncrement,
             id,
@@ -1207,7 +1184,6 @@ export namespace Table {
             {
                 usedRef,
                 alias,
-                name,
                 columns,
 
                 autoIncrement,
@@ -1257,7 +1233,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
-            readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
 
             readonly autoIncrement : TableT["autoIncrement"];
@@ -1293,7 +1268,7 @@ export namespace Table {
 
         for (let hasExplicitDefaultValueColumn of hasExplicitDefaultValueColumns) {
             if (table.hasExplicitDefaultValue.indexOf(hasExplicitDefaultValueColumn.name) >= 0) {
-                throw new Error(`Column ${table.name}.${hasExplicitDefaultValueColumn.name} already declared as having a default value`);
+                throw new Error(`Column ${table.alias}.${hasExplicitDefaultValueColumn.name} already declared as having a default value`);
             }
             ColumnMapUtil.assertHasColumnIdentifier(table.columns, hasExplicitDefaultValueColumn);
         }
@@ -1310,7 +1285,6 @@ export namespace Table {
         const {
             usedRef,
             alias,
-            name,
 
             autoIncrement,
             id,
@@ -1331,7 +1305,6 @@ export namespace Table {
             {
                 usedRef,
                 alias,
-                name,
                 columns,
 
                 autoIncrement,
@@ -1357,7 +1330,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
-            readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
 
             readonly autoIncrement : TableT["autoIncrement"];
@@ -1380,7 +1352,6 @@ export namespace Table {
         const {
             usedRef,
             alias,
-            name,
             columns,
 
             autoIncrement,
@@ -1402,7 +1373,6 @@ export namespace Table {
             {
                 usedRef,
                 alias,
-                name,
                 columns,
 
                 autoIncrement,
@@ -1455,7 +1425,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
-            readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
 
             readonly autoIncrement : TableT["autoIncrement"];
@@ -1488,7 +1457,7 @@ export namespace Table {
 
         for (let mutableColumn of mutableColumns) {
             if (table.generated.indexOf(mutableColumn.name) >= 0) {
-                throw new Error(`Column ${table.name}.${mutableColumn.name} is generated and cannot be mutable`);
+                throw new Error(`Column ${table.alias}.${mutableColumn.name} is generated and cannot be mutable`);
             }
             ColumnMapUtil.assertHasColumnIdentifier(table.columns, mutableColumn);
         }
@@ -1504,7 +1473,6 @@ export namespace Table {
         const {
             usedRef,
             alias,
-            name,
 
             autoIncrement,
             id,
@@ -1525,7 +1493,6 @@ export namespace Table {
             {
                 usedRef,
                 alias,
-                name,
                 columns,
 
                 autoIncrement,
@@ -1589,12 +1556,12 @@ export namespace Table {
             >
         ) &
         (
-            ParentT["name"] extends TableT["name"] ?
-            "Parent cannot have same name as table"|void :
+            ParentT["alias"] extends TableT["alias"] ?
+            "Parent cannot have same alias as table"|void :
             unknown
         ) &
         (
-            ParentT["name"] extends TableT["parents"][number]["name"] ?
+            ParentT["alias"] extends TableT["parents"][number]["alias"] ?
             "Parent already added to table"|void :
             unknown
         )
@@ -1606,7 +1573,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
-            readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
 
             readonly autoIncrement : TableT["autoIncrement"];
@@ -1644,14 +1610,14 @@ export namespace Table {
             table.candidateKeys,
             parent.candidateKeys
         )) {
-            throw new Error(`No common candidate keys found between table ${table.name} and parent ${parent.name}`);
+            throw new Error(`No common candidate keys found between table ${table.alias} and parent ${parent.alias}`);
         };
-        if (table.name == parent.name) {
-            throw new Error(`Parent ${table.name} cannot have same name as table`);
+        if (table.alias == parent.alias) {
+            throw new Error(`Parent ${table.alias} cannot have same alias as table`);
         }
         for (let otherParent of table.parents) {
-            if (otherParent.name == parent.name) {
-                throw new Error(`Parent ${parent.name} already added to table`);
+            if (otherParent.alias == parent.alias) {
+                throw new Error(`Parent ${parent.alias} already added to table`);
             }
         }
         //TODO Recursively find incompatible types
@@ -1664,7 +1630,7 @@ export namespace Table {
                 sd.isNullable(table.columns[columnName].assertDelegate) !=
                 sd.isNullable(parentColumn.assertDelegate)
             ) {
-                throw new Error(`Parent ${parent.name}.${columnName} and ${table.name}.${columnName} have incompatible types; one is nullable, the other is not`);
+                throw new Error(`Parent ${parent.alias}.${columnName} and ${table.alias}.${columnName} have incompatible types; one is nullable, the other is not`);
             }
         }
 
@@ -1681,7 +1647,6 @@ export namespace Table {
         const {
             usedRef,
             alias,
-            name,
             columns,
 
             autoIncrement,
@@ -1703,7 +1668,6 @@ export namespace Table {
             {
                 usedRef,
                 alias,
-                name,
                 columns,
 
                 autoIncrement,
@@ -1728,7 +1692,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
-            readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
 
             readonly autoIncrement : TableT["autoIncrement"];
@@ -1751,7 +1714,6 @@ export namespace Table {
         const {
             usedRef,
             alias,
-            name,
             columns,
 
             autoIncrement,
@@ -1773,7 +1735,6 @@ export namespace Table {
             {
                 usedRef,
                 alias,
-                name,
                 columns,
 
                 autoIncrement,
@@ -1796,7 +1757,6 @@ export namespace Table {
         Table<{
             readonly usedRef : TableT["usedRef"];
             readonly alias : TableT["alias"];
-            readonly name  : TableT["name"];
             readonly columns : TableT["columns"];
 
             readonly autoIncrement : TableT["autoIncrement"];
@@ -1819,7 +1779,6 @@ export namespace Table {
         const {
             usedRef,
             alias,
-            name,
             columns,
 
             autoIncrement,
@@ -1841,7 +1800,6 @@ export namespace Table {
             {
                 usedRef,
                 alias,
-                name,
                 columns,
 
                 autoIncrement,

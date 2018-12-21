@@ -21,7 +21,7 @@ tape(__filename, (t) => {
     ]);
 
     t.deepEqual(table.alias, "table");
-    t.deepEqual(table.name, "table");
+
 
     t.true(o.ColumnMapUtil.isColumnMap(table.columns));
     t.deepEqual(Object.keys(table.columns).length, 6);
@@ -84,7 +84,7 @@ tape(__filename, (t) => {
     ]);
 
     t.deepEqual(table.alias, "table");
-    t.deepEqual(table.name, "table");
+
 
     t.true(o.ColumnMapUtil.isColumnMap(table.columns));
     t.deepEqual(Object.keys(table.columns).length, 3);
@@ -141,7 +141,7 @@ tape(__filename, (t) => {
     ]);
 
     t.deepEqual(table.alias, "table");
-    t.deepEqual(table.name, "table");
+
 
     t.true(o.ColumnMapUtil.isColumnMap(table.columns));
     t.deepEqual(Object.keys(table.columns).length, 6);
@@ -215,7 +215,7 @@ tape(__filename, (t) => {
     ]);
 
     t.deepEqual(table.alias, "table");
-    t.deepEqual(table.name, "table");
+
 
     t.true(o.ColumnMapUtil.isColumnMap(table.columns));
     t.deepEqual(Object.keys(table.columns).length, 6);

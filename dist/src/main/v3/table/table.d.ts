@@ -25,7 +25,6 @@ export interface TableData extends AliasedTableData {
 export interface ITable<DataT extends TableData = TableData> extends IAliasedTable<DataT> {
     readonly usedRef: DataT["usedRef"];
     readonly alias: DataT["alias"];
-    readonly name: DataT["name"];
     readonly columns: DataT["columns"];
     readonly unaliasedQuery: QueryTree;
     readonly autoIncrement: DataT["autoIncrement"];
@@ -42,7 +41,6 @@ export interface ITable<DataT extends TableData = TableData> extends IAliasedTab
 export declare class Table<DataT extends TableData> implements ITable<DataT> {
     readonly usedRef: DataT["usedRef"];
     readonly alias: DataT["alias"];
-    readonly name: DataT["name"];
     readonly columns: DataT["columns"];
     readonly unaliasedQuery: QueryTree;
     readonly autoIncrement: DataT["autoIncrement"];
@@ -85,16 +83,14 @@ export declare namespace Table {
     type As<TableT extends ITable, NewAliasT extends string> = (AliasedTable<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: NewAliasT;
-        readonly name: TableT["name"];
         readonly columns: ColumnMapUtil.WithTableAlias<TableT["columns"], NewAliasT>;
     }>);
-    function as<TableT extends ITable, NewAliasT extends string>({ usedRef, name, columns, unaliasedQuery, }: TableT, newAlias: NewAliasT): (As<TableT, NewAliasT>);
+    function as<TableT extends ITable, NewAliasT extends string>({ usedRef, columns, unaliasedQuery, }: TableT, newAlias: NewAliasT): (As<TableT, NewAliasT>);
 }
 export declare namespace Table {
     type SetName<TableT extends ITable, NewNameT extends string> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: NewNameT;
-        readonly name: NewNameT;
         readonly columns: ColumnMapUtil.WithTableAlias<TableT["columns"], NewNameT>;
         readonly autoIncrement: TableT["autoIncrement"];
         readonly id: TableT["id"];
@@ -113,7 +109,6 @@ export declare namespace Table {
     type AddColumnsFromFieldTuple<TableT extends ITable, FieldsT extends sd.AnyField[]> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
-        readonly name: TableT["name"];
         readonly columns: ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>>;
         readonly autoIncrement: TableT["autoIncrement"];
         readonly id: TableT["id"];
@@ -132,7 +127,6 @@ export declare namespace Table {
     type AddColumnsFromAssertMap<TableT extends ITable, AssertMapT extends AssertMap> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
-        readonly name: TableT["name"];
         readonly columns: ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>>;
         readonly autoIncrement: TableT["autoIncrement"];
         readonly id: TableT["id"];
@@ -169,7 +163,6 @@ export declare namespace Table {
     type SetAutoIncrement<TableT extends ITable, DelegateT extends AutoIncrementDelegate<TableT["columns"]>> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
-        readonly name: TableT["name"];
         readonly columns: TableT["columns"];
         readonly autoIncrement: ReturnType<DelegateT>["name"];
         readonly id: ReturnType<DelegateT>["name"];
@@ -191,7 +184,6 @@ export declare namespace Table {
     }>, DelegateT extends IdDelegate<TableT["columns"]>> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
-        readonly name: TableT["name"];
         readonly columns: TableT["columns"];
         readonly autoIncrement: TableT["autoIncrement"];
         readonly id: ReturnType<DelegateT>["name"];
@@ -213,7 +205,6 @@ export declare namespace Table {
     type AddCandidateKey<TableT extends ITable, DelegateT extends CandidateKeyDelegate<TableT>> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
-        readonly name: TableT["name"];
         readonly columns: TableT["columns"];
         readonly autoIncrement: TableT["autoIncrement"];
         readonly id: TableT["id"];
@@ -236,7 +227,6 @@ export declare namespace Table {
     type SetGenerated<TableT extends ITable, DelegateT extends GeneratedDelegate<TableT>> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
-        readonly name: TableT["name"];
         readonly columns: TableT["columns"];
         readonly autoIncrement: TableT["autoIncrement"];
         readonly id: TableT["id"];
@@ -259,7 +249,6 @@ export declare namespace Table {
     type SetHasExplicitDefaultValue<TableT extends ITable, DelegateT extends HasExplicitDefaultValueDelegate<TableT>> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
-        readonly name: TableT["name"];
         readonly columns: TableT["columns"];
         readonly autoIncrement: TableT["autoIncrement"];
         readonly id: TableT["id"];
@@ -278,7 +267,6 @@ export declare namespace Table {
     type SetImmutable<TableT extends ITable> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
-        readonly name: TableT["name"];
         readonly columns: TableT["columns"];
         readonly autoIncrement: TableT["autoIncrement"];
         readonly id: TableT["id"];
@@ -301,7 +289,6 @@ export declare namespace Table {
     type OverwriteMutable<TableT extends ITable, DelegateT extends MutableDelegate<TableT>> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
-        readonly name: TableT["name"];
         readonly columns: TableT["columns"];
         readonly autoIncrement: TableT["autoIncrement"];
         readonly id: TableT["id"];
@@ -319,11 +306,10 @@ export declare namespace Table {
 export declare namespace Table {
     type Parent<TableT extends ITable, ParentT extends ITable> = (ParentT & (CandidateKeyArrayUtil.CommonCandidateKeyUnion<TableT["candidateKeys"], ParentT["candidateKeys"]> extends never ? ["No common candidate keys found between table and parent", "Candidate keys: ", TableT["candidateKeys"][number], "Parent candidate keys: ", ParentT["candidateKeys"][number]] | void : unknown) & (ToUnknownIfAllFieldsNever<{
         [columnName in Extract<keyof TableT["columns"], keyof ParentT["columns"]>]: (ReturnType<TableT["columns"][columnName]["assertDelegate"]> extends ReturnType<ParentT["columns"][columnName]["assertDelegate"]> ? never : ["Column", columnName, "has incompatible types", ReturnType<TableT["columns"][columnName]["assertDelegate"]>, ReturnType<ParentT["columns"][columnName]["assertDelegate"]>] | void);
-    }>) & (ParentT["name"] extends TableT["name"] ? "Parent cannot have same name as table" | void : unknown) & (ParentT["name"] extends TableT["parents"][number]["name"] ? "Parent already added to table" | void : unknown));
+    }>) & (ParentT["alias"] extends TableT["alias"] ? "Parent cannot have same alias as table" | void : unknown) & (ParentT["alias"] extends TableT["parents"][number]["alias"] ? "Parent already added to table" | void : unknown));
     type AddParent<TableT extends ITable, ParentT extends ITable> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
-        readonly name: TableT["name"];
         readonly columns: TableT["columns"];
         readonly autoIncrement: TableT["autoIncrement"];
         readonly id: TableT["id"];
@@ -342,7 +328,6 @@ export declare namespace Table {
     type DisallowInsert<TableT extends ITable> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
-        readonly name: TableT["name"];
         readonly columns: TableT["columns"];
         readonly autoIncrement: TableT["autoIncrement"];
         readonly id: TableT["id"];
@@ -359,7 +344,6 @@ export declare namespace Table {
     type DisallowDelete<TableT extends ITable> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
-        readonly name: TableT["name"];
         readonly columns: TableT["columns"];
         readonly autoIncrement: TableT["autoIncrement"];
         readonly id: TableT["id"];

@@ -11,7 +11,6 @@ function tableFromFieldTuple(name, fields) {
     return new table_1.Table({
         usedRef: {},
         alias: name,
-        name: name,
         columns,
         autoIncrement: undefined,
         id: undefined,

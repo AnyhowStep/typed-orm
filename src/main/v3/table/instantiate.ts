@@ -18,7 +18,6 @@ export function table<
     Table<{
         readonly usedRef : {};
         readonly alias : NameT;
-        readonly name  : NameT;
         readonly columns : ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
 
         readonly autoIncrement : undefined;
@@ -43,7 +42,6 @@ export function table<
     Table<{
         readonly usedRef : {};
         readonly alias : NameT;
-        readonly name  : NameT;
         readonly columns : ColumnMapUtil.FromFieldArray<NameT, FieldsT>;
 
         readonly autoIncrement : undefined;
@@ -64,7 +62,6 @@ export function table<TableT extends ITable> (
     Table<{
         readonly usedRef : TableT["usedRef"];
         readonly alias : TableT["alias"];
-        readonly name  : TableT["name"];
         readonly columns : TableT["columns"];
 
         readonly autoIncrement : TableT["autoIncrement"];

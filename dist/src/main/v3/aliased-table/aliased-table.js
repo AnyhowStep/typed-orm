@@ -8,7 +8,6 @@ class AliasedTable {
     constructor(data, { unaliasedQuery, }) {
         this.usedRef = data.usedRef;
         this.alias = data.alias;
-        this.name = data.name;
         this.columns = data.columns;
         this.unaliasedQuery = unaliasedQuery;
     }
@@ -25,16 +24,14 @@ exports.AliasedTable = AliasedTable;
     */
     function queryTree({ alias, unaliasedQuery, }) {
         const escapedAlias = sqlstring_1.escapeId(alias);
-        if (unaliasedQuery == escapedAlias) {
+        if (unaliasedQuery === escapedAlias) {
             return unaliasedQuery;
         }
-        else {
-            return [
-                unaliasedQuery,
-                "AS",
-                sqlstring_1.escapeId(alias),
-            ];
-        }
+        return [
+            unaliasedQuery,
+            "AS",
+            sqlstring_1.escapeId(alias),
+        ];
     }
     AliasedTable.queryTree = queryTree;
     function isAliasedTable(raw) {
@@ -42,12 +39,10 @@ exports.AliasedTable = AliasedTable;
             (raw instanceof Object) &&
             ("usedRef" in raw) &&
             ("alias" in raw) &&
-            ("name" in raw) &&
             ("columns" in raw) &&
             ("unaliasedQuery" in raw) &&
             column_ref_1.ColumnRefUtil.isColumnRef(raw.usedRef) &&
             (typeof raw.alias == "string") &&
-            (typeof raw.name == "string") &&
             column_map_1.ColumnMapUtil.isColumnMap(raw.columns) &&
             query_tree_1.QueryTreeUtil.isQueryTree(raw.unaliasedQuery));
     }

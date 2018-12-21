@@ -3,7 +3,6 @@ import * as o from "../../../../dist/src/main";
 export declare const table: o.Table<{
     readonly usedRef: {};
     readonly alias: "table";
-    readonly name: "table";
     readonly columns: {
         readonly x: o.Column<{
             tableAlias: "table";
@@ -69,7 +68,6 @@ export declare const table: o.Table<{
 export declare const emptyTable: o.Table<{
     readonly usedRef: {};
     readonly alias: "table";
-    readonly name: "table";
     readonly columns: {} & {
         readonly a: o.Column<{
             tableAlias: "table";
@@ -110,7 +108,6 @@ export declare const emptyTable: o.Table<{
 export declare const narrow: o.Table<{
     readonly usedRef: {};
     readonly alias: "table";
-    readonly name: "table";
     readonly columns: {
         readonly a: o.Column<{
             tableAlias: "table";
@@ -172,7 +169,6 @@ export declare const narrow: o.Table<{
 export declare const lastDuplicateOverwritesTable: o.Table<{
     readonly usedRef: {};
     readonly alias: "table";
-    readonly name: "table";
     readonly columns: {
         readonly x: o.Column<{
             tableAlias: "table";

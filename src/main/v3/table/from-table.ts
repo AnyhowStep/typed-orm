@@ -6,7 +6,6 @@ export function tableFromTable<TableT extends ITable> (
     Table<{
         readonly usedRef : {};
         readonly alias : TableT["alias"];
-        readonly name  : TableT["name"];
         readonly columns : TableT["columns"];
 
         readonly autoIncrement : TableT["autoIncrement"];
@@ -24,7 +23,6 @@ export function tableFromTable<TableT extends ITable> (
     const {
         usedRef,
         alias,
-        name,
         columns,
 
         autoIncrement,
@@ -44,7 +42,6 @@ export function tableFromTable<TableT extends ITable> (
         {
             usedRef,
             alias,
-            name,
             columns,
 
             autoIncrement,

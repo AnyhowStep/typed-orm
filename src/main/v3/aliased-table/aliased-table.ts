@@ -6,15 +6,12 @@ import {QueryTree, QueryTreeUtil} from "../query-tree";
 export interface AliasedTableData {
     readonly usedRef : ColumnRef;
     readonly alias : string;
-    readonly name  : string;
     readonly columns : ColumnMap;
 }
 
 export interface IAliasedTable<DataT extends AliasedTableData=AliasedTableData> {
     readonly usedRef : DataT["usedRef"];
     readonly alias : DataT["alias"];
-    //TODO Is name even used? Remove this?
-    readonly name  : DataT["name"];
     readonly columns : DataT["columns"];
 
     //Called `unaliasedQuery` to be consistent with IExprSelectItem
@@ -25,8 +22,6 @@ export interface IAliasedTable<DataT extends AliasedTableData=AliasedTableData> 
 export class AliasedTable<DataT extends AliasedTableData> implements IAliasedTable<DataT> {
     readonly usedRef : DataT["usedRef"];
     readonly alias : DataT["alias"];
-    //TODO Remove this? Doesn't seem useful for AliasedTable to have this
-    readonly name  : DataT["name"];
     readonly columns : DataT["columns"];
 
     readonly unaliasedQuery : QueryTree;
@@ -42,7 +37,6 @@ export class AliasedTable<DataT extends AliasedTableData> implements IAliasedTab
     ) {
         this.usedRef = data.usedRef;
         this.alias = data.alias;
-        this.name = data.name;
         this.columns = data.columns;
 
         this.unaliasedQuery = unaliasedQuery;
@@ -82,13 +76,11 @@ export namespace AliasedTable {
             (raw instanceof Object) &&
             ("usedRef" in raw) &&
             ("alias" in raw) &&
-            ("name" in raw) &&
             ("columns" in raw) &&
             ("unaliasedQuery" in raw) &&
 
             ColumnRefUtil.isColumnRef(raw.usedRef) &&
             (typeof raw.alias == "string") &&
-            (typeof raw.name == "string") &&
             ColumnMapUtil.isColumnMap(raw.columns) &&
             QueryTreeUtil.isQueryTree(raw.unaliasedQuery)
         );

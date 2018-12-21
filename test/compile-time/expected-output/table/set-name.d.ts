@@ -3,7 +3,6 @@ import * as o from "../../../../dist/src/main";
 export declare const renamed: o.Table<{
     readonly usedRef: {};
     readonly alias: "renamed";
-    readonly name: "renamed";
     readonly columns: {
         readonly x: o.Column<{
             readonly tableAlias: "renamed";
@@ -44,7 +43,6 @@ export declare const renamed: o.Table<{
 export declare const emptyRenamed: o.Table<{
     readonly usedRef: {};
     readonly alias: "emptyRenamed";
-    readonly name: "emptyRenamed";
     readonly columns: {};
     readonly autoIncrement: undefined;
     readonly id: undefined;

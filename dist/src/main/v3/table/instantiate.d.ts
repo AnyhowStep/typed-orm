@@ -7,7 +7,6 @@ import { AssertMap, AssertMapUtil } from "../assert-map";
 export declare function table<NameT extends string, AssertMapT extends AssertMap>(name: NameT, assertMap: AssertMapT): (Table<{
     readonly usedRef: {};
     readonly alias: NameT;
-    readonly name: NameT;
     readonly columns: ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
     readonly autoIncrement: undefined;
     readonly generated: [];
@@ -23,7 +22,6 @@ export declare function table<NameT extends string, AssertMapT extends AssertMap
 export declare function table<NameT extends string, FieldsT extends Tuple<sd.AnyField>>(name: NameT, fields: FieldsT): (Table<{
     readonly usedRef: {};
     readonly alias: NameT;
-    readonly name: NameT;
     readonly columns: ColumnMapUtil.FromFieldArray<NameT, FieldsT>;
     readonly autoIncrement: undefined;
     readonly generated: [];
@@ -39,7 +37,6 @@ export declare function table<NameT extends string, FieldsT extends Tuple<sd.Any
 export declare function table<TableT extends ITable>(table: TableT): (Table<{
     readonly usedRef: TableT["usedRef"];
     readonly alias: TableT["alias"];
-    readonly name: TableT["name"];
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];
     readonly generated: TableT["generated"];

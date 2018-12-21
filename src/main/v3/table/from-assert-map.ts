@@ -13,7 +13,6 @@ export function tableFromAssertMap<
     Table<{
         readonly usedRef : {};
         readonly alias : NameT;
-        readonly name  : NameT;
         readonly columns : ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
 
         readonly autoIncrement : undefined;
@@ -42,7 +41,6 @@ export function tableFromAssertMap<
         {
             usedRef : {},
             alias : name,
-            name  : name,
             columns,
 
             autoIncrement : undefined,

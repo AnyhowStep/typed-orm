@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
+const sqlstring_1 = require("sqlstring");
 const aliased_table_1 = require("../aliased-table");
 const column_map_1 = require("../column-map");
 const candidate_key_array_1 = require("../candidate-key-array");
@@ -11,7 +12,6 @@ class Table {
     constructor(data, { unaliasedQuery, }) {
         this.usedRef = data.usedRef;
         this.alias = data.alias;
-        this.name = data.name;
         this.columns = data.columns;
         this.unaliasedQuery = unaliasedQuery;
         this.autoIncrement = data.autoIncrement;
@@ -86,27 +86,26 @@ class Table {
 }
 exports.Table = Table;
 (function (Table) {
-    function as({ usedRef, name, columns, unaliasedQuery, }, newAlias) {
+    function as({ usedRef, columns, unaliasedQuery, }, newAlias) {
         //https://github.com/Microsoft/TypeScript/issues/28592
         const columns2 = columns;
         return new aliased_table_1.AliasedTable({
             usedRef: usedRef,
             alias: newAlias,
-            name,
             columns: column_map_1.ColumnMapUtil.withTableAlias(columns2, newAlias),
         }, { unaliasedQuery });
     }
     Table.as = as;
 })(Table = exports.Table || (exports.Table = {}));
 (function (Table) {
+    //TODO Change this to setAlias?
     function setName(table, newName) {
         //https://github.com/Microsoft/TypeScript/issues/28592
         const columns = table.columns;
-        const { usedRef, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+        const { usedRef, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
         return new Table({
             usedRef,
             alias: newName,
-            name: newName,
             columns: column_map_1.ColumnMapUtil.withTableAlias(columns, newName),
             autoIncrement,
             id,
@@ -118,7 +117,9 @@ exports.Table = Table;
             parents,
             insertAllowed,
             deleteAllowed,
-        }, { unaliasedQuery });
+        }, {
+            unaliasedQuery: sqlstring_1.escapeId(newName),
+        });
     }
     Table.setName = setName;
 })(Table = exports.Table || (exports.Table = {}));
@@ -130,11 +131,10 @@ exports.Table = Table;
         const columnMapFromFieldArray = column_map_1.ColumnMapUtil.fromFieldArray(table.alias, fields);
         const columns = column_map_1.ColumnMapUtil.intersect(tableColumns, columnMapFromFieldArray);
         const isNullable = column_1.ColumnUtil.Name.Array.nullableFromColumnMap(columns);
-        const { usedRef, alias, name, autoIncrement, id, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+        const { usedRef, alias, autoIncrement, id, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
         const result = new Table({
             usedRef,
             alias,
-            name,
             columns,
             autoIncrement,
             id,
@@ -157,11 +157,10 @@ exports.Table = Table;
         const tableColumns = table.columns;
         const columns = column_map_1.ColumnMapUtil.intersect(tableColumns, column_map_1.ColumnMapUtil.fromAssertMap(table.alias, assertMap));
         const isNullable = column_1.ColumnUtil.Name.Array.nullableFromColumnMap(columns);
-        const { usedRef, alias, name, autoIncrement, id, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+        const { usedRef, alias, autoIncrement, id, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
         const result = new Table({
             usedRef,
             alias,
-            name,
             columns,
             autoIncrement,
             id,
@@ -230,11 +229,10 @@ exports.Table = Table;
         const mutable = table.mutable.filter((columnName) => {
             return (columnName != autoIncrement.name);
         });
-        const { usedRef, alias, name, isNullable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+        const { usedRef, alias, isNullable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
         const result = new Table({
             usedRef,
             alias,
-            name,
             columns,
             autoIncrement: autoIncrement.name,
             id: autoIncrement.name,
@@ -261,11 +259,10 @@ exports.Table = Table;
         const candidateKeys = table.candidateKeys.concat([
             [id.name]
         ]);
-        const { usedRef, alias, name, autoIncrement, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+        const { usedRef, alias, autoIncrement, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
         const result = new Table({
             usedRef,
             alias,
-            name,
             columns,
             autoIncrement,
             id: id.name,
@@ -294,11 +291,10 @@ exports.Table = Table;
         const candidateKeys = string_array_1.StringArrayUtil.uniqueStringArray(table.candidateKeys.concat([
             candidateKeyColumns.map(candidateKeyColumn => candidateKeyColumn.name)
         ]));
-        const { usedRef, alias, name, autoIncrement, id, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+        const { usedRef, alias, autoIncrement, id, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
         const result = new Table({
             usedRef,
             alias,
-            name,
             columns,
             autoIncrement,
             id,
@@ -323,7 +319,7 @@ exports.Table = Table;
         const generatedColumns = delegate(columns);
         for (let generatedColumn of generatedColumns) {
             if (table.generated.indexOf(generatedColumn.name) >= 0) {
-                throw new Error(`Column ${table.name}.${generatedColumn.name} already declared generated`);
+                throw new Error(`Column ${table.alias}.${generatedColumn.name} already declared generated`);
             }
             column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, generatedColumn);
         }
@@ -338,11 +334,10 @@ exports.Table = Table;
         const mutable = string_array_1.StringArrayUtil.uniqueString(table.mutable.filter((columnName) => {
             return generatedColumns.every(column => column.name != columnName);
         }));
-        const { usedRef, alias, name, autoIncrement, id, candidateKeys, isNullable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+        const { usedRef, alias, autoIncrement, id, candidateKeys, isNullable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
         const result = new Table({
             usedRef,
             alias,
-            name,
             columns,
             autoIncrement,
             id,
@@ -367,7 +362,7 @@ exports.Table = Table;
         const hasExplicitDefaultValueColumns = delegate(columns);
         for (let hasExplicitDefaultValueColumn of hasExplicitDefaultValueColumns) {
             if (table.hasExplicitDefaultValue.indexOf(hasExplicitDefaultValueColumn.name) >= 0) {
-                throw new Error(`Column ${table.name}.${hasExplicitDefaultValueColumn.name} already declared as having a default value`);
+                throw new Error(`Column ${table.alias}.${hasExplicitDefaultValueColumn.name} already declared as having a default value`);
             }
             column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, hasExplicitDefaultValueColumn);
         }
@@ -375,11 +370,10 @@ exports.Table = Table;
             ...table.hasExplicitDefaultValue,
             ...hasExplicitDefaultValueColumns.map(column => column.name),
         ]);
-        const { usedRef, alias, name, autoIncrement, id, candidateKeys, generated, isNullable, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+        const { usedRef, alias, autoIncrement, id, candidateKeys, generated, isNullable, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
         const result = new Table({
             usedRef,
             alias,
-            name,
             columns,
             autoIncrement,
             id,
@@ -398,11 +392,10 @@ exports.Table = Table;
 })(Table = exports.Table || (exports.Table = {}));
 (function (Table) {
     function setImmutable(table) {
-        const { usedRef, alias, name, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+        const { usedRef, alias, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
         return new Table({
             usedRef,
             alias,
-            name,
             columns,
             autoIncrement,
             id,
@@ -426,18 +419,17 @@ exports.Table = Table;
         const mutableColumns = delegate(columns);
         for (let mutableColumn of mutableColumns) {
             if (table.generated.indexOf(mutableColumn.name) >= 0) {
-                throw new Error(`Column ${table.name}.${mutableColumn.name} is generated and cannot be mutable`);
+                throw new Error(`Column ${table.alias}.${mutableColumn.name} is generated and cannot be mutable`);
             }
             column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, mutableColumn);
         }
         //TODO Make other arrays of strings always
         //have unique elements?
         const mutable = (string_array_1.StringArrayUtil.uniqueString(mutableColumns.map(column => column.name)));
-        const { usedRef, alias, name, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+        const { usedRef, alias, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
         const result = new Table({
             usedRef,
             alias,
-            name,
             columns,
             autoIncrement,
             id,
@@ -461,15 +453,15 @@ exports.Table = Table;
     //+ No duplicates
     function addParent(table, parent) {
         if (!candidate_key_array_1.CandidateKeyArrayUtil.hasCommonCandidateKeys(table.candidateKeys, parent.candidateKeys)) {
-            throw new Error(`No common candidate keys found between table ${table.name} and parent ${parent.name}`);
+            throw new Error(`No common candidate keys found between table ${table.alias} and parent ${parent.alias}`);
         }
         ;
-        if (table.name == parent.name) {
-            throw new Error(`Parent ${table.name} cannot have same name as table`);
+        if (table.alias == parent.alias) {
+            throw new Error(`Parent ${table.alias} cannot have same alias as table`);
         }
         for (let otherParent of table.parents) {
-            if (otherParent.name == parent.name) {
-                throw new Error(`Parent ${parent.name} already added to table`);
+            if (otherParent.alias == parent.alias) {
+                throw new Error(`Parent ${parent.alias} already added to table`);
             }
         }
         //TODO Recursively find incompatible types
@@ -480,7 +472,7 @@ exports.Table = Table;
             }
             if (sd.isNullable(table.columns[columnName].assertDelegate) !=
                 sd.isNullable(parentColumn.assertDelegate)) {
-                throw new Error(`Parent ${parent.name}.${columnName} and ${table.name}.${columnName} have incompatible types; one is nullable, the other is not`);
+                throw new Error(`Parent ${parent.alias}.${columnName} and ${table.alias}.${columnName} have incompatible types; one is nullable, the other is not`);
             }
         }
         const parents = [
@@ -488,11 +480,10 @@ exports.Table = Table;
             ...parent.parents,
             parent
         ];
-        const { usedRef, alias, name, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+        const { usedRef, alias, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
         return new Table({
             usedRef,
             alias,
-            name,
             columns,
             autoIncrement,
             id,
@@ -510,11 +501,10 @@ exports.Table = Table;
 })(Table = exports.Table || (exports.Table = {}));
 (function (Table) {
     function disallowInsert(table) {
-        const { usedRef, alias, name, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, deleteAllowed, unaliasedQuery, } = table;
+        const { usedRef, alias, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, deleteAllowed, unaliasedQuery, } = table;
         return new Table({
             usedRef,
             alias,
-            name,
             columns,
             autoIncrement,
             id,
@@ -530,11 +520,10 @@ exports.Table = Table;
     }
     Table.disallowInsert = disallowInsert;
     function disallowDelete(table) {
-        const { usedRef, alias, name, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, unaliasedQuery, } = table;
+        const { usedRef, alias, columns, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, unaliasedQuery, } = table;
         return new Table({
             usedRef,
             alias,
-            name,
             columns,
             autoIncrement,
             id,

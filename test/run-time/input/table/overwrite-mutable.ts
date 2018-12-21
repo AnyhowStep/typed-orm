@@ -14,7 +14,7 @@ tape(__filename, (t) => {
     .overwriteMutable(c => [c.x, c.z, c.x, c.z]);
 
     t.deepEqual(table.alias, "table");
-    t.deepEqual(table.name, "table");
+
 
     t.true(o.ColumnMapUtil.isColumnMap(table.columns));
     t.deepEqual(Object.keys(table.columns).length, 3);

@@ -3,7 +3,6 @@ import * as o from "../../../../dist/src/main";
 export declare const table: o.Table<{
     readonly usedRef: {};
     readonly alias: "t";
-    readonly name: "t";
     readonly columns: {
         readonly x: o.Column<{
             tableAlias: "t";
@@ -37,7 +36,6 @@ export declare const join: o.Join<{
     aliasedTable: o.Table<{
         readonly usedRef: {};
         readonly alias: "t";
-        readonly name: "t";
         readonly columns: {
             readonly x: o.Column<{
                 tableAlias: "t";
@@ -109,7 +107,6 @@ export declare const nullableJoin: o.Join<{
     aliasedTable: o.Table<{
         readonly usedRef: {};
         readonly alias: "t";
-        readonly name: "t";
         readonly columns: {
             readonly x: o.Column<{
                 tableAlias: "t";

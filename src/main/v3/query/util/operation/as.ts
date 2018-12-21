@@ -48,10 +48,5 @@
     readonly name  : DataT["name"];      = "" <- Empty string
     readonly columns : DataT["columns"]; = No columnName overlap, from _selects
 
-    //HACK to fake multi-database support
-    //TODO decide if multi-database support should be a thing
-    //TODO Move this to Table, not AliasedTable?
-    readonly __databaseName? : string|undefined;
-
     TODO readonly unaliasedQuery : QueryTree; = QueryUtil.queryTree_RawExpr()
 */

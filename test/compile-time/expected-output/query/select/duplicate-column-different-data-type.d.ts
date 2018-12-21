@@ -10,7 +10,6 @@ export declare const query4: o.Query<{
         aliasedTable: o.Table<{
             readonly usedRef: {};
             readonly alias: "table";
-            readonly name: "table";
             readonly columns: {
                 readonly x: o.Column<{
                     tableAlias: "table";
@@ -79,7 +78,6 @@ export declare const query4: o.Query<{
         aliasedTable: o.Table<{
             readonly usedRef: {};
             readonly alias: "table3";
-            readonly name: "table3";
             readonly columns: {
                 readonly x: o.Column<{
                     tableAlias: "table3";

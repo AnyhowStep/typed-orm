@@ -13,7 +13,7 @@ tape(__filename, (t) => {
     ).setAutoIncrement(c => c.x);
 
     t.deepEqual(table.alias, "table");
-    t.deepEqual(table.name, "table");
+
 
     t.true(o.ColumnMapUtil.isColumnMap(table.columns));
     t.deepEqual(Object.keys(table.columns).length, 3);

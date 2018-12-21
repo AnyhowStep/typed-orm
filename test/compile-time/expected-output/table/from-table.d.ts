@@ -3,7 +3,6 @@ import * as o from "../../../../dist/src/main";
 export declare const table: o.Table<{
     readonly usedRef: {};
     readonly alias: "table";
-    readonly name: "table";
     readonly columns: {
         readonly x: o.Column<{
             tableAlias: "table";
@@ -44,7 +43,6 @@ export declare const table: o.Table<{
 export declare const emptyTable: o.Table<{
     readonly usedRef: {};
     readonly alias: "table";
-    readonly name: "table";
     readonly columns: {};
     readonly autoIncrement: undefined;
     readonly generated: [];
@@ -60,7 +58,6 @@ export declare const emptyTable: o.Table<{
 export declare const nullableTable: o.Table<{
     readonly usedRef: {};
     readonly alias: "table";
-    readonly name: "table";
     readonly columns: {
         readonly a: o.Column<{
             tableAlias: "table";

@@ -15,7 +15,6 @@ export function tableFromFieldTuple<
     Table<{
         readonly usedRef : {};
         readonly alias : NameT;
-        readonly name  : NameT;
         readonly columns : ColumnMapUtil.FromFieldArray<NameT, FieldsT>;
 
         readonly autoIncrement : undefined;
@@ -40,7 +39,6 @@ export function tableFromFieldTuple<
         {
             usedRef : {},
             alias : name,
-            name  : name,
             columns,
 
             autoIncrement : undefined,

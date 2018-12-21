@@ -3,7 +3,6 @@ import * as o from "../../../../dist/src/main";
 export declare const t: o.Table<{
     readonly usedRef: {};
     readonly alias: "name";
-    readonly name: "name";
     readonly columns: {
         readonly x: o.Column<{
             tableAlias: "name";
@@ -37,7 +36,6 @@ export declare const t2: any;
 export declare const t3: o.Table<{
     readonly usedRef: {};
     readonly alias: "232";
-    readonly name: "232";
     readonly columns: {
         readonly x: o.Column<{
             tableAlias: "232";

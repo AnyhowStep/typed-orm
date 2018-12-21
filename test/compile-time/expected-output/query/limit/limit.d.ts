@@ -7,7 +7,6 @@ export declare const query: o.Query<{
         aliasedTable: o.Table<{
             readonly usedRef: {};
             readonly alias: "table";
-            readonly name: "table";
             readonly columns: {
                 readonly x: o.Column<{
                     tableAlias: "table";
