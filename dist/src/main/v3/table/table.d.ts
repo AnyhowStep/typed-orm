@@ -9,6 +9,7 @@ import { ToUnknownIfAllFieldsNever } from "../type";
 import { AssertMap } from "../assert-map";
 import { ColumnUtil } from "../column";
 import { TypeMapUtil } from "../type-map";
+import { QueryTree } from "../query-tree";
 export interface TableData extends AliasedTableData {
     readonly autoIncrement: undefined | string;
     readonly id: undefined | string;
@@ -26,7 +27,7 @@ export interface ITable<DataT extends TableData = TableData> extends IAliasedTab
     readonly alias: DataT["alias"];
     readonly name: DataT["name"];
     readonly columns: DataT["columns"];
-    readonly __databaseName?: string | undefined;
+    readonly unaliasedQuery: QueryTree;
     readonly autoIncrement: DataT["autoIncrement"];
     readonly id: DataT["id"];
     readonly candidateKeys: DataT["candidateKeys"];
@@ -43,7 +44,7 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     readonly alias: DataT["alias"];
     readonly name: DataT["name"];
     readonly columns: DataT["columns"];
-    readonly __databaseName?: string | undefined;
+    readonly unaliasedQuery: QueryTree;
     readonly autoIncrement: DataT["autoIncrement"];
     readonly id: DataT["id"];
     readonly candidateKeys: DataT["candidateKeys"];
@@ -54,8 +55,9 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     readonly parents: DataT["parents"];
     readonly insertAllowed: DataT["insertAllowed"];
     readonly deleteAllowed: DataT["deleteAllowed"];
-    constructor(data: DataT, __databaseName?: string | undefined);
-    queryTree(): string;
+    constructor(data: DataT, { unaliasedQuery, }: {
+        unaliasedQuery: QueryTree;
+    });
     as<NewAliasT extends string>(newAlias: NewAliasT): Table.As<this, NewAliasT>;
     private cachedCandidateKeyAssertDelegate;
     candidateKeyAssertDelegate(): Table.CandidateKeyAssertDelegate<this>;
@@ -86,7 +88,7 @@ export declare namespace Table {
         readonly name: TableT["name"];
         readonly columns: ColumnMapUtil.WithTableAlias<TableT["columns"], NewAliasT>;
     }>);
-    function as<TableT extends ITable, NewAliasT extends string>({ usedRef, name, columns, __databaseName, }: TableT, newAlias: NewAliasT): (As<TableT, NewAliasT>);
+    function as<TableT extends ITable, NewAliasT extends string>({ usedRef, name, columns, unaliasedQuery, }: TableT, newAlias: NewAliasT): (As<TableT, NewAliasT>);
 }
 export declare namespace Table {
     type SetName<TableT extends ITable, NewNameT extends string> = (Table<{

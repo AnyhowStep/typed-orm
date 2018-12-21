@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const table_1 = require("./table");
 function tableFromTable(table) {
-    const { usedRef, alias, name, columns, autoIncrement, generated, isNullable, hasExplicitDefaultValue, mutable, id, candidateKeys, parents, insertAllowed, deleteAllowed, } = table;
+    const { usedRef, alias, name, columns, autoIncrement, generated, isNullable, hasExplicitDefaultValue, mutable, id, candidateKeys, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
     return new table_1.Table({
         usedRef,
         alias,
@@ -18,7 +18,9 @@ function tableFromTable(table) {
         parents,
         insertAllowed,
         deleteAllowed,
-    }, table.__databaseName);
+    }, {
+        unaliasedQuery,
+    });
 }
 exports.tableFromTable = tableFromTable;
 //# sourceMappingURL=from-table.js.map

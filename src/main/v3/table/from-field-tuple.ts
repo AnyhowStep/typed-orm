@@ -3,6 +3,7 @@ import {Table} from "./table";
 import {Tuple} from "../tuple";
 import {ColumnMapUtil} from "../column-map";
 import {FieldArrayUtil} from "../field-array";
+import {escapeId} from "mysql";
 
 export function tableFromFieldTuple<
     NameT extends string,
@@ -55,6 +56,8 @@ export function tableFromFieldTuple<
             insertAllowed : true,
             deleteAllowed : true,
         },
-        undefined
+        {
+            unaliasedQuery : escapeId(name),
+        }
     );
 }

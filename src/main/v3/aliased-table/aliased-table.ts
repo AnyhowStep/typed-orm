@@ -1,6 +1,7 @@
 import {ColumnMap, ColumnMapUtil} from "../column-map";
 import {escapeId} from "sqlstring";
 import {ColumnRefUtil, ColumnRef} from "../column-ref";
+import {QueryTree, QueryTreeUtil} from "../query-tree";
 
 export interface AliasedTableData {
     readonly usedRef : ColumnRef;
@@ -12,33 +13,39 @@ export interface AliasedTableData {
 export interface IAliasedTable<DataT extends AliasedTableData=AliasedTableData> {
     readonly usedRef : DataT["usedRef"];
     readonly alias : DataT["alias"];
+    //TODO Is name even used? Remove this?
     readonly name  : DataT["name"];
     readonly columns : DataT["columns"];
 
-    //HACK to fake multi-database support
-    //TODO decide if multi-database support should be a thing
-    //TODO Move this to Table, not AliasedTable?
-    readonly __databaseName? : string|undefined;
+    //Called `unaliasedQuery` to be consistent with IExprSelectItem
+    //TODO, change both to unaliasedQueryTree?
+    readonly unaliasedQuery : QueryTree;
 }
 
 export class AliasedTable<DataT extends AliasedTableData> implements IAliasedTable<DataT> {
     readonly usedRef : DataT["usedRef"];
     readonly alias : DataT["alias"];
+    //TODO Remove this? Doesn't seem useful for AliasedTable to have this
     readonly name  : DataT["name"];
     readonly columns : DataT["columns"];
 
-    __databaseName? : string|undefined;
+    readonly unaliasedQuery : QueryTree;
 
     constructor (
         data : DataT,
-        __databaseName? : string|undefined
+        {
+            unaliasedQuery,
+        } :
+        {
+            unaliasedQuery : QueryTree,
+        }
     ) {
         this.usedRef = data.usedRef;
         this.alias = data.alias;
         this.name = data.name;
         this.columns = data.columns;
 
-        this.__databaseName = __databaseName;
+        this.unaliasedQuery = unaliasedQuery;
     }
 
     queryTree () {
@@ -46,26 +53,28 @@ export class AliasedTable<DataT extends AliasedTableData> implements IAliasedTab
     }
 }
 export namespace AliasedTable {
+    /*
+        `name`
+        `name` AS `alias`
+        (SELECT x) AS `alias`
+    */
     export function queryTree (
         {
             alias,
-            name,
-            __databaseName
+            unaliasedQuery,
         } : IAliasedTable
-    ) {
-        const result : string[] = [];
-        if (__databaseName != undefined) {
-            result.push(escapeId(__databaseName));
-            result.push(".");
+    ) : QueryTree {
+        const escapedAlias = escapeId(alias);
+
+        if (unaliasedQuery === escapedAlias) {
+            return unaliasedQuery;
         }
-        if (name == alias) {
-            result.push(escapeId(name));
-        } else {
-            result.push(escapeId(name));
-            result.push(" AS ");
-            result.push(escapeId(alias));
-        }
-        return result.join("");
+
+        return [
+            unaliasedQuery,
+            "AS",
+            escapeId(alias),
+        ];
     }
     export function isAliasedTable (raw : any) : raw is IAliasedTable {
         return (
@@ -75,15 +84,13 @@ export namespace AliasedTable {
             ("alias" in raw) &&
             ("name" in raw) &&
             ("columns" in raw) &&
-            (raw.usedRef instanceof Object) &&
+            ("unaliasedQuery" in raw) &&
+
+            ColumnRefUtil.isColumnRef(raw.usedRef) &&
             (typeof raw.alias == "string") &&
             (typeof raw.name == "string") &&
-            ColumnRefUtil.isColumnRef(raw.usedRef) &&
             ColumnMapUtil.isColumnMap(raw.columns) &&
-            (
-                raw.__databaseName === undefined ||
-                typeof raw.__databaseName == "string"
-            )
+            QueryTreeUtil.isQueryTree(raw.unaliasedQuery)
         );
     }
 }

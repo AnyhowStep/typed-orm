@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const table_1 = require("./table");
 const column_map_1 = require("../column-map");
 const assert_map_1 = require("../assert-map");
+const mysql_1 = require("mysql");
 function tableFromAssertMap(name, assertMap) {
     /*
         In general, this should be fine.
@@ -27,7 +28,9 @@ function tableFromAssertMap(name, assertMap) {
         parents: [],
         insertAllowed: true,
         deleteAllowed: true,
-    }, undefined);
+    }, {
+        unaliasedQuery: mysql_1.escapeId(name),
+    });
 }
 exports.tableFromAssertMap = tableFromAssertMap;
 //# sourceMappingURL=from-assert-map.js.map

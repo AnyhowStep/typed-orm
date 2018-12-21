@@ -3,13 +3,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const column_map_1 = require("../column-map");
 const sqlstring_1 = require("sqlstring");
 const column_ref_1 = require("../column-ref");
+const query_tree_1 = require("../query-tree");
 class AliasedTable {
-    constructor(data, __databaseName) {
+    constructor(data, { unaliasedQuery, }) {
         this.usedRef = data.usedRef;
         this.alias = data.alias;
         this.name = data.name;
         this.columns = data.columns;
-        this.__databaseName = __databaseName;
+        this.unaliasedQuery = unaliasedQuery;
     }
     queryTree() {
         return AliasedTable.queryTree(this);
@@ -17,21 +18,23 @@ class AliasedTable {
 }
 exports.AliasedTable = AliasedTable;
 (function (AliasedTable) {
-    function queryTree({ alias, name, __databaseName }) {
-        const result = [];
-        if (__databaseName != undefined) {
-            result.push(sqlstring_1.escapeId(__databaseName));
-            result.push(".");
-        }
-        if (name == alias) {
-            result.push(sqlstring_1.escapeId(name));
+    /*
+        `name`
+        `name` AS `alias`
+        (SELECT x) AS `alias`
+    */
+    function queryTree({ alias, unaliasedQuery, }) {
+        const escapedAlias = sqlstring_1.escapeId(alias);
+        if (unaliasedQuery == escapedAlias) {
+            return unaliasedQuery;
         }
         else {
-            result.push(sqlstring_1.escapeId(name));
-            result.push(" AS ");
-            result.push(sqlstring_1.escapeId(alias));
+            return [
+                unaliasedQuery,
+                "AS",
+                sqlstring_1.escapeId(alias),
+            ];
         }
-        return result.join("");
     }
     AliasedTable.queryTree = queryTree;
     function isAliasedTable(raw) {
@@ -41,13 +44,12 @@ exports.AliasedTable = AliasedTable;
             ("alias" in raw) &&
             ("name" in raw) &&
             ("columns" in raw) &&
-            (raw.usedRef instanceof Object) &&
+            ("unaliasedQuery" in raw) &&
+            column_ref_1.ColumnRefUtil.isColumnRef(raw.usedRef) &&
             (typeof raw.alias == "string") &&
             (typeof raw.name == "string") &&
-            column_ref_1.ColumnRefUtil.isColumnRef(raw.usedRef) &&
             column_map_1.ColumnMapUtil.isColumnMap(raw.columns) &&
-            (raw.__databaseName === undefined ||
-                typeof raw.__databaseName == "string"));
+            query_tree_1.QueryTreeUtil.isQueryTree(raw.unaliasedQuery));
     }
     AliasedTable.isAliasedTable = isAliasedTable;
 })(AliasedTable = exports.AliasedTable || (exports.AliasedTable = {}));

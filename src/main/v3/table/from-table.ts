@@ -37,6 +37,8 @@ export function tableFromTable<TableT extends ITable> (
         parents,
         insertAllowed,
         deleteAllowed,
+
+        unaliasedQuery,
     } = table;
     return new Table(
         {
@@ -56,6 +58,8 @@ export function tableFromTable<TableT extends ITable> (
             insertAllowed,
             deleteAllowed,
         },
-        table.__databaseName
+        {
+            unaliasedQuery,
+        }
     );
 }

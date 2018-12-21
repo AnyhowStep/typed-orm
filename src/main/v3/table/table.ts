@@ -10,6 +10,7 @@ import {AssertMap} from "../assert-map";
 import {ColumnUtil} from "../column";
 import {TypeMapUtil} from "../type-map";
 import {StringArrayUtil} from "../string-array";
+import {QueryTree} from "../query-tree";
 
 export interface TableData extends AliasedTableData {
     //The maximum value `UNSIGNED BIGINT` can have is
@@ -106,7 +107,7 @@ export interface ITable<DataT extends TableData=TableData> extends IAliasedTable
     readonly name  : DataT["name"];
     readonly columns : DataT["columns"];
 
-    readonly __databaseName? : string|undefined;
+    readonly unaliasedQuery : QueryTree;
 
     readonly autoIncrement : DataT["autoIncrement"];
     readonly id : DataT["id"];
@@ -128,7 +129,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     readonly name  : DataT["name"];
     readonly columns : DataT["columns"];
 
-    readonly __databaseName? : string|undefined;
+    readonly unaliasedQuery : QueryTree;
 
     readonly autoIncrement : DataT["autoIncrement"];
     readonly id : DataT["id"];
@@ -145,14 +146,19 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
 
     constructor (
         data : DataT,
-        __databaseName? : string|undefined
+        {
+            unaliasedQuery,
+        } :
+        {
+            unaliasedQuery : QueryTree,
+        }
     ) {
         this.usedRef = data.usedRef;
         this.alias = data.alias;
         this.name = data.name;
         this.columns = data.columns;
 
-        this.__databaseName = __databaseName;
+        this.unaliasedQuery = unaliasedQuery;
 
         this.autoIncrement = data.autoIncrement;
         this.id = data.id;
@@ -166,10 +172,6 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
         this.parents = data.parents;
         this.insertAllowed = data.insertAllowed;
         this.deleteAllowed = data.deleteAllowed;
-    }
-
-    queryTree () {
-        return AliasedTable.queryTree(this);
     }
 
     as<NewAliasT extends string> (newAlias : NewAliasT) : Table.As<this, NewAliasT> {
@@ -323,7 +325,7 @@ export namespace Table {
             usedRef,
             name,
             columns,
-            __databaseName,
+            unaliasedQuery,
         } : TableT,
         newAlias : NewAliasT
     ) : (
@@ -341,7 +343,7 @@ export namespace Table {
                     newAlias
                 ),
             },
-            __databaseName
+            {unaliasedQuery}
         );
     }
 }
@@ -393,6 +395,8 @@ export namespace Table {
             parents,
             insertAllowed,
             deleteAllowed,
+
+            unaliasedQuery,
         } = table;
 
         return new Table(
@@ -418,7 +422,7 @@ export namespace Table {
                 insertAllowed,
                 deleteAllowed,
             },
-            table.__databaseName
+            {unaliasedQuery}
         );
     }
 }
@@ -498,6 +502,8 @@ export namespace Table {
             parents,
             insertAllowed,
             deleteAllowed,
+
+            unaliasedQuery,
         } = table;
 
         const result : AddColumnsFromFieldTuple<TableT, FieldsT> = new Table(
@@ -520,7 +526,7 @@ export namespace Table {
                 insertAllowed,
                 deleteAllowed,
             },
-            table.__databaseName
+            {unaliasedQuery}
         );
         return result;
     }
@@ -597,6 +603,8 @@ export namespace Table {
             parents,
             insertAllowed,
             deleteAllowed,
+
+            unaliasedQuery,
         } = table;
 
         const result : AddColumnsFromAssertMap<TableT, AssertMapT> = new Table(
@@ -619,7 +627,7 @@ export namespace Table {
                 insertAllowed,
                 deleteAllowed,
             },
-            table.__databaseName
+            {unaliasedQuery}
         );
         return result;
     }
@@ -827,6 +835,8 @@ export namespace Table {
             parents,
             insertAllowed,
             deleteAllowed,
+
+            unaliasedQuery,
         } = table;
 
         const result : SetAutoIncrement<TableT, DelegateT> = new Table(
@@ -849,7 +859,7 @@ export namespace Table {
                 insertAllowed,
                 deleteAllowed,
             },
-            table.__databaseName
+            {unaliasedQuery}
         );
         return result;
     }
@@ -925,6 +935,8 @@ export namespace Table {
             parents,
             insertAllowed,
             deleteAllowed,
+
+            unaliasedQuery,
         } = table;
 
         const result : SetId<TableT, DelegateT> = new Table(
@@ -947,7 +959,7 @@ export namespace Table {
                 insertAllowed,
                 deleteAllowed,
             },
-            table.__databaseName
+            {unaliasedQuery}
         );
         return result;
     }
@@ -1034,6 +1046,8 @@ export namespace Table {
             parents,
             insertAllowed,
             deleteAllowed,
+
+            unaliasedQuery,
         } = table;
 
         const result : AddCandidateKey<TableT, DelegateT> = new Table(
@@ -1056,7 +1070,7 @@ export namespace Table {
                 insertAllowed,
                 deleteAllowed,
             },
-            table.__databaseName
+            {unaliasedQuery}
         );
         return result;
     }
@@ -1185,6 +1199,8 @@ export namespace Table {
             parents,
             insertAllowed,
             deleteAllowed,
+
+            unaliasedQuery,
         } = table;
 
         const result : SetGenerated<TableT, DelegateT> = new Table(
@@ -1207,7 +1223,7 @@ export namespace Table {
                 insertAllowed,
                 deleteAllowed,
             },
-            table.__databaseName
+            {unaliasedQuery}
         );
         return result;
     }
@@ -1307,6 +1323,8 @@ export namespace Table {
             parents,
             insertAllowed,
             deleteAllowed,
+
+            unaliasedQuery,
         } = table;
 
         const result : SetHasExplicitDefaultValue<TableT, DelegateT> = new Table(
@@ -1329,7 +1347,7 @@ export namespace Table {
                 insertAllowed,
                 deleteAllowed,
             },
-            table.__databaseName
+            {unaliasedQuery}
         );
         return result;
     }
@@ -1376,6 +1394,8 @@ export namespace Table {
             parents,
             insertAllowed,
             deleteAllowed,
+
+            unaliasedQuery,
         } = table;
 
         return new Table(
@@ -1398,7 +1418,7 @@ export namespace Table {
                 insertAllowed,
                 deleteAllowed,
             },
-            table.__databaseName
+            {unaliasedQuery}
         );
     }
 }
@@ -1497,6 +1517,8 @@ export namespace Table {
             parents,
             insertAllowed,
             deleteAllowed,
+
+            unaliasedQuery,
         } = table;
 
         const result : OverwriteMutable<TableT, DelegateT> = new Table(
@@ -1519,7 +1541,7 @@ export namespace Table {
                 insertAllowed,
                 deleteAllowed,
             },
-            table.__databaseName
+            {unaliasedQuery}
         );
         return result;
     }
@@ -1673,27 +1695,32 @@ export namespace Table {
 
             insertAllowed,
             deleteAllowed,
+
+            unaliasedQuery,
         } = table;
 
-        return new Table({
-            usedRef,
-            alias,
-            name,
-            columns,
+        return new Table(
+            {
+                usedRef,
+                alias,
+                name,
+                columns,
 
-            autoIncrement,
-            id,
-            candidateKeys,
+                autoIncrement,
+                id,
+                candidateKeys,
 
-            generated,
-            isNullable,
-            hasExplicitDefaultValue,
-            mutable,
+                generated,
+                isNullable,
+                hasExplicitDefaultValue,
+                mutable,
 
-            parents,
-            insertAllowed,
-            deleteAllowed,
-        });
+                parents,
+                insertAllowed,
+                deleteAllowed,
+            },
+            {unaliasedQuery}
+        );
     }
 }
 export namespace Table {
@@ -1738,6 +1765,8 @@ export namespace Table {
 
             parents,
             deleteAllowed,
+
+            unaliasedQuery,
         } = table;
 
         return new Table(
@@ -1760,7 +1789,7 @@ export namespace Table {
                 insertAllowed : false,
                 deleteAllowed,
             },
-            table.__databaseName
+            {unaliasedQuery}
         );
     }
     export type DisallowDelete<TableT extends ITable> = (
@@ -1804,6 +1833,8 @@ export namespace Table {
 
             parents,
             insertAllowed,
+
+            unaliasedQuery,
         } = table;
 
         return new Table(
@@ -1826,7 +1857,7 @@ export namespace Table {
                 insertAllowed,
                 deleteAllowed : false,
             },
-            table.__databaseName
+            {unaliasedQuery}
         );
     }
 }

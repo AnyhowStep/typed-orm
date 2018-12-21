@@ -1,6 +1,7 @@
 import {Table} from "./table";
 import {ColumnMapUtil} from "../column-map";
 import {AssertMap, AssertMapUtil} from "../assert-map";
+import {escapeId} from "mysql";
 
 export function tableFromAssertMap<
     NameT extends string,
@@ -57,6 +58,8 @@ export function tableFromAssertMap<
             insertAllowed : true,
             deleteAllowed : true,
         },
-        undefined
+        {
+            unaliasedQuery : escapeId(name),
+        }
     );
 }
