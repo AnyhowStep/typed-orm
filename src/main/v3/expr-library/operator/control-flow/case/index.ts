@@ -66,7 +66,7 @@ export function CaseConstructor<
     }>
 );
 export function CaseConstructor (arg0? : RawExpr<NonNullPrimitiveExpr>) {
-    if (arg0 == undefined) {
+    if (arg0 === undefined) {
         return CaseConditionConstructor();
     } else {
         return CaseValueConstructor(arg0);

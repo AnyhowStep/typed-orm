@@ -29,7 +29,7 @@ function CaseValueConstructor(valueExpr) {
     ]);
 }
 function CaseConstructor(arg0) {
-    if (arg0 == undefined) {
+    if (arg0 === undefined) {
         return CaseConditionConstructor();
     }
     else {
