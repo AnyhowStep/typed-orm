@@ -579,4 +579,29 @@ export namespace ColumnRefUtil {
         }
         return result;
     }
+
+    export type DuplicateColumnName<RefT extends ColumnRef> = (
+        {
+            [tableAlias in Extract<keyof RefT, string>] : (
+                Extract<
+                    //Get the column names of this ColumnMap
+                    ColumnUtil.Name.FromColumnMap<
+                        RefT[tableAlias]
+                    >,
+                    //Get the column names of all other ColumnMap
+                    ColumnUtil.Name.FromColumnMap<
+                        RefT[Exclude<
+                            Extract<keyof RefT, string>,
+                            tableAlias
+                        >]
+                    >
+                >
+            )
+        }[Extract<keyof RefT, string>]
+    );
+    export type HasDuplicateColumnName<RefT extends ColumnRef> = (
+        DuplicateColumnName<RefT> extends never ?
+        false :
+        true
+    );
 }

@@ -15,5 +15,17 @@ var SelectItemArrayUtil;
         return true;
     }
     SelectItemArrayUtil.isSelectItemArray = isSelectItemArray;
+    function assertNoDuplicateColumnName(arr) {
+        const seen = [];
+        for (let item of arr) {
+            for (let name of select_item_1.SelectItemUtil.getColumnNames(item)) {
+                if (seen.indexOf(name) >= 0) {
+                    throw new Error(`Duplicate column name '${name}' found`);
+                }
+                seen.push(name);
+            }
+        }
+    }
+    SelectItemArrayUtil.assertNoDuplicateColumnName = assertNoDuplicateColumnName;
 })(SelectItemArrayUtil = exports.SelectItemArrayUtil || (exports.SelectItemArrayUtil = {}));
 //# sourceMappingURL=select-item-array.js.map

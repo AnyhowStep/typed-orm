@@ -6,6 +6,24 @@ const expr_select_item_1 = require("./expr-select-item");
 const column_ref_1 = require("./column-ref");
 var SelectItemUtil;
 (function (SelectItemUtil) {
+    function getColumnNames(item) {
+        if (column_1.ColumnUtil.isColumn(item)) {
+            return [item.name];
+        }
+        else if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(item)) {
+            return [item.alias];
+        }
+        else if (column_map_1.ColumnMapUtil.isColumnMap(item)) {
+            return column_1.ColumnUtil.Name.Array.fromColumnMap(item);
+        }
+        else if (column_ref_1.ColumnRefUtil.isColumnRef(item)) {
+            return column_1.ColumnUtil.Name.Array.fromColumnRef(item);
+        }
+        else {
+            throw new Error("Unknown select item");
+        }
+    }
+    SelectItemUtil.getColumnNames = getColumnNames;
     function isSingleValueSelectItem(raw) {
         return (column_1.ColumnUtil.isColumn(raw) ||
             expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(raw));

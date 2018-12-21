@@ -31,6 +31,19 @@ export namespace SelectItemUtil {
         ColumnUtil.Name.FromColumnRef<SelectItemT> :
         never
     );
+    export function getColumnNames (item : SelectItem) : string[] {
+        if (ColumnUtil.isColumn(item)) {
+            return [item.name];
+        } else if (ExprSelectItemUtil.isExprSelectItem(item)) {
+            return [item.alias];
+        } else if (ColumnMapUtil.isColumnMap(item)) {
+            return ColumnUtil.Name.Array.fromColumnMap(item);
+        } else if (ColumnRefUtil.isColumnRef(item)) {
+            return ColumnUtil.Name.Array.fromColumnRef(item);
+        } else {
+            throw new Error("Unknown select item");
+        }
+    }
     export function isSingleValueSelectItem (raw : any) : raw is SingleValueSelectItem {
         return (
             ColumnUtil.isColumn(raw) ||

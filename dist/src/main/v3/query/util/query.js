@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const query_tree_1 = require("../../query-tree");
 const aliased_table_1 = require("../../aliased-table");
 const column_1 = require("../../column");
 const expr_select_item_1 = require("../../expr-select-item");
@@ -34,6 +35,29 @@ function queryTreeSelectItem_ColumnRef(columnRef) {
             result.push(",");
         }
         result.push(queryTreeSelectItem_Column(column));
+    }
+    return result;
+}
+function queryTreeSelectItem_As_Column(column) {
+    return column_1.ColumnUtil.queryTree(column);
+}
+function queryTreeSelectItem_As_ColumnMap(columnMap) {
+    const result = [];
+    for (let column of column_map_1.ColumnMapUtil.getSortedColumnArray(columnMap)) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        result.push(queryTreeSelectItem_As_Column(column));
+    }
+    return result;
+}
+function queryTreeSelectItem_As_ColumnRef(columnRef) {
+    const result = [];
+    for (let column of column_ref_1.ColumnRefUtil.getSortedColumnArray(columnRef)) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        result.push(queryTreeSelectItem_As_Column(column));
     }
     return result;
 }
@@ -88,6 +112,39 @@ function queryTreeSelects_RawExpr(query) {
     ];
 }
 exports.queryTreeSelects_RawExpr = queryTreeSelects_RawExpr;
+function queryTreeSelects_As(query) {
+    const selects = query._selects;
+    const result = [];
+    for (let item of selects) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        if (column_1.ColumnUtil.isColumn(item)) {
+            result.push(queryTreeSelectItem_As_Column(item));
+        }
+        else if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(item)) {
+            result.push(query_tree_1.Parentheses.Create(item.unaliasedQuery));
+            result.push("AS");
+            result.push(sqlstring_1.escapeId(item.alias));
+        }
+        else if (column_map_1.ColumnMapUtil.isColumnMap(item)) {
+            result.push(queryTreeSelectItem_As_ColumnMap(item));
+        }
+        else if (column_ref_1.ColumnRefUtil.isColumnRef(item)) {
+            result.push(queryTreeSelectItem_As_ColumnRef(item));
+        }
+        else {
+            throw new Error(`Unknown select item`);
+        }
+    }
+    return [
+        "SELECT",
+        (query._distinct ? "DISTINCT" : ""),
+        (query._sqlCalcFoundRows ? "SQL_CALC_FOUND_ROWS" : ""),
+        result
+    ];
+}
+exports.queryTreeSelects_As = queryTreeSelects_As;
 function queryTreeJoins(query) {
     const joins = query._joins;
     if (joins == undefined || joins.length == 0) {
@@ -261,6 +318,43 @@ function queryTree_RawExpr(query) {
     }
 }
 exports.queryTree_RawExpr = queryTree_RawExpr;
+function queryTree_As(query) {
+    if (query._unions != undefined ||
+        query._unionOrders != undefined ||
+        query._unionLimit != undefined) {
+        return [
+            "(",
+            "(",
+            queryTreeSelects_As(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+            ")",
+            queryTreeUnion(query),
+            queryTreeUnionOrderBy(query),
+            queryTreeUnionLimit(query),
+            ")",
+        ];
+    }
+    else {
+        //No UNION-related clauses
+        return [
+            "(",
+            queryTreeSelects_As(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+            ")",
+        ];
+    }
+}
+exports.queryTree_As = queryTree_As;
 function queryTree(query) {
     if (query._unions != undefined ||
         query._unionOrders != undefined ||

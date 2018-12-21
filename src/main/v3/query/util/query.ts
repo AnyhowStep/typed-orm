@@ -1,5 +1,5 @@
 import {IQuery} from "../query";
-import {QueryTreeArray, QueryTree} from "../../query-tree";
+import {QueryTreeArray, QueryTree, Parentheses} from "../../query-tree";
 import {AliasedTable} from "../../aliased-table";
 import {IColumn, ColumnUtil} from "../../column";
 import {AfterSelectClause, OneSelectItemQuery} from "./predicate";
@@ -40,6 +40,31 @@ function queryTreeSelectItem_ColumnRef (columnRef : ColumnRef) : QueryTreeArray 
     return result;
 }
 
+
+function queryTreeSelectItem_As_Column (column : IColumn) : QueryTree {
+    return ColumnUtil.queryTree(column);
+}
+function queryTreeSelectItem_As_ColumnMap (columnMap : ColumnMap) : QueryTreeArray {
+    const result : QueryTreeArray = [];
+    for (let column of ColumnMapUtil.getSortedColumnArray(columnMap)) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        result.push(queryTreeSelectItem_As_Column(column));
+    }
+    return result;
+}
+function queryTreeSelectItem_As_ColumnRef (columnRef : ColumnRef) : QueryTreeArray {
+    const result : QueryTreeArray = [];
+    for (let column of ColumnRefUtil.getSortedColumnArray(columnRef)) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        result.push(queryTreeSelectItem_As_Column(column));
+    }
+    return result;
+}
+
 export function queryTreeSelects (query : AfterSelectClause) : QueryTreeArray {
     const selects = query._selects;
     const result : QueryTreeArray = [];
@@ -75,6 +100,34 @@ export function queryTreeSelects_RawExpr (query : OneSelectItemQuery<any>) : Que
         result = item.unaliasedQuery;
     } else {
         throw new Error(`Unknown select item`);
+    }
+    return [
+        "SELECT",
+        (query._distinct ? "DISTINCT" : ""),
+        (query._sqlCalcFoundRows ? "SQL_CALC_FOUND_ROWS" : ""),
+        result
+    ];
+}
+export function queryTreeSelects_As (query : AfterSelectClause) : QueryTreeArray {
+    const selects = query._selects;
+    const result : QueryTreeArray = [];
+    for (let item of selects) {
+        if (result.length > 0) {
+            result.push(",");
+        }
+        if (ColumnUtil.isColumn(item)) {
+            result.push(queryTreeSelectItem_As_Column(item));
+        } else if (ExprSelectItemUtil.isExprSelectItem(item)) {
+            result.push(Parentheses.Create(item.unaliasedQuery));
+            result.push("AS");
+            result.push(escapeId(item.alias));
+        } else if (ColumnMapUtil.isColumnMap(item)) {
+            result.push(queryTreeSelectItem_As_ColumnMap(item));
+        } else if (ColumnRefUtil.isColumnRef(item)) {
+            result.push(queryTreeSelectItem_As_ColumnRef(item));
+        } else {
+            throw new Error(`Unknown select item`);
+        }
     }
     return [
         "SELECT",
@@ -239,6 +292,43 @@ export function queryTree_RawExpr (query : OneSelectItemQuery<any>) : QueryTreeA
         return [
             "(",
             queryTreeSelects_RawExpr(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+            ")",
+        ];
+    }
+}
+export function queryTree_As (query : AfterSelectClause) : QueryTreeArray {
+    if (
+        query._unions != undefined ||
+        query._unionOrders != undefined ||
+        query._unionLimit != undefined
+    ) {
+        return [
+            "(",
+            "(",
+            queryTreeSelects_As(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+            ")",
+            queryTreeUnion(query),
+            queryTreeUnionOrderBy(query),
+            queryTreeUnionLimit(query),
+            ")",
+        ];
+    } else {
+        //No UNION-related clauses
+        return [
+            "(",
+            queryTreeSelects_As(query),
             queryTreeFrom(query),
             queryTreeWhere(query),
             queryTreeGroupBy(query),

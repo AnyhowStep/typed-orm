@@ -1,3 +1,11 @@
+import {AfterSelectClause} from "../predicate";
+import {IAliasedTable, AliasedTable} from "../../../aliased-table";
+import {IJoin} from "../../../join";
+import {ColumnRefUtil} from "../../../column-ref";
+import {ColumnMapUtil} from "../../../column-map";
+import {SelectItemArrayUtil} from "../../../select-item-array";
+import {queryTree_As} from "../query";
+
 /*
     If IQuery is a RawExpr, then the result is,
     IExprSelectItem & IAlasedTable
@@ -45,8 +53,60 @@
     readonly usedRef : DataT["usedRef"]; = from _parentJoins
 
     --> readonly alias : DataT["alias"]; = <alias>
-    readonly name  : DataT["name"];      = "" <- Empty string
     readonly columns : DataT["columns"]; = No columnName overlap, from _selects
 
-    TODO readonly unaliasedQuery : QueryTree; = QueryUtil.queryTree_RawExpr()
+    readonly unaliasedQuery : QueryTree; = QueryUtil.queryTree_RawExpr()
 */
+export type As<
+    QueryT extends AfterSelectClause,
+    AliasT extends string
+> = (
+    IAliasedTable<{
+        usedRef : (
+            QueryT["_parentJoins"] extends IJoin[] ?
+            ColumnRefUtil.FromJoinArray<QueryT["_parentJoins"]> :
+            {}
+        ),
+        alias : AliasT,
+        columns : ColumnMapUtil.FromSelectItemArray<QueryT["_selects"]>,
+    }>
+);
+
+export type AssertAliasableQuery<
+    QueryT extends AfterSelectClause
+> = (
+    QueryT &
+    //No duplicate columnNames in _selects
+    (
+        SelectItemArrayUtil.DuplicateColumnName<QueryT["_selects"]> extends never ?
+        unknown :
+        [
+            "Duplicate column names not allowed in selects",
+            SelectItemArrayUtil.DuplicateColumnName<QueryT["_selects"]>
+        ]
+    )
+);
+
+export function as<
+    QueryT extends AfterSelectClause,
+    AliasT extends string
+> (
+    query : AssertAliasableQuery<QueryT>,
+    alias : AliasT
+) : As<QueryT, AliasT> {
+    SelectItemArrayUtil.assertNoDuplicateColumnName(query._selects);
+    return new AliasedTable(
+        {
+            usedRef : (
+                query._parentJoins == undefined ?
+                {} :
+                ColumnRefUtil.fromJoinArray(query._parentJoins)
+            ),
+            alias,
+            columns : ColumnMapUtil.fromSelectItemArray(query._selects),
+        },
+        {
+            unaliasedQuery : queryTree_As(query),
+        }
+    ) as any;
+}

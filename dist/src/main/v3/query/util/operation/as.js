@@ -1,54 +1,21 @@
 "use strict";
-/*
-    If IQuery is a RawExpr, then the result is,
-    IExprSelectItem & IAlasedTable
-
-    If IQuery is ZeroOrOneRowQuery, then the
-    type is nullable.
-
-    If IQuery is OneRowQuery, then the
-    type is NOT nullable.
-
-    -----
-
-    If IQuery is not a RawExpr, then the result is
-    IAlasedTable
-
-    -----
-
-    The query.as() operation is useful for joining
-    to sub queries.
-
-    To alias, no duplicate column names are allowed
-    in the query.
-
-    Selecting `table--x` and `other--x` is not allowed
-    to alias the query.
-
-    -----
-
-    TODO IAliasedTable MUST have a usedRef and JOIN
-    operations must check for compatible usedRef
-*/
-/*
-    IExprSelectItem
-    readonly usedRef : DataT["usedRef"]; = from _parentJoins
-    readonly assertDelegate : DataT["assertDelegate"]; = from _selects[0]
-
-    readonly tableAlias : DataT["tableAlias"]; = `__aliased`
-    --> readonly alias : DataT["alias"];       = <alias>
-
-    readonly unaliasedQuery : QueryTree; = QueryUtil.queryTree_RawExpr()
-
-    -----
-
-    IAliasedTable
-    readonly usedRef : DataT["usedRef"]; = from _parentJoins
-
-    --> readonly alias : DataT["alias"]; = <alias>
-    readonly name  : DataT["name"];      = "" <- Empty string
-    readonly columns : DataT["columns"]; = No columnName overlap, from _selects
-
-    TODO readonly unaliasedQuery : QueryTree; = QueryUtil.queryTree_RawExpr()
-*/ 
+Object.defineProperty(exports, "__esModule", { value: true });
+const aliased_table_1 = require("../../../aliased-table");
+const column_ref_1 = require("../../../column-ref");
+const column_map_1 = require("../../../column-map");
+const select_item_array_1 = require("../../../select-item-array");
+const query_1 = require("../query");
+function as(query, alias) {
+    select_item_array_1.SelectItemArrayUtil.assertNoDuplicateColumnName(query._selects);
+    return new aliased_table_1.AliasedTable({
+        usedRef: (query._parentJoins == undefined ?
+            {} :
+            column_ref_1.ColumnRefUtil.fromJoinArray(query._parentJoins)),
+        alias,
+        columns: column_map_1.ColumnMapUtil.fromSelectItemArray(query._selects),
+    }, {
+        unaliasedQuery: query_1.queryTree_As(query),
+    });
+}
+exports.as = as;
 //# sourceMappingURL=as.js.map

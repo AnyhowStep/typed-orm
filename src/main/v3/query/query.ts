@@ -727,6 +727,22 @@ export class Query<DataT extends QueryData> {
             ...(arr as any)
         );
     }
+    /*as<AliasT extends string> (
+        this : QueryUtil.AssertAliasableQuery<
+            Extract<this, QueryUtil.AfterSelectClause>
+        >,
+        alias : AliasT
+    ) : (
+        QueryUtil.As<
+            Extract<this, QueryUtil.AfterSelectClause>,
+            AliasT
+        >
+    ) {
+        return QueryUtil.as<
+            Extract<this, QueryUtil.AfterSelectClause>,
+            AliasT
+        >(this as any, alias);
+    }*/
 }
 export function from<AliasedTableT extends IAliasedTable> (
     aliasedTable : QueryUtil.AssertUniqueJoinTarget<
