@@ -156,14 +156,51 @@ export function unionOrderBy<
         }
     }
 
+    const {
+        _distinct,
+        _sqlCalcFoundRows,
+
+        _joins,
+        _parentJoins,
+        _selects,
+        _where,
+
+        _grouped,
+        _having,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionLimit,
+
+        _mapDelegate,
+    } = query;
     return new Query(
         {
-            ...query,
+            _distinct,
+            _sqlCalcFoundRows,
+
+            _joins,
+            _parentJoins,
+            _selects,
+            _where,
+
+            _grouped,
+            _having,
+
+            _orders,
+            _limit,
+
+            _unions,
             _unionOrders : (
                 query._unionOrders == undefined ?
                 orders :
                 [...query._unionOrders, ...orders]
-            )
+            ),
+            _unionLimit,
+
+            _mapDelegate,
         }
     ) as UnionOrderBy<QueryT>;
 }

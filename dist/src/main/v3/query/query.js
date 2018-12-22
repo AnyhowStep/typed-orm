@@ -124,6 +124,9 @@ class Query {
         //TODO Figure out what's wrong
         ...arr);
     }
+    as(alias) {
+        return QueryUtil.as(this, alias);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

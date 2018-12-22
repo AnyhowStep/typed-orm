@@ -85,14 +85,52 @@ export function andWhere<
 
     ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);
 
+    const {
+        _distinct,
+        _sqlCalcFoundRows,
+
+        _joins,
+        _parentJoins,
+        _selects,
+
+        _grouped,
+        _having,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
+    } = query;
+
     return new Query(
         {
-            ...query,
+            _distinct,
+            _sqlCalcFoundRows,
+
+            _joins,
+            _parentJoins,
+            _selects,
             _where : (
                 query._where == undefined ?
                 expr :
                 and(query._where, expr)
-            )
+            ) as IAnonymousTypedExpr<boolean>,
+
+            _grouped,
+            _having,
+
+            _orders,
+            _limit,
+
+            _unions,
+            _unionOrders,
+            _unionLimit,
+
+            _mapDelegate,
         }
-    );
+    ) as AndWhere<QueryT>;
 }

@@ -13,11 +13,24 @@ function andHaving(query, delegate) {
     const rawExpr = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef), query);
     const expr = expr_1.ExprUtil.fromRawExpr(rawExpr);
     column_ref_1.ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);
+    const { _distinct, _sqlCalcFoundRows, _joins, _parentJoins, _selects, _where, _grouped, _orders, _limit, _unions, _unionOrders, _unionLimit, _mapDelegate, } = query;
     return new query_1.Query({
-        ...query,
+        _distinct,
+        _sqlCalcFoundRows,
+        _joins,
+        _parentJoins,
+        _selects,
+        _where,
+        _grouped,
         _having: (query._having == undefined ?
             expr :
-            expr_library_1.and(query._having, expr))
+            expr_library_1.and(query._having, expr)),
+        _orders,
+        _limit,
+        _unions,
+        _unionOrders,
+        _unionLimit,
+        _mapDelegate,
     });
 }
 exports.andHaving = andHaving;

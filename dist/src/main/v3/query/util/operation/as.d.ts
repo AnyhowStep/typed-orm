@@ -4,7 +4,11 @@ import { IJoin } from "../../../join";
 import { ColumnRefUtil } from "../../../column-ref";
 import { ColumnMapUtil } from "../../../column-map";
 import { SelectItemArrayUtil } from "../../../select-item-array";
-export declare type As<QueryT extends AfterSelectClause, AliasT extends string> = (IAliasedTable<{
+import { SelectItem } from "../../../select-item";
+export declare type As<QueryT extends {
+    _parentJoins: IJoin[] | undefined;
+    _selects: SelectItem[];
+}, AliasT extends string> = (IAliasedTable<{
     usedRef: (QueryT["_parentJoins"] extends IJoin[] ? ColumnRefUtil.FromJoinArray<QueryT["_parentJoins"]> : {});
     alias: AliasT;
     columns: ColumnMapUtil.FromSelectItemArray<QueryT["_selects"], AliasT>;

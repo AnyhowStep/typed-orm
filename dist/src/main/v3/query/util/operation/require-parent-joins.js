@@ -18,11 +18,24 @@ function requireParentJoins(query, nullable, ...arr) {
     //It doesn't matter what type of Join this is.
     //It should never affect output.
     join_1.JoinType.INNER, [], []));
+    const { _distinct, _sqlCalcFoundRows, _joins, _selects, _where, _grouped, _having, _orders, _limit, _unions, _unionOrders, _unionLimit, _mapDelegate, } = query;
     return new query_1.Query({
-        ...query,
+        _distinct,
+        _sqlCalcFoundRows,
+        _joins,
         _parentJoins: ((query._parentJoins == undefined) ?
             parentJoins :
-            [...query._parentJoins, ...parentJoins])
+            [...query._parentJoins, ...parentJoins]),
+        _selects,
+        _where,
+        _grouped,
+        _having,
+        _orders,
+        _limit,
+        _unions,
+        _unionOrders,
+        _unionLimit,
+        _mapDelegate,
     });
 }
 exports.requireParentJoins = requireParentJoins;

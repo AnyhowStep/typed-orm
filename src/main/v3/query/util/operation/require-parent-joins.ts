@@ -93,8 +93,32 @@ export function requireParentJoins<
         [],
         []
     ));
+
+    const {
+        _distinct,
+        _sqlCalcFoundRows,
+
+        _joins,
+        _selects,
+        _where,
+
+        _grouped,
+        _having,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
+    } = query;
     return new Query({
-        ...query,
+        _distinct,
+        _sqlCalcFoundRows,
+
+        _joins,
         _parentJoins : (
             (query._parentJoins == undefined) ?
             parentJoins :
@@ -106,6 +130,20 @@ export function requireParentJoins<
                 ToParentJoins<NullableT, ArrT[number]>
             )[] :
             ToParentJoins<NullableT, ArrT[number]>[]
-        )
+        ),
+        _selects,
+        _where,
+
+        _grouped,
+        _having,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
     });
 }

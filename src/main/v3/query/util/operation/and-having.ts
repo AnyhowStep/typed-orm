@@ -87,14 +87,52 @@ export function andHaving<
 
     ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);
 
+    const {
+        _distinct,
+        _sqlCalcFoundRows,
+
+        _joins,
+        _parentJoins,
+        _selects,
+        _where,
+
+        _grouped,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
+    } = query;
+
     return new Query(
         {
-            ...query,
+            _distinct,
+            _sqlCalcFoundRows,
+
+            _joins,
+            _parentJoins,
+            _selects,
+            _where,
+
+            _grouped,
             _having : (
                 query._having == undefined ?
                 expr :
                 and(query._having, expr)
-            )
+            ) as IAnonymousTypedExpr<boolean>,
+
+            _orders,
+            _limit,
+
+            _unions,
+            _unionOrders,
+            _unionLimit,
+
+            _mapDelegate,
         }
-    );
+    ) as AndHaving<QueryT>;
 }

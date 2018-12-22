@@ -40,11 +40,24 @@ function union(query, other, unionType = constants_1.DISTINCT) {
         distinct: (unionType == constants_1.DISTINCT),
         query: other,
     };
+    const { _distinct, _sqlCalcFoundRows, _joins, _parentJoins, _selects, _where, _grouped, _having, _orders, _limit, _unionOrders, _unionLimit, _mapDelegate, } = query;
     return new query_1.Query({
-        ...query,
+        _distinct,
+        _sqlCalcFoundRows,
+        _joins,
+        _parentJoins,
+        _selects,
+        _where,
+        _grouped,
+        _having,
+        _orders,
+        _limit,
         _unions: (query._unions == undefined ?
             [unionQuery] :
-            [...query._unions, unionQuery])
+            [...query._unions, unionQuery]),
+        _unionOrders,
+        _unionLimit,
+        _mapDelegate,
     });
 }
 exports.union = union;

@@ -150,14 +150,51 @@ export function orderBy<
         }
     }
 
+    const {
+        _distinct,
+        _sqlCalcFoundRows,
+
+        _joins,
+        _parentJoins,
+        _selects,
+        _where,
+
+        _grouped,
+        _having,
+
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
+    } = query;
     return new Query(
         {
-            ...query,
+            _distinct,
+            _sqlCalcFoundRows,
+
+            _joins,
+            _parentJoins,
+            _selects,
+            _where,
+
+            _grouped,
+            _having,
+
             _orders : (
                 query._orders == undefined ?
                 orders :
                 [...query._orders, ...orders]
-            )
+            ),
+            _limit,
+
+            _unions,
+            _unionOrders,
+            _unionLimit,
+
+            _mapDelegate
         }
     );
 }

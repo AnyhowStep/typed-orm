@@ -7,7 +7,7 @@ function selectExpr(query, delegate) {
         throw new Error(`Cannot select unaliased expression after SELECT clause`);
     }
     const wrappedDelegate = c => [expr_1.ExprUtil.as(delegate(c), "value")];
-    return select_1.select(query, wrappedDelegate);
+    return select_1.select(query, wrappedDelegate); //TODO Not use `as any` hacks?
 }
 exports.selectExpr = selectExpr;
 //# sourceMappingURL=select-expr.js.map

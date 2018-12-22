@@ -5,6 +5,7 @@ import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnMapUtil} from "../../../column-map";
 import {SelectItemArrayUtil} from "../../../select-item-array";
 import {queryTree_As} from "../query";
+import {SelectItem} from "../../../select-item";
 
 /*
     If IQuery is a RawExpr, then the result is,
@@ -58,7 +59,10 @@ import {queryTree_As} from "../query";
     readonly unaliasedQuery : QueryTree; = QueryUtil.queryTree_RawExpr()
 */
 export type As<
-    QueryT extends AfterSelectClause,
+    QueryT extends {
+        _parentJoins : IJoin[]|undefined,
+        _selects : SelectItem[],
+    },
     AliasT extends string
 > = (
     IAliasedTable<{
@@ -68,7 +72,10 @@ export type As<
             {}
         ),
         alias : AliasT,
-        columns : ColumnMapUtil.FromSelectItemArray<QueryT["_selects"], AliasT>,
+        columns : ColumnMapUtil.FromSelectItemArray<
+            QueryT["_selects"],
+            AliasT
+        >,
     }>
 );
 

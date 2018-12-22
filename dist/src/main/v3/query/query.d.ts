@@ -88,6 +88,7 @@ export declare class Query<DataT extends QueryData> {
     crossJoin<AliasedTableT extends IAliasedTable>(this: Extract<this, QueryUtil.AfterFromClause>, aliasedTable: QueryUtil.AssertUniqueJoinTarget<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>): (QueryUtil.CrossJoin<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>);
     requireParentJoins<ArrT extends NonEmptyTuple<IAliasedTable>>(...arr: QueryUtil.AssertValidParentJoins<this, ArrT>): (QueryUtil.RequireParentJoins<this, false, ArrT>);
     requireNullableParentJoins<ArrT extends NonEmptyTuple<IAliasedTable>>(...arr: QueryUtil.AssertValidParentJoins<this, ArrT>): (QueryUtil.RequireParentJoins<this, true, ArrT>);
+    as<AliasT extends string>(this: QueryUtil.AssertAliasableQuery<Extract<this, QueryUtil.AfterSelectClause>>, alias: AliasT): (QueryUtil.As<Extract<this, QueryUtil.AfterSelectClause>, AliasT>);
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertUniqueJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 export declare function select<SelectDelegateT extends QueryUtil.SelectDelegate<QueryUtil.NewInstance>>(delegate: QueryUtil.AssertValidSelectDelegate<QueryUtil.NewInstance, SelectDelegateT>): (QueryUtil.Select<QueryUtil.NewInstance, SelectDelegateT>);

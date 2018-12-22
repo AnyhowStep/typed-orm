@@ -30,8 +30,46 @@ export function distinct<QueryT extends AfterSelectClause> (
     if (query._selects == undefined) {
         throw new Error(`Cannot use DISTINCT before SELECT clause`);
     }
+
+    const {
+        _sqlCalcFoundRows,
+
+        _joins,
+        _parentJoins,
+        _selects,
+        _where,
+
+        _grouped,
+        _having,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
+    } = query;
     return new Query({
-        ...query,
         _distinct : true,
+        _sqlCalcFoundRows,
+
+        _joins,
+        _parentJoins,
+        _selects,
+        _where,
+
+        _grouped,
+        _having,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
     });
 }

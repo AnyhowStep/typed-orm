@@ -204,14 +204,52 @@ export function union<
         distinct : (unionType == DISTINCT),
         query : other,
     };
+
+    const {
+        _distinct,
+        _sqlCalcFoundRows,
+
+        _joins,
+        _parentJoins,
+        _selects,
+        _where,
+
+        _grouped,
+        _having,
+
+        _orders,
+        _limit,
+
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
+    } = query;
     return new Query(
         {
-            ...query,
+            _distinct,
+            _sqlCalcFoundRows,
+
+            _joins,
+            _parentJoins,
+            _selects,
+            _where,
+
+            _grouped,
+            _having,
+
+            _orders,
+            _limit,
+
             _unions : (
                 query._unions == undefined ?
                 [unionQuery] :
                 [...query._unions, unionQuery]
-            )
+            ),
+            _unionOrders,
+            _unionLimit,
+
+            _mapDelegate,
         }
     );
 }

@@ -83,7 +83,11 @@ export function from<
                 [],
                 [],
             ),
-        ],
+        ] as Join<{
+            aliasedTable : AliasedTableT,
+            columns : AliasedTableT["columns"],
+            nullable : false,
+        }>[],
         _parentJoins,
         _selects,
         _where,

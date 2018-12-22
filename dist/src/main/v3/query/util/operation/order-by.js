@@ -23,11 +23,24 @@ function orderBy(query, delegate) {
             column_ref_1.ColumnRefUtil.assertIsSubset(orderExpr.usedRef, queryRef);
         }
     }
+    const { _distinct, _sqlCalcFoundRows, _joins, _parentJoins, _selects, _where, _grouped, _having, _limit, _unions, _unionOrders, _unionLimit, _mapDelegate, } = query;
     return new query_1.Query({
-        ...query,
+        _distinct,
+        _sqlCalcFoundRows,
+        _joins,
+        _parentJoins,
+        _selects,
+        _where,
+        _grouped,
+        _having,
         _orders: (query._orders == undefined ?
             orders :
-            [...query._orders, ...orders])
+            [...query._orders, ...orders]),
+        _limit,
+        _unions,
+        _unionOrders,
+        _unionLimit,
+        _mapDelegate
     });
 }
 exports.orderBy = orderBy;
