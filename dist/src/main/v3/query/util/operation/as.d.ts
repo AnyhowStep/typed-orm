@@ -1,5 +1,5 @@
 import { AfterSelectClause } from "../predicate";
-import { IAliasedTable } from "../../../aliased-table";
+import { AliasedTable } from "../../../aliased-table";
 import { IJoin } from "../../../join";
 import { ColumnRefUtil } from "../../../column-ref";
 import { ColumnMapUtil } from "../../../column-map";
@@ -8,7 +8,7 @@ import { SelectItem } from "../../../select-item";
 export declare type As<QueryT extends {
     _parentJoins: IJoin[] | undefined;
     _selects: SelectItem[];
-}, AliasT extends string> = (IAliasedTable<{
+}, AliasT extends string> = (AliasedTable<{
     usedRef: (QueryT["_parentJoins"] extends IJoin[] ? ColumnRefUtil.FromJoinArray<QueryT["_parentJoins"]> : {});
     alias: AliasT;
     columns: ColumnMapUtil.FromSelectItemArray<QueryT["_selects"], AliasT>;

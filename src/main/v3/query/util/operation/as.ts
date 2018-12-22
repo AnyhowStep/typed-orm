@@ -1,5 +1,5 @@
 import {AfterSelectClause} from "../predicate";
-import {IAliasedTable, AliasedTable} from "../../../aliased-table";
+import {AliasedTable} from "../../../aliased-table";
 import {IJoin} from "../../../join";
 import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnMapUtil} from "../../../column-map";
@@ -65,7 +65,7 @@ export type As<
     },
     AliasT extends string
 > = (
-    IAliasedTable<{
+    AliasedTable<{
         usedRef : (
             QueryT["_parentJoins"] extends IJoin[] ?
             ColumnRefUtil.FromJoinArray<QueryT["_parentJoins"]> :
