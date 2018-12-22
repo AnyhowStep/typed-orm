@@ -146,6 +146,7 @@ function isOneSelectItemQuery(query) {
         select_item_1.SelectItemUtil.isSingleValueSelectItem(query._selects[0]));
 }
 exports.isOneSelectItemQuery = isOneSelectItemQuery;
+//TODO Rename to assertValidJoinTarget
 function assertUniqueJoinTarget(query, aliasedTable) {
     if (query._joins != undefined) {
         if (query._joins.some(j => j.aliasedTable.alias == aliasedTable.alias)) {

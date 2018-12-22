@@ -13,6 +13,7 @@ import {IAliasedTable} from "../../aliased-table";
 import {isObjectWithKeys} from "../../type";
 import {ColumnIdentifierUtil} from "../../column-identifier";
 import {OrderUtil} from "../../order";
+import { ColumnUtil } from "../../column";
 
 export function isUnionQuery (raw : any) : raw is UnionQuery {
     return (
@@ -220,7 +221,7 @@ export function isOneSelectItemQuery (query : IQuery) : query is OneSelectItemQu
         SelectItemUtil.isSingleValueSelectItem(query._selects[0])
     );
 }
-
+//TODO Rename to AssertValidJoinTargetImpl
 export type AssertUniqueJoinTargetImpl<
     QueryT extends IQuery,
     AliasedTableT extends IAliasedTable
@@ -266,11 +267,42 @@ export type AssertUniqueJoinTargetImpl<
             ]|void
         ) :
         unknown
+    ) &
+    //AliasedTableT["usedRef"] must be compatible with QueryT["_parentJoins"]
+    (
+        Extract<keyof AliasedTableT["usedRef"], string> extends never ?
+        //The easy case, AliasedTableT has no usedRef
+        unknown :
+        (
+            QueryT["_parentJoins"] extends IJoin[] ?
+            (
+                Exclude<
+                    ColumnUtil.FromColumnRef<AliasedTableT["usedRef"]>,
+                    ColumnUtil.FromJoinArray<QueryT["_parentJoins"]>
+                > extends never ?
+                //All of usedRef exist in parentJoins
+                unknown :
+                [
+                    "Incompatible usedRef",
+                    Exclude<
+                        ColumnUtil.FromColumnRef<AliasedTableT["usedRef"]>,
+                        ColumnUtil.FromJoinArray<QueryT["_parentJoins"]>
+                    >
+                ]
+            ) :
+            //You can't have any usedRef if there are no parentJoins
+            [
+                "Incompatible usedRef",
+                //All columns in the usedRef are incompatible
+                ColumnIdentifierUtil.FromColumnRef<AliasedTableT["usedRef"]>
+            ]
+        )
     )
 );
 //AliasedTableT["alias"] must not already be in
 //QueryT["joins"] or
 //QueryT["parentJoins"]
+//TODO Rename to AssertValidJoinTarget
 export type AssertUniqueJoinTarget<
     QueryT extends IQuery,
     AliasedTableT extends IAliasedTable
@@ -278,6 +310,7 @@ export type AssertUniqueJoinTarget<
     AliasedTableT &
     AssertUniqueJoinTargetImpl<QueryT, AliasedTableT>
 );
+//TODO Rename to assertValidJoinTarget
 export function assertUniqueJoinTarget (
     query : IQuery,
     aliasedTable : IAliasedTable

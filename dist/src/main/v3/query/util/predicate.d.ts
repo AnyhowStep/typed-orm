@@ -3,6 +3,8 @@ import { JoinArrayUtil } from "../../join-array";
 import { IJoin } from "../../join";
 import { SelectItem, AnonymousTypedSingleValueSelectItem } from "../../select-item";
 import { IAliasedTable } from "../../aliased-table";
+import { ColumnIdentifierUtil } from "../../column-identifier";
+import { ColumnUtil } from "../../column";
 export declare function isUnionQuery(raw: any): raw is UnionQuery;
 export declare function isUnionQueryArray(raw: any): raw is UnionQuery[];
 export declare function isLimitData(raw: any): raw is LimitData;
@@ -55,7 +57,7 @@ export declare function isZeroOrOneRowUnionQuery(query: IQuery): query is ZeroOr
 export declare function isZeroOrOneRowFromQuery(query: IQuery): query is ZeroOrOneRowFromQuery;
 export declare function isZeroOrOneRowQuery(query: IQuery): query is ZeroOrOneRowQuery;
 export declare function isOneSelectItemQuery(query: IQuery): query is OneSelectItemQuery<any>;
-export declare type AssertUniqueJoinTargetImpl<QueryT extends IQuery, AliasedTableT extends IAliasedTable> = ((QueryT["_joins"] extends IJoin[] ? (Extract<AliasedTableT["alias"], JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>> extends never ? unknown : ["Alias", Extract<AliasedTableT["alias"], JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>>, "already used in previous JOINs", JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>] | void) : unknown) & (QueryT["_parentJoins"] extends IJoin[] ? (Extract<AliasedTableT["alias"], JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>> extends never ? unknown : ["Alias", Extract<AliasedTableT["alias"], JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>>, "already used in parent JOINs", JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>] | void) : unknown));
+export declare type AssertUniqueJoinTargetImpl<QueryT extends IQuery, AliasedTableT extends IAliasedTable> = ((QueryT["_joins"] extends IJoin[] ? (Extract<AliasedTableT["alias"], JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>> extends never ? unknown : ["Alias", Extract<AliasedTableT["alias"], JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>>, "already used in previous JOINs", JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>] | void) : unknown) & (QueryT["_parentJoins"] extends IJoin[] ? (Extract<AliasedTableT["alias"], JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>> extends never ? unknown : ["Alias", Extract<AliasedTableT["alias"], JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>>, "already used in parent JOINs", JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>] | void) : unknown) & (Extract<keyof AliasedTableT["usedRef"], string> extends never ? unknown : (QueryT["_parentJoins"] extends IJoin[] ? (Exclude<ColumnUtil.FromColumnRef<AliasedTableT["usedRef"]>, ColumnUtil.FromJoinArray<QueryT["_parentJoins"]>> extends never ? unknown : ["Incompatible usedRef", Exclude<ColumnUtil.FromColumnRef<AliasedTableT["usedRef"]>, ColumnUtil.FromJoinArray<QueryT["_parentJoins"]>>]) : ["Incompatible usedRef", ColumnIdentifierUtil.FromColumnRef<AliasedTableT["usedRef"]>])));
 export declare type AssertUniqueJoinTarget<QueryT extends IQuery, AliasedTableT extends IAliasedTable> = (AliasedTableT & AssertUniqueJoinTargetImpl<QueryT, AliasedTableT>);
 export declare function assertUniqueJoinTarget(query: IQuery, aliasedTable: IAliasedTable): void;
 //# sourceMappingURL=predicate.d.ts.map

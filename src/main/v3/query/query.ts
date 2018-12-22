@@ -754,7 +754,7 @@ export function from<AliasedTableT extends IAliasedTable> (
     QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>
 ) {
     return QueryUtil.newInstance()
-        .from(aliasedTable);
+        .from<AliasedTableT>(aliasedTable);
 }
 export function select<
     SelectDelegateT extends QueryUtil.SelectDelegate<
