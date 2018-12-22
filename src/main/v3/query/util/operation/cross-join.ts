@@ -1,5 +1,5 @@
 import {Query} from "../../query";
-import {AfterFromClause, AssertUniqueJoinTarget, assertUniqueJoinTarget} from "../predicate";
+import {AfterFromClause, AssertValidJoinTarget, assertValidJoinTarget} from "../predicate";
 import {IAliasedTable} from "../../../aliased-table";
 import {Join, JoinType} from "../../../join";
 
@@ -73,14 +73,14 @@ export function crossJoin<
     AliasedTableT extends IAliasedTable
 > (
     query : QueryT,
-    aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>
+    aliasedTable : AssertValidJoinTarget<QueryT, AliasedTableT>
 ) : (
     CrossJoin<QueryT, AliasedTableT>
 ) {
     if (query._joins == undefined) {
         throw new Error(`Cannot CROSS JOIN before FROM clause`);
     }
-    assertUniqueJoinTarget(query, aliasedTable);
+    assertValidJoinTarget(query, aliasedTable);
 
     const {
         _distinct,

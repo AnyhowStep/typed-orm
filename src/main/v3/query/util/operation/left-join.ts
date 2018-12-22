@@ -1,5 +1,5 @@
 import {Query} from "../../query";
-import {AfterFromClause, AssertUniqueJoinTarget} from "../predicate";
+import {AfterFromClause, AssertValidJoinTarget} from "../predicate";
 import {JoinFromDelegate, JoinToDelegate, invokeJoinDelegate} from "./join-delegate";
 import {IAliasedTable} from "../../../aliased-table";
 import {Join, JoinType} from "../../../join";
@@ -43,7 +43,7 @@ export function leftJoin<
     FromDelegateT extends JoinFromDelegate<QueryT["_joins"]>
 > (
     query : QueryT,
-    aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,
+    aliasedTable : AssertValidJoinTarget<QueryT, AliasedTableT>,
     fromDelegate : FromDelegateT,
     toDelegate : JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>
 ) : (

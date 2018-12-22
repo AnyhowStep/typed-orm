@@ -1,7 +1,7 @@
 import {IQuery, Query} from "../../query";
 import {IAliasedTable} from "../../../aliased-table";
 import {IJoin, Join, JoinType} from "../../../join";
-import {AssertUniqueJoinTargetImpl, assertUniqueJoinTarget} from "../predicate";
+import {AssertValidJoinTargetImpl, assertValidJoinTarget} from "../predicate";
 import {NonEmptyTuple} from "../../../tuple";
 
 export type ToParentJoins<
@@ -57,7 +57,7 @@ export type AssertValidParentJoins<
     ArrT extends NonEmptyTuple<IAliasedTable>
 > = (
     ArrT &
-    AssertUniqueJoinTargetImpl<QueryT, ArrT[number]>
+    AssertValidJoinTargetImpl<QueryT, ArrT[number]>
 );
 
 /*
@@ -79,7 +79,7 @@ export function requireParentJoins<
     >
 ) {
     for (let aliasedTable of arr) {
-        assertUniqueJoinTarget(query, aliasedTable);
+        assertValidJoinTarget(query, aliasedTable);
     }
     const parentJoins = arr.map(aliasedTable => new Join(
         {

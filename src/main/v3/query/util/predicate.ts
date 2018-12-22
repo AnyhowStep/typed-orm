@@ -222,8 +222,7 @@ export function isOneSelectItemQuery (query : IQuery) : query is OneSelectItemQu
         SelectItemUtil.isSingleValueSelectItem(query._selects[0])
     );
 }
-//TODO Rename to AssertValidJoinTargetImpl
-export type AssertUniqueJoinTargetImpl<
+export type AssertValidJoinTargetImpl<
     QueryT extends IQuery,
     AliasedTableT extends IAliasedTable
 > = (
@@ -303,16 +302,14 @@ export type AssertUniqueJoinTargetImpl<
 //AliasedTableT["alias"] must not already be in
 //QueryT["joins"] or
 //QueryT["parentJoins"]
-//TODO Rename to AssertValidJoinTarget
-export type AssertUniqueJoinTarget<
+export type AssertValidJoinTarget<
     QueryT extends IQuery,
     AliasedTableT extends IAliasedTable
 > = (
     AliasedTableT &
-    AssertUniqueJoinTargetImpl<QueryT, AliasedTableT>
+    AssertValidJoinTargetImpl<QueryT, AliasedTableT>
 );
-//TODO Rename to assertValidJoinTarget
-export function assertUniqueJoinTarget (
+export function assertValidJoinTarget (
     query : IQuery,
     aliasedTable : IAliasedTable
 ) {

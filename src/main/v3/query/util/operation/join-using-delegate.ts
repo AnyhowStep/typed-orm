@@ -1,4 +1,4 @@
-import {AfterFromClause, AssertUniqueJoinTarget, assertUniqueJoinTarget} from "../predicate";
+import {AfterFromClause, AssertValidJoinTarget, assertValidJoinTarget} from "../predicate";
 import {IAliasedTable} from "../../../aliased-table";
 import {IJoin} from "../../../join";
 import {ColumnRefUtil} from "../../../column-ref";
@@ -82,13 +82,13 @@ export function invokeJoinUsingDelegate<
     UsingDelegateT extends JoinUsingDelegate<QueryT["_joins"], AliasedTableT>
 >(
     query : QueryT,
-    aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,
+    aliasedTable : AssertValidJoinTarget<QueryT, AliasedTableT>,
     usingDelegate : UsingDelegateT
 ) : ReturnType<UsingDelegateT> {
     if (query._joins == undefined) {
         throw new Error(`Cannot JOIN before FROM clause`);
     }
-    assertUniqueJoinTarget(query, aliasedTable);
+    assertValidJoinTarget(query, aliasedTable);
 
     const usingColumns : JoinUsingColumnUnion<
         ColumnUtil.FromJoinArray<QueryT["_joins"]>,

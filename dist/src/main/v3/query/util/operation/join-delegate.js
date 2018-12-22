@@ -8,7 +8,7 @@ function invokeJoinDelegate(query, aliasedTable, fromDelegate, toDelegate) {
     if (query._joins == undefined) {
         throw new Error(`Cannot JOIN before FROM clause`);
     }
-    predicate_1.assertUniqueJoinTarget(query, aliasedTable);
+    predicate_1.assertValidJoinTarget(query, aliasedTable);
     const joins = query._joins;
     const fromRef = column_ref_1.ColumnRefUtil.fromJoinArray(joins);
     const from = fromDelegate(column_ref_1.ColumnRefUtil.toConvenient(fromRef));

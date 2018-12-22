@@ -147,8 +147,7 @@ function isOneSelectItemQuery(query) {
         select_item_1.SelectItemUtil.isSingleValueSelectItem(query._selects[0]));
 }
 exports.isOneSelectItemQuery = isOneSelectItemQuery;
-//TODO Rename to assertValidJoinTarget
-function assertUniqueJoinTarget(query, aliasedTable) {
+function assertValidJoinTarget(query, aliasedTable) {
     if (query._parentJoins == undefined) {
         column_identifier_ref_1.ColumnIdentifierRefUtil.assertHasColumnIdentifiers({}, column_identifier_1.ColumnIdentifierUtil.Array.fromColumnRef(aliasedTable.usedRef));
     }
@@ -166,5 +165,5 @@ function assertUniqueJoinTarget(query, aliasedTable) {
         }
     }
 }
-exports.assertUniqueJoinTarget = assertUniqueJoinTarget;
+exports.assertValidJoinTarget = assertValidJoinTarget;
 //# sourceMappingURL=predicate.js.map

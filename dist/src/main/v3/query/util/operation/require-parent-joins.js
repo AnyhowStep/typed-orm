@@ -8,7 +8,7 @@ const predicate_1 = require("../predicate");
 */
 function requireParentJoins(query, nullable, ...arr) {
     for (let aliasedTable of arr) {
-        predicate_1.assertUniqueJoinTarget(query, aliasedTable);
+        predicate_1.assertValidJoinTarget(query, aliasedTable);
     }
     const parentJoins = arr.map(aliasedTable => new join_1.Join({
         aliasedTable,

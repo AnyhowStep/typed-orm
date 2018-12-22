@@ -16,7 +16,7 @@ function invokeJoinUsingDelegate(query, aliasedTable, usingDelegate) {
     if (query._joins == undefined) {
         throw new Error(`Cannot JOIN before FROM clause`);
     }
-    predicate_1.assertUniqueJoinTarget(query, aliasedTable);
+    predicate_1.assertValidJoinTarget(query, aliasedTable);
     const usingColumns = joinUsingColumns(column_1.ColumnUtil.Array.fromJoinArray(query._joins), aliasedTable);
     const using = usingDelegate((query._joins.length == 1 ?
         column_map_1.ColumnMapUtil.fromColumnArray(usingColumns) :

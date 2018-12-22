@@ -1,6 +1,6 @@
 import {Query} from "../../query";
 import {Join, JoinType} from "../../../join";
-import {BeforeFromClause, AssertUniqueJoinTarget, assertUniqueJoinTarget} from "../predicate";
+import {BeforeFromClause, AssertValidJoinTarget, assertValidJoinTarget} from "../predicate";
 import {IAliasedTable} from "../../../aliased-table";
 
 export type From<
@@ -39,14 +39,14 @@ export function from<
     AliasedTableT extends IAliasedTable
 > (
     query : QueryT,
-    aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>
+    aliasedTable : AssertValidJoinTarget<QueryT, AliasedTableT>
 ) : (
     From<QueryT, AliasedTableT>
 ) {
     if (query._joins != undefined) {
         throw new Error(`FROM clause not allowed more than once`);
     }
-    assertUniqueJoinTarget(query, aliasedTable);
+    assertValidJoinTarget(query, aliasedTable);
 
     const {
         _distinct,

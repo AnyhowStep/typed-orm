@@ -246,7 +246,7 @@ export class Query<DataT extends QueryData> {
         AliasedTableT extends IAliasedTable
     > (
         this : Extract<this, QueryUtil.BeforeFromClause>,
-        aliasedTable : QueryUtil.AssertUniqueJoinTarget<
+        aliasedTable : QueryUtil.AssertValidJoinTarget<
             Extract<this, QueryUtil.BeforeFromClause>,
             AliasedTableT
         >
@@ -272,7 +272,7 @@ export class Query<DataT extends QueryData> {
         >
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        aliasedTable : QueryUtil.AssertUniqueJoinTarget<
+        aliasedTable : QueryUtil.AssertValidJoinTarget<
             Extract<this, QueryUtil.AfterFromClause>,
             AliasedTableT
         >,
@@ -306,7 +306,7 @@ export class Query<DataT extends QueryData> {
         >
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        aliasedTable : QueryUtil.AssertUniqueJoinTarget<
+        aliasedTable : QueryUtil.AssertValidJoinTarget<
             Extract<this, QueryUtil.AfterFromClause>,
             AliasedTableT
         >,
@@ -340,7 +340,7 @@ export class Query<DataT extends QueryData> {
         >
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        aliasedTable : QueryUtil.AssertUniqueJoinTarget<
+        aliasedTable : QueryUtil.AssertValidJoinTarget<
             Extract<this, QueryUtil.AfterFromClause>,
             AliasedTableT
         >,
@@ -373,7 +373,7 @@ export class Query<DataT extends QueryData> {
         UsingDelegateT extends QueryUtil.JoinUsingDelegate<Extract<this, QueryUtil.AfterFromClause>["_joins"], AliasedTableT>
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        aliasedTable : QueryUtil.AssertUniqueJoinTarget<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>,
+        aliasedTable : QueryUtil.AssertValidJoinTarget<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>,
         usingDelegate : UsingDelegateT
     ) : (
         QueryUtil.InnerJoin<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>
@@ -394,7 +394,7 @@ export class Query<DataT extends QueryData> {
         UsingDelegateT extends QueryUtil.JoinUsingDelegate<Extract<this, QueryUtil.AfterFromClause>["_joins"], AliasedTableT>
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        aliasedTable : QueryUtil.AssertUniqueJoinTarget<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>,
+        aliasedTable : QueryUtil.AssertValidJoinTarget<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>,
         usingDelegate : UsingDelegateT
     ) : (
         QueryUtil.LeftJoin<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>
@@ -415,7 +415,7 @@ export class Query<DataT extends QueryData> {
         UsingDelegateT extends QueryUtil.JoinUsingDelegate<Extract<this, QueryUtil.AfterFromClause>["_joins"], AliasedTableT>
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        aliasedTable : QueryUtil.AssertUniqueJoinTarget<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>,
+        aliasedTable : QueryUtil.AssertValidJoinTarget<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>,
         usingDelegate : UsingDelegateT
     ) : (
         QueryUtil.RightJoin<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>
@@ -664,7 +664,7 @@ export class Query<DataT extends QueryData> {
         AliasedTableT extends IAliasedTable
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        aliasedTable : QueryUtil.AssertUniqueJoinTarget<
+        aliasedTable : QueryUtil.AssertValidJoinTarget<
             Extract<this, QueryUtil.AfterFromClause>,
             AliasedTableT
         >
@@ -746,7 +746,7 @@ export class Query<DataT extends QueryData> {
 }
 
 export function from<AliasedTableT extends IAliasedTable> (
-    aliasedTable : QueryUtil.AssertUniqueJoinTarget<
+    aliasedTable : QueryUtil.AssertValidJoinTarget<
         QueryUtil.NewInstance,
         AliasedTableT
     >

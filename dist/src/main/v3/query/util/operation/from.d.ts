@@ -1,6 +1,6 @@
 import { Query } from "../../query";
 import { Join } from "../../../join";
-import { BeforeFromClause, AssertUniqueJoinTarget } from "../predicate";
+import { BeforeFromClause, AssertValidJoinTarget } from "../predicate";
 import { IAliasedTable } from "../../../aliased-table";
 export declare type From<QueryT extends BeforeFromClause, AliasedTableT extends IAliasedTable> = (Query<{
     readonly _distinct: QueryT["_distinct"];
@@ -22,5 +22,5 @@ export declare type From<QueryT extends BeforeFromClause, AliasedTableT extends 
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare function from<QueryT extends BeforeFromClause, AliasedTableT extends IAliasedTable>(query: QueryT, aliasedTable: AssertUniqueJoinTarget<QueryT, AliasedTableT>): (From<QueryT, AliasedTableT>);
+export declare function from<QueryT extends BeforeFromClause, AliasedTableT extends IAliasedTable>(query: QueryT, aliasedTable: AssertValidJoinTarget<QueryT, AliasedTableT>): (From<QueryT, AliasedTableT>);
 //# sourceMappingURL=from.d.ts.map

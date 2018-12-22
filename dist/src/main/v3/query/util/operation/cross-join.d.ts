@@ -1,5 +1,5 @@
 import { Query } from "../../query";
-import { AfterFromClause, AssertUniqueJoinTarget } from "../predicate";
+import { AfterFromClause, AssertValidJoinTarget } from "../predicate";
 import { IAliasedTable } from "../../../aliased-table";
 import { Join } from "../../../join";
 export declare type CrossJoin<QueryT extends AfterFromClause, AliasedTableT extends IAliasedTable> = (Query<{
@@ -22,5 +22,5 @@ export declare type CrossJoin<QueryT extends AfterFromClause, AliasedTableT exte
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare function crossJoin<QueryT extends AfterFromClause, AliasedTableT extends IAliasedTable>(query: QueryT, aliasedTable: AssertUniqueJoinTarget<QueryT, AliasedTableT>): (CrossJoin<QueryT, AliasedTableT>);
+export declare function crossJoin<QueryT extends AfterFromClause, AliasedTableT extends IAliasedTable>(query: QueryT, aliasedTable: AssertValidJoinTarget<QueryT, AliasedTableT>): (CrossJoin<QueryT, AliasedTableT>);
 //# sourceMappingURL=cross-join.d.ts.map

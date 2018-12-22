@@ -1,4 +1,4 @@
-import {AfterFromClause, AssertUniqueJoinTarget} from "../predicate";
+import {AfterFromClause, AssertValidJoinTarget} from "../predicate";
 import {IAliasedTable} from "../../../aliased-table";
 import {JoinUsingDelegate, invokeJoinUsingDelegate} from "./join-using-delegate";
 import {InnerJoin, innerJoin} from "./inner-join";
@@ -9,7 +9,7 @@ export function innerJoinUsing<
     UsingDelegateT extends JoinUsingDelegate<QueryT["_joins"], AliasedTableT>
 > (
     query : QueryT,
-    aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,
+    aliasedTable : AssertValidJoinTarget<QueryT, AliasedTableT>,
     usingDelegate : UsingDelegateT
 ) : (
     InnerJoin<QueryT, AliasedTableT>

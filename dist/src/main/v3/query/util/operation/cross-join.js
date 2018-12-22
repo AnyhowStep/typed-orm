@@ -7,7 +7,7 @@ function crossJoin(query, aliasedTable) {
     if (query._joins == undefined) {
         throw new Error(`Cannot CROSS JOIN before FROM clause`);
     }
-    predicate_1.assertUniqueJoinTarget(query, aliasedTable);
+    predicate_1.assertValidJoinTarget(query, aliasedTable);
     const { _distinct, _sqlCalcFoundRows, _parentJoins, _selects, _where, _grouped, _having, _orders, _limit, _unions, _unionOrders, _unionLimit, _mapDelegate, } = query;
     return new query_1.Query({
         _distinct,

@@ -1,7 +1,7 @@
 import { IQuery, Query } from "../../query";
 import { IAliasedTable } from "../../../aliased-table";
 import { IJoin } from "../../../join";
-import { AssertUniqueJoinTargetImpl } from "../predicate";
+import { AssertValidJoinTargetImpl } from "../predicate";
 import { NonEmptyTuple } from "../../../tuple";
 export declare type ToParentJoins<NullableT extends boolean, AliasedTableT extends IAliasedTable> = (AliasedTableT extends IAliasedTable ? IJoin<{
     aliasedTable: AliasedTableT;
@@ -24,6 +24,6 @@ export declare type RequireParentJoins<QueryT extends IQuery, NullableT extends 
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare type AssertValidParentJoins<QueryT extends IQuery, ArrT extends NonEmptyTuple<IAliasedTable>> = (ArrT & AssertUniqueJoinTargetImpl<QueryT, ArrT[number]>);
+export declare type AssertValidParentJoins<QueryT extends IQuery, ArrT extends NonEmptyTuple<IAliasedTable>> = (ArrT & AssertValidJoinTargetImpl<QueryT, ArrT[number]>);
 export declare function requireParentJoins<QueryT extends IQuery, NullableT extends boolean, ArrT extends NonEmptyTuple<IAliasedTable>>(query: QueryT, nullable: NullableT, ...arr: AssertValidParentJoins<QueryT, ArrT>): (RequireParentJoins<QueryT, NullableT, ArrT>);
 //# sourceMappingURL=require-parent-joins.d.ts.map

@@ -1,5 +1,5 @@
 import * as sd from "schema-decorator";
-import {AfterFromClause, AssertUniqueJoinTarget, assertUniqueJoinTarget} from "../predicate";
+import {AfterFromClause, AssertValidJoinTarget, assertValidJoinTarget} from "../predicate";
 import {IJoin} from "../../../join";
 import {ColumnRefUtil} from "../../../column-ref";
 import {NonEmptyTuple} from "../../../tuple";
@@ -137,7 +137,7 @@ export function invokeJoinDelegate<
     FromDelegateT extends JoinFromDelegate<QueryT["_joins"]>
 > (
     query : QueryT,
-    aliasedTable : AssertUniqueJoinTarget<QueryT, AliasedTableT>,
+    aliasedTable : AssertValidJoinTarget<QueryT, AliasedTableT>,
     fromDelegate : FromDelegateT,
     toDelegate : JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>
 ) : (
@@ -149,7 +149,7 @@ export function invokeJoinDelegate<
     if (query._joins == undefined) {
         throw new Error(`Cannot JOIN before FROM clause`);
     }
-    assertUniqueJoinTarget(query, aliasedTable);
+    assertValidJoinTarget(query, aliasedTable);
 
     const joins : QueryT["_joins"] = query._joins;
     const fromRef = ColumnRefUtil.fromJoinArray(joins);
