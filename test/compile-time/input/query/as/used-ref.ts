@@ -1,6 +1,14 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 
+const parent = o.table(
+    "parent",
+    {
+        a : sd.naturalNumber(),
+        b : sd.string(),
+        c : sd.boolean(),
+    }
+);
 const table = o.table(
     "table",
     {
@@ -11,5 +19,6 @@ const table = o.table(
 );
 
 export const aliased = o.from(table)
-    .select(c => [c.z, c.x, c.y])
+    .requireParentJoins(parent)
+    .select(c => [c.table.z, c.table.x, c.table.y])
     .as("aliased");

@@ -11,5 +11,4 @@ const table = o.table(
 );
 
 export const aliased = o.from(table)
-    .select(c => [c.z, c.x, c.y])
     .as("aliased");

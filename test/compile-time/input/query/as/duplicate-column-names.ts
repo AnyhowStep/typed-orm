@@ -10,6 +10,15 @@ const table = o.table(
     }
 );
 
+const parent = o.table(
+    "parent",
+    {
+        x : sd.buffer(),
+        y : sd.buffer(),
+        z : sd.buffer(),
+    }
+);
 export const aliased = o.from(table)
-    .select(c => [c.z, c.x, c.y])
+    .requireParentJoins(parent)
+    .select(c => [c.table.x, c.parent.x])
     .as("aliased");
