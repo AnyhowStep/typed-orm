@@ -14,6 +14,7 @@ import {isObjectWithKeys} from "../../type";
 import {ColumnIdentifierUtil} from "../../column-identifier";
 import {OrderUtil} from "../../order";
 import { ColumnUtil } from "../../column";
+import { ColumnIdentifierRefUtil } from "../../column-identifier-ref";
 
 export function isUnionQuery (raw : any) : raw is UnionQuery {
     return (
@@ -315,6 +316,18 @@ export function assertUniqueJoinTarget (
     query : IQuery,
     aliasedTable : IAliasedTable
 ) {
+    if (query._parentJoins == undefined) {
+        ColumnIdentifierRefUtil.assertHasColumnIdentifiers(
+            {},
+            ColumnIdentifierUtil.Array.fromColumnRef(aliasedTable.usedRef)
+        );
+    } else {
+        ColumnIdentifierRefUtil.assertHasColumnIdentifiers(
+            ColumnIdentifierRefUtil.fromJoinArray(query._parentJoins),
+            ColumnIdentifierUtil.Array.fromColumnRef(aliasedTable.usedRef)
+        );
+    }
+
     if (query._joins != undefined) {
         if (query._joins.some(j => j.aliasedTable.alias == aliasedTable.alias)) {
             throw new Error(`Alias ${aliasedTable.alias} already used in previous JOINs`);
