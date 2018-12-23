@@ -5,43 +5,40 @@ const expr_1 = require("../../../../expr");
 const query_tree_1 = require("../../../../query-tree");
 const dataType = require("../../../../data-type");
 //https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_minus
-class BigIntSubExpr extends expr_1.Expr {
-    constructor(data, queryTree) {
-        super({
-            usedRef: data.usedRef,
-            assertDelegate: dataType.bigint
-        }, queryTree);
+function tryGetSubQueryTree(rawExpr) {
+    if (expr_1.ExprUtil.isExpr(rawExpr)) {
+        if (rawExpr.queryTree instanceof query_tree_1.Parentheses) {
+            const tree = rawExpr.queryTree.getTree();
+            if (tree instanceof Array) {
+                if (tree.length == 0) {
+                    //This shouldn't happen, in general...
+                    return [];
+                }
+                for (let i = 1; i < tree.length; i += 2) {
+                    if (tree[i] !== "-") {
+                        return undefined;
+                    }
+                }
+                return tree;
+            }
+        }
     }
+    return undefined;
 }
 function bigIntSub(...arr) {
     const usedRef = raw_expr_1.RawExprUtil.intersectUsedRefTuple(...arr);
     const queryTree = [];
     for (let rawExpr of arr) {
-        if (rawExpr instanceof BigIntSubExpr) {
-            if (rawExpr.queryTree instanceof query_tree_1.Parentheses) {
-                const tree = rawExpr.queryTree.getTree();
-                if (tree instanceof Array) {
-                    if (tree.length == 0) {
-                        //This shouldn't happen, in general...
-                        continue;
-                    }
-                    if (queryTree.length > 0) {
-                        queryTree.push("-");
-                    }
-                    queryTree.push(...tree);
-                }
-                else {
-                    if (queryTree.length > 0) {
-                        queryTree.push("-");
-                    }
-                    queryTree.push(tree);
-                }
+        const subQueryTree = tryGetSubQueryTree(rawExpr);
+        if (subQueryTree != undefined) {
+            if (subQueryTree.length == 0) {
+                continue;
             }
             else {
                 if (queryTree.length > 0) {
                     queryTree.push("-");
                 }
-                queryTree.push(raw_expr_1.RawExprUtil.queryTree(rawExpr));
+                queryTree.push(...subQueryTree);
             }
         }
         else {
@@ -53,13 +50,15 @@ function bigIntSub(...arr) {
     }
     if (queryTree.length == 0) {
         //TODO Is the subtraction of zero numbers... zero?
-        return new BigIntSubExpr({
+        return new expr_1.Expr({
             usedRef: usedRef,
+            assertDelegate: dataType.bigint,
         }, raw_expr_1.RawExprUtil.queryTree(0));
     }
     else {
-        return new BigIntSubExpr({
+        return new expr_1.Expr({
             usedRef: usedRef,
+            assertDelegate: dataType.bigint,
         }, queryTree);
     }
 }

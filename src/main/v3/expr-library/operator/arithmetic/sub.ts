@@ -1,26 +1,29 @@
 import * as sd from "schema-decorator";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
-import {Expr, ExprData} from "../../../expr";
+import {Expr, ExprUtil} from "../../../expr";
 import {Tuple} from "../../../tuple";
-import {QueryTree, Parentheses, QueryTreeArray} from "../../../query-tree";
+import {Parentheses, QueryTreeArray} from "../../../query-tree";
 
 //https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_minus
-class SubExpr<DataT extends Pick<ExprData, "usedRef">> extends Expr<{
-    usedRef : DataT["usedRef"],
-    assertDelegate : sd.AssertDelegate<number>,
-}> {
-    constructor (
-        data : DataT,
-        queryTree : QueryTree
-    ) {
-        super(
-            {
-                usedRef : data.usedRef,
-                assertDelegate : sd.number()
-            },
-            queryTree
-        );
+function tryGetSubQueryTree (rawExpr : RawExpr<number>) : QueryTreeArray|undefined {
+    if (ExprUtil.isExpr(rawExpr)) {
+        if (rawExpr.queryTree instanceof Parentheses) {
+            const tree = rawExpr.queryTree.getTree();
+            if (tree instanceof Array) {
+                if (tree.length == 0) {
+                    //This shouldn't happen, in general...
+                    return [];
+                }
+                for (let i=1; i<tree.length; i+=2) {
+                    if (tree[i] !== "-") {
+                        return undefined;
+                    }
+                }
+                return tree;
+            }
+        }
     }
+    return undefined;
 }
 export function sub<ArrT extends Tuple<RawExpr<number>>> (
     ...arr : ArrT
@@ -34,29 +37,15 @@ export function sub<ArrT extends Tuple<RawExpr<number>>> (
     const queryTree : QueryTreeArray = [];
 
     for (let rawExpr of arr) {
-        if (rawExpr instanceof SubExpr) {
-            if (rawExpr.queryTree instanceof Parentheses) {
-                const tree = rawExpr.queryTree.getTree();
-                if (tree instanceof Array) {
-                    if (tree.length == 0) {
-                        //This shouldn't happen, in general...
-                        continue;
-                    }
-                    if (queryTree.length > 0) {
-                        queryTree.push("-");
-                    }
-                    queryTree.push(...tree);
-                } else {
-                    if (queryTree.length > 0) {
-                        queryTree.push("-");
-                    }
-                    queryTree.push(tree);
-                }
+        const subQueryTree = tryGetSubQueryTree(rawExpr);
+        if (subQueryTree != undefined) {
+            if (subQueryTree.length == 0) {
+                continue;
             } else {
                 if (queryTree.length > 0) {
                     queryTree.push("-");
                 }
-                queryTree.push(RawExprUtil.queryTree(rawExpr));
+                queryTree.push(...subQueryTree);
             }
         } else {
             if (queryTree.length > 0) {
@@ -67,16 +56,18 @@ export function sub<ArrT extends Tuple<RawExpr<number>>> (
     }
     if (queryTree.length == 0) {
         //TODO Is the subtraction of zero numbers... zero?
-        return new SubExpr(
+        return new Expr(
             {
                 usedRef : usedRef,
+                assertDelegate : sd.number(),
             },
             RawExprUtil.queryTree(0)
         );
     } else {
-        return new SubExpr(
+        return new Expr(
             {
                 usedRef : usedRef,
+                assertDelegate : sd.number(),
             },
             queryTree
         );

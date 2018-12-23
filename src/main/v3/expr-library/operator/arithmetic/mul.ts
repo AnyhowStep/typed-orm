@@ -1,26 +1,29 @@
 import * as sd from "schema-decorator";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
-import {Expr, ExprData} from "../../../expr";
+import {Expr, ExprUtil} from "../../../expr";
 import {Tuple} from "../../../tuple";
-import {QueryTree, Parentheses, QueryTreeArray} from "../../../query-tree";
+import {Parentheses, QueryTreeArray} from "../../../query-tree";
 
 //https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_times
-class MulExpr<DataT extends Pick<ExprData, "usedRef">> extends Expr<{
-    usedRef : DataT["usedRef"],
-    assertDelegate : sd.AssertDelegate<number>,
-}> {
-    constructor (
-        data : DataT,
-        queryTree : QueryTree
-    ) {
-        super(
-            {
-                usedRef : data.usedRef,
-                assertDelegate : sd.number()
-            },
-            queryTree
-        );
+function tryGetMulQueryTree (rawExpr : RawExpr<number>) : QueryTreeArray|undefined {
+    if (ExprUtil.isExpr(rawExpr)) {
+        if (rawExpr.queryTree instanceof Parentheses) {
+            const tree = rawExpr.queryTree.getTree();
+            if (tree instanceof Array) {
+                if (tree.length == 0) {
+                    //This shouldn't happen, in general...
+                    return [];
+                }
+                for (let i=1; i<tree.length; i+=2) {
+                    if (tree[i] !== "*") {
+                        return undefined;
+                    }
+                }
+                return tree;
+            }
+        }
     }
+    return undefined;
 }
 export function mul<ArrT extends Tuple<RawExpr<number>>> (
     ...arr : ArrT
@@ -34,29 +37,15 @@ export function mul<ArrT extends Tuple<RawExpr<number>>> (
     const queryTree : QueryTreeArray = [];
 
     for (let rawExpr of arr) {
-        if (rawExpr instanceof MulExpr) {
-            if (rawExpr.queryTree instanceof Parentheses) {
-                const tree = rawExpr.queryTree.getTree();
-                if (tree instanceof Array) {
-                    if (tree.length == 0) {
-                        //This shouldn't happen, in general...
-                        continue;
-                    }
-                    if (queryTree.length > 0) {
-                        queryTree.push("*");
-                    }
-                    queryTree.push(...tree);
-                } else {
-                    if (queryTree.length > 0) {
-                        queryTree.push("*");
-                    }
-                    queryTree.push(tree);
-                }
+        const mulQueryTree = tryGetMulQueryTree(rawExpr);
+        if (mulQueryTree != undefined) {
+            if (mulQueryTree.length == 0) {
+                continue;
             } else {
                 if (queryTree.length > 0) {
                     queryTree.push("*");
                 }
-                queryTree.push(RawExprUtil.queryTree(rawExpr));
+                queryTree.push(...mulQueryTree);
             }
         } else {
             if (queryTree.length > 0) {
@@ -67,16 +56,18 @@ export function mul<ArrT extends Tuple<RawExpr<number>>> (
     }
     if (queryTree.length == 0) {
         //TODO Is the multiplication of zero numbers... one?
-        return new MulExpr(
+        return new Expr(
             {
                 usedRef : usedRef,
+                assertDelegate : sd.number(),
             },
             RawExprUtil.queryTree(1)
         );
     } else {
-        return new MulExpr(
+        return new Expr(
             {
                 usedRef : usedRef,
+                assertDelegate : sd.number(),
             },
             queryTree
         );
