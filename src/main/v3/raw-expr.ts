@@ -12,6 +12,8 @@ import {IQuery, QueryUtil} from "./query";
 import {IJoin} from "./join";
 import {MySqlDateTime, dateTime, MySqlDate, MySqlTime, date, time} from "./data-type";
 import * as dataType from "./data-type";
+import {IAnonymousTypedExprSelectItem, IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
+import {Parentheses} from "./query-tree";
 
 export type RawExpr<TypeT> = (
     (
@@ -25,7 +27,8 @@ export type RawExpr<TypeT> = (
         null extends TypeT ?
         (OneSelectItemQuery<TypeT> & ZeroOrOneRowQuery) :
         (OneSelectItemQuery<TypeT> & OneRowQuery)
-    )
+    ) |
+    IAnonymousTypedExprSelectItem<TypeT>
 );
 
 export namespace RawExprUtil {
@@ -45,6 +48,8 @@ export namespace RawExprUtil {
             >> :
             {}
         ) :
+        RawExprT extends IExprSelectItem ?
+        RawExprT["usedRef"] :
         never
     );
     export function usedRef<RawExprT extends RawExpr<any>> (
@@ -98,6 +103,10 @@ export namespace RawExprUtil {
             }
         }
 
+        if (ExprSelectItemUtil.isExprSelectItem(rawExpr)) {
+            return rawExpr.usedRef as any;
+        }
+
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
     export type TypeOf<RawExprT extends RawExpr<any>> = (
@@ -109,30 +118,12 @@ export namespace RawExprUtil {
         ReturnType<RawExprT["assertDelegate"]> :
         RawExprT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery ?
         QueryUtil.TypeOf<RawExprT> :
+        RawExprT extends IExprSelectItem ?
+        ReturnType<RawExprT["assertDelegate"]> :
         never
     );
     export type AssertDelegate<RawExprT extends RawExpr<any>> = (
         sd.AssertDelegate<TypeOf<RawExprT>>
-        /*RawExprT extends PrimitiveExpr ?
-        sd.AssertDelegate<RawExprT> :
-        RawExprT extends IExpr ?
-        RawExprT["assertDelegate"] :
-        RawExprT extends IColumn ?
-        RawExprT["assertDelegate"] :
-        RawExprT extends OneSelectItemQuery<any> ?
-        (
-            RawExprT extends OneRowQuery ?
-            sd.AssertDelegate<
-                SelectItemUtil.TypeOf<RawExprT["_selects"][0]>
-            > :
-            sd.AssertDelegate<
-                null|
-                SelectItemUtil.TypeOf<RawExprT["_selects"][0]>
-            >
-        ) :
-        RawExprT extends TableSubquery.SingleValueOrEmpty<any> ?
-        TableSubquery.AssertDelegate<RawExprT> :
-        never*/
     );
     export function assertDelegate<RawExprT extends RawExpr<any>> (
         rawExpr : RawExprT
@@ -190,6 +181,10 @@ export namespace RawExprUtil {
             QueryUtil.isZeroOrOneRowQuery(rawExpr)
         ) {
             return QueryUtil.assertDelegate(rawExpr) as any;
+        }
+
+        if (ExprSelectItemUtil.isExprSelectItem(rawExpr)) {
+            return rawExpr.assertDelegate as any;
         }
 
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
@@ -257,42 +252,13 @@ export namespace RawExprUtil {
             return QueryUtil.queryTree_RawExpr(rawExpr);
         }
 
+        if (ExprSelectItemUtil.isExprSelectItem(rawExpr)) {
+            return Parentheses.Create(rawExpr.unaliasedQuery);
+        }
+
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
 
-    /*
-        //This is if we want to get a Tuple of UsedRef
-        items = [];
-        arr = [];
-        for (let i=0; i<21; ++i) {
-            arr.push(`[${items.join(", ")}]`);
-            items.push(`UsedRef<ArrT[${i}]>`);
-        }
-
-        arr2 = [];
-        for (let i=0; i<arr.length; ++i) {
-            arr2.push(`ArrT["length"] extends ${i} ?\n        ${arr[i]} :`);
-        }
-        arr2.join("\n        ")
-
-        //However, the current use-case only covers merging the UsedRef
-        items = [];
-        arr = [];
-        for (let i=0; i<21; ++i) {
-            if (i == 0) {
-                arr.push("{}");
-            } else {
-                arr.push(items.join(" & "));
-            }
-            items.push(`UsedRef<ArrT[${i}]>`);
-        }
-
-        arr2 = [];
-        for (let i=0; i<arr.length; ++i) {
-            arr2.push(`ArrT["length"] extends ${i} ?\n        ${arr[i]} :`);
-        }
-        arr2.join("\n        ")
-    */
     export type IntersectUsedRefTuple<ArrT extends Tuple<RawExpr<any>>> = (
         ArrT["length"] extends 0 ?
         {} :

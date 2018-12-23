@@ -8,6 +8,8 @@ const sqlstring_1 = require("sqlstring");
 const query_1 = require("./query");
 const data_type_1 = require("./data-type");
 const dataType = require("./data-type");
+const expr_select_item_1 = require("./expr-select-item");
+const query_tree_1 = require("./query-tree");
 var RawExprUtil;
 (function (RawExprUtil) {
     function usedRef(rawExpr) {
@@ -55,6 +57,9 @@ var RawExprUtil;
             else {
                 return column_ref_1.ColumnRefUtil.fromJoinArray(rawExpr._parentJoins);
             }
+        }
+        if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(rawExpr)) {
+            return rawExpr.usedRef;
         }
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
@@ -107,6 +112,9 @@ var RawExprUtil;
             query_1.QueryUtil.isOneSelectItemQuery(rawExpr) &&
             query_1.QueryUtil.isZeroOrOneRowQuery(rawExpr)) {
             return query_1.QueryUtil.assertDelegate(rawExpr);
+        }
+        if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(rawExpr)) {
+            return rawExpr.assertDelegate;
         }
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
@@ -168,6 +176,9 @@ var RawExprUtil;
         }
         if (query_1.QueryUtil.isQuery(rawExpr) && query_1.QueryUtil.isOneSelectItemQuery(rawExpr)) {
             return query_1.QueryUtil.queryTree_RawExpr(rawExpr);
+        }
+        if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(rawExpr)) {
+            return query_tree_1.Parentheses.Create(rawExpr.unaliasedQuery);
         }
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
