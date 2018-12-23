@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 const expr_1 = require("./expr");
 const column_1 = require("./column");
-const table_subquery_1 = require("./table-subquery");
 const column_ref_1 = require("./column-ref");
 const sqlstring_1 = require("sqlstring");
 const query_1 = require("./query");
@@ -57,9 +56,6 @@ var RawExprUtil;
                 return column_ref_1.ColumnRefUtil.fromJoinArray(rawExpr._parentJoins);
             }
         }
-        if (table_subquery_1.TableSubquery.isSingleValueOrEmpty(rawExpr)) {
-            return {};
-        }
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
     RawExprUtil.usedRef = usedRef;
@@ -111,9 +107,6 @@ var RawExprUtil;
             query_1.QueryUtil.isOneSelectItemQuery(rawExpr) &&
             query_1.QueryUtil.isZeroOrOneRowQuery(rawExpr)) {
             return query_1.QueryUtil.assertDelegate(rawExpr);
-        }
-        if (table_subquery_1.TableSubquery.isSingleValueOrEmpty(rawExpr)) {
-            return table_subquery_1.TableSubquery.assertDelegate(rawExpr);
         }
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
@@ -175,9 +168,6 @@ var RawExprUtil;
         }
         if (query_1.QueryUtil.isQuery(rawExpr) && query_1.QueryUtil.isOneSelectItemQuery(rawExpr)) {
             return query_1.QueryUtil.queryTree_RawExpr(rawExpr);
-        }
-        if (table_subquery_1.TableSubquery.isSingleValueOrEmpty(rawExpr)) {
-            return table_subquery_1.TableSubquery.queryTree(rawExpr);
         }
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }

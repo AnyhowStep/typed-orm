@@ -8,7 +8,7 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to parameter of type 'number | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<number>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<number>; }> | (QueryData & ... 2 more ... & IQuery<...>) | ITableSubquery<...>'.",
+      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to parameter of type 'number | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<number>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<number>; }> | (QueryData & ... 2 more ... & IQuery<...>)'.",
       "category": 1,
       "code": 2345,
       "next": {

@@ -2,7 +2,6 @@ import * as sd from "schema-decorator";
 import {PrimitiveExpr} from "./primitive-expr";
 import {IAnonymousTypedExpr, IExpr, ExprUtil} from "./expr";
 import {IAnonymousTypedColumn, IColumn, ColumnUtil} from "./column";
-import {TableSubquery} from "./table-subquery";
 import {ColumnRefUtil} from "./column-ref";
 import {escape} from "sqlstring";
 import {QueryTree} from "./query-tree";
@@ -26,11 +25,6 @@ export type RawExpr<TypeT> = (
         null extends TypeT ?
         (OneSelectItemQuery<TypeT> & ZeroOrOneRowQuery) :
         (OneSelectItemQuery<TypeT> & OneRowQuery)
-    ) |
-    (
-        null extends TypeT ?
-        TableSubquery.SingleValueOrEmpty<TypeT> :
-        TableSubquery.SingleValue<TypeT>
     )
 );
 
@@ -51,10 +45,6 @@ export namespace RawExprUtil {
             >> :
             {}
         ) :
-        //TableSubquery have parentJoins as usedRef
-        //Query, too
-        RawExprT extends TableSubquery.SingleValueOrEmpty<any> ?
-        {} :
         never
     );
     export function usedRef<RawExprT extends RawExpr<any>> (
@@ -108,10 +98,6 @@ export namespace RawExprUtil {
             }
         }
 
-        if (TableSubquery.isSingleValueOrEmpty(rawExpr)) {
-            return {} as any;
-        }
-
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
     export type TypeOf<RawExprT extends RawExpr<any>> = (
@@ -123,8 +109,6 @@ export namespace RawExprUtil {
         ReturnType<RawExprT["assertDelegate"]> :
         RawExprT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery ?
         QueryUtil.TypeOf<RawExprT> :
-        RawExprT extends TableSubquery.SingleValueOrEmpty<any> ?
-        TableSubquery.TypeOf<RawExprT> :
         never
     );
     export type AssertDelegate<RawExprT extends RawExpr<any>> = (
@@ -208,10 +192,6 @@ export namespace RawExprUtil {
             return QueryUtil.assertDelegate(rawExpr) as any;
         }
 
-        if (TableSubquery.isSingleValueOrEmpty(rawExpr)) {
-            return TableSubquery.assertDelegate(rawExpr) as any;
-        }
-
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
 
@@ -275,10 +255,6 @@ export namespace RawExprUtil {
 
         if (QueryUtil.isQuery(rawExpr) && QueryUtil.isOneSelectItemQuery(rawExpr)) {
             return QueryUtil.queryTree_RawExpr(rawExpr);
-        }
-
-        if (TableSubquery.isSingleValueOrEmpty(rawExpr)) {
-            return TableSubquery.queryTree(rawExpr);
         }
 
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
