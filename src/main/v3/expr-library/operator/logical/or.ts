@@ -1,25 +1,40 @@
 import * as sd from "schema-decorator";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
-import {Expr, ExprData} from "../../../expr";
+import {Expr, ExprUtil} from "../../../expr";
 import {Tuple} from "../../../tuple";
-import {QueryTree, Parentheses, QueryTreeArray} from "../../../query-tree";
+import {Parentheses, QueryTreeArray} from "../../../query-tree";
 
-class OrExpr<DataT extends Pick<ExprData, "usedRef">> extends Expr<{
-    usedRef : DataT["usedRef"],
-    assertDelegate : sd.AssertDelegate<boolean>,
-}> {
-    constructor (
-        data : DataT,
-        queryTree : QueryTree
-    ) {
-        super(
-            {
-                usedRef : data.usedRef,
-                assertDelegate : sd.numberToBoolean()
-            },
-            queryTree
-        );
+function tryGetOrQueryTree (rawExpr : RawExpr<boolean>) : QueryTreeArray|undefined {
+    const falseLiteral = RawExprUtil.queryTree(false);
+
+    if (ExprUtil.isExpr(rawExpr)) {
+        if (rawExpr.queryTree instanceof Parentheses) {
+            const tree = rawExpr.queryTree.getTree();
+            if (tree === falseLiteral) {
+                return [];
+            }
+
+            if (tree instanceof Array) {
+                if (tree.length == 0) {
+                    //This shouldn't happen, in general...
+                    return [];
+                }
+                if (tree.length == 1 && tree[0] === falseLiteral) {
+                    //Makes resultant queries "tidier" if we eliminate all false constants
+                    return [];
+                }
+                for (let i=1; i<tree.length; i+=2) {
+                    if (tree[i] !== "OR") {
+                        return undefined;
+                    }
+                }
+                return tree;
+            }
+        } else if (rawExpr.queryTree === falseLiteral) {
+            return [];
+        }
     }
+    return undefined;
 }
 export function or<ArrT extends Tuple<RawExpr<boolean>>> (
     ...arr : ArrT
@@ -32,42 +47,16 @@ export function or<ArrT extends Tuple<RawExpr<boolean>>> (
     const usedRef = RawExprUtil.intersectUsedRefTuple(...arr);
     const queryTree : QueryTreeArray = [];
 
-    const falseLiteral = RawExprUtil.queryTree(false);
-
     for (let rawExpr of arr) {
-        if (rawExpr instanceof OrExpr) {
-            if (rawExpr.queryTree === falseLiteral) {
+        const orQueryTree = tryGetOrQueryTree(rawExpr);
+        if (orQueryTree != undefined) {
+            if (orQueryTree.length == 0) {
                 continue;
-            } else if (rawExpr.queryTree instanceof Parentheses) {
-                const tree = rawExpr.queryTree.getTree();
-                if (tree instanceof Array) {
-                    if (tree.length == 0) {
-                        //This shouldn't happen, in general...
-                        continue;
-                    }
-                    if (tree.length == 1 && tree[0] === falseLiteral) {
-                        //Makes resultant queries "tidier" if we eliminate all false constants
-                        continue;
-                    }
-                    if (queryTree.length > 0) {
-                        queryTree.push("OR");
-                    }
-                    queryTree.push(...tree);
-                } else {
-                    //Makes resultant queries "tidier" if we eliminate all false constants
-                    if (tree === falseLiteral) {
-                        continue;
-                    }
-                    if (queryTree.length > 0) {
-                        queryTree.push("OR");
-                    }
-                    queryTree.push(tree);
-                }
             } else {
                 if (queryTree.length > 0) {
                     queryTree.push("OR");
                 }
-                queryTree.push(RawExprUtil.queryTree(rawExpr));
+                queryTree.push(...orQueryTree);
             }
         } else {
             //Makes resultant queries "tidier" if we eliminate all false constants
@@ -81,16 +70,18 @@ export function or<ArrT extends Tuple<RawExpr<boolean>>> (
         }
     }
     if (queryTree.length == 0) {
-        return new OrExpr(
+        return new Expr(
             {
                 usedRef : usedRef,
+                assertDelegate : sd.numberToBoolean(),
             },
-            falseLiteral
+            RawExprUtil.queryTree(false)
         );
     } else {
-        return new OrExpr(
+        return new Expr(
             {
                 usedRef : usedRef,
+                assertDelegate : sd.numberToBoolean(),
             },
             queryTree
         );

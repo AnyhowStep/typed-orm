@@ -4,55 +4,51 @@ const sd = require("schema-decorator");
 const raw_expr_1 = require("../../../raw-expr");
 const expr_1 = require("../../../expr");
 const query_tree_1 = require("../../../query-tree");
-class OrExpr extends expr_1.Expr {
-    constructor(data, queryTree) {
-        super({
-            usedRef: data.usedRef,
-            assertDelegate: sd.numberToBoolean()
-        }, queryTree);
+function tryGetOrQueryTree(rawExpr) {
+    const falseLiteral = raw_expr_1.RawExprUtil.queryTree(false);
+    if (expr_1.ExprUtil.isExpr(rawExpr)) {
+        if (rawExpr.queryTree instanceof query_tree_1.Parentheses) {
+            const tree = rawExpr.queryTree.getTree();
+            if (tree === falseLiteral) {
+                return [];
+            }
+            if (tree instanceof Array) {
+                if (tree.length == 0) {
+                    //This shouldn't happen, in general...
+                    return [];
+                }
+                if (tree.length == 1 && tree[0] === falseLiteral) {
+                    //Makes resultant queries "tidier" if we eliminate all false constants
+                    return [];
+                }
+                for (let i = 1; i < tree.length; i += 2) {
+                    if (tree[i] !== "OR") {
+                        return undefined;
+                    }
+                }
+                return tree;
+            }
+        }
+        else if (rawExpr.queryTree === falseLiteral) {
+            return [];
+        }
     }
+    return undefined;
 }
 function or(...arr) {
     const usedRef = raw_expr_1.RawExprUtil.intersectUsedRefTuple(...arr);
     const queryTree = [];
-    const falseLiteral = raw_expr_1.RawExprUtil.queryTree(false);
     for (let rawExpr of arr) {
-        if (rawExpr instanceof OrExpr) {
-            if (rawExpr.queryTree === falseLiteral) {
+        const orQueryTree = tryGetOrQueryTree(rawExpr);
+        if (orQueryTree != undefined) {
+            if (orQueryTree.length == 0) {
                 continue;
-            }
-            else if (rawExpr.queryTree instanceof query_tree_1.Parentheses) {
-                const tree = rawExpr.queryTree.getTree();
-                if (tree instanceof Array) {
-                    if (tree.length == 0) {
-                        //This shouldn't happen, in general...
-                        continue;
-                    }
-                    if (tree.length == 1 && tree[0] === falseLiteral) {
-                        //Makes resultant queries "tidier" if we eliminate all false constants
-                        continue;
-                    }
-                    if (queryTree.length > 0) {
-                        queryTree.push("OR");
-                    }
-                    queryTree.push(...tree);
-                }
-                else {
-                    //Makes resultant queries "tidier" if we eliminate all false constants
-                    if (tree === falseLiteral) {
-                        continue;
-                    }
-                    if (queryTree.length > 0) {
-                        queryTree.push("OR");
-                    }
-                    queryTree.push(tree);
-                }
             }
             else {
                 if (queryTree.length > 0) {
                     queryTree.push("OR");
                 }
-                queryTree.push(raw_expr_1.RawExprUtil.queryTree(rawExpr));
+                queryTree.push(...orQueryTree);
             }
         }
         else {
@@ -67,13 +63,15 @@ function or(...arr) {
         }
     }
     if (queryTree.length == 0) {
-        return new OrExpr({
+        return new expr_1.Expr({
             usedRef: usedRef,
-        }, falseLiteral);
+            assertDelegate: sd.numberToBoolean(),
+        }, raw_expr_1.RawExprUtil.queryTree(false));
     }
     else {
-        return new OrExpr({
+        return new expr_1.Expr({
             usedRef: usedRef,
+            assertDelegate: sd.numberToBoolean(),
         }, queryTree);
     }
 }

@@ -15,99 +15,99 @@ tape(__filename, (t) => {
         }
     );
 
-    const and1 = o.and(
+    const or1 = o.or(
         table.columns.x,
         table.columns.y
     );
     t.deepEqual(
         new o.SqlFormatter().format(
-            o.QueryTreeUtil.toSql(and1.queryTree)
+            o.QueryTreeUtil.toSql(or1.queryTree)
         ),
-        "(\n  `table`.`x` AND\n  `table`.`y`\n)"
+        "(\n  `table`.`x` OR\n  `table`.`y`\n)"
     );
 
-    const and2 = o.and(
+    const or2 = o.or(
         table.columns.x,
         table.columns.y,
         table.columns.z,
     );
     t.deepEqual(
         new o.SqlFormatter().format(
-            o.QueryTreeUtil.toSql(and2.queryTree)
+            o.QueryTreeUtil.toSql(or2.queryTree)
         ),
-        "(\n  `table`.`x` AND\n  `table`.`y` AND\n  `table`.`z`\n)"
+        "(\n  `table`.`x` OR\n  `table`.`y` OR\n  `table`.`z`\n)"
     );
 
-    const and3 = o.and(
-        and1,
+    const or3 = o.or(
+        or1,
         table.columns.a
     );
     t.deepEqual(
         new o.SqlFormatter().format(
-            o.QueryTreeUtil.toSql(and3.queryTree)
+            o.QueryTreeUtil.toSql(or3.queryTree)
         ),
-        "(\n  `table`.`x` AND\n  `table`.`y` AND\n  `table`.`a`\n)"
+        "(\n  `table`.`x` OR\n  `table`.`y` OR\n  `table`.`a`\n)"
     );
 
-    const and4 = o.and(
-        and3,
+    const or4 = o.or(
+        or3,
         table.columns.b
     );
     t.deepEqual(
         new o.SqlFormatter().format(
-            o.QueryTreeUtil.toSql(and4.queryTree)
+            o.QueryTreeUtil.toSql(or4.queryTree)
         ),
-        "(\n  `table`.`x` AND\n  `table`.`y` AND\n  `table`.`a` AND\n  `table`.`b`\n)"
+        "(\n  `table`.`x` OR\n  `table`.`y` OR\n  `table`.`a` OR\n  `table`.`b`\n)"
     );
 
-    const and5 = o.and(
+    const or5 = o.or(
         o.eq(table.columns.x, table.columns.y),
         table.columns.z
     );
     t.deepEqual(
         new o.SqlFormatter().format(
-            o.QueryTreeUtil.toSql(and5.queryTree)
+            o.QueryTreeUtil.toSql(or5.queryTree)
         ),
-        "(\n  (`table`.`x` = `table`.`y`) AND\n  `table`.`z`\n)"
+        "(\n  (`table`.`x` = `table`.`y`) OR\n  `table`.`z`\n)"
     );
 
-    const and6 = o.and(
+    const or6 = o.or(
         table.columns.x
     );
     t.deepEqual(
         new o.SqlFormatter().format(
-            o.QueryTreeUtil.toSql(and6.queryTree)
+            o.QueryTreeUtil.toSql(or6.queryTree)
         ),
         "`table`.`x`"
     );
 
-    const and7 = o.and(
+    const or7 = o.or(
     );
     t.deepEqual(
         new o.SqlFormatter().format(
-            o.QueryTreeUtil.toSql(and7.queryTree)
+            o.QueryTreeUtil.toSql(or7.queryTree)
         ),
-        "true"
+        "false"
     );
 
-    const and8 = o.and(
-        and7,
+    const or8 = o.or(
+        or7,
         table.columns.x
     );
     t.deepEqual(
         new o.SqlFormatter().format(
-            o.QueryTreeUtil.toSql(and8.queryTree)
+            o.QueryTreeUtil.toSql(or8.queryTree)
         ),
         "`table`.`x`"
     );
 
-    const and9 = o.and(
-        true,
+    const or9 = o.or(
+        false,
         table.columns.x
     );
     t.deepEqual(
         new o.SqlFormatter().format(
-            o.QueryTreeUtil.toSql(and9.queryTree)
+            o.QueryTreeUtil.toSql(or9.queryTree)
         ),
         "`table`.`x`"
     );

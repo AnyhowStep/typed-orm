@@ -47,8 +47,6 @@ export function and<ArrT extends Tuple<RawExpr<boolean>>> (
     const usedRef = RawExprUtil.intersectUsedRefTuple(...arr);
     const queryTree : QueryTreeArray = [];
 
-    const trueLiteral = RawExprUtil.queryTree(true);
-
     for (let rawExpr of arr) {
         const andQueryTree = tryGetAndQueryTree(rawExpr);
         if (andQueryTree != undefined) {
@@ -77,7 +75,7 @@ export function and<ArrT extends Tuple<RawExpr<boolean>>> (
                 usedRef,
                 assertDelegate : sd.numberToBoolean(),
             },
-            trueLiteral
+            RawExprUtil.queryTree(true)
         );
     } else {
         return new Expr(

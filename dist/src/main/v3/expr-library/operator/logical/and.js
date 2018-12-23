@@ -38,7 +38,6 @@ function tryGetAndQueryTree(rawExpr) {
 function and(...arr) {
     const usedRef = raw_expr_1.RawExprUtil.intersectUsedRefTuple(...arr);
     const queryTree = [];
-    const trueLiteral = raw_expr_1.RawExprUtil.queryTree(true);
     for (let rawExpr of arr) {
         const andQueryTree = tryGetAndQueryTree(rawExpr);
         if (andQueryTree != undefined) {
@@ -67,7 +66,7 @@ function and(...arr) {
         return new expr_1.Expr({
             usedRef,
             assertDelegate: sd.numberToBoolean(),
-        }, trueLiteral);
+        }, raw_expr_1.RawExprUtil.queryTree(true));
     }
     else {
         return new expr_1.Expr({
