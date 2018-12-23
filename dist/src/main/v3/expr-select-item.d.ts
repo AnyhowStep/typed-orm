@@ -1,13 +1,13 @@
 import * as sd from "schema-decorator";
 import { ColumnRef } from "./column-ref";
 import { QueryTreeArray, QueryTree } from "./query-tree";
-export interface AliasedExprData {
+export interface ExprSelectItemData {
     readonly usedRef: ColumnRef;
     readonly assertDelegate: sd.AssertDelegate<any>;
     readonly tableAlias: string;
     readonly alias: string;
 }
-export interface IExprSelectItem<DataT extends AliasedExprData = AliasedExprData> {
+export interface IExprSelectItem<DataT extends ExprSelectItemData = ExprSelectItemData> {
     readonly usedRef: DataT["usedRef"];
     readonly assertDelegate: DataT["assertDelegate"];
     readonly tableAlias: DataT["tableAlias"];

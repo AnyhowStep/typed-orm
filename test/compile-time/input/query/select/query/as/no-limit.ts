@@ -7,7 +7,7 @@ export const query = o.select(() => [
     selectItem
 ]);
 declare const isExprSelectItem : (
-    typeof selectItem extends o.IExprSelectItem<o.AliasedExprData> ?
+    typeof selectItem extends o.IExprSelectItem<o.ExprSelectItemData> ?
         "y" : "n"
 );
 export const y : "y" = isExprSelectItem;

@@ -4,10 +4,7 @@ import {QueryTreeArray, Parentheses, QueryTree, QueryTreeUtil} from "./query-tre
 import {escapeId} from "sqlstring";
 import {SEPARATOR} from "./constants";
 
-//TODO
-//Rename to IExprSelectItemData?
-//Or rename IExprSelectItem to IAliasedExpr?
-export interface AliasedExprData {
+export interface ExprSelectItemData {
     readonly usedRef : ColumnRef;
     readonly assertDelegate : sd.AssertDelegate<any>;
 
@@ -16,7 +13,7 @@ export interface AliasedExprData {
 }
 
 //There doesn't seem to be a point in making a class for this...
-export interface IExprSelectItem<DataT extends AliasedExprData=AliasedExprData> {
+export interface IExprSelectItem<DataT extends ExprSelectItemData=ExprSelectItemData> {
     readonly usedRef : DataT["usedRef"];
     readonly assertDelegate : DataT["assertDelegate"];
 
