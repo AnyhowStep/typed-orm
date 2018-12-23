@@ -91,6 +91,10 @@ export namespace ExprUtil {
     }
 
     export type As<ExprT extends IExpr, AliasT extends string> = (
+        Expr<{
+            readonly usedRef : ExprT["usedRef"];
+            readonly assertDelegate : ExprT["assertDelegate"];
+        }> &
         IExprSelectItem<{
             readonly usedRef : ExprT["usedRef"];
             readonly assertDelegate : ExprT["assertDelegate"];
@@ -105,14 +109,13 @@ export namespace ExprUtil {
         expr : ExprT,
         alias : AliasT
     ) : As<ExprT, AliasT> {
-        return {
-            usedRef : expr.usedRef,
-            assertDelegate : expr.assertDelegate,
-
-            tableAlias : ALIASED,
-            alias : alias,
-
-            unaliasedQuery : expr.queryTree,
-        };
+        const result = new Expr(
+            expr,
+            expr.queryTree
+        );
+        (result as any).tableAlias = ALIASED;
+        (result as any).alias = alias;
+        (result as any).unaliasedQuery = expr.queryTree;
+        return result as any;
     }
 }

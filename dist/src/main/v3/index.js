@@ -15,6 +15,7 @@ __export(require("./query"));
 __export(require("./table"));
 __export(require("./assert-map"));
 __export(require("./expr-select-item"));
+__export(require("./expr"));
 __export(require("./column-identifier-map"));
 __export(require("./column-ref"));
 __export(require("./constants"));

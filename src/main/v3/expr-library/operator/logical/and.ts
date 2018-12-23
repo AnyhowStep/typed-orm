@@ -1,25 +1,40 @@
 import * as sd from "schema-decorator";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
-import {Expr, ExprData} from "../../../expr";
+import {Expr, ExprUtil} from "../../../expr";
 import {Tuple} from "../../../tuple";
-import {QueryTree, Parentheses, QueryTreeArray} from "../../../query-tree";
+import {Parentheses, QueryTreeArray} from "../../../query-tree";
 
-class AndExpr<DataT extends Pick<ExprData, "usedRef">> extends Expr<{
-    usedRef : DataT["usedRef"],
-    assertDelegate : sd.AssertDelegate<boolean>,
-}> {
-    constructor (
-        data : DataT,
-        queryTree : QueryTree
-    ) {
-        super(
-            {
-                usedRef : data.usedRef,
-                assertDelegate : sd.numberToBoolean()
-            },
-            queryTree
-        );
+function tryGetAndQueryTree (rawExpr : RawExpr<boolean>) : QueryTreeArray|undefined {
+    const trueLiteral = RawExprUtil.queryTree(true);
+
+    if (ExprUtil.isExpr(rawExpr)) {
+        if (rawExpr.queryTree instanceof Parentheses) {
+            const tree = rawExpr.queryTree.getTree();
+            if (tree === trueLiteral) {
+                return [];
+            }
+
+            if (tree instanceof Array) {
+                if (tree.length == 0) {
+                    //This shouldn't happen, in general...
+                    return [];
+                }
+                if (tree.length == 1 && tree[0] === trueLiteral) {
+                    //Makes resultant queries "tidier" if we eliminate all true constants
+                    return [];
+                }
+                for (let i=1; i<tree.length; i+=2) {
+                    if (tree[i] !== "AND") {
+                        return undefined;
+                    }
+                }
+                return tree;
+            }
+        } else if (rawExpr.queryTree === trueLiteral) {
+            return [];
+        }
     }
+    return undefined;
 }
 export function and<ArrT extends Tuple<RawExpr<boolean>>> (
     ...arr : ArrT
@@ -35,39 +50,15 @@ export function and<ArrT extends Tuple<RawExpr<boolean>>> (
     const trueLiteral = RawExprUtil.queryTree(true);
 
     for (let rawExpr of arr) {
-        if (rawExpr instanceof AndExpr) {
-            if (rawExpr.queryTree === trueLiteral) {
+        const andQueryTree = tryGetAndQueryTree(rawExpr);
+        if (andQueryTree != undefined) {
+            if (andQueryTree.length == 0) {
                 continue;
-            } else if (rawExpr.queryTree instanceof Parentheses) {
-                const tree = rawExpr.queryTree.getTree();
-                if (tree instanceof Array) {
-                    if (tree.length == 0) {
-                        //This shouldn't happen, in general...
-                        continue;
-                    }
-                    if (tree.length == 1 && tree[0] === trueLiteral) {
-                        //Makes resultant queries "tidier" if we eliminate all true constants
-                        continue;
-                    }
-                    if (queryTree.length > 0) {
-                        queryTree.push("AND");
-                    }
-                    queryTree.push(...tree);
-                } else {
-                    //Makes resultant queries "tidier" if we eliminate all true constants
-                    if (tree === trueLiteral) {
-                        continue;
-                    }
-                    if (queryTree.length > 0) {
-                        queryTree.push("AND");
-                    }
-                    queryTree.push(tree);
-                }
             } else {
                 if (queryTree.length > 0) {
                     queryTree.push("AND");
                 }
-                queryTree.push(RawExprUtil.queryTree(rawExpr));
+                queryTree.push(...andQueryTree);
             }
         } else {
             //Makes resultant queries "tidier" if we eliminate all true constants
@@ -81,16 +72,18 @@ export function and<ArrT extends Tuple<RawExpr<boolean>>> (
         }
     }
     if (queryTree.length == 0) {
-        return new AndExpr(
+        return new Expr(
             {
-                usedRef : usedRef,
+                usedRef,
+                assertDelegate : sd.numberToBoolean(),
             },
             trueLiteral
         );
     } else {
-        return new AndExpr(
+        return new Expr(
             {
-                usedRef : usedRef,
+                usedRef,
+                assertDelegate : sd.numberToBoolean(),
             },
             queryTree
         );

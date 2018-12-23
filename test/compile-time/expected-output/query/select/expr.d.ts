@@ -89,7 +89,30 @@ export declare const query: o.Query<{
         nullable: false;
     }>[];
     readonly _parentJoins: undefined;
-    readonly _selects: [o.IExprSelectItem<{
+    readonly _selects: [o.Expr<{
+        readonly usedRef: {
+            readonly table: {
+                readonly x: o.Column<{
+                    tableAlias: "table";
+                    name: "x";
+                    assertDelegate: sd.AssertDelegate<number> & {
+                        __accepts: number;
+                        __canAccept: number;
+                    };
+                }>;
+            } & {
+                readonly w: o.Column<{
+                    tableAlias: "table";
+                    name: "w";
+                    assertDelegate: sd.AssertDelegate<number> & {
+                        __accepts: number;
+                        __canAccept: number;
+                    };
+                }>;
+            };
+        } & {};
+        readonly assertDelegate: sd.AssertDelegate<boolean>;
+    }> & o.IExprSelectItem<{
         readonly usedRef: {
             readonly table: {
                 readonly x: o.Column<{

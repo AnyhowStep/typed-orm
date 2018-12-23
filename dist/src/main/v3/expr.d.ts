@@ -32,7 +32,10 @@ export declare namespace ExprUtil {
         assertDelegate: RawExprUtil.AssertDelegate<RawExprT>;
     }>);
     function fromRawExpr<RawExprT extends RawExpr<PrimitiveExpr>>(rawExpr: RawExprT): FromRawExpr<RawExprT>;
-    type As<ExprT extends IExpr, AliasT extends string> = (IExprSelectItem<{
+    type As<ExprT extends IExpr, AliasT extends string> = (Expr<{
+        readonly usedRef: ExprT["usedRef"];
+        readonly assertDelegate: ExprT["assertDelegate"];
+    }> & IExprSelectItem<{
         readonly usedRef: ExprT["usedRef"];
         readonly assertDelegate: ExprT["assertDelegate"];
         readonly tableAlias: typeof ALIASED;

@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../../../dist/src/main";
-export declare const eq1: import("../../../../../../dist/src/main/v3/expr").Expr<{
+export declare const eq1: o.Expr<{
     usedRef: {
         readonly table: {
             readonly x: o.Column<{
@@ -24,7 +24,7 @@ export declare const eq1: import("../../../../../../dist/src/main/v3/expr").Expr
     } & {};
     assertDelegate: sd.AssertDelegate<boolean>;
 }>;
-export declare const eq2: import("../../../../../../dist/src/main/v3/expr").Expr<{
+export declare const eq2: o.Expr<{
     usedRef: {
         readonly table: {
             readonly x: o.Column<{
@@ -39,7 +39,7 @@ export declare const eq2: import("../../../../../../dist/src/main/v3/expr").Expr
     } & {};
     assertDelegate: sd.AssertDelegate<boolean>;
 }>;
-export declare const eq3: import("../../../../../../dist/src/main/v3/expr").Expr<{
+export declare const eq3: o.Expr<{
     usedRef: {
         readonly table: {
             readonly x: o.Column<{
@@ -71,7 +71,7 @@ export declare const eq3: import("../../../../../../dist/src/main/v3/expr").Expr
     } & {};
     assertDelegate: sd.AssertDelegate<boolean>;
 }>;
-export declare const eq4: import("../../../../../../dist/src/main/v3/expr").Expr<{
+export declare const eq4: o.Expr<{
     usedRef: {
         readonly table: {
             readonly a: o.Column<{
@@ -111,7 +111,7 @@ export declare const eq4: import("../../../../../../dist/src/main/v3/expr").Expr
     } & {};
     assertDelegate: sd.AssertDelegate<boolean>;
 }>;
-export declare const eq5: import("../../../../../../dist/src/main/v3/expr").Expr<{
+export declare const eq5: o.Expr<{
     usedRef: {
         readonly table: {
             readonly x: o.Column<{

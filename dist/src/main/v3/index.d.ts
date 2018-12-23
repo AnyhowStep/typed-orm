@@ -10,6 +10,7 @@ export * from "./query";
 export * from "./table";
 export * from "./assert-map";
 export * from "./expr-select-item";
+export * from "./expr";
 export * from "./column-identifier-map";
 export * from "./column-ref";
 export * from "./constants";

@@ -43,13 +43,11 @@ var ExprUtil;
     }
     ExprUtil.fromRawExpr = fromRawExpr;
     function as(expr, alias) {
-        return {
-            usedRef: expr.usedRef,
-            assertDelegate: expr.assertDelegate,
-            tableAlias: constants_1.ALIASED,
-            alias: alias,
-            unaliasedQuery: expr.queryTree,
-        };
+        const result = new Expr(expr, expr.queryTree);
+        result.tableAlias = constants_1.ALIASED;
+        result.alias = alias;
+        result.unaliasedQuery = expr.queryTree;
+        return result;
     }
     ExprUtil.as = as;
 })(ExprUtil = exports.ExprUtil || (exports.ExprUtil = {}));

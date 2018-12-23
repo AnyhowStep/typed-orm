@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../../../dist/src/main";
-export declare const expr1: import("../../../../../../dist/src/main/v3/expr").Expr<{
+export declare const expr1: o.Expr<{
     usedRef: {
         readonly table: {
             readonly x: o.Column<{
@@ -37,7 +37,7 @@ export declare const expr1: import("../../../../../../dist/src/main/v3/expr").Ex
     };
     assertDelegate: sd.AssertDelegate<number>;
 }>;
-export declare const expr2: import("../../../../../../dist/src/main/v3/expr").Expr<{
+export declare const expr2: o.Expr<{
     usedRef: {
         readonly table: {
             readonly x: o.Column<{
@@ -74,12 +74,12 @@ export declare const expr2: import("../../../../../../dist/src/main/v3/expr").Ex
     };
     assertDelegate: sd.AssertDelegate<number>;
 }>;
-export declare const expr3: import("../../../../../../dist/src/main/v3/expr").Expr<{
+export declare const expr3: o.Expr<{
     usedRef: {};
     assertDelegate: sd.AssertDelegate<number>;
 }>;
 export declare const expr4: any;
-export declare const expr5: import("../../../../../../dist/src/main/v3/expr").Expr<{
+export declare const expr5: o.Expr<{
     usedRef: {
         readonly table: {
             readonly x: o.Column<{

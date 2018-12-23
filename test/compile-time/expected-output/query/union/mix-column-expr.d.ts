@@ -142,7 +142,30 @@ export declare const query: o.Query<{
             __accepts: string;
             __canAccept: string;
         };
-    }>, o.IExprSelectItem<{
+    }>, o.Expr<{
+        readonly usedRef: {
+            readonly table: {
+                readonly x: o.Column<{
+                    tableAlias: "table";
+                    name: "x";
+                    assertDelegate: sd.AssertDelegate<number> & {
+                        __accepts: number;
+                        __canAccept: number;
+                    };
+                }>;
+            } & {
+                readonly a: o.Column<{
+                    tableAlias: "table";
+                    name: "a";
+                    assertDelegate: sd.AssertDelegate<number> & {
+                        __accepts: number;
+                        __canAccept: number;
+                    };
+                }>;
+            };
+        } & {};
+        readonly assertDelegate: sd.AssertDelegate<boolean>;
+    }> & o.IExprSelectItem<{
         readonly usedRef: {
             readonly table: {
                 readonly x: o.Column<{

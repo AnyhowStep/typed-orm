@@ -145,7 +145,7 @@ export declare const query: o.Query<{
     readonly _selects: undefined;
     readonly _where: undefined;
     readonly _grouped: undefined;
-    readonly _having: import("../../../../../dist/src/main/v3/expr").IExpr<{
+    readonly _having: o.IExpr<{
         usedRef: o.ColumnRef;
         assertDelegate: sd.AssertDelegate<boolean>;
     }>;

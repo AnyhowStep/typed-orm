@@ -73,7 +73,18 @@ export declare const query: o.Query<{
         nullable: false;
     }>[];
     readonly _parentJoins: undefined;
-    readonly _selects: [o.IExprSelectItem<{
+    readonly _selects: [o.Expr<{
+        readonly usedRef: {
+            readonly table: {
+                readonly x: o.IColumn<{
+                    readonly tableAlias: "table";
+                    readonly name: "x";
+                    readonly assertDelegate: sd.AssertDelegate<number>;
+                }>;
+            } & {};
+        } & {};
+        readonly assertDelegate: sd.AssertDelegate<boolean>;
+    }> & o.IExprSelectItem<{
         readonly usedRef: {
             readonly table: {
                 readonly x: o.IColumn<{
@@ -108,7 +119,7 @@ export declare const query: o.Query<{
     }>];
     readonly _where: undefined;
     readonly _grouped: undefined;
-    readonly _having: import("../../../../../../dist/src/main/v3/expr").IExpr<{
+    readonly _having: o.IExpr<{
         usedRef: o.ColumnRef;
         assertDelegate: sd.AssertDelegate<boolean>;
     }>;

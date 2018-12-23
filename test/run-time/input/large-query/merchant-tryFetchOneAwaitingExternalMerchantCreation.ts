@@ -151,14 +151,14 @@ function secondsTillTimeout () {
         o.TemporalUnit.SECOND,
         o.now(),
         merchantLock.columns.timeoutAt
-    );
+    ).as("secondsTillTimeout");
 }
 
 function lockIsLocked () {
     return o.gt(
         secondsTillTimeout(),
         0n
-    );
+    ).as("lockIsLocked");
 }
 
 function isLocked () {
@@ -170,7 +170,7 @@ function isLocked () {
                 c.merchant.merchantId
             ))
             .andWhere(() => lockIsLocked())
-    );
+    ).as("isLocked");
 }
 
 function hasExternalMerchant () {
@@ -181,7 +181,7 @@ function hasExternalMerchant () {
                 c.externalMerchant.merchantId,
                 c.merchant.merchantId
             ))
-    );
+    ).as("hasExternalMerchant");
 }
 
 function isEnabled () {
@@ -220,7 +220,11 @@ function isEnabled () {
         ),
         //payOutMethodIsEnabledExpression(),
         //appPlatformIsEnabledExpression()
-    );
+    ).as("testChanging")
+    .as("alias")
+    .as("multiple")
+    .as("times")
+    .as("isEnabled");
 }
 
 function userHasPersonalInformation () {
@@ -236,7 +240,7 @@ function userHasPersonalInformation () {
                 c.user.externalUserId
             )
         ))
-    );
+    ).as("userHasPersonalInformation");
 }
 
 function canCreateExternalMerchant () {
@@ -247,7 +251,7 @@ function canCreateExternalMerchant () {
         userHasPersonalInformation(),
         //Must be enabled
         isEnabled()
-    );
+    ).as("canCreateExternalMerchant");
 }
 
 function canStartExternalMerchantCreationAttempt () {
@@ -257,6 +261,7 @@ function canStartExternalMerchantCreationAttempt () {
         //trying to create the merchant
         o.not(isLocked())
     )
+    .as("canStartExternalMerchantCreationAttempt")
 }
 function lastExternalMerchantCreationAttemptAt () {
     return o.requireParentJoins(merchant)
@@ -271,7 +276,8 @@ function lastExternalMerchantCreationAttemptAt () {
             [c.externalMerchantCreationAttempt.attemptedAt, o.DESC]
         ])
         .limit(1)
-        .select(c => [c.externalMerchantCreationAttempt.attemptedAt]);
+        .select(c => [c.externalMerchantCreationAttempt.attemptedAt])
+        .as("lastExternalMerchantCreationAttemptAt");
 }
 const query = o.from(merchant)
     //TODO innerJoinUsingCandidateKey()
@@ -314,7 +320,6 @@ const query = o.from(merchant)
     .select(c => [c])
     .select(() => [
         lastExternalMerchantCreationAttemptAt()
-            .as("lastExternalMerchantCreationAttemptAt")
     ])
     .orderBy(c => [
         //We prioritize those that have not been attempted

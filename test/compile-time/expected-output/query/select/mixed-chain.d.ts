@@ -167,7 +167,18 @@ export declare const query: o.Query<{
         };
         readonly tableAlias: "table";
         readonly alias: "aliased";
-    }>, o.IExprSelectItem<{
+    }>, o.Expr<{
+        readonly usedRef: {
+            readonly table: {
+                readonly y: o.IColumn<{
+                    readonly tableAlias: "table";
+                    readonly name: "y";
+                    readonly assertDelegate: sd.AssertDelegate<string>;
+                }>;
+            } & {};
+        } & {};
+        readonly assertDelegate: sd.AssertDelegate<boolean>;
+    }> & o.IExprSelectItem<{
         readonly usedRef: {
             readonly table: {
                 readonly y: o.IColumn<{
@@ -219,7 +230,32 @@ export declare const query: o.Query<{
                 __canAccept: boolean;
             };
         }>;
-    }, o.IExprSelectItem<{
+    }, o.Expr<{
+        readonly usedRef: {
+            readonly joined1: {
+                readonly a: o.Column<{
+                    tableAlias: "joined1";
+                    name: "a";
+                    assertDelegate: sd.AssertDelegate<number> & {
+                        __accepts: number;
+                        __canAccept: number;
+                    };
+                }>;
+            };
+        } & {
+            readonly table: {
+                readonly x: o.Column<{
+                    tableAlias: "table";
+                    name: "x";
+                    assertDelegate: sd.AssertDelegate<number> & {
+                        __accepts: number;
+                        __canAccept: number;
+                    };
+                }>;
+            };
+        };
+        readonly assertDelegate: sd.AssertDelegate<boolean>;
+    }> & o.IExprSelectItem<{
         readonly usedRef: {
             readonly joined1: {
                 readonly a: o.Column<{

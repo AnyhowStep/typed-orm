@@ -73,7 +73,34 @@ export declare const query: o.Query<{
         nullable: false;
     }>[];
     readonly _parentJoins: undefined;
-    readonly _selects: [o.IExprSelectItem<{
+    readonly _selects: [o.Expr<{
+        readonly usedRef: {
+            readonly table: {
+                readonly x: o.IColumn<{
+                    readonly tableAlias: "table";
+                    readonly name: "x";
+                    readonly assertDelegate: sd.AssertDelegate<number>;
+                }>;
+                readonly y: o.Column<{
+                    tableAlias: "table";
+                    name: "y";
+                    assertDelegate: sd.AssertDelegate<string> & {
+                        __accepts: string;
+                        __canAccept: string;
+                    };
+                }>;
+                readonly z: o.Column<{
+                    tableAlias: "table";
+                    name: "z";
+                    assertDelegate: sd.AssertDelegate<boolean> & {
+                        __accepts: boolean;
+                        __canAccept: boolean;
+                    };
+                }>;
+            } & {};
+        } & {};
+        readonly assertDelegate: sd.AssertDelegate<boolean>;
+    }> & o.IExprSelectItem<{
         readonly usedRef: {
             readonly table: {
                 readonly x: o.IColumn<{
