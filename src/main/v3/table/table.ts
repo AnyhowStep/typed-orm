@@ -245,7 +245,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
         return Table.setId(this, delegate);
     }
     /*
-        TODO Adding a candidate key that is a super-set of
+        TODO-FEATURE Adding a candidate key that is a super-set of
         an existing candidate key should throw an error,
         both during compile-time and run-time.
 
@@ -366,7 +366,7 @@ export namespace Table {
             readonly deleteAllowed : TableT["deleteAllowed"];
         }>
     );
-    //TODO Change this to setAlias?
+    //TODO-FEATURE Change this to setAlias?
     export function setName<TableT extends ITable, NewNameT extends string> (
         table : TableT,
         newName : NewNameT
@@ -446,7 +446,7 @@ export namespace Table {
             >[];
             readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
             /*
-                TODO Debate whether new columns should be mutable
+                TODO-DEBATE Debate whether new columns should be mutable
             */
             readonly mutable : TableT["mutable"];
 
@@ -548,7 +548,7 @@ export namespace Table {
             >[];
             readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
             /*
-                TODO Debate whether new columns should be mutable
+                TODO-DEBATE Debate whether new columns should be mutable
             */
             readonly mutable : TableT["mutable"];
 
@@ -702,7 +702,7 @@ export namespace Table {
 export namespace Table {
     //Auto-increment columns cannot be nullable
     //The `number|string|bigint` requirement is only a compile-time constraint
-    //TODO Consider having run-time checks to see if it allows 1,2,3,4,5,... ?
+    //TODO-DEBATE Consider having run-time checks to see if it allows 1,2,3,4,5,... ?
     export type AutoIncrementColumnMap<ColumnMapT extends ColumnMap> = (
         {
             [columnName in {
@@ -1414,7 +1414,7 @@ export namespace Table {
         )
     );
     /*
-        TODO Implement addMutable(), removeMutable() ?
+        TODO-FEATURE Implement addMutable(), removeMutable() ?
     */
     //Technically, "overwrite" is the wrong verb to use.
     //This creates an entirely new Table.
@@ -1462,7 +1462,7 @@ export namespace Table {
             ColumnMapUtil.assertHasColumnIdentifier(table.columns, mutableColumn);
         }
 
-        //TODO Make other arrays of strings always
+        //TODO-FEATURE Make other arrays of strings always
         //have unique elements?
         const mutable : ReturnType<DelegateT>[number]["name"][] = (
             StringArrayUtil.uniqueString(
@@ -1534,7 +1534,7 @@ export namespace Table {
             unknown
         ) &
         (
-            //TODO Recursively find incompatible types
+            //TODO-FEATURE Recursively find incompatible types
             ToUnknownIfAllFieldsNever<
                 {
                     [columnName in Extract<
@@ -1620,7 +1620,7 @@ export namespace Table {
                 throw new Error(`Parent ${parent.alias} already added to table`);
             }
         }
-        //TODO Recursively find incompatible types
+        //TODO-FEATURE Recursively find incompatible types
         for (let columnName in table.columns) {
             const parentColumn = parent.columns[columnName];
             if (parentColumn == undefined) {
@@ -1820,7 +1820,7 @@ export namespace Table {
     }
 }
 export namespace Table {
-    //TODO Find better names
+    //TODO-DEBATE Find better names
     export type PolymorphicColumnNameUnion<TableT extends ITable> = (
         (ColumnUtil.FromColumnMap<TableT["columns"]>["name"]) |
         (ColumnUtil.FromColumnMap<TableT["parents"][number]["columns"]>["name"])

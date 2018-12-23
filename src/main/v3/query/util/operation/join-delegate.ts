@@ -30,7 +30,7 @@ export type JoinToColumn<
 );
 
 /*
-    TODO Consider allowing JOIN'ing on parent query columns?
+    TODO-DEBATE Consider allowing JOIN'ing on parent query columns?
     What's the use-case?
 */
 export type JoinToDelegate<

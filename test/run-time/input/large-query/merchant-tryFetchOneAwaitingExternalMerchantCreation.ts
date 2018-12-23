@@ -187,7 +187,7 @@ function hasExternalMerchant () {
 function isEnabled () {
     return o.and(
         o.coalesce(
-            //TODO Add a coalesce() method to Query!
+            //TODO-FEATURE Add a coalesce() method to Query!
             //It'll be the same as coalesce(from().select(), defaultValue)
             o.requireParentJoins(merchant)
                 .from(merchantEnabled)
@@ -203,7 +203,7 @@ function isEnabled () {
             true
         ),
         o.coalesce(
-            //TODO Add a coalesce() method to Query!
+            //TODO-FEATURE Add a coalesce() method to Query!
             //It'll be the same as coalesce(from().select(), defaultValue)
             o.requireParentJoins(business)
                 .from(businessEnabled)
@@ -280,7 +280,7 @@ function lastExternalMerchantCreationAttemptAt () {
         .as("lastExternalMerchantCreationAttemptAt");
 }
 const query = o.from(merchant)
-    //TODO innerJoinUsingCandidateKey()
+    //TODO-FEATURE innerJoinUsingCandidateKey()
     .innerJoinUsing(
         appPlatform,
         c => [

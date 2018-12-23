@@ -6,7 +6,7 @@ import {FunctionCall} from "../../../query-tree";
 import {Tuple} from "../../../tuple";
 
 //https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_concat-ws
-//TODO Add support for Buffer
+//TODO-FEATURE Add support for Buffer
 //If all arguments are nonbinary strings, the result is a nonbinary string.
 //If the arguments include any binary strings, the result is a binary string.
 export function concatWs<

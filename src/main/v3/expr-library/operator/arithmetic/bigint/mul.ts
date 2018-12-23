@@ -56,7 +56,7 @@ export function bigIntMul<ArrT extends Tuple<RawExpr<bigint>>> (
         }
     }
     if (queryTree.length == 0) {
-        //TODO Is the multiplication of zero numbers... one?
+        //By convention, multiplying zero numbers is one.
         return new Expr(
             {
                 usedRef : usedRef,

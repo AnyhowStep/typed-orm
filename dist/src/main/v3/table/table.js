@@ -53,7 +53,7 @@ class Table {
         return Table.setId(this, delegate);
     }
     /*
-        TODO Adding a candidate key that is a super-set of
+        TODO-FEATURE Adding a candidate key that is a super-set of
         an existing candidate key should throw an error,
         both during compile-time and run-time.
 
@@ -98,7 +98,7 @@ exports.Table = Table;
     Table.as = as;
 })(Table = exports.Table || (exports.Table = {}));
 (function (Table) {
-    //TODO Change this to setAlias?
+    //TODO-FEATURE Change this to setAlias?
     function setName(table, newName) {
         //https://github.com/Microsoft/TypeScript/issues/28592
         const columns = table.columns;
@@ -423,7 +423,7 @@ exports.Table = Table;
             }
             column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, mutableColumn);
         }
-        //TODO Make other arrays of strings always
+        //TODO-FEATURE Make other arrays of strings always
         //have unique elements?
         const mutable = (string_array_1.StringArrayUtil.uniqueString(mutableColumns.map(column => column.name)));
         const { usedRef, alias, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
@@ -464,7 +464,7 @@ exports.Table = Table;
                 throw new Error(`Parent ${parent.alias} already added to table`);
             }
         }
-        //TODO Recursively find incompatible types
+        //TODO-FEATURE Recursively find incompatible types
         for (let columnName in table.columns) {
             const parentColumn = parent.columns[columnName];
             if (parentColumn == undefined) {

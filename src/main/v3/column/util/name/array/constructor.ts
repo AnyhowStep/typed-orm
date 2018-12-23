@@ -9,7 +9,6 @@ import {StringArrayUtil} from "../../../../string-array";
 export type FromColumnMap<ColumnMapT extends ColumnMap> = (
     Ctor.FromColumnMap<ColumnMapT>[]
 );
-//TODO Figure out naming convention
 export function fromColumnMap<ColumnMapT extends ColumnMap> (
     columnMap : ColumnMapT
 ) : FromColumnMap<ColumnMapT> {
@@ -23,7 +22,6 @@ export function fromColumnMap<ColumnMapT extends ColumnMap> (
 export type FromColumnRef<ColumnRefT extends ColumnRef> = (
     Ctor.FromColumnRef<ColumnRefT>[]
 );
-//TODO Figure out naming convention
 export function fromColumnRef<ColumnRefT extends ColumnRef> (
     columnRef : ColumnRefT
 ) : FromColumnRef<ColumnRefT> {

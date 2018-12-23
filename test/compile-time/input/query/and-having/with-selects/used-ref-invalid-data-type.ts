@@ -13,7 +13,7 @@ const sameName = o.table(
     "table",
     {
         /*
-            TODO
+            TODO-DEBATE
 
             Note that if this was sd.naturalNumber() instead,
             it would compile but MySQL would give us an error.

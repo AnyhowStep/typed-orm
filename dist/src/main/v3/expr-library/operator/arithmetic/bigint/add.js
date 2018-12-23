@@ -49,7 +49,7 @@ function bigIntAdd(...arr) {
         }
     }
     if (queryTree.length == 0) {
-        //TODO Is the addition of zero numbers... zero?
+        //By convention, adding zero numbers is zero.
         return new expr_1.Expr({
             usedRef: usedRef,
             assertDelegate: dataType.bigint,

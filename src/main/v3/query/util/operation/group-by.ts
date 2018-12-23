@@ -27,7 +27,7 @@ export type GroupBy<
         readonly _selects : QueryT["_selects"],
         readonly _where : QueryT["_where"],
 
-        //TODO Debate making this more strongly typed?
+        //TODO-DEBATE Debate making this more strongly typed?
         //It will be necessary when pursuing ONLY_FULL_GROUP_BY support
         readonly _grouped : ColumnIdentifier[],
         readonly _having : QueryT["_having"],

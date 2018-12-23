@@ -15,7 +15,7 @@ export interface IAliasedTable<DataT extends AliasedTableData=AliasedTableData> 
     readonly columns : DataT["columns"];
 
     //Called `unaliasedQuery` to be consistent with IExprSelectItem
-    //TODO, change both to unaliasedQueryTree?
+    //TODO-DEBATE, change both to unaliasedQueryTree?
     readonly unaliasedQuery : QueryTree;
 }
 

@@ -6,7 +6,7 @@ import {Join, JoinType} from "../../../join";
 import {JoinArrayUtil} from "../../../join-array";
 
 /*
-    TODO
+    TODO-FEATURE
 
     We don't allow RIGHT JOIN after SELECT, WHERE, HAVING,
     ORDER BY, and UNION'S ORDER BY clauses

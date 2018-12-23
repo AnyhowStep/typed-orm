@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-//TODO Create a version using MySQL queries
+//TODO-FEATURE Create a version using MySQL queries
 //REGEXP_REPLACE(pattern, '(\\%|\\_)', '\\$1', 1, 0, 'm')
 /*
     With LIKE you can use the following two wildcard characters in the pattern:

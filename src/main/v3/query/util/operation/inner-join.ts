@@ -5,7 +5,7 @@ import {IAliasedTable} from "../../../aliased-table";
 import {Join, JoinType} from "../../../join";
 
 /*
-    TODO Implement innerJoinCandidateKey() and innerJoinUsingCandidateKey()
+    TODO-FEATURE Implement innerJoinCandidateKey() and innerJoinUsingCandidateKey()
 
     This will force the "to-columns" to be a
     candidate key of the target table.

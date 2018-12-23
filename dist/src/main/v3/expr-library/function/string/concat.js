@@ -5,7 +5,7 @@ const expr_1 = require("../../../expr");
 const raw_expr_1 = require("../../../raw-expr");
 const query_tree_1 = require("../../../query-tree");
 //https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_concat
-//TODO Add support for Buffer
+//TODO-FEATURE Add support for Buffer
 //If all arguments are nonbinary strings, the result is a nonbinary string.
 //If the arguments include any binary strings, the result is a binary string.
 function concat(arg0, ...args) {

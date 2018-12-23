@@ -55,7 +55,7 @@ export function add<ArrT extends Tuple<RawExpr<number>>> (
         }
     }
     if (queryTree.length == 0) {
-        //TODO Is the addition of zero numbers... zero?
+        //By convention, adding zero numbers is zero.
         return new Expr(
             {
                 usedRef : usedRef,

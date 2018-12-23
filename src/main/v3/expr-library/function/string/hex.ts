@@ -5,7 +5,7 @@ import {RawExprUtil} from "../../../raw-expr";
 import {FunctionCall} from "../../../query-tree";
 
 //https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_hex
-//TODO Debate if number should not be allowed?
+//TODO-DEBATE Debate if number should not be allowed?
 //For a numeric argument N,
 //HEX() returns a hexadecimal string representation
 //of the value of N treated as a longlong (BIGINT) number.

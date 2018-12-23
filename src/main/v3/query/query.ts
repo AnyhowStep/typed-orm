@@ -14,7 +14,7 @@ export interface UnionQuery {
     readonly distinct : boolean,
     readonly query : QueryUtil.AfterSelectClause,
 }
-//TODO consider allowing this to be bigint?
+//TODO-DEBATE consider allowing this to be bigint?
 //A maxRowCount/offset of 3.141 would be weird
 export interface LimitData {
     //This is called "max"RowCount and not rowCount
@@ -25,7 +25,7 @@ export interface LimitData {
     readonly offset   : number,
 }
 /*
-    TODO Implement support for SQL_MODE=ONLY_FULL_GROUP_BY
+    TODO-FEATURE Implement support for SQL_MODE=ONLY_FULL_GROUP_BY
     Supporting it will increase compile-time safety for queries.
     I don't know enough to implement this at the moment.
 
@@ -77,11 +77,11 @@ export interface LimitData {
 
     -----
 
-    TODO Disable aggregate functions in WHERE clause
+    TODO-FEATURE Disable aggregate functions in WHERE clause
     This can probably be achieved by tagging certain interfaces with
     a `usesAggregateFunction` field.
 
-    TODO
+    TODO-FEATURE
     Type narrowing where expressions
         + Same with WHERE, implemented internally with WHERE
     DISTINCT
@@ -701,7 +701,7 @@ export class Query<DataT extends QueryData> {
         >(
             this,
             false,
-            //TODO Figure out what's wrong
+            //TODO-UNHACK Figure out what's wrong
             ...(arr as any)
         );
     }
@@ -723,7 +723,7 @@ export class Query<DataT extends QueryData> {
         >(
             this,
             true,
-            //TODO Figure out what's wrong
+            //TODO-UNHACK Figure out what's wrong
             ...(arr as any)
         );
     }

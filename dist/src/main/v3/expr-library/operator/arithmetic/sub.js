@@ -49,7 +49,7 @@ function sub(...arr) {
         }
     }
     if (queryTree.length == 0) {
-        //TODO Is the subtraction of zero numbers... zero?
+        //By convention, the subtraction of zero numbers is zero
         return new expr_1.Expr({
             usedRef: usedRef,
             assertDelegate: sd.number(),

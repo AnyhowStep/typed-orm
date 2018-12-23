@@ -14,7 +14,7 @@ export type FromExprSelectItem<ItemT extends IExprSelectItem> = (
         readonly assertDelegate : ItemT["assertDelegate"],
     }>
 );
-//TODO Find some way to not need this hack
+//TODO-UNHACK Find some way to not need this hack
 export function fromExprSelectItem<ItemT extends IExprSelectItem> (
     item : ItemT
 ) : FromExprSelectItem<ItemT> {
@@ -25,7 +25,7 @@ export function fromExprSelectItem<ItemT extends IExprSelectItem> (
             assertDelegate : item.assertDelegate,
         },
         undefined,
-        //TODO Find some way to not need this hack
+        //TODO-UNHACK Find some way to not need this hack
         true
     );
 }

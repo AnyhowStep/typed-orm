@@ -49,7 +49,7 @@ function mul(...arr) {
         }
     }
     if (queryTree.length == 0) {
-        //TODO Is the multiplication of zero numbers... one?
+        //By convention, multiplying zero numbers is one.
         return new expr_1.Expr({
             usedRef: usedRef,
             assertDelegate: sd.number(),

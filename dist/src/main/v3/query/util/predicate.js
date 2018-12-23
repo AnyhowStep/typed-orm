@@ -66,13 +66,13 @@ function isQuery(raw) {
         (raw._selects == undefined ||
             select_item_array_1.SelectItemArrayUtil.isSelectItemArray(raw._selects)) &&
         (
-        //TODO Check if boolean expr
+        //TODO-FEATURE Check if boolean expr
         raw._where == undefined ||
             expr_1.ExprUtil.isExpr(raw._where)) &&
         (raw._grouped == undefined ||
             column_identifier_1.ColumnIdentifierUtil.Array.isColumnIdentifierArray(raw._grouped)) &&
         (
-        //TODO Check if boolean expr
+        //TODO-FEATURE Check if boolean expr
         raw._having == undefined ||
             expr_1.ExprUtil.isExpr(raw._having)) &&
         (raw._orders == undefined ||

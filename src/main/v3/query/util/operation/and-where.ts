@@ -26,7 +26,7 @@ export type AndWhere<
         readonly _joins : QueryT["_joins"],
         readonly _parentJoins : QueryT["_parentJoins"],
         readonly _selects : QueryT["_selects"],
-        //TODO See if this needs to be more strongly typed
+        //TODO-DEBATE See if this needs to be more strongly typed
         readonly _where : IAnonymousTypedExpr<boolean>,
 
         readonly _grouped : QueryT["_grouped"],

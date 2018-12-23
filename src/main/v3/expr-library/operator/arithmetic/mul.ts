@@ -55,7 +55,7 @@ export function mul<ArrT extends Tuple<RawExpr<number>>> (
         }
     }
     if (queryTree.length == 0) {
-        //TODO Is the multiplication of zero numbers... one?
+        //By convention, multiplying zero numbers is one.
         return new Expr(
             {
                 usedRef : usedRef,

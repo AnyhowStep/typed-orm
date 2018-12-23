@@ -19,7 +19,7 @@ tape(__filename, (t) => {
         .select(() => [
             o.nullSafeEq(32, null).as("a"),
             o.nullSafeEq(null, null).as("b"),
-            //TODO Should I allow a raw `null` literal here?
+            //TODO-DEBATE Should I allow a raw `null` literal here?
             o.nullSafeEq(null as null|string, "test").as("c"),
         ])
         .select(c => [

@@ -116,12 +116,12 @@ class Query {
     }
     requireParentJoins(...arr) {
         return QueryUtil.requireParentJoins(this, false, 
-        //TODO Figure out what's wrong
+        //TODO-UNHACK Figure out what's wrong
         ...arr);
     }
     requireNullableParentJoins(...arr) {
         return QueryUtil.requireParentJoins(this, true, 
-        //TODO Figure out what's wrong
+        //TODO-UNHACK Figure out what's wrong
         ...arr);
     }
     as(alias) {

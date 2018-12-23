@@ -5,7 +5,7 @@ const expr_1 = require("../../../expr");
 const raw_expr_1 = require("../../../raw-expr");
 const query_tree_1 = require("../../../query-tree");
 //https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_bin
-//TODO Debate if should only allow bigint?
+//TODO-DEBATE Debate if should only allow bigint?
 //Returns a string representation of the binary value of N,
 //where N is a longlong (BIGINT) number.
 //This is equivalent to CONV(N,10,2).

@@ -56,7 +56,7 @@ export function bigIntSub<ArrT extends Tuple<RawExpr<bigint>>> (
         }
     }
     if (queryTree.length == 0) {
-        //TODO Is the subtraction of zero numbers... zero?
+        //By convention, the subtraction of zero numbers is zero
         return new Expr(
             {
                 usedRef : usedRef,

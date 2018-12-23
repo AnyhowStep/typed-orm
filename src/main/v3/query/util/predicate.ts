@@ -82,7 +82,7 @@ export function isQuery (raw : any) : raw is IQuery {
             SelectItemArrayUtil.isSelectItemArray(raw._selects)
         ) &&
         (
-            //TODO Check if boolean expr
+            //TODO-FEATURE Check if boolean expr
             raw._where == undefined ||
             ExprUtil.isExpr(raw._where)
         ) &&
@@ -91,7 +91,7 @@ export function isQuery (raw : any) : raw is IQuery {
             ColumnIdentifierUtil.Array.isColumnIdentifierArray(raw._grouped)
         ) &&
         (
-            //TODO Check if boolean expr
+            //TODO-FEATURE Check if boolean expr
             raw._having == undefined ||
             ExprUtil.isExpr(raw._having)
         ) &&
@@ -234,7 +234,7 @@ export type AssertValidJoinTargetImpl<
                 JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>
             > extends never ?
             unknown :
-            //TODO remove the |void?
+            //TODO-DEBATE remove the |void?
             [
                 "Alias",
                 Extract<
@@ -255,7 +255,7 @@ export type AssertValidJoinTargetImpl<
                 JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>
             > extends never ?
             unknown :
-            //TODO remove the |void?
+            //TODO-DEBATE remove the |void?
             [
                 "Alias",
                 Extract<

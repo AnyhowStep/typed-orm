@@ -29,7 +29,7 @@ export type AndHaving<
         readonly _where : QueryT["_where"],
 
         readonly _grouped : QueryT["_grouped"],
-        //TODO See if this needs to be more strongly typed
+        //TODO-DEBATE See if this needs to be more strongly typed
         readonly _having : IAnonymousTypedExpr<boolean>,
 
         readonly _orders : QueryT["_orders"],
@@ -49,7 +49,7 @@ export type AssertValidAndHavingDelegate<
 > = (
     AndHavingDelegateT &
     (
-        //TODO Safer to convert both to union of columns and check if used columns extends query columns
+        //TODO-DEBATE Safer to convert both to union of columns and check if used columns extends query columns
         //I think
         ColumnRefUtil.FromQuery<QueryT> extends RawExprUtil.UsedRef<ReturnType<AndHavingDelegateT>> ?
         unknown :

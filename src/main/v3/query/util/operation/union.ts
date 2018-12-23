@@ -27,7 +27,7 @@ export type Union<
         readonly _orders : QueryT["_orders"],
         readonly _limit : QueryT["_limit"],
 
-        //TODO Determine if tighter types are better
+        //TODO-DEBATE Determine if tighter types are better
         readonly _unions : UnionQuery[],
         readonly _unionOrders : QueryT["_unionOrders"],
         readonly _unionLimit : QueryT["_unionLimit"],

@@ -13,7 +13,7 @@ export namespace CandidateKeyArrayUtil {
         the two tables must have at least
         one unique key in common.
 
-        TODO Find a better name?
+        TODO-DEBATE Find a better name?
     */
     export type CommonCandidateKeyUnion<
         ArrayA extends CandidateKey[],

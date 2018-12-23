@@ -15,7 +15,7 @@ export type TernaryComparison = (
         right : RightT
     ) => (
         Expr<{
-            //TODO Investigate efficiency?
+            //TODO-DEBATE Investigate efficiency?
             usedRef : RawExprUtil.IntersectUsedRefTuple<
                 [LeftT, MidT, RightT]
             >,

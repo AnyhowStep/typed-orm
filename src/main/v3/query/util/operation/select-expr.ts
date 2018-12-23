@@ -106,5 +106,5 @@ export function selectExpr<
     return select(
         query,
         wrappedDelegate as any
-    ) as any; //TODO Not use `as any` hacks?
+    ) as any; //TODO-UNHACK Not use `as any` hacks?
 }

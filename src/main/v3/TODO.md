@@ -35,21 +35,4 @@
   })
   ```
 
-
-+ Let `IExprSelectItem` be a `RawExpr`
-```ts
-TODO Implement a "defaultAlias" for expressions.
-This way, we can just write,
-function isConfirmed () {
-    o.exists(
-        //snip
-    ).as("isConfirmed")
-}
-//Snip
-.selectExpr(
-    sql.tentativeContributorNegotiation
-        .isConfirmed()
-)
-```
-
 + Implement `Column.asc()/.desc()`, `Expr.asc()/.desc()` convenience methods

@@ -99,7 +99,7 @@ export namespace ExprUtil {
             readonly usedRef : ExprT["usedRef"];
             readonly assertDelegate : ExprT["assertDelegate"];
 
-            //TODO Consider allowing tableAlias to change?
+            //TODO-DEBATE Consider allowing tableAlias to change?
             //There doesn't seem to be any harm in it.
             readonly tableAlias : typeof ALIASED;
             readonly alias : AliasT;
