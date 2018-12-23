@@ -15,6 +15,7 @@ export * from "./join-using-delegate";
 export * from "./left-join-using";
 export * from "./left-join";
 export * from "./limit";
+export * from "./map";
 export * from "./offset";
 export * from "./order-by";
 export * from "./require-parent-joins";

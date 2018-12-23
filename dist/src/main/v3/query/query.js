@@ -136,6 +136,9 @@ class Query {
     coalesce(defaultExpr) {
         return QueryUtil.coalesce(this, defaultExpr);
     }
+    map(delegate) {
+        return QueryUtil.map(this, delegate);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

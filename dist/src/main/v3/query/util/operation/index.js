@@ -20,6 +20,7 @@ __export(require("./join-using-delegate"));
 __export(require("./left-join-using"));
 __export(require("./left-join"));
 __export(require("./limit"));
+__export(require("./map"));
 __export(require("./offset"));
 __export(require("./order-by"));
 __export(require("./require-parent-joins"));

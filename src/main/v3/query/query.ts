@@ -837,6 +837,28 @@ export class Query<DataT extends QueryData> {
     ) {
         return QueryUtil.coalesce(this, defaultExpr);
     }
+
+    map<
+        DelegateT extends MapDelegate<
+        QueryUtil.MappedType<
+                Extract<this, QueryUtil.AfterSelectClause>
+            >,
+            QueryUtil.UnmappedType<
+                Extract<this, QueryUtil.AfterSelectClause>["_selects"]
+            >,
+            any
+        >
+    > (
+        this : Extract<this, QueryUtil.AfterSelectClause>,
+        delegate : DelegateT
+    ) : (
+        QueryUtil.Map<
+            Extract<this, QueryUtil.AfterSelectClause>,
+            DelegateT
+        >
+    ) {
+        return QueryUtil.map(this, delegate);
+    }
 }
 
 export function from<AliasedTableT extends IAliasedTable> (
