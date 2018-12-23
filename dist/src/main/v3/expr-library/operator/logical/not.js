@@ -5,37 +5,29 @@ const raw_expr_1 = require("../../../raw-expr");
 const expr_1 = require("../../../expr");
 const query_tree_1 = require("../../../query-tree");
 const constant = require("../../constant");
-class NotExpr extends expr_1.Expr {
-    constructor(data, queryTree) {
-        super({
-            usedRef: data.usedRef,
-            assertDelegate: sd.numberToBoolean()
-        }, queryTree);
-    }
-}
 function not(rawExpr) {
-    if (rawExpr instanceof NotExpr) {
-        //NOT (NOT (expr)) === expr
-        if (rawExpr.queryTree instanceof query_tree_1.Parentheses) {
-            const tree = rawExpr.queryTree.getTree();
-            if (tree instanceof Array && tree.length == 2) {
-                return new expr_1.Expr({
-                    usedRef: rawExpr.usedRef,
-                    assertDelegate: rawExpr.assertDelegate,
-                }, tree[1]);
-            }
-        }
-    }
-    else if (rawExpr === true) {
+    if (rawExpr === true) {
         //NOT TRUE === FALSE
         return constant.false;
     }
-    else if (rawExpr === false) {
+    if (rawExpr === false) {
         //NOT FALSE === TRUE
         return constant.true;
     }
-    else if (rawExpr instanceof expr_1.Expr) {
-        if (rawExpr.queryTree == raw_expr_1.RawExprUtil.queryTree(true)) {
+    if (expr_1.ExprUtil.isExpr(rawExpr)) {
+        if (rawExpr.queryTree instanceof query_tree_1.Parentheses) {
+            const tree = rawExpr.queryTree.getTree();
+            if (tree instanceof Array && tree.length == 2) {
+                if (tree[0] === "NOT") {
+                    //NOT (NOT (expr)) === expr
+                    return new expr_1.Expr({
+                        usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+                        assertDelegate: sd.numberToBoolean(),
+                    }, tree[1]);
+                }
+            }
+        }
+        else if (rawExpr.queryTree == raw_expr_1.RawExprUtil.queryTree(true)) {
             //NOT TRUE === FALSE
             return constant.false;
         }
@@ -44,8 +36,9 @@ function not(rawExpr) {
             return constant.true;
         }
     }
-    return new NotExpr({
+    return new expr_1.Expr({
         usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+        assertDelegate: sd.numberToBoolean(),
     }, [
         "NOT",
         raw_expr_1.RawExprUtil.queryTree(rawExpr)
