@@ -1,5 +1,5 @@
 import * as sd from "schema-decorator";
-import {ColumnRef} from "./column-ref";
+import {ColumnRef, ColumnRefUtil} from "./column-ref";
 import {QueryTreeArray, Parentheses, QueryTree, QueryTreeUtil} from "./query-tree";
 import {escapeId} from "sqlstring";
 import {SEPARATOR} from "./constants";
@@ -47,7 +47,7 @@ export namespace ExprSelectItemUtil {
             ("tableAlias" in raw) &&
             ("alias" in raw) &&
             ("unaliasedQuery" in raw) &&
-            (raw.usedRef instanceof Object) &&
+            (ColumnRefUtil.isColumnRef(raw.usedRef)) &&
             (typeof raw.assertDelegate == "function") &&
             (typeof raw.tableAlias == "string") &&
             (typeof raw.alias == "string") &&

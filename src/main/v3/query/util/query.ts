@@ -304,14 +304,13 @@ export function queryTree_RawExpr (query : OneSelectItemQuery<any>) : QueryTreeA
         ];
     }
 }
-export function queryTree_As (query : AfterSelectClause) : QueryTreeArray {
+export function queryTree_As (query : AfterSelectClause) : QueryTree {
     if (
         query._unions != undefined ||
         query._unionOrders != undefined ||
         query._unionLimit != undefined
     ) {
-        return [
-            "(",
+        return Parentheses.Create([
             "(",
             queryTreeSelects_As(query),
             queryTreeFrom(query),
@@ -324,12 +323,10 @@ export function queryTree_As (query : AfterSelectClause) : QueryTreeArray {
             queryTreeUnion(query),
             queryTreeUnionOrderBy(query),
             queryTreeUnionLimit(query),
-            ")",
-        ];
+        ]);
     } else {
         //No UNION-related clauses
-        return [
-            "(",
+        return Parentheses.Create([
             queryTreeSelects_As(query),
             queryTreeFrom(query),
             queryTreeWhere(query),
@@ -337,8 +334,7 @@ export function queryTree_As (query : AfterSelectClause) : QueryTreeArray {
             queryTreeHaving(query),
             queryTreeOrderBy(query),
             queryTreeLimit(query),
-            ")",
-        ];
+        ]);
     }
 }
 

@@ -32,4 +32,5 @@ export declare type ToInterface<ColumnT extends IColumn> = (ColumnT extends ICol
     readonly name: ColumnT["name"];
     readonly assertDelegate: ColumnT["assertDelegate"];
 }> : never);
+export declare function setIsInSelectClause<ColumnT extends IColumn>(column: ColumnT, __isInSelectClause: boolean): Column<ColumnT>;
 //# sourceMappingURL=operation.d.ts.map

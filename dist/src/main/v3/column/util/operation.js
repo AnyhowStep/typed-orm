@@ -39,4 +39,8 @@ function as(column, alias) {
     };
 }
 exports.as = as;
+function setIsInSelectClause(column, __isInSelectClause) {
+    return new column_1.Column(column, column.__subTableName, __isInSelectClause);
+}
+exports.setIsInSelectClause = setIsInSelectClause;
 //# sourceMappingURL=operation.js.map

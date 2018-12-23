@@ -324,8 +324,7 @@ function queryTree_As(query) {
     if (query._unions != undefined ||
         query._unionOrders != undefined ||
         query._unionLimit != undefined) {
-        return [
-            "(",
+        return query_tree_1.Parentheses.Create([
             "(",
             queryTreeSelects_As(query),
             queryTreeFrom(query),
@@ -338,13 +337,11 @@ function queryTree_As(query) {
             queryTreeUnion(query),
             queryTreeUnionOrderBy(query),
             queryTreeUnionLimit(query),
-            ")",
-        ];
+        ]);
     }
     else {
         //No UNION-related clauses
-        return [
-            "(",
+        return query_tree_1.Parentheses.Create([
             queryTreeSelects_As(query),
             queryTreeFrom(query),
             queryTreeWhere(query),
@@ -352,8 +349,7 @@ function queryTree_As(query) {
             queryTreeHaving(query),
             queryTreeOrderBy(query),
             queryTreeLimit(query),
-            ")",
-        ];
+        ]);
     }
 }
 exports.queryTree_As = queryTree_As;

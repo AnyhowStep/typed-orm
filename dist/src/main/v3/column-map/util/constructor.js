@@ -82,7 +82,8 @@ function fromSelectItemArray(selects, tableAlias) {
     for (let item of selects) {
         const map = fromSelectItem(item);
         for (let columnName in map) {
-            result[columnName] = column_1.ColumnUtil.withTableAlias(map[columnName], tableAlias);
+            //HACK A hack to undo other hacks...
+            result[columnName] = column_1.ColumnUtil.setIsInSelectClause(column_1.ColumnUtil.withTableAlias(map[columnName], tableAlias), false);
         }
     }
     return result;

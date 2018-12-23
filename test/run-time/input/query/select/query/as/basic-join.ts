@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import * as tape from "tape";
-import * as o from "../../../../../dist/src/main";
+import * as o from "../../../../../../../dist/src/main";
 import * as fs from "fs";
 
 tape(__filename, (t) => {
@@ -13,14 +13,20 @@ tape(__filename, (t) => {
         }
     );
 
-    const query = o.from(table)
-        .select(c => [c.z, c.x, c.y]);
-    const aliased = query
-        .as("aliased");
+    const selectItem = o.from(table)
+        .select(c => [c.x])
+        .limit(1)
+        .as("test");
+
+    const query = o.from(selectItem)
+        .select(c => [c.x]);
+
+    t.true(o.AliasedTable.isAliasedTable(selectItem));
+    t.true(o.ExprSelectItemUtil.isExprSelectItem(selectItem));
 
     const formatter = new o.SqlFormatter();
     const sql = o.QueryTreeUtil.toSql(
-        o.AliasedTable.queryTree(aliased)
+        o.QueryUtil.queryTree(query)
     );
     const actual = formatter.format(sql);
     t.deepEqual(

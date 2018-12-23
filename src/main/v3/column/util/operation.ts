@@ -191,3 +191,14 @@ export type ToInterface<ColumnT extends IColumn> = (
     }> :
     never
 );
+
+export function setIsInSelectClause<ColumnT extends IColumn> (
+    column : ColumnT,
+    __isInSelectClause : boolean,
+) : Column<ColumnT> {
+    return new Column(
+        column,
+        column.__subTableName,
+        __isInSelectClause
+    );
+}

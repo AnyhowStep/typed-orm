@@ -226,9 +226,13 @@ export function fromSelectItemArray<SelectsT extends SelectItem[], TableAliasT e
     for (let item of selects) {
         const map = fromSelectItem(item);
         for (let columnName in map) {
-            result[columnName] = ColumnUtil.withTableAlias(
-                map[columnName],
-                tableAlias
+            //HACK A hack to undo other hacks...
+            result[columnName] = ColumnUtil.setIsInSelectClause(
+                ColumnUtil.withTableAlias(
+                    map[columnName],
+                    tableAlias
+                ),
+                false
             );
         }
     }
