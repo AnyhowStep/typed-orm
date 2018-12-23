@@ -5,6 +5,7 @@ export * from "./cross-join";
 export * from "./distinct";
 export * from "./from";
 export * from "./group-by";
+export * from "./inner-join-one-using";
 export * from "./inner-join-one";
 export * from "./inner-join-using";
 export * from "./inner-join";

@@ -36,6 +36,15 @@ var CandidateKeyArrayUtil;
         return false;
     }
     CandidateKeyArrayUtil.hasSubKey = hasSubKey;
+    function hasSuperKey(arr, key) {
+        for (let k of arr) {
+            if (candidate_key_1.CandidateKeyUtil.isSubKey(key, k)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    CandidateKeyArrayUtil.hasSuperKey = hasSuperKey;
     function hasKey(arr, key) {
         for (let k of arr) {
             if (candidate_key_1.CandidateKeyUtil.isEqual(k, key)) {

@@ -8,6 +8,9 @@ export declare namespace CandidateKeyArrayUtil {
     type FindSubKey<ArrT extends CandidateKey[], KeyT extends CandidateKey> = (CandidateKeyUtil.ExtractSubKey<ArrT[number], KeyT>);
     type HasSubKey<ArrT extends CandidateKey[], KeyT extends CandidateKey> = (true extends CandidateKeyUtil.IsSubKey<ArrT[number], KeyT> ? true : false);
     function hasSubKey<ArrT extends CandidateKey[], KeyT extends CandidateKey>(arr: ArrT, key: KeyT): HasSubKey<ArrT, KeyT>;
+    type FindSuperKey<ArrT extends CandidateKey[], KeyT extends CandidateKey> = (CandidateKeyUtil.ExtractSuperKey<ArrT[number], KeyT>);
+    type HasSuperKey<ArrT extends CandidateKey[], KeyT extends CandidateKey> = (true extends CandidateKeyUtil.IsSubKey<KeyT, ArrT[number]> ? true : false);
+    function hasSuperKey<ArrT extends CandidateKey[], KeyT extends CandidateKey>(arr: ArrT, key: KeyT): HasSuperKey<ArrT, KeyT>;
     type HasKey<ArrT extends CandidateKey[], KeyT extends CandidateKey> = (KeyT extends ArrT[number] ? (Extract<ArrT[number], KeyT> extends never ? false : true) : false);
     function hasKey<ArrT extends CandidateKey[], KeyT extends CandidateKey>(arr: ArrT, key: KeyT): HasKey<ArrT, KeyT>;
 }

@@ -210,6 +210,13 @@ exports.Table = Table;
         const columns = table.columns;
         //https://github.com/Microsoft/TypeScript/issues/24277
         const autoIncrement = delegate(columns);
+        const key = [autoIncrement.name];
+        if (candidate_key_array_1.CandidateKeyArrayUtil.hasSubKey(table.candidateKeys, key)) {
+            throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a super key of some candidate key`);
+        }
+        if (candidate_key_array_1.CandidateKeyArrayUtil.hasSuperKey(table.candidateKeys, key)) {
+            throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a sub key of some candidate key`);
+        }
         column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, autoIncrement);
         const candidateKeys = string_array_1.StringArrayUtil.uniqueStringArray(table.candidateKeys.concat([
             [autoIncrement.name]
@@ -255,6 +262,13 @@ exports.Table = Table;
         const columns = table.columns;
         //https://github.com/Microsoft/TypeScript/issues/24277
         const id = delegate(columns);
+        const key = [id.name];
+        if (candidate_key_array_1.CandidateKeyArrayUtil.hasSubKey(table.candidateKeys, key)) {
+            throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a super key of some candidate key`);
+        }
+        if (candidate_key_array_1.CandidateKeyArrayUtil.hasSuperKey(table.candidateKeys, key)) {
+            throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a sub key of some candidate key`);
+        }
         column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, id);
         const candidateKeys = table.candidateKeys.concat([
             [id.name]
@@ -291,6 +305,9 @@ exports.Table = Table;
         const key = string_array_1.StringArrayUtil.uniqueString(candidateKeyColumns.map(candidateKeyColumn => candidateKeyColumn.name));
         if (candidate_key_array_1.CandidateKeyArrayUtil.hasSubKey(table.candidateKeys, key)) {
             throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a super key of some candidate key`);
+        }
+        if (candidate_key_array_1.CandidateKeyArrayUtil.hasSuperKey(table.candidateKeys, key)) {
+            throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a sub key of some candidate key`);
         }
         const candidateKeys = table.candidateKeys.concat([key]);
         const { usedRef, alias, autoIncrement, id, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;

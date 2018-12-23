@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import * as tape from "tape";
-import * as o from "../../../../dist/src/main";
+import * as o from "../../../../../dist/src/main";
 
 tape(__filename, (t) => {
     const table = o.table(
@@ -26,14 +26,34 @@ tape(__filename, (t) => {
             c.x,
             c.y,
             c.y,
-        ] as never);
+        ] as any as [typeof c.w]);
     });
     t.throws(() => {
         table.addCandidateKey(c => [
             c.x,
             c.y,
             c.z,
-        ] as never);
+        ] as any as [typeof c.w]);
+    });
+    t.throws(() => {
+        table.addCandidateKey(c => [
+            c.x,
+        ] as any as [typeof c.w]);
+    });
+    t.throws(() => {
+        table.addCandidateKey(c => [
+            c.y,
+        ] as any as [typeof c.w]);
+    });
+    t.throws(() => {
+        table.addCandidateKey(c => [
+            c.z,
+        ] as any as [typeof c.w]);
+    });
+    t.doesNotThrow(() => {
+        table.addCandidateKey(c => [
+            c.x, c.z,
+        ]);
     });
 
     t.deepEqual(table.candidateKeys[0].length, 2);

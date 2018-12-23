@@ -92,6 +92,37 @@ export namespace CandidateKeyArrayUtil {
         }
         return false as HasSubKey<ArrT, KeyT>;
     }
+    export type FindSuperKey<
+        ArrT extends CandidateKey[],
+        KeyT extends CandidateKey
+    > = (
+        CandidateKeyUtil.ExtractSuperKey<
+            ArrT[number],
+            KeyT
+        >
+    );
+    export type HasSuperKey<
+        ArrT extends CandidateKey[],
+        KeyT extends CandidateKey
+    > = (
+        true extends CandidateKeyUtil.IsSubKey<KeyT, ArrT[number]> ?
+        true :
+        false
+    );
+    export function hasSuperKey<
+        ArrT extends CandidateKey[],
+        KeyT extends CandidateKey
+    > (
+        arr : ArrT,
+        key : KeyT
+    ) : HasSuperKey<ArrT, KeyT> {
+        for (let k of arr) {
+            if (CandidateKeyUtil.isSubKey(key, k)) {
+                return true as HasSuperKey<ArrT, KeyT>;
+            }
+        }
+        return false as HasSuperKey<ArrT, KeyT>;
+    }
 
     export type HasKey<
         ArrT extends CandidateKey[],

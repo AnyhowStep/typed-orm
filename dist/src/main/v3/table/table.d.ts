@@ -64,12 +64,8 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     setName<NewNameT extends string>(newName: NewNameT): Table.SetName<this, NewNameT>;
     addColumns<FieldsT extends sd.AnyField[]>(fields: FieldsT): (Table.AddColumnsFromFieldTuple<this, FieldsT>);
     addColumns<AssertMapT extends AssertMap>(assertMap: AssertMapT): (Table.AddColumnsFromAssertMap<this, AssertMapT>);
-    setAutoIncrement<DelegateT extends Table.AutoIncrementDelegate<this["columns"]>>(delegate: DelegateT): Table.SetAutoIncrement<this, DelegateT>;
-    setId<DelegateT extends Table.IdDelegate<this["columns"]>>(this: ITable<DataT & {
-        id: undefined;
-    }>, delegate: DelegateT): (Table.SetId<this & {
-        id: undefined;
-    }, DelegateT>);
+    setAutoIncrement<DelegateT extends Table.AutoIncrementDelegate<this>>(delegate: DelegateT): Table.SetAutoIncrement<this, DelegateT>;
+    setId<DelegateT extends Table.IdDelegate<this>>(delegate: DelegateT): (Table.SetId<this, DelegateT>);
     addCandidateKey<DelegateT extends Table.CandidateKeyDelegate<this>>(delegate: Table.AssertValidCandidateKeyDelegate<this, DelegateT>): (Table.AddCandidateKey<this, DelegateT>);
     setGenerated<DelegateT extends Table.GeneratedDelegate<this>>(delegate: DelegateT): (Table.SetGenerated<this, DelegateT>);
     setHasExplicitDefaultValue<DelegateT extends Table.HasExplicitDefaultValueDelegate<this>>(delegate: DelegateT): (Table.SetHasExplicitDefaultValue<this, DelegateT>);
@@ -154,13 +150,13 @@ export declare namespace Table {
     function superKeyAssertDelegate<TableT extends ITable>(table: TableT): (SuperKeyAssertDelegate<TableT>);
 }
 export declare namespace Table {
-    type AutoIncrementColumnMap<ColumnMapT extends ColumnMap> = ({
+    type AutoIncrementColumnMap<TableT extends ITable> = ({
         [columnName in {
-            [columnName in keyof ColumnMapT]: (ColumnMapT[columnName] extends IAnonymousTypedColumn<number | string | bigint> ? columnName : never);
-        }[keyof ColumnMapT]]: (ColumnMapT[columnName]);
+            [columnName in keyof TableT["columns"]]: (TableT["columns"][columnName] extends IAnonymousTypedColumn<number | string | bigint> ? (columnName extends TableT["candidateKeys"][number][number] ? never : columnName) : never);
+        }[keyof TableT["columns"]]]: (TableT["columns"][columnName]);
     });
-    type AutoIncrementDelegate<ColumnMapT extends ColumnMap> = ((columnMap: AutoIncrementColumnMap<ColumnMapT>) => (AutoIncrementColumnMap<ColumnMapT>[keyof AutoIncrementColumnMap<ColumnMapT>]));
-    type SetAutoIncrement<TableT extends ITable, DelegateT extends AutoIncrementDelegate<TableT["columns"]>> = (Table<{
+    type AutoIncrementDelegate<TableT extends ITable> = ((columnMap: AutoIncrementColumnMap<TableT>) => (AutoIncrementColumnMap<TableT>[keyof AutoIncrementColumnMap<TableT>]));
+    type SetAutoIncrement<TableT extends ITable, DelegateT extends AutoIncrementDelegate<TableT>> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly columns: TableT["columns"];
@@ -175,13 +171,16 @@ export declare namespace Table {
         readonly insertAllowed: TableT["insertAllowed"];
         readonly deleteAllowed: TableT["deleteAllowed"];
     }>);
-    function setAutoIncrement<TableT extends ITable, DelegateT extends AutoIncrementDelegate<TableT["columns"]>>(table: TableT, delegate: DelegateT): (SetAutoIncrement<TableT, DelegateT>);
+    function setAutoIncrement<TableT extends ITable, DelegateT extends AutoIncrementDelegate<TableT>>(table: TableT, delegate: DelegateT): (SetAutoIncrement<TableT, DelegateT>);
 }
 export declare namespace Table {
-    type IdDelegate<ColumnMapT extends ColumnMap> = ((columnMap: ColumnMapT) => (ColumnMapT[string]));
-    type SetId<TableT extends ITable<TableData & {
-        id: undefined;
-    }>, DelegateT extends IdDelegate<TableT["columns"]>> = (Table<{
+    type IdColumnMap<TableT extends ITable> = ({
+        [columnName in {
+            [columnName in keyof TableT["columns"]]: ((columnName extends TableT["candidateKeys"][number][number] ? never : columnName));
+        }[keyof TableT["columns"]]]: (TableT["columns"][columnName]);
+    });
+    type IdDelegate<TableT extends ITable> = ((columnMap: IdColumnMap<TableT>) => (IdColumnMap<TableT>[keyof IdColumnMap<TableT>]));
+    type SetId<TableT extends ITable, DelegateT extends IdDelegate<TableT>> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
         readonly columns: TableT["columns"];
@@ -196,13 +195,11 @@ export declare namespace Table {
         readonly insertAllowed: TableT["insertAllowed"];
         readonly deleteAllowed: TableT["deleteAllowed"];
     }>);
-    function setId<TableT extends ITable<TableData & {
-        id: undefined;
-    }>, DelegateT extends IdDelegate<TableT["columns"]>>(table: TableT, delegate: DelegateT): (SetId<TableT, DelegateT>);
+    function setId<TableT extends ITable<TableData>, DelegateT extends IdDelegate<TableT>>(table: TableT, delegate: DelegateT): (SetId<TableT, DelegateT>);
 }
 export declare namespace Table {
     type CandidateKeyDelegate<TableT extends ITable> = ((columnMap: TableT["columns"]) => (TableT["columns"][string][]));
-    type AssertValidCandidateKeyDelegate<TableT extends ITable, DelegateT extends CandidateKeyDelegate<TableT>> = (DelegateT & (CandidateKeyArrayUtil.FindSubKey<TableT["candidateKeys"], ReturnType<DelegateT>[number]["name"][]> extends never ? unknown : ["Cannot add key as candidate key", ReturnType<DelegateT>[number]["name"], "is a super key of", CandidateKeyArrayUtil.FindSubKey<TableT["candidateKeys"], ReturnType<DelegateT>[number]["name"][]>]));
+    type AssertValidCandidateKeyDelegate<TableT extends ITable, DelegateT extends CandidateKeyDelegate<TableT>> = (DelegateT & (CandidateKeyArrayUtil.FindSubKey<TableT["candidateKeys"], ReturnType<DelegateT>[number]["name"][]> extends never ? (CandidateKeyArrayUtil.FindSuperKey<TableT["candidateKeys"], ReturnType<DelegateT>[number]["name"][]> extends never ? unknown : ["Cannot add key as candidate key", ReturnType<DelegateT>[number]["name"], "is a sub key of", CandidateKeyArrayUtil.FindSuperKey<TableT["candidateKeys"], ReturnType<DelegateT>[number]["name"][]>]) : ["Cannot add key as candidate key", ReturnType<DelegateT>[number]["name"], "is a super key of", CandidateKeyArrayUtil.FindSubKey<TableT["candidateKeys"], ReturnType<DelegateT>[number]["name"][]>]));
     type AddCandidateKey<TableT extends ITable, DelegateT extends CandidateKeyDelegate<TableT>> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];

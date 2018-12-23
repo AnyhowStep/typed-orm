@@ -1,0 +1,23 @@
+[
+  {
+    "messageText": "Property 'y' does not exist on type '{ b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; }'.",
+    "code": 2339,
+    "category": 1,
+    "length": 1,
+    "start": 365
+  },
+  {
+    "messageText": "Property 'c' does not exist on type '{ b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; }'.",
+    "code": 2339,
+    "category": 1,
+    "length": 1,
+    "start": 401
+  },
+  {
+    "messageText": "Property 'd' does not exist on type '{ b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; }'.",
+    "code": 2339,
+    "category": 1,
+    "length": 1,
+    "start": 437
+  }
+]

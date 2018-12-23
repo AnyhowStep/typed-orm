@@ -369,47 +369,6 @@ export class Query<DataT extends QueryData> {
         );
     }
 
-    innerJoinOne<
-        TableT extends ITable,
-        FromDelegateT extends QueryUtil.JoinFromDelegate<
-            Extract<this, QueryUtil.AfterFromClause>["_joins"]
-        >,
-        ToDelegateT extends QueryUtil.JoinToDelegate<
-            Extract<this, QueryUtil.AfterFromClause>,
-            TableT,
-            FromDelegateT
-        >
-    > (
-        this : Extract<this, QueryUtil.AfterFromClause>,
-        table : QueryUtil.AssertValidJoinTarget<
-            Extract<this, QueryUtil.AfterFromClause>,
-            TableT
-        >,
-        fromDelegate : FromDelegateT,
-        toDelegate : QueryUtil.AssertValidJoinToOneDelegate<
-            Extract<this, QueryUtil.AfterFromClause>,
-            TableT,
-            FromDelegateT,
-            ToDelegateT
-        >
-    ) : (
-        QueryUtil.InnerJoin<
-            Extract<this, QueryUtil.AfterFromClause>,
-            TableT
-        >
-    ) {
-        return QueryUtil.innerJoinOne<
-            Extract<this, QueryUtil.AfterFromClause>,
-            TableT,
-            FromDelegateT,
-            ToDelegateT
-        >(
-            this,
-            table,
-            fromDelegate,
-            toDelegate
-        );
-    }
     public innerJoinUsing<
         AliasedTableT extends IAliasedTable,
         UsingDelegateT extends QueryUtil.JoinUsingDelegate<Extract<this, QueryUtil.AfterFromClause>["_joins"], AliasedTableT>
@@ -469,6 +428,82 @@ export class Query<DataT extends QueryData> {
         >(
             this,
             aliasedTable,
+            usingDelegate
+        );
+    }
+
+    innerJoinOne<
+        TableT extends ITable,
+        FromDelegateT extends QueryUtil.JoinFromDelegate<
+            Extract<this, QueryUtil.AfterFromClause>["_joins"]
+        >,
+        ToDelegateT extends QueryUtil.JoinToDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            FromDelegateT
+        >
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        table : QueryUtil.AssertValidJoinTarget<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT
+        >,
+        fromDelegate : FromDelegateT,
+        toDelegate : QueryUtil.AssertValidJoinToOneDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            FromDelegateT,
+            ToDelegateT
+        >
+    ) : (
+        QueryUtil.InnerJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT
+        >
+    ) {
+        return QueryUtil.innerJoinOne<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            FromDelegateT,
+            ToDelegateT
+        >(
+            this,
+            table,
+            fromDelegate,
+            toDelegate
+        );
+    }
+
+    innerJoinOneUsing<
+        TableT extends ITable,
+        UsingDelegateT extends QueryUtil.JoinUsingDelegate<
+            Extract<this, QueryUtil.AfterFromClause>["_joins"],
+            TableT
+        >
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        table : QueryUtil.AssertValidJoinTarget<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT
+        >,
+        usingDelegate : QueryUtil.AssertValidJoinOneUsingDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            UsingDelegateT
+        >
+    ) : (
+        QueryUtil.InnerJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT
+        >
+    ) {
+        return QueryUtil.innerJoinUsing<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            UsingDelegateT
+        >(
+            this,
+            table,
             usingDelegate
         );
     }

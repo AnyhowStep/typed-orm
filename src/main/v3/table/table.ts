@@ -228,21 +228,26 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     }
 
     setAutoIncrement<
-        DelegateT extends Table.AutoIncrementDelegate<this["columns"]>
+        DelegateT extends Table.AutoIncrementDelegate<this>
     > (
         delegate : DelegateT
     ) : Table.SetAutoIncrement<this, DelegateT> {
-        return Table.setAutoIncrement(this, delegate);
+        return Table.setAutoIncrement<
+            this,
+            DelegateT
+        >(this, delegate);
     }
     setId<
-        DelegateT extends Table.IdDelegate<this["columns"]>
+        DelegateT extends Table.IdDelegate<this>
     > (
-        this : ITable<DataT & { id : undefined }>,
         delegate : DelegateT
     ) : (
-        Table.SetId<this & { id : undefined }, DelegateT>
+        Table.SetId<this, DelegateT>
     ) {
-        return Table.setId(this, delegate);
+        return Table.setId<
+            this,
+            DelegateT
+        >(this, delegate);
     }
     /*
         Adding a candidate key that is a super-set of
@@ -705,23 +710,27 @@ export namespace Table {
     //Auto-increment columns cannot be nullable
     //The `number|string|bigint` requirement is only a compile-time constraint
     //TODO-DEBATE Consider having run-time checks to see if it allows 1,2,3,4,5,... ?
-    export type AutoIncrementColumnMap<ColumnMapT extends ColumnMap> = (
+    export type AutoIncrementColumnMap<TableT extends ITable> = (
         {
             [columnName in {
-                [columnName in keyof ColumnMapT] : (
-                    ColumnMapT[columnName] extends IAnonymousTypedColumn<number|string|bigint> ?
-                    columnName :
+                [columnName in keyof TableT["columns"]] : (
+                    TableT["columns"][columnName] extends IAnonymousTypedColumn<number|string|bigint> ?
+                    (
+                        columnName extends TableT["candidateKeys"][number][number] ?
+                        never :
+                        columnName
+                    ) :
                     never
                 )
-            }[keyof ColumnMapT]] : (
-                ColumnMapT[columnName]
+            }[keyof TableT["columns"]]] : (
+                TableT["columns"][columnName]
             )
         }
     );
-    export type AutoIncrementDelegate<ColumnMapT extends ColumnMap> = (
-        (columnMap : AutoIncrementColumnMap<ColumnMapT>) => (
-            AutoIncrementColumnMap<ColumnMapT>[
-                keyof AutoIncrementColumnMap<ColumnMapT>
+    export type AutoIncrementDelegate<TableT extends ITable> = (
+        (columnMap : AutoIncrementColumnMap<TableT>) => (
+            AutoIncrementColumnMap<TableT>[
+                keyof AutoIncrementColumnMap<TableT>
             ]
         )
     );
@@ -729,7 +738,7 @@ export namespace Table {
     //This creates an entirely new Table.
     export type SetAutoIncrement<
         TableT extends ITable,
-        DelegateT extends AutoIncrementDelegate<TableT["columns"]>
+        DelegateT extends AutoIncrementDelegate<TableT>
     > = (
         Table<{
             readonly usedRef : TableT["usedRef"];
@@ -765,7 +774,7 @@ export namespace Table {
     );
     export function setAutoIncrement<
         TableT extends ITable,
-        DelegateT extends AutoIncrementDelegate<TableT["columns"]>
+        DelegateT extends AutoIncrementDelegate<TableT>
     > (
         table : TableT,
         delegate : DelegateT
@@ -776,6 +785,20 @@ export namespace Table {
         const columns : TableT["columns"] = table.columns;
         //https://github.com/Microsoft/TypeScript/issues/24277
         const autoIncrement : ReturnType<DelegateT> = delegate(columns) as any;
+
+        const key = [autoIncrement.name];
+        if (CandidateKeyArrayUtil.hasSubKey(
+            table.candidateKeys,
+            key
+        )) {
+            throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a super key of some candidate key`);
+        }
+        if (CandidateKeyArrayUtil.hasSuperKey(
+            table.candidateKeys,
+            key
+        )) {
+            throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a sub key of some candidate key`);
+        }
 
         ColumnMapUtil.assertHasColumnIdentifier(table.columns, autoIncrement);
         const candidateKeys : (
@@ -852,18 +875,33 @@ export namespace Table {
     }
 }
 export namespace Table {
-    export type IdDelegate<
-        ColumnMapT extends ColumnMap
-    > = (
-        (columnMap : ColumnMapT) => (
-            ColumnMapT[string]
+    export type IdColumnMap<TableT extends ITable> = (
+        {
+            [columnName in {
+                [columnName in keyof TableT["columns"]] : (
+                    (
+                        columnName extends TableT["candidateKeys"][number][number] ?
+                        never :
+                        columnName
+                    )
+                )
+            }[keyof TableT["columns"]]] : (
+                TableT["columns"][columnName]
+            )
+        }
+    );
+    export type IdDelegate<TableT extends ITable> = (
+        (columnMap : IdColumnMap<TableT>) => (
+            IdColumnMap<TableT>[
+                keyof IdColumnMap<TableT>
+            ]
         )
     );
     //Technically, "set" is the wrong verb to use.
     //This creates an entirely new Table.
     export type SetId<
-        TableT extends ITable<TableData & { id : undefined }>,
-        DelegateT extends IdDelegate<TableT["columns"]>
+        TableT extends ITable,
+        DelegateT extends IdDelegate<TableT>
     > = (
         Table<{
             readonly usedRef : TableT["usedRef"];
@@ -888,8 +926,8 @@ export namespace Table {
         }>
     );
     export function setId<
-        TableT extends ITable<TableData & { id : undefined }>,
-        DelegateT extends IdDelegate<TableT["columns"]>
+        TableT extends ITable<TableData>,
+        DelegateT extends IdDelegate<TableT>
     > (
         table : TableT,
         delegate : DelegateT
@@ -900,6 +938,20 @@ export namespace Table {
         const columns : TableT["columns"] = table.columns;
         //https://github.com/Microsoft/TypeScript/issues/24277
         const id : ReturnType<DelegateT> = delegate(columns) as any;
+
+        const key = [id.name];
+        if (CandidateKeyArrayUtil.hasSubKey(
+            table.candidateKeys,
+            key
+        )) {
+            throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a super key of some candidate key`);
+        }
+        if (CandidateKeyArrayUtil.hasSuperKey(
+            table.candidateKeys,
+            key
+        )) {
+            throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a sub key of some candidate key`);
+        }
 
         ColumnMapUtil.assertHasColumnIdentifier(table.columns, id);
         const candidateKeys : (
@@ -966,7 +1018,22 @@ export namespace Table {
                 TableT["candidateKeys"],
                 ReturnType<DelegateT>[number]["name"][]
             > extends never ?
-            unknown :
+            (
+                CandidateKeyArrayUtil.FindSuperKey<
+                    TableT["candidateKeys"],
+                    ReturnType<DelegateT>[number]["name"][]
+                > extends never ?
+                unknown :
+                [
+                    "Cannot add key as candidate key",
+                    ReturnType<DelegateT>[number]["name"],
+                    "is a sub key of",
+                    CandidateKeyArrayUtil.FindSuperKey<
+                        TableT["candidateKeys"],
+                        ReturnType<DelegateT>[number]["name"][]
+                    >
+                ]
+            ) :
             [
                 "Cannot add key as candidate key",
                 ReturnType<DelegateT>[number]["name"],
@@ -1036,6 +1103,12 @@ export namespace Table {
             key
         )) {
             throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a super key of some candidate key`);
+        }
+        if (CandidateKeyArrayUtil.hasSuperKey(
+            table.candidateKeys,
+            key
+        )) {
+            throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a sub key of some candidate key`);
         }
 
         const candidateKeys : (
