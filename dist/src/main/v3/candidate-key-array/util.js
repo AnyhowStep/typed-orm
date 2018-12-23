@@ -36,5 +36,14 @@ var CandidateKeyArrayUtil;
         return false;
     }
     CandidateKeyArrayUtil.hasSubKey = hasSubKey;
+    function hasKey(arr, key) {
+        for (let k of arr) {
+            if (candidate_key_1.CandidateKeyUtil.isEqual(k, key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    CandidateKeyArrayUtil.hasKey = hasKey;
 })(CandidateKeyArrayUtil = exports.CandidateKeyArrayUtil || (exports.CandidateKeyArrayUtil = {}));
 //# sourceMappingURL=util.js.map

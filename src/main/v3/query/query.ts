@@ -6,8 +6,9 @@ import * as QueryUtil from "./util";
 import {ColumnIdentifier} from "../column-identifier";
 import {Order} from "../order";
 import {MapDelegate} from "../map-delegate";
-import { DISTINCT } from "../constants";
+import {DISTINCT} from "../constants";
 import {NonEmptyTuple} from "../tuple";
+import {ITable} from "../table";
 
 export interface UnionQuery {
     //Defaults to true
@@ -368,6 +369,47 @@ export class Query<DataT extends QueryData> {
         );
     }
 
+    innerJoinOne<
+        TableT extends ITable,
+        FromDelegateT extends QueryUtil.JoinFromDelegate<
+            Extract<this, QueryUtil.AfterFromClause>["_joins"]
+        >,
+        ToDelegateT extends QueryUtil.JoinToDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            FromDelegateT
+        >
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        table : QueryUtil.AssertValidJoinTarget<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT
+        >,
+        fromDelegate : FromDelegateT,
+        toDelegate : QueryUtil.AssertValidJoinToOneDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            FromDelegateT,
+            ToDelegateT
+        >
+    ) : (
+        QueryUtil.InnerJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT
+        >
+    ) {
+        return QueryUtil.innerJoinOne<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            FromDelegateT,
+            ToDelegateT
+        >(
+            this,
+            table,
+            fromDelegate,
+            toDelegate
+        );
+    }
     public innerJoinUsing<
         AliasedTableT extends IAliasedTable,
         UsingDelegateT extends QueryUtil.JoinUsingDelegate<Extract<this, QueryUtil.AfterFromClause>["_joins"], AliasedTableT>

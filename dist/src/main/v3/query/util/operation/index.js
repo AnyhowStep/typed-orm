@@ -10,6 +10,7 @@ __export(require("./cross-join"));
 __export(require("./distinct"));
 __export(require("./from"));
 __export(require("./group-by"));
+__export(require("./inner-join-one"));
 __export(require("./inner-join-using"));
 __export(require("./inner-join"));
 __export(require("./join-delegate"));

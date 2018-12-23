@@ -31,6 +31,9 @@ class Query {
     rightJoin(aliasedTable, fromDelegate, toDelegate) {
         return QueryUtil.rightJoin(this, aliasedTable, fromDelegate, toDelegate);
     }
+    innerJoinOne(table, fromDelegate, toDelegate) {
+        return QueryUtil.innerJoinOne(this, table, fromDelegate, toDelegate);
+    }
     innerJoinUsing(aliasedTable, usingDelegate) {
         return QueryUtil.innerJoinUsing(this, aliasedTable, usingDelegate);
     }
