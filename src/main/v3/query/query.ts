@@ -9,6 +9,8 @@ import {MapDelegate} from "../map-delegate";
 import {DISTINCT} from "../constants";
 import {NonEmptyTuple} from "../tuple";
 import {ITable} from "../table";
+import { RawExpr, RawExprUtil } from "../raw-expr";
+import { PrimitiveExpr } from "../primitive-expr";
 
 export interface UnionQuery {
     //Defaults to true
@@ -819,6 +821,21 @@ export class Query<DataT extends QueryData> {
             Extract<this, QueryUtil.AfterSelectClause>,
             AliasT
         >(this, alias);
+    }
+    coalesce<
+        DefaultT extends RawExpr<RawExprUtil.TypeOf<
+            Extract<this, RawExpr<PrimitiveExpr>>
+        >>
+    > (
+        this : Extract<this, RawExpr<PrimitiveExpr>>,
+        defaultExpr : DefaultT
+    ) : (
+        QueryUtil.Coalesce<
+            Extract<this, RawExpr<PrimitiveExpr>>,
+            DefaultT
+        >
+    ) {
+        return QueryUtil.coalesce(this, defaultExpr);
     }
 }
 

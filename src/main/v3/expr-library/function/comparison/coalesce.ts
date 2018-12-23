@@ -32,12 +32,14 @@ export function coalesce<
     arg0 : Arg0,
     arg1 : Arg1
 ) : (
-    //Not an exact typing but, in general, should work
     Expr<{
         usedRef : RawExprUtil.IntersectUsedRefTuple<
             [Arg0, Arg1]
         >,
-        assertDelegate : RawExprUtil.AssertDelegate<Arg1>,
+        assertDelegate : RawExprUtil.AssertDelegate<
+            Exclude<RawExprUtil.TypeOf<Arg0>, null>|
+            Arg1
+        >,
     }>
 );
 export function coalesce<
@@ -49,12 +51,15 @@ export function coalesce<
     arg1 : Arg1,
     arg2 : Arg2
 ) : (
-    //Not an exact typing but, in general, should work
     Expr<{
         usedRef : RawExprUtil.IntersectUsedRefTuple<
             [Arg0, Arg1, Arg2]
         >,
-        assertDelegate : RawExprUtil.AssertDelegate<Arg2>,
+        assertDelegate : RawExprUtil.AssertDelegate<
+            Exclude<RawExprUtil.TypeOf<Arg0>, null>|
+            Exclude<RawExprUtil.TypeOf<Arg1>, null>|
+            Arg2
+        >,
     }>
 );
 export function coalesce<
@@ -68,12 +73,16 @@ export function coalesce<
     arg2 : Arg2,
     arg3 : Arg3
 ) : (
-    //Not an exact typing but, in general, should work
     Expr<{
         usedRef : RawExprUtil.IntersectUsedRefTuple<
             [Arg0, Arg1, Arg2, Arg3]
         >,
-        assertDelegate : RawExprUtil.AssertDelegate<Arg3>,
+        assertDelegate : RawExprUtil.AssertDelegate<
+            Exclude<RawExprUtil.TypeOf<Arg0>, null>|
+            Exclude<RawExprUtil.TypeOf<Arg1>, null>|
+            Exclude<RawExprUtil.TypeOf<Arg2>, null>|
+            Arg3
+        >,
     }>
 );
 export function coalesce(

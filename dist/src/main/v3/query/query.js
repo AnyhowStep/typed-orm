@@ -133,6 +133,9 @@ class Query {
     as(alias) {
         return QueryUtil.as(this, alias);
     }
+    coalesce(defaultExpr) {
+        return QueryUtil.coalesce(this, defaultExpr);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

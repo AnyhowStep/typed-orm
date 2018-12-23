@@ -8,6 +8,8 @@ import { Order } from "../order";
 import { MapDelegate } from "../map-delegate";
 import { NonEmptyTuple } from "../tuple";
 import { ITable } from "../table";
+import { RawExpr, RawExprUtil } from "../raw-expr";
+import { PrimitiveExpr } from "../primitive-expr";
 export interface UnionQuery {
     readonly distinct: boolean;
     readonly query: QueryUtil.AfterSelectClause;
@@ -92,6 +94,7 @@ export declare class Query<DataT extends QueryData> {
     requireParentJoins<ArrT extends NonEmptyTuple<IAliasedTable>>(...arr: QueryUtil.AssertValidParentJoins<this, ArrT>): (QueryUtil.RequireParentJoins<this, false, ArrT>);
     requireNullableParentJoins<ArrT extends NonEmptyTuple<IAliasedTable>>(...arr: QueryUtil.AssertValidParentJoins<this, ArrT>): (QueryUtil.RequireParentJoins<this, true, ArrT>);
     as<AliasT extends string>(this: QueryUtil.AssertAliasableQuery<Extract<this, QueryUtil.AfterSelectClause>>, alias: AliasT): (QueryUtil.As<Extract<this, QueryUtil.AfterSelectClause>, AliasT>);
+    coalesce<DefaultT extends RawExpr<RawExprUtil.TypeOf<Extract<this, RawExpr<PrimitiveExpr>>>>>(this: Extract<this, RawExpr<PrimitiveExpr>>, defaultExpr: DefaultT): (QueryUtil.Coalesce<Extract<this, RawExpr<PrimitiveExpr>>, DefaultT>);
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertValidJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 export declare function select<SelectDelegateT extends QueryUtil.SelectDelegate<QueryUtil.NewInstance>>(delegate: QueryUtil.AssertValidSelectDelegate<QueryUtil.NewInstance, SelectDelegateT>): (QueryUtil.Select<QueryUtil.NewInstance, SelectDelegateT>);

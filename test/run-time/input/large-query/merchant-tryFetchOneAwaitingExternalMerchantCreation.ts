@@ -186,38 +186,30 @@ function hasExternalMerchant () {
 
 function isEnabled () {
     return o.and(
-        o.coalesce(
-            //TODO-FEATURE Add a coalesce() method to Query!
-            //It'll be the same as coalesce(from().select(), defaultValue)
-            o.requireParentJoins(merchant)
-                .from(merchantEnabled)
-                .andWhere(c => o.eq(
-                    c.merchantEnabled.merchantId,
-                    c.merchant.merchantId
-                ))
-                .orderBy(c => [
-                    [c.merchantEnabled.updatedAt, o.DESC]
-                ])
-                .limit(1)
-                .select(c => [c.merchantEnabled.enabled]),
-            true
-        ),
-        o.coalesce(
-            //TODO-FEATURE Add a coalesce() method to Query!
-            //It'll be the same as coalesce(from().select(), defaultValue)
-            o.requireParentJoins(business)
-                .from(businessEnabled)
-                .andWhere(c => o.eq(
-                    c.businessEnabled.businessId,
-                    c.business.businessId
-                ))
-                .orderBy(c => [
-                    [c.businessEnabled.updatedAt, o.DESC]
-                ])
-                .limit(1)
-                .select(c => [c.businessEnabled.enabled]),
-            true
-        ),
+        o.requireParentJoins(merchant)
+            .from(merchantEnabled)
+            .andWhere(c => o.eq(
+                c.merchantEnabled.merchantId,
+                c.merchant.merchantId
+            ))
+            .orderBy(c => [
+                [c.merchantEnabled.updatedAt, o.DESC]
+            ])
+            .limit(1)
+            .select(c => [c.merchantEnabled.enabled])
+            .coalesce(true),
+        o.requireParentJoins(business)
+            .from(businessEnabled)
+            .andWhere(c => o.eq(
+                c.businessEnabled.businessId,
+                c.business.businessId
+            ))
+            .orderBy(c => [
+                [c.businessEnabled.updatedAt, o.DESC]
+            ])
+            .limit(1)
+            .select(c => [c.businessEnabled.enabled])
+            .coalesce(true),
         //payOutMethodIsEnabledExpression(),
         //appPlatformIsEnabledExpression()
     ).as("testChanging")

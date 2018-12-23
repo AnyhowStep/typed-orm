@@ -1,6 +1,7 @@
 export * from "./and-having";
 export * from "./and-where";
 export * from "./as";
+export * from "./coalesce";
 export * from "./cross-join";
 export * from "./distinct";
 export * from "./from";
