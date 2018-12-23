@@ -53,7 +53,7 @@ class Table {
         return Table.setId(this, delegate);
     }
     /*
-        TODO-FEATURE Adding a candidate key that is a super-set of
+        Adding a candidate key that is a super-set of
         an existing candidate key should throw an error,
         both during compile-time and run-time.
 
@@ -288,9 +288,11 @@ exports.Table = Table;
         for (let candidateKeyColumn of candidateKeyColumns) {
             column_map_1.ColumnMapUtil.assertHasColumnIdentifier(table.columns, candidateKeyColumn);
         }
-        const candidateKeys = string_array_1.StringArrayUtil.uniqueStringArray(table.candidateKeys.concat([
-            candidateKeyColumns.map(candidateKeyColumn => candidateKeyColumn.name)
-        ]));
+        const key = string_array_1.StringArrayUtil.uniqueString(candidateKeyColumns.map(candidateKeyColumn => candidateKeyColumn.name));
+        if (candidate_key_array_1.CandidateKeyArrayUtil.hasSubKey(table.candidateKeys, key)) {
+            throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a super key of some candidate key`);
+        }
+        const candidateKeys = table.candidateKeys.concat([key]);
         const { usedRef, alias, autoIncrement, id, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
         const result = new Table({
             usedRef,

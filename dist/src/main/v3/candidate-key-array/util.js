@@ -27,5 +27,14 @@ var CandidateKeyArrayUtil;
         return result;
     }
     CandidateKeyArrayUtil.commonCandidateKeys = commonCandidateKeys;
+    function hasSubKey(arr, key) {
+        for (let k of arr) {
+            if (candidate_key_1.CandidateKeyUtil.isSubKey(k, key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    CandidateKeyArrayUtil.hasSubKey = hasSubKey;
 })(CandidateKeyArrayUtil = exports.CandidateKeyArrayUtil || (exports.CandidateKeyArrayUtil = {}));
 //# sourceMappingURL=util.js.map

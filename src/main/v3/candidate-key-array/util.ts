@@ -60,4 +60,36 @@ export namespace CandidateKeyArrayUtil {
         }
         return result as any;
     }
+
+    export type FindSubKey<
+        ArrT extends CandidateKey[],
+        KeyT extends CandidateKey
+    > = (
+        CandidateKeyUtil.ExtractSubKey<
+            ArrT[number],
+            KeyT
+        >
+    );
+    export type HasSubKey<
+        ArrT extends CandidateKey[],
+        KeyT extends CandidateKey
+    > = (
+        true extends CandidateKeyUtil.IsSubKey<ArrT[number], KeyT> ?
+        true :
+        false
+    );
+    export function hasSubKey<
+        ArrT extends CandidateKey[],
+        KeyT extends CandidateKey
+    > (
+        arr : ArrT,
+        key : KeyT
+    ) : HasSubKey<ArrT, KeyT> {
+        for (let k of arr) {
+            if (CandidateKeyUtil.isSubKey(k, key)) {
+                return true as HasSubKey<ArrT, KeyT>;
+            }
+        }
+        return false as HasSubKey<ArrT, KeyT>;
+    }
 }

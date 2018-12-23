@@ -70,3 +70,51 @@ export declare const skad: sd.AssertDelegate<({
     x?: number | undefined;
     w?: Date | undefined;
 })>;
+export declare const table2: o.Table<{
+    readonly usedRef: {};
+    readonly alias: "table";
+    readonly columns: {
+        readonly x: o.Column<{
+            tableAlias: "table";
+            name: "x";
+            assertDelegate: sd.AssertDelegate<number> & {
+                __accepts: number;
+                __canAccept: number;
+            };
+        }>;
+        readonly y: o.Column<{
+            tableAlias: "table";
+            name: "y";
+            assertDelegate: sd.AssertDelegate<string> & {
+                __accepts: string;
+                __canAccept: string;
+            };
+        }>;
+        readonly z: o.Column<{
+            tableAlias: "table";
+            name: "z";
+            assertDelegate: sd.AssertDelegate<boolean> & {
+                __accepts: boolean;
+                __canAccept: boolean;
+            };
+        }>;
+        readonly w: o.Column<{
+            tableAlias: "table";
+            name: "w";
+            assertDelegate: sd.AssertDelegate<Date> & {
+                __accepts: Date;
+                __canAccept: string | number | Date;
+            };
+        }>;
+    };
+    readonly autoIncrement: undefined;
+    readonly id: undefined;
+    readonly candidateKeys: (("x" | "y")[] | ("y" | "z")[] | ("x" | "z")[])[];
+    readonly generated: [];
+    readonly isNullable: never[];
+    readonly hasExplicitDefaultValue: [];
+    readonly mutable: ("x" | "y" | "z" | "w")[];
+    readonly parents: [];
+    readonly insertAllowed: true;
+    readonly deleteAllowed: true;
+}>;

@@ -245,7 +245,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
         return Table.setId(this, delegate);
     }
     /*
-        TODO-FEATURE Adding a candidate key that is a super-set of
+        Adding a candidate key that is a super-set of
         an existing candidate key should throw an error,
         both during compile-time and run-time.
 
@@ -254,11 +254,13 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     addCandidateKey<
         DelegateT extends Table.CandidateKeyDelegate<this>
     > (
-        delegate : DelegateT
+        delegate : Table.AssertValidCandidateKeyDelegate<
+            this, DelegateT
+        >
     ) : (
         Table.AddCandidateKey<this, DelegateT>
     ) {
-        return Table.addCandidateKey(this, delegate);
+        return Table.addCandidateKey<this, DelegateT>(this, delegate);
     }
     setGenerated<
         DelegateT extends Table.GeneratedDelegate<this>
@@ -954,6 +956,28 @@ export namespace Table {
             TableT["columns"][string][]
         )
     );
+    export type AssertValidCandidateKeyDelegate<
+        TableT extends ITable,
+        DelegateT extends CandidateKeyDelegate<TableT>
+    > = (
+        DelegateT &
+        (
+            CandidateKeyArrayUtil.FindSubKey<
+                TableT["candidateKeys"],
+                ReturnType<DelegateT>[number]["name"][]
+            > extends never ?
+            unknown :
+            [
+                "Cannot add key as candidate key",
+                ReturnType<DelegateT>[number]["name"],
+                "is a super key of",
+                CandidateKeyArrayUtil.FindSubKey<
+                    TableT["candidateKeys"],
+                    ReturnType<DelegateT>[number]["name"][]
+                >
+            ]
+        )
+    );
     //Technically, "add" is the wrong verb to use.
     //This creates an entirely new Table.
     export type AddCandidateKey<
@@ -987,7 +1011,9 @@ export namespace Table {
         DelegateT extends CandidateKeyDelegate<TableT>
     > (
         table : TableT,
-        delegate : DelegateT
+        delegate : AssertValidCandidateKeyDelegate<
+            TableT, DelegateT
+        >
     ) : (
         AddCandidateKey<TableT, DelegateT>
     ) {
@@ -1000,16 +1026,22 @@ export namespace Table {
             ColumnMapUtil.assertHasColumnIdentifier(table.columns, candidateKeyColumn);
         }
 
+        const key = StringArrayUtil.uniqueString(
+            candidateKeyColumns.map(
+                candidateKeyColumn => candidateKeyColumn.name
+            )
+        );
+        if (CandidateKeyArrayUtil.hasSubKey(
+            table.candidateKeys,
+            key
+        )) {
+            throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a super key of some candidate key`);
+        }
+
         const candidateKeys : (
             TableT["candidateKeys"][number] |
             (ReturnType<DelegateT>[number]["name"][])
-        )[] = StringArrayUtil.uniqueStringArray(
-            table.candidateKeys.concat([
-                candidateKeyColumns.map(
-                    candidateKeyColumn => candidateKeyColumn.name
-                )
-            ])
-        );
+        )[] = table.candidateKeys.concat([key]);
 
         const {
             usedRef,

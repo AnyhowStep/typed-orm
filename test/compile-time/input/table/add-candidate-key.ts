@@ -18,13 +18,28 @@ export const table = o.table(
     c.y,
     c.z,
     c.z,
-]).addCandidateKey(c => [
-    c.x,
-    c.y,
-    c.y,
 ]);
 
 export declare const ck : o.Table.CandidateKey<typeof table>;
 export const ckad = table.candidateKeyAssertDelegate();
 export declare const sk : o.Table.SuperKey<typeof table>;
 export const skad = table.superKeyAssertDelegate();
+
+table.addCandidateKey(c => [
+    c.x,
+    c.y,
+    c.y,
+]);
+
+table.addCandidateKey(c => [
+    c.x,
+    c.y,
+    c.z,
+]);
+
+
+//OK because not a super key of any existing candidate keys!
+export const table2 = table.addCandidateKey(c => [
+    c.x,
+    c.z,
+]);

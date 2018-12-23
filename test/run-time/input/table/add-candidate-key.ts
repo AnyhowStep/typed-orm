@@ -20,11 +20,21 @@ tape(__filename, (t) => {
         c.y,
         c.z,
         c.z,
-    ]).addCandidateKey(c => [
-        c.x,
-        c.y,
-        c.y,
     ]);
+    t.throws(() => {
+        table.addCandidateKey(c => [
+            c.x,
+            c.y,
+            c.y,
+        ] as never);
+    });
+    t.throws(() => {
+        table.addCandidateKey(c => [
+            c.x,
+            c.y,
+            c.z,
+        ] as never);
+    });
 
     t.deepEqual(table.candidateKeys[0].length, 2);
     t.true((table.candidateKeys[0] as string[]).indexOf("x") >= 0);

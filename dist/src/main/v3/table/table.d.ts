@@ -70,7 +70,7 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     }>, delegate: DelegateT): (Table.SetId<this & {
         id: undefined;
     }, DelegateT>);
-    addCandidateKey<DelegateT extends Table.CandidateKeyDelegate<this>>(delegate: DelegateT): (Table.AddCandidateKey<this, DelegateT>);
+    addCandidateKey<DelegateT extends Table.CandidateKeyDelegate<this>>(delegate: Table.AssertValidCandidateKeyDelegate<this, DelegateT>): (Table.AddCandidateKey<this, DelegateT>);
     setGenerated<DelegateT extends Table.GeneratedDelegate<this>>(delegate: DelegateT): (Table.SetGenerated<this, DelegateT>);
     setHasExplicitDefaultValue<DelegateT extends Table.HasExplicitDefaultValueDelegate<this>>(delegate: DelegateT): (Table.SetHasExplicitDefaultValue<this, DelegateT>);
     setImmutable(): Table.SetImmutable<this>;
@@ -202,6 +202,7 @@ export declare namespace Table {
 }
 export declare namespace Table {
     type CandidateKeyDelegate<TableT extends ITable> = ((columnMap: TableT["columns"]) => (TableT["columns"][string][]));
+    type AssertValidCandidateKeyDelegate<TableT extends ITable, DelegateT extends CandidateKeyDelegate<TableT>> = (DelegateT & (CandidateKeyArrayUtil.FindSubKey<TableT["candidateKeys"], ReturnType<DelegateT>[number]["name"][]> extends never ? unknown : ["Cannot add key as candidate key", ReturnType<DelegateT>[number]["name"], "is a super key of", CandidateKeyArrayUtil.FindSubKey<TableT["candidateKeys"], ReturnType<DelegateT>[number]["name"][]>]));
     type AddCandidateKey<TableT extends ITable, DelegateT extends CandidateKeyDelegate<TableT>> = (Table<{
         readonly usedRef: TableT["usedRef"];
         readonly alias: TableT["alias"];
@@ -217,7 +218,7 @@ export declare namespace Table {
         readonly insertAllowed: TableT["insertAllowed"];
         readonly deleteAllowed: TableT["deleteAllowed"];
     }>);
-    function addCandidateKey<TableT extends ITable, DelegateT extends CandidateKeyDelegate<TableT>>(table: TableT, delegate: DelegateT): (AddCandidateKey<TableT, DelegateT>);
+    function addCandidateKey<TableT extends ITable, DelegateT extends CandidateKeyDelegate<TableT>>(table: TableT, delegate: AssertValidCandidateKeyDelegate<TableT, DelegateT>): (AddCandidateKey<TableT, DelegateT>);
 }
 export declare namespace Table {
     type GeneratedColumnMap<ColumnMapT extends ColumnMap, GeneratedT extends string[]> = ({
