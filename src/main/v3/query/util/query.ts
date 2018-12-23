@@ -3,7 +3,7 @@ import {IQuery} from "../query";
 import {QueryTreeArray, QueryTree, Parentheses} from "../../query-tree";
 import {AliasedTable} from "../../aliased-table";
 import {IColumn, ColumnUtil} from "../../column";
-import {AfterSelectClause, OneSelectItemQuery, OneRowQuery, isOneRowQuery, ZeroOrOneRowQuery} from "./predicate";
+import {AfterSelectClause, BeforeSelectClause, OneSelectItemQuery, OneRowQuery, isOneRowQuery, ZeroOrOneRowQuery} from "./predicate";
 import {ExprSelectItemUtil} from "../../expr-select-item";
 import {ColumnMap, ColumnMapUtil} from "../../column-map";
 import {SEPARATOR} from "../../constants";
@@ -328,6 +328,39 @@ export function queryTree_As (query : AfterSelectClause) : QueryTree {
         //No UNION-related clauses
         return Parentheses.Create([
             queryTreeSelects_As(query),
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+        ]);
+    }
+}
+export function queryTree_SelectStar (query : BeforeSelectClause) : QueryTree {
+    if (
+        query._unions != undefined ||
+        query._unionOrders != undefined ||
+        query._unionLimit != undefined
+    ) {
+        return Parentheses.Create([
+            "(",
+            "SELECT *",
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+            ")",
+            queryTreeUnion(query),
+            queryTreeUnionOrderBy(query),
+            queryTreeUnionLimit(query),
+        ]);
+    } else {
+        //No UNION-related clauses
+        return Parentheses.Create([
+            "SELECT *",
             queryTreeFrom(query),
             queryTreeWhere(query),
             queryTreeGroupBy(query),

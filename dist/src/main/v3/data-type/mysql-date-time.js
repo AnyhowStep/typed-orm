@@ -216,32 +216,29 @@ class MySqlDateTime {
     }
 }
 exports.MySqlDateTime = MySqlDateTime;
-function dateTime() {
-    return sd.or(sd.instanceOf(MySqlDateTime), sd.chain(sd.string(), (name, str) => {
-        try {
-            const result = new MySqlDateTime(str);
-            return result;
-        }
-        catch (err) {
-            throw new Error(`Could not parse ${name}: ${err.message}`);
-        }
-    }), sd.chain(sd.string(), sd.dateTime(), (name, jsDate) => {
-        try {
-            const result = MySqlDateTime.FromJsDate(jsDate);
-            return result;
-        }
-        catch (err) {
-            throw new Error(`Could not convert jsDate ${name}: ${err.message}`);
-        }
-    }), sd.chain(sd.validDate(), (name, jsDate) => {
-        try {
-            const result = MySqlDateTime.FromJsDate(jsDate);
-            return result;
-        }
-        catch (err) {
-            throw new Error(`Could not convert jsDate ${name}: ${err.message}`);
-        }
-    }));
-}
-exports.dateTime = dateTime;
+exports.dateTime = sd.or(sd.instanceOf(MySqlDateTime), sd.chain(sd.string(), (name, str) => {
+    try {
+        const result = new MySqlDateTime(str);
+        return result;
+    }
+    catch (err) {
+        throw new Error(`Could not parse ${name}: ${err.message}`);
+    }
+}), sd.chain(sd.string(), sd.dateTime(), (name, jsDate) => {
+    try {
+        const result = MySqlDateTime.FromJsDate(jsDate);
+        return result;
+    }
+    catch (err) {
+        throw new Error(`Could not convert jsDate ${name}: ${err.message}`);
+    }
+}), sd.chain(sd.validDate(), (name, jsDate) => {
+    try {
+        const result = MySqlDateTime.FromJsDate(jsDate);
+        return result;
+    }
+    catch (err) {
+        throw new Error(`Could not convert jsDate ${name}: ${err.message}`);
+    }
+}));
 //# sourceMappingURL=mysql-date-time.js.map

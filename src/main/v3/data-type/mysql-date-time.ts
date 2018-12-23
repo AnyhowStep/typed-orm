@@ -285,42 +285,40 @@ export class MySqlDateTime {
     }
 }
 
-export function dateTime () {
-    return sd.or(
-        sd.instanceOf(MySqlDateTime),
-        sd.chain(
-            sd.string(),
-            (name : string, str : string) => {
-                try {
-                    const result = new MySqlDateTime(str);
-                    return result;
-                } catch (err) {
-                    throw new Error(`Could not parse ${name}: ${err.message}`);
-                }
+export const dateTime = sd.or(
+    sd.instanceOf(MySqlDateTime),
+    sd.chain(
+        sd.string(),
+        (name : string, str : string) => {
+            try {
+                const result = new MySqlDateTime(str);
+                return result;
+            } catch (err) {
+                throw new Error(`Could not parse ${name}: ${err.message}`);
             }
-        ),
-        sd.chain(
-            sd.string(),
-            sd.dateTime(),
-            (name : string, jsDate : Date) => {
-                try {
-                    const result = MySqlDateTime.FromJsDate(jsDate);
-                    return result;
-                } catch (err) {
-                    throw new Error(`Could not convert jsDate ${name}: ${err.message}`);
-                }
+        }
+    ),
+    sd.chain(
+        sd.string(),
+        sd.dateTime(),
+        (name : string, jsDate : Date) => {
+            try {
+                const result = MySqlDateTime.FromJsDate(jsDate);
+                return result;
+            } catch (err) {
+                throw new Error(`Could not convert jsDate ${name}: ${err.message}`);
             }
-        ),
-        sd.chain(
-            sd.validDate(),
-            (name : string, jsDate : Date) => {
-                try {
-                    const result = MySqlDateTime.FromJsDate(jsDate);
-                    return result;
-                } catch (err) {
-                    throw new Error(`Could not convert jsDate ${name}: ${err.message}`);
-                }
+        }
+    ),
+    sd.chain(
+        sd.validDate(),
+        (name : string, jsDate : Date) => {
+            try {
+                const result = MySqlDateTime.FromJsDate(jsDate);
+                return result;
+            } catch (err) {
+                throw new Error(`Could not convert jsDate ${name}: ${err.message}`);
             }
-        )
-    );
-}
+        }
+    )
+);

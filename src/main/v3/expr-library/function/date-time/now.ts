@@ -1,15 +1,15 @@
 import * as sd from "schema-decorator";
 import {Expr} from "../../../expr";
-import {dateTime} from "../../../data-type";
+import {dateTime, MySqlDateTime} from "../../../data-type";
 
 const nowArr : Expr<{
     usedRef : {},
-    assertDelegate : ReturnType<typeof dateTime>
+    assertDelegate : sd.AssertDelegate<MySqlDateTime>
 }>[] = [
     new Expr(
         {
             usedRef : {},
-            assertDelegate : dateTime(),
+            assertDelegate : dateTime,
         },
         "NOW()"
     ),
@@ -18,7 +18,7 @@ for (let i=1; i<=6; ++i) {
     nowArr.push(new Expr(
         {
             usedRef : {},
-            assertDelegate : dateTime(),
+            assertDelegate : dateTime,
         },
         `NOW(${i})`
     ));

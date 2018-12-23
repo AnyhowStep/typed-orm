@@ -6,13 +6,13 @@ const data_type_1 = require("../../../data-type");
 const nowArr = [
     new expr_1.Expr({
         usedRef: {},
-        assertDelegate: data_type_1.dateTime(),
+        assertDelegate: data_type_1.dateTime,
     }, "NOW()"),
 ];
 for (let i = 1; i <= 6; ++i) {
     nowArr.push(new expr_1.Expr({
         usedRef: {},
-        assertDelegate: data_type_1.dateTime(),
+        assertDelegate: data_type_1.dateTime,
     }, `NOW(${i})`));
 }
 /*

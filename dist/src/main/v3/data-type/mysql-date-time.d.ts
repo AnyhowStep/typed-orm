@@ -17,7 +17,7 @@ export declare class MySqlDateTime {
     toJSON(): string;
     static FromJsDate(jsDate: Date): MySqlDateTime;
 }
-export declare function dateTime(): sd.AssertDelegate<MySqlDateTime> & {
+export declare const dateTime: sd.AssertDelegate<MySqlDateTime> & {
     __accepts: string | Date | MySqlDateTime;
     __canAccept: string | Date | MySqlDateTime;
 };

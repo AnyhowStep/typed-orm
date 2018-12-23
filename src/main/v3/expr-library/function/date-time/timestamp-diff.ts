@@ -42,5 +42,5 @@ export function timestampDiff<
             ]
         )
     );
-    return result as any;
+    return result;
 }

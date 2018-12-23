@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import { IQuery } from "../query";
 import { QueryTreeArray, QueryTree } from "../../query-tree";
-import { AfterSelectClause, OneSelectItemQuery, OneRowQuery, ZeroOrOneRowQuery } from "./predicate";
+import { AfterSelectClause, BeforeSelectClause, OneSelectItemQuery, OneRowQuery, ZeroOrOneRowQuery } from "./predicate";
 import { SelectItemUtil } from "../../select-item";
 export declare function queryTreeSelects(query: AfterSelectClause): QueryTreeArray;
 export declare function queryTreeSelects_RawExpr(query: OneSelectItemQuery<any>): QueryTreeArray;
@@ -15,6 +15,7 @@ export declare function queryTreeOrderBy(query: IQuery): QueryTreeArray;
 export declare function queryTreeLimit(query: IQuery): QueryTreeArray;
 export declare function queryTree_RawExpr(query: OneSelectItemQuery<any>): QueryTreeArray;
 export declare function queryTree_As(query: AfterSelectClause): QueryTree;
+export declare function queryTree_SelectStar(query: BeforeSelectClause): QueryTree;
 export declare function queryTree(query: AfterSelectClause): QueryTreeArray;
 export declare function queryTreeUnion(query: IQuery): QueryTreeArray;
 export declare function queryTreeUnionOrderBy(query: IQuery): QueryTreeArray;

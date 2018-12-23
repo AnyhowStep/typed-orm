@@ -14,7 +14,7 @@ export declare class MySqlTime {
     toJSON(): string;
     static FromJsDate(jsDate: Date): MySqlTime;
 }
-export declare function time(): sd.AssertDelegate<MySqlTime> & {
+export declare const time: sd.AssertDelegate<MySqlTime> & {
     __accepts: string | Date | MySqlTime;
     __canAccept: string | Date | MySqlTime;
 };

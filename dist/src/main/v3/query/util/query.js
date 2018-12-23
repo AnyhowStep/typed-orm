@@ -353,6 +353,39 @@ function queryTree_As(query) {
     }
 }
 exports.queryTree_As = queryTree_As;
+function queryTree_SelectStar(query) {
+    if (query._unions != undefined ||
+        query._unionOrders != undefined ||
+        query._unionLimit != undefined) {
+        return query_tree_1.Parentheses.Create([
+            "(",
+            "SELECT *",
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+            ")",
+            queryTreeUnion(query),
+            queryTreeUnionOrderBy(query),
+            queryTreeUnionLimit(query),
+        ]);
+    }
+    else {
+        //No UNION-related clauses
+        return query_tree_1.Parentheses.Create([
+            "SELECT *",
+            queryTreeFrom(query),
+            queryTreeWhere(query),
+            queryTreeGroupBy(query),
+            queryTreeHaving(query),
+            queryTreeOrderBy(query),
+            queryTreeLimit(query),
+        ]);
+    }
+}
+exports.queryTree_SelectStar = queryTree_SelectStar;
 function queryTree(query) {
     if (query._unions != undefined ||
         query._unionOrders != undefined ||

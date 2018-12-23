@@ -10,4 +10,5 @@ __export(require("./control-flow"));
 __export(require("./date-time"));
 __export(require("./math"));
 __export(require("./string"));
+__export(require("./sub-query"));
 //# sourceMappingURL=index.js.map

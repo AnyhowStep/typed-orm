@@ -42,5 +42,5 @@ export function timestampAdd<
             ]
         )
     );
-    return result as any;
+    return result;
 }

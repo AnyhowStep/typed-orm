@@ -6,10 +6,7 @@ export declare const selectItem: o.IAliasedTable<{
         readonly now: o.Column<{
             readonly tableAlias: "test";
             readonly name: "now";
-            readonly assertDelegate: import("schema-decorator").AssertDelegate<o.MySqlDateTime> & {
-                __accepts: string | Date | o.MySqlDateTime;
-                __canAccept: string | Date | o.MySqlDateTime;
-            };
+            readonly assertDelegate: import("schema-decorator").AssertDelegate<o.MySqlDateTime>;
         }>;
     };
 }> & {
@@ -28,10 +25,7 @@ export declare const query: o.Query<{
             readonly now: o.Column<{
                 readonly tableAlias: "test";
                 readonly name: "now";
-                readonly assertDelegate: import("schema-decorator").AssertDelegate<o.MySqlDateTime> & {
-                    __accepts: string | Date | o.MySqlDateTime;
-                    __canAccept: string | Date | o.MySqlDateTime;
-                };
+                readonly assertDelegate: import("schema-decorator").AssertDelegate<o.MySqlDateTime>;
             }>;
         };
     }> & {
