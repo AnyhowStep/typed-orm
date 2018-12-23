@@ -1,0 +1,62 @@
+import * as sd from "schema-decorator";
+import * as tape from "tape";
+import * as o from "../../../../dist/src/main";
+import * as fs from "fs";
+
+const merchant = o.table(
+    "merchant",
+    {
+        appId : o.bigint,
+        merchantId : o.bigint,
+        businessId : o.bigint,
+        payOutMethodId : o.bigint,
+        platformId : o.bigint,
+        createdAt : o.dateTime,
+    }
+)
+    .setAutoIncrement(c => c.merchantId)
+    .setHasExplicitDefaultValue(c => [
+        c.createdAt
+    ])
+    .setImmutable();
+const merchantLock = o.table(
+    "merchantLock",
+    {
+        merchantId : o.bigint,
+        timeoutAt : o.dateTime
+    }
+);
+
+function secondsTillTimeout<
+    LockTableT extends o.AliasedTableUtil.ToInterface<
+        o.TableUtil.FromAssertMap<
+            LockTableT["alias"],
+            {
+                "timeoutAt" : typeof o.dateTime
+            }
+        >
+    >
+> (table : LockTableT) {
+    return o.timestampDiff(
+        o.TemporalUnit.SECOND,
+        o.now(),
+        table.columns.timeoutAt
+    ).as("secondsTillTimeout");
+}
+const x = secondsTillTimeout(merchantLock);
+function lockIsLocked<
+    LockTableT extends o.AliasedTableUtil.ToInterface<
+        o.TableUtil.FromAssertMap<
+            LockTableT["alias"],
+            {
+                "timeoutAt" : typeof o.dateTime
+            }
+        >
+    >
+> (table : LockTableT) {
+    return o.gt(
+        secondsTillTimeout(table),
+        0n
+    ).as("lockIsLocked");
+}
+const y = lockIsLocked(merchantLock);

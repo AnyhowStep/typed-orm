@@ -6,11 +6,6 @@
 + Implement subqueries.
 
 + Implement replaceTable()
-  + Implement `IAliasedTable` .as()
-    + Implement `Table` .as()
-    + Implement `AliasedQuery` .as()
-    + Unify them
-      + This means `IAliasedTable` will need a `queryTree` field like `IExpr`
 
 + Implement `Query.transform()`
 + Implement type-narrowing `WHERE` expressions

@@ -3,8 +3,8 @@ import {Table, ITable} from "./table";
 import {Tuple} from "../tuple";
 import {ColumnMapUtil} from "../column-map";
 import {FieldArrayUtil} from "../field-array";
-import {AssertMap, AssertMapUtil} from "../assert-map";
-import {tableFromAssertMap} from "./from-assert-map";
+import {AssertMap} from "../assert-map";
+import {FromAssertMap, fromAssertMap} from "./util";
 import {tableFromFieldTuple} from "./from-field-tuple";
 import {tableFromTable} from "./from-table";
 
@@ -15,22 +15,7 @@ export function table<
     name : NameT,
     assertMap : AssertMapT
 ) : (
-    Table<{
-        readonly usedRef : {};
-        readonly alias : NameT;
-        readonly columns : ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
-
-        readonly autoIncrement : undefined;
-        readonly generated : [];
-        readonly isNullable : AssertMapUtil.NullableNameUnion<AssertMapT>[];
-        readonly hasExplicitDefaultValue : [];
-        readonly mutable : Extract<keyof AssertMapT, string>[];
-        readonly id : undefined;
-        readonly candidateKeys : [];
-        readonly parents : [];
-        readonly insertAllowed : true;
-        readonly deleteAllowed : true;
-    }>
+    FromAssertMap<NameT, AssertMapT>
 );
 export function table<
     NameT extends string,
@@ -84,6 +69,6 @@ export function table (arg0 : any, arg1? : any) {
     if (arg1 instanceof Array) {
         return tableFromFieldTuple(arg0, arg1 as any);
     } else {
-        return tableFromAssertMap(arg0, arg1);
+        return fromAssertMap(arg0, arg1);
     }
 }

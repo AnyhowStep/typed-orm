@@ -3,22 +3,9 @@ import { Table, ITable } from "./table";
 import { Tuple } from "../tuple";
 import { ColumnMapUtil } from "../column-map";
 import { FieldArrayUtil } from "../field-array";
-import { AssertMap, AssertMapUtil } from "../assert-map";
-export declare function table<NameT extends string, AssertMapT extends AssertMap>(name: NameT, assertMap: AssertMapT): (Table<{
-    readonly usedRef: {};
-    readonly alias: NameT;
-    readonly columns: ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
-    readonly autoIncrement: undefined;
-    readonly generated: [];
-    readonly isNullable: AssertMapUtil.NullableNameUnion<AssertMapT>[];
-    readonly hasExplicitDefaultValue: [];
-    readonly mutable: Extract<keyof AssertMapT, string>[];
-    readonly id: undefined;
-    readonly candidateKeys: [];
-    readonly parents: [];
-    readonly insertAllowed: true;
-    readonly deleteAllowed: true;
-}>);
+import { AssertMap } from "../assert-map";
+import { FromAssertMap } from "./util";
+export declare function table<NameT extends string, AssertMapT extends AssertMap>(name: NameT, assertMap: AssertMapT): (FromAssertMap<NameT, AssertMapT>);
 export declare function table<NameT extends string, FieldsT extends Tuple<sd.AnyField>>(name: NameT, fields: FieldsT): (Table<{
     readonly usedRef: {};
     readonly alias: NameT;

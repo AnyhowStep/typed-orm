@@ -141,3 +141,11 @@ export function toNullable<ColumnMapT extends ColumnMap> (
     }
     return result as ToNullable<ColumnMapT>;
 }
+
+export type ToInterface<MapT extends ColumnMap> = (
+    {
+        readonly [columnName in keyof MapT] : (
+            ColumnUtil.ToInterface<MapT[columnName]>
+        )
+    }
+);

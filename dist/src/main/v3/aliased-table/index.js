@@ -4,4 +4,6 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./aliased-table"));
+const AliasedTableUtil = require("./util");
+exports.AliasedTableUtil = AliasedTableUtil;
 //# sourceMappingURL=index.js.map

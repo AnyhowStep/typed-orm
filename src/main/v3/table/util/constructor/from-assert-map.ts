@@ -1,15 +1,12 @@
-import {Table} from "./table";
-import {ColumnMapUtil} from "../column-map";
-import {AssertMap, AssertMapUtil} from "../assert-map";
+import {Table} from "../../table";
+import {ColumnMapUtil} from "../../../column-map";
+import {AssertMap, AssertMapUtil} from "../../../assert-map";
 import {escapeId} from "mysql";
 
-export function tableFromAssertMap<
+export type FromAssertMap<
     NameT extends string,
     AssertMapT extends AssertMap
-> (
-    name : NameT,
-    assertMap : AssertMapT
-) : (
+> = (
     Table<{
         readonly usedRef : {};
         readonly alias : NameT;
@@ -26,6 +23,15 @@ export function tableFromAssertMap<
         readonly insertAllowed : true;
         readonly deleteAllowed : true;
     }>
+);
+export function fromAssertMap<
+    NameT extends string,
+    AssertMapT extends AssertMap
+> (
+    name : NameT,
+    assertMap : AssertMapT
+) : (
+    FromAssertMap<NameT, AssertMapT>
 ) {
     /*
         In general, this should be fine.

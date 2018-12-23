@@ -1,7 +1,7 @@
-import { Table } from "./table";
-import { ColumnMapUtil } from "../column-map";
-import { AssertMap, AssertMapUtil } from "../assert-map";
-export declare function tableFromAssertMap<NameT extends string, AssertMapT extends AssertMap>(name: NameT, assertMap: AssertMapT): (Table<{
+import { Table } from "../../table";
+import { ColumnMapUtil } from "../../../column-map";
+import { AssertMap, AssertMapUtil } from "../../../assert-map";
+export declare type FromAssertMap<NameT extends string, AssertMapT extends AssertMap> = (Table<{
     readonly usedRef: {};
     readonly alias: NameT;
     readonly columns: ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
@@ -16,4 +16,5 @@ export declare function tableFromAssertMap<NameT extends string, AssertMapT exte
     readonly insertAllowed: true;
     readonly deleteAllowed: true;
 }>);
+export declare function fromAssertMap<NameT extends string, AssertMapT extends AssertMap>(name: NameT, assertMap: AssertMapT): (FromAssertMap<NameT, AssertMapT>);
 //# sourceMappingURL=from-assert-map.d.ts.map

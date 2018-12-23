@@ -604,4 +604,12 @@ export namespace ColumnRefUtil {
         false :
         true
     );
+
+    export type ToInterface<RefT extends ColumnRef> = (
+        {
+            readonly [tableAlias in keyof RefT] : (
+                ColumnMapUtil.ToInterface<RefT[tableAlias]>
+            )
+        }
+    );
 }

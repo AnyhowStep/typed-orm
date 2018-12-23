@@ -5,4 +5,6 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./instantiate"));
 __export(require("./table"));
+const TableUtil = require("./util");
+exports.TableUtil = TableUtil;
 //# sourceMappingURL=index.js.map

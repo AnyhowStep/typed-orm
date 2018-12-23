@@ -21,4 +21,7 @@ export declare type ToNullable<ColumnMapT extends ColumnMap> = ({
     readonly [columnName in keyof ColumnMapT]: (ColumnUtil.ToNullable<ColumnMapT[columnName]>);
 });
 export declare function toNullable<ColumnMapT extends ColumnMap>(columnMap: ColumnMapT): ToNullable<ColumnMapT>;
+export declare type ToInterface<MapT extends ColumnMap> = ({
+    readonly [columnName in keyof MapT]: (ColumnUtil.ToInterface<MapT[columnName]>);
+});
 //# sourceMappingURL=operation.d.ts.map
