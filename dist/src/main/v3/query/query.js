@@ -44,7 +44,7 @@ class Query {
         return QueryUtil.innerJoinOne(this, table, fromDelegate, toDelegate);
     }
     innerJoinOneUsing(table, usingDelegate) {
-        return QueryUtil.innerJoinUsing(this, table, usingDelegate);
+        return QueryUtil.innerJoinOneUsing(this, table, usingDelegate);
     }
     select(delegate) {
         return QueryUtil.select(this, delegate);

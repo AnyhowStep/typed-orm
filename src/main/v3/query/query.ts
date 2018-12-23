@@ -497,7 +497,7 @@ export class Query<DataT extends QueryData> {
             TableT
         >
     ) {
-        return QueryUtil.innerJoinUsing<
+        return QueryUtil.innerJoinOneUsing<
             Extract<this, QueryUtil.AfterFromClause>,
             TableT,
             UsingDelegateT
