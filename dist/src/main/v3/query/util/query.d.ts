@@ -1,6 +1,8 @@
+import * as sd from "schema-decorator";
 import { IQuery } from "../query";
 import { QueryTreeArray } from "../../query-tree";
-import { AfterSelectClause, OneSelectItemQuery } from "./predicate";
+import { AfterSelectClause, OneSelectItemQuery, OneRowQuery, ZeroOrOneRowQuery } from "./predicate";
+import { SelectItemUtil } from "../../select-item";
 export declare function queryTreeSelects(query: AfterSelectClause): QueryTreeArray;
 export declare function queryTreeSelects_RawExpr(query: OneSelectItemQuery<any>): QueryTreeArray;
 export declare function queryTreeSelects_As(query: AfterSelectClause): QueryTreeArray;
@@ -17,4 +19,7 @@ export declare function queryTree(query: AfterSelectClause): QueryTreeArray;
 export declare function queryTreeUnion(query: IQuery): QueryTreeArray;
 export declare function queryTreeUnionOrderBy(query: IQuery): QueryTreeArray;
 export declare function queryTreeUnionLimit(query: IQuery): QueryTreeArray;
+export declare type TypeOf<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> = (QueryT extends OneRowQuery ? SelectItemUtil.TypeOf<QueryT["_selects"][0]> : null | SelectItemUtil.TypeOf<QueryT["_selects"][0]>);
+export declare type AssertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> = (sd.AssertDelegate<TypeOf<QueryT>>);
+export declare function assertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery>(rawExpr: QueryT): AssertDelegate<QueryT>;
 //# sourceMappingURL=query.d.ts.map

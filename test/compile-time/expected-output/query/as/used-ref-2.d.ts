@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
-export declare const aliased: o.AliasedTable<{
+export declare const aliased: o.IAliasedTable<{
     usedRef: {
         readonly parent: {
             readonly a: o.Column<{

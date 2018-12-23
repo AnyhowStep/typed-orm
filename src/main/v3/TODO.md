@@ -8,7 +8,6 @@
 + Implement `AliasedQuery`
   + Can extend `IExpr` if selecting a single column.
     + Type is always nullable
-  + Will extend `IAliasedTable` to enable joining to a subquery.
 
 + Implement replaceTable()
   + Implement `IAliasedTable` .as()
@@ -23,7 +22,6 @@
   + andWhereIsNotNull
   + andWhereIsEqual
 + Implement `Query.useJoins()`
-+ Implement `requireParentJoins()`
 + Implement `Query.flatten()`
   + It'll be a convenience method for,
   ```ts
@@ -41,50 +39,15 @@
   })
   ```
 
-```ts
-/*
-  This should not be allowed unless
-  `tentativeContributorNegotiation`
-  is in the parent joins of the outer query
-*/
-from(t.tentativeContribution)
-  .joinUsing(
-    from(t.tentativeContribution)
-      .groupBy(c => [
-        c.appId,
-        c.tentativeContributorNegotiationId,
-        c.invoiceId,
-        c.externalUserId
-      ])
-      .select(c => [
-        c.tentativeContributorNegotiationId,
-        c.invoiceId,
-        c.externalUserId,
-        o.max(c.updatedAt).as("updatedAt"),
-      ])
-      //This is important
-      .requireParentJoins(t.tentativeContributorNegotiation)
-      .where(c => o.eq(
-        c.tentativeContribution.tentativeContributorNegotiationId,
-        c.tentativeContributorNegotiation.tentativeContributorNegotiationId
-      ))
-      .as("latests"),
-    c => [
-      c.tentativeContributorNegotiationId,
-      c.invoiceId,
-      c.externalUserId,
-      c.updatedAt
-    ]
-  )
-```
 
++ Let `IExprSelectItem` be a `RawExpr`
 ```ts
 TODO Implement a "defaultAlias" for expressions.
 This way, we can just write,
 function isConfirmed () {
     o.exists(
         //snip
-    ).defaultAlias("isConfirmed")
+    ).as("isConfirmed")
 }
 //Snip
 .selectExpr(

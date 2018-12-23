@@ -1,8 +1,9 @@
+import * as sd from "schema-decorator";
 import {IQuery} from "../query";
 import {QueryTreeArray, QueryTree, Parentheses} from "../../query-tree";
 import {AliasedTable} from "../../aliased-table";
 import {IColumn, ColumnUtil} from "../../column";
-import {AfterSelectClause, OneSelectItemQuery} from "./predicate";
+import {AfterSelectClause, OneSelectItemQuery, OneRowQuery, isOneRowQuery, ZeroOrOneRowQuery} from "./predicate";
 import {ExprSelectItemUtil} from "../../expr-select-item";
 import {ColumnMap, ColumnMapUtil} from "../../column-map";
 import {SEPARATOR} from "../../constants";
@@ -11,6 +12,7 @@ import {ColumnIdentifierRefUtil} from "../../column-identifier-ref";
 import {ExprUtil} from "../../expr";
 import {RawExprUtil} from "../../raw-expr";
 import {ColumnRef, ColumnRefUtil} from "../../column-ref";
+import {SelectItemUtil} from "../../select-item";
 
 function queryTreeSelectItem_Column (column : IColumn) : QueryTreeArray {
     const result : QueryTreeArray = [];
@@ -437,5 +439,23 @@ export function queryTreeUnionLimit (query : IQuery) : QueryTreeArray {
             "LIMIT", RawExprUtil.queryTree(limit.maxRowCount),
             "OFFSET", RawExprUtil.queryTree(limit.offset),
         ];
+    }
+}
+
+export type TypeOf<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> = (
+    QueryT extends OneRowQuery ?
+    SelectItemUtil.TypeOf<QueryT["_selects"][0]> :
+    null|SelectItemUtil.TypeOf<QueryT["_selects"][0]>
+);
+export type AssertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> = (
+    sd.AssertDelegate<TypeOf<QueryT>>
+);
+export function assertDelegate<
+    QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery
+> (rawExpr : QueryT) : AssertDelegate<QueryT> {
+    if (isOneRowQuery(rawExpr)) {
+        return rawExpr._selects[0].assertDelegate as any;
+    } else {
+        return sd.nullable(rawExpr._selects[0].assertDelegate) as any;
     }
 }

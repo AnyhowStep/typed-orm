@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const sd = require("schema-decorator");
 const query_tree_1 = require("../../query-tree");
 const aliased_table_1 = require("../../aliased-table");
 const column_1 = require("../../column");
+const predicate_1 = require("./predicate");
 const expr_select_item_1 = require("../../expr-select-item");
 const column_map_1 = require("../../column-map");
 const constants_1 = require("../../constants");
@@ -456,4 +458,13 @@ function queryTreeUnionLimit(query) {
     }
 }
 exports.queryTreeUnionLimit = queryTreeUnionLimit;
+function assertDelegate(rawExpr) {
+    if (predicate_1.isOneRowQuery(rawExpr)) {
+        return rawExpr._selects[0].assertDelegate;
+    }
+    else {
+        return sd.nullable(rawExpr._selects[0].assertDelegate);
+    }
+}
+exports.assertDelegate = assertDelegate;
 //# sourceMappingURL=query.js.map

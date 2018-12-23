@@ -9,9 +9,8 @@ import {QueryTree} from "./query-tree";
 import {Tuple} from "./tuple";
 import {ColumnRef} from "./column-ref";
 import {OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery} from "./query/util";
-import { IQuery, QueryUtil } from "./query";
-import { IJoin } from "./join";
-import {SelectItemUtil} from "./select-item";
+import {IQuery, QueryUtil} from "./query";
+import {IJoin} from "./join";
 import {MySqlDateTime, dateTime, MySqlDate, MySqlTime, date, time} from "./data-type";
 import * as dataType from "./data-type";
 
@@ -122,12 +121,8 @@ export namespace RawExprUtil {
         ReturnType<RawExprT["assertDelegate"]> :
         RawExprT extends IColumn ?
         ReturnType<RawExprT["assertDelegate"]> :
-        RawExprT extends OneSelectItemQuery<any> ?
-        (
-            RawExprT extends OneRowQuery ?
-            SelectItemUtil.TypeOf<RawExprT["_selects"][0]> :
-            null|SelectItemUtil.TypeOf<RawExprT["_selects"][0]>
-        ) :
+        RawExprT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery ?
+        QueryUtil.TypeOf<RawExprT> :
         RawExprT extends TableSubquery.SingleValueOrEmpty<any> ?
         TableSubquery.TypeOf<RawExprT> :
         never
@@ -205,12 +200,12 @@ export namespace RawExprUtil {
             return rawExpr.assertDelegate as any;
         }
 
-        if (QueryUtil.isQuery(rawExpr) && QueryUtil.isOneSelectItemQuery(rawExpr)) {
-            if (QueryUtil.isOneRowQuery(rawExpr)) {
-                return rawExpr._selects[0].assertDelegate as any;
-            } else {
-                return sd.nullable(rawExpr._selects[0].assertDelegate) as any;
-            }
+        if (
+            QueryUtil.isQuery(rawExpr) &&
+            QueryUtil.isOneSelectItemQuery(rawExpr) &&
+            QueryUtil.isZeroOrOneRowQuery(rawExpr)
+        ) {
+            return QueryUtil.assertDelegate(rawExpr) as any;
         }
 
         if (TableSubquery.isSingleValueOrEmpty(rawExpr)) {

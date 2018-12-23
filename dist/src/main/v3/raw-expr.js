@@ -107,13 +107,10 @@ var RawExprUtil;
         if (column_1.ColumnUtil.isColumn(rawExpr)) {
             return rawExpr.assertDelegate;
         }
-        if (query_1.QueryUtil.isQuery(rawExpr) && query_1.QueryUtil.isOneSelectItemQuery(rawExpr)) {
-            if (query_1.QueryUtil.isOneRowQuery(rawExpr)) {
-                return rawExpr._selects[0].assertDelegate;
-            }
-            else {
-                return sd.nullable(rawExpr._selects[0].assertDelegate);
-            }
+        if (query_1.QueryUtil.isQuery(rawExpr) &&
+            query_1.QueryUtil.isOneSelectItemQuery(rawExpr) &&
+            query_1.QueryUtil.isZeroOrOneRowQuery(rawExpr)) {
+            return query_1.QueryUtil.assertDelegate(rawExpr);
         }
         if (table_subquery_1.TableSubquery.isSingleValueOrEmpty(rawExpr)) {
             return table_subquery_1.TableSubquery.assertDelegate(rawExpr);

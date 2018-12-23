@@ -72,7 +72,7 @@ export declare const query: o.Query<{
         };
         nullable: false;
     }> | o.Join<{
-        aliasedTable: o.AliasedTable<{
+        aliasedTable: o.IAliasedTable<{
             usedRef: {};
             alias: "subQuery";
             columns: {

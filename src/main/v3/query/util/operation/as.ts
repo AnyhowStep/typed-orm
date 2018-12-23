@@ -1,11 +1,12 @@
-import {AfterSelectClause} from "../predicate";
-import {AliasedTable} from "../../../aliased-table";
+import {AfterSelectClause, OneSelectItemQuery, isOneSelectItemQuery, ZeroOrOneRowQuery, isZeroOrOneRowQuery} from "../predicate";
+import {IAliasedTable, AliasedTable} from "../../../aliased-table";
 import {IJoin} from "../../../join";
 import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnMapUtil} from "../../../column-map";
 import {SelectItemArrayUtil} from "../../../select-item-array";
-import {queryTree_As} from "../query";
+import {queryTree_As, AssertDelegate, assertDelegate} from "../query";
 import {SelectItem} from "../../../select-item";
+import {ALIASED} from "../../../constants";
 
 /*
     If IQuery is a RawExpr, then the result is,
@@ -21,22 +22,6 @@ import {SelectItem} from "../../../select-item";
 
     If IQuery is not a RawExpr, then the result is
     IAlasedTable
-
-    -----
-
-    The query.as() operation is useful for joining
-    to sub queries.
-
-    To alias, no duplicate column names are allowed
-    in the query.
-
-    Selecting `table--x` and `other--x` is not allowed
-    to alias the query.
-
-    -----
-
-    TODO IAliasedTable MUST have a usedRef and JOIN
-    operations must check for compatible usedRef
 */
 /*
     IExprSelectItem
@@ -65,7 +50,7 @@ export type As<
     },
     AliasT extends string
 > = (
-    AliasedTable<{
+    IAliasedTable<{
         usedRef : (
             QueryT["_parentJoins"] extends IJoin[] ?
             ColumnRefUtil.FromJoinArray<QueryT["_parentJoins"]> :
@@ -76,7 +61,16 @@ export type As<
             QueryT["_selects"],
             AliasT
         >,
-    }>
+    }> &
+    (
+        QueryT extends (OneSelectItemQuery<any> & ZeroOrOneRowQuery) ?
+        //Should satisfy both IAliasedTable and IExprSelectItem after this
+        {
+            assertDelegate : AssertDelegate<QueryT>,
+            tableAlias : typeof ALIASED,
+        } :
+        unknown
+    )
 );
 
 export type AssertAliasableQuery<
@@ -102,7 +96,7 @@ export function as<
     alias : AliasT
 ) : As<QueryT, AliasT> {
     SelectItemArrayUtil.assertNoDuplicateColumnName(query._selects);
-    return new AliasedTable(
+    const aliasedTable = new AliasedTable(
         {
             usedRef : (
                 query._parentJoins == undefined ?
@@ -115,5 +109,14 @@ export function as<
         {
             unaliasedQuery : queryTree_As(query),
         }
-    ) as any;
+    );
+
+    if (isOneSelectItemQuery(query) && isZeroOrOneRowQuery(query)) {
+        //Should satisfy IAliasedTable and IExprSelectItem after this
+        (aliasedTable as any).assertDelegate = assertDelegate(query);
+        (aliasedTable as any).tableAlias = ALIASED;
+        return aliasedTable as any;
+    } else {
+        return aliasedTable as any;
+    }
 }

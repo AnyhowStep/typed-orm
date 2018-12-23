@@ -8,14 +8,13 @@ import { QueryTree } from "./query-tree";
 import { Tuple } from "./tuple";
 import { ColumnRef } from "./column-ref";
 import { OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery } from "./query/util";
-import { IQuery } from "./query";
+import { IQuery, QueryUtil } from "./query";
 import { IJoin } from "./join";
-import { SelectItemUtil } from "./select-item";
 export declare type RawExpr<TypeT> = ((TypeT extends PrimitiveExpr ? TypeT : never) | IAnonymousTypedExpr<TypeT> | IAnonymousTypedColumn<TypeT> | (null extends TypeT ? (OneSelectItemQuery<TypeT> & ZeroOrOneRowQuery) : (OneSelectItemQuery<TypeT> & OneRowQuery)) | (null extends TypeT ? TableSubquery.SingleValueOrEmpty<TypeT> : TableSubquery.SingleValue<TypeT>));
 export declare namespace RawExprUtil {
     type UsedRef<RawExprT extends RawExpr<any>> = (RawExprT extends PrimitiveExpr ? {} : RawExprT extends IExpr ? RawExprT["usedRef"] : RawExprT extends IColumn ? ColumnRefUtil.FromColumn<RawExprT> : RawExprT extends IQuery ? (RawExprT["_parentJoins"] extends IJoin[] ? ColumnRefUtil.FromJoinArray<Extract<RawExprT["_parentJoins"], IJoin[]>> : {}) : RawExprT extends TableSubquery.SingleValueOrEmpty<any> ? {} : never);
     function usedRef<RawExprT extends RawExpr<any>>(rawExpr: RawExprT): UsedRef<RawExprT>;
-    type TypeOf<RawExprT extends RawExpr<any>> = (RawExprT extends PrimitiveExpr ? RawExprT : RawExprT extends IExpr ? ReturnType<RawExprT["assertDelegate"]> : RawExprT extends IColumn ? ReturnType<RawExprT["assertDelegate"]> : RawExprT extends OneSelectItemQuery<any> ? (RawExprT extends OneRowQuery ? SelectItemUtil.TypeOf<RawExprT["_selects"][0]> : null | SelectItemUtil.TypeOf<RawExprT["_selects"][0]>) : RawExprT extends TableSubquery.SingleValueOrEmpty<any> ? TableSubquery.TypeOf<RawExprT> : never);
+    type TypeOf<RawExprT extends RawExpr<any>> = (RawExprT extends PrimitiveExpr ? RawExprT : RawExprT extends IExpr ? ReturnType<RawExprT["assertDelegate"]> : RawExprT extends IColumn ? ReturnType<RawExprT["assertDelegate"]> : RawExprT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery ? QueryUtil.TypeOf<RawExprT> : RawExprT extends TableSubquery.SingleValueOrEmpty<any> ? TableSubquery.TypeOf<RawExprT> : never);
     type AssertDelegate<RawExprT extends RawExpr<any>> = (sd.AssertDelegate<TypeOf<RawExprT>>);
     function assertDelegate<RawExprT extends RawExpr<any>>(rawExpr: RawExprT): AssertDelegate<RawExprT>;
     function queryTree(rawExpr: RawExpr<any>): QueryTree;
