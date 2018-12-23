@@ -5,10 +5,6 @@
 
 + Implement subqueries.
 
-+ Implement `AliasedQuery`
-  + Can extend `IExpr` if selecting a single column.
-    + Type is always nullable
-
 + Implement replaceTable()
   + Implement `IAliasedTable` .as()
     + Implement `Table` .as()
