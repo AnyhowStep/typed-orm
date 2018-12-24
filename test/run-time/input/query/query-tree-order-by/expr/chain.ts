@@ -35,6 +35,12 @@ tape(__filename, (t) => {
         ])
         .orderBy(c => [
             [o.eq(c.joined1.c, c.table.y), o.ASC]
+        ])
+        .orderBy(c => [
+            o.eq(c.table.x, c.joined1.a).desc()
+        ])
+        .orderBy(c => [
+            o.eq(c.joined1.c, c.table.y).asc()
         ]);
 
     const formatter = new o.SqlFormatter();

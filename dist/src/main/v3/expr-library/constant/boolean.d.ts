@@ -1,10 +1,12 @@
-declare const TRUE: import("../../expr").Expr<{
+import * as sd from "schema-decorator";
+import { Expr } from "../../expr";
+declare function getTrue(): Expr<{
     usedRef: {};
-    assertDelegate: import("schema-decorator").AssertDelegate<true>;
+    assertDelegate: sd.AssertDelegate<true>;
 }>;
-declare const FALSE: import("../../expr").Expr<{
+declare function getFalse(): Expr<{
     usedRef: {};
-    assertDelegate: import("schema-decorator").AssertDelegate<false>;
+    assertDelegate: sd.AssertDelegate<false>;
 }>;
-export { TRUE as true, FALSE as false, };
+export { getTrue as true, getFalse as false, };
 //# sourceMappingURL=boolean.d.ts.map

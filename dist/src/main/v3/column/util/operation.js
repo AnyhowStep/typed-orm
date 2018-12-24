@@ -4,6 +4,7 @@ const sd = require("schema-decorator");
 const column_1 = require("../column");
 const column_ref_1 = require("../../column-ref");
 const query_1 = require("./query");
+const order_1 = require("../../order");
 function toNullable({ tableAlias, name, assertDelegate, __subTableName, __isInSelectClause, }) {
     return new column_1.Column({
         tableAlias,
@@ -43,4 +44,16 @@ function setIsInSelectClause(column, __isInSelectClause) {
     return new column_1.Column(column, column.__subTableName, __isInSelectClause);
 }
 exports.setIsInSelectClause = setIsInSelectClause;
+function asc(column) {
+    return [column, order_1.ASC];
+}
+exports.asc = asc;
+function desc(column) {
+    return [column, order_1.DESC];
+}
+exports.desc = desc;
+function sort(column, sortDirection) {
+    return [column, sortDirection];
+}
+exports.sort = sort;
 //# sourceMappingURL=operation.js.map

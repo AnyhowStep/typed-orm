@@ -17,7 +17,11 @@ tape(__filename, (t) => {
         .orderBy(c => [
             c.x,
             [c.y, o.ASC],
-            [c.z, o.DESC]
+            [c.z, o.DESC],
+            c.y.asc(),
+            c.z.desc(),
+            c.y.sort(o.ASC),
+            c.z.sort(o.DESC)
         ]);
 
     const formatter = new o.SqlFormatter();

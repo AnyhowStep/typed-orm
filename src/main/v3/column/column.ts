@@ -1,5 +1,6 @@
 import * as sd from "schema-decorator";
 import * as ColumnUtil from "./util";
+import {SortDirection} from "../order";
 
 export interface ColumnData {
     readonly tableAlias : string;
@@ -70,6 +71,16 @@ export class Column<DataT extends ColumnData> implements IColumn<DataT> {
 
     as<AliasT extends string> (alias : AliasT) : ColumnUtil.As<this, AliasT> {
         return ColumnUtil.as(this, alias);
+    }
+
+    asc () : ColumnUtil.Asc<this> {
+        return ColumnUtil.asc(this);
+    }
+    desc () : ColumnUtil.Desc<this> {
+        return ColumnUtil.desc(this);
+    }
+    sort (sortDirection : SortDirection) : ColumnUtil.Sort<this> {
+        return ColumnUtil.sort(this, sortDirection);
     }
 }
 

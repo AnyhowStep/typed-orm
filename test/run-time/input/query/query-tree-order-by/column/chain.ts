@@ -20,6 +20,12 @@ tape(__filename, (t) => {
         ])
         .orderBy(c => [
             [c.z, o.DESC]
+        ])
+        .orderBy(c => [
+            c.y.asc()
+        ])
+        .orderBy(c => [
+            c.z.desc()
         ]);
 
     const formatter = new o.SqlFormatter();

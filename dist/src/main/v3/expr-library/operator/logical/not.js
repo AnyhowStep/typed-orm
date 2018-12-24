@@ -8,11 +8,11 @@ const constant = require("../../constant");
 function not(rawExpr) {
     if (rawExpr === true) {
         //NOT TRUE === FALSE
-        return constant.false;
+        return constant.false();
     }
     if (rawExpr === false) {
         //NOT FALSE === TRUE
-        return constant.true;
+        return constant.true();
     }
     if (expr_1.ExprUtil.isExpr(rawExpr)) {
         if (rawExpr.queryTree instanceof query_tree_1.Parentheses) {
@@ -29,11 +29,11 @@ function not(rawExpr) {
         }
         else if (rawExpr.queryTree == raw_expr_1.RawExprUtil.queryTree(true)) {
             //NOT TRUE === FALSE
-            return constant.false;
+            return constant.false();
         }
         else if (rawExpr.queryTree == raw_expr_1.RawExprUtil.queryTree(false)) {
             //NOT FALSE === TRUE
-            return constant.true;
+            return constant.true();
         }
     }
     return new expr_1.Expr({

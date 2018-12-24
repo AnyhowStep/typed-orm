@@ -2,27 +2,12 @@ import * as sd from "schema-decorator";
 import {Expr} from "../../../expr";
 import {dateTime} from "../../../data-type";
 
-const utcTimestampArr : Expr<{
-    usedRef : {},
-    assertDelegate : sd.AssertDelegate<Date>
-}>[] = [
-    new Expr(
-        {
-            usedRef : {},
-            assertDelegate : dateTime(0),
-        },
-        "UTC_TIMESTAMP()"
-    ),
-];
-for (let i=1; i<=3; ++i) {
-    utcTimestampArr.push(new Expr(
-        {
-            usedRef : {},
-            assertDelegate : dateTime(i as 1|2|3),
-        },
-        `UTC_TIMESTAMP(${i})`
-    ));
-}
+const cache : {
+    [index in 0|1|2|3]? : Expr<{
+        usedRef : {},
+        assertDelegate : sd.AssertDelegate<Date>
+    }>
+} = [undefined, undefined, undefined, undefined];
 /*
     JavaScript's `Date` class only supports up to millisecond precision.
     This is equivalent to 3 fractional seconds precision.
@@ -33,5 +18,16 @@ for (let i=1; i<=3; ++i) {
 export function utcTimestamp (fractionalSecondsPrecision : 0|1|2|3/*|4|5|6*/ = 0) {
     //Run-time check. To be safe.
     sd.literal(0, 1, 2, 3/*, 4, 5, 6*/)("fractionalSecondsPrecision", fractionalSecondsPrecision);
-    return utcTimestampArr[fractionalSecondsPrecision];
+    let cached = cache[fractionalSecondsPrecision];
+    if (cached == undefined) {
+        cached = new Expr(
+            {
+                usedRef : {},
+                assertDelegate : dateTime(fractionalSecondsPrecision),
+            },
+            `UTC_TIMESTAMP(${fractionalSecondsPrecision == 0 ? '' : fractionalSecondsPrecision})`
+        );
+        cache[fractionalSecondsPrecision] = cached;
+    }
+    return cached;
 }

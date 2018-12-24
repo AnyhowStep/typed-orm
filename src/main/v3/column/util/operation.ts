@@ -3,6 +3,7 @@ import {IColumn, Column} from "../column";
 import {IExprSelectItem} from "../../expr-select-item";
 import {ColumnRefUtil} from "../../column-ref";
 import {queryTree} from "./query";
+import {ASC, DESC, SortDirection} from "../../order";
 
 /*
     Used to implement LEFT/RIGHT JOINs.
@@ -221,3 +222,30 @@ export type ExcludeNullable<ColumnT extends IColumn> = (
     ) :
     never
 );
+
+export type Asc<ColumnT extends IColumn> = (
+    [ColumnT, typeof ASC]
+);
+export function asc<
+    ColumnT extends IColumn
+> (column : ColumnT) : Asc<ColumnT> {
+    return [column, ASC];
+}
+
+export type Desc<ColumnT extends IColumn> = (
+    [ColumnT, typeof DESC]
+);
+export function desc<
+    ColumnT extends IColumn
+> (column : ColumnT) : Desc<ColumnT> {
+    return [column, DESC];
+}
+
+export type Sort<ColumnT extends IColumn> = (
+    [ColumnT, SortDirection]
+);
+export function sort<
+    ColumnT extends IColumn
+> (column : ColumnT, sortDirection : SortDirection) : Sort<ColumnT> {
+    return [column, sortDirection];
+}

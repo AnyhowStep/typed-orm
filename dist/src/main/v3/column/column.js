@@ -27,6 +27,15 @@ class Column {
     as(alias) {
         return ColumnUtil.as(this, alias);
     }
+    asc() {
+        return ColumnUtil.asc(this);
+    }
+    desc() {
+        return ColumnUtil.desc(this);
+    }
+    sort(sortDirection) {
+        return ColumnUtil.sort(this, sortDirection);
+    }
 }
 exports.Column = Column;
 function column(tableAlias, name, assertFunc) {

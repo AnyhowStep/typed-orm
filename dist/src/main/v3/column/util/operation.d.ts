@@ -2,6 +2,7 @@ import * as sd from "schema-decorator";
 import { IColumn, Column } from "../column";
 import { IExprSelectItem } from "../../expr-select-item";
 import { ColumnRefUtil } from "../../column-ref";
+import { ASC, DESC, SortDirection } from "../../order";
 export declare type ToNullable<ColumnT extends IColumn> = (ColumnT extends IColumn ? Column<{
     readonly tableAlias: ColumnT["tableAlias"];
     readonly name: ColumnT["name"];
@@ -35,4 +36,10 @@ export declare type ToInterface<ColumnT extends IColumn> = (ColumnT extends ICol
 export declare function setIsInSelectClause<ColumnT extends IColumn>(column: ColumnT, __isInSelectClause: boolean): Column<ColumnT>;
 export declare type ExtractNullable<ColumnT extends IColumn> = (ColumnT extends IColumn ? (null extends ReturnType<ColumnT["assertDelegate"]> ? ColumnT : never) : never);
 export declare type ExcludeNullable<ColumnT extends IColumn> = (ColumnT extends IColumn ? (null extends ReturnType<ColumnT["assertDelegate"]> ? never : ColumnT) : never);
+export declare type Asc<ColumnT extends IColumn> = ([ColumnT, typeof ASC]);
+export declare function asc<ColumnT extends IColumn>(column: ColumnT): Asc<ColumnT>;
+export declare type Desc<ColumnT extends IColumn> = ([ColumnT, typeof DESC]);
+export declare function desc<ColumnT extends IColumn>(column: ColumnT): Desc<ColumnT>;
+export declare type Sort<ColumnT extends IColumn> = ([ColumnT, SortDirection]);
+export declare function sort<ColumnT extends IColumn>(column: ColumnT, sortDirection: SortDirection): Sort<ColumnT>;
 //# sourceMappingURL=operation.d.ts.map

@@ -1,5 +1,6 @@
 import * as sd from "schema-decorator";
 import * as ColumnUtil from "./util";
+import { SortDirection } from "../order";
 export interface ColumnData {
     readonly tableAlias: string;
     readonly name: string;
@@ -29,6 +30,9 @@ export declare class Column<DataT extends ColumnData> implements IColumn<DataT> 
     withTableAlias<NewTableAliasT extends string>(newTableAlias: NewTableAliasT): (ColumnUtil.WithTableAlias<this, NewTableAliasT>);
     withType<NewAssertFuncT extends sd.AnyAssertFunc>(newAssertFunc: NewAssertFuncT): (ColumnUtil.WithType<this, NewAssertFuncT>);
     as<AliasT extends string>(alias: AliasT): ColumnUtil.As<this, AliasT>;
+    asc(): ColumnUtil.Asc<this>;
+    desc(): ColumnUtil.Desc<this>;
+    sort(sortDirection: SortDirection): ColumnUtil.Sort<this>;
 }
 export declare function column<TableAliasT extends string, NameT extends string, AssertFuncT extends sd.AnyAssertFunc>(tableAlias: TableAliasT, name: NameT, assertFunc: AssertFuncT): Column<{
     readonly tableAlias: TableAliasT;
