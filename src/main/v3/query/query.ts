@@ -924,6 +924,33 @@ export class Query<DataT extends QueryData> {
             ValueT
         >(this, delegate, value);
     }
+
+    whereNullSafeEq<
+        DelegateT extends QueryUtil.WhereNullSafeEqDelegate<
+            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>
+        >,
+        ValueT extends PrimitiveExpr
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+        delegate : DelegateT,
+        value : QueryUtil.AssertValidNullSafeEqTarget<
+            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            DelegateT,
+            ValueT
+        >
+    ) : (
+        QueryUtil.WhereNullSafeEq<
+            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            DelegateT,
+            ValueT
+        >
+    ) {
+        return QueryUtil.whereNullSafeEq<
+            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            DelegateT,
+            ValueT
+        >(this, delegate, value);
+    }
 }
 
 export function from<AliasedTableT extends IAliasedTable> (

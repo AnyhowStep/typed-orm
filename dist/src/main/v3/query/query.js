@@ -148,6 +148,9 @@ class Query {
     whereEq(delegate, value) {
         return QueryUtil.whereEq(this, delegate, value);
     }
+    whereNullSafeEq(delegate, value) {
+        return QueryUtil.whereNullSafeEq(this, delegate, value);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

@@ -35,5 +35,6 @@ __export(require("./union"));
 __export(require("./where-eq"));
 __export(require("./where-is-not-null"));
 __export(require("./where-is-null"));
+__export(require("./where-null-safe-eq"));
 __export(require("./where"));
 //# sourceMappingURL=index.js.map
