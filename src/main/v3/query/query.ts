@@ -840,7 +840,7 @@ export class Query<DataT extends QueryData> {
 
     map<
         DelegateT extends MapDelegate<
-        QueryUtil.MappedType<
+            QueryUtil.MappedType<
                 Extract<this, QueryUtil.AfterSelectClause>
             >,
             QueryUtil.UnmappedType<

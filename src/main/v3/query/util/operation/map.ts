@@ -100,18 +100,30 @@ export function map<
         Promise<ReturnType<DelegateT>>
     >|undefined = undefined;
     if (query._mapDelegate == undefined) {
-        newMapDelegate = async (row, originalRow) => {
+        newMapDelegate = (async (row, originalRow) => {
             return delegate(row, originalRow);
-        };
+        }) as MapDelegate<
+            UnmappedType<QueryT["_selects"]>,
+            UnmappedType<QueryT["_selects"]>,
+            ReturnType<DelegateT> extends Promise<any> ?
+            ReturnType<DelegateT> :
+            Promise<ReturnType<DelegateT>>
+        >;
     } else {
         const prvDelegate = query._mapDelegate;
-        newMapDelegate = async (row, originalRow) => {
+        newMapDelegate = (async (row, originalRow) => {
             const prvResult : MappedType<QueryT> = await prvDelegate(
                 row,
                 originalRow
             );
             return delegate(prvResult, originalRow);
-        };
+        }) as MapDelegate<
+            UnmappedType<QueryT["_selects"]>,
+            UnmappedType<QueryT["_selects"]>,
+            ReturnType<DelegateT> extends Promise<any> ?
+            ReturnType<DelegateT> :
+            Promise<ReturnType<DelegateT>>
+        >;
     }
 
     const {
