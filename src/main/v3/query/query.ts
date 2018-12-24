@@ -878,6 +878,25 @@ export class Query<DataT extends QueryData> {
             DelegateT
         >(this, delegate)
     }
+
+    andWhereIsNotNull<
+        DelegateT extends QueryUtil.AndWhereIsNotNullDelegate<
+            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>
+        >
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+        delegate : DelegateT
+    ) : (
+        QueryUtil.AndWhereIsNotNull<
+            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            DelegateT
+        >
+    ) {
+        return QueryUtil.andWhereIsNotNull<
+            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            DelegateT
+        >(this, delegate);
+    }
 }
 
 export function from<AliasedTableT extends IAliasedTable> (

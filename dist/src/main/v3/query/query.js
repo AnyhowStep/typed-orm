@@ -142,6 +142,9 @@ class Query {
     andWhereIsNull(delegate) {
         return QueryUtil.andWhereIsNull(this, delegate);
     }
+    andWhereIsNotNull(delegate) {
+        return QueryUtil.andWhereIsNotNull(this, delegate);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {
