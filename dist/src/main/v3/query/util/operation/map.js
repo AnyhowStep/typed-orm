@@ -5,6 +5,7 @@ function map(query, delegate) {
     if (query._selects == undefined) {
         throw new Error(`Cannot use map() before SELECT clause`);
     }
+    //TODO-UNHACK Not use all this hackery
     let newMapDelegate = undefined;
     if (query._mapDelegate == undefined) {
         newMapDelegate = (async (row, originalRow) => {

@@ -1,4 +1,4 @@
-import {Query, IQuery} from "../../query";
+import {Query} from "../../query";
 import {AfterSelectClause} from "../predicate";
 import {MapDelegate} from "../../../map-delegate";
 import {ColumnRefUtil, ColumnRef} from "../../../column-ref";
@@ -40,11 +40,11 @@ export type UnmappedType<
 export type MappedType<
     QueryT extends AfterSelectClause
 > = (
-    IQuery["_mapDelegate"] extends MapDelegate ?
+    QueryT["_mapDelegate"] extends MapDelegate ?
     (
-        ReturnType<MapDelegate> extends Promise<infer R> ?
+        ReturnType<QueryT["_mapDelegate"]> extends Promise<infer R> ?
         R :
-        ReturnType<MapDelegate>
+        ReturnType<QueryT["_mapDelegate"]>
     ) :
     UnmappedType<QueryT["_selects"]>
 )
@@ -92,6 +92,7 @@ export function map<
         throw new Error(`Cannot use map() before SELECT clause`);
     }
 
+    //TODO-UNHACK Not use all this hackery
     let newMapDelegate : MapDelegate<
         UnmappedType<QueryT["_selects"]>,
         UnmappedType<QueryT["_selects"]>,
@@ -101,7 +102,7 @@ export function map<
     >|undefined = undefined;
     if (query._mapDelegate == undefined) {
         newMapDelegate = (async (row, originalRow) => {
-            return delegate(row, originalRow);
+            return delegate(row as any, originalRow);
         }) as MapDelegate<
             UnmappedType<QueryT["_selects"]>,
             UnmappedType<QueryT["_selects"]>,

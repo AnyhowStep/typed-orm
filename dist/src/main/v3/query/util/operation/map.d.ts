@@ -1,4 +1,4 @@
-import { Query, IQuery } from "../../query";
+import { Query } from "../../query";
 import { AfterSelectClause } from "../predicate";
 import { MapDelegate } from "../../../map-delegate";
 import { ColumnRefUtil, ColumnRef } from "../../../column-ref";
@@ -14,7 +14,7 @@ export declare type ToTypeMap<MapT extends ColumnMap> = ({
     readonly [columnName in keyof MapT]: (ReturnType<MapT[columnName]["assertDelegate"]>);
 });
 export declare type UnmappedType<ArrT extends SelectItem[]> = (SelectItemArrayUtil.HasDuplicateColumnName<ArrT> extends true ? ToTypeRef<ColumnRefUtil.FromSelectItemArray<ArrT>> : ToTypeMap<ColumnMapUtil.FromSelectItemArray<ArrT, "">>);
-export declare type MappedType<QueryT extends AfterSelectClause> = (IQuery["_mapDelegate"] extends MapDelegate ? (ReturnType<MapDelegate> extends Promise<infer R> ? R : ReturnType<MapDelegate>) : UnmappedType<QueryT["_selects"]>);
+export declare type MappedType<QueryT extends AfterSelectClause> = (QueryT["_mapDelegate"] extends MapDelegate ? (ReturnType<QueryT["_mapDelegate"]> extends Promise<infer R> ? R : ReturnType<QueryT["_mapDelegate"]>) : UnmappedType<QueryT["_selects"]>);
 export declare type Map<QueryT extends AfterSelectClause, DelegateT extends MapDelegate<MappedType<QueryT>, UnmappedType<QueryT["_selects"]>, any>> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];
