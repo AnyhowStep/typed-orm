@@ -47,7 +47,7 @@ export declare const ai: o.Table<{
     };
     readonly autoIncrement: "b";
     readonly id: "b";
-    readonly candidateKeys: ("y"[] | ("c" | "d")[] | "b"[])[];
+    readonly candidateKeys: ("y"[] | "b"[] | ("c" | "d")[])[];
     readonly generated: "b"[];
     readonly isNullable: never[];
     readonly hasExplicitDefaultValue: "b"[];

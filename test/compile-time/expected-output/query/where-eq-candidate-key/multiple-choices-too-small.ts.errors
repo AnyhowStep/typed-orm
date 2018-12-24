@@ -1,0 +1,50 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type '{ x: number; }' is not assignable to parameter of type '{ readonly y: string | null; readonly z: boolean; } | { readonly x: number; readonly y: string | null; }'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Property 'y' is missing in type '{ x: number; }' but required in type '{ readonly x: number; readonly y: string | null; }'.",
+        "category": 1,
+        "code": 2741
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 23,
+    "start": 375
+  },
+  {
+    "messageText": {
+      "messageText": "Argument of type '{ y: string; }' is not assignable to parameter of type '{ readonly y: string | null; readonly z: boolean; } | { readonly x: number; readonly y: string | null; }'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Property 'x' is missing in type '{ y: string; }' but required in type '{ readonly x: number; readonly y: string | null; }'.",
+        "category": 1,
+        "code": 2741
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 25,
+    "start": 469
+  },
+  {
+    "messageText": {
+      "messageText": "Argument of type '{ z: true; }' is not assignable to parameter of type '{ readonly y: string | null; readonly z: boolean; } | { readonly x: number; readonly y: string | null; }'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Property 'y' is missing in type '{ z: true; }' but required in type '{ readonly y: string | null; readonly z: boolean; }'.",
+        "category": 1,
+        "code": 2741
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 25,
+    "start": 565
+  }
+]

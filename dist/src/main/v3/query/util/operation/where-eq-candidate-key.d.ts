@@ -18,5 +18,5 @@ export declare type WhereEqCandidateKey<QueryT extends AfterFromClause> = (Query
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare function whereEqCandidateKey<QueryT extends AfterFromClause, TableT extends ITable>(query: QueryT, table: TableT, key: Table.CandidateKey<TableT>): WhereEqCandidateKey<QueryT>;
+export declare function whereEqCandidateKey<QueryT extends AfterFromClause, TableT extends ITable>(query: QueryT, table: TableT & QueryT["_joins"][number]["aliasedTable"], key: Table.CandidateKey<TableT>): WhereEqCandidateKey<QueryT>;
 //# sourceMappingURL=where-eq-candidate-key.d.ts.map

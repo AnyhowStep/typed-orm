@@ -42,7 +42,7 @@ export function whereEqCandidateKey<
     TableT extends ITable,
 > (
     query : QueryT,
-    table : TableT,
+    table : TableT & QueryT["_joins"][number]["aliasedTable"],
     key : Table.CandidateKey<TableT>
 ) : WhereEqCandidateKey<QueryT> {
     if (query._joins == undefined) {

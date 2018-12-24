@@ -1,0 +1,50 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type '{ x: number; y: string; w: Date; }' is not assignable to parameter of type '{ readonly y: string | null; readonly z: boolean; } | { readonly x: number; readonly y: string | null; }'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Object literal may only specify known properties, and 'w' does not exist in type '{ readonly y: string | null; readonly z: boolean; } | { readonly x: number; readonly y: string | null; }'.",
+        "category": 1,
+        "code": 2353
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 35,
+    "start": 444
+  },
+  {
+    "messageText": {
+      "messageText": "Argument of type '{ y: string; z: true; w: Date; }' is not assignable to parameter of type '{ readonly y: string | null; readonly z: boolean; } | { readonly x: number; readonly y: string | null; }'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Object literal may only specify known properties, and 'w' does not exist in type '{ readonly y: string | null; readonly z: boolean; } | { readonly x: number; readonly y: string | null; }'.",
+        "category": 1,
+        "code": 2353
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 35,
+    "start": 603
+  },
+  {
+    "messageText": {
+      "messageText": "Argument of type '{ w: Date; }' is not assignable to parameter of type '{ readonly y: string | null; readonly z: boolean; } | { readonly x: number; readonly y: string | null; }'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Object literal may only specify known properties, and 'w' does not exist in type '{ readonly y: string | null; readonly z: boolean; } | { readonly x: number; readonly y: string | null; }'.",
+        "category": 1,
+        "code": 2353
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 35,
+    "start": 729
+  }
+]

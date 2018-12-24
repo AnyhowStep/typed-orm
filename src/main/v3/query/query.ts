@@ -956,7 +956,7 @@ export class Query<DataT extends QueryData> {
         TableT extends ITable,
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        table : TableT,
+        table : TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
         key : Table.CandidateKey<TableT>
     ) : QueryUtil.WhereEqCandidateKey<Extract<this, QueryUtil.AfterFromClause>> {
         return QueryUtil.whereEqCandidateKey(
