@@ -11,12 +11,13 @@ tape(__filename, (t) => {
             y : sd.nullable(sd.string()),
             z : sd.boolean(),
         }
-    ).addCandidateKey(c => [c.x, c.y]);
+    ).addCandidateKey(c => [c.x, c.y])
+    .addCandidateKey(c => [c.y, c.z]);;
 
     const query = o.from(table)
         .whereEqCandidateKey(table, {
             y : "hey",
-            x : 56,
+            z : true,
         })
         .selectExpr(() => o.utcTimestamp());
 

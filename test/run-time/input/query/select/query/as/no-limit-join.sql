@@ -3,5 +3,5 @@ SELECT
 FROM
   (
     SELECT
-      NOW() AS `now`
+      UTC_TIMESTAMP() AS `now`
   ) AS `test`

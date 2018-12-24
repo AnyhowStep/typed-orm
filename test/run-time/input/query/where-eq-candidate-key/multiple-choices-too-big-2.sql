@@ -4,6 +4,6 @@ FROM
   `table`
 WHERE
   (
-    (`table`.`x` <=> 56) AND
-    (`table`.`y` <=> 'hey')
+    (`table`.`y` <=> 'hey') AND
+    (`table`.`z` <=> true)
   )

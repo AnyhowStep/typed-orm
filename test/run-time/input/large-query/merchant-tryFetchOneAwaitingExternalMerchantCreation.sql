@@ -142,7 +142,11 @@ WHERE
               `merchantLock`.`merchantId` = `merchant`.`merchantId`
             ) AND
             (
-              TIMESTAMPDIFF(SECOND, NOW(), `merchantLock`.`timeoutAt`) > 0
+              TIMESTAMPDIFF(
+                SECOND,
+                UTC_TIMESTAMP(),
+                `merchantLock`.`timeoutAt`
+              ) > 0
             )
           )
       )

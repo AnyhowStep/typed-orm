@@ -1,5 +1,5 @@
 SELECT
   (
     SELECT
-      NOW() AS `now`
+      UTC_TIMESTAMP() AS `now`
   ) AS `__aliased--test`

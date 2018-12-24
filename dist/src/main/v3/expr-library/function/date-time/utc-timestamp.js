@@ -7,13 +7,13 @@ const utcTimestampArr = [
     new expr_1.Expr({
         usedRef: {},
         assertDelegate: data_type_1.dateTime(0),
-    }, "NOW()"),
+    }, "UTC_TIMESTAMP()"),
 ];
 for (let i = 1; i <= 3; ++i) {
     utcTimestampArr.push(new expr_1.Expr({
         usedRef: {},
         assertDelegate: data_type_1.dateTime(i),
-    }, `NOW(${i})`));
+    }, `UTC_TIMESTAMP(${i})`));
 }
 /*
     JavaScript's `Date` class only supports up to millisecond precision.

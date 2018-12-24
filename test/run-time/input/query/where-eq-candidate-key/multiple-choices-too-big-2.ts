@@ -10,14 +10,17 @@ tape(__filename, (t) => {
             x : sd.naturalNumber(),
             y : sd.nullable(sd.string()),
             z : sd.boolean(),
+            w : o.dateTime(),
         }
-    ).addCandidateKey(c => [c.x, c.y]);
+    ).addCandidateKey(c => [c.x, c.y])
+    .addCandidateKey(c => [c.y, c.z]);
 
     const query = o.from(table)
         .whereEqCandidateKey(table, {
+            z : true,
             y : "hey",
-            x : 56,
-        })
+            w : new Date("2018-01-01 00:00:00"),
+        } as unknown as { z : boolean, y : string })
         .selectExpr(() => o.utcTimestamp());
 
     const formatter = new o.SqlFormatter();
@@ -31,6 +34,13 @@ tape(__filename, (t) => {
             __filename.replace(/\.ts$/, ".sql")
         ).toString()
     );
+
+    t.throws(() => {
+        o.from(table)
+            .whereEqCandidateKey(table, {
+                w : new Date("2018-01-01 00:00:00"),
+            } as unknown as { x : number, y : string });
+    });
 
     t.end();
 });

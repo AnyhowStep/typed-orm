@@ -11,7 +11,7 @@ const utcTimestampArr : Expr<{
             usedRef : {},
             assertDelegate : dateTime(0),
         },
-        "NOW()"
+        "UTC_TIMESTAMP()"
     ),
 ];
 for (let i=1; i<=3; ++i) {
@@ -20,7 +20,7 @@ for (let i=1; i<=3; ++i) {
             usedRef : {},
             assertDelegate : dateTime(i as 1|2|3),
         },
-        `NOW(${i})`
+        `UTC_TIMESTAMP(${i})`
     ));
 }
 /*

@@ -4,6 +4,7 @@ import {IAnonymousTypedExpr} from "../../../expr";
 import {and} from "../../../expr-library";
 import {nullSafeEq} from "../../../expr-library";
 import {ITable, Table} from "../../../table";
+import { ColumnIdentifierRefUtil } from "../../../column-identifier-ref";
 
 export type WhereEqCandidateKey<
     QueryT extends AfterFromClause,
@@ -54,11 +55,19 @@ export function whereEqCandidateKey<
 
     key = candidateKeyAssertDelegate(`${table.alias} CK`, key);
 
+    const ref = ColumnIdentifierRefUtil.fromJoinArray(
+        query._joins
+    );
     const exprArr : IAnonymousTypedExpr<boolean>[] = [];
-    for (let columnName in key) {
-        const value = key[columnName];
+    for (let columnName of Object.keys(key).sort()) {
+        const column = table.columns[columnName];
+        ColumnIdentifierRefUtil.assertHasColumnIdentifier(
+            ref,
+            column
+        );
+        const value = (key as any)[columnName];
         exprArr.push(nullSafeEq(
-            table.columns[columnName],
+            column,
             value
         ));
     }
