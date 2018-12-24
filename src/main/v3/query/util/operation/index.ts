@@ -1,4 +1,5 @@
 export * from "./and-having";
+export * from "./and-where-is-null";
 export * from "./and-where";
 export * from "./as";
 export * from "./coalesce";

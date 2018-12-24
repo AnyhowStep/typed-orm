@@ -21,5 +21,9 @@ var JoinArrayUtil;
         });
     }
     JoinArrayUtil.toNullable = toNullable;
+    function replaceColumn(joins, column) {
+        return joins.map(join => join_1.Join.replaceColumn(join, column));
+    }
+    JoinArrayUtil.replaceColumn = replaceColumn;
 })(JoinArrayUtil = exports.JoinArrayUtil || (exports.JoinArrayUtil = {}));
 //# sourceMappingURL=join-array.js.map

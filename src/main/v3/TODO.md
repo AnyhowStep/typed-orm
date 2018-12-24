@@ -7,27 +7,12 @@
 
 + Implement replaceTable()
 
-+ Implement `Query.transform()`
 + Implement type-narrowing `WHERE` expressions
   + andWhereIsNull
   + andWhereIsNotNull
   + andWhereIsEqual
 + Implement `Query.useJoins()`
-+ Implement `Query.flatten()`
-  + It'll be a convenience method for,
-  ```ts
-  Query.transform(row => {
-    //Confirm `row` is a nested object, with multiple tableAliases
-    //Confirm `row` has no duplicate columnNames,
-    //we do not want to overwrite values.
-    const result = {};
-    for (let tableAlias of Object.keys(row)) {
-      for (let columnName of Object.keys(row[tableAlias])) {
-        result[columnName] = row[tableAlias][columnName];
-      }
-    }
-    return result;
-  })
-  ```
 
 + Implement `Column.asc()/.desc()`, `Expr.asc()/.desc()` convenience methods
+
++ UTC Offset support (If you store your times as EDT/EST, good luck?)

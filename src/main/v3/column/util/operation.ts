@@ -202,3 +202,13 @@ export function setIsInSelectClause<ColumnT extends IColumn> (
         __isInSelectClause
     );
 }
+
+export type ExtractNullable<ColumnT extends IColumn> = (
+    ColumnT extends IColumn ?
+    (
+        null extends ReturnType<ColumnT["assertDelegate"]> ?
+        ColumnT :
+        never
+    ) :
+    never
+);

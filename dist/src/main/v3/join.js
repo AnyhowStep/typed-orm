@@ -4,6 +4,7 @@ const aliased_table_1 = require("./aliased-table");
 const column_map_1 = require("./column-map");
 const column_1 = require("./column");
 const e = require("enum-util");
+const column_identifier_map_1 = require("./column-identifier-map");
 var JoinType;
 (function (JoinType) {
     JoinType["FROM"] = "FROM";
@@ -53,5 +54,25 @@ exports.Join = Join;
         return result;
     }
     Join.toNullable = toNullable;
+    function replaceColumn(join, column) {
+        if (!column_identifier_map_1.ColumnIdentifierMapUtil.hasColumnIdentifier(join.columns, column)) {
+            return join;
+        }
+        const columns = {};
+        for (let columnName in join.columns) {
+            if (columnName == column.name) {
+                columns[columnName] = column;
+            }
+            else {
+                columns[columnName] = join.columns[columnName];
+            }
+        }
+        return new Join({
+            aliasedTable: join.aliasedTable,
+            columns: columns,
+            nullable: join.nullable,
+        }, join.joinType, join.from, join.to);
+    }
+    Join.replaceColumn = replaceColumn;
 })(Join = exports.Join || (exports.Join = {}));
 //# sourceMappingURL=join.js.map

@@ -40,5 +40,13 @@ export declare namespace Join {
         nullable: true;
     }> : never);
     function toNullable<JoinT extends IJoin>(join: JoinT): ToNullable<JoinT>;
+    type ReplaceColumn<JoinT extends IJoin, ColumnT extends IColumn> = (JoinT extends IJoin ? (ColumnT["tableAlias"] extends JoinT["aliasedTable"] ? (ColumnT["name"] extends keyof JoinT["columns"] ? (IJoin<{
+        readonly aliasedTable: JoinT["aliasedTable"];
+        readonly columns: {
+            readonly [columnName in keyof JoinT["columns"]]: (columnName extends ColumnT["name"] ? ColumnT : JoinT["columns"][columnName]);
+        };
+        readonly nullable: JoinT["nullable"];
+    }>) : JoinT) : JoinT) : never);
+    function replaceColumn<JoinT extends IJoin, ColumnT extends IColumn>(join: JoinT, column: ColumnT): ReplaceColumn<JoinT, ColumnT>;
 }
 //# sourceMappingURL=join.d.ts.map

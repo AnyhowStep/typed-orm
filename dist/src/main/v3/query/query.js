@@ -139,6 +139,9 @@ class Query {
     map(delegate) {
         return QueryUtil.map(this, delegate);
     }
+    andWhereIsNull(delegate) {
+        return QueryUtil.andWhereIsNull(this, delegate);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {
