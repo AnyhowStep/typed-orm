@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 
-export const bigint = sd.or(
+const bigintDelegate = sd.or(
     (name : string, raw : unknown) : bigint => {
         if (typeof raw == "bigint") {
             return raw;
@@ -10,11 +10,32 @@ export const bigint = sd.or(
     sd.chain(
         sd.string(),
         (name : string, str : string) : bigint => {
-            const result = BigInt(str);
-            if (result.toString() === str) {
-                return result;
+            try {
+                const result = BigInt(str);
+                if (result.toString() === str) {
+                    return result;
+                }
+                throw new Error(`${name} is not a valid bigint string`);
+            } catch (err) {
+                throw new Error(`${name} is not a valid bigint string; ${err.message}`);
             }
-            throw new Error(`${name} is not a valid bigint string`);
+        }
+    ),
+    sd.chain(
+        sd.finiteNumber(),
+        (name : string, n : number) : bigint => {
+            try {
+                const result = BigInt(n);
+                if (Number(result) === n) {
+                    return result;
+                }
+                throw new Error(`${name} is not a valid bigint number`);
+            } catch (err) {
+                throw new Error(`${name} is not a valid bigint number; ${err.message}`);
+            }
         }
     ),
 );
+export function bigint () {
+    return bigintDelegate;
+}

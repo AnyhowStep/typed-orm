@@ -19,7 +19,7 @@ export function castAsSignedInteger<
     return new Expr(
         {
             usedRef : RawExprUtil.usedRef(rawExpr),
-            assertDelegate : dataType.bigint,
+            assertDelegate : dataType.bigint(),
         },
         new FunctionCall("CAST", [
             [

@@ -60,7 +60,7 @@ export function bigIntAdd<ArrT extends Tuple<RawExpr<bigint>>> (
         return new Expr(
             {
                 usedRef : usedRef,
-                assertDelegate : dataType.bigint,
+                assertDelegate : dataType.bigint(),
             },
             RawExprUtil.queryTree(0)
         );
@@ -68,7 +68,7 @@ export function bigIntAdd<ArrT extends Tuple<RawExpr<bigint>>> (
         return new Expr(
             {
                 usedRef : usedRef,
-                assertDelegate : dataType.bigint,
+                assertDelegate : dataType.bigint(),
             },
             queryTree
         );

@@ -27,7 +27,7 @@ export function integerDiv<
                 RawExprUtil.usedRef(left),
                 RawExprUtil.usedRef(right)
             ),
-            assertDelegate : sd.nullable(dataType.bigint),
+            assertDelegate : sd.nullable(dataType.bigint()),
         },
         [
             RawExprUtil.queryTree(left),

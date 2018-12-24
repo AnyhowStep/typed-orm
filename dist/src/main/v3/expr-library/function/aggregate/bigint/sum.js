@@ -9,7 +9,7 @@ const dataType = require("../../../../data-type");
 function bigIntSum(rawExpr) {
     const result = new expr_1.Expr({
         usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
-        assertDelegate: sd.nullable(dataType.bigint),
+        assertDelegate: sd.nullable(dataType.bigint()),
     }, new query_tree_1.FunctionCall("SUM", [
         raw_expr_1.RawExprUtil.queryTree(rawExpr)
     ]));

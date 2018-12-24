@@ -5,12 +5,12 @@ tape(__filename, (t) => {
     const table = o.table(
         "table",
         {
-            x : o.bigint,
-            y : o.bigint,
-            z : o.bigint,
-            a : o.bigint,
-            b : o.bigint,
-            c : o.bigint,
+            x : o.bigint(),
+            y : o.bigint(),
+            z : o.bigint(),
+            a : o.bigint(),
+            b : o.bigint(),
+            c : o.bigint(),
         }
     );
 

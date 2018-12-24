@@ -6,9 +6,9 @@ import * as fs from "fs";
 const appPlatform = o.table(
     "appPlatform",
     {
-        appId : o.bigint,
-        platformId : o.bigint,
-        createdAt : o.dateTime
+        appId : o.bigint(),
+        platformId : o.bigint(),
+        createdAt : o.dateTime()
     }
 )
     .setImmutable()
@@ -18,11 +18,11 @@ const appPlatform = o.table(
 const user = o.table(
     "user",
     {
-        appId : o.bigint,
+        appId : o.bigint(),
         externalUserId : sd.varChar(1, 255),
         displayName : sd.varChar(1, 255),
         banned : sd.numberToBoolean(),
-        createdAt : o.dateTime,
+        createdAt : o.dateTime(),
     }
 )
     .setHasExplicitDefaultValue(c => [
@@ -38,19 +38,19 @@ const user = o.table(
 const personalInformation = o.table(
     "personalInformation",
     {
-        appId : o.bigint,
+        appId : o.bigint(),
         externalUserId : sd.varChar(1, 255)
     }
 );
 const business = o.table(
     "business",
     {
-        appId : o.bigint,
-        businessId : o.bigint,
-        businessTypeId : o.bigint,
+        appId : o.bigint(),
+        businessId : o.bigint(),
+        businessTypeId : o.bigint(),
         externalUserId : sd.varChar(1, 255),
-        countryId : o.bigint,
-        createdAt : o.dateTime,
+        countryId : o.bigint(),
+        createdAt : o.dateTime(),
         createdByExternalUserId : sd.varChar(1, 255),
     }
 )
@@ -61,11 +61,11 @@ const business = o.table(
 const payOutMethod = o.table(
     "payOutMethod",
     {
-        appId : o.bigint,
-        payOutMethodId : o.bigint,
+        appId : o.bigint(),
+        payOutMethodId : o.bigint(),
         externalUserId : sd.varChar(1, 255),
-        payOutMethodTypeId : o.bigint,
-        createdAt : o.dateTime,
+        payOutMethodTypeId : o.bigint(),
+        createdAt : o.dateTime(),
         createdByExternalUserId : sd.varChar(1, 255)
     }
 )
@@ -76,11 +76,11 @@ const payOutMethod = o.table(
 const businessPayOutMethod = o.table(
     "businessPayOutMethod",
     {
-        appId : o.bigint,
-        businessId : o.bigint,
-        payOutMethodId : o.bigint,
+        appId : o.bigint(),
+        businessId : o.bigint(),
+        payOutMethodId : o.bigint(),
         externalUserId : sd.varChar(1, 255),
-        createdAt : o.dateTime,
+        createdAt : o.dateTime(),
         createdByExternalUserId : sd.varChar(1, 255),
     }
 )
@@ -94,12 +94,12 @@ const businessPayOutMethod = o.table(
 const merchant = o.table(
     "merchant",
     {
-        appId : o.bigint,
-        merchantId : o.bigint,
-        businessId : o.bigint,
-        payOutMethodId : o.bigint,
-        platformId : o.bigint,
-        createdAt : o.dateTime,
+        appId : o.bigint(),
+        merchantId : o.bigint(),
+        businessId : o.bigint(),
+        payOutMethodId : o.bigint(),
+        platformId : o.bigint(),
+        createdAt : o.dateTime(),
     }
 )
     .setAutoIncrement(c => c.merchantId)
@@ -110,46 +110,46 @@ const merchant = o.table(
 const merchantLock = o.table(
     "merchantLock",
     {
-        merchantId : o.bigint,
-        timeoutAt : o.dateTime
+        merchantId : o.bigint(),
+        timeoutAt : o.dateTime()
     }
 );
 
 const externalMerchant = o.table(
     "externalMerchant",
     {
-        merchantId : o.bigint,
+        merchantId : o.bigint(),
     }
 );
 
 const merchantEnabled = o.table(
     "merchantEnabled",
     {
-        merchantId : o.bigint,
+        merchantId : o.bigint(),
         enabled : sd.numberToBoolean(),
-        updatedAt : o.dateTime
+        updatedAt : o.dateTime()
     }
 );
 
 const businessEnabled = o.table(
     "businessEnabled",
     {
-        businessId : o.bigint,
+        businessId : o.bigint(),
         enabled : sd.numberToBoolean(),
-        updatedAt : o.dateTime,
+        updatedAt : o.dateTime(),
     }
 );
 const externalMerchantCreationAttempt = o.table(
     "externalMerchantCreationAttempt",
     {
-        merchantId : o.bigint,
-        attemptedAt : o.dateTime,
+        merchantId : o.bigint(),
+        attemptedAt : o.dateTime(),
     }
 )
 function secondsTillTimeout () {
     return o.timestampDiff(
         o.TemporalUnit.SECOND,
-        o.now(),
+        o.utcTimestamp(),
         merchantLock.columns.timeoutAt
     ).as("secondsTillTimeout");
 }

@@ -17,7 +17,7 @@ export function bigIntNeg<
     return new Expr(
         {
             usedRef : RawExprUtil.usedRef(rawExpr),
-            assertDelegate : dataType.bigint,
+            assertDelegate : dataType.bigint(),
         },
         [
             "-",

@@ -12,7 +12,7 @@ function timestampDiff(temporalUnit, from, to) {
     sd.enumeration(constant_1.TemporalUnit)("temporalUnit", temporalUnit);
     const result = new expr_1.Expr({
         usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple(from, to),
-        assertDelegate: dataType.bigint,
+        assertDelegate: dataType.bigint(),
     }, new query_tree_1.FunctionCall("TIMESTAMPDIFF", [
         temporalUnit,
         raw_expr_1.RawExprUtil.queryTree(from),

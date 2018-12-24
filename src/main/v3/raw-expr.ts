@@ -10,7 +10,7 @@ import {ColumnRef} from "./column-ref";
 import {OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery} from "./query/util";
 import {IQuery, QueryUtil} from "./query";
 import {IJoin} from "./join";
-import {MySqlDateTime, dateTime, MySqlDate, MySqlTime, date, time} from "./data-type";
+import {dateTime, DateTimeUtil} from "./data-type";
 import * as dataType from "./data-type";
 import {IAnonymousTypedExprSelectItem, IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 import {Parentheses} from "./query-tree";
@@ -77,15 +77,6 @@ export namespace RawExprUtil {
         if (rawExpr === null) {
             return {} as any;
         }
-        if (rawExpr instanceof MySqlDateTime) {
-            return {} as any;
-        }
-        if (rawExpr instanceof MySqlDate) {
-            return {} as any;
-        }
-        if (rawExpr instanceof MySqlTime) {
-            return {} as any;
-        }
 
         if (ExprUtil.isExpr(rawExpr)) {
             return rawExpr.usedRef as any;
@@ -133,7 +124,7 @@ export namespace RawExprUtil {
             return sd.literal(rawExpr) as any;
         }
         if (typeof rawExpr == "bigint") {
-            return dataType.bigint as any;
+            return dataType.bigint() as any;
         }
         if (typeof rawExpr == "string") {
             return sd.literal(rawExpr) as any;
@@ -147,7 +138,7 @@ export namespace RawExprUtil {
         }
         if (rawExpr instanceof Date) {
             //TODO-DEBATE Have a delegate that checks for the exact date given?
-            return sd.date() as any;
+            return dateTime(3) as any;
         }
         if (rawExpr instanceof Buffer) {
             //TODO-DEBATE Have a delegate that checks for the exact buffer given?
@@ -156,15 +147,6 @@ export namespace RawExprUtil {
         }
         if (rawExpr === null) {
             return sd.nil() as any;
-        }
-        if (rawExpr instanceof MySqlDateTime) {
-            return dateTime as any;
-        }
-        if (rawExpr instanceof MySqlDate) {
-            return date as any;
-        }
-        if (rawExpr instanceof MySqlTime) {
-            return time as any;
         }
 
         if (ExprUtil.isExpr(rawExpr)) {
@@ -190,15 +172,6 @@ export namespace RawExprUtil {
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
 
-    function zeroPad (num : number, length : number) {
-        const str = num.toString();
-        if (str.length < length) {
-            return "0".repeat(length-str.length) + str;
-        } else {
-            return str;
-        }
-    }
-
     export function queryTree (rawExpr : RawExpr<any>) : QueryTree {
         //Check primitive cases first
         if (typeof rawExpr == "number") {
@@ -214,14 +187,7 @@ export namespace RawExprUtil {
             return escape(rawExpr);
         }
         if (rawExpr instanceof Date) {
-            const year = zeroPad(rawExpr.getUTCFullYear(), 4);
-            const month = zeroPad(rawExpr.getUTCMonth() + 1, 2);
-            const day = zeroPad(rawExpr.getUTCDate(), 2);
-            const hour = zeroPad(rawExpr.getUTCHours(), 2);
-            const minute = zeroPad(rawExpr.getUTCMinutes(), 2);
-            const second = zeroPad(rawExpr.getUTCSeconds(), 2);
-            const ms = zeroPad(rawExpr.getMilliseconds(), 3);
-            return escape(`${year}-${month}-${day} ${hour}:${minute}:${second}.${ms}`);
+            return DateTimeUtil.toSqlUtc(rawExpr, 3);
         }
         if (rawExpr instanceof Buffer) {
             //escape(Buffer.from("hello")) == "X'68656c6c6f'"
@@ -229,15 +195,6 @@ export namespace RawExprUtil {
         }
         if (rawExpr === null) {
             return escape(rawExpr);
-        }
-        if (rawExpr instanceof MySqlDateTime) {
-            return escape(rawExpr.mySqlString());
-        }
-        if (rawExpr instanceof MySqlDate) {
-            return escape(rawExpr.mySqlString());
-        }
-        if (rawExpr instanceof MySqlTime) {
-            return escape(rawExpr.mySqlString());
         }
 
         if (ExprUtil.isExpr(rawExpr)) {

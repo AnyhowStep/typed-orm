@@ -13,7 +13,7 @@ export function count () : (
     const result = new Expr(
         {
             usedRef : {},
-            assertDelegate : dataType.bigint,
+            assertDelegate : dataType.bigint(),
         },
         new FunctionCall(
             "COUNT",

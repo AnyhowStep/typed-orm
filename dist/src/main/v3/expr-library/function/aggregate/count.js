@@ -7,7 +7,7 @@ const dataType = require("../../../data-type");
 function count() {
     const result = new expr_1.Expr({
         usedRef: {},
-        assertDelegate: dataType.bigint,
+        assertDelegate: dataType.bigint(),
     }, new query_tree_1.FunctionCall("COUNT", [
         "*"
     ]));

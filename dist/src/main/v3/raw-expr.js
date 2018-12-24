@@ -35,15 +35,6 @@ var RawExprUtil;
         if (rawExpr === null) {
             return {};
         }
-        if (rawExpr instanceof data_type_1.MySqlDateTime) {
-            return {};
-        }
-        if (rawExpr instanceof data_type_1.MySqlDate) {
-            return {};
-        }
-        if (rawExpr instanceof data_type_1.MySqlTime) {
-            return {};
-        }
         if (expr_1.ExprUtil.isExpr(rawExpr)) {
             return rawExpr.usedRef;
         }
@@ -70,7 +61,7 @@ var RawExprUtil;
             return sd.literal(rawExpr);
         }
         if (typeof rawExpr == "bigint") {
-            return dataType.bigint;
+            return dataType.bigint();
         }
         if (typeof rawExpr == "string") {
             return sd.literal(rawExpr);
@@ -83,7 +74,7 @@ var RawExprUtil;
         }
         if (rawExpr instanceof Date) {
             //TODO-DEBATE Have a delegate that checks for the exact date given?
-            return sd.date();
+            return data_type_1.dateTime(3);
         }
         if (rawExpr instanceof Buffer) {
             //TODO-DEBATE Have a delegate that checks for the exact buffer given?
@@ -92,15 +83,6 @@ var RawExprUtil;
         }
         if (rawExpr === null) {
             return sd.nil();
-        }
-        if (rawExpr instanceof data_type_1.MySqlDateTime) {
-            return data_type_1.dateTime;
-        }
-        if (rawExpr instanceof data_type_1.MySqlDate) {
-            return data_type_1.date;
-        }
-        if (rawExpr instanceof data_type_1.MySqlTime) {
-            return data_type_1.time;
         }
         if (expr_1.ExprUtil.isExpr(rawExpr)) {
             return rawExpr.assertDelegate;
@@ -119,15 +101,6 @@ var RawExprUtil;
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
     RawExprUtil.assertDelegate = assertDelegate;
-    function zeroPad(num, length) {
-        const str = num.toString();
-        if (str.length < length) {
-            return "0".repeat(length - str.length) + str;
-        }
-        else {
-            return str;
-        }
-    }
     function queryTree(rawExpr) {
         //Check primitive cases first
         if (typeof rawExpr == "number") {
@@ -143,14 +116,7 @@ var RawExprUtil;
             return sqlstring_1.escape(rawExpr);
         }
         if (rawExpr instanceof Date) {
-            const year = zeroPad(rawExpr.getUTCFullYear(), 4);
-            const month = zeroPad(rawExpr.getUTCMonth() + 1, 2);
-            const day = zeroPad(rawExpr.getUTCDate(), 2);
-            const hour = zeroPad(rawExpr.getUTCHours(), 2);
-            const minute = zeroPad(rawExpr.getUTCMinutes(), 2);
-            const second = zeroPad(rawExpr.getUTCSeconds(), 2);
-            const ms = zeroPad(rawExpr.getMilliseconds(), 3);
-            return sqlstring_1.escape(`${year}-${month}-${day} ${hour}:${minute}:${second}.${ms}`);
+            return data_type_1.DateTimeUtil.toSqlUtc(rawExpr, 3);
         }
         if (rawExpr instanceof Buffer) {
             //escape(Buffer.from("hello")) == "X'68656c6c6f'"
@@ -158,15 +124,6 @@ var RawExprUtil;
         }
         if (rawExpr === null) {
             return sqlstring_1.escape(rawExpr);
-        }
-        if (rawExpr instanceof data_type_1.MySqlDateTime) {
-            return sqlstring_1.escape(rawExpr.mySqlString());
-        }
-        if (rawExpr instanceof data_type_1.MySqlDate) {
-            return sqlstring_1.escape(rawExpr.mySqlString());
-        }
-        if (rawExpr instanceof data_type_1.MySqlTime) {
-            return sqlstring_1.escape(rawExpr.mySqlString());
         }
         if (expr_1.ExprUtil.isExpr(rawExpr)) {
             return rawExpr.queryTree;

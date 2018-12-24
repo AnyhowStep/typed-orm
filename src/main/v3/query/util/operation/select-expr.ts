@@ -10,14 +10,14 @@ import {AssertValidSelectDelegateImpl, select} from "./select";
 
     This allows you to write the following queries,
 
-    o.selectExpr(() => o.now())
+    o.selectExpr(() => o.utcTimestamp())
 
     o.from(table)
         .selectExpr(c => o.add(c.x, c.y))
 
     The above queries are equivalent to,
 
-    o.select(() => [o.now().as("value")])
+    o.select(() => [o.utcTimestamp().as("value")])
 
     o.from(table)
         .select(c => [o.add(c.x, c.y).as("value")])

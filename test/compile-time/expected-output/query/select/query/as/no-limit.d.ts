@@ -6,11 +6,11 @@ export declare const selectItem: o.IAliasedTable<{
         readonly now: o.Column<{
             readonly tableAlias: "test";
             readonly name: "now";
-            readonly assertDelegate: import("schema-decorator").AssertDelegate<o.MySqlDateTime>;
+            readonly assertDelegate: import("schema-decorator").AssertDelegate<Date>;
         }>;
     };
 }> & {
-    assertDelegate: import("schema-decorator").AssertDelegate<o.MySqlDateTime>;
+    assertDelegate: import("schema-decorator").AssertDelegate<Date>;
     tableAlias: "__aliased";
 };
 export declare const query: o.Query<{
@@ -25,11 +25,11 @@ export declare const query: o.Query<{
             readonly now: o.Column<{
                 readonly tableAlias: "test";
                 readonly name: "now";
-                readonly assertDelegate: import("schema-decorator").AssertDelegate<o.MySqlDateTime>;
+                readonly assertDelegate: import("schema-decorator").AssertDelegate<Date>;
             }>;
         };
     }> & {
-        assertDelegate: import("schema-decorator").AssertDelegate<o.MySqlDateTime>;
+        assertDelegate: import("schema-decorator").AssertDelegate<Date>;
         tableAlias: "__aliased";
     }];
     readonly _where: undefined;

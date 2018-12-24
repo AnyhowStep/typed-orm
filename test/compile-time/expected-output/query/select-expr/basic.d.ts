@@ -6,10 +6,10 @@ export declare const query: o.Query<{
     readonly _parentJoins: undefined;
     readonly _selects: [o.Expr<{
         readonly usedRef: {};
-        readonly assertDelegate: import("schema-decorator").AssertDelegate<o.MySqlDateTime>;
+        readonly assertDelegate: import("schema-decorator").AssertDelegate<Date>;
     }> & o.IExprSelectItem<{
         readonly usedRef: {};
-        readonly assertDelegate: import("schema-decorator").AssertDelegate<o.MySqlDateTime>;
+        readonly assertDelegate: import("schema-decorator").AssertDelegate<Date>;
         readonly tableAlias: "__aliased";
         readonly alias: "value";
     }>];

@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
-export declare const bigint: sd.AssertDelegate<bigint> & {
-    __accepts: string | bigint;
-    __canAccept: string | bigint;
+export declare function bigint(): sd.AssertDelegate<bigint> & {
+    __accepts: string | number | bigint;
+    __canAccept: string | number | bigint;
 };
 //# sourceMappingURL=bigint.d.ts.map

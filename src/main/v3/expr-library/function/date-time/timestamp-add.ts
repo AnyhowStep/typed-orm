@@ -9,7 +9,7 @@ import * as dataType from "../../../data-type";
 //https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_timestampadd
 export function timestampAdd<
     IntervalT extends RawExpr<bigint>,
-    DateTimeT extends RawExpr<dataType.MySqlDateTime>
+    DateTimeT extends RawExpr<Date>
 >(
     temporalUnit : TemporalUnit,
     interval : IntervalT,
@@ -20,7 +20,7 @@ export function timestampAdd<
             RawExprUtil.UsedRef<IntervalT> &
             RawExprUtil.UsedRef<DateTimeT>
         ),
-        assertDelegate : sd.AssertDelegate<dataType.MySqlDateTime>,
+        assertDelegate : sd.AssertDelegate<Date>,
     }>
 ) {
     //Defend ourself from invalid values during run-time
@@ -31,7 +31,7 @@ export function timestampAdd<
                 interval,
                 dateTime
             ),
-            assertDelegate : dataType.dateTime,
+            assertDelegate : dataType.dateTime(3),
         },
         new FunctionCall(
             "TIMESTAMPADD",

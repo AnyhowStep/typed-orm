@@ -8,8 +8,8 @@ import * as dataType from "../../../data-type";
 
 //https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_timestampdiff
 export function timestampDiff<
-    FromT extends RawExpr<dataType.MySqlDateTime>,
-    ToT extends RawExpr<dataType.MySqlDateTime>
+    FromT extends RawExpr<Date>,
+    ToT extends RawExpr<Date>
 >(
     temporalUnit : TemporalUnit,
     from : FromT,
@@ -31,7 +31,7 @@ export function timestampDiff<
                 from,
                 to
             ),
-            assertDelegate : dataType.bigint,
+            assertDelegate : dataType.bigint(),
         },
         new FunctionCall(
             "TIMESTAMPDIFF",

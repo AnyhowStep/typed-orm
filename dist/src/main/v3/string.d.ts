@@ -3,5 +3,6 @@ export declare namespace StringUtil {
         [str in S]: Exclude<S, str>;
     }[S]);
     type IsOneLiteral<S extends string> = (IsOneLiteralImpl<S> extends never ? (S extends never ? false : true) : false);
+    function zeroPad(num: number, length: number): string;
 }
 //# sourceMappingURL=string.d.ts.map

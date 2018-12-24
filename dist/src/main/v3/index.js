@@ -24,4 +24,5 @@ __export(require("./join"));
 __export(require("./query-tree"));
 __export(require("./select-item-array"));
 __export(require("./select-item"));
+__export(require("./string"));
 //# sourceMappingURL=index.js.map

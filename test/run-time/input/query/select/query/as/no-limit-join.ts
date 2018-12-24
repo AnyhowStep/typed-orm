@@ -3,7 +3,7 @@ import * as o from "../../../../../../../dist/src/main";
 import * as fs from "fs";
 
 tape(__filename, (t) => {
-    const selectItem = o.select(() => [o.now().as("now")])
+    const selectItem = o.select(() => [o.utcTimestamp().as("now")])
         .as("test");
 
     const query = o.from(selectItem)

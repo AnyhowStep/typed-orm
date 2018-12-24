@@ -52,13 +52,13 @@ function bigIntMul(...arr) {
         //By convention, multiplying zero numbers is one.
         return new expr_1.Expr({
             usedRef: usedRef,
-            assertDelegate: dataType.bigint,
+            assertDelegate: dataType.bigint(),
         }, raw_expr_1.RawExprUtil.queryTree(1));
     }
     else {
         return new expr_1.Expr({
             usedRef: usedRef,
-            assertDelegate: dataType.bigint,
+            assertDelegate: dataType.bigint(),
         }, queryTree);
     }
 }

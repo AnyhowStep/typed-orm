@@ -7,7 +7,7 @@ const dataType = require("../../../../data-type");
 function bigIntNeg(rawExpr) {
     return new expr_1.Expr({
         usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
-        assertDelegate: dataType.bigint,
+        assertDelegate: dataType.bigint(),
     }, [
         "-",
         raw_expr_1.RawExprUtil.queryTree(rawExpr),

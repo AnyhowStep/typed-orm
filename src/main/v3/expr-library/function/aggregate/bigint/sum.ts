@@ -18,7 +18,7 @@ export function bigIntSum<RawExprT extends RawExpr<bigint|null>>(
     const result = new Expr(
         {
             usedRef : RawExprUtil.usedRef(rawExpr),
-            assertDelegate : sd.nullable(dataType.bigint),
+            assertDelegate : sd.nullable(dataType.bigint()),
         },
         new FunctionCall(
             "SUM",

@@ -1,24 +1,24 @@
 import * as sd from "schema-decorator";
 import {Expr} from "../../../expr";
-import {dateTime, MySqlDateTime} from "../../../data-type";
+import {dateTime} from "../../../data-type";
 
-const nowArr : Expr<{
+const utcTimestampArr : Expr<{
     usedRef : {},
-    assertDelegate : sd.AssertDelegate<MySqlDateTime>
+    assertDelegate : sd.AssertDelegate<Date>
 }>[] = [
     new Expr(
         {
             usedRef : {},
-            assertDelegate : dateTime,
+            assertDelegate : dateTime(0),
         },
         "NOW()"
     ),
 ];
-for (let i=1; i<=6; ++i) {
-    nowArr.push(new Expr(
+for (let i=1; i<=3; ++i) {
+    utcTimestampArr.push(new Expr(
         {
             usedRef : {},
-            assertDelegate : dateTime,
+            assertDelegate : dateTime(i as 1|2|3),
         },
         `NOW(${i})`
     ));
@@ -30,8 +30,8 @@ for (let i=1; i<=6; ++i) {
     However, MySQL has up to 6 fractional seconds precision.
     This is equivalent to microsecond precision.
 */
-export function now (fractionalSecondsPrecision : 0|1|2|3|4|5|6 = 0) {
+export function utcTimestamp (fractionalSecondsPrecision : 0|1|2|3/*|4|5|6*/ = 0) {
     //Run-time check. To be safe.
-    sd.literal(0, 1, 2, 3, 4, 5, 6)("fractionalSecondsPrecision", fractionalSecondsPrecision);
-    return nowArr[fractionalSecondsPrecision];
+    sd.literal(0, 1, 2, 3/*, 4, 5, 6*/)("fractionalSecondsPrecision", fractionalSecondsPrecision);
+    return utcTimestampArr[fractionalSecondsPrecision];
 }

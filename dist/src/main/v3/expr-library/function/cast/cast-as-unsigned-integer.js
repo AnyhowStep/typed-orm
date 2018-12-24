@@ -8,7 +8,7 @@ const dataType = require("../../../data-type");
 function castAsUnsignedInteger(rawExpr) {
     return new expr_1.Expr({
         usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
-        assertDelegate: dataType.bigint,
+        assertDelegate: dataType.bigint(),
     }, new query_tree_1.FunctionCall("CAST", [
         [
             raw_expr_1.RawExprUtil.queryTree(rawExpr),
