@@ -5,8 +5,8 @@ import { ColumnRefUtil } from "../../../column-ref";
 import { ColumnUtil, Column } from "../../../column";
 import { IAnonymousTypedExpr } from "../../../expr";
 import { JoinArrayUtil } from "../../../join-array";
-export declare type AndWhereIsNullDelegate<QueryT extends AfterFromClause & BeforeSelectClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromJoinArray<QueryT["_joins"]>>) => (ColumnUtil.ExtractNullable<ColumnUtil.FromColumnRef<ColumnRefUtil.FromJoinArray<QueryT["_joins"]>>>));
-export declare type AndWhereIsNull<QueryT extends AfterFromClause & BeforeSelectClause, DelegateT extends AndWhereIsNullDelegate<QueryT>> = (Query<{
+export declare type WhereIsNullDelegate<QueryT extends AfterFromClause & BeforeSelectClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromJoinArray<QueryT["_joins"]>>) => (ColumnUtil.ExtractNullable<ColumnUtil.FromColumnRef<ColumnRefUtil.FromJoinArray<QueryT["_joins"]>>>));
+export declare type WhereIsNull<QueryT extends AfterFromClause & BeforeSelectClause, DelegateT extends WhereIsNullDelegate<QueryT>> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];
     readonly _joins: (JoinArrayUtil.ReplaceColumn<QueryT["_joins"], Column<{
@@ -26,5 +26,5 @@ export declare type AndWhereIsNull<QueryT extends AfterFromClause & BeforeSelect
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare function andWhereIsNull<QueryT extends AfterFromClause & BeforeSelectClause, DelegateT extends AndWhereIsNullDelegate<QueryT>>(query: QueryT, delegate: DelegateT): AndWhereIsNull<QueryT, DelegateT>;
+export declare function whereIsNull<QueryT extends AfterFromClause & BeforeSelectClause, DelegateT extends WhereIsNullDelegate<QueryT>>(query: QueryT, delegate: DelegateT): WhereIsNull<QueryT, DelegateT>;
 //# sourceMappingURL=and-where-is-null.d.ts.map

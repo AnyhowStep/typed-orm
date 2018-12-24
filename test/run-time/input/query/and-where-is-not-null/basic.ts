@@ -14,7 +14,7 @@ tape(__filename, (t) => {
     );
 
     const query = o.from(table)
-        .andWhereIsNotNull(c => c.y)
+        .whereIsNotNull(c => c.y)
         .select(c => [c.y]);
 
     const formatter = new o.SqlFormatter();

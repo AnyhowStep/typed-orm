@@ -11,4 +11,4 @@ const table = o.table(
 );
 
 export const query = o.from(table)
-    .andWhereIsNotNull(c => c.y);
+    .whereIsNotNull(c => c.y);

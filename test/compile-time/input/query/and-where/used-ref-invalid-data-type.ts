@@ -17,7 +17,7 @@ const sameName = o.table(
 )
 
 export const query = o.from(table)
-    .andWhere(() => o.eq(
+    .where(() => o.eq(
         sameName.columns.x,
         sameName.columns.x
     ));

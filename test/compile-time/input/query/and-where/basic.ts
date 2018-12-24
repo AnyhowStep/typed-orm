@@ -24,7 +24,7 @@ export const query = o.from(table)
         c => [c.y],
         t => [t.c]
     )
-    .andWhere(c => o.eq(
+    .where(c => o.eq(
         c.table.y,
         c.joined1.c
     ));

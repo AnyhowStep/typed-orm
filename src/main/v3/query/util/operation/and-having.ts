@@ -7,7 +7,7 @@ import {ColumnUtil} from "../../../column";
 import {IAnonymousTypedExpr} from "../../../expr";
 import {and} from "../../../expr-library";
 
-export type AndHavingDelegate<
+export type HavingDelegate<
     QueryT extends AfterFromClause
 > = (
     (
@@ -16,7 +16,7 @@ export type AndHavingDelegate<
     ) => RawExpr<boolean>
 );
 
-export type AndHaving<
+export type Having<
     QueryT extends AfterFromClause
 > = (
     Query<{
@@ -43,21 +43,21 @@ export type AndHaving<
     }>
 );
 
-export type AssertValidAndHavingDelegate<
+export type AssertValidHavingDelegate<
     QueryT extends AfterFromClause,
-    AndHavingDelegateT extends AndHavingDelegate<QueryT>
+    HavingDelegateT extends HavingDelegate<QueryT>
 > = (
-    AndHavingDelegateT &
+    HavingDelegateT &
     (
         //TODO-DEBATE Safer to convert both to union of columns and check if used columns extends query columns
         //I think
-        ColumnRefUtil.FromQuery<QueryT> extends RawExprUtil.UsedRef<ReturnType<AndHavingDelegateT>> ?
+        ColumnRefUtil.FromQuery<QueryT> extends RawExprUtil.UsedRef<ReturnType<HavingDelegateT>> ?
         unknown :
         [
             "HAVING expression contains some invalid columns; the following are not allowed:",
             Exclude<
                 ColumnUtil.FromColumnRef<
-                    RawExprUtil.UsedRef<ReturnType<AndHavingDelegateT>>
+                    RawExprUtil.UsedRef<ReturnType<HavingDelegateT>>
                 >,
                 ColumnUtil.FromColumnRef<
                     ColumnRefUtil.FromQuery<QueryT>
@@ -68,13 +68,13 @@ export type AssertValidAndHavingDelegate<
 );
 
 //Must be called after `FROM` as per MySQL
-export function andHaving<
+export function having<
     QueryT extends AfterFromClause,
-    AndHavingDelegateT extends AndHavingDelegate<QueryT>
+    HavingDelegateT extends HavingDelegate<QueryT>
 > (
     query : QueryT,
-    delegate : AssertValidAndHavingDelegate<QueryT, AndHavingDelegateT>
-) : AndHaving<QueryT> {
+    delegate : AssertValidHavingDelegate<QueryT, HavingDelegateT>
+) : Having<QueryT> {
     if (query._joins == undefined) {
         throw new Error(`Cannot use HAVING before FROM clause`);
     }
@@ -82,7 +82,7 @@ export function andHaving<
     const rawExpr = delegate(
         ColumnRefUtil.toConvenient(queryRef),
         query
-    ) as ReturnType<AndHavingDelegateT>;
+    ) as ReturnType<HavingDelegateT>;
     const expr = ExprUtil.fromRawExpr(rawExpr);
 
     ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);
@@ -134,5 +134,5 @@ export function andHaving<
 
             _mapDelegate,
         }
-    ) as AndHaving<QueryT>;
+    ) as Having<QueryT>;
 }

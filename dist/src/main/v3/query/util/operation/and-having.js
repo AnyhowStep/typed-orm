@@ -5,7 +5,7 @@ const column_ref_1 = require("../../../column-ref");
 const expr_1 = require("../../../expr");
 const expr_library_1 = require("../../../expr-library");
 //Must be called after `FROM` as per MySQL
-function andHaving(query, delegate) {
+function having(query, delegate) {
     if (query._joins == undefined) {
         throw new Error(`Cannot use HAVING before FROM clause`);
     }
@@ -33,5 +33,5 @@ function andHaving(query, delegate) {
         _mapDelegate,
     });
 }
-exports.andHaving = andHaving;
+exports.having = having;
 //# sourceMappingURL=and-having.js.map

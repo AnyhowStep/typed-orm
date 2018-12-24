@@ -560,20 +560,20 @@ export class Query<DataT extends QueryData> {
         );
     }
 
-    andWhere<
-        AndWhereDelegateT extends QueryUtil.AndWhereDelegate<
+    where<
+        WhereDelegateT extends QueryUtil.WhereDelegate<
             Extract<this, QueryUtil.AfterFromClause>
         >
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        delegate : QueryUtil.AssertValidAndWhereDelegate<
+        delegate : QueryUtil.AssertValidWhereDelegate<
             Extract<this, QueryUtil.AfterFromClause>,
-            AndWhereDelegateT
+            WhereDelegateT
         >
-    ) : QueryUtil.AndWhere<Extract<this, QueryUtil.AfterFromClause>> {
-        return QueryUtil.andWhere<
+    ) : QueryUtil.Where<Extract<this, QueryUtil.AfterFromClause>> {
+        return QueryUtil.where<
             Extract<this, QueryUtil.AfterFromClause>,
-            AndWhereDelegateT
+            WhereDelegateT
         >(this, delegate);
     }
 
@@ -594,20 +594,20 @@ export class Query<DataT extends QueryData> {
         >(this, delegate);
     }
 
-    andHaving<
-        AndHavingDelegateT extends QueryUtil.AndHavingDelegate<
+    having<
+        HavingDelegateT extends QueryUtil.HavingDelegate<
             Extract<this, QueryUtil.AfterFromClause>
         >
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        delegate : QueryUtil.AssertValidAndHavingDelegate<
+        delegate : QueryUtil.AssertValidHavingDelegate<
             Extract<this, QueryUtil.AfterFromClause>,
-            AndHavingDelegateT
+            HavingDelegateT
         >
-    ) : QueryUtil.AndHaving<Extract<this, QueryUtil.AfterFromClause>> {
-        return QueryUtil.andHaving<
+    ) : QueryUtil.Having<Extract<this, QueryUtil.AfterFromClause>> {
+        return QueryUtil.having<
             Extract<this, QueryUtil.AfterFromClause>,
-            AndHavingDelegateT
+            HavingDelegateT
         >(this, delegate);
     }
 
@@ -860,39 +860,39 @@ export class Query<DataT extends QueryData> {
         return QueryUtil.map(this, delegate);
     }
 
-    andWhereIsNull<
-        DelegateT extends QueryUtil.AndWhereIsNullDelegate<
+    whereIsNull<
+        DelegateT extends QueryUtil.WhereIsNullDelegate<
             Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>
         >
     > (
         this : Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
         delegate : DelegateT
     ) : (
-        QueryUtil.AndWhereIsNull<
+        QueryUtil.WhereIsNull<
             Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
             DelegateT
         >
     ) {
-        return QueryUtil.andWhereIsNull<
+        return QueryUtil.whereIsNull<
             Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
             DelegateT
         >(this, delegate)
     }
 
-    andWhereIsNotNull<
-        DelegateT extends QueryUtil.AndWhereIsNotNullDelegate<
+    whereIsNotNull<
+        DelegateT extends QueryUtil.WhereIsNotNullDelegate<
             Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>
         >
     > (
         this : Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
         delegate : DelegateT
     ) : (
-        QueryUtil.AndWhereIsNotNull<
+        QueryUtil.WhereIsNotNull<
             Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
             DelegateT
         >
     ) {
-        return QueryUtil.andWhereIsNotNull<
+        return QueryUtil.whereIsNotNull<
             Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
             DelegateT
         >(this, delegate);

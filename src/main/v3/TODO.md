@@ -8,9 +8,9 @@
 + Implement replaceTable()
 
 + Implement type-narrowing `WHERE` expressions
-  + andWhereIsNull
-  + andWhereIsNotNull
-  + andWhereIsEqual
+  + whereIsNull
+  + whereIsNotNull
+  + whereIsEqual
 + Implement `Query.useJoins()`
 
 + Implement `Column.asc()/.desc()`, `Expr.asc()/.desc()` convenience methods

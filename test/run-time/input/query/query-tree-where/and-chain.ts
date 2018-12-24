@@ -14,8 +14,8 @@ tape(__filename, (t) => {
     );
 
     const query = o.from(table)
-        .andWhere(c => o.and(c.z, c.x, o.and(c.y, c.z, o.and(c.x, c.y))))
-        .andWhere(c => c.z);
+        .where(c => o.and(c.z, c.x, o.and(c.y, c.z, o.and(c.x, c.y))))
+        .where(c => c.z);
 
     const formatter = new o.SqlFormatter();
     const sql = o.QueryTreeUtil.toSql(

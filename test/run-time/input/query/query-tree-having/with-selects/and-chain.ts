@@ -18,7 +18,7 @@ tape(__filename, (t) => {
             c.z.as("test"),
             o.eq(c.x, c.x).as("eq")
         ])
-        .andHaving(c => o.and(
+        .having(c => o.and(
             c.table.z,
             c.table.test,
             o.and(
@@ -30,7 +30,7 @@ tape(__filename, (t) => {
                 )
             )
         ))
-        .andHaving(c => c.table.z);
+        .having(c => c.table.z);
 
     const formatter = new o.SqlFormatter();
     const sql = o.QueryTreeUtil.toSql(

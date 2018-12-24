@@ -165,11 +165,11 @@ function isLocked () {
     return o.exists(
         o.requireParentJoins(merchant)
             .from(merchantLock)
-            .andWhere(c => o.eq(
+            .where(c => o.eq(
                 c.merchantLock.merchantId,
                 c.merchant.merchantId
             ))
-            .andWhere(() => lockIsLocked())
+            .where(() => lockIsLocked())
     ).as("isLocked");
 }
 
@@ -177,7 +177,7 @@ function hasExternalMerchant () {
     return o.exists(
         o.requireParentJoins(merchant)
             .from(externalMerchant)
-            .andWhere(c => o.eq(
+            .where(c => o.eq(
                 c.externalMerchant.merchantId,
                 c.merchant.merchantId
             ))
@@ -188,7 +188,7 @@ function isEnabled () {
     return o.and(
         o.requireParentJoins(merchant)
             .from(merchantEnabled)
-            .andWhere(c => o.eq(
+            .where(c => o.eq(
                 c.merchantEnabled.merchantId,
                 c.merchant.merchantId
             ))
@@ -200,7 +200,7 @@ function isEnabled () {
             .coalesce(true),
         o.requireParentJoins(business)
             .from(businessEnabled)
-            .andWhere(c => o.eq(
+            .where(c => o.eq(
                 c.businessEnabled.businessId,
                 c.business.businessId
             ))
@@ -222,7 +222,7 @@ function isEnabled () {
 function userHasPersonalInformation () {
     return o.exists(o.requireParentJoins(user)
         .from(personalInformation)
-        .andWhere(c => o.and(
+        .where(c => o.and(
             o.eq(
                 c.personalInformation.appId,
                 c.user.appId
@@ -259,7 +259,7 @@ function lastExternalMerchantCreationAttemptAt () {
     return o.requireParentJoins(merchant)
         //Get creation attempts of the merchant
         .from(externalMerchantCreationAttempt)
-        .andWhere(c => o.eq(
+        .where(c => o.eq(
             c.externalMerchantCreationAttempt.merchantId,
             c.merchant.merchantId
         ))
@@ -306,7 +306,7 @@ const query = o.from(merchant)
             c.businessPayOutMethod.payOutMethodId
         ]
     )
-    .andWhere(
+    .where(
         canStartExternalMerchantCreationAttempt
     )
     .select(c => [c])

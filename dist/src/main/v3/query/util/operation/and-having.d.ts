@@ -4,8 +4,8 @@ import { ColumnRefUtil } from "../../../column-ref";
 import { RawExpr, RawExprUtil } from "../../../raw-expr";
 import { ColumnUtil } from "../../../column";
 import { IAnonymousTypedExpr } from "../../../expr";
-export declare type AndHavingDelegate<QueryT extends AfterFromClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>, query: QueryT) => RawExpr<boolean>);
-export declare type AndHaving<QueryT extends AfterFromClause> = (Query<{
+export declare type HavingDelegate<QueryT extends AfterFromClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>, query: QueryT) => RawExpr<boolean>);
+export declare type Having<QueryT extends AfterFromClause> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];
     readonly _joins: QueryT["_joins"];
@@ -21,6 +21,6 @@ export declare type AndHaving<QueryT extends AfterFromClause> = (Query<{
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare type AssertValidAndHavingDelegate<QueryT extends AfterFromClause, AndHavingDelegateT extends AndHavingDelegate<QueryT>> = (AndHavingDelegateT & (ColumnRefUtil.FromQuery<QueryT> extends RawExprUtil.UsedRef<ReturnType<AndHavingDelegateT>> ? unknown : ["HAVING expression contains some invalid columns; the following are not allowed:", Exclude<ColumnUtil.FromColumnRef<RawExprUtil.UsedRef<ReturnType<AndHavingDelegateT>>>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>>]));
-export declare function andHaving<QueryT extends AfterFromClause, AndHavingDelegateT extends AndHavingDelegate<QueryT>>(query: QueryT, delegate: AssertValidAndHavingDelegate<QueryT, AndHavingDelegateT>): AndHaving<QueryT>;
+export declare type AssertValidHavingDelegate<QueryT extends AfterFromClause, HavingDelegateT extends HavingDelegate<QueryT>> = (HavingDelegateT & (ColumnRefUtil.FromQuery<QueryT> extends RawExprUtil.UsedRef<ReturnType<HavingDelegateT>> ? unknown : ["HAVING expression contains some invalid columns; the following are not allowed:", Exclude<ColumnUtil.FromColumnRef<RawExprUtil.UsedRef<ReturnType<HavingDelegateT>>>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>>]));
+export declare function having<QueryT extends AfterFromClause, HavingDelegateT extends HavingDelegate<QueryT>>(query: QueryT, delegate: AssertValidHavingDelegate<QueryT, HavingDelegateT>): Having<QueryT>;
 //# sourceMappingURL=and-having.d.ts.map

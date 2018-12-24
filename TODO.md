@@ -8,7 +8,7 @@ Support for accessing parent-query column references (in JOIN clause),
 + groupBy()
 + appendGroupBy()
 + having()
-+ andHaving()
++ having()
 + orderBy()
 + appendOrderBy()
 + unionOrderBy()

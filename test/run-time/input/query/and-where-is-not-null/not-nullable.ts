@@ -14,7 +14,7 @@ tape(__filename, (t) => {
 
     t.throws(() => {
         o.from(table)
-            .andWhereIsNotNull(c => c.x as unknown as typeof c.y);
+            .whereIsNotNull(c => c.x as unknown as typeof c.y);
     });
 
     t.end();

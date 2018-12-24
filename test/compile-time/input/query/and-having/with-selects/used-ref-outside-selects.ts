@@ -13,7 +13,7 @@ const test = o.ColumnUtil.fromExprSelectItem(table.columns.y.as("test"));
 
 
 export const query = o.from(table)
-    .andHaving(c => o.eq(
+    .having(c => o.eq(
         c.y,
         test
     ));

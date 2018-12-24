@@ -19,7 +19,7 @@ const sameName = o.table(
             it would compile but MySQL would give us an error.
 
             The only real way around this would be to not pass a
-            ColumnRef to andHaving() but to pass a Ref-type that
+            ColumnRef to having() but to pass a Ref-type that
             would have IExprSelectItem as well.
 
             And also having the usedRef use this new Ref-type.
@@ -34,7 +34,7 @@ const sameName = o.table(
 
 export const query = o.from(table)
     .select(c => [c.x.as("test")])
-    .andHaving(() => o.eq(
+    .having(() => o.eq(
         sameName.columns.test,
         sameName.columns.test
     ));

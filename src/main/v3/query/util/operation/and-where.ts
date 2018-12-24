@@ -7,7 +7,7 @@ import {ColumnUtil} from "../../../column";
 import {IAnonymousTypedExpr} from "../../../expr";
 import {and} from "../../../expr-library";
 
-export type AndWhereDelegate<
+export type WhereDelegate<
     QueryT extends AfterFromClause
 > = (
     (
@@ -16,7 +16,7 @@ export type AndWhereDelegate<
     ) => RawExpr<boolean>
 );
 
-export type AndWhere<
+export type Where<
     QueryT extends AfterFromClause
 > = (
     Query<{
@@ -43,19 +43,19 @@ export type AndWhere<
     }>
 );
 
-export type AssertValidAndWhereDelegate<
+export type AssertValidWhereDelegate<
     QueryT extends AfterFromClause,
-    AndWhereDelegateT extends AndWhereDelegate<QueryT>
+    WhereDelegateT extends WhereDelegate<QueryT>
 > = (
-    AndWhereDelegateT &
+    WhereDelegateT &
     (
-        ColumnRefUtil.FromQueryJoins<QueryT> extends RawExprUtil.UsedRef<ReturnType<AndWhereDelegateT>> ?
+        ColumnRefUtil.FromQueryJoins<QueryT> extends RawExprUtil.UsedRef<ReturnType<WhereDelegateT>> ?
         unknown :
         [
             "WHERE expression contains some invalid columns; the following are not allowed:",
             Exclude<
                 ColumnUtil.FromColumnRef<
-                    RawExprUtil.UsedRef<ReturnType<AndWhereDelegateT>>
+                    RawExprUtil.UsedRef<ReturnType<WhereDelegateT>>
                 >,
                 ColumnUtil.FromColumnRef<
                     ColumnRefUtil.FromQueryJoins<QueryT>
@@ -66,21 +66,21 @@ export type AssertValidAndWhereDelegate<
 );
 
 //Must be called after `FROM` as per MySQL
-export function andWhere<
+export function where<
     QueryT extends AfterFromClause,
-    AndWhereDelegateT extends AndWhereDelegate<QueryT>
+    WhereDelegateT extends WhereDelegate<QueryT>
 > (
     query : QueryT,
-    delegate : AssertValidAndWhereDelegate<QueryT, AndWhereDelegateT>
-) : AndWhere<QueryT> {
+    delegate : AssertValidWhereDelegate<QueryT, WhereDelegateT>
+) : Where<QueryT> {
     if (query._joins == undefined) {
         throw new Error(`Cannot use WHERE before FROM clause`);
     }
     const queryRef = ColumnRefUtil.fromQueryJoins(query);
-    const rawExpr : ReturnType<AndWhereDelegateT> = delegate(
+    const rawExpr : ReturnType<WhereDelegateT> = delegate(
         ColumnRefUtil.toConvenient(queryRef),
         query
-    ) as ReturnType<AndWhereDelegateT>;
+    ) as ReturnType<WhereDelegateT>;
     const expr = ExprUtil.fromRawExpr(rawExpr);
 
     ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);
@@ -132,5 +132,5 @@ export function andWhere<
 
             _mapDelegate,
         }
-    ) as AndWhere<QueryT>;
+    ) as Where<QueryT>;
 }

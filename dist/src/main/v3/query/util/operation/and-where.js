@@ -5,7 +5,7 @@ const column_ref_1 = require("../../../column-ref");
 const expr_1 = require("../../../expr");
 const expr_library_1 = require("../../../expr-library");
 //Must be called after `FROM` as per MySQL
-function andWhere(query, delegate) {
+function where(query, delegate) {
     if (query._joins == undefined) {
         throw new Error(`Cannot use WHERE before FROM clause`);
     }
@@ -33,5 +33,5 @@ function andWhere(query, delegate) {
         _mapDelegate,
     });
 }
-exports.andWhere = andWhere;
+exports.where = where;
 //# sourceMappingURL=and-where.js.map

@@ -14,8 +14,8 @@ tape(__filename, (t) => {
     );
 
     const query = o.from(table)
-        .andHaving(c => o.and(c.z, c.x, o.and(c.y, c.z, o.and(c.x, c.y))))
-        .andHaving(c => c.z);
+        .having(c => o.and(c.z, c.x, o.and(c.y, c.z, o.and(c.x, c.y))))
+        .having(c => c.z);
 
     const formatter = new o.SqlFormatter();
     const sql = o.QueryTreeUtil.toSql(

@@ -19,7 +19,7 @@ const joined1 = o.table(
 )
 
 export const query = o.from(table)
-    .andWhere(c => o.eq(
+    .where(c => o.eq(
         c.y,
         joined1.columns.c
     ));

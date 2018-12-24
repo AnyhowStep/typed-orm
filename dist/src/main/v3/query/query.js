@@ -52,14 +52,14 @@ class Query {
     selectExpr(delegate) {
         return QueryUtil.selectExpr(this, delegate);
     }
-    andWhere(delegate) {
-        return QueryUtil.andWhere(this, delegate);
+    where(delegate) {
+        return QueryUtil.where(this, delegate);
     }
     groupBy(delegate) {
         return QueryUtil.groupBy(this, delegate);
     }
-    andHaving(delegate) {
-        return QueryUtil.andHaving(this, delegate);
+    having(delegate) {
+        return QueryUtil.having(this, delegate);
     }
     orderBy(delegate) {
         return QueryUtil.orderBy(this, delegate);
@@ -139,11 +139,11 @@ class Query {
     map(delegate) {
         return QueryUtil.map(this, delegate);
     }
-    andWhereIsNull(delegate) {
-        return QueryUtil.andWhereIsNull(this, delegate);
+    whereIsNull(delegate) {
+        return QueryUtil.whereIsNull(this, delegate);
     }
-    andWhereIsNotNull(delegate) {
-        return QueryUtil.andWhereIsNotNull(this, delegate);
+    whereIsNotNull(delegate) {
+        return QueryUtil.whereIsNotNull(this, delegate);
     }
 }
 exports.Query = Query;

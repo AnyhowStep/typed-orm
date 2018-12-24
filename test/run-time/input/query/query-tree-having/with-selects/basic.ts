@@ -15,7 +15,7 @@ tape(__filename, (t) => {
 
     const query = o.from(table)
         .select(c => [c.z.as("test")])
-        .andHaving(c => c.test);
+        .having(c => c.test);
 
     const formatter = new o.SqlFormatter();
     const sql = o.QueryTreeUtil.toSql(

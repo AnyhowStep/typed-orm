@@ -12,4 +12,4 @@ const table = o.table(
 
 export const query = o.from(table)
     .select(c => [o.eq(c.x, c.x).as("eq"), c.z.as("test")])
-    .andHaving(c => o.and(c.__aliased.eq, c.table.test));
+    .having(c => o.and(c.__aliased.eq, c.table.test));

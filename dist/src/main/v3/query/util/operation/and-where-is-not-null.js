@@ -8,12 +8,12 @@ const expr_library_1 = require("../../../expr-library");
 const join_array_1 = require("../../../join-array");
 const column_identifier_ref_1 = require("../../../column-identifier-ref");
 const expr_library_2 = require("../../../expr-library");
-function andWhereIsNotNull(query, delegate) {
+function whereIsNotNull(query, delegate) {
     if (query._joins == undefined) {
-        throw new Error(`Cannot use andWhereIsNotNull() before FROM clause`);
+        throw new Error(`Cannot use whereIsNotNull() before FROM clause`);
     }
     if (query._selects != undefined) {
-        throw new Error(`Cannot use andWhereIsNotNull() after SELECT clause`);
+        throw new Error(`Cannot use whereIsNotNull() after SELECT clause`);
     }
     const queryRef = column_ref_1.ColumnRefUtil.fromJoinArray(query._joins);
     const rawColumn = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef));
@@ -47,5 +47,5 @@ function andWhereIsNotNull(query, delegate) {
         _mapDelegate,
     });
 }
-exports.andWhereIsNotNull = andWhereIsNotNull;
+exports.whereIsNotNull = whereIsNotNull;
 //# sourceMappingURL=and-where-is-not-null.js.map

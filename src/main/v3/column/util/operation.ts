@@ -156,7 +156,7 @@ export type As<ColumnT extends IColumn, AliasT extends string> = (
 
             o.from(table)
                 .select(c => [c.z.as("x")])
-                .andHaving(c => c.x)
+                .having(c => c.x)
 
             c.x in the HAVING clause is now ambiguous!
 

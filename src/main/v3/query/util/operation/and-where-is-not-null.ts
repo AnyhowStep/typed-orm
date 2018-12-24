@@ -9,7 +9,7 @@ import {JoinArrayUtil} from "../../../join-array";
 import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
 import {isNotNull} from "../../../expr-library";
 
-export type AndWhereIsNotNullDelegate<
+export type WhereIsNotNullDelegate<
     QueryT extends AfterFromClause & BeforeSelectClause
 > = (
     (
@@ -24,9 +24,9 @@ export type AndWhereIsNotNullDelegate<
         >
     )
 );
-export type AndWhereIsNotNull<
+export type WhereIsNotNull<
     QueryT extends AfterFromClause & BeforeSelectClause,
-    DelegateT extends AndWhereIsNotNullDelegate<QueryT>
+    DelegateT extends WhereIsNotNullDelegate<QueryT>
 > = (
     Query<{
         readonly _distinct : QueryT["_distinct"];
@@ -63,18 +63,18 @@ export type AndWhereIsNotNull<
     }>
 );
 
-export function andWhereIsNotNull<
+export function whereIsNotNull<
     QueryT extends AfterFromClause & BeforeSelectClause,
-    DelegateT extends AndWhereIsNotNullDelegate<QueryT>
+    DelegateT extends WhereIsNotNullDelegate<QueryT>
 > (
     query : QueryT,
     delegate : DelegateT
-) : AndWhereIsNotNull<QueryT, DelegateT> {
+) : WhereIsNotNull<QueryT, DelegateT> {
     if (query._joins == undefined) {
-        throw new Error(`Cannot use andWhereIsNotNull() before FROM clause`);
+        throw new Error(`Cannot use whereIsNotNull() before FROM clause`);
     }
     if (query._selects != undefined) {
-        throw new Error(`Cannot use andWhereIsNotNull() after SELECT clause`);
+        throw new Error(`Cannot use whereIsNotNull() after SELECT clause`);
     }
     const queryRef = ColumnRefUtil.fromJoinArray(query._joins as QueryT["_joins"]);
     const rawColumn : ReturnType<DelegateT> = delegate(
@@ -146,5 +146,5 @@ export function andWhereIsNotNull<
 
             _mapDelegate,
         }
-    ) as unknown as AndWhereIsNotNull<QueryT, DelegateT>;
+    ) as unknown as WhereIsNotNull<QueryT, DelegateT>;
 }
