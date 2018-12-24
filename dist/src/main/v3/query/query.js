@@ -145,6 +145,9 @@ class Query {
     whereIsNotNull(delegate) {
         return QueryUtil.whereIsNotNull(this, delegate);
     }
+    whereEq(delegate, value) {
+        return QueryUtil.whereEq(this, delegate, value);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

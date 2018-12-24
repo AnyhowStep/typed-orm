@@ -34,4 +34,5 @@ export declare type ToInterface<ColumnT extends IColumn> = (ColumnT extends ICol
 }> : never);
 export declare function setIsInSelectClause<ColumnT extends IColumn>(column: ColumnT, __isInSelectClause: boolean): Column<ColumnT>;
 export declare type ExtractNullable<ColumnT extends IColumn> = (ColumnT extends IColumn ? (null extends ReturnType<ColumnT["assertDelegate"]> ? ColumnT : never) : never);
+export declare type ExcludeNullable<ColumnT extends IColumn> = (ColumnT extends IColumn ? (null extends ReturnType<ColumnT["assertDelegate"]> ? never : ColumnT) : never);
 //# sourceMappingURL=operation.d.ts.map

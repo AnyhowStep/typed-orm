@@ -9,7 +9,7 @@ import { MapDelegate } from "../map-delegate";
 import { NonEmptyTuple } from "../tuple";
 import { ITable } from "../table";
 import { RawExpr, RawExprUtil } from "../raw-expr";
-import { PrimitiveExpr } from "../primitive-expr";
+import { PrimitiveExpr, NonNullPrimitiveExpr } from "../primitive-expr";
 export interface UnionQuery {
     readonly distinct: boolean;
     readonly query: QueryUtil.AfterSelectClause;
@@ -98,6 +98,7 @@ export declare class Query<DataT extends QueryData> {
     map<DelegateT extends MapDelegate<QueryUtil.MappedType<Extract<this, QueryUtil.AfterSelectClause>>, QueryUtil.UnmappedType<Extract<this, QueryUtil.AfterSelectClause>["_selects"]>, any>>(this: Extract<this, QueryUtil.AfterSelectClause>, delegate: DelegateT): (QueryUtil.Map<Extract<this, QueryUtil.AfterSelectClause>, DelegateT>);
     whereIsNull<DelegateT extends QueryUtil.WhereIsNullDelegate<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>>>(this: Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, delegate: DelegateT): (QueryUtil.WhereIsNull<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, DelegateT>);
     whereIsNotNull<DelegateT extends QueryUtil.WhereIsNotNullDelegate<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>>>(this: Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, delegate: DelegateT): (QueryUtil.WhereIsNotNull<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, DelegateT>);
+    whereEq<DelegateT extends QueryUtil.WhereEqDelegate<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>>, ValueT extends NonNullPrimitiveExpr>(this: Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, delegate: DelegateT, value: QueryUtil.AssertValidEqTarget<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, DelegateT, ValueT>): (QueryUtil.WhereEq<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, DelegateT, ValueT>);
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertValidJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 export declare function select<SelectDelegateT extends QueryUtil.SelectDelegate<QueryUtil.NewInstance>>(delegate: QueryUtil.AssertValidSelectDelegate<QueryUtil.NewInstance, SelectDelegateT>): (QueryUtil.Select<QueryUtil.NewInstance, SelectDelegateT>);

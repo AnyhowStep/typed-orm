@@ -212,3 +212,12 @@ export type ExtractNullable<ColumnT extends IColumn> = (
     ) :
     never
 );
+export type ExcludeNullable<ColumnT extends IColumn> = (
+    ColumnT extends IColumn ?
+    (
+        null extends ReturnType<ColumnT["assertDelegate"]> ?
+        never :
+        ColumnT
+    ) :
+    never
+);

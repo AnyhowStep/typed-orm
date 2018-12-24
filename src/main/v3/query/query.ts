@@ -10,7 +10,7 @@ import {DISTINCT} from "../constants";
 import {NonEmptyTuple} from "../tuple";
 import {ITable} from "../table";
 import { RawExpr, RawExprUtil } from "../raw-expr";
-import { PrimitiveExpr } from "../primitive-expr";
+import { PrimitiveExpr, NonNullPrimitiveExpr } from "../primitive-expr";
 
 export interface UnionQuery {
     //Defaults to true
@@ -896,6 +896,33 @@ export class Query<DataT extends QueryData> {
             Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
             DelegateT
         >(this, delegate);
+    }
+
+    whereEq<
+        DelegateT extends QueryUtil.WhereEqDelegate<
+            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>
+        >,
+        ValueT extends NonNullPrimitiveExpr
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+        delegate : DelegateT,
+        value : QueryUtil.AssertValidEqTarget<
+            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            DelegateT,
+            ValueT
+        >
+    ) : (
+        QueryUtil.WhereEq<
+            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            DelegateT,
+            ValueT
+        >
+    ) {
+        return QueryUtil.whereEq<
+            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            DelegateT,
+            ValueT
+        >(this, delegate, value);
     }
 }
 
