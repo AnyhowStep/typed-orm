@@ -7,12 +7,17 @@
 
 + Implement replaceTable()
 
-+ Implement type-narrowing `WHERE` expressions
-  + whereIsNull
-  + whereIsNotNull
-  + whereIsEqual
 + Implement `Query.useJoins()`
+  + Implement join declarations
 
 + Implement `Column.asc()/.desc()`, `Expr.asc()/.desc()` convenience methods
 
-+ UTC Only
++ INSERT statements
+  + Polymorphic Insert
++ UPDATE statements
++ DELETE statements
+
++ Validate table declarations
++ Log table pattern
++ Pooled connection
++ Transactions
