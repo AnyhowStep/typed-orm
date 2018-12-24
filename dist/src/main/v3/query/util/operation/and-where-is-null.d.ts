@@ -9,11 +9,11 @@ export declare type AndWhereIsNullDelegate<QueryT extends AfterFromClause & Befo
 export declare type AndWhereIsNull<QueryT extends AfterFromClause & BeforeSelectClause, DelegateT extends AndWhereIsNullDelegate<QueryT>> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];
-    readonly _joins: (ReturnType<DelegateT>["name"] extends QueryT["_joins"][number]["aliasedTable"]["alias"] ? JoinArrayUtil.ReplaceColumn<QueryT["_joins"], Column<{
+    readonly _joins: (JoinArrayUtil.ReplaceColumn<QueryT["_joins"], Column<{
         tableAlias: ReturnType<DelegateT>["tableAlias"];
         name: ReturnType<DelegateT>["name"];
         assertDelegate: sd.AssertDelegate<null>;
-    }>> : QueryT["_joins"]);
+    }>>);
     readonly _parentJoins: QueryT["_parentJoins"];
     readonly _selects: QueryT["_selects"];
     readonly _where: IAnonymousTypedExpr<boolean>;

@@ -122,7 +122,7 @@ export namespace Join {
     > = (
         JoinT extends IJoin ?
         (
-            ColumnT["tableAlias"] extends JoinT["aliasedTable"] ?
+            ColumnT["tableAlias"] extends JoinT["aliasedTable"]["alias"] ?
             (
                 ColumnT["name"] extends keyof JoinT["columns"] ?
                 (

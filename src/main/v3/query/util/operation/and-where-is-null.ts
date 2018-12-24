@@ -8,7 +8,6 @@ import {and} from "../../../expr-library";
 import {JoinArrayUtil} from "../../../join-array";
 import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
 import {isNull} from "../../../expr-library";
-import {IJoin} from "../../../join";
 
 export type AndWhereIsNullDelegate<
     QueryT extends AfterFromClause & BeforeSelectClause
@@ -34,13 +33,11 @@ export type AndWhereIsNull<
         readonly _sqlCalcFoundRows : QueryT["_sqlCalcFoundRows"];
 
         readonly _joins : (
-            ReturnType<DelegateT>["name"] extends QueryT["_joins"][number]["aliasedTable"]["alias"] ?
             JoinArrayUtil.ReplaceColumn<QueryT["_joins"], Column<{
                 tableAlias : ReturnType<DelegateT>["tableAlias"],
                 name : ReturnType<DelegateT>["name"],
                 assertDelegate : sd.AssertDelegate<null>,
-            }>> :
-            QueryT["_joins"]
+            }>>
         ),
         readonly _parentJoins : QueryT["_parentJoins"],
         readonly _selects : QueryT["_selects"],
@@ -123,7 +120,7 @@ export function andWhereIsNull<
             _distinct,
             _sqlCalcFoundRows,
 
-            _joins : (newJoins as IJoin[]),
+            _joins : newJoins,
             _parentJoins,
             _selects,
             _where : (
