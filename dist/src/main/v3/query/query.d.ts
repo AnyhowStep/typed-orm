@@ -7,7 +7,7 @@ import { ColumnIdentifier } from "../column-identifier";
 import { Order } from "../order";
 import { MapDelegate } from "../map-delegate";
 import { NonEmptyTuple } from "../tuple";
-import { ITable } from "../table";
+import { ITable, Table } from "../table";
 import { RawExpr, RawExprUtil } from "../raw-expr";
 import { PrimitiveExpr, NonNullPrimitiveExpr } from "../primitive-expr";
 export interface UnionQuery {
@@ -100,6 +100,7 @@ export declare class Query<DataT extends QueryData> {
     whereIsNotNull<DelegateT extends QueryUtil.WhereIsNotNullDelegate<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>>>(this: Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, delegate: DelegateT): (QueryUtil.WhereIsNotNull<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, DelegateT>);
     whereEq<DelegateT extends QueryUtil.WhereEqDelegate<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>>, ValueT extends NonNullPrimitiveExpr>(this: Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, delegate: DelegateT, value: QueryUtil.AssertValidEqTarget<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, DelegateT, ValueT>): (QueryUtil.WhereEq<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, DelegateT, ValueT>);
     whereNullSafeEq<DelegateT extends QueryUtil.WhereNullSafeEqDelegate<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>>, ValueT extends PrimitiveExpr>(this: Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, delegate: DelegateT, value: QueryUtil.AssertValidNullSafeEqTarget<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, DelegateT, ValueT>): (QueryUtil.WhereNullSafeEq<Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>, DelegateT, ValueT>);
+    whereEqCandidateKey<TableT extends ITable>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT, key: Table.CandidateKey<TableT>): QueryUtil.WhereEqCandidateKey<Extract<this, QueryUtil.AfterFromClause>>;
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertValidJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 export declare function select<SelectDelegateT extends QueryUtil.SelectDelegate<QueryUtil.NewInstance>>(delegate: QueryUtil.AssertValidSelectDelegate<QueryUtil.NewInstance, SelectDelegateT>): (QueryUtil.Select<QueryUtil.NewInstance, SelectDelegateT>);

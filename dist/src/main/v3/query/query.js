@@ -151,6 +151,9 @@ class Query {
     whereNullSafeEq(delegate, value) {
         return QueryUtil.whereNullSafeEq(this, delegate, value);
     }
+    whereEqCandidateKey(table, key) {
+        return QueryUtil.whereEqCandidateKey(this, table, key);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

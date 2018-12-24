@@ -8,7 +8,7 @@ import {Order} from "../order";
 import {MapDelegate} from "../map-delegate";
 import {DISTINCT} from "../constants";
 import {NonEmptyTuple} from "../tuple";
-import {ITable} from "../table";
+import {ITable, Table} from "../table";
 import { RawExpr, RawExprUtil } from "../raw-expr";
 import { PrimitiveExpr, NonNullPrimitiveExpr } from "../primitive-expr";
 
@@ -950,6 +950,20 @@ export class Query<DataT extends QueryData> {
             DelegateT,
             ValueT
         >(this, delegate, value);
+    }
+
+    whereEqCandidateKey<
+        TableT extends ITable,
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        table : TableT,
+        key : Table.CandidateKey<TableT>
+    ) : QueryUtil.WhereEqCandidateKey<Extract<this, QueryUtil.AfterFromClause>> {
+        return QueryUtil.whereEqCandidateKey(
+            this,
+            table,
+            key
+        );
     }
 }
 
