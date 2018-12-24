@@ -15,4 +15,4 @@
 
 + Implement `Column.asc()/.desc()`, `Expr.asc()/.desc()` convenience methods
 
-+ UTC Offset support (If you store your times as EDT/EST, good luck?)
++ UTC Only
