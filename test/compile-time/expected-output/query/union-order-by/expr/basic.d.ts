@@ -87,7 +87,7 @@ export declare const query: o.Query<{
     readonly _orders: undefined;
     readonly _limit: undefined;
     readonly _unions: undefined;
-    readonly _unionOrders: [o.OrderExpr, o.Sort][];
+    readonly _unionOrders: [o.SortExpr, o.SortDirection][];
     readonly _unionLimit: undefined;
     readonly _mapDelegate: undefined;
 }>;

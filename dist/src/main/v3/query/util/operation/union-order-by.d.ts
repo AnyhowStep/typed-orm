@@ -4,9 +4,9 @@ import { ColumnRefUtil } from "../../../column-ref";
 import { IExpr } from "../../../expr";
 import { ColumnUtil } from "../../../column";
 import { NonEmptyTuple } from "../../../tuple";
-import { RawOrder, Order, OrderUtil, Sort } from "../../../order";
+import { RawOrder, Order, OrderUtil, SortDirection } from "../../../order";
 import { ToUnknownIfAllFieldsNever } from "../../../type";
-export declare type UnionOrderByDelegate<QueryT extends AfterSelectClause & (AfterFromClause | AfterUnionClause)> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuerySelects<QueryT>>, query: QueryT) => NonEmptyTuple<ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuerySelects<QueryT>> | [ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuerySelects<QueryT>>, Sort] | IExpr | [IExpr, Sort]>);
+export declare type UnionOrderByDelegate<QueryT extends AfterSelectClause & (AfterFromClause | AfterUnionClause)> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuerySelects<QueryT>>, query: QueryT) => NonEmptyTuple<ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuerySelects<QueryT>> | [ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuerySelects<QueryT>>, SortDirection] | IExpr | [IExpr, SortDirection]>);
 export declare type UnionOrderBy<QueryT extends AfterSelectClause & (AfterFromClause | AfterUnionClause)> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];

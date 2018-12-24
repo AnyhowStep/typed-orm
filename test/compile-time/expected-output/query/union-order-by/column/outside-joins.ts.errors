@@ -1,7 +1,7 @@
 [
   {
     "messageText": {
-      "messageText": "Type 'Column<{ tableAlias: \"table2\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to type 'IExpr<ExprData> | [IExpr<ExprData>, Sort] | Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }> | [...]'.",
+      "messageText": "Type 'Column<{ tableAlias: \"table2\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to type 'IExpr<ExprData> | [IExpr<ExprData>, SortDirection] | Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }> | [...]'.",
       "category": 1,
       "code": 2322,
       "next": {

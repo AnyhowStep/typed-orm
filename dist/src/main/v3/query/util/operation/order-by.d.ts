@@ -4,9 +4,9 @@ import { ColumnRefUtil } from "../../../column-ref";
 import { IExpr } from "../../../expr";
 import { ColumnUtil } from "../../../column";
 import { NonEmptyTuple } from "../../../tuple";
-import { RawOrder, Order, OrderUtil, Sort } from "../../../order";
+import { RawOrder, Order, OrderUtil, SortDirection } from "../../../order";
 import { ToUnknownIfAllFieldsNever } from "../../../type";
-export declare type OrderByDelegate<QueryT extends AfterFromClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>, query: QueryT) => NonEmptyTuple<ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> | [ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>, Sort] | IExpr | [IExpr, Sort]>);
+export declare type OrderByDelegate<QueryT extends AfterFromClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>, query: QueryT) => NonEmptyTuple<ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> | [ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>, SortDirection] | IExpr | [IExpr, SortDirection]>);
 export declare type OrderBy<QueryT extends AfterFromClause> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];

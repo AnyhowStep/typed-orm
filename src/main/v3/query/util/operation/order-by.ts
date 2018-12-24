@@ -4,7 +4,7 @@ import {ColumnRefUtil} from "../../../column-ref";
 import {IExpr, ExprUtil} from "../../../expr";
 import {ColumnUtil} from "../../../column";
 import {NonEmptyTuple} from "../../../tuple";
-import {RawOrder, Order, OrderUtil, Sort} from "../../../order";
+import {RawOrder, Order, OrderUtil, SortDirection} from "../../../order";
 import {ToUnknownIfAllFieldsNever} from "../../../type";
 
 export type OrderByDelegate<
@@ -21,12 +21,12 @@ export type OrderByDelegate<
             ColumnUtil.FromColumnRef<
                 ColumnRefUtil.FromQuery<QueryT>
             >,
-            Sort
+            SortDirection
         ] |
         IExpr |
         [
             IExpr,
-            Sort
+            SortDirection
         ]
     >
 );

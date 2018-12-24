@@ -1,14 +1,14 @@
-import {Sort, OrderExpr, Order, ASC, DESC} from "../order";
+import {SortDirection, SortExpr, Order, ASC, DESC} from "../order";
 import {ColumnUtil} from "../../column";
 import {ExprUtil} from "../../expr";
 
-export function isSort (raw : any) : raw is Sort {
+export function isSort (raw : any) : raw is SortDirection {
     return (
         raw === ASC ||
         raw === DESC
     );
 }
-export function isOrderExpr (raw : any) : raw is OrderExpr {
+export function isOrderExpr (raw : any) : raw is SortExpr {
     return (
         ColumnUtil.isColumn(raw) ||
         ExprUtil.isExpr(raw)
