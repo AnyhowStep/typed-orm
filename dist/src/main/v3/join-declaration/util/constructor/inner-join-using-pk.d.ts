@@ -5,15 +5,15 @@ import { AssertValidJoinTarget } from "../predicate";
 import { InnerJoin } from "./inner-join";
 export declare type AssertValidJoinUsingPkTarget<FromTableT extends IAliasedTable, ToTableT extends ITable & {
     primaryKey: string[];
-}> = (AssertValidJoinTarget<FromTableT, ToTableT> & (ToTableT["primaryKey"][number] extends FromTableT["columns"][string]["name"] ? ((ColumnUtil.ToNullable<Extract<ToTableT["columns"][string], {
+}> = (AssertValidJoinTarget<FromTableT, ToTableT> & (ToTableT["primaryKey"][number] extends ColumnUtil.FromColumnMap<FromTableT["columns"]>["name"] ? ((ColumnUtil.ToInterface<ColumnUtil.WithTableAlias<ColumnUtil.ToNullable<Extract<ColumnUtil.FromColumnMap<ToTableT["columns"]>, {
     name: ToTableT["primaryKey"][number];
-}>>) extends (ColumnUtil.ToNullable<Extract<FromTableT["columns"][string], {
+}>>, string>>) extends (ColumnUtil.ToInterface<ColumnUtil.WithTableAlias<ColumnUtil.ToNullable<Extract<ColumnUtil.FromColumnMap<FromTableT["columns"]>, {
     name: ToTableT["primaryKey"][number];
-}>>) ? unknown : [FromTableT["alias"], "has incompatible columns", Exclude<ColumnUtil.ToNullable<Extract<ToTableT["columns"][string], {
+}>>, string>>) ? unknown : [FromTableT["alias"], "has incompatible columns; expecting", Exclude<ColumnUtil.ToInterface<ColumnUtil.WithTableAlias<ColumnUtil.ToNullable<Extract<ColumnUtil.FromColumnMap<ToTableT["columns"]>, {
     name: ToTableT["primaryKey"][number];
-}>>, ColumnUtil.ToNullable<Extract<FromTableT["columns"][string], {
+}>>, string>>, ColumnUtil.ToInterface<ColumnUtil.WithTableAlias<ColumnUtil.ToNullable<Extract<ColumnUtil.FromColumnMap<FromTableT["columns"]>, {
     name: ToTableT["primaryKey"][number];
-}>>>]) : [FromTableT["alias"], "is missing columns", Exclude<ToTableT["primaryKey"][number], FromTableT["columns"][string]["name"]>]));
+}>>, string>>>]) : [FromTableT["alias"], "is missing columns", Exclude<ToTableT["primaryKey"][number], ColumnUtil.FromColumnMap<FromTableT["columns"]>["name"]>]));
 export declare function innerJoinUsingPk<FromTableT extends IAliasedTable, ToTableT extends ITable & {
     primaryKey: string[];
 }>(fromTable: FromTableT, toTable: AssertValidJoinUsingPkTarget<FromTableT, ToTableT>): InnerJoin<FromTableT, ToTableT>;

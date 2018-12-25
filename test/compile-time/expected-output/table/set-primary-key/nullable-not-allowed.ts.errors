@@ -1,0 +1,9 @@
+[
+  {
+    "messageText": "Property 'b' does not exist on type '{ a: Column<{ tableAlias: \"joined2\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | number | Date; }; }>; y: Column<{ tableAlias: \"joined2\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; }'.",
+    "code": 2339,
+    "category": 1,
+    "length": 1,
+    "start": 265
+  }
+]

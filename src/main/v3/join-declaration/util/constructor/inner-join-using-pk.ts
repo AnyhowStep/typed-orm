@@ -10,38 +10,58 @@ export type AssertValidJoinUsingPkTarget<
 > = (
     AssertValidJoinTarget<FromTableT, ToTableT> &
     (
-        ToTableT["primaryKey"][number] extends FromTableT["columns"][string]["name"] ?
+        ToTableT["primaryKey"][number] extends ColumnUtil.FromColumnMap<FromTableT["columns"]>["name"] ?
         (
             (
-                ColumnUtil.ToNullable<
-                    Extract<
-                        ToTableT["columns"][string],
-                        { name : ToTableT["primaryKey"][number] }
+                ColumnUtil.ToInterface<
+                    ColumnUtil.WithTableAlias<
+                        ColumnUtil.ToNullable<
+                            Extract<
+                                ColumnUtil.FromColumnMap<ToTableT["columns"]>,
+                                { name : ToTableT["primaryKey"][number] }
+                            >
+                        >,
+                        string
                     >
                 >
             ) extends (
-                ColumnUtil.ToNullable<
-                    Extract<
-                        FromTableT["columns"][string],
-                        { name : ToTableT["primaryKey"][number] }
+                ColumnUtil.ToInterface<
+                    ColumnUtil.WithTableAlias<
+                        ColumnUtil.ToNullable<
+                            Extract<
+                                ColumnUtil.FromColumnMap<FromTableT["columns"]>,
+                                { name : ToTableT["primaryKey"][number] }
+                            >
+                        >,
+                        string
                     >
                 >
             ) ?
             unknown :
             [
                 FromTableT["alias"],
-                "has incompatible columns",
+                "has incompatible columns; expecting",
                 Exclude<
-                    ColumnUtil.ToNullable<
-                        Extract<
-                            ToTableT["columns"][string],
-                            { name : ToTableT["primaryKey"][number] }
+                    ColumnUtil.ToInterface<
+                        ColumnUtil.WithTableAlias<
+                            ColumnUtil.ToNullable<
+                                Extract<
+                                    ColumnUtil.FromColumnMap<ToTableT["columns"]>,
+                                    { name : ToTableT["primaryKey"][number] }
+                                >
+                            >,
+                            string
                         >
                     >,
-                    ColumnUtil.ToNullable<
-                        Extract<
-                            FromTableT["columns"][string],
-                            { name : ToTableT["primaryKey"][number] }
+                    ColumnUtil.ToInterface<
+                        ColumnUtil.WithTableAlias<
+                            ColumnUtil.ToNullable<
+                                Extract<
+                                    ColumnUtil.FromColumnMap<FromTableT["columns"]>,
+                                    { name : ToTableT["primaryKey"][number] }
+                                >
+                            >,
+                            string
                         >
                     >
                 >
@@ -52,7 +72,7 @@ export type AssertValidJoinUsingPkTarget<
             "is missing columns",
             Exclude<
                 ToTableT["primaryKey"][number],
-                FromTableT["columns"][string]["name"]
+                ColumnUtil.FromColumnMap<FromTableT["columns"]>["name"]
             >
         ]
     )

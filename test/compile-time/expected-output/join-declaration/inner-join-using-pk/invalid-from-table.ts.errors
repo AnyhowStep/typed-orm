@@ -1,0 +1,18 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join-declaration/join-declaration\").JoinDeclaration<{ readonly fromTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: import(\"...' is not assignable to parameter of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join-declaration/join-declaration\").JoinDeclaration<{ readonly fromTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: import(\"...'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type 'JoinDeclaration<{ readonly fromTable: Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | ... 1 more ... | Date; }; }>; readonly b: Column<...>; readonly y: ...' is missing the following properties from type '[\"Invalid fromTable;\", \"joined1\", \"is not in joins\"]': 0, 1, 2, length, and 31 more.",
+        "category": 1,
+        "code": 2740
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 2,
+    "start": 632
+  }
+]
