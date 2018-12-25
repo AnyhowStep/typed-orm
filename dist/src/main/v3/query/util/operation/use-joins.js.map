@@ -1,0 +1,1 @@
+{"version":3,"file":"use-joins.js","sourceRoot":"","sources":["../../../../../../../src/main/v3/query/util/operation/use-joins.ts"],"names":[],"mappings":";;AAMA,yCAAmC;AA4EnC,SAAgB,QAAQ,CAIpB,KAAc,EACd,GAAmD;IAInD,IAAI,MAAM,GAAS,KAAK,CAAC;IACzB,KAAK,IAAI,QAAQ,IAAI,GAAG,EAAE;QACtB,MAAM,GAAG,kBAAO,CAAC,MAAM,EAAE,QAAe,CAAC,CAAC;KAC7C;IACD,OAAO,MAAM,CAAC;AAClB,CAAC;AAdD,4BAcC"}

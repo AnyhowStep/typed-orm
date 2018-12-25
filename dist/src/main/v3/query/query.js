@@ -157,6 +157,9 @@ class Query {
     useJoin(joinDecl) {
         return QueryUtil.useJoin(this, joinDecl);
     }
+    useJoins(...arr) {
+        return QueryUtil.useJoins(this, arr);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

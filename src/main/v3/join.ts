@@ -2,8 +2,9 @@ import {IAliasedTable, AliasedTable} from "./aliased-table";
 import {ColumnMap, ColumnMapUtil} from "./column-map";
 import {IColumn, ColumnUtil} from "./column";
 import * as e from "enum-util";
-import { ColumnIdentifierMapUtil } from "./column-identifier-map";
-import { Writable } from "./type";
+import {ColumnIdentifierMapUtil} from "./column-identifier-map";
+import {Writable} from "./type";
+import {IJoinDeclaration} from "./join-declaration";
 
 export enum JoinType {
     FROM  = "FROM",
@@ -175,4 +176,16 @@ export namespace Join {
             join.to
         ) as ReplaceColumn<JoinT, ColumnT>;
     }
+
+    export type FromJoinDeclaration<
+        JoinDeclT extends IJoinDeclaration
+    > = (
+        JoinDeclT extends IJoinDeclaration ?
+        Join<{
+            aliasedTable : JoinDeclT["toTable"],
+            columns : JoinDeclT["toTable"]["columns"],
+            nullable : JoinDeclT["nullable"],
+        }> :
+        never
+    );
 }

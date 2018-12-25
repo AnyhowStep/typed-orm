@@ -2,6 +2,7 @@ import { IAliasedTable } from "./aliased-table";
 import { ColumnMap } from "./column-map";
 import { IColumn } from "./column";
 import * as e from "enum-util";
+import { IJoinDeclaration } from "./join-declaration";
 export declare enum JoinType {
     FROM = "FROM",
     INNER = "INNER",
@@ -48,5 +49,10 @@ export declare namespace Join {
         readonly nullable: JoinT["nullable"];
     }>) : JoinT) : JoinT) : never);
     function replaceColumn<JoinT extends IJoin, ColumnT extends IColumn>(join: JoinT, column: ColumnT): ReplaceColumn<JoinT, ColumnT>;
+    type FromJoinDeclaration<JoinDeclT extends IJoinDeclaration> = (JoinDeclT extends IJoinDeclaration ? Join<{
+        aliasedTable: JoinDeclT["toTable"];
+        columns: JoinDeclT["toTable"]["columns"];
+        nullable: JoinDeclT["nullable"];
+    }> : never);
 }
 //# sourceMappingURL=join.d.ts.map

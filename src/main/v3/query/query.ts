@@ -986,6 +986,26 @@ export class Query<DataT extends QueryData> {
             JoinDeclT
         >(this, joinDecl);
     }
+
+    useJoins<
+        ArrT extends NonEmptyTuple<IJoinDeclaration>
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        ...arr : QueryUtil.AssertValidJoinDeclarationArray<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ArrT
+        >
+    ) : (
+        QueryUtil.UseJoins<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ArrT
+        >
+    ) {
+        return QueryUtil.useJoins<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ArrT
+        >(this, arr);
+    }
 }
 
 export function from<AliasedTableT extends IAliasedTable> (
