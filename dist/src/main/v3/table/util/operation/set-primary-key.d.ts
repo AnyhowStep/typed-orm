@@ -4,10 +4,10 @@ import { NonNullPrimitiveExpr } from "../../../primitive-expr";
 import { AssertValidCandidateKeyDelegate } from "./add-candidate-key";
 export declare type PrimaryKeyColumnMap<TableT extends ITable> = ({
     [columnName in {
-        [columnName in keyof TableT["columns"]]: (TableT["columns"][columnName] extends IAnonymousTypedColumn<NonNullPrimitiveExpr> ? (columnName extends TableT["candidateKeys"][number][number] ? never : columnName) : never);
+        [columnName in keyof TableT["columns"]]: (TableT["columns"][columnName] extends IAnonymousTypedColumn<NonNullPrimitiveExpr> ? columnName : never);
     }[keyof TableT["columns"]]]: (TableT["columns"][columnName]);
 });
-export declare type PrimaryKeyDelegate<TableT extends ITable> = ((columnMap: PrimaryKeyColumnMap<TableT>) => ((PrimaryKeyColumnMap<TableT>[keyof PrimaryKeyColumnMap<TableT>])[]));
+export declare type PrimaryKeyDelegate<TableT extends ITable> = ((columnMap: PrimaryKeyColumnMap<TableT>) => (TableT["columns"][string][]));
 export declare type SetPrimaryKey<TableT extends ITable, DelegateT extends PrimaryKeyDelegate<TableT>> = (Table<{
     readonly usedRef: TableT["usedRef"];
     readonly alias: TableT["alias"];

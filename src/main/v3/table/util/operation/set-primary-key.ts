@@ -9,11 +9,7 @@ export type PrimaryKeyColumnMap<TableT extends ITable> = (
         [columnName in {
             [columnName in keyof TableT["columns"]] : (
                 TableT["columns"][columnName] extends IAnonymousTypedColumn<NonNullPrimitiveExpr> ?
-                (
-                    columnName extends TableT["candidateKeys"][number][number] ?
-                    never :
-                    columnName
-                ) :
+                columnName :
                 //Cannot be nullable
                 never
             )
@@ -26,11 +22,12 @@ export type PrimaryKeyDelegate<
     TableT extends ITable
 > = (
     (columnMap : PrimaryKeyColumnMap<TableT>) => (
-        (
+        TableT["columns"][string][]
+        /*(
             PrimaryKeyColumnMap<TableT>[
                 keyof PrimaryKeyColumnMap<TableT>
             ]
-        )[]
+        )[]*/
     )
 );
 export type SetPrimaryKey<
