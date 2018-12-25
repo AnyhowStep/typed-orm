@@ -154,6 +154,9 @@ class Query {
     whereEqCandidateKey(table, key) {
         return QueryUtil.whereEqCandidateKey(this, table, key);
     }
+    useJoin(joinDecl) {
+        return QueryUtil.useJoin(this, joinDecl);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

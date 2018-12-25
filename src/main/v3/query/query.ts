@@ -9,8 +9,9 @@ import {MapDelegate} from "../map-delegate";
 import {DISTINCT} from "../constants";
 import {NonEmptyTuple} from "../tuple";
 import {ITable, Table} from "../table";
-import { RawExpr, RawExprUtil } from "../raw-expr";
-import { PrimitiveExpr, NonNullPrimitiveExpr } from "../primitive-expr";
+import {RawExpr, RawExprUtil} from "../raw-expr";
+import {PrimitiveExpr, NonNullPrimitiveExpr} from "../primitive-expr";
+import {IJoinDeclaration} from "../join-declaration";
 
 export interface UnionQuery {
     //Defaults to true
@@ -964,6 +965,26 @@ export class Query<DataT extends QueryData> {
             table,
             key
         );
+    }
+
+    useJoin<
+        JoinDeclT extends IJoinDeclaration
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        joinDecl : QueryUtil.AssertValidJoinDeclaration<
+            Extract<this, QueryUtil.AfterFromClause>,
+            JoinDeclT
+        >
+    ) : (
+        QueryUtil.UseJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            JoinDeclT
+        >
+    ) {
+        return QueryUtil.useJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            JoinDeclT
+        >(this, joinDecl);
     }
 }
 

@@ -32,6 +32,7 @@ __export(require("./union-limit"));
 __export(require("./union-offset"));
 __export(require("./union-order-by"));
 __export(require("./union"));
+__export(require("./use-join"));
 __export(require("./where-eq-candidate-key"));
 __export(require("./where-eq"));
 __export(require("./where-is-not-null"));

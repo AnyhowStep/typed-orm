@@ -24,3 +24,5 @@ export const j1 = o.innerJoin(
     t => [t.x],
     t => [t.b]
 );
+export const query = o.from(table)
+    .useJoin(j1);
