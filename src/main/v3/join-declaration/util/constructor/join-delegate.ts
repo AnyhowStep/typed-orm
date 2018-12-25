@@ -2,6 +2,10 @@ import {IAliasedTable} from "../../../aliased-table";
 import {IColumn, ColumnUtil} from "../../../column";
 import {QueryUtil} from "../../../query";
 import {NonEmptyTuple} from "../../../tuple";
+import {AssertValidJoinTarget} from "../predicate";
+import {ColumnMapUtil} from "../../../column-map";
+import {JoinType} from "../../../join";
+import {JoinDeclaration} from "../../join-declaration";
 
 export type JoinFromDelegate<
     FromTableT extends IAliasedTable
@@ -107,3 +111,57 @@ export type JoinToDelegate<
         ColumnUtil.FromColumnMap<ToTableT["columns"]>[]
     )
 );
+export function invokeJoinDelegate<
+    FromTableT extends IAliasedTable,
+    ToTableT extends IAliasedTable,
+    FromDelegateT extends JoinFromDelegate<FromTableT>,
+    NullableT extends boolean,
+> (
+    fromTable : FromTableT,
+    toTable : AssertValidJoinTarget<FromTableT, ToTableT>,
+    fromDelegate : FromDelegateT,
+    toDelegate : JoinToDelegate<FromTableT, ToTableT, FromDelegateT>,
+    nullable : NullableT,
+    joinType : JoinType.INNER|JoinType.LEFT
+) : (
+    JoinDeclaration<{
+        readonly fromTable : FromTableT;
+        readonly toTable : ToTableT,
+        readonly nullable : NullableT,
+    }>
+) {
+    if (fromTable.alias == toTable.alias) {
+        throw new Error(`Cannot join two tables with the same name`);
+    }
+    const fromColumns = fromDelegate(fromTable.columns);
+
+    ColumnUtil.Array.assertIsColumnArray(fromColumns);
+    if (fromColumns.length == 0) {
+        throw new Error(`Expected JOIN to have at least one column for ON clause`);
+    }
+    ColumnMapUtil.assertHasColumnIdentifiers(
+        fromTable.columns,
+        fromColumns
+    );
+
+    const toColumns = toDelegate(toTable.columns);
+
+    ColumnUtil.Array.assertIsColumnArray(toColumns);
+    if (fromColumns.length != toColumns.length) {
+        throw new Error(`Expected JOIN to have ${fromColumns.length} target columns`);
+    }
+    ColumnMapUtil.assertHasColumnIdentifiers(
+        toTable.columns,
+        toColumns
+    );
+    return new JoinDeclaration(
+        {
+            fromTable,
+            toTable,
+            nullable : nullable,
+        },
+        joinType,
+        fromColumns,
+        toColumns
+    );
+}

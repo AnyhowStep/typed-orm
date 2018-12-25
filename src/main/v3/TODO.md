@@ -8,6 +8,8 @@
 + Implement replaceTable()
 
 + Implement join declarations
++ `JoinDeclaration.reverse()`
++ `JoinDeclaration.eq()`
 
 + INSERT statements
   + Polymorphic Insert

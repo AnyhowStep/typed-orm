@@ -8,4 +8,12 @@ __export(require("./inner-join-one-using"));
 __export(require("./inner-join-using-pk"));
 __export(require("./inner-join-using"));
 __export(require("./inner-join"));
+__export(require("./join-delegate"));
+__export(require("./join-one-using-delegate"));
+__export(require("./join-using-delegate"));
+__export(require("./join-using-pk"));
+__export(require("./left-join-one-using"));
+__export(require("./left-join-using-pk"));
+__export(require("./left-join-using"));
+__export(require("./left-join"));
 //# sourceMappingURL=index.js.map

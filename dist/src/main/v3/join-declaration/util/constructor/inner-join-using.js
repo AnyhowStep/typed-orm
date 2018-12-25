@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const inner_join_1 = require("./inner-join");
+const join_using_delegate_1 = require("./join-using-delegate");
+const join_1 = require("../../../join");
 function innerJoinUsing(fromTable, toTable, usingDelegate) {
-    const usingColumns = (usingDelegate(fromTable.columns));
-    return inner_join_1.innerJoin(fromTable, toTable, () => usingColumns, () => (usingColumns.map(c => toTable.columns[c.name])));
+    return join_using_delegate_1.invokeJoinUsingDelegate(fromTable, toTable, usingDelegate, false, join_1.JoinType.INNER);
 }
 exports.innerJoinUsing = innerJoinUsing;
 //# sourceMappingURL=inner-join-using.js.map

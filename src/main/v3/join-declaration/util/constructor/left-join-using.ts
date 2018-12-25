@@ -1,10 +1,10 @@
 import {IAliasedTable} from "../../../aliased-table";
-import {InnerJoin} from "./inner-join";
+import {LeftJoin} from "./left-join";
 import {JoinUsingDelegate, invokeJoinUsingDelegate} from "./join-using-delegate";
 import {AssertValidJoinTarget} from "../predicate";
 import {JoinType} from "../../../join";
 
-export function innerJoinUsing<
+export function leftJoinUsing<
     FromTableT extends IAliasedTable,
     ToTableT extends IAliasedTable,
     UsingDelegateT extends JoinUsingDelegate<FromTableT, ToTableT>
@@ -12,17 +12,17 @@ export function innerJoinUsing<
     fromTable : FromTableT,
     toTable : AssertValidJoinTarget<FromTableT, ToTableT>,
     usingDelegate : UsingDelegateT
-) : InnerJoin<FromTableT, ToTableT> {
+) : LeftJoin<FromTableT, ToTableT> {
     return invokeJoinUsingDelegate<
         FromTableT,
         ToTableT,
         UsingDelegateT,
-        false
+        true
     >(
         fromTable,
         toTable,
         usingDelegate,
-        false,
-        JoinType.INNER
+        true,
+        JoinType.LEFT
     );
 }
