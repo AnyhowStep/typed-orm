@@ -56,6 +56,7 @@ export declare const table: o.Table<{
     };
     readonly autoIncrement: undefined;
     readonly id: undefined;
+    readonly primaryKey: undefined;
     readonly candidateKeys: [];
     readonly generated: [];
     readonly isNullable: "c"[];
@@ -96,6 +97,7 @@ export declare const emptyTable: o.Table<{
     };
     readonly autoIncrement: undefined;
     readonly id: undefined;
+    readonly primaryKey: undefined;
     readonly candidateKeys: [];
     readonly generated: [];
     readonly isNullable: "c"[];
@@ -157,6 +159,7 @@ export declare const narrow: o.Table<{
     } & {};
     readonly autoIncrement: undefined;
     readonly id: undefined;
+    readonly primaryKey: undefined;
     readonly candidateKeys: [];
     readonly generated: [];
     readonly isNullable: never[];

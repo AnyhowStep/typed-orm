@@ -8,6 +8,7 @@ export declare type AddColumnsFromAssertMap<TableT extends ITable, AssertMapT ex
     readonly columns: ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>>;
     readonly autoIncrement: TableT["autoIncrement"];
     readonly id: TableT["id"];
+    readonly primaryKey: TableT["primaryKey"];
     readonly candidateKeys: TableT["candidateKeys"];
     readonly generated: TableT["generated"];
     readonly isNullable: ColumnUtil.Name.NullableFromColumnMap<ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>>>[];

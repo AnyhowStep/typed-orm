@@ -7,6 +7,7 @@ import * as TableUtil from "./util";
 export interface TableData extends AliasedTableData {
     readonly autoIncrement: undefined | string;
     readonly id: undefined | string;
+    readonly primaryKey: undefined | CandidateKey;
     readonly candidateKeys: CandidateKey[];
     readonly generated: string[];
     readonly isNullable: string[];
@@ -23,6 +24,7 @@ export interface ITable<DataT extends TableData = TableData> extends IAliasedTab
     readonly unaliasedQuery: QueryTree;
     readonly autoIncrement: DataT["autoIncrement"];
     readonly id: DataT["id"];
+    readonly primaryKey: DataT["primaryKey"];
     readonly candidateKeys: DataT["candidateKeys"];
     readonly generated: DataT["generated"];
     readonly isNullable: DataT["isNullable"];
@@ -39,6 +41,7 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     readonly unaliasedQuery: QueryTree;
     readonly autoIncrement: DataT["autoIncrement"];
     readonly id: DataT["id"];
+    readonly primaryKey: DataT["primaryKey"];
     readonly candidateKeys: DataT["candidateKeys"];
     readonly generated: DataT["generated"];
     readonly isNullable: DataT["isNullable"];

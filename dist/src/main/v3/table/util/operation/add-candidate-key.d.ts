@@ -8,6 +8,7 @@ export declare type AddCandidateKey<TableT extends ITable, DelegateT extends Can
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];
     readonly id: TableT["id"];
+    readonly primaryKey: TableT["primaryKey"];
     readonly candidateKeys: (TableT["candidateKeys"][number] | (ReturnType<DelegateT>[number]["name"][]))[];
     readonly generated: TableT["generated"];
     readonly isNullable: TableT["isNullable"];

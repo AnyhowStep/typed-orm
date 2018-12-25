@@ -1,7 +1,9 @@
 import { Table, ITable } from "../../table";
+import { IAnonymousTypedColumn } from "../../../column";
+import { NonNullPrimitiveExpr } from "../../../primitive-expr";
 export declare type IdColumnMap<TableT extends ITable> = ({
     [columnName in {
-        [columnName in keyof TableT["columns"]]: ((columnName extends TableT["candidateKeys"][number][number] ? never : columnName));
+        [columnName in keyof TableT["columns"]]: (TableT["columns"][columnName] extends IAnonymousTypedColumn<NonNullPrimitiveExpr> ? (columnName extends TableT["candidateKeys"][number][number] ? never : columnName) : never);
     }[keyof TableT["columns"]]]: (TableT["columns"][columnName]);
 });
 export declare type IdDelegate<TableT extends ITable> = ((columnMap: IdColumnMap<TableT>) => (IdColumnMap<TableT>[keyof IdColumnMap<TableT>]));
@@ -11,6 +13,7 @@ export declare type SetId<TableT extends ITable, DelegateT extends IdDelegate<Ta
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];
     readonly id: ReturnType<DelegateT>["name"];
+    readonly primaryKey: ReturnType<DelegateT>["name"][];
     readonly candidateKeys: (TableT["candidateKeys"][number] | (ReturnType<DelegateT>["name"][]))[];
     readonly generated: TableT["generated"];
     readonly isNullable: TableT["isNullable"];

@@ -5,6 +5,7 @@ export declare type SetImmutable<TableT extends ITable> = (Table<{
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];
     readonly id: TableT["id"];
+    readonly primaryKey: TableT["primaryKey"];
     readonly candidateKeys: TableT["candidateKeys"];
     readonly generated: TableT["generated"];
     readonly isNullable: TableT["isNullable"];

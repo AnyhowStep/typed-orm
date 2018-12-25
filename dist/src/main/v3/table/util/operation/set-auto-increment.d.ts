@@ -12,6 +12,7 @@ export declare type SetAutoIncrement<TableT extends ITable, DelegateT extends Au
     readonly columns: TableT["columns"];
     readonly autoIncrement: ReturnType<DelegateT>["name"];
     readonly id: ReturnType<DelegateT>["name"];
+    readonly primaryKey: ReturnType<DelegateT>["name"][];
     readonly candidateKeys: (TableT["candidateKeys"][number] | (ReturnType<DelegateT>["name"][]))[];
     readonly generated: (TableT["generated"][number] | ReturnType<DelegateT>["name"])[];
     readonly isNullable: TableT["isNullable"];

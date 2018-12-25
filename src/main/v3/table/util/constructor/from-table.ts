@@ -1,24 +1,30 @@
-import {ITable, Table} from "./table";
+import {ITable, Table} from "../../table";
 
-export function tableFromTable<TableT extends ITable> (
-    table : TableT
-) : (
+export type FromTable<TableT extends ITable> = (
     Table<{
         readonly usedRef : {};
         readonly alias : TableT["alias"];
         readonly columns : TableT["columns"];
 
         readonly autoIncrement : TableT["autoIncrement"];
+        readonly id : TableT["id"];
+        readonly primaryKey : TableT["primaryKey"];
+        readonly candidateKeys : TableT["candidateKeys"];
+
         readonly generated : TableT["generated"];
         readonly isNullable : TableT["isNullable"];
         readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
         readonly mutable : TableT["mutable"];
-        readonly id : TableT["id"];
-        readonly candidateKeys : TableT["candidateKeys"];
+
         readonly parents : TableT["parents"];
         readonly insertAllowed : TableT["insertAllowed"];
         readonly deleteAllowed : TableT["deleteAllowed"];
     }>
+);
+export function fromTable<TableT extends ITable> (
+    table : TableT
+) : (
+    FromTable<TableT>
 ) {
     const {
         usedRef,
@@ -26,12 +32,15 @@ export function tableFromTable<TableT extends ITable> (
         columns,
 
         autoIncrement,
+        id,
+        primaryKey,
+        candidateKeys,
+
         generated,
         isNullable,
         hasExplicitDefaultValue,
         mutable,
-        id,
-        candidateKeys,
+
         parents,
         insertAllowed,
         deleteAllowed,
@@ -45,12 +54,15 @@ export function tableFromTable<TableT extends ITable> (
             columns,
 
             autoIncrement,
+            id,
+            primaryKey,
+            candidateKeys,
+
             generated,
             isNullable,
             hasExplicitDefaultValue,
             mutable,
-            id,
-            candidateKeys,
+
             parents,
             insertAllowed,
             deleteAllowed,

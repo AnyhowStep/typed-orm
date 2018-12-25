@@ -42,6 +42,7 @@ export type SetAutoIncrement<
 
         readonly autoIncrement : ReturnType<DelegateT>["name"];
         readonly id : ReturnType<DelegateT>["name"];
+        readonly primaryKey : ReturnType<DelegateT>["name"][];
         readonly candidateKeys : (
             TableT["candidateKeys"][number] |
             (ReturnType<DelegateT>["name"][])
@@ -153,6 +154,7 @@ export function setAutoIncrement<
 
             autoIncrement : autoIncrement.name,
             id : autoIncrement.name,
+            primaryKey : [autoIncrement.name],
             candidateKeys,
 
             generated,

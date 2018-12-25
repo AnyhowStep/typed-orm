@@ -10,6 +10,7 @@ export declare type AddGenerated<TableT extends ITable, DelegateT extends Genera
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];
     readonly id: TableT["id"];
+    readonly primaryKey: TableT["primaryKey"];
     readonly candidateKeys: TableT["candidateKeys"];
     readonly generated: (TableT["generated"][number] | ReturnType<DelegateT>[number]["name"])[];
     readonly isNullable: TableT["isNullable"];

@@ -36,6 +36,7 @@ export type SetMutable<
 
         readonly autoIncrement : TableT["autoIncrement"];
         readonly id : TableT["id"];
+        readonly primaryKey : TableT["primaryKey"];
         readonly candidateKeys : TableT["candidateKeys"];
 
         readonly generated : TableT["generated"];
@@ -83,6 +84,7 @@ export function setMutable<
 
         autoIncrement,
         id,
+        primaryKey,
         candidateKeys,
 
         generated,
@@ -104,6 +106,7 @@ export function setMutable<
 
             autoIncrement,
             id,
+            primaryKey,
             candidateKeys,
 
             generated,

@@ -1,33 +1,42 @@
+import {escapeId} from "sqlstring";
 import * as sd from "schema-decorator";
-import {Table} from "./table";
-import {Tuple} from "../tuple";
-import {ColumnMapUtil} from "../column-map";
-import {FieldArrayUtil} from "../field-array";
-import {escapeId} from "mysql";
+import {Table} from "../../table";
+import {Tuple} from "../../../tuple";
+import {ColumnMapUtil} from "../../../column-map";
+import {FieldArrayUtil} from "../../../field-array";
 
-export function tableFromFieldTuple<
+export type FromFieldTuple<
     NameT extends string,
     FieldsT extends Tuple<sd.AnyField>
-> (
-    name : NameT,
-    fields : FieldsT
-) : (
+> = (
     Table<{
         readonly usedRef : {};
         readonly alias : NameT;
         readonly columns : ColumnMapUtil.FromFieldArray<NameT, FieldsT>;
 
         readonly autoIncrement : undefined;
+        readonly id : undefined;
+        readonly primaryKey : undefined;
+        readonly candidateKeys : [];
+
         readonly generated : [];
         readonly isNullable : FieldArrayUtil.NullableNameUnion<FieldsT>[];
         readonly hasExplicitDefaultValue : [];
         readonly mutable : FieldsT[number]["name"][];
-        readonly id : undefined;
-        readonly candidateKeys : [];
+
         readonly parents : [];
         readonly insertAllowed : true;
         readonly deleteAllowed : true;
     }>
+);
+export function fromFieldTuple<
+    NameT extends string,
+    FieldsT extends Tuple<sd.AnyField>
+> (
+    name : NameT,
+    fields : FieldsT
+) : (
+    FromFieldTuple<NameT, FieldsT>
 ) {
     const columns = ColumnMapUtil.fromFieldArray(name, fields);
 
@@ -43,6 +52,7 @@ export function tableFromFieldTuple<
 
             autoIncrement : undefined,
             id : undefined,
+            primaryKey : undefined,
             candidateKeys : [] as [],
 
             generated : [] as [],

@@ -31,6 +31,7 @@ export declare const table: o.Table<{
     };
     readonly autoIncrement: undefined;
     readonly id: "z";
+    readonly primaryKey: "z"[];
     readonly candidateKeys: "z"[][];
     readonly generated: [];
     readonly isNullable: never[];

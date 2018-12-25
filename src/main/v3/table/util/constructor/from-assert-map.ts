@@ -1,7 +1,7 @@
+import {escapeId} from "sqlstring";
 import {Table} from "../../table";
 import {ColumnMapUtil} from "../../../column-map";
 import {AssertMap, AssertMapUtil} from "../../../assert-map";
-import {escapeId} from "mysql";
 
 export type FromAssertMap<
     NameT extends string,
@@ -13,12 +13,15 @@ export type FromAssertMap<
         readonly columns : ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
 
         readonly autoIncrement : undefined;
+        readonly id : undefined;
+        readonly primaryKey : undefined;
+        readonly candidateKeys : [];
+
         readonly generated : [];
         readonly isNullable : AssertMapUtil.NullableNameUnion<AssertMapT>[];
         readonly hasExplicitDefaultValue : [];
         readonly mutable : Extract<keyof AssertMapT, string>[];
-        readonly id : undefined;
-        readonly candidateKeys : [];
+
         readonly parents : [];
         readonly insertAllowed : true;
         readonly deleteAllowed : true;
@@ -51,6 +54,7 @@ export function fromAssertMap<
 
             autoIncrement : undefined,
             id : undefined,
+            primaryKey : undefined,
             candidateKeys : [] as [],
 
             generated : [] as [],

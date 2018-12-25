@@ -8,6 +8,7 @@ export type DisallowDelete<TableT extends ITable> = (
 
         readonly autoIncrement : TableT["autoIncrement"];
         readonly id : TableT["id"];
+        readonly primaryKey : TableT["primaryKey"];
         readonly candidateKeys : TableT["candidateKeys"];
 
         readonly generated : TableT["generated"];
@@ -30,6 +31,7 @@ export function disallowDelete<TableT extends ITable> (table : TableT) : (
 
         autoIncrement,
         id,
+        primaryKey,
         candidateKeys,
 
         generated,
@@ -51,6 +53,7 @@ export function disallowDelete<TableT extends ITable> (table : TableT) : (
 
             autoIncrement,
             id,
+            primaryKey,
             candidateKeys,
 
             generated,

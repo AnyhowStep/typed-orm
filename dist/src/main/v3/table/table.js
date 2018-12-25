@@ -9,6 +9,7 @@ class Table {
         this.unaliasedQuery = unaliasedQuery;
         this.autoIncrement = data.autoIncrement;
         this.id = data.id;
+        this.primaryKey = data.primaryKey;
         this.candidateKeys = data.candidateKeys;
         this.generated = data.generated;
         this.isNullable = data.isNullable;

@@ -8,13 +8,14 @@ function addColumnsFromAssertMap(table, assertMap) {
     const tableColumns = table.columns;
     const columns = column_map_1.ColumnMapUtil.intersect(tableColumns, column_map_1.ColumnMapUtil.fromAssertMap(table.alias, assertMap));
     const isNullable = column_1.ColumnUtil.Name.Array.nullableFromColumnMap(columns);
-    const { usedRef, alias, autoIncrement, id, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+    const { usedRef, alias, autoIncrement, id, primaryKey, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
     const result = new table_1.Table({
         usedRef,
         alias,
         columns,
         autoIncrement,
         id,
+        primaryKey,
         candidateKeys,
         generated,
         isNullable,

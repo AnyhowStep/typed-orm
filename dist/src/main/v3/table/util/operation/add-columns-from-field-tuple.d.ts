@@ -8,6 +8,7 @@ export declare type AddColumnsFromFieldTuple<TableT extends ITable, FieldsT exte
     readonly columns: ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>>;
     readonly autoIncrement: TableT["autoIncrement"];
     readonly id: TableT["id"];
+    readonly primaryKey: TableT["primaryKey"];
     readonly candidateKeys: TableT["candidateKeys"];
     readonly generated: TableT["generated"];
     readonly isNullable: ColumnUtil.Name.NullableFromColumnMap<ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>>>[];

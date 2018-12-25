@@ -6,6 +6,7 @@ export declare type SetAlias<TableT extends ITable, NewAliasT extends string> = 
     readonly columns: ColumnMapUtil.WithTableAlias<TableT["columns"], NewAliasT>;
     readonly autoIncrement: TableT["autoIncrement"];
     readonly id: TableT["id"];
+    readonly primaryKey: TableT["primaryKey"];
     readonly candidateKeys: TableT["candidateKeys"];
     readonly generated: TableT["generated"];
     readonly isNullable: TableT["isNullable"];

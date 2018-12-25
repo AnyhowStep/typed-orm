@@ -66,6 +66,7 @@ export type AddParent<
 
         readonly autoIncrement : TableT["autoIncrement"];
         readonly id : TableT["id"];
+        readonly primaryKey : TableT["primaryKey"];
         readonly candidateKeys : TableT["candidateKeys"];
 
         readonly generated : TableT["generated"];
@@ -140,6 +141,7 @@ export function addParent<
 
         autoIncrement,
         id,
+        primaryKey,
         candidateKeys,
 
         generated,
@@ -161,6 +163,7 @@ export function addParent<
 
             autoIncrement,
             id,
+            primaryKey,
             candidateKeys,
 
             generated,

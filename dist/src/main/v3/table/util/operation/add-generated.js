@@ -25,13 +25,14 @@ function addGenerated(table, delegate) {
     const mutable = string_array_1.StringArrayUtil.uniqueString(table.mutable.filter((columnName) => {
         return generatedColumns.every(column => column.name != columnName);
     }));
-    const { usedRef, alias, autoIncrement, id, candidateKeys, isNullable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+    const { usedRef, alias, autoIncrement, id, primaryKey, candidateKeys, isNullable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
     const result = new table_1.Table({
         usedRef,
         alias,
         columns,
         autoIncrement,
         id,
+        primaryKey,
         candidateKeys,
         generated,
         isNullable,

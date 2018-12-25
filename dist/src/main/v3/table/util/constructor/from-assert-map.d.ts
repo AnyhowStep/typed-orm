@@ -6,12 +6,13 @@ export declare type FromAssertMap<NameT extends string, AssertMapT extends Asser
     readonly alias: NameT;
     readonly columns: ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
     readonly autoIncrement: undefined;
+    readonly id: undefined;
+    readonly primaryKey: undefined;
+    readonly candidateKeys: [];
     readonly generated: [];
     readonly isNullable: AssertMapUtil.NullableNameUnion<AssertMapT>[];
     readonly hasExplicitDefaultValue: [];
     readonly mutable: Extract<keyof AssertMapT, string>[];
-    readonly id: undefined;
-    readonly candidateKeys: [];
     readonly parents: [];
     readonly insertAllowed: true;
     readonly deleteAllowed: true;

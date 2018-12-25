@@ -7,6 +7,7 @@ export declare type ToInterface<TableT extends ITable> = (ITable<{
     readonly columns: ColumnMapUtil.ToInterface<TableT["columns"]>;
     readonly autoIncrement: TableT["autoIncrement"];
     readonly id: TableT["id"];
+    readonly primaryKey: TableT["primaryKey"];
     readonly candidateKeys: TableT["candidateKeys"];
     readonly generated: TableT["generated"];
     readonly isNullable: TableT["isNullable"];

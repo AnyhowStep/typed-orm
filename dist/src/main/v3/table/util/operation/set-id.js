@@ -26,6 +26,7 @@ function setId(table, delegate) {
         columns,
         autoIncrement,
         id: id.name,
+        primaryKey: [id.name],
         candidateKeys,
         generated,
         isNullable,

@@ -42,12 +42,13 @@ export declare const query: o.Query<{
                 }>;
             };
             readonly autoIncrement: undefined;
+            readonly id: undefined;
+            readonly primaryKey: undefined;
+            readonly candidateKeys: [];
             readonly generated: [];
             readonly isNullable: never[];
             readonly hasExplicitDefaultValue: [];
             readonly mutable: ("x" | "y" | "z" | "w")[];
-            readonly id: undefined;
-            readonly candidateKeys: [];
             readonly parents: [];
             readonly insertAllowed: true;
             readonly deleteAllowed: true;

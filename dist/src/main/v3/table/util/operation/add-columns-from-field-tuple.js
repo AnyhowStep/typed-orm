@@ -10,13 +10,14 @@ function addColumnsFromFieldTuple(table, fields) {
     const columnMapFromFieldArray = column_map_1.ColumnMapUtil.fromFieldArray(table.alias, fields);
     const columns = column_map_1.ColumnMapUtil.intersect(tableColumns, columnMapFromFieldArray);
     const isNullable = column_1.ColumnUtil.Name.Array.nullableFromColumnMap(columns);
-    const { usedRef, alias, autoIncrement, id, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+    const { usedRef, alias, autoIncrement, id, primaryKey, candidateKeys, generated, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
     const result = new table_1.Table({
         usedRef,
         alias,
         columns,
         autoIncrement,
         id,
+        primaryKey,
         candidateKeys,
         generated,
         isNullable,

@@ -42,6 +42,7 @@ function setAutoIncrement(table, delegate) {
         columns,
         autoIncrement: autoIncrement.name,
         id: autoIncrement.name,
+        primaryKey: [autoIncrement.name],
         candidateKeys,
         generated,
         isNullable,

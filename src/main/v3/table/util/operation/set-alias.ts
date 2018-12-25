@@ -13,6 +13,7 @@ export type SetAlias<TableT extends ITable, NewAliasT extends string> = (
 
         readonly autoIncrement : TableT["autoIncrement"];
         readonly id : TableT["id"];
+        readonly primaryKey : TableT["primaryKey"];
         readonly candidateKeys : TableT["candidateKeys"];
 
         readonly generated : TableT["generated"];
@@ -38,6 +39,7 @@ export function setAlias<TableT extends ITable, NewAliasT extends string> (
         usedRef,
         autoIncrement,
         id,
+        primaryKey,
         candidateKeys,
 
         generated,
@@ -61,6 +63,7 @@ export function setAlias<TableT extends ITable, NewAliasT extends string> (
 
             autoIncrement,
             id,
+            primaryKey,
             candidateKeys,
 
             generated,

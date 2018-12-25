@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const sqlstring_1 = require("sqlstring");
 const table_1 = require("../../table");
 const column_map_1 = require("../../../column-map");
 const assert_map_1 = require("../../../assert-map");
-const mysql_1 = require("mysql");
 function fromAssertMap(name, assertMap) {
     /*
         In general, this should be fine.
@@ -19,6 +19,7 @@ function fromAssertMap(name, assertMap) {
         columns,
         autoIncrement: undefined,
         id: undefined,
+        primaryKey: undefined,
         candidateKeys: [],
         generated: [],
         isNullable,
@@ -28,7 +29,7 @@ function fromAssertMap(name, assertMap) {
         insertAllowed: true,
         deleteAllowed: true,
     }, {
-        unaliasedQuery: mysql_1.escapeId(name),
+        unaliasedQuery: sqlstring_1.escapeId(name),
     });
 }
 exports.fromAssertMap = fromAssertMap;

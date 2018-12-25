@@ -32,6 +32,7 @@ export type AddGenerated<
 
         readonly autoIncrement : TableT["autoIncrement"];
         readonly id : TableT["id"];
+        readonly primaryKey : TableT["primaryKey"];
         readonly candidateKeys : TableT["candidateKeys"];
 
         readonly generated : (
@@ -114,6 +115,7 @@ export function addGenerated<
 
         autoIncrement,
         id,
+        primaryKey,
         candidateKeys,
 
         isNullable,
@@ -133,6 +135,7 @@ export function addGenerated<
 
             autoIncrement,
             id,
+            primaryKey,
             candidateKeys,
 
             generated,

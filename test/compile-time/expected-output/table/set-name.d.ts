@@ -31,6 +31,7 @@ export declare const renamed: o.Table<{
     };
     readonly autoIncrement: undefined;
     readonly id: undefined;
+    readonly primaryKey: undefined;
     readonly candidateKeys: [];
     readonly generated: [];
     readonly isNullable: never[];
@@ -46,6 +47,7 @@ export declare const emptyRenamed: o.Table<{
     readonly columns: {};
     readonly autoIncrement: undefined;
     readonly id: undefined;
+    readonly primaryKey: undefined;
     readonly candidateKeys: [];
     readonly generated: [];
     readonly isNullable: never[];

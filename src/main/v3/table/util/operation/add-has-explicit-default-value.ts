@@ -32,6 +32,7 @@ export type AddHasExplicitDefaultValue<
 
         readonly autoIncrement : TableT["autoIncrement"];
         readonly id : TableT["id"];
+        readonly primaryKey : TableT["primaryKey"];
         readonly candidateKeys : TableT["candidateKeys"];
 
         readonly generated : TableT["generated"];
@@ -83,6 +84,7 @@ export function addHasExplicitDefaultValue<
 
         autoIncrement,
         id,
+        primaryKey,
         candidateKeys,
 
         generated,
@@ -104,6 +106,7 @@ export function addHasExplicitDefaultValue<
 
             autoIncrement,
             id,
+            primaryKey,
             candidateKeys,
 
             generated,

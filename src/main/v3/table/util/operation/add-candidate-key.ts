@@ -58,6 +58,7 @@ export type AddCandidateKey<
 
         readonly autoIncrement : TableT["autoIncrement"];
         readonly id : TableT["id"];
+        readonly primaryKey : TableT["primaryKey"];
         readonly candidateKeys : (
             TableT["candidateKeys"][number] |
             (ReturnType<DelegateT>[number]["name"][])
@@ -122,6 +123,7 @@ export function addCandidateKey<
 
         autoIncrement,
         id,
+        primaryKey,
 
         generated,
         isNullable,
@@ -143,6 +145,7 @@ export function addCandidateKey<
 
             autoIncrement,
             id,
+            primaryKey,
             candidateKeys,
 
             generated,

@@ -1,16 +1,23 @@
 import {Table, ITable} from "../../table";
 import {CandidateKeyArrayUtil} from "../../../candidate-key-array";
 import {ColumnMapUtil} from "../../../column-map";
+import {IAnonymousTypedColumn} from "../../../column";
+import {NonNullPrimitiveExpr} from "../../../primitive-expr";
 
+//This `id` will be a PK.
+//So, it cannot be nullable.
 export type IdColumnMap<TableT extends ITable> = (
     {
         [columnName in {
             [columnName in keyof TableT["columns"]] : (
+                TableT["columns"][columnName] extends IAnonymousTypedColumn<NonNullPrimitiveExpr> ?
                 (
                     columnName extends TableT["candidateKeys"][number][number] ?
                     never :
                     columnName
-                )
+                ) :
+                //Cannot be nullable
+                never
             )
         }[keyof TableT["columns"]]] : (
             TableT["columns"][columnName]
@@ -35,6 +42,7 @@ export type SetId<
 
         readonly autoIncrement : TableT["autoIncrement"];
         readonly id : ReturnType<DelegateT>["name"];
+        readonly primaryKey : ReturnType<DelegateT>["name"][];
         readonly candidateKeys : (
             TableT["candidateKeys"][number] |
             (ReturnType<DelegateT>["name"][])
@@ -109,6 +117,7 @@ export function setId<
 
             autoIncrement,
             id : id.name,
+            primaryKey : [id.name],
             candidateKeys,
 
             generated,

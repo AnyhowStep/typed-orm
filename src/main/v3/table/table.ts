@@ -18,6 +18,17 @@ export interface TableData extends AliasedTableData {
     readonly autoIncrement : undefined|string;
     //A table can have a PK that is an FK to an auto-increment column in another table
     readonly id : undefined|string;
+    /*
+        A primary key is just a candidate key.
+        With the additional restriction that
+        all its columns cannot be nullable!
+
+        Apart from that, the only thing "special"
+        about it is that we say,
+
+        "This is *the* candidate key I want to talk about by default"
+    */
+    readonly primaryKey : undefined|CandidateKey;
     readonly candidateKeys : CandidateKey[];
 
     //If a column is generated, you must specify as such manually.
@@ -103,6 +114,7 @@ export interface ITable<DataT extends TableData=TableData> extends IAliasedTable
 
     readonly autoIncrement : DataT["autoIncrement"];
     readonly id : DataT["id"];
+    readonly primaryKey : DataT["primaryKey"];
     readonly candidateKeys : DataT["candidateKeys"];
 
     readonly generated : DataT["generated"];
@@ -124,6 +136,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
 
     readonly autoIncrement : DataT["autoIncrement"];
     readonly id : DataT["id"];
+    readonly primaryKey : DataT["primaryKey"];
     readonly candidateKeys : DataT["candidateKeys"];
 
     readonly generated : DataT["generated"];
@@ -152,6 +165,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
 
         this.autoIncrement = data.autoIncrement;
         this.id = data.id;
+        this.primaryKey = data.primaryKey;
         this.candidateKeys = data.candidateKeys;
 
         this.generated = data.generated;
