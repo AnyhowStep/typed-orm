@@ -1,0 +1,23 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type 'void | [\"x\"[], \"is not a candidate key of\", \"joined1\"]' is not assignable to parameter of type 'IJoinDeclaration<JoinDeclarationData> & [\"Incompatible usedRef\", { readonly tableAlias: string; readonly name: string; }] & [\"Invalid fromTable;\", string, \"is not in joins\"]'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type 'void' is not assignable to type 'IJoinDeclaration<JoinDeclarationData> & [\"Incompatible usedRef\", { readonly tableAlias: string; readonly name: string; }] & [\"Invalid fromTable;\", string, \"is not in joins\"]'.",
+        "category": 1,
+        "code": 2322,
+        "next": {
+          "messageText": "Type 'void' is not assignable to type 'IJoinDeclaration<JoinDeclarationData>'.",
+          "category": 1,
+          "code": 2322
+        }
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 2,
+    "start": 543
+  }
+]

@@ -1,7 +1,7 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '{ x: number; }' is not assignable to parameter of type '{ readonly y: string | null; readonly z: boolean; } | { readonly x: number; readonly y: string | null; }'.",
+      "messageText": "Argument of type '{ x: number; }' is not assignable to parameter of type '{ readonly x: number; readonly y: string | null; } | { readonly y: string | null; readonly z: boolean; }'.",
       "category": 1,
       "code": 2345,
       "next": {
@@ -17,11 +17,11 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type '{ y: string; }' is not assignable to parameter of type '{ readonly y: string | null; readonly z: boolean; } | { readonly x: number; readonly y: string | null; }'.",
+      "messageText": "Argument of type '{ y: string; }' is not assignable to parameter of type '{ readonly x: number; readonly y: string | null; } | { readonly y: string | null; readonly z: boolean; }'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Property 'x' is missing in type '{ y: string; }' but required in type '{ readonly x: number; readonly y: string | null; }'.",
+        "messageText": "Property 'z' is missing in type '{ y: string; }' but required in type '{ readonly y: string | null; readonly z: boolean; }'.",
         "category": 1,
         "code": 2741
       }
@@ -33,7 +33,7 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type '{ z: true; }' is not assignable to parameter of type '{ readonly y: string | null; readonly z: boolean; } | { readonly x: number; readonly y: string | null; }'.",
+      "messageText": "Argument of type '{ z: true; }' is not assignable to parameter of type '{ readonly x: number; readonly y: string | null; } | { readonly y: string | null; readonly z: boolean; }'.",
       "category": 1,
       "code": 2345,
       "next": {

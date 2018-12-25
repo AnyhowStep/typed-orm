@@ -35,7 +35,7 @@ export declare const query: o.Query<{
             };
             readonly autoIncrement: undefined;
             readonly id: undefined;
-            readonly candidateKeys: (("y" | "z")[] | ("x" | "y")[])[];
+            readonly candidateKeys: (("x" | "y")[] | ("y" | "z")[])[];
             readonly generated: [];
             readonly isNullable: "y"[];
             readonly hasExplicitDefaultValue: [];
@@ -122,7 +122,7 @@ export declare const query2: o.Query<{
             };
             readonly autoIncrement: undefined;
             readonly id: undefined;
-            readonly candidateKeys: (("y" | "z")[] | ("x" | "y")[])[];
+            readonly candidateKeys: (("x" | "y")[] | ("y" | "z")[])[];
             readonly generated: [];
             readonly isNullable: "y"[];
             readonly hasExplicitDefaultValue: [];

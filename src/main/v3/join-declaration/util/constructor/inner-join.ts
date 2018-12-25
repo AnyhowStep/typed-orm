@@ -4,6 +4,7 @@ import {JoinDeclaration} from "../../join-declaration";
 import {ColumnMapUtil} from "../../../column-map";
 import {JoinFromDelegate, JoinToDelegate} from "./join-delegate";
 import {ColumnUtil} from "../../../column";
+import {AssertValidJoinTarget} from "../predicate";
 
 export type InnerJoin<
     FromTableT extends IAliasedTable,
@@ -21,14 +22,7 @@ export function innerJoin<
     FromDelegateT extends JoinFromDelegate<FromTableT>
 > (
     fromTable : FromTableT,
-    toTable : ToTableT & (
-        Extract<FromTableT["alias"], ToTableT["alias"]> extends never ?
-        unknown :
-        [
-            "Cannot join two tables with the same name",
-            Extract<FromTableT["alias"], ToTableT["alias"]>
-        ]
-    ),
+    toTable : AssertValidJoinTarget<FromTableT, ToTableT>,
     fromDelegate : FromDelegateT,
     toDelegate : JoinToDelegate<FromTableT, ToTableT, FromDelegateT>
 ) : InnerJoin<FromTableT, ToTableT> {

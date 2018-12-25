@@ -39,7 +39,7 @@ export declare const table: o.Table<{
     };
     readonly autoIncrement: undefined;
     readonly id: undefined;
-    readonly candidateKeys: (("y" | "z")[] | ("x" | "y")[])[];
+    readonly candidateKeys: (("x" | "y")[] | ("y" | "z")[])[];
     readonly generated: [];
     readonly isNullable: never[];
     readonly hasExplicitDefaultValue: [];
@@ -50,24 +50,24 @@ export declare const table: o.Table<{
 }>;
 export declare const ck: o.Table.CandidateKey<typeof table>;
 export declare const ckad: sd.AssertDelegate<{
-    readonly y: string;
-    readonly z: boolean;
-} | {
     readonly x: number;
     readonly y: string;
+} | {
+    readonly y: string;
+    readonly z: boolean;
 }>;
 export declare const sk: o.Table.SuperKey<typeof table>;
 export declare const skad: sd.AssertDelegate<({
-    readonly y: string;
-    readonly z: boolean;
-} & {
-    x?: number | undefined;
-    w?: Date | undefined;
-}) | ({
     readonly x: number;
     readonly y: string;
 } & {
     z?: boolean | undefined;
+    w?: Date | undefined;
+}) | ({
+    readonly y: string;
+    readonly z: boolean;
+} & {
+    x?: number | undefined;
     w?: Date | undefined;
 })>;
 export declare const table2: o.Table<{
@@ -109,7 +109,7 @@ export declare const table2: o.Table<{
     };
     readonly autoIncrement: undefined;
     readonly id: undefined;
-    readonly candidateKeys: (("y" | "z")[] | ("x" | "y")[] | ("x" | "z")[])[];
+    readonly candidateKeys: (("x" | "y")[] | ("y" | "z")[] | ("x" | "z")[])[];
     readonly generated: [];
     readonly isNullable: never[];
     readonly hasExplicitDefaultValue: [];
