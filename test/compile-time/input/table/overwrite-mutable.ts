@@ -9,4 +9,4 @@ export const table = o.table(
         z : sd.boolean(),
     }
 ).setImmutable()
-.overwriteMutable(c => [c.x, c.z, c.x, c.z]);
+.setMutable(c => [c.x, c.z, c.x, c.z]);

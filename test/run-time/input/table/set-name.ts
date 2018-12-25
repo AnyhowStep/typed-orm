@@ -11,7 +11,7 @@ tape(__filename, (t) => {
             z : sd.boolean(),
         }
     );
-    const table = tableSrc.setName("renamed")
+    const table = tableSrc.setAlias("renamed")
 
     t.true(o.AliasedTable.isAliasedTable(table));
     t.deepEqual(table.alias, "renamed");
@@ -40,7 +40,7 @@ tape(__filename, (t) => {
         "table",
         {}
     );
-    const table = tableSrc.setName("emptyRenamed")
+    const table = tableSrc.setAlias("emptyRenamed")
 
     t.true(o.AliasedTable.isAliasedTable(table));
     t.deepEqual(table.alias, "emptyRenamed");

@@ -7,8 +7,7 @@
 
 + Implement replaceTable()
 
-+ Implement `Query.useJoins()`
-  + Implement join declarations
++ Implement join declarations
 
 + INSERT statements
   + Polymorphic Insert

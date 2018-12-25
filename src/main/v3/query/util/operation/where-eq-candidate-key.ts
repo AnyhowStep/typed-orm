@@ -3,8 +3,8 @@ import {AfterFromClause} from "../predicate";
 import {IAnonymousTypedExpr} from "../../../expr";
 import {and} from "../../../expr-library";
 import {nullSafeEq} from "../../../expr-library";
-import {ITable, Table} from "../../../table";
-import { ColumnIdentifierRefUtil } from "../../../column-identifier-ref";
+import {ITable, Table, TableUtil} from "../../../table";
+import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
 
 export type WhereEqCandidateKey<
     QueryT extends AfterFromClause,
@@ -44,14 +44,14 @@ export function whereEqCandidateKey<
 > (
     query : QueryT,
     table : TableT & QueryT["_joins"][number]["aliasedTable"],
-    key : Table.CandidateKey<TableT>
+    key : TableUtil.CandidateKey<TableT>
 ) : WhereEqCandidateKey<QueryT> {
     if (query._joins == undefined) {
         throw new Error(`Cannot use whereEqCandidateKey() before FROM clause`);
     }
     const candidateKeyAssertDelegate = (table instanceof Table) ?
         table.candidateKeyAssertDelegate() :
-        Table.candidateKeyAssertDelegate(table);
+        TableUtil.candidateKeyAssertDelegate(table);
 
     key = candidateKeyAssertDelegate(`${table.alias} CK`, key);
 

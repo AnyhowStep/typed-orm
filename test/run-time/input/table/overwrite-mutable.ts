@@ -11,7 +11,7 @@ tape(__filename, (t) => {
             z : sd.boolean(),
         }
     ).setImmutable()
-    .overwriteMutable(c => [c.x, c.z, c.x, c.z]);
+    .setMutable(c => [c.x, c.z, c.x, c.z]);
 
     t.deepEqual(table.alias, "table");
 

@@ -16,7 +16,7 @@ function whereEqCandidateKey(query, table, key) {
     }
     const candidateKeyAssertDelegate = (table instanceof table_1.Table) ?
         table.candidateKeyAssertDelegate() :
-        table_1.Table.candidateKeyAssertDelegate(table);
+        table_1.TableUtil.candidateKeyAssertDelegate(table);
     key = candidateKeyAssertDelegate(`${table.alias} CK`, key);
     const ref = column_identifier_ref_1.ColumnIdentifierRefUtil.fromJoinArray(query._joins);
     const exprArr = [];

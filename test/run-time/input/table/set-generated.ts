@@ -10,7 +10,7 @@ tape(__filename, (t) => {
             y : sd.string(),
             z : sd.boolean(),
         }
-    ).setGenerated(c => [c.x, c.z, c.x, c.z]);
+    ).addGenerated(c => [c.x, c.z, c.x, c.z]);
 
     t.deepEqual(table.alias, "table");
 

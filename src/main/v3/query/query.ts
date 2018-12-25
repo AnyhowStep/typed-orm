@@ -8,7 +8,7 @@ import {Order} from "../order";
 import {MapDelegate} from "../map-delegate";
 import {DISTINCT} from "../constants";
 import {NonEmptyTuple} from "../tuple";
-import {ITable, Table} from "../table";
+import {ITable, TableUtil} from "../table";
 import {RawExpr, RawExprUtil} from "../raw-expr";
 import {PrimitiveExpr, NonNullPrimitiveExpr} from "../primitive-expr";
 import {IJoinDeclaration} from "../join-declaration";
@@ -958,7 +958,7 @@ export class Query<DataT extends QueryData> {
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
         table : TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
-        key : Table.CandidateKey<TableT>
+        key : TableUtil.CandidateKey<TableT>
     ) : QueryUtil.WhereEqCandidateKey<Extract<this, QueryUtil.AfterFromClause>> {
         return QueryUtil.whereEqCandidateKey(
             this,

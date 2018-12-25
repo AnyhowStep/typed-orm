@@ -22,4 +22,4 @@ export const t3 = o.table(
         y : sd.naturalNumber(),
     }
 ).setAutoIncrement(c => c.x)
-.overwriteMutable(c => [c.x]);
+.setMutable(c => [c.x]);

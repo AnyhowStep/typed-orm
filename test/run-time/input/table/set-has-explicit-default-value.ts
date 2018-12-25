@@ -10,7 +10,7 @@ tape(__filename, (t) => {
             y : sd.string(),
             z : sd.boolean(),
         }
-    ).setHasExplicitDefaultValue(c => [c.x, c.z, c.x, c.z])
+    ).addHasExplicitDefaultValue(c => [c.x, c.z, c.x, c.z])
 
     t.deepEqual(table.alias, "table");
 
@@ -59,8 +59,8 @@ tape(__filename, (t) => {
                 y : sd.string(),
                 z : sd.boolean(),
             }
-        ).setHasExplicitDefaultValue(c => [c.x, c.z, c.x, c.z])
-        .setHasExplicitDefaultValue(c => [(c as any).x]);
+        ).addHasExplicitDefaultValue(c => [c.x, c.z, c.x, c.z])
+        .addHasExplicitDefaultValue(c => [(c as any).x]);
     });
 
     t.end();

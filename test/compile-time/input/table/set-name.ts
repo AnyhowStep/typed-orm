@@ -9,10 +9,10 @@ const table = o.table(
         z : sd.boolean(),
     }
 );
-export const renamed = table.setName("renamed");
+export const renamed = table.setAlias("renamed");
 
 const emptyTable = o.table(
     "table",
     {}
 );
-export const emptyRenamed = emptyTable.setName("emptyRenamed");
+export const emptyRenamed = emptyTable.setAlias("emptyRenamed");

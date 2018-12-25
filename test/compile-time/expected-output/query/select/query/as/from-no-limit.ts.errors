@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Type 'IAliasedTable<{ usedRef: {}; alias: \"test\"; columns: { readonly x: Column<{ readonly tableAlias: \"test\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; }; }>' is not assignable to type 'IColumn<ColumnData> | ColumnMap | ColumnRef | IExprSelectItem<ExprSelectItemData>'.",
+      "messageText": "Type 'IAliasedTable<{ usedRef: {}; alias: \"test\"; columns: { readonly x: Column<{ readonly tableAlias: \"test\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; }; }>' is not assignable to type 'IColumn<ColumnData> | ColumnRef | ColumnMap | IExprSelectItem<ExprSelectItemData>'.",
       "category": 1,
       "code": 2322,
       "next": {
-        "messageText": "Type 'IAliasedTable<{ usedRef: {}; alias: \"test\"; columns: { readonly x: Column<{ readonly tableAlias: \"test\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; }; }>' is not assignable to type 'ColumnRef'.",
+        "messageText": "Type 'IAliasedTable<{ usedRef: {}; alias: \"test\"; columns: { readonly x: Column<{ readonly tableAlias: \"test\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; }; }>' is not assignable to type 'ColumnMap'.",
         "category": 1,
         "code": 2322,
         "next": {

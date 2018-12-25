@@ -12,7 +12,7 @@ const appPlatform = o.table(
     }
 )
     .setImmutable()
-    .setHasExplicitDefaultValue(c => [c.createdAt])
+    .addHasExplicitDefaultValue(c => [c.createdAt])
     .addCandidateKey(c => [c.appId, c.platformId]);
 
 const user = o.table(
@@ -25,12 +25,12 @@ const user = o.table(
         createdAt : o.dateTime(),
     }
 )
-    .setHasExplicitDefaultValue(c => [
+    .addHasExplicitDefaultValue(c => [
         c.displayName,
         c.banned,
         c.createdAt
     ])
-    .overwriteMutable(c => [
+    .setMutable(c => [
         c.displayName,
         c.banned
     ])
@@ -55,7 +55,7 @@ const business = o.table(
     }
 )
     .setAutoIncrement(c => c.businessId)
-    .setHasExplicitDefaultValue(c => [c.createdAt])
+    .addHasExplicitDefaultValue(c => [c.createdAt])
     .setImmutable();
 
 const payOutMethod = o.table(
@@ -70,7 +70,7 @@ const payOutMethod = o.table(
     }
 )
     .setAutoIncrement(c => c.payOutMethodId)
-    .setHasExplicitDefaultValue(c => [c.createdAt])
+    .addHasExplicitDefaultValue(c => [c.createdAt])
     .setImmutable()
 
 const businessPayOutMethod = o.table(
@@ -88,7 +88,7 @@ const businessPayOutMethod = o.table(
         c.businessId,
         c.payOutMethodId,
     ])
-    .setHasExplicitDefaultValue(c => [c.createdAt])
+    .addHasExplicitDefaultValue(c => [c.createdAt])
     .setImmutable()
 
 const merchant = o.table(
@@ -103,7 +103,7 @@ const merchant = o.table(
     }
 )
     .setAutoIncrement(c => c.merchantId)
-    .setHasExplicitDefaultValue(c => [
+    .addHasExplicitDefaultValue(c => [
         c.createdAt
     ])
     .setImmutable();

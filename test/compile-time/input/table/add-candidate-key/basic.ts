@@ -20,9 +20,9 @@ export const table = o.table(
     c.z,
 ]);
 
-export declare const ck : o.Table.CandidateKey<typeof table>;
+export declare const ck : o.TableUtil.CandidateKey<typeof table>;
 export const ckad = table.candidateKeyAssertDelegate();
-export declare const sk : o.Table.SuperKey<typeof table>;
+export declare const sk : o.TableUtil.SuperKey<typeof table>;
 export const skad = table.superKeyAssertDelegate();
 
 table.addCandidateKey(c => [

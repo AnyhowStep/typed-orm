@@ -4,4 +4,5 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./constructor"));
+__export(require("./operation"));
 //# sourceMappingURL=index.js.map

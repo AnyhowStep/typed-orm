@@ -8,4 +8,4 @@ export const table = o.table(
         y : sd.string(),
         z : sd.boolean(),
     }
-).setHasExplicitDefaultValue(c => [c.x, c.z, c.x, c.z]);
+).addHasExplicitDefaultValue(c => [c.x, c.z, c.x, c.z]);
