@@ -1,0 +1,28 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type '[import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join-declaration/join-declaration\").JoinDeclaration<{ readonly fromTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: import(\"/...' is not assignable to parameter of type '[import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join-declaration/join-declaration\").JoinDeclaration<{ readonly fromTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: import(\"/...'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type '[JoinDeclaration<{ readonly fromTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 9 m...' is not assignable to type '[\"Duplicate JOIN targets not allowed\", \"joined1\"]'.",
+        "category": 1,
+        "code": 2322,
+        "next": {
+          "messageText": "Types of property '0' are incompatible.",
+          "category": 1,
+          "code": 2326,
+          "next": {
+            "messageText": "Type 'JoinDeclaration<{ readonly fromTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 9 mo...' is not assignable to type '\"Duplicate JOIN targets not allowed\"'.",
+            "category": 1,
+            "code": 2322
+          }
+        }
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 2,
+    "start": 706
+  }
+]
