@@ -4,6 +4,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./constructor"));
+__export(require("./predicate"));
 const Array = require("./array");
 exports.Array = Array;
 //# sourceMappingURL=index.js.map

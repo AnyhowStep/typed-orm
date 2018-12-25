@@ -8,4 +8,6 @@ const JoinDeclarationUtil = require("./util");
 exports.JoinDeclarationUtil = JoinDeclarationUtil;
 const util_1 = require("./util");
 exports.innerJoin = util_1.innerJoin;
+const util_2 = require("./util");
+exports.innerJoinUsing = util_2.innerJoinUsing;
 //# sourceMappingURL=index.js.map

@@ -5,3 +5,6 @@ export {JoinDeclarationUtil};
 
 import {innerJoin} from "./util";
 export {innerJoin};
+
+import {innerJoinUsing} from "./util";
+export {innerJoinUsing};
