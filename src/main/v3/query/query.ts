@@ -11,7 +11,7 @@ import {NonEmptyTuple} from "../tuple";
 import {ITable, TableUtil} from "../table";
 import {RawExpr, RawExprUtil} from "../raw-expr";
 import {PrimitiveExpr, NonNullPrimitiveExpr} from "../primitive-expr";
-import {IJoinDeclaration} from "../join-declaration";
+import {IJoinDeclaration, JoinDeclarationUtil} from "../join-declaration";
 
 export interface UnionQuery {
     //Defaults to true
@@ -1005,6 +1005,35 @@ export class Query<DataT extends QueryData> {
             Extract<this, QueryUtil.AfterFromClause>,
             ArrT
         >(this, arr);
+    }
+
+    innerJoinUsingPk<
+        FromDelegateT extends QueryUtil.FromTableDelegate<
+            Extract<this, QueryUtil.AfterFromClause>
+        >,
+        ToTableT extends ITable & { primaryKey : string[] }
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        fromTableDelegate : FromDelegateT,
+        toTable : JoinDeclarationUtil.AssertValidJoinUsingPkTarget<
+            ReturnType<FromDelegateT>,
+            ToTableT
+        >
+    ) : (
+        QueryUtil.InnerJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ToTableT
+        >
+    ) {
+        return QueryUtil.innerJoinUsingPk<
+            Extract<this, QueryUtil.AfterFromClause>,
+            FromDelegateT,
+            ToTableT
+        >(
+            this,
+            fromTableDelegate,
+            toTable
+        );
     }
 }
 

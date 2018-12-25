@@ -160,6 +160,9 @@ class Query {
     useJoins(...arr) {
         return QueryUtil.useJoins(this, arr);
     }
+    innerJoinUsingPk(fromTableDelegate, toTable) {
+        return QueryUtil.innerJoinUsingPk(this, fromTableDelegate, toTable);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {
