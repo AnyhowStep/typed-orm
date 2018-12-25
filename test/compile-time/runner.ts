@@ -52,7 +52,7 @@ const emitResult = program.emit(
         );
     }
 );
-let allDiagnostics = ts
+const allDiagnostics = ts
     .getPreEmitDiagnostics(program)
     .concat(emitResult.diagnostics);
 
