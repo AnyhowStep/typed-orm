@@ -13,7 +13,7 @@ export function innerJoinUsing<
     usingDelegate : UsingDelegateT
 ) : InnerJoin<FromTableT, ToTableT> {
     const usingColumns = (
-        usingDelegate(fromTable.columns)
+        usingDelegate(fromTable.columns as any)
     ) as ReturnType<UsingDelegateT>;
 
     return innerJoin<

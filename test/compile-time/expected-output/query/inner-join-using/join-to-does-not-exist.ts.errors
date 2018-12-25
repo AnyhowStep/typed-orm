@@ -7,12 +7,7 @@
       "next": {
         "messageText": "Type '[any]' is not assignable to type 'never[]'.",
         "category": 1,
-        "code": 2322,
-        "next": {
-          "messageText": "Type 'any' is not assignable to type 'never'.",
-          "category": 1,
-          "code": 2322
-        }
+        "code": 2322
       }
     },
     "code": 2322,

@@ -1,9 +1,30 @@
 [
   {
-    "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>' is not assignable to type 'never'.",
+    "messageText": {
+      "messageText": "Type '[any]' is not assignable to type 'never[] & { \"0\": never; }'.",
+      "category": 1,
+      "code": 2322,
+      "next": {
+        "messageText": "Type '[any]' is not assignable to type 'never[]'.",
+        "category": 1,
+        "code": 2322,
+        "next": {
+          "messageText": "Type 'any' is not assignable to type 'never'.",
+          "category": 1,
+          "code": 2322
+        }
+      }
+    },
     "code": 2322,
     "category": 1,
-    "length": 3,
-    "start": 423
+    "length": 5,
+    "start": 422
+  },
+  {
+    "messageText": "Property 'x' does not exist on type '{}'.",
+    "code": 2339,
+    "category": 1,
+    "length": 1,
+    "start": 425
   }
 ]
