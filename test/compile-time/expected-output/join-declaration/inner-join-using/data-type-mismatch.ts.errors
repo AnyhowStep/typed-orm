@@ -1,0 +1,9 @@
+[
+  {
+    "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>' is not assignable to type 'never'.",
+    "code": 2322,
+    "category": 1,
+    "length": 3,
+    "start": 423
+  }
+]
