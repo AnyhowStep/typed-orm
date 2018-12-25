@@ -11,6 +11,7 @@ import {
 
 removeAllFilesAndDirectoriesSync(actualOutputRoot);
 
+const start = new Date().getTime();
 const rootNames = getAllTsFiles(inputRoot);
 const compilerOptions : ts.CompilerOptions = {
     strict : true,
@@ -149,6 +150,9 @@ for (let rootName of rootNames) {
         });
     }
 }
+const end = new Date().getTime();
+const timeTaken = end-start;
+console.log("Compile-time tests completed in", timeTaken/1000.0, "ms");
 if (allDiffResults.length > 0) {
     for (let diffResult of allDiffResults) {
         console.log("====================================");

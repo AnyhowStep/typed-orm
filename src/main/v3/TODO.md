@@ -10,8 +10,6 @@
 + Implement `Query.useJoins()`
   + Implement join declarations
 
-+ Implement `Column.asc()/.desc()`, `Expr.asc()/.desc()` convenience methods
-
 + INSERT statements
   + Polymorphic Insert
 + UPDATE statements
