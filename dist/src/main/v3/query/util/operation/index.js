@@ -17,6 +17,7 @@ __export(require("./inner-join-using"));
 __export(require("./inner-join"));
 __export(require("./join-delegate"));
 __export(require("./join-using-delegate"));
+__export(require("./left-join-using-pk"));
 __export(require("./left-join-using"));
 __export(require("./left-join"));
 __export(require("./limit"));

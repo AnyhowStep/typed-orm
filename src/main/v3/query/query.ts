@@ -1038,6 +1038,38 @@ export class Query<DataT extends QueryData> {
             toTable
         );
     }
+
+    leftJoinUsingPk<
+        FromDelegateT extends QueryUtil.FromTableDelegate<
+            Extract<this, QueryUtil.AfterFromClause>
+        >,
+        ToTableT extends ITable & { primaryKey : string[] }
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        fromTableDelegate : FromDelegateT,
+        toTable : JoinDeclarationUtil.AssertValidJoinUsingPkTarget<
+            Extract<
+                Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
+                ReturnType<FromDelegateT>
+            >,
+            ToTableT
+        >
+    ) : (
+        QueryUtil.LeftJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ToTableT
+        >
+    ) {
+        return QueryUtil.leftJoinUsingPk<
+            Extract<this, QueryUtil.AfterFromClause>,
+            FromDelegateT,
+            ToTableT
+        >(
+            this,
+            fromTableDelegate,
+            toTable
+        );
+    }
 }
 
 export function from<AliasedTableT extends IAliasedTable> (
