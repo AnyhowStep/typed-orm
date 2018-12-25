@@ -1,0 +1,23 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type 'JoinDeclaration<{ readonly fromTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 9 mo...' is not assignable to parameter of type '(JoinDeclaration<{ readonly fromTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 9 m...'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join-declaration/join-declaration\").JoinDeclaration<{ readonly fromTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: import(\"/h...' is not assignable to type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join-declaration/join-declaration\").JoinDeclaration<{ readonly fromTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: import(\"/h...'. Two different types with this name exist, but they are unrelated.",
+        "category": 1,
+        "code": 2719,
+        "next": {
+          "messageText": "Type 'JoinDeclaration<{ readonly fromTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 9 mo...' is missing the following properties from type '[\"Alias\", \"joined1\", \"already used in previous JOINs\", \"table\" | \"joined1\"]': 0, 1, 2, 3, and 32 more.",
+          "category": 1,
+          "code": 2740
+        }
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 2,
+    "start": 501
+  }
+]

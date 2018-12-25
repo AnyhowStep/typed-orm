@@ -22,6 +22,6 @@ export declare type UseJoin<QueryT extends AfterFromClause, JoinDeclT extends IJ
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare type AssertValidJoinDeclaration<QueryT extends AfterFromClause, JoinDeclT extends IJoinDeclaration> = (JoinDeclT & AssertValidJoinTargetImpl<QueryT, JoinDeclT["toTable"]>);
+export declare type AssertValidJoinDeclaration<QueryT extends AfterFromClause, JoinDeclT extends IJoinDeclaration> = (JoinDeclT & AssertValidJoinTargetImpl<QueryT, JoinDeclT["toTable"]> & (JoinDeclT["fromTable"]["alias"] extends QueryT["_joins"][number]["aliasedTable"]["alias"] ? unknown : ["Invalid fromTable;", JoinDeclT["fromTable"]["alias"], "is not in joins"]));
 export declare function useJoin<QueryT extends AfterFromClause, JoinDeclT extends IJoinDeclaration>(query: QueryT, joinDecl: AssertValidJoinDeclaration<QueryT, JoinDeclT>): (UseJoin<QueryT, JoinDeclT>);
 //# sourceMappingURL=use-join.d.ts.map

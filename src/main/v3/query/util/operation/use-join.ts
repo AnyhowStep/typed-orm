@@ -45,7 +45,16 @@ export type AssertValidJoinDeclaration<
     AssertValidJoinTargetImpl<
         QueryT,
         JoinDeclT["toTable"]
-    >
+    > &
+    (
+        JoinDeclT["fromTable"]["alias"] extends QueryT["_joins"][number]["aliasedTable"]["alias"] ?
+        unknown :
+        [
+            "Invalid fromTable;",
+            JoinDeclT["fromTable"]["alias"],
+            "is not in joins"
+        ]
+    )
 );
 export function useJoin<
     QueryT extends AfterFromClause,
