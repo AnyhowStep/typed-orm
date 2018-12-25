@@ -1,13 +1,10 @@
 import * as sd from "schema-decorator";
 import {Table, ITable} from "../../table";
-import {CandidateKeyArrayUtil} from "../../../candidate-key-array";
-import {ColumnMapUtil} from "../../../column-map";
 import {IAnonymousTypedColumn} from "../../../column";
 import {NonNullPrimitiveExpr} from "../../../primitive-expr";
+import {AssertValidCandidateKeyDelegate, addCandidateKey} from "./add-candidate-key";
 
-//This `id` will be a PK.
-//So, it cannot be nullable.
-export type IdColumnMap<TableT extends ITable> = (
+export type PrimaryKeyColumnMap<TableT extends ITable> = (
     {
         [columnName in {
             [columnName in keyof TableT["columns"]] : (
@@ -25,16 +22,20 @@ export type IdColumnMap<TableT extends ITable> = (
         )
     }
 );
-export type IdDelegate<TableT extends ITable> = (
-    (columnMap : IdColumnMap<TableT>) => (
-        IdColumnMap<TableT>[
-            keyof IdColumnMap<TableT>
-        ]
+export type PrimaryKeyDelegate<
+    TableT extends ITable
+> = (
+    (columnMap : PrimaryKeyColumnMap<TableT>) => (
+        (
+            PrimaryKeyColumnMap<TableT>[
+                keyof PrimaryKeyColumnMap<TableT>
+            ]
+        )[]
     )
 );
-export type SetId<
+export type SetPrimaryKey<
     TableT extends ITable,
-    DelegateT extends IdDelegate<TableT>
+    DelegateT extends PrimaryKeyDelegate<TableT>
 > = (
     Table<{
         readonly usedRef : TableT["usedRef"];
@@ -42,11 +43,13 @@ export type SetId<
         readonly columns : TableT["columns"];
 
         readonly autoIncrement : TableT["autoIncrement"];
-        readonly id : ReturnType<DelegateT>["name"];
-        readonly primaryKey : ReturnType<DelegateT>["name"][];
+        readonly id : TableT["id"];
+        readonly primaryKey : (
+            (ReturnType<DelegateT>[number]["name"][])
+        );
         readonly candidateKeys : (
             TableT["candidateKeys"][number] |
-            (ReturnType<DelegateT>["name"][])
+            (ReturnType<DelegateT>[number]["name"][])
         )[];
 
         readonly generated : TableT["generated"];
@@ -59,70 +62,64 @@ export type SetId<
         readonly deleteAllowed : TableT["deleteAllowed"];
     }>
 );
-export function setId<
+export function setPrimaryKey<
     TableT extends ITable,
-    DelegateT extends IdDelegate<TableT>
+    DelegateT extends PrimaryKeyDelegate<TableT>
 > (
     table : TableT,
-    delegate : DelegateT
+    delegate : AssertValidCandidateKeyDelegate<
+        TableT, DelegateT
+    >
 ) : (
-    SetId<TableT, DelegateT>
+    SetPrimaryKey<TableT, DelegateT>
 ) {
     //https://github.com/Microsoft/TypeScript/issues/28592
     const columns : TableT["columns"] = table.columns;
     //https://github.com/Microsoft/TypeScript/issues/24277
-    const id : ReturnType<DelegateT> = delegate(columns) as any;
+    const primaryKeyColumns : ReturnType<DelegateT> = delegate(columns) as any;
 
-    if (sd.isNullable(id.assertDelegate)) {
-        throw new Error(`A primary key cannot have a nullable column; ${id.tableAlias}.${id.name} is nullable`);
+    for (let c of primaryKeyColumns) {
+        if (sd.isNullable(c.assertDelegate)) {
+            throw new Error(`A primary key cannot have a nullable column; ${c.tableAlias}.${c.name} is nullable`);
+        }
     }
 
-    const key = [id.name];
-    if (CandidateKeyArrayUtil.hasSubKey(
-        table.candidateKeys,
-        key
-    )) {
-        throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a super key of some candidate key`);
-    }
-    if (CandidateKeyArrayUtil.hasSuperKey(
-        table.candidateKeys,
-        key
-    )) {
-        throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a sub key of some candidate key`);
-    }
-
-    ColumnMapUtil.assertHasColumnIdentifier(table.columns, id);
-    const candidateKeys : (
-        TableT["candidateKeys"][number] |
-        (ReturnType<DelegateT>["name"][])
-    )[] = table.candidateKeys.concat([
-        [id.name]
-    ]);
+    const withCandidateKey = addCandidateKey(
+        table,
+        (() => primaryKeyColumns) as any
+    );
 
     const {
         usedRef,
         alias,
+
         autoIncrement,
+        id,
+        candidateKeys,
+
         generated,
         isNullable,
         hasExplicitDefaultValue,
         mutable,
+
         parents,
         insertAllowed,
         deleteAllowed,
 
         unaliasedQuery,
-    } = table;
+    } = withCandidateKey;
 
-    const result : SetId<TableT, DelegateT> = new Table(
+    const result : SetPrimaryKey<TableT, DelegateT> = new Table(
         {
             usedRef,
             alias,
             columns,
 
             autoIncrement,
-            id : id.name,
-            primaryKey : [id.name],
+            id,
+            primaryKey : (
+                primaryKeyColumns.map(c => c.name)
+            ),
             candidateKeys,
 
             generated,
@@ -134,7 +131,7 @@ export function setId<
             insertAllowed,
             deleteAllowed,
         },
-        {unaliasedQuery}
+        { unaliasedQuery }
     );
     return result;
 }

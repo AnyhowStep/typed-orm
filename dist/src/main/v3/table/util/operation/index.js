@@ -19,5 +19,6 @@ __export(require("./set-auto-increment"));
 __export(require("./set-id"));
 __export(require("./set-immutable"));
 __export(require("./set-mutable"));
+__export(require("./set-primary-key"));
 __export(require("./super-key-assert-delegate"));
 //# sourceMappingURL=index.js.map

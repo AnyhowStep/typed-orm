@@ -255,6 +255,20 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
             DelegateT
         >(this, delegate);
     }
+    setPrimaryKey<
+        DelegateT extends TableUtil.PrimaryKeyDelegate<this>
+    > (
+        delegate : TableUtil.AssertValidCandidateKeyDelegate<
+            this, DelegateT
+        >
+    ) : (
+        TableUtil.SetPrimaryKey<this, DelegateT>
+    ) {
+        return TableUtil.setPrimaryKey<
+            this,
+            DelegateT
+        >(this, delegate);
+    }
     /*
         Adding a candidate key that is a super-set of
         an existing candidate key should throw an error,

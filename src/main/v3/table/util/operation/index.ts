@@ -14,5 +14,6 @@ export * from "./set-auto-increment";
 export * from "./set-id";
 export * from "./set-immutable";
 export * from "./set-mutable";
+export * from "./set-primary-key";
 export * from "./super-key-assert-delegate";
 export * from "./to-interface";

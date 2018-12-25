@@ -1,3 +1,4 @@
+import * as sd from "schema-decorator";
 import {Table, ITable} from "../../table";
 import {IAnonymousTypedColumn} from "../../../column";
 import {CandidateKeyArrayUtil} from "../../../candidate-key-array";
@@ -81,6 +82,10 @@ export function setAutoIncrement<
     const columns : TableT["columns"] = table.columns;
     //https://github.com/Microsoft/TypeScript/issues/24277
     const autoIncrement : ReturnType<DelegateT> = delegate(columns) as any;
+
+    if (sd.isNullable(autoIncrement.assertDelegate)) {
+        throw new Error(`A primary key cannot have a nullable column; ${autoIncrement.tableAlias}.${autoIncrement.name} is nullable`);
+    }
 
     const key = [autoIncrement.name];
     if (CandidateKeyArrayUtil.hasSubKey(

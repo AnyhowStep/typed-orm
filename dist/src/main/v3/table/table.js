@@ -46,6 +46,9 @@ class Table {
     setId(delegate) {
         return TableUtil.setId(this, delegate);
     }
+    setPrimaryKey(delegate) {
+        return TableUtil.setPrimaryKey(this, delegate);
+    }
     /*
         Adding a candidate key that is a super-set of
         an existing candidate key should throw an error,
