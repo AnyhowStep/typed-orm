@@ -32,6 +32,9 @@ export function innerJoin<
     fromDelegate : FromDelegateT,
     toDelegate : JoinToDelegate<FromTableT, ToTableT, FromDelegateT>
 ) : InnerJoin<FromTableT, ToTableT> {
+    if (fromTable.alias == toTable.alias) {
+        throw new Error(`Cannot join two tables with the same name`);
+    }
     const fromColumns = fromDelegate(fromTable.columns);
 
     ColumnUtil.Array.assertIsColumnArray(fromColumns);

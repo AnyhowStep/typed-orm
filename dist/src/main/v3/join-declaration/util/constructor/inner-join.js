@@ -5,6 +5,9 @@ const join_declaration_1 = require("../../join-declaration");
 const column_map_1 = require("../../../column-map");
 const column_1 = require("../../../column");
 function innerJoin(fromTable, toTable, fromDelegate, toDelegate) {
+    if (fromTable.alias == toTable.alias) {
+        throw new Error(`Cannot join two tables with the same name`);
+    }
     const fromColumns = fromDelegate(fromTable.columns);
     column_1.ColumnUtil.Array.assertIsColumnArray(fromColumns);
     if (fromColumns.length == 0) {
