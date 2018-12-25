@@ -106,7 +106,7 @@ export declare class Query<DataT extends QueryData> {
     useJoins<ArrT extends NonEmptyTuple<IJoinDeclaration>>(this: Extract<this, QueryUtil.AfterFromClause>, ...arr: QueryUtil.AssertValidJoinDeclarationArray<Extract<this, QueryUtil.AfterFromClause>, ArrT>): (QueryUtil.UseJoins<Extract<this, QueryUtil.AfterFromClause>, ArrT>);
     innerJoinUsingPk<FromDelegateT extends QueryUtil.FromTableDelegate<Extract<this, QueryUtil.AfterFromClause>>, ToTableT extends ITable & {
         primaryKey: string[];
-    }>(this: Extract<this, QueryUtil.AfterFromClause>, fromTableDelegate: FromDelegateT, toTable: JoinDeclarationUtil.AssertValidJoinUsingPkTarget<ReturnType<FromDelegateT>, ToTableT>): (QueryUtil.InnerJoin<Extract<this, QueryUtil.AfterFromClause>, ToTableT>);
+    }>(this: Extract<this, QueryUtil.AfterFromClause>, fromTableDelegate: FromDelegateT, toTable: JoinDeclarationUtil.AssertValidJoinUsingPkTarget<Extract<Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], ReturnType<FromDelegateT>>, ToTableT>): (QueryUtil.InnerJoin<Extract<this, QueryUtil.AfterFromClause>, ToTableT>);
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertValidJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 export declare function select<SelectDelegateT extends QueryUtil.SelectDelegate<QueryUtil.NewInstance>>(delegate: QueryUtil.AssertValidSelectDelegate<QueryUtil.NewInstance, SelectDelegateT>): (QueryUtil.Select<QueryUtil.NewInstance, SelectDelegateT>);

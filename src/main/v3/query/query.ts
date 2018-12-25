@@ -1016,7 +1016,10 @@ export class Query<DataT extends QueryData> {
         this : Extract<this, QueryUtil.AfterFromClause>,
         fromTableDelegate : FromDelegateT,
         toTable : JoinDeclarationUtil.AssertValidJoinUsingPkTarget<
-            ReturnType<FromDelegateT>,
+            Extract<
+                Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
+                ReturnType<FromDelegateT>
+            >,
             ToTableT
         >
     ) : (

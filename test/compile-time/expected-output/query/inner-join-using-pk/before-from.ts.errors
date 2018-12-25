@@ -1,0 +1,9 @@
+[
+  {
+    "messageText": "The 'this' context of type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: undefined; readonly _parentJoins: undefined; readonly _selects: undefined; readonly _where: undefined; ... 7 more ...; readonly _mapDelegate: undefined; }>' is not assignable to method's 'this' of type 'never'.",
+    "code": 2684,
+    "category": 1,
+    "length": 25,
+    "start": 374
+  }
+]

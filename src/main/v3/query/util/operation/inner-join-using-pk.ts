@@ -12,16 +12,15 @@ export type FromTableDelegate<
     (
         tables : {
             [tableAlias in QueryT["_joins"][number]["aliasedTable"]["alias"]] : (
-                Extract<
-                    QueryT["_joins"][number]["aliasedTable"],
-                    {
-                        alias : tableAlias
-                    }
-                >
+                {
+                    alias : tableAlias
+                }
             )
 
         }
-    ) => QueryT["_joins"][number]["aliasedTable"]
+    ) => {
+        alias : QueryT["_joins"][number]["aliasedTable"]["alias"]
+    }
 );
 export function innerJoinUsingPk<
     QueryT extends AfterFromClause,
@@ -31,7 +30,10 @@ export function innerJoinUsingPk<
     query : QueryT,
     fromTableDelegate : FromDelegateT,
     toTable : JoinDeclarationUtil.AssertValidJoinUsingPkTarget<
-        ReturnType<FromDelegateT>,
+        Extract<
+            QueryT["_joins"][number]["aliasedTable"],
+            ReturnType<FromDelegateT>
+        >,
         ToTableT
     >
 ) : (
@@ -43,12 +45,12 @@ export function innerJoinUsingPk<
     for (let join of query._joins) {
         tables[join.aliasedTable.alias] = join.aliasedTable;
     }
-    let fromTable = fromTableDelegate(tables as any);
-    if (!(fromTable.alias in tables)) {
-        throw new Error(`Invalid from table ${fromTable.alias}`);
+    let fromTableObj = fromTableDelegate(tables as any);
+    if (!(fromTableObj.alias in tables)) {
+        throw new Error(`Invalid from table ${fromTableObj.alias}`);
     }
     //Just to be sure
-    fromTable = tables[fromTable.alias];
+    const fromTable = tables[fromTableObj.alias];
     return innerJoin(
         query,
         toTable as any,

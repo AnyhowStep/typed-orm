@@ -6,12 +6,12 @@ function innerJoinUsingPk(query, fromTableDelegate, toTable) {
     for (let join of query._joins) {
         tables[join.aliasedTable.alias] = join.aliasedTable;
     }
-    let fromTable = fromTableDelegate(tables);
-    if (!(fromTable.alias in tables)) {
-        throw new Error(`Invalid from table ${fromTable.alias}`);
+    let fromTableObj = fromTableDelegate(tables);
+    if (!(fromTableObj.alias in tables)) {
+        throw new Error(`Invalid from table ${fromTableObj.alias}`);
     }
     //Just to be sure
-    fromTable = tables[fromTable.alias];
+    const fromTable = tables[fromTableObj.alias];
     return inner_join_1.innerJoin(query, toTable, () => toTable.primaryKey.map(columnName => fromTable.columns[columnName]), () => toTable.primaryKey.map(columnName => toTable.columns[columnName]));
 }
 exports.innerJoinUsingPk = innerJoinUsingPk;
