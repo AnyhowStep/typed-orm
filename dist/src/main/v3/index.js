@@ -10,6 +10,7 @@ __export(require("./column-map"));
 __export(require("./data-type"));
 __export(require("./expr-library"));
 __export(require("./formatter"));
+__export(require("./join-declaration"));
 __export(require("./order"));
 __export(require("./query"));
 __export(require("./table"));

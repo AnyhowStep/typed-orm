@@ -7,6 +7,7 @@ export * from "./column-map";
 export * from "./data-type";
 export * from "./expr-library";
 export * from "./formatter";
+export * from "./join-declaration";
 export * from "./order";
 export * from "./query";
 export * from "./table";
