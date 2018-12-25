@@ -5,6 +5,7 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./inner-join-one-using"));
 //export * from "./inner-join-one";
+__export(require("./inner-join-using-pk"));
 __export(require("./inner-join-using"));
 __export(require("./inner-join"));
 //# sourceMappingURL=index.js.map
