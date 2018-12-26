@@ -18,15 +18,18 @@ export type Limit<
 
         readonly _orders : QueryT["_orders"],
         readonly _limit : (
-            QueryT["_limit"] extends LimitData ?
-            {
-                readonly maxRowCount : MaxRowCountT,
-                readonly offset : QueryT["_limit"]["offset"],
-            } :
-            {
-                readonly maxRowCount : MaxRowCountT,
-                readonly offset : 0,
-            }
+            Extract<
+                QueryT["_limit"] extends LimitData ?
+                {
+                    readonly maxRowCount : MaxRowCountT,
+                    readonly offset : QueryT["_limit"]["offset"],
+                } :
+                {
+                    readonly maxRowCount : MaxRowCountT,
+                    readonly offset : 0,
+                },
+                LimitData
+            >
         ),
 
         readonly _unions : QueryT["_unions"],

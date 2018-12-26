@@ -9,13 +9,13 @@ export declare type Limit<QueryT extends IQuery, MaxRowCountT extends number> = 
     readonly _grouped: QueryT["_grouped"];
     readonly _having: QueryT["_having"];
     readonly _orders: QueryT["_orders"];
-    readonly _limit: (QueryT["_limit"] extends LimitData ? {
+    readonly _limit: (Extract<QueryT["_limit"] extends LimitData ? {
         readonly maxRowCount: MaxRowCountT;
         readonly offset: QueryT["_limit"]["offset"];
     } : {
         readonly maxRowCount: MaxRowCountT;
         readonly offset: 0;
-    });
+    }, LimitData>);
     readonly _unions: QueryT["_unions"];
     readonly _unionOrders: QueryT["_unionOrders"];
     readonly _unionLimit: QueryT["_unionLimit"];

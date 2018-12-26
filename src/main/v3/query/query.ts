@@ -1476,17 +1476,17 @@ export class Query<DataT extends QueryData> {
     }
 
     fetchAll (
-        this : Extract<this, QueryUtil.AfterSelectClause>,
+        this : Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>,
         connection : IConnection
     ) : (
         Promise<
             QueryUtil.FetchAll<
-                Extract<this, QueryUtil.AfterSelectClause>
+                Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>
             >
         >
     ) {
         return QueryUtil.fetchAll<
-            Extract<this, QueryUtil.AfterSelectClause>
+            Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>
         >(this, connection);
     }
 }

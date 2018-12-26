@@ -121,7 +121,7 @@ export declare class Query<DataT extends QueryData> {
     whereEqCandidateKey<TableT extends ITable>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], key: TableUtil.CandidateKey<TableT>): QueryUtil.WhereEqCandidateKey<Extract<this, QueryUtil.AfterFromClause>>;
     useJoin<JoinDeclT extends IJoinDeclaration>(this: Extract<this, QueryUtil.AfterFromClause>, joinDecl: QueryUtil.AssertValidJoinDeclaration<Extract<this, QueryUtil.AfterFromClause>, JoinDeclT>): (QueryUtil.UseJoin<Extract<this, QueryUtil.AfterFromClause>, JoinDeclT>);
     useJoins<ArrT extends NonEmptyTuple<IJoinDeclaration>>(this: Extract<this, QueryUtil.AfterFromClause>, ...arr: QueryUtil.AssertValidJoinDeclarationArray<Extract<this, QueryUtil.AfterFromClause>, ArrT>): (QueryUtil.UseJoins<Extract<this, QueryUtil.AfterFromClause>, ArrT>);
-    fetchAll(this: Extract<this, QueryUtil.AfterSelectClause>, connection: IConnection): (Promise<QueryUtil.FetchAll<Extract<this, QueryUtil.AfterSelectClause>>>);
+    fetchAll(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection): (Promise<QueryUtil.FetchAll<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>>);
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertValidJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 export declare function select<SelectDelegateT extends QueryUtil.SelectDelegate<QueryUtil.NewInstance>>(delegate: QueryUtil.AssertValidSelectDelegate<QueryUtil.NewInstance, SelectDelegateT>): (QueryUtil.Select<QueryUtil.NewInstance, SelectDelegateT>);

@@ -153,6 +153,14 @@ function canWidenColumnTypes(query) {
         isBeforeUnionOrderByClause(query));
 }
 exports.canWidenColumnTypes = canWidenColumnTypes;
+function isMainQuery(query) {
+    return query._parentJoins == undefined;
+}
+exports.isMainQuery = isMainQuery;
+function isSubQuery(query) {
+    return query._parentJoins != undefined;
+}
+exports.isSubQuery = isSubQuery;
 function isOneRowQuery(query) {
     return isBeforeFromClause(query) && isBeforeUnionClause(query);
 }

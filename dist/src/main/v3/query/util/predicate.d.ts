@@ -60,6 +60,12 @@ export declare type CanWidenColumnTypes = IQuery<QueryData & {
     _orders: undefined;
     _unionOrders: undefined;
 }>;
+export declare type MainQuery = IQuery<QueryData & {
+    _parentJoins: undefined;
+}>;
+export declare type SubQuery = IQuery<QueryData & {
+    _parentJoins: IJoin[];
+}>;
 export declare type OneRowQuery = (BeforeFromClause & BeforeUnionClause);
 export declare type ZeroOrOneRowUnionQuery = (AfterUnionClause & {
     _unionLimit: {
@@ -94,6 +100,8 @@ export declare function isAfterOrderByClause(query: IQuery): query is AfterOrder
 export declare function isBeforeUnionOrderByClause(query: IQuery): query is BeforeUnionOrderByClause;
 export declare function isAfterUnionOrderByClause(query: IQuery): query is AfterUnionOrderByClause;
 export declare function canWidenColumnTypes(query: IQuery): query is CanWidenColumnTypes;
+export declare function isMainQuery(query: IQuery): query is MainQuery;
+export declare function isSubQuery(query: IQuery): query is SubQuery;
 export declare function isOneRowQuery(query: IQuery): query is OneRowQuery;
 export declare function isZeroOrOneRowUnionQuery(query: IQuery): query is ZeroOrOneRowUnionQuery;
 export declare function isZeroOrOneRowFromQuery(query: IQuery): query is ZeroOrOneRowFromQuery;

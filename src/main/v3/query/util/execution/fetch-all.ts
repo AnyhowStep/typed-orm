@@ -1,4 +1,4 @@
-import {AfterSelectClause} from "../predicate";
+import {AfterSelectClause, MainQuery} from "../predicate";
 import {IConnection, Types} from "../../../execution";
 import {MappedType} from "../operation";
 import {queryTree} from "../query";
@@ -6,15 +6,15 @@ import {QueryTreeUtil} from "../../../query-tree";
 import {SEPARATOR} from "../../../constants";
 import {SelectItemArrayUtil} from "../../../select-item-array";
 import {ColumnRefUtil, ColumnRef} from "../../../column-ref";
-import { DateTimeUtil } from "../../../data-type";
+import {DateTimeUtil} from "../../../data-type";
 
 export type FetchAll<
-    QueryT extends AfterSelectClause
+    QueryT extends AfterSelectClause & MainQuery
 > = (
     MappedType<QueryT>[]
 );
 export async function fetchAll<
-    QueryT extends AfterSelectClause
+    QueryT extends AfterSelectClause & MainQuery
 >(
     query : QueryT,
     connection : IConnection

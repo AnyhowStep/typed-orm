@@ -146,6 +146,8 @@ export type CanWidenColumnTypes = IQuery<
         _unionOrders : undefined,
     }
 >;
+export type MainQuery = IQuery<QueryData & { _parentJoins : undefined }>;
+export type SubQuery = IQuery<QueryData & { _parentJoins : IJoin[] }>;
 export type OneRowQuery = (
     BeforeFromClause &
     BeforeUnionClause
@@ -222,6 +224,12 @@ export function canWidenColumnTypes (query : IQuery) : query is CanWidenColumnTy
         isBeforeOrderByClause(query) &&
         isBeforeUnionOrderByClause(query)
     )
+}
+export function isMainQuery (query : IQuery) : query is MainQuery {
+    return query._parentJoins == undefined;
+}
+export function isSubQuery (query : IQuery) : query is SubQuery {
+    return query._parentJoins != undefined;
 }
 export function isOneRowQuery (query : IQuery) : query is OneRowQuery {
     return isBeforeFromClause(query) && isBeforeUnionClause(query);
