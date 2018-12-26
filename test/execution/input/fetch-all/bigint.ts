@@ -78,3 +78,22 @@ tape(__filename + "-int-and-smaller-always-received-as-number", async (t) => {
 
     t.end();
 });
+
+tape(__filename + "-count(*)-returns-bigint-string", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        await connection.rawQuery("DROP TABLE IF EXISTS t");
+        await connection.rawQuery(`
+            CREATE TABLE t (
+                value INT UNSIGNED NOT NULL
+            )
+        `);
+        await connection.rawQuery("INSERT INTO t (value) VALUES (4294967295)");
+        await connection.rawQuery("INSERT INTO t (value) VALUES (4294967294)");
+        await connection.rawQuery("INSERT INTO t (value) VALUES (4294967293)");
+        return connection.rawQuery("SELECT COUNT(*) AS v FROM t");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "3");
+
+    t.end();
+});

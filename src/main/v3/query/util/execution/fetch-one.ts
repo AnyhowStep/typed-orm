@@ -19,8 +19,12 @@ export async function fetchOne<
         query,
         connection
     );
-    if (result == undefined) {
-        throw new RowNotFoundError(`Expected one row, found zero`);
+    if (result === undefined) {
+        if (query._joins == undefined || query._joins.length == 0) {
+            throw new RowNotFoundError(`Expected one row, found zero`);
+        } else {
+            throw new RowNotFoundError(`Expected one row from ${query._joins[0].aliasedTable.alias}, found zero`);
+        }
     } else {
         return result;
     }

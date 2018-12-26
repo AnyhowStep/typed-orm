@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const fetch_all_1 = require("./fetch-all");
 const operation_1 = require("../operation");
 const error_1 = require("./error");
-async function fetchZeroOrOne(query, connection) {
-    const result = await fetch_all_1.fetchAll(
+const fetch_value_array_1 = require("./fetch-value-array");
+async function fetchValueOrUndefined(query, connection) {
+    const result = await fetch_value_array_1.fetchValueArray(
     /*
         We use LIMIT 2,
         because if we fetch more than one row,
@@ -22,12 +22,12 @@ async function fetchZeroOrOne(query, connection) {
     }
     else {
         if (query._joins == undefined || query._joins.length == 0) {
-            throw new error_1.TooManyRowsFoundError(`Expected zero or one row, fetched more than that`);
+            throw new error_1.TooManyRowsFoundError(`Expected zero or one value, fetched more than that`);
         }
         else {
-            throw new error_1.TooManyRowsFoundError(`Expected zero or one row from ${query._joins[0].aliasedTable.alias}, fetched more than that`);
+            throw new error_1.TooManyRowsFoundError(`Expected zero or one value from ${query._joins[0].aliasedTable.alias}, fetched more than that`);
         }
     }
 }
-exports.fetchZeroOrOne = fetchZeroOrOne;
-//# sourceMappingURL=fetch-zero-or-one.js.map
+exports.fetchValueOrUndefined = fetchValueOrUndefined;
+//# sourceMappingURL=fetch-value-or-undefined.js.map

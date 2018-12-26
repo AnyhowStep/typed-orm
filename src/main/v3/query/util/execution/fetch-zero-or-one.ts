@@ -33,6 +33,10 @@ export async function fetchZeroOrOne<
     } else if (result.length == 1) {
         return result[0];
     } else {
-        throw new TooManyRowsFoundError(`Expected zero or one row, fetched more than that`);
+        if (query._joins == undefined || query._joins.length == 0) {
+            throw new TooManyRowsFoundError(`Expected zero or one row, fetched more than that`);
+        } else {
+            throw new TooManyRowsFoundError(`Expected zero or one row from ${query._joins[0].aliasedTable.alias}, fetched more than that`);
+        }
     }
 }

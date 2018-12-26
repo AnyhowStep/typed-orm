@@ -11,3 +11,17 @@ export class TooManyRowsFoundError extends Error {
         Object.setPrototypeOf(this, TooManyRowsFoundError.prototype);
     }
 }
+
+export class NoColumnsSelectedError extends Error {
+    constructor (message : string) {
+        super(message);
+        Object.setPrototypeOf(this, RowNotFoundError.prototype);
+    }
+}
+
+export class TooManyColumnsSelectedError extends Error {
+    constructor (message : string) {
+        super(message);
+        Object.setPrototypeOf(this, RowNotFoundError.prototype);
+    }
+}

@@ -14,4 +14,18 @@ class TooManyRowsFoundError extends Error {
     }
 }
 exports.TooManyRowsFoundError = TooManyRowsFoundError;
+class NoColumnsSelectedError extends Error {
+    constructor(message) {
+        super(message);
+        Object.setPrototypeOf(this, RowNotFoundError.prototype);
+    }
+}
+exports.NoColumnsSelectedError = NoColumnsSelectedError;
+class TooManyColumnsSelectedError extends Error {
+    constructor(message) {
+        super(message);
+        Object.setPrototypeOf(this, RowNotFoundError.prototype);
+    }
+}
+exports.TooManyColumnsSelectedError = TooManyColumnsSelectedError;
 //# sourceMappingURL=error.js.map
