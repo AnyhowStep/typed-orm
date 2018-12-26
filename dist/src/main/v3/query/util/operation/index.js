@@ -10,16 +10,19 @@ __export(require("./cross-join"));
 __export(require("./distinct"));
 __export(require("./from"));
 __export(require("./group-by"));
-__export(require("./inner-join-one-using"));
-__export(require("./inner-join-one"));
-__export(require("./inner-join-using-pk"));
-__export(require("./inner-join-using"));
-__export(require("./inner-join"));
+//TODO-REFACTOR Rename all of these things. It's terrible.
+__export(require("./inner-join-one-using")); //innerJoinCkUsing()?
+__export(require("./inner-join-one")); //innerJoinCk()?
+__export(require("./inner-join-using-from-pk")); //innerJoinFromPk()?
+__export(require("./inner-join-using-pk")); //innerJoinPk()
+__export(require("./inner-join-using")); //OK
+__export(require("./inner-join")); //OK
 __export(require("./join-delegate"));
 __export(require("./join-using-delegate"));
-__export(require("./left-join-using-pk"));
-__export(require("./left-join-using"));
-__export(require("./left-join"));
+__export(require("./left-join-using-from-pk")); //leftJoinFromPk()
+__export(require("./left-join-using-pk")); //leftJoinPk()
+__export(require("./left-join-using")); //OK
+__export(require("./left-join")); //OK
 __export(require("./limit"));
 __export(require("./map"));
 __export(require("./offset"));

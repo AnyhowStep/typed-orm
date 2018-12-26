@@ -1,10 +1,9 @@
 import {IAliasedTable} from "../../../aliased-table";
 
-export type AssertValidJoinTarget<
+export type AssertValidJoinTargetImpl<
     FromTableT extends IAliasedTable,
     ToTableT extends IAliasedTable
 > = (
-    ToTableT &
     (
         Extract<FromTableT["alias"], ToTableT["alias"]> extends never ?
         unknown :
@@ -13,6 +12,13 @@ export type AssertValidJoinTarget<
             Extract<FromTableT["alias"], ToTableT["alias"]>
         ]
     )
+);
+export type AssertValidJoinTarget<
+    FromTableT extends IAliasedTable,
+    ToTableT extends IAliasedTable
+> = (
+    ToTableT &
+    AssertValidJoinTargetImpl<FromTableT, ToTableT>
 );
 export function assertValidJoinTarget<
     FromTableT extends IAliasedTable,

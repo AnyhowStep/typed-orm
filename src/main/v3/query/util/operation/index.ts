@@ -5,16 +5,19 @@ export * from "./cross-join";
 export * from "./distinct";
 export * from "./from";
 export * from "./group-by";
-export * from "./inner-join-one-using";
-export * from "./inner-join-one";
-export * from "./inner-join-using-pk";
-export * from "./inner-join-using";
-export * from "./inner-join";
+//TODO-REFACTOR Rename all of these things. It's terrible.
+export * from "./inner-join-one-using"; //innerJoinCkUsing()?
+export * from "./inner-join-one"; //innerJoinCk()?
+export * from "./inner-join-using-from-pk"; //innerJoinFromPk()?
+export * from "./inner-join-using-pk"; //innerJoinPk()
+export * from "./inner-join-using"; //OK
+export * from "./inner-join"; //OK
 export * from "./join-delegate";
 export * from "./join-using-delegate";
-export * from "./left-join-using-pk";
-export * from "./left-join-using";
-export * from "./left-join";
+export * from "./left-join-using-from-pk"; //leftJoinFromPk()
+export * from "./left-join-using-pk"; //leftJoinPk()
+export * from "./left-join-using"; //OK
+export * from "./left-join"; //OK
 export * from "./limit";
 export * from "./map";
 export * from "./offset";

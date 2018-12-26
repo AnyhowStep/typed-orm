@@ -1,16 +1,16 @@
 import {IAliasedTable} from "../../../aliased-table";
 import {ITable} from "../../../table";
 import {ColumnUtil} from "../../../column";
-import {AssertValidJoinTarget} from "../predicate";
+import {AssertValidJoinTargetImpl} from "../predicate";
 import {JoinType} from "../../../join";
 import {JoinDeclaration} from "../../join-declaration";
 import {invokeJoinDelegate} from "./join-delegate";
 
-export type AssertValidJoinUsingPkTarget<
+export type AssertValidJoinUsingPkTargetImpl<
     FromTableT extends IAliasedTable,
     ToTableT extends ITable & { primaryKey : string[] }
 > = (
-    AssertValidJoinTarget<FromTableT, ToTableT> &
+    AssertValidJoinTargetImpl<FromTableT, ToTableT> &
     (
         ToTableT["primaryKey"][number] extends ColumnUtil.FromColumnMap<FromTableT["columns"]>["name"] ?
         (
@@ -78,6 +78,13 @@ export type AssertValidJoinUsingPkTarget<
             >
         ]
     )
+);
+export type AssertValidJoinUsingPkTarget<
+    FromTableT extends IAliasedTable,
+    ToTableT extends ITable & { primaryKey : string[] }
+> = (
+    ToTableT &
+    AssertValidJoinUsingPkTargetImpl<FromTableT, ToTableT>
 );
 
 export function invokeJoinUsingPk<

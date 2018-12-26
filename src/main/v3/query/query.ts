@@ -1070,6 +1070,76 @@ export class Query<DataT extends QueryData> {
             toTable
         );
     }
+
+    innerJoinUsingFromPk<
+        FromDelegateT extends QueryUtil.JoinUsingFromPkDelegate<
+            Extract<this, QueryUtil.AfterFromClause>
+        >,
+        ToTableT extends IAliasedTable
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        fromTableDelegate : FromDelegateT,
+        toTable : (
+            ToTableT &
+            JoinDeclarationUtil.AssertValidJoinUsingPkTargetImpl<
+                ToTableT,
+                Extract<
+                    Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
+                    ReturnType<FromDelegateT>
+                >
+            >
+        )
+    ) : (
+        QueryUtil.InnerJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ToTableT
+        >
+    ) {
+        return QueryUtil.innerJoinUsingFromPk<
+            Extract<this, QueryUtil.AfterFromClause>,
+            FromDelegateT,
+            ToTableT
+        >(
+            this,
+            fromTableDelegate,
+            toTable
+        );
+    }
+
+    leftJoinUsingFromPk<
+        FromDelegateT extends QueryUtil.JoinUsingFromPkDelegate<
+            Extract<this, QueryUtil.AfterFromClause>
+        >,
+        ToTableT extends IAliasedTable
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        fromTableDelegate : FromDelegateT,
+        toTable : (
+            ToTableT &
+            JoinDeclarationUtil.AssertValidJoinUsingPkTargetImpl<
+                ToTableT,
+                Extract<
+                    Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
+                    ReturnType<FromDelegateT>
+                >
+            >
+        )
+    ) : (
+        QueryUtil.LeftJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ToTableT
+        >
+    ) {
+        return QueryUtil.leftJoinUsingFromPk<
+            Extract<this, QueryUtil.AfterFromClause>,
+            FromDelegateT,
+            ToTableT
+        >(
+            this,
+            fromTableDelegate,
+            toTable
+        );
+    }
 }
 
 export function from<AliasedTableT extends IAliasedTable> (
