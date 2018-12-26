@@ -3,14 +3,29 @@ export * from "./join-declaration";
 import * as JoinDeclarationUtil from "./util";
 export {JoinDeclarationUtil};
 
-import {innerJoinOneUsing} from "./util";
-export {innerJoinOneUsing};
+import {
+    innerJoinOneUsing,
+    innerJoinUsingFromPk,
+    innerJoinUsingPk,
+    innerJoinUsing,
+    innerJoin,
 
-import {innerJoinUsingPk} from "./util";
-export {innerJoinUsingPk};
+    leftJoinOneUsing,
+    leftJoinUsingFromPk,
+    leftJoinUsingPk,
+    leftJoinUsing,
+    leftJoin,
+} from "./util";
+export {
+    innerJoinOneUsing,
+    innerJoinUsingFromPk,
+    innerJoinUsingPk,
+    innerJoinUsing,
+    innerJoin,
 
-import {innerJoinUsing} from "./util";
-export {innerJoinUsing};
-
-import {innerJoin} from "./util";
-export {innerJoin};
+    leftJoinOneUsing,
+    leftJoinUsingFromPk,
+    leftJoinUsingPk,
+    leftJoinUsing,
+    leftJoin,
+};

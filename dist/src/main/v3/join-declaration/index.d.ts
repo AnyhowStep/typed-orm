@@ -1,12 +1,6 @@
 export * from "./join-declaration";
 import * as JoinDeclarationUtil from "./util";
 export { JoinDeclarationUtil };
-import { innerJoinOneUsing } from "./util";
-export { innerJoinOneUsing };
-import { innerJoinUsingPk } from "./util";
-export { innerJoinUsingPk };
-import { innerJoinUsing } from "./util";
-export { innerJoinUsing };
-import { innerJoin } from "./util";
-export { innerJoin };
+import { innerJoinOneUsing, innerJoinUsingFromPk, innerJoinUsingPk, innerJoinUsing, innerJoin, leftJoinOneUsing, leftJoinUsingFromPk, leftJoinUsingPk, leftJoinUsing, leftJoin } from "./util";
+export { innerJoinOneUsing, innerJoinUsingFromPk, innerJoinUsingPk, innerJoinUsing, innerJoin, leftJoinOneUsing, leftJoinUsingFromPk, leftJoinUsingPk, leftJoinUsing, leftJoin, };
 //# sourceMappingURL=index.d.ts.map

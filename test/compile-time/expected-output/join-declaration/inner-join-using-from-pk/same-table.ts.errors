@@ -1,0 +1,18 @@
+[
+  {
+    "messageText": {
+      "messageText": "Argument of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column/column\").Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: import(\"/ho...' is not assignable to parameter of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column/column\").Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: import(\"/ho...'.",
+      "category": 1,
+      "code": 2345,
+      "next": {
+        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 10 more ...; readonly deleteAllowed: true;...' is missing the following properties from type '[\"Cannot join two tables with the same name\", \"table\"]': 0, 1, length, pop, and 30 more.",
+        "category": 1,
+        "code": 2740
+      }
+    },
+    "code": 2345,
+    "category": 1,
+    "length": 5,
+    "start": 299
+  }
+]
