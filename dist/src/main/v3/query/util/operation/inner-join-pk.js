@@ -15,4 +15,4 @@ function innerJoinUsingPk(query, fromTableDelegate, toTable) {
     return inner_join_1.innerJoin(query, toTable, () => toTable.primaryKey.map(columnName => fromTable.columns[columnName]), () => toTable.primaryKey.map(columnName => toTable.columns[columnName]));
 }
 exports.innerJoinUsingPk = innerJoinUsingPk;
-//# sourceMappingURL=inner-join-using-pk.js.map
+//# sourceMappingURL=inner-join-pk.js.map

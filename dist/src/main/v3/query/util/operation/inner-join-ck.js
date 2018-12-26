@@ -17,4 +17,4 @@ function innerJoinOne(query, table, fromDelegate, toDelegate) {
     return inner_join_1.innerJoin(query, table, (() => from), (() => to));
 }
 exports.innerJoinOne = innerJoinOne;
-//# sourceMappingURL=inner-join-one.js.map
+//# sourceMappingURL=inner-join-ck.js.map

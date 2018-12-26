@@ -4,7 +4,7 @@ import {LeftJoin, leftJoin} from "./left-join";
 //TODO-REFACTOR Move this to QueryUtil, doesn't really
 //belongs to JoinDeclarationUtil, I think
 import {JoinDeclarationUtil} from "../../../join-declaration";
-import {JoinUsingFromPkDelegate} from "./inner-join-using-from-pk";
+import {JoinUsingFromPkDelegate} from "./inner-join-from-pk";
 
 //TODO-REFACTOR Fix this ugly shit
 export function leftJoinUsingFromPk<

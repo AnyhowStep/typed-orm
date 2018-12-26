@@ -16,4 +16,4 @@ function leftJoinUsingPk(query, fromTableDelegate, toTable) {
     return left_join_1.leftJoin(query, toTable, () => toTable.primaryKey.map(columnName => fromTable.columns[columnName]), () => toTable.primaryKey.map(columnName => toTable.columns[columnName]));
 }
 exports.leftJoinUsingPk = leftJoinUsingPk;
-//# sourceMappingURL=left-join-using-pk.js.map
+//# sourceMappingURL=left-join-pk.js.map

@@ -12,4 +12,4 @@ function innerJoinOneUsing(query, table, usingDelegate) {
     return inner_join_using_1.innerJoinUsing(query, table, () => using);
 }
 exports.innerJoinOneUsing = innerJoinOneUsing;
-//# sourceMappingURL=inner-join-one-using.js.map
+//# sourceMappingURL=inner-join-ck-using.js.map

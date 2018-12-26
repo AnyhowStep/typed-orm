@@ -15,4 +15,4 @@ export declare type JoinUsingFromPkDelegate<QueryT extends AfterFromClause> = ((
     }>["alias"];
 });
 export declare function innerJoinUsingFromPk<QueryT extends AfterFromClause, FromDelegateT extends JoinUsingFromPkDelegate<QueryT>, ToTableT extends IAliasedTable>(query: QueryT, fromTableDelegate: FromDelegateT, toTable: (ToTableT & JoinDeclarationUtil.AssertValidJoinUsingPkTargetImpl<ToTableT, Extract<QueryT["_joins"][number]["aliasedTable"], ReturnType<FromDelegateT>>>)): (InnerJoin<QueryT, ToTableT>);
-//# sourceMappingURL=inner-join-using-from-pk.d.ts.map
+//# sourceMappingURL=inner-join-from-pk.d.ts.map

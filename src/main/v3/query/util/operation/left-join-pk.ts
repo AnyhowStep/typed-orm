@@ -5,7 +5,7 @@ import {LeftJoin, leftJoin} from "./left-join";
 //TODO-REFACTOR Move this to QueryUtil, doesn't really
 //belongs to JoinDeclarationUtil, I think
 import {JoinDeclarationUtil} from "../../../join-declaration";
-import {FromTableDelegate} from "./inner-join-using-pk";
+import {FromTableDelegate} from "./inner-join-pk";
 
 //TODO-REFACTOR Most of this code is copy-pasted, duplicate code
 export function leftJoinUsingPk<
