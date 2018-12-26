@@ -95,3 +95,13 @@ tape(__filename, async (t) => {
 
     t.end();
 });
+
+tape(__filename, async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT NOW(3) - UTC_TIMESTAMP(3) AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "0.000");
+
+    t.end();
+});
