@@ -10,7 +10,7 @@ const table = o.table(
     }
 ).setPrimaryKey(c => [c.x]);
 
-export const j1 = o.innerJoinUsingFromPk(
+export const j1 = o.innerJoinFromPk(
     table,
     table
 );

@@ -20,7 +20,7 @@ tape(__filename, (t) => {
         }
     ).addCandidateKey(c => [c.x]);
 
-    const j1 = o.innerJoinOneUsing(
+    const j1 = o.innerJoinCkUsing(
         table,
         joined1,
         t => [t.x]

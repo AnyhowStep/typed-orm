@@ -19,7 +19,7 @@ const joined1 = o.table(
 )
 
 export const query = o.QueryUtil.newInstance()
-    .innerJoinUsingPk(
+    .innerJoinPk(
         () => table,
         joined1
     );

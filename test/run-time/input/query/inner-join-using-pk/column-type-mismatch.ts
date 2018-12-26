@@ -31,7 +31,7 @@ tape(__filename, (t) => {
     */
     t.doesNotThrow(() => {
         o.from(table)
-            .innerJoinUsingPk(
+            .innerJoinPk(
                 t => t.table,
                 joined1 as any
             );

@@ -113,6 +113,46 @@ function isAfterSelectClause(query) {
     return query._selects != undefined;
 }
 exports.isAfterSelectClause = isAfterSelectClause;
+function isBeforeWhereClause(query) {
+    return query._where == undefined;
+}
+exports.isBeforeWhereClause = isBeforeWhereClause;
+function isAfterWhereClause(query) {
+    return query._where != undefined;
+}
+exports.isAfterWhereClause = isAfterWhereClause;
+function isBeforeHavingClause(query) {
+    return query._having == undefined;
+}
+exports.isBeforeHavingClause = isBeforeHavingClause;
+function isAfterHavingClause(query) {
+    return query._having != undefined;
+}
+exports.isAfterHavingClause = isAfterHavingClause;
+function isBeforeOrderByClause(query) {
+    return query._orders == undefined;
+}
+exports.isBeforeOrderByClause = isBeforeOrderByClause;
+function isAfterOrderByClause(query) {
+    return query._orders != undefined;
+}
+exports.isAfterOrderByClause = isAfterOrderByClause;
+function isBeforeUnionOrderByClause(query) {
+    return query._unionOrders == undefined;
+}
+exports.isBeforeUnionOrderByClause = isBeforeUnionOrderByClause;
+function isAfterUnionOrderByClause(query) {
+    return query._unionOrders != undefined;
+}
+exports.isAfterUnionOrderByClause = isAfterUnionOrderByClause;
+function canWidenColumnTypes(query) {
+    return (isBeforeSelectClause(query) &&
+        isBeforeWhereClause(query) &&
+        isBeforeHavingClause(query) &&
+        isBeforeOrderByClause(query) &&
+        isBeforeUnionOrderByClause(query));
+}
+exports.canWidenColumnTypes = canWidenColumnTypes;
 function isOneRowQuery(query) {
     return isBeforeFromClause(query) && isBeforeUnionClause(query);
 }

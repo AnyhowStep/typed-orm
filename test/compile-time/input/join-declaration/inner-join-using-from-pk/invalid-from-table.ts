@@ -26,7 +26,7 @@ const joined2 = o.table(
     }
 ).setPrimaryKey(c => [c.a, c.y]);
 
-const j2 = o.innerJoinUsingFromPk(
+const j2 = o.innerJoinFromPk(
     joined2,
     joined1
 );

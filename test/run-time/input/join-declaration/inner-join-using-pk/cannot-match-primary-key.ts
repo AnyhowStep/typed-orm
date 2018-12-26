@@ -21,7 +21,7 @@ tape(__filename, (t) => {
     ).setPrimaryKey(c => [c.x, c.y, c.a]);
 
     t.throws(() => {
-        o.innerJoinUsingPk(
+        o.innerJoinPk(
             table,
             joined1 as any
         );

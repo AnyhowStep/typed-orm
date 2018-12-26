@@ -28,7 +28,7 @@ tape(__filename, (t) => {
         }
     ).setPrimaryKey(c => [c.a]);
 
-    const j2 = o.innerJoinUsingPk(
+    const j2 = o.innerJoinPk(
         joined1,
         joined2
     );

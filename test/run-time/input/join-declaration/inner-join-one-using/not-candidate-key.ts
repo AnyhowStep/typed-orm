@@ -21,7 +21,7 @@ tape(__filename, (t) => {
     ).addCandidateKey(c => [c.x, c.y]);
 
     t.throws(() => {
-        o.innerJoinOneUsing(
+        o.innerJoinCkUsing(
             table,
             joined1,
             t => [t.x]

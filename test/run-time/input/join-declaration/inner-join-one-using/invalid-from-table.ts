@@ -28,7 +28,7 @@ tape(__filename, (t) => {
         }
     ).addCandidateKey(c => [c.b]);
 
-    const j2 = o.innerJoinOneUsing(
+    const j2 = o.innerJoinCkUsing(
         joined1,
         joined2,
         t => [t.b]

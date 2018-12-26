@@ -20,7 +20,7 @@ const joined1 = o.table(
 
 
 export const query = o.from(table)
-    .innerJoinOneUsing(
+    .innerJoinCkUsing(
         joined1,
         c => [c.y]
     );

@@ -40,11 +40,41 @@ class Query {
     rightJoinUsing(aliasedTable, usingDelegate) {
         return QueryUtil.rightJoinUsing(this, aliasedTable, usingDelegate);
     }
-    innerJoinOne(table, fromDelegate, toDelegate) {
-        return QueryUtil.innerJoinOne(this, table, fromDelegate, toDelegate);
+    innerJoinCk(table, fromDelegate, toDelegate) {
+        return QueryUtil.innerJoinCk(this, table, fromDelegate, toDelegate);
     }
-    innerJoinOneUsing(table, usingDelegate) {
-        return QueryUtil.innerJoinOneUsing(this, table, usingDelegate);
+    leftJoinCk(table, fromDelegate, toDelegate) {
+        return QueryUtil.leftJoinCk(this, table, fromDelegate, toDelegate);
+    }
+    rightJoinCk(table, fromDelegate, toDelegate) {
+        return QueryUtil.rightJoinCk(this, table, fromDelegate, toDelegate);
+    }
+    innerJoinCkUsing(table, usingDelegate) {
+        return QueryUtil.innerJoinCkUsing(this, table, usingDelegate);
+    }
+    leftJoinCkUsing(table, usingDelegate) {
+        return QueryUtil.leftJoinCkUsing(this, table, usingDelegate);
+    }
+    rightJoinCkUsing(table, usingDelegate) {
+        return QueryUtil.rightJoinCkUsing(this, table, usingDelegate);
+    }
+    innerJoinPk(delegate, toTable) {
+        return QueryUtil.innerJoinPk(this, delegate, toTable);
+    }
+    leftJoinPk(delegate, toTable) {
+        return QueryUtil.leftJoinPk(this, delegate, toTable);
+    }
+    rightJoinPk(delegate, toTable) {
+        return QueryUtil.rightJoinPk(this, delegate, toTable);
+    }
+    innerJoinFromPk(delegate, toTable) {
+        return QueryUtil.innerJoinFromPk(this, delegate, toTable);
+    }
+    leftJoinFromPk(delegate, toTable) {
+        return QueryUtil.leftJoinFromPk(this, delegate, toTable);
+    }
+    rightJoinFromPk(delegate, toTable) {
+        return QueryUtil.rightJoinFromPk(this, delegate, toTable);
     }
     select(delegate) {
         return QueryUtil.select(this, delegate);
@@ -159,18 +189,6 @@ class Query {
     }
     useJoins(...arr) {
         return QueryUtil.useJoins(this, arr);
-    }
-    innerJoinUsingPk(fromTableDelegate, toTable) {
-        return QueryUtil.innerJoinUsingPk(this, fromTableDelegate, toTable);
-    }
-    leftJoinUsingPk(fromTableDelegate, toTable) {
-        return QueryUtil.leftJoinUsingPk(this, fromTableDelegate, toTable);
-    }
-    innerJoinUsingFromPk(fromTableDelegate, toTable) {
-        return QueryUtil.innerJoinUsingFromPk(this, fromTableDelegate, toTable);
-    }
-    leftJoinUsingFromPk(fromTableDelegate, toTable) {
-        return QueryUtil.leftJoinUsingFromPk(this, fromTableDelegate, toTable);
     }
 }
 exports.Query = Query;

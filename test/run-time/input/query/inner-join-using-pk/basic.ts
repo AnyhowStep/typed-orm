@@ -21,7 +21,7 @@ tape(__filename, (t) => {
     ).setPrimaryKey(c => [c.y]);
 
     const query = o.from(table)
-        .innerJoinUsingPk(
+        .innerJoinPk(
             t => t.table,
             joined1
         );

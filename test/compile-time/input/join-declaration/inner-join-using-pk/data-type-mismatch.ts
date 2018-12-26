@@ -18,7 +18,7 @@ const joined1 = o.table(
     }
 ).setPrimaryKey(c => [c.b, c.y]);
 
-export const j1 = o.innerJoinUsingPk(
+export const j1 = o.innerJoinPk(
     table,
     joined1
 );

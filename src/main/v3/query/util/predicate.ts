@@ -139,7 +139,7 @@ export type AfterUnionOrderByClause = IQuery<QueryData & { _unionOrders : Order[
 export type CanWidenColumnTypes = IQuery<
     QueryData &
     {
-        _selects : SelectItem[],
+        _selects : undefined,
         _where : undefined,
         _having : undefined,
         _orders : undefined,

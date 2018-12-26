@@ -154,101 +154,90 @@ const joined21 = o.table(
     }
 ).setPrimaryKey(c => [c.x]);
 
-const joined22 = o.table(
-    "joined22",
-    {
-        x : sd.naturalNumber(),
-    }
-).setPrimaryKey(c => [c.x]);
-
 export const query = o.from(table)
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.table,
         joined1
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined1,
         joined2
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined2,
         joined3
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined3,
         joined4
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined4,
         joined5
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined5,
         joined6
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined6,
         joined7
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined7,
         joined8
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined8,
         joined9
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined9,
         joined10
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined10,
         joined11
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined11,
         joined12
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined12,
         joined13
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined13,
         joined14
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined14,
         joined15
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined15,
         joined16
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined16,
         joined17
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined17,
         joined18
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined18,
         joined19
     )
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.joined19,
         joined20
-    )
-    .innerJoinUsingPk(
-        t => t.joined20,
-        joined21
-    )
+    );
 export declare const tableAliasUnion : o.JoinArrayUtil.ToTableAliasUnion<typeof query._joins>;
 export const query2 = query
-    .innerJoinUsingPk(
-        t => t.joined21,
-        joined22
+    .innerJoinPk(
+        t => t.joined20,
+        joined21
     );

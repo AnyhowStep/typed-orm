@@ -19,7 +19,7 @@ const joined1 = o.table(
 ).setPrimaryKey(c => [c.y])
 
 export const query = o.from(table)
-    .innerJoinUsingPk(
+    .innerJoinPk(
         t => t.table,
         joined1
     );

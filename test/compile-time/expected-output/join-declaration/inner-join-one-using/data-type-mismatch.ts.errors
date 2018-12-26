@@ -18,13 +18,13 @@
     "code": 2322,
     "category": 1,
     "length": 5,
-    "start": 453
+    "start": 452
   },
   {
     "messageText": "Property 'x' does not exist on type '{}'.",
     "code": 2339,
     "category": 1,
     "length": 1,
-    "start": 456
+    "start": 455
   }
 ]

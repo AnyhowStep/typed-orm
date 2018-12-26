@@ -10,7 +10,7 @@ const table = o.table(
     }
 );
 
-export const j1 = o.innerJoinOneUsing(
+export const j1 = o.innerJoinCkUsing(
     table,
     table,
     () => [table.columns.x]

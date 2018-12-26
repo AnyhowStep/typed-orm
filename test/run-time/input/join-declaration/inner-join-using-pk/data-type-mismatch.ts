@@ -28,7 +28,7 @@ tape(__filename, (t) => {
 
             This could be solved by adding run-time information.
         */
-        o.innerJoinUsingPk(
+        o.innerJoinPk(
             table,
             joined1 as any
         );

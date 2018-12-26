@@ -22,11 +22,11 @@ tape(__filename, (t) => {
 
     t.throws(() => {
         o.from(table)
-            .innerJoinUsingPk(
+            .innerJoinPk(
                 t => t.table,
                 joined1
             )
-            .innerJoinUsingPk(
+            .innerJoinPk(
                 t => t.table,
                 joined1 as any
             );

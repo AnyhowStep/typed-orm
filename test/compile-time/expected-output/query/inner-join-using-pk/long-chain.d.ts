@@ -780,43 +780,6 @@ export declare const query: o.Query<{
             }>;
         };
         nullable: false;
-    }> | o.Join<{
-        aliasedTable: o.Table<{
-            readonly usedRef: {};
-            readonly alias: "joined21";
-            readonly columns: {
-                readonly x: o.Column<{
-                    tableAlias: "joined21";
-                    name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
-                }>;
-            };
-            readonly autoIncrement: undefined;
-            readonly id: undefined;
-            readonly primaryKey: "x"[];
-            readonly candidateKeys: "x"[][];
-            readonly generated: [];
-            readonly isNullable: never[];
-            readonly hasExplicitDefaultValue: [];
-            readonly mutable: "x"[];
-            readonly parents: [];
-            readonly insertAllowed: true;
-            readonly deleteAllowed: true;
-        }>;
-        columns: {
-            readonly x: o.Column<{
-                tableAlias: "joined21";
-                name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
-            }>;
-        };
-        nullable: false;
     }>)[];
     readonly _parentJoins: undefined;
     readonly _selects: undefined;
@@ -831,19 +794,4 @@ export declare const query: o.Query<{
     readonly _mapDelegate: undefined;
 }>;
 export declare const tableAliasUnion: o.JoinArrayUtil.ToTableAliasUnion<typeof query._joins>;
-export declare const query2: o.Query<{
-    readonly _distinct: false;
-    readonly _sqlCalcFoundRows: false;
-    readonly _joins: any[];
-    readonly _parentJoins: undefined;
-    readonly _selects: undefined;
-    readonly _where: undefined;
-    readonly _grouped: undefined;
-    readonly _having: undefined;
-    readonly _orders: undefined;
-    readonly _limit: undefined;
-    readonly _unions: undefined;
-    readonly _unionOrders: undefined;
-    readonly _unionLimit: undefined;
-    readonly _mapDelegate: undefined;
-}>;
+export declare const query2: any;

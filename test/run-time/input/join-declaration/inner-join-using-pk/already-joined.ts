@@ -20,7 +20,7 @@ tape(__filename, (t) => {
         }
     ).setPrimaryKey(c => [c.x]);
 
-    const j1 = o.innerJoinUsingPk(
+    const j1 = o.innerJoinPk(
         table,
         joined1
     );

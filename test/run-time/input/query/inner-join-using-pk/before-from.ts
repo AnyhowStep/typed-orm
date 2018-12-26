@@ -22,7 +22,7 @@ tape(__filename, (t) => {
 
     t.throws(() => {
         (o.QueryUtil.newInstance() as any)
-            .innerJoinUsingPk(
+            .innerJoinPk(
                 () => table,
                 joined1
             );

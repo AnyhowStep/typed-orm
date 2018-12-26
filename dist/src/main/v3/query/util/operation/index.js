@@ -3,6 +3,12 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
+__export(require("./join"));
+__export(require("./join-ck"));
+__export(require("./join-ck-using"));
+__export(require("./join-from-pk"));
+__export(require("./join-pk"));
+__export(require("./join-using"));
 __export(require("./and-having"));
 __export(require("./as"));
 __export(require("./coalesce"));
@@ -10,26 +16,11 @@ __export(require("./cross-join"));
 __export(require("./distinct"));
 __export(require("./from"));
 __export(require("./group-by"));
-//TODO-REFACTOR Rename all of these things. It's terrible.
-__export(require("./inner-join-ck-using")); //innerJoinCkUsing()?
-__export(require("./inner-join-ck")); //innerJoinCk()?
-__export(require("./inner-join-from-pk")); //innerJoinFromPk()?
-__export(require("./inner-join-pk")); //innerJoinPk()
-__export(require("./inner-join-using")); //OK
-__export(require("./inner-join")); //OK
-__export(require("./join-delegate"));
-__export(require("./join-using-delegate"));
-__export(require("./left-join-from-pk")); //leftJoinFromPk()
-__export(require("./left-join-pk")); //leftJoinPk()
-__export(require("./left-join-using")); //OK
-__export(require("./left-join")); //OK
 __export(require("./limit"));
 __export(require("./map"));
 __export(require("./offset"));
 __export(require("./order-by"));
 __export(require("./require-parent-joins"));
-__export(require("./right-join-using"));
-__export(require("./right-join"));
 __export(require("./select-expr"));
 __export(require("./select"));
 __export(require("./sql-calc-found-rows"));

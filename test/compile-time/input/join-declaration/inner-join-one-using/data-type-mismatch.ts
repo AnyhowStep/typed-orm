@@ -18,7 +18,7 @@ const joined1 = o.table(
     }
 ).addCandidateKey(c => [c.x]);
 
-export const j1 = o.innerJoinOneUsing(
+export const j1 = o.innerJoinCkUsing(
     table,
     joined1,
     t => [t.x]

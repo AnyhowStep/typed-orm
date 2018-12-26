@@ -20,10 +20,10 @@ const joined1 = o.table(
         w : sd.number(),
     }
 ).addCandidateKey(c => [c.y, c.b])
+.addCandidateKey(c => [c.b, c.a])
 
-//https://github.com/Microsoft/TypeScript/issues/29133
 export const query = o.from(table)
-    .innerJoinOneUsing(
+    .innerJoinCkUsing(
         joined1,
         c => [c.b, c.y]
     );
