@@ -1,8 +1,8 @@
-import {IAliasedTable} from "../../../aliased-table";
-import {LeftJoin} from "./left-join";
-import {JoinUsingDelegate, invokeJoinUsingDelegate} from "./join-using-delegate";
-import {AssertValidJoinTarget} from "../predicate";
-import {JoinType} from "../../../join";
+import {IAliasedTable} from "../../../../aliased-table";
+import {LeftJoin} from "../join";
+import {JoinUsingDelegate, joinUsing} from "./join-using";
+import {AssertValidJoinTarget} from "../../predicate";
+import {JoinType} from "../../../../join";
 
 export function leftJoinUsing<
     FromTableT extends IAliasedTable,
@@ -13,7 +13,7 @@ export function leftJoinUsing<
     toTable : AssertValidJoinTarget<FromTableT, ToTableT>,
     usingDelegate : UsingDelegateT
 ) : LeftJoin<FromTableT, ToTableT> {
-    return invokeJoinUsingDelegate<
+    return joinUsing<
         FromTableT,
         ToTableT,
         UsingDelegateT,
