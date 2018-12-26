@@ -16,3 +16,15 @@
 + Log table pattern
 + Pooled connection
 + Transactions
+
++ String collation safety
+  + _utf8'some string' COLLATE utf8_danish_ci
+
++ BigInt range safety
+  + Not going over 2^64-1 for UNSIGNED BIGINT
+  + Range safety for TINYINT, SMALLINT, MEDIUMINT, INT
+
++ DECIMAL support
++ SET support
++ ENUM support
++ BIT support

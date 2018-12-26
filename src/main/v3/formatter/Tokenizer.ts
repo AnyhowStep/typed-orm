@@ -43,7 +43,7 @@ export class Tokenizer {
         reservedToplevelWords : string[],
         reservedNewlineWords : string[],
         reservedPreNewlineWords : string[],
-        stringTypes : ("``"|"[]"|"\"\""|"''"|"N''")[],
+        stringTypes : ("``"|"[]"|"\"\""|"''"|"N''"|"X''")[],
         openParens : string[],
         closeParens : string[],
         indexedPlaceholderTypes : string[],
@@ -91,7 +91,7 @@ export class Tokenizer {
         return new RegExp(`^([\\w${specialChars.join("")}]+)`);
     }
 
-    createStringRegex(stringTypes : ("``"|"[]"|"\"\""|"''"|"N''")[]) {
+    createStringRegex(stringTypes : ("``"|"[]"|"\"\""|"''"|"N''"|"X''")[]) {
         return new RegExp(
             "^(" + this.createStringPattern(stringTypes) + ")"
         );
@@ -103,13 +103,14 @@ export class Tokenizer {
     // 3. double quoted string using "" or \" to escape
     // 4. single quoted string using '' or \' to escape
     // 5. national character quoted string using N'' or N\' to escape
-    createStringPattern(stringTypes : ("``"|"[]"|"\"\""|"''"|"N''")[]) {
+    createStringPattern(stringTypes : ("``"|"[]"|"\"\""|"''"|"N''"|"X''")[]) {
         const patterns = {
             "``": "((`[^`]*($|`))+)",
             "[]": "((\\[[^\\]]*($|\\]))(\\][^\\]]*($|\\]))*)",
             "\"\"": "((\"[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*(\"|$))+)",
             "''": "(('[^'\\\\]*(?:\\\\.[^'\\\\]*)*('|$))+)",
             "N''": "((N'[^N'\\\\]*(?:\\\\.[^N'\\\\]*)*('|$))+)",
+            "X''": "((X'[^X'\\\\]*(?:\\\\.[^X'\\\\]*)*('|$))+)",
         };
 
         return stringTypes.map(t => patterns[t]).join("|");

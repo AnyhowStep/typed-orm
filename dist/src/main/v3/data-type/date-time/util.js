@@ -17,13 +17,39 @@ function toSqlUtc(d, fractionalSecondPrecision /*|4|5|6*/) {
     const minute = string_1.StringUtil.zeroPad(d.getUTCMinutes(), 2);
     const second = string_1.StringUtil.zeroPad(d.getUTCSeconds(), 2);
     if (fractionalSecondPrecision == 0) {
-        //Calling escape() should be a no-op but just in case...
-        return sqlstring_1.escape(`${year}-${month}-${day} ${hour}:${minute}:${second}`);
+        /*
+            https://dev.mysql.com/doc/refman/8.0/en/date-and-time-literals.html
+
+            The TIMESTAMP syntax produces a DATETIME value in MySQL
+            because DATETIME has a range that more closely corresponds
+            to the standard SQL TIMESTAMP type,
+            which has a year range from 0001 to 9999.
+
+            (The MySQL TIMESTAMP year range is 1970 to 2038.)
+        */
+        return [
+            "(TIMESTAMP ",
+            sqlstring_1.escape(`${year}-${month}-${day} ${hour}:${minute}:${second}`),
+            ")"
+        ].join("");
     }
     else {
         const ms = string_1.StringUtil.zeroPad(d.getUTCMilliseconds(), fractionalSecondPrecision).substr(0, fractionalSecondPrecision);
-        //Calling escape() should be a no-op but just in case...
-        return sqlstring_1.escape(`${year}-${month}-${day} ${hour}:${minute}:${second}.${ms}`);
+        /*
+            https://dev.mysql.com/doc/refman/8.0/en/date-and-time-literals.html
+
+            The TIMESTAMP syntax produces a DATETIME value in MySQL
+            because DATETIME has a range that more closely corresponds
+            to the standard SQL TIMESTAMP type,
+            which has a year range from 0001 to 9999.
+
+            (The MySQL TIMESTAMP year range is 1970 to 2038.)
+        */
+        return [
+            "(TIMESTAMP ",
+            sqlstring_1.escape(`${year}-${month}-${day} ${hour}:${minute}:${second}.${ms}`),
+            ")"
+        ].join("");
     }
 }
 exports.toSqlUtc = toSqlUtc;

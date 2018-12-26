@@ -104,7 +104,7 @@ class SqlFormatter {
                 reservedToplevelWords,
                 reservedNewlineWords,
                 reservedPreNewlineWords,
-                stringTypes: [`""`, "N''", "''", "``", "[]"],
+                stringTypes: [`""`, "N''", "''", "``", "[]", "X''"],
                 openParens: ["(", "CASE"],
                 closeParens: [")", "END"],
                 indexedPlaceholderTypes: ["?"],

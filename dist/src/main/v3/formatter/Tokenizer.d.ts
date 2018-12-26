@@ -35,7 +35,7 @@ export declare class Tokenizer {
         reservedToplevelWords: string[];
         reservedNewlineWords: string[];
         reservedPreNewlineWords: string[];
-        stringTypes: ("``" | "[]" | "\"\"" | "''" | "N''")[];
+        stringTypes: ("``" | "[]" | "\"\"" | "''" | "N''" | "X''")[];
         openParens: string[];
         closeParens: string[];
         indexedPlaceholderTypes: string[];
@@ -46,8 +46,8 @@ export declare class Tokenizer {
     createLineCommentRegex(lineCommentTypes: string[]): RegExp;
     createReservedWordRegex(reservedWords: string[]): RegExp;
     createWordRegex(specialChars?: string[]): RegExp;
-    createStringRegex(stringTypes: ("``" | "[]" | "\"\"" | "''" | "N''")[]): RegExp;
-    createStringPattern(stringTypes: ("``" | "[]" | "\"\"" | "''" | "N''")[]): string;
+    createStringRegex(stringTypes: ("``" | "[]" | "\"\"" | "''" | "N''" | "X''")[]): RegExp;
+    createStringPattern(stringTypes: ("``" | "[]" | "\"\"" | "''" | "N''" | "X''")[]): string;
     createParenRegex(parens: string[]): RegExp;
     escapeParen(paren: string): string;
     createPlaceholderRegex(types: string[], pattern: string): RegExp | undefined;
