@@ -19,4 +19,10 @@ for (let path of getAllTsFiles(__dirname + "/input")) {
 }
 const end = new Date().getTime();
 const timeTaken = end-start;
-console.log("Run-time tests completed in", timeTaken/1000.0, "s");
+console.log("Execution tests completed in", timeTaken/1000.0, "s");
+
+import {pool} from "./pool";
+tape(__filename, t => {
+    pool.disconnect();
+    t.end();
+});

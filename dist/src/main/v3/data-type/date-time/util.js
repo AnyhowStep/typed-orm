@@ -97,12 +97,12 @@ function fromSqlUtc(sql, fractionalSecondPrecision /*|4|5|6*/) {
     }
     const microsecondPart = (match[9] == undefined) ?
         0 :
-        parseInt(match[9]);
+        parseInt(string_1.StringUtil.trailingZeroPad(match[9], 6));
     if (microsecondPart > 999999) {
         throw new Error(`Microsecond must be [0, 999999]`);
     }
     const millisecond = Math.floor(microsecondPart / 1000);
-    const microsecond = microsecondPart - (millisecond * 1000);
+    const microsecond = microsecondPart % 1000;
     if (match[9] != undefined &&
         match[9].length > fractionalSecondPrecision) {
         throw new Error(`Expected DATETIME(${fractionalSecondPrecision}), received DATETIME(${match[9].length})`);

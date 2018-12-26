@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
-const string_array_1 = require("../../../../string-array");
 function fromColumnMap(columnMap) {
     //Technically, this could be wrong.
     //But it shouldn't be wrong, in general.
@@ -13,7 +12,7 @@ function fromColumnRef(columnRef) {
         memo.push(...fromColumnMap(columnRef[tableAlias]));
         return memo;
     }, []);
-    return string_array_1.StringArrayUtil.uniqueString(result);
+    return result;
 }
 exports.fromColumnRef = fromColumnRef;
 function nullableFromColumnMap(columnMap) {

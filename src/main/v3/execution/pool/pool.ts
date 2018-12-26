@@ -17,4 +17,6 @@ export interface IPool {
     acquireTransaction<ResultT> (
         callback : TransactionCallback<ResultT>
     ) : Promise<ResultT>;
+
+    disconnect () : Promise<void>;
 }

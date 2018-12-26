@@ -40,4 +40,12 @@ export namespace StringUtil {
             return str;
         }
     }
+    export function trailingZeroPad (num : number|string, length : number) {
+        const str = num.toString();
+        if (str.length < length) {
+            return str + "0".repeat(length-str.length);
+        } else {
+            return str;
+        }
+    }
 }

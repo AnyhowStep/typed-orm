@@ -1,7 +1,12 @@
 import * as mysql from "mysql";
 import {IPool, ConnectionCallback, TransactionCallback} from "../pool";
 import {CharSet} from "../../data-type";
-import {IConnection, ITransactionConnection, SelectResult} from "../connection";
+import {
+    IConnection,
+    ITransactionConnection,
+    RawQueryResult,
+    SelectResult
+} from "../connection";
 
 export class Connection implements IConnection, ITransactionConnection {
     private readonly connection : mysql.PoolConnection;
@@ -106,11 +111,41 @@ export class Connection implements IConnection, ITransactionConnection {
         }
     }
 
+    rawQuery (sql : string) : Promise<RawQueryResult> {
+        return new Promise<RawQueryResult>((resolve, reject) => {
+            const query = this.connection.query(
+                sql,
+                (err, results, fieldArr) => {
+                    if (err != undefined) {
+                        reject(err);
+                        return;
+                    }
+                    if (fieldArr == undefined) {
+                        resolve({
+                            query,
+                            results,
+                            fields : undefined,
+                        });
+                    } else {
+                        const fieldObj : any = {};
+                        for (let f of fieldArr) {
+                            fieldObj[f.name] = f;
+                        }
+                        resolve({
+                            query,
+                            results,
+                            fields : fieldObj,
+                        });
+                    }
+                }
+            );
+        });
+    }
     select (sql : string) : Promise<SelectResult> {
         return new Promise<SelectResult>((resolve, reject) => {
             const query = this.connection.query(
                 sql,
-                (err, results, fields) => {
+                (err, results, fieldArr) => {
                     if (err != undefined) {
                         reject(err);
                         return;
@@ -119,7 +154,7 @@ export class Connection implements IConnection, ITransactionConnection {
                         reject(new Error(`Expected results`));
                         return;
                     }
-                    if (fields == undefined) {
+                    if (fieldArr == undefined) {
                         reject(new Error(`Expected fields`));
                         return;
                     }
@@ -127,14 +162,18 @@ export class Connection implements IConnection, ITransactionConnection {
                         reject(new Error(`Expected results to be an array`));
                         return;
                     }
-                    if (!(fields instanceof Array)) {
+                    if (!(fieldArr instanceof Array)) {
                         reject(new Error(`Expected fields to be an array`));
                         return;
+                    }
+                    const fieldObj : any = {};
+                    for (let f of fieldArr) {
+                        fieldObj[f.name] = f;
                     }
                     resolve({
                         query,
                         rows   : results,
-                        fields : fields as any,
+                        fields : fieldObj,
                     });
                 }
             );
@@ -178,9 +217,22 @@ export class Pool implements IPool {
                     return;
                 }
                 const connection = new Connection(rawConnection);
-                const result = callback(connection);
-                rawConnection.release();
-                resolve(result);
+                connection.rawQuery("SET @@session.time_zone = '+00:00'")
+                    .then(() => {
+                        callback(connection)
+                            .then((result) => {
+                                rawConnection.release();
+                                resolve(result);
+                            })
+                            .catch((err) => {
+                                rawConnection.release();
+                                reject(err);
+                            });
+                    })
+                    .catch((err) => {
+                        rawConnection.release();
+                        reject(err);
+                    });
             });
         });
     }
@@ -192,6 +244,18 @@ export class Pool implements IPool {
             return connection.transaction((transactionConnection) => {
                 return callback(transactionConnection);
             })
+        });
+    }
+
+    disconnect () : Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.pool.end((err) => {
+                if (err == undefined) {
+                    resolve();
+                } else {
+                    reject(err);
+                }
+            });
         });
     }
 }

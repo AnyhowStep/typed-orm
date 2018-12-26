@@ -101,9 +101,37 @@ class Connection {
             return this.transaction(callback);
         }
     }
+    rawQuery(sql) {
+        return new Promise((resolve, reject) => {
+            const query = this.connection.query(sql, (err, results, fieldArr) => {
+                if (err != undefined) {
+                    reject(err);
+                    return;
+                }
+                if (fieldArr == undefined) {
+                    resolve({
+                        query,
+                        results,
+                        fields: undefined,
+                    });
+                }
+                else {
+                    const fieldObj = {};
+                    for (let f of fieldArr) {
+                        fieldObj[f.name] = f;
+                    }
+                    resolve({
+                        query,
+                        results,
+                        fields: fieldObj,
+                    });
+                }
+            });
+        });
+    }
     select(sql) {
         return new Promise((resolve, reject) => {
-            const query = this.connection.query(sql, (err, results, fields) => {
+            const query = this.connection.query(sql, (err, results, fieldArr) => {
                 if (err != undefined) {
                     reject(err);
                     return;
@@ -112,7 +140,7 @@ class Connection {
                     reject(new Error(`Expected results`));
                     return;
                 }
-                if (fields == undefined) {
+                if (fieldArr == undefined) {
                     reject(new Error(`Expected fields`));
                     return;
                 }
@@ -120,14 +148,18 @@ class Connection {
                     reject(new Error(`Expected results to be an array`));
                     return;
                 }
-                if (!(fields instanceof Array)) {
+                if (!(fieldArr instanceof Array)) {
                     reject(new Error(`Expected fields to be an array`));
                     return;
+                }
+                const fieldObj = {};
+                for (let f of fieldArr) {
+                    fieldObj[f.name] = f;
                 }
                 resolve({
                     query,
                     rows: results,
-                    fields: fields,
+                    fields: fieldObj,
                 });
             });
         });
@@ -160,9 +192,22 @@ class Pool {
                     return;
                 }
                 const connection = new Connection(rawConnection);
-                const result = callback(connection);
-                rawConnection.release();
-                resolve(result);
+                connection.rawQuery("SET @@session.time_zone = '+00:00'")
+                    .then(() => {
+                    callback(connection)
+                        .then((result) => {
+                        rawConnection.release();
+                        resolve(result);
+                    })
+                        .catch((err) => {
+                        rawConnection.release();
+                        reject(err);
+                    });
+                })
+                    .catch((err) => {
+                    rawConnection.release();
+                    reject(err);
+                });
             });
         });
     }
@@ -170,6 +215,18 @@ class Pool {
         return this.acquire((connection) => {
             return connection.transaction((transactionConnection) => {
                 return callback(transactionConnection);
+            });
+        });
+    }
+    disconnect() {
+        return new Promise((resolve, reject) => {
+            this.pool.end((err) => {
+                if (err == undefined) {
+                    resolve();
+                }
+                else {
+                    reject(err);
+                }
             });
         });
     }

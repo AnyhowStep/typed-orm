@@ -25,5 +25,15 @@ var StringUtil;
         }
     }
     StringUtil.zeroPad = zeroPad;
+    function trailingZeroPad(num, length) {
+        const str = num.toString();
+        if (str.length < length) {
+            return str + "0".repeat(length - str.length);
+        }
+        else {
+            return str;
+        }
+    }
+    StringUtil.trailingZeroPad = trailingZeroPad;
 })(StringUtil = exports.StringUtil || (exports.StringUtil = {}));
 //# sourceMappingURL=string.js.map

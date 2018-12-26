@@ -152,7 +152,7 @@ for (let rootName of rootNames) {
 }
 const end = new Date().getTime();
 const timeTaken = end-start;
-console.log("Compile-time tests completed in", timeTaken/1000.0, "ms");
+console.log("Compile-time tests completed in", timeTaken/1000.0, "s");
 if (allDiffResults.length > 0) {
     for (let diffResult of allDiffResults) {
         console.log("====================================");

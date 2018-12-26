@@ -48,17 +48,29 @@ export interface IFieldInfo {
     zeroFill: boolean;
     protocol41: boolean;
 }
+export interface RawQueryResult {
+    query: {
+        sql: string;
+    };
+    results: any | undefined;
+    fields: {
+        [name: string]: IFieldInfo;
+    } | undefined;
+}
 export interface SelectResult {
     query: {
         sql: string;
     };
     rows: any[];
-    fields: IFieldInfo[];
+    fields: {
+        [name: string]: IFieldInfo;
+    };
 }
 export interface IConnection {
     isInTransaction(): this is ITransactionConnection;
     transaction<ResultT>(callback: TransactionCallback<ResultT>): Promise<ResultT>;
     transactionIfNotInOne<ResultT>(callback: TransactionCallback<ResultT>): Promise<ResultT>;
+    rawQuery(sql: string): Promise<RawQueryResult>;
     select(sql: string): Promise<SelectResult>;
 }
 export interface ITransactionConnection extends IConnection {

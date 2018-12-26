@@ -1,11 +1,12 @@
 import {AfterSelectClause} from "../predicate";
-import {IConnection} from "../../../execution";
+import {IConnection, Types} from "../../../execution";
 import {MappedType} from "../operation";
 import {queryTree} from "../query";
 import {QueryTreeUtil} from "../../../query-tree";
 import {SEPARATOR} from "../../../constants";
 import {SelectItemArrayUtil} from "../../../select-item-array";
 import {ColumnRefUtil, ColumnRef} from "../../../column-ref";
+import { DateTimeUtil } from "../../../data-type";
 
 export type FetchAll<
     QueryT extends AfterSelectClause
@@ -21,7 +22,6 @@ export async function fetchAll<
     SelectItemArrayUtil.assertNoDuplicateColumnName
     const sql = QueryTreeUtil.toSqlPretty(queryTree(query));
     const rawResult = await connection.select(sql);
-    console.log("fetchAll result", rawResult);
 
     const hasDuplicateColumnName = SelectItemArrayUtil
         .hasDuplicateColumnName(
@@ -33,9 +33,22 @@ export async function fetchAll<
     for (let rawRow of rawResult.rows) {
         const originalRow : any = {};
         for (let k of Object.keys(rawRow)) {
-            const parts = rawRow[k].split(SEPARATOR);
+            const parts = k.split(SEPARATOR);
             const tableAlias = parts[0];
             const columnName = parts[1];
+
+            switch (rawResult.fields[k].type) {
+                case Types.DATETIME:
+                case Types.DATETIME2:
+                case Types.TIMESTAMP:
+                case Types.TIMESTAMP2: {
+                    rawRow[k] = DateTimeUtil.fromSqlUtc(
+                        rawRow[k],
+                        rawResult.fields[k].decimals as 0|1|2|3
+                    );
+                    break;
+                }
+            }
             const value = ref[tableAlias][columnName].assertDelegate(
                 `${tableAlias}.${columnName}`,
                 rawRow[k]

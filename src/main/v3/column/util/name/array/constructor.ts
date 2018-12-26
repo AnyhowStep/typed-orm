@@ -2,7 +2,6 @@ import * as sd from "schema-decorator";
 import * as Ctor from "../constructor";
 import {ColumnMap} from "../../../../column-map";
 import {ColumnRef} from "../../../../column-ref";
-import {StringArrayUtil} from "../../../../string-array";
 
 //Technically, this could be wrong.
 //But it shouldn't be wrong, in general.
@@ -32,7 +31,7 @@ export function fromColumnRef<ColumnRefT extends ColumnRef> (
         },
         []
     );
-    return StringArrayUtil.uniqueString(result) as FromColumnRef<ColumnRefT>;
+    return result as FromColumnRef<ColumnRefT>;
 }
 
 

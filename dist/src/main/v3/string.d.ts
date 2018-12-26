@@ -4,5 +4,6 @@ export declare namespace StringUtil {
     }[S]);
     type IsOneLiteral<S extends string> = (IsOneLiteralImpl<S> extends never ? (S extends never ? false : true) : false);
     function zeroPad(num: number, length: number): string;
+    function trailingZeroPad(num: number | string, length: number): string;
 }
 //# sourceMappingURL=string.d.ts.map

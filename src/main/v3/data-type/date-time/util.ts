@@ -106,13 +106,13 @@ export function fromSqlUtc (sql : string, fractionalSecondPrecision : 0|1|2|3/*|
 
     const microsecondPart = (match[9] == undefined) ?
         0 :
-        parseInt(match[9]);
+        parseInt(StringUtil.trailingZeroPad(match[9], 6));
     if (microsecondPart > 999999) {
         throw new Error(`Microsecond must be [0, 999999]`);
     }
 
     const millisecond = Math.floor(microsecondPart/1000);
-    const microsecond = microsecondPart - (millisecond * 1000);
+    const microsecond = microsecondPart % 1000;
 
     if (
         match[9] != undefined &&

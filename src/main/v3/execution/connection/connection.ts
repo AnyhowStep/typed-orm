@@ -53,10 +53,19 @@ export interface IFieldInfo {
     protocol41: boolean;
 }
 
+export interface RawQueryResult {
+    query  : { sql : string },
+    results : any|undefined,
+    fields : {
+        [name : string] : IFieldInfo
+    }|undefined,
+}
 export interface SelectResult {
     query  : { sql : string },
     rows   : any[],
-    fields : IFieldInfo[],
+    fields : {
+        [name : string] : IFieldInfo
+    },
 }
 
 export interface IConnection {
@@ -68,6 +77,7 @@ export interface IConnection {
         callback : TransactionCallback<ResultT>
     ) : Promise<ResultT>;
 
+    rawQuery (sql : string) : Promise<RawQueryResult>;
     select (sql : string) : Promise<SelectResult>;
     //TODO insert
     //TODO update
