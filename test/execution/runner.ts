@@ -22,7 +22,15 @@ const timeTaken = end-start;
 console.log("Execution tests completed in", timeTaken/1000.0, "s");
 
 import {pool} from "./pool";
-tape(__filename, t => {
-    pool.disconnect();
+tape(__filename, async (t) => {
+    console.log("Disconnecting");
+    await pool.disconnect()
+        .then(() => {
+            console.log("Disconnected");
+        })
+        .catch((err) => {
+            console.log("Disconnected with error", err);
+        });
+
     t.end();
 });
