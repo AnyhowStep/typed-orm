@@ -154,11 +154,15 @@ export function invokeJoinDelegate<
         toTable.columns,
         toColumns
     );
-    return new JoinDeclaration(
+    return new JoinDeclaration<{
+        readonly fromTable : FromTableT;
+        readonly toTable : ToTableT,
+        readonly nullable : NullableT,
+    }>(
         {
             fromTable,
             toTable,
-            nullable : nullable,
+            nullable,
         },
         joinType,
         fromColumns,

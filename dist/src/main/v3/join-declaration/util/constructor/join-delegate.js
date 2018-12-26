@@ -22,7 +22,7 @@ function invokeJoinDelegate(fromTable, toTable, fromDelegate, toDelegate, nullab
     return new join_declaration_1.JoinDeclaration({
         fromTable,
         toTable,
-        nullable: nullable,
+        nullable,
     }, joinType, fromColumns, toColumns);
 }
 exports.invokeJoinDelegate = invokeJoinDelegate;

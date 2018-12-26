@@ -1,6 +1,7 @@
 import { IAliasedTable } from "../aliased-table";
 import { JoinType } from "../join";
 import { IColumn } from "../column";
+import * as JoinDeclarationUtil from "./util";
 export interface JoinDeclarationData {
     readonly fromTable: IAliasedTable;
     readonly toTable: IAliasedTable;
@@ -22,5 +23,7 @@ export declare class JoinDeclaration<DataT extends JoinDeclarationData> implemen
     readonly from: IColumn[];
     readonly to: IColumn[];
     constructor(data: DataT, joinType: JoinType.INNER | JoinType.LEFT, from: IColumn[], to: IColumn[]);
+    swap(): JoinDeclarationUtil.Swap<this>;
+    eq(): JoinDeclarationUtil.Eq<this>;
 }
 //# sourceMappingURL=join-declaration.d.ts.map

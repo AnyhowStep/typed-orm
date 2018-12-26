@@ -1,11 +1,12 @@
 import {IAliasedTable} from "../aliased-table";
 import {JoinType} from "../join";
 import {IColumn} from "../column";
+import * as JoinDeclarationUtil from "./util";
 
 export interface JoinDeclarationData {
     readonly fromTable : IAliasedTable;
-    readonly toTable : IAliasedTable,
-    readonly nullable : boolean,
+    readonly toTable : IAliasedTable;
+    readonly nullable : boolean;
 }
 export interface IJoinDeclaration<DataT extends JoinDeclarationData=JoinDeclarationData> {
     readonly fromTable : DataT["fromTable"];
@@ -40,5 +41,12 @@ export class JoinDeclaration<DataT extends JoinDeclarationData> implements IJoin
         this.joinType = joinType;
         this.from = from;
         this.to = to;
+    }
+
+    swap () : JoinDeclarationUtil.Swap<this> {
+        return JoinDeclarationUtil.swap(this);
+    }
+    eq () : JoinDeclarationUtil.Eq<this> {
+        return JoinDeclarationUtil.eq(this);
     }
 }
