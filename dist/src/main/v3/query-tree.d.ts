@@ -18,6 +18,7 @@ export interface QueryTreeArray extends Array<string | QueryTree | Parentheses |
 export declare type QueryTree = string | QueryTreeArray | Parentheses | FunctionCall;
 export declare namespace QueryTreeUtil {
     function toSql(tree: QueryTree): string;
+    function toSqlPretty(tree: QueryTree): string;
     function isQueryTree(raw: any): raw is QueryTree;
 }
 //# sourceMappingURL=query-tree.d.ts.map

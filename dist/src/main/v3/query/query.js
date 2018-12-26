@@ -190,6 +190,9 @@ class Query {
     useJoins(...arr) {
         return QueryUtil.useJoins(this, arr);
     }
+    fetchAll(connection) {
+        return QueryUtil.fetchAll(this, connection);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

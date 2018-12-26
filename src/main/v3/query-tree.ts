@@ -1,3 +1,5 @@
+import {SqlFormatter} from "./formatter";
+
 export class Parentheses {
     private readonly tree : QueryTree;
     private constructor (tree : QueryTree) {
@@ -82,6 +84,10 @@ export namespace QueryTreeUtil {
         } else {
             return tree.map(toSql).join("\n");
         }
+    }
+    export function toSqlPretty (tree : QueryTree) : string {
+        const sql = toSql(tree);
+        return new SqlFormatter().format(sql);
     }
 
     export function isQueryTree (raw : any) : raw is QueryTree {

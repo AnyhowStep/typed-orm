@@ -61,6 +61,18 @@ export namespace SelectItemArrayUtil {
         }
         return true;
     }
+    export function hasDuplicateColumnName (arr : SelectItem[]) {
+        const seen : string[] = [];
+        for (let item of arr) {
+            for (let name of SelectItemUtil.getColumnNames(item)) {
+                if (seen.indexOf(name) >= 0) {
+                    return true;
+                }
+                seen.push(name);
+            }
+        }
+        return false;
+    }
     export function assertNoDuplicateColumnName (arr : SelectItem[]) {
         const seen : string[] = [];
         for (let item of arr) {

@@ -15,6 +15,19 @@ var SelectItemArrayUtil;
         return true;
     }
     SelectItemArrayUtil.isSelectItemArray = isSelectItemArray;
+    function hasDuplicateColumnName(arr) {
+        const seen = [];
+        for (let item of arr) {
+            for (let name of select_item_1.SelectItemUtil.getColumnNames(item)) {
+                if (seen.indexOf(name) >= 0) {
+                    return true;
+                }
+                seen.push(name);
+            }
+        }
+        return false;
+    }
+    SelectItemArrayUtil.hasDuplicateColumnName = hasDuplicateColumnName;
     function assertNoDuplicateColumnName(arr) {
         const seen = [];
         for (let item of arr) {

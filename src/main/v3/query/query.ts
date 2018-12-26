@@ -12,6 +12,7 @@ import {ITable, TableUtil} from "../table";
 import {RawExpr, RawExprUtil} from "../raw-expr";
 import {PrimitiveExpr, NonNullPrimitiveExpr} from "../primitive-expr";
 import {IJoinDeclaration} from "../join-declaration";
+import {IConnection} from "../execution";
 
 export interface UnionQuery {
     //Defaults to true
@@ -1472,6 +1473,21 @@ export class Query<DataT extends QueryData> {
             Extract<this, QueryUtil.AfterFromClause>,
             ArrT
         >(this, arr);
+    }
+
+    fetchAll (
+        this : Extract<this, QueryUtil.AfterSelectClause>,
+        connection : IConnection
+    ) : (
+        Promise<
+            QueryUtil.FetchAll<
+                Extract<this, QueryUtil.AfterSelectClause>
+            >
+        >
+    ) {
+        return QueryUtil.fetchAll<
+            Extract<this, QueryUtil.AfterSelectClause>
+        >(this, connection);
     }
 }
 

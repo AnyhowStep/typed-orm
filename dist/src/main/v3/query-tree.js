@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const formatter_1 = require("./formatter");
 class Parentheses {
     constructor(tree) {
         this.cachedSql = undefined;
@@ -88,6 +89,11 @@ var QueryTreeUtil;
         }
     }
     QueryTreeUtil.toSql = toSql;
+    function toSqlPretty(tree) {
+        const sql = toSql(tree);
+        return new formatter_1.SqlFormatter().format(sql);
+    }
+    QueryTreeUtil.toSqlPretty = toSqlPretty;
     function isQueryTree(raw) {
         if (raw instanceof Parentheses) {
             return true;

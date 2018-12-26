@@ -21,4 +21,5 @@ export * from "./query-tree";
 export * from "./select-item-array";
 export * from "./select-item";
 export * from "./string";
+export * from "./execution";
 //# sourceMappingURL=index.d.ts.map

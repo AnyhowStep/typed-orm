@@ -12,6 +12,7 @@ export declare namespace SelectItemArrayUtil {
     }[Extract<keyof SelectsT, string>]);
     type HasDuplicateColumnName<SelectsT extends SelectItem[]> = (DuplicateColumnName<SelectsT> extends never ? false : true);
     function isSelectItemArray(raw: any): raw is SelectItem[];
+    function hasDuplicateColumnName(arr: SelectItem[]): boolean;
     function assertNoDuplicateColumnName(arr: SelectItem[]): void;
 }
 //# sourceMappingURL=select-item-array.d.ts.map
