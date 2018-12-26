@@ -17,12 +17,13 @@ const start = new Date().getTime();
 for (let path of getAllTsFiles(__dirname + "/input")) {
     require(path);
 }
-const end = new Date().getTime();
-const timeTaken = end-start;
-console.log("Execution tests completed in", timeTaken/1000.0, "s");
 
 import {pool} from "./pool";
 tape(__filename, async (t) => {
+    const end = new Date().getTime();
+    const timeTaken = end-start;
+    console.log("Execution tests completed in", timeTaken/1000.0, "s");
+
     console.log("Disconnecting");
     await pool.disconnect()
         .then(() => {
