@@ -93,7 +93,7 @@ export type AssertValidJoinPk<
     AssertValidJoinPkImpl<FromTableT, ToTableT>
 );
 //TODO-REFACTOR Rename this
-export type AssertValidJoinPk_FromDelegate<
+export type AssertValidJoinPk_FromDelegateImpl<
     QueryT extends AfterFromClause,
     DelegateT extends JoinPkDelegate<QueryT>,
     ToTableT extends ITable & { primaryKey : string[] }
@@ -102,11 +102,24 @@ export type AssertValidJoinPk_FromDelegate<
         QueryT,
         ToTableT
     > &
-    AssertValidJoinPk<
+    AssertValidJoinPkImpl<
         Extract<
             QueryT["_joins"][number]["aliasedTable"],
             ReturnType<DelegateT>
         >,
+        ToTableT
+    >
+);
+//TODO-REFACTOR Rename this
+export type AssertValidJoinPk_FromDelegate<
+    QueryT extends AfterFromClause,
+    DelegateT extends JoinPkDelegate<QueryT>,
+    ToTableT extends ITable & { primaryKey : string[] }
+> = (
+    ToTableT &
+    AssertValidJoinPk_FromDelegateImpl<
+        QueryT,
+        DelegateT,
         ToTableT
     >
 );
@@ -160,7 +173,12 @@ export function joinPk<
     }
     const fromTable = tables[delegateResult.alias];
 
-    return join(
+    return join<
+        QueryT,
+        ToTableT,
+        () => any,
+        NullableT
+    >(
         query,
         toTable,
         () => toTable.primaryKey.map(
@@ -168,7 +186,7 @@ export function joinPk<
         ) as any,
         () => toTable.primaryKey.map(
             columnName => toTable.columns[columnName]
-        ),
+        ) as any,
         nullable,
         joinType
     );
