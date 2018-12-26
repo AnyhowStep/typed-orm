@@ -4,28 +4,32 @@ import * as JoinDeclarationUtil from "./util";
 export {JoinDeclarationUtil};
 
 import {
-    innerJoinOneUsing,
-    innerJoinUsingFromPk,
-    innerJoinUsingPk,
-    innerJoinUsing,
     innerJoin,
+    innerJoinCk,
+    innerJoinCkUsing,
+    innerJoinFromPk,
+    innerJoinPk,
+    innerJoinUsing,
 
-    leftJoinOneUsing,
-    leftJoinUsingFromPk,
-    leftJoinUsingPk,
-    leftJoinUsing,
     leftJoin,
+    leftJoinCk,
+    leftJoinCkUsing,
+    leftJoinFromPk,
+    leftJoinPk,
+    leftJoinUsing,
 } from "./util";
 export {
-    innerJoinOneUsing,
-    innerJoinUsingFromPk,
-    innerJoinUsingPk,
-    innerJoinUsing,
     innerJoin,
+    innerJoinCk,
+    innerJoinCkUsing,
+    innerJoinFromPk,
+    innerJoinPk,
+    innerJoinUsing,
 
-    leftJoinOneUsing,
-    leftJoinUsingFromPk,
-    leftJoinUsingPk,
-    leftJoinUsing,
     leftJoin,
+    leftJoinCk,
+    leftJoinCkUsing,
+    leftJoinFromPk,
+    leftJoinPk,
+    leftJoinUsing,
 };

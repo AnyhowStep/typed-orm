@@ -1,16 +1,16 @@
-import {IAliasedTable} from "../../../aliased-table";
-import {ITable} from "../../../table";
-import {ColumnUtil} from "../../../column";
-import {QueryUtil} from "../../../query";
-import {NonEmptyTuple} from "../../../tuple";
-import {ColumnMapUtil} from "../../../column-map";
-import {CandidateKeyArrayUtil} from "../../../candidate-key-array";
-import {AssertValidJoinTarget} from "../predicate";
-import {JoinDeclaration} from "../../join-declaration";
-import {JoinType} from "../../../join";
-import { invokeJoinUsingDelegate } from "./join-using-delegate";
+import {IAliasedTable} from "../../../../aliased-table";
+import {ITable} from "../../../../table";
+import {ColumnUtil} from "../../../../column";
+import {QueryUtil} from "../../../../query";
+import {NonEmptyTuple} from "../../../../tuple";
+import {ColumnMapUtil} from "../../../../column-map";
+import {CandidateKeyArrayUtil} from "../../../../candidate-key-array";
+import {AssertValidJoinTarget} from "../../predicate";
+import {JoinDeclaration} from "../../../join-declaration";
+import {JoinType} from "../../../../join";
+import {joinUsing} from "../join-using";
 
-export type JoinOneUsingDelegate<
+export type JoinCkUsingDelegate<
     FromTableT extends IAliasedTable,
     ToTableT extends ITable
 > = (
@@ -27,7 +27,7 @@ export type JoinOneUsingDelegate<
             >[]
         >
     ) => (
-        NonEmptyTuple<(
+        NonEmptyTuple<
             Extract<
                 QueryUtil.JoinUsingColumnUnion<
                     ColumnUtil.FromColumnMap<FromTableT["columns"]>,
@@ -37,15 +37,15 @@ export type JoinOneUsingDelegate<
                     name : ToTableT["candidateKeys"][number][number]
                 }
             >
-        )>
+        >
     )
 );
 
 //https://github.com/Microsoft/TypeScript/issues/29133
-export type AssertValidJoinOneUsingDelegate_Hack<
+export type AssertValidJoinCkUsingDelegate_Hack<
     FromTableT extends IAliasedTable,
     ToTableT extends ITable,
-    DelegateT extends JoinOneUsingDelegate<FromTableT, ToTableT>,
+    DelegateT extends JoinCkUsingDelegate<FromTableT, ToTableT>,
     ResultT
 > = (
     CandidateKeyArrayUtil.HasKey<
@@ -60,10 +60,10 @@ export type AssertValidJoinOneUsingDelegate_Hack<
     ]|void
 );
 
-export function invokeJoinOneUsing<
+export function joinCkUsing<
     FromTableT extends IAliasedTable,
     ToTableT extends ITable,
-    UsingDelegateT extends JoinOneUsingDelegate<FromTableT, ToTableT>,
+    UsingDelegateT extends JoinCkUsingDelegate<FromTableT, ToTableT>,
     NullableT extends boolean,
 > (
     fromTable : FromTableT,
@@ -72,7 +72,7 @@ export function invokeJoinOneUsing<
     nullable : NullableT,
     joinType : JoinType.INNER|JoinType.LEFT
 ) : (
-    AssertValidJoinOneUsingDelegate_Hack<
+    AssertValidJoinCkUsingDelegate_Hack<
         FromTableT,
         ToTableT,
         UsingDelegateT,
@@ -83,9 +83,14 @@ export function invokeJoinOneUsing<
         }>
     >
 ) {
-    const result = invokeJoinUsingDelegate(
+    const result = joinUsing<
+        FromTableT,
+        ToTableT,
+        any,
+        NullableT
+    >(
         fromTable,
-        toTable as any,
+        toTable,
         usingDelegate as any,
         nullable,
         joinType

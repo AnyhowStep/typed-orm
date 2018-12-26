@@ -20,12 +20,12 @@ export type JoinUsingDelegate<
             >[]
         >
     ) => (
-        NonEmptyTuple<(
+        NonEmptyTuple<
             QueryUtil.JoinUsingColumnUnion<
                 ColumnUtil.FromColumnMap<FromTableT["columns"]>,
                 ToTableT
             >
-        )>
+        >
     )
 );
 

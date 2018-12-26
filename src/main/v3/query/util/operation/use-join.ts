@@ -1,6 +1,6 @@
 import {Query} from "../../query";
 import {AfterFromClause, AssertValidJoinTargetImpl} from "../predicate";
-import {invokeJoinDelegate} from "./join-delegate";
+import {join} from "./join";
 import {Join} from "../../../join";
 import {IJoinDeclaration} from "../../../join-declaration";
 
@@ -65,63 +65,12 @@ export function useJoin<
 ) : (
     UseJoin<QueryT, JoinDeclT>
 ) {
-    const {from, to} = invokeJoinDelegate(
+    return join(
         query,
         joinDecl.toTable as any,
         () => joinDecl.from as any,
-        () => joinDecl.to
+        () => joinDecl.to,
+        joinDecl.nullable,
+        joinDecl.joinType
     );
-
-    const {
-        _distinct,
-        _sqlCalcFoundRows,
-
-        _parentJoins,
-        _selects,
-        _where,
-
-        _grouped,
-        _having,
-
-        _orders,
-        _limit,
-
-        _unions,
-        _unionOrders,
-        _unionLimit,
-
-        _mapDelegate,
-    } = query;
-    return new Query({
-        _distinct,
-        _sqlCalcFoundRows,
-        _joins : [
-            ...query._joins,
-            new Join(
-                {
-                    aliasedTable : joinDecl.toTable,
-                    columns : joinDecl.toTable.columns,
-                    nullable : joinDecl.nullable,
-                },
-                joinDecl.joinType,
-                from,
-                to,
-            ),
-        ],
-        _parentJoins,
-        _selects,
-        _where,
-
-        _grouped,
-        _having,
-
-        _orders,
-        _limit,
-
-        _unions,
-        _unionOrders,
-        _unionLimit,
-
-        _mapDelegate,
-    });
 }
