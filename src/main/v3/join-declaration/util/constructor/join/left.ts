@@ -1,20 +1,20 @@
-import {IAliasedTable} from "../../../aliased-table";
-import {JoinType} from "../../../join";
-import {JoinDeclaration} from "../../join-declaration";
-import {JoinFromDelegate, JoinToDelegate, invokeJoinDelegate} from "./join-delegate";
-import {AssertValidJoinTarget} from "../predicate";
+import {IAliasedTable} from "../../../../aliased-table";
+import {JoinType} from "../../../../join";
+import {JoinDeclaration} from "../../../join-declaration";
+import {JoinFromDelegate, JoinToDelegate, join} from "./join";
+import {AssertValidJoinTarget} from "../../predicate";
 
-export type InnerJoin<
+export type LeftJoin<
     FromTableT extends IAliasedTable,
     ToTableT extends IAliasedTable
 > = (
     JoinDeclaration<{
         readonly fromTable : FromTableT;
         readonly toTable : ToTableT,
-        readonly nullable : false,
+        readonly nullable : true,
     }>
 );
-export function innerJoin<
+export function leftJoin<
     FromTableT extends IAliasedTable,
     ToTableT extends IAliasedTable,
     FromDelegateT extends JoinFromDelegate<FromTableT>
@@ -23,13 +23,13 @@ export function innerJoin<
     toTable : AssertValidJoinTarget<FromTableT, ToTableT>,
     fromDelegate : FromDelegateT,
     toDelegate : JoinToDelegate<FromTableT, ToTableT, FromDelegateT>
-) : InnerJoin<FromTableT, ToTableT> {
-    return invokeJoinDelegate(
+) : LeftJoin<FromTableT, ToTableT> {
+    return join(
         fromTable,
         toTable,
         fromDelegate,
         toDelegate,
-        false,
-        JoinType.INNER
+        true,
+        JoinType.LEFT
     );
 }

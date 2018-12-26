@@ -1,11 +1,11 @@
-import {IAliasedTable} from "../../../aliased-table";
-import {IColumn, ColumnUtil} from "../../../column";
-import {QueryUtil} from "../../../query";
-import {NonEmptyTuple} from "../../../tuple";
-import {AssertValidJoinTarget} from "../predicate";
-import {ColumnMapUtil} from "../../../column-map";
-import {JoinType} from "../../../join";
-import {JoinDeclaration} from "../../join-declaration";
+import {IAliasedTable} from "../../../../aliased-table";
+import {IColumn, ColumnUtil} from "../../../../column";
+import {QueryUtil} from "../../../../query";
+import {NonEmptyTuple} from "../../../../tuple";
+import {AssertValidJoinTarget} from "../../predicate";
+import {ColumnMapUtil} from "../../../../column-map";
+import {JoinType} from "../../../../join";
+import {JoinDeclaration} from "../../../join-declaration";
 
 export type JoinFromDelegate<
     FromTableT extends IAliasedTable
@@ -111,7 +111,7 @@ export type JoinToDelegate<
         ColumnUtil.FromColumnMap<ToTableT["columns"]>[]
     )
 );
-export function invokeJoinDelegate<
+export function join<
     FromTableT extends IAliasedTable,
     ToTableT extends IAliasedTable,
     FromDelegateT extends JoinFromDelegate<FromTableT>,
@@ -154,6 +154,7 @@ export function invokeJoinDelegate<
         toTable.columns,
         toColumns
     );
+
     return new JoinDeclaration<{
         readonly fromTable : FromTableT;
         readonly toTable : ToTableT,

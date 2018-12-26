@@ -11,7 +11,7 @@ import {NonEmptyTuple} from "../tuple";
 import {ITable, TableUtil} from "../table";
 import {RawExpr, RawExprUtil} from "../raw-expr";
 import {PrimitiveExpr, NonNullPrimitiveExpr} from "../primitive-expr";
-import {IJoinDeclaration, JoinDeclarationUtil} from "../join-declaration";
+import {IJoinDeclaration} from "../join-declaration";
 
 export interface UnionQuery {
     //Defaults to true
