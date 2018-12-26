@@ -1,4 +1,8 @@
 export * from "./join";
+export * from "./join-ck";
+export * from "./join-ck-using";
+export * from "./join-from-pk";
+export * from "./join-pk";
 export * from "./join-using";
 
 export * from "./and-having";
@@ -8,20 +12,11 @@ export * from "./cross-join";
 export * from "./distinct";
 export * from "./from";
 export * from "./group-by";
-//TODO-REFACTOR Rename all of these things. It's terrible.
-export * from "./inner-join-ck-using"; //innerJoinCkUsing()?
-export * from "./inner-join-ck"; //innerJoinCk()?
-export * from "./inner-join-from-pk"; //innerJoinFromPk()?
-export * from "./inner-join-pk"; //innerJoinPk()
-export * from "./left-join-from-pk"; //leftJoinFromPk()
-export * from "./left-join-pk"; //leftJoinPk()
 export * from "./limit";
 export * from "./map";
 export * from "./offset";
 export * from "./order-by";
 export * from "./require-parent-joins";
-export * from "./right-join-using";
-export * from "./right-join";
 export * from "./select-expr";
 export * from "./select";
 export * from "./sql-calc-found-rows";

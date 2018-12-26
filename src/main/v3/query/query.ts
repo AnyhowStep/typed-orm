@@ -224,7 +224,7 @@ export class Query<DataT extends QueryData> {
 
     readonly _mapDelegate : DataT["_mapDelegate"];
 
-    public constructor (data : DataT) {
+    constructor (data : DataT) {
         this._distinct = data._distinct;
         this._sqlCalcFoundRows = data._sqlCalcFoundRows;
 
@@ -246,7 +246,7 @@ export class Query<DataT extends QueryData> {
         this._mapDelegate = data._mapDelegate;
     }
 
-    public from<
+    from<
         AliasedTableT extends IAliasedTable
     > (
         this : Extract<this, QueryUtil.BeforeFromClause>,
@@ -269,7 +269,7 @@ export class Query<DataT extends QueryData> {
         );
     }
 
-    public innerJoin<
+    innerJoin<
         AliasedTableT extends IAliasedTable,
         FromDelegateT extends QueryUtil.JoinFromDelegate<
             Extract<this, QueryUtil.AfterFromClause>["_joins"]
@@ -303,7 +303,7 @@ export class Query<DataT extends QueryData> {
             toDelegate
         );
     }
-    public leftJoin<
+    leftJoin<
         AliasedTableT extends IAliasedTable,
         FromDelegateT extends QueryUtil.JoinFromDelegate<
             Extract<this, QueryUtil.AfterFromClause>["_joins"]
@@ -337,31 +337,49 @@ export class Query<DataT extends QueryData> {
             toDelegate
         );
     }
-    public rightJoin<
+    rightJoin<
         AliasedTableT extends IAliasedTable,
         FromDelegateT extends QueryUtil.JoinFromDelegate<
-            Extract<this, QueryUtil.AfterFromClause>["_joins"]
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >["_joins"]
         >
     > (
-        this : Extract<this, QueryUtil.AfterFromClause>,
+        this : Extract<
+            this,
+            QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+        >,
         aliasedTable : QueryUtil.AssertValidJoinTarget<
-            Extract<this, QueryUtil.AfterFromClause>,
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
             AliasedTableT
         >,
         fromDelegate : FromDelegateT,
         toDelegate : QueryUtil.JoinToDelegate<
-            Extract<this, QueryUtil.AfterFromClause>,
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
             AliasedTableT,
             FromDelegateT
         >
     ) : (
         QueryUtil.RightJoin<
-            Extract<this, QueryUtil.AfterFromClause>,
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
             AliasedTableT
         >
     ) {
         return QueryUtil.rightJoin<
-            Extract<this, QueryUtil.AfterFromClause>,
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
             AliasedTableT,
             FromDelegateT
         >(
@@ -372,15 +390,24 @@ export class Query<DataT extends QueryData> {
         );
     }
 
-    public innerJoinUsing<
+    innerJoinUsing<
         AliasedTableT extends IAliasedTable,
-        UsingDelegateT extends QueryUtil.JoinUsingDelegate<Extract<this, QueryUtil.AfterFromClause>["_joins"], AliasedTableT>
+        UsingDelegateT extends QueryUtil.JoinUsingDelegate<
+            Extract<this, QueryUtil.AfterFromClause>["_joins"],
+            AliasedTableT
+        >
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        aliasedTable : QueryUtil.AssertValidJoinTarget<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>,
+        aliasedTable : QueryUtil.AssertValidJoinTarget<
+            Extract<this, QueryUtil.AfterFromClause>,
+            AliasedTableT
+        >,
         usingDelegate : UsingDelegateT
     ) : (
-        QueryUtil.InnerJoin<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>
+        QueryUtil.InnerJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            AliasedTableT
+        >
     ) {
         return QueryUtil.innerJoinUsing<
             Extract<this, QueryUtil.AfterFromClause>,
@@ -393,15 +420,24 @@ export class Query<DataT extends QueryData> {
         );
     }
 
-    public leftJoinUsing<
+    leftJoinUsing<
         AliasedTableT extends IAliasedTable,
-        UsingDelegateT extends QueryUtil.JoinUsingDelegate<Extract<this, QueryUtil.AfterFromClause>["_joins"], AliasedTableT>
+        UsingDelegateT extends QueryUtil.JoinUsingDelegate<
+            Extract<this, QueryUtil.AfterFromClause>["_joins"],
+            AliasedTableT
+        >
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        aliasedTable : QueryUtil.AssertValidJoinTarget<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>,
+        aliasedTable : QueryUtil.AssertValidJoinTarget<
+            Extract<this, QueryUtil.AfterFromClause>,
+            AliasedTableT
+        >,
         usingDelegate : UsingDelegateT
     ) : (
-        QueryUtil.LeftJoin<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>
+        QueryUtil.LeftJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            AliasedTableT
+        >
     ) {
         return QueryUtil.leftJoinUsing<
             Extract<this, QueryUtil.AfterFromClause>,
@@ -414,18 +450,42 @@ export class Query<DataT extends QueryData> {
         );
     }
 
-    public rightJoinUsing<
+    rightJoinUsing<
         AliasedTableT extends IAliasedTable,
-        UsingDelegateT extends QueryUtil.JoinUsingDelegate<Extract<this, QueryUtil.AfterFromClause>["_joins"], AliasedTableT>
+        UsingDelegateT extends QueryUtil.JoinUsingDelegate<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >["_joins"],
+            AliasedTableT
+        >
     > (
-        this : Extract<this, QueryUtil.AfterFromClause>,
-        aliasedTable : QueryUtil.AssertValidJoinTarget<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>,
+        this : Extract<
+            this,
+            QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+        >,
+        aliasedTable : QueryUtil.AssertValidJoinTarget<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            AliasedTableT
+        >,
         usingDelegate : UsingDelegateT
     ) : (
-        QueryUtil.RightJoin<Extract<this, QueryUtil.AfterFromClause>, AliasedTableT>
+        QueryUtil.RightJoin<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            AliasedTableT
+        >
     ) {
         return QueryUtil.rightJoinUsing<
-            Extract<this, QueryUtil.AfterFromClause>,
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
             AliasedTableT,
             UsingDelegateT
         >(
@@ -435,7 +495,7 @@ export class Query<DataT extends QueryData> {
         );
     }
 
-    innerJoinOne<
+    innerJoinCk<
         TableT extends ITable,
         FromDelegateT extends QueryUtil.JoinFromDelegate<
             Extract<this, QueryUtil.AfterFromClause>["_joins"]
@@ -452,19 +512,20 @@ export class Query<DataT extends QueryData> {
             TableT
         >,
         fromDelegate : FromDelegateT,
-        toDelegate : QueryUtil.AssertValidJoinToOneDelegate<
+        toDelegate : ToDelegateT
+    ) : (
+        QueryUtil.AssertValidJoinCkDelegate_Hack<
             Extract<this, QueryUtil.AfterFromClause>,
             TableT,
             FromDelegateT,
-            ToDelegateT
-        >
-    ) : (
-        QueryUtil.InnerJoin<
-            Extract<this, QueryUtil.AfterFromClause>,
-            TableT
+            ToDelegateT,
+            QueryUtil.InnerJoin<
+                Extract<this, QueryUtil.AfterFromClause>,
+                TableT
+            >
         >
     ) {
-        return QueryUtil.innerJoinOne<
+        return QueryUtil.innerJoinCk<
             Extract<this, QueryUtil.AfterFromClause>,
             TableT,
             FromDelegateT,
@@ -477,7 +538,114 @@ export class Query<DataT extends QueryData> {
         );
     }
 
-    innerJoinOneUsing<
+    leftJoinCk<
+        TableT extends ITable,
+        FromDelegateT extends QueryUtil.JoinFromDelegate<
+            Extract<this, QueryUtil.AfterFromClause>["_joins"]
+        >,
+        ToDelegateT extends QueryUtil.JoinToDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            FromDelegateT
+        >
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        table : QueryUtil.AssertValidJoinTarget<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT
+        >,
+        fromDelegate : FromDelegateT,
+        toDelegate : ToDelegateT
+    ) : (
+        QueryUtil.AssertValidJoinCkDelegate_Hack<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            FromDelegateT,
+            ToDelegateT,
+            QueryUtil.LeftJoin<
+                Extract<this, QueryUtil.AfterFromClause>,
+                TableT
+            >
+        >
+    ) {
+        return QueryUtil.leftJoinCk<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            FromDelegateT,
+            ToDelegateT
+        >(
+            this,
+            table,
+            fromDelegate,
+            toDelegate
+        );
+    }
+
+    rightJoinCk<
+        TableT extends ITable,
+        FromDelegateT extends QueryUtil.JoinFromDelegate<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >["_joins"]
+        >,
+        ToDelegateT extends QueryUtil.JoinToDelegate<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            TableT,
+            FromDelegateT
+        >
+    > (
+        this : Extract<
+            this,
+            QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+        >,
+        table : QueryUtil.AssertValidJoinTarget<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            TableT
+        >,
+        fromDelegate : FromDelegateT,
+        toDelegate : ToDelegateT
+    ) : (
+        QueryUtil.AssertValidJoinCkDelegate_Hack<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            TableT,
+            FromDelegateT,
+            ToDelegateT,
+                QueryUtil.RightJoin<
+                    Extract<
+                    this,
+                    QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+                >,
+                TableT
+            >
+        >
+    ) {
+        return QueryUtil.rightJoinCk<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            TableT,
+            FromDelegateT,
+            ToDelegateT
+        >(
+            this,
+            table,
+            fromDelegate,
+            toDelegate
+        );
+    }
+
+    innerJoinCkUsing<
         TableT extends ITable,
         UsingDelegateT extends QueryUtil.JoinUsingDelegate<
             Extract<this, QueryUtil.AfterFromClause>["_joins"],
@@ -489,18 +657,19 @@ export class Query<DataT extends QueryData> {
             Extract<this, QueryUtil.AfterFromClause>,
             TableT
         >,
-        usingDelegate : QueryUtil.AssertValidJoinOneUsingDelegate<
+        usingDelegate : UsingDelegateT
+    ) : (
+        QueryUtil.AssertValidJoinCkUsingDelegate_Hack<
             Extract<this, QueryUtil.AfterFromClause>,
             TableT,
-            UsingDelegateT
-        >
-    ) : (
-        QueryUtil.InnerJoin<
-            Extract<this, QueryUtil.AfterFromClause>,
-            TableT
+            UsingDelegateT,
+            QueryUtil.InnerJoin<
+                Extract<this, QueryUtil.AfterFromClause>,
+                TableT
+            >
         >
     ) {
-        return QueryUtil.innerJoinOneUsing<
+        return QueryUtil.innerJoinCkUsing<
             Extract<this, QueryUtil.AfterFromClause>,
             TableT,
             UsingDelegateT
@@ -508,6 +677,304 @@ export class Query<DataT extends QueryData> {
             this,
             table,
             usingDelegate
+        );
+    }
+
+    leftJoinCkUsing<
+        TableT extends ITable,
+        UsingDelegateT extends QueryUtil.JoinUsingDelegate<
+            Extract<this, QueryUtil.AfterFromClause>["_joins"],
+            TableT
+        >
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        table : QueryUtil.AssertValidJoinTarget<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT
+        >,
+        usingDelegate : UsingDelegateT
+    ) : (
+        QueryUtil.AssertValidJoinCkUsingDelegate_Hack<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            UsingDelegateT,
+            QueryUtil.LeftJoin<
+                Extract<this, QueryUtil.AfterFromClause>,
+                TableT
+            >
+        >
+    ) {
+        return QueryUtil.leftJoinCkUsing<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT,
+            UsingDelegateT
+        >(
+            this,
+            table,
+            usingDelegate
+        );
+    }
+
+    rightJoinCkUsing<
+        TableT extends ITable,
+        UsingDelegateT extends QueryUtil.JoinUsingDelegate<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >["_joins"],
+            TableT
+        >
+    > (
+        this : Extract<
+            this,
+            QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+        >,
+        table : QueryUtil.AssertValidJoinTarget<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            TableT
+        >,
+        usingDelegate : UsingDelegateT
+    ) : (
+        QueryUtil.AssertValidJoinCkUsingDelegate_Hack<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            TableT,
+            UsingDelegateT,
+            QueryUtil.RightJoin<
+                Extract<
+                    this,
+                    QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+                >,
+                TableT
+            >
+        >
+    ) {
+        return QueryUtil.rightJoinCkUsing<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            TableT,
+            UsingDelegateT
+        >(
+            this,
+            table,
+            usingDelegate
+        );
+    }
+
+    innerJoinPk<
+        DelegateT extends QueryUtil.JoinPkDelegate<
+            Extract<this, QueryUtil.AfterFromClause>
+        >,
+        ToTableT extends ITable & { primaryKey : string[] },
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        delegate : DelegateT,
+        toTable : QueryUtil.AssertValidJoinPk_FromDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            DelegateT,
+            ToTableT
+        >
+    ) : (
+        QueryUtil.InnerJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ToTableT
+        >
+    ) {
+        return QueryUtil.innerJoinPk<
+            Extract<this, QueryUtil.AfterFromClause>,
+            DelegateT,
+            ToTableT
+        >(
+            this,
+            delegate,
+            toTable
+        );
+    }
+
+    leftJoinPk<
+        DelegateT extends QueryUtil.JoinPkDelegate<
+            Extract<this, QueryUtil.AfterFromClause>
+        >,
+        ToTableT extends ITable & { primaryKey : string[] },
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        delegate : DelegateT,
+        toTable : QueryUtil.AssertValidJoinPk_FromDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            DelegateT,
+            ToTableT
+        >
+    ) : (
+        QueryUtil.LeftJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ToTableT
+        >
+    ) {
+        return QueryUtil.leftJoinPk<
+            Extract<this, QueryUtil.AfterFromClause>,
+            DelegateT,
+            ToTableT
+        >(
+            this,
+            delegate,
+            toTable
+        );
+    }
+
+    rightJoinPk<
+        DelegateT extends QueryUtil.JoinPkDelegate<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >
+        >,
+        ToTableT extends ITable & { primaryKey : string[] },
+    > (
+        this : Extract<
+            this,
+            QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+        >,
+        delegate : DelegateT,
+        toTable : QueryUtil.AssertValidJoinPk_FromDelegate<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            DelegateT,
+            ToTableT
+        >
+    ) : (
+        QueryUtil.RightJoin<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            ToTableT
+        >
+    ) {
+        return QueryUtil.rightJoinPk<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            DelegateT,
+            ToTableT
+        >(
+            this,
+            delegate,
+            toTable
+        );
+    }
+
+    innerJoinFromPk<
+        DelegateT extends QueryUtil.JoinFromPkDelegate<
+            Extract<this, QueryUtil.AfterFromClause>
+        >,
+        ToTableT extends IAliasedTable
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        delegate : DelegateT,
+        toTable : QueryUtil.AssertValidJoinFromPk_FromDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            DelegateT,
+            ToTableT
+        >
+    ) : (
+        QueryUtil.InnerJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ToTableT
+        >
+    ) {
+        return QueryUtil.innerJoinFromPk<
+            Extract<this, QueryUtil.AfterFromClause>,
+            DelegateT,
+            ToTableT
+        >(
+            this,
+            delegate,
+            toTable
+        );
+    }
+
+    leftJoinFromPk<
+        DelegateT extends QueryUtil.JoinFromPkDelegate<
+            Extract<this, QueryUtil.AfterFromClause>
+        >,
+        ToTableT extends IAliasedTable
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        delegate : DelegateT,
+        toTable : QueryUtil.AssertValidJoinFromPk_FromDelegate<
+            Extract<this, QueryUtil.AfterFromClause>,
+            DelegateT,
+            ToTableT
+        >
+    ) : (
+        QueryUtil.LeftJoin<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ToTableT
+        >
+    ) {
+        return QueryUtil.leftJoinFromPk<
+            Extract<this, QueryUtil.AfterFromClause>,
+            DelegateT,
+            ToTableT
+        >(
+            this,
+            delegate,
+            toTable
+        );
+    }
+
+    rightJoinFromPk<
+        DelegateT extends QueryUtil.JoinFromPkDelegate<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >
+        >,
+        ToTableT extends IAliasedTable
+    > (
+        this : Extract<
+            this,
+            QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+        >,
+        delegate : DelegateT,
+        toTable : QueryUtil.AssertValidJoinFromPk_FromDelegate<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            DelegateT,
+            ToTableT
+        >
+    ) : (
+        QueryUtil.RightJoin<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            ToTableT
+        >
+    ) {
+        return QueryUtil.rightJoinFromPk<
+            Extract<
+                this,
+                QueryUtil.AfterFromClause & QueryUtil.CanWidenColumnTypes
+            >,
+            DelegateT,
+            ToTableT
+        >(
+            this,
+            delegate,
+            toTable
         );
     }
 
@@ -1005,140 +1472,6 @@ export class Query<DataT extends QueryData> {
             Extract<this, QueryUtil.AfterFromClause>,
             ArrT
         >(this, arr);
-    }
-
-    innerJoinUsingPk<
-        FromDelegateT extends QueryUtil.FromTableDelegate<
-            Extract<this, QueryUtil.AfterFromClause>
-        >,
-        ToTableT extends ITable & { primaryKey : string[] }
-    > (
-        this : Extract<this, QueryUtil.AfterFromClause>,
-        fromTableDelegate : FromDelegateT,
-        toTable : JoinDeclarationUtil.AssertValidJoinUsingPkTarget<
-            Extract<
-                Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
-                ReturnType<FromDelegateT>
-            >,
-            ToTableT
-        >
-    ) : (
-        QueryUtil.InnerJoin<
-            Extract<this, QueryUtil.AfterFromClause>,
-            ToTableT
-        >
-    ) {
-        return QueryUtil.innerJoinUsingPk<
-            Extract<this, QueryUtil.AfterFromClause>,
-            FromDelegateT,
-            ToTableT
-        >(
-            this,
-            fromTableDelegate,
-            toTable
-        );
-    }
-
-    leftJoinUsingPk<
-        FromDelegateT extends QueryUtil.FromTableDelegate<
-            Extract<this, QueryUtil.AfterFromClause>
-        >,
-        ToTableT extends ITable & { primaryKey : string[] }
-    > (
-        this : Extract<this, QueryUtil.AfterFromClause>,
-        fromTableDelegate : FromDelegateT,
-        toTable : JoinDeclarationUtil.AssertValidJoinUsingPkTarget<
-            Extract<
-                Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
-                ReturnType<FromDelegateT>
-            >,
-            ToTableT
-        >
-    ) : (
-        QueryUtil.LeftJoin<
-            Extract<this, QueryUtil.AfterFromClause>,
-            ToTableT
-        >
-    ) {
-        return QueryUtil.leftJoinUsingPk<
-            Extract<this, QueryUtil.AfterFromClause>,
-            FromDelegateT,
-            ToTableT
-        >(
-            this,
-            fromTableDelegate,
-            toTable
-        );
-    }
-
-    innerJoinUsingFromPk<
-        FromDelegateT extends QueryUtil.JoinUsingFromPkDelegate<
-            Extract<this, QueryUtil.AfterFromClause>
-        >,
-        ToTableT extends IAliasedTable
-    > (
-        this : Extract<this, QueryUtil.AfterFromClause>,
-        fromTableDelegate : FromDelegateT,
-        toTable : (
-            ToTableT &
-            JoinDeclarationUtil.AssertValidJoinUsingPkTargetImpl<
-                ToTableT,
-                Extract<
-                    Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
-                    ReturnType<FromDelegateT>
-                >
-            >
-        )
-    ) : (
-        QueryUtil.InnerJoin<
-            Extract<this, QueryUtil.AfterFromClause>,
-            ToTableT
-        >
-    ) {
-        return QueryUtil.innerJoinUsingFromPk<
-            Extract<this, QueryUtil.AfterFromClause>,
-            FromDelegateT,
-            ToTableT
-        >(
-            this,
-            fromTableDelegate,
-            toTable
-        );
-    }
-
-    leftJoinUsingFromPk<
-        FromDelegateT extends QueryUtil.JoinUsingFromPkDelegate<
-            Extract<this, QueryUtil.AfterFromClause>
-        >,
-        ToTableT extends IAliasedTable
-    > (
-        this : Extract<this, QueryUtil.AfterFromClause>,
-        fromTableDelegate : FromDelegateT,
-        toTable : (
-            ToTableT &
-            JoinDeclarationUtil.AssertValidJoinUsingPkTargetImpl<
-                ToTableT,
-                Extract<
-                    Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
-                    ReturnType<FromDelegateT>
-                >
-            >
-        )
-    ) : (
-        QueryUtil.LeftJoin<
-            Extract<this, QueryUtil.AfterFromClause>,
-            ToTableT
-        >
-    ) {
-        return QueryUtil.leftJoinUsingFromPk<
-            Extract<this, QueryUtil.AfterFromClause>,
-            FromDelegateT,
-            ToTableT
-        >(
-            this,
-            fromTableDelegate,
-            toTable
-        );
     }
 }
 
