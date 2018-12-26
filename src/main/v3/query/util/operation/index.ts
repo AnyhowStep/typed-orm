@@ -1,3 +1,6 @@
+export * from "./join";
+export * from "./join-using";
+
 export * from "./and-having";
 export * from "./as";
 export * from "./coalesce";
@@ -10,14 +13,8 @@ export * from "./inner-join-ck-using"; //innerJoinCkUsing()?
 export * from "./inner-join-ck"; //innerJoinCk()?
 export * from "./inner-join-from-pk"; //innerJoinFromPk()?
 export * from "./inner-join-pk"; //innerJoinPk()
-export * from "./inner-join-using"; //OK
-export * from "./inner-join"; //OK
-export * from "./join-delegate";
-export * from "./join-using-delegate";
 export * from "./left-join-from-pk"; //leftJoinFromPk()
 export * from "./left-join-pk"; //leftJoinPk()
-export * from "./left-join-using"; //OK
-export * from "./left-join"; //OK
 export * from "./limit";
 export * from "./map";
 export * from "./offset";

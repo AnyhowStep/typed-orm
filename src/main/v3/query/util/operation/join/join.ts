@@ -1,11 +1,12 @@
 import * as sd from "schema-decorator";
-import {AfterFromClause, AssertValidJoinTarget, assertValidJoinTarget} from "../predicate";
-import {IJoin} from "../../../join";
-import {ColumnRefUtil} from "../../../column-ref";
-import {NonEmptyTuple} from "../../../tuple";
-import {IColumn, ColumnUtil} from "../../../column";
-import {IAliasedTable} from "../../../aliased-table";
-import {ColumnMapUtil} from "../../../column-map";
+import {AfterFromClause, AssertValidJoinTarget, assertValidJoinTarget} from "../../predicate";
+import {IJoin, Join, JoinType} from "../../../../join";
+import {ColumnRefUtil} from "../../../../column-ref";
+import {NonEmptyTuple} from "../../../../tuple";
+import {IColumn, ColumnUtil} from "../../../../column";
+import {IAliasedTable} from "../../../../aliased-table";
+import {ColumnMapUtil} from "../../../../column-map";
+import {Query} from "../../../query";
 
 export type JoinFromDelegate<JoinsT extends IJoin[]> = (
     (columns : ColumnRefUtil.ToConvenient<
@@ -131,20 +132,58 @@ export type JoinToDelegate<
     )
 );
 
-export function invokeJoinDelegate<
+export type JoinResult<
     QueryT extends AfterFromClause,
     AliasedTableT extends IAliasedTable,
-    FromDelegateT extends JoinFromDelegate<QueryT["_joins"]>
+    NullableT extends boolean
+> = (
+    Query<{
+        readonly _distinct : QueryT["_distinct"];
+        readonly _sqlCalcFoundRows : QueryT["_sqlCalcFoundRows"];
+
+        readonly _joins : (
+            QueryT["_joins"][number] |
+            Join<{
+                aliasedTable : AliasedTableT,
+                columns : AliasedTableT["columns"],
+                nullable : NullableT,
+            }>
+        )[],
+        readonly _parentJoins : QueryT["_parentJoins"],
+        readonly _selects : QueryT["_selects"],
+        readonly _where : QueryT["_where"],
+
+        readonly _grouped : QueryT["_grouped"],
+        readonly _having : QueryT["_having"],
+
+        readonly _orders : QueryT["_orders"],
+        readonly _limit : QueryT["_limit"],
+
+        readonly _unions : QueryT["_unions"],
+        readonly _unionOrders : QueryT["_unionOrders"],
+        readonly _unionLimit : QueryT["_unionLimit"],
+
+        readonly _mapDelegate : QueryT["_mapDelegate"],
+    }>
+);
+export function join<
+    QueryT extends AfterFromClause,
+    AliasedTableT extends IAliasedTable,
+    FromDelegateT extends JoinFromDelegate<QueryT["_joins"]>,
+    NullableT extends boolean
 > (
     query : QueryT,
     aliasedTable : AssertValidJoinTarget<QueryT, AliasedTableT>,
     fromDelegate : FromDelegateT,
-    toDelegate : JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>
+    toDelegate : JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>,
+    nullable : NullableT,
+    joinType : JoinType
 ) : (
-    {
-        from : ReturnType<FromDelegateT>,
-        to : ReturnType<JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>>
-    }
+    JoinResult<
+        QueryT,
+        AliasedTableT,
+        NullableT
+    >
 ) {
     if (query._joins == undefined) {
         throw new Error(`Cannot JOIN before FROM clause`);
@@ -173,8 +212,57 @@ export function invokeJoinDelegate<
         aliasedTable.columns,
         to
     );
-    return {
-        from : from as ReturnType<FromDelegateT>,
-        to : to,
-    };
+
+    const {
+        _distinct,
+        _sqlCalcFoundRows,
+
+        _parentJoins,
+        _selects,
+        _where,
+
+        _grouped,
+        _having,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
+    } = query;
+    return new Query({
+        _distinct,
+        _sqlCalcFoundRows,
+        _joins : [
+            ...query._joins,
+            new Join(
+                {
+                    aliasedTable,
+                    columns : aliasedTable.columns,
+                    nullable,
+                },
+                joinType,
+                from,
+                to,
+            ),
+        ],
+        _parentJoins,
+        _selects,
+        _where,
+
+        _grouped,
+        _having,
+
+        _orders,
+        _limit,
+
+        _unions,
+        _unionOrders,
+        _unionLimit,
+
+        _mapDelegate,
+    });
 }

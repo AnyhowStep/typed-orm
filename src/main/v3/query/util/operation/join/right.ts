@@ -1,13 +1,11 @@
-import {Query} from "../../query";
-import {AfterFromClause, AssertValidJoinTarget} from "../predicate";
-import {JoinFromDelegate, JoinToDelegate, invokeJoinDelegate} from "./join-delegate";
-import {IAliasedTable} from "../../../aliased-table";
-import {Join, JoinType} from "../../../join";
-import {JoinArrayUtil} from "../../../join-array";
+import {Query} from "../../../query";
+import {AfterFromClause, CanWidenColumnTypes, canWidenColumnTypes, AssertValidJoinTarget} from "../../predicate";
+import {JoinFromDelegate, JoinToDelegate, join} from "./join";
+import {IAliasedTable} from "../../../../aliased-table";
+import {Join, JoinType} from "../../../../join";
+import {JoinArrayUtil} from "../../../../join-array";
 
 /*
-    TODO-FEATURE
-
     We don't allow RIGHT JOIN after SELECT, WHERE, HAVING,
     ORDER BY, and UNION'S ORDER BY clauses
     because they rely on data types not widening in their expressions.
@@ -54,7 +52,7 @@ import {JoinArrayUtil} from "../../../join-array";
     And we know how NULL is with ASC/DESC sorting, not fun.
 */
 export type RightJoin<
-    QueryT extends AfterFromClause,
+    QueryT extends AfterFromClause & CanWidenColumnTypes,
     AliasedTableT extends IAliasedTable
 > = (
     Query<{
@@ -87,7 +85,7 @@ export type RightJoin<
     }>
 );
 export function rightJoin<
-    QueryT extends AfterFromClause,
+    QueryT extends AfterFromClause & CanWidenColumnTypes,
     AliasedTableT extends IAliasedTable,
     FromDelegateT extends JoinFromDelegate<QueryT["_joins"]>
 > (
@@ -98,17 +96,14 @@ export function rightJoin<
 ) : (
     RightJoin<QueryT, AliasedTableT>
 ) {
-    const {from, to} = invokeJoinDelegate(
-        query,
-        aliasedTable,
-        fromDelegate,
-        toDelegate
-    );
-
+    if (!canWidenColumnTypes(query)) {
+        throw new Error(`Cannot use RIGHT JOIN here`);
+    }
     const {
         _distinct,
         _sqlCalcFoundRows,
 
+        _joins,
         _parentJoins,
         _selects,
         _where,
@@ -124,34 +119,36 @@ export function rightJoin<
         _unionLimit,
 
         _mapDelegate,
-    } = query;
+    } = join<
+        QueryT,
+        AliasedTableT,
+        FromDelegateT,
+        false
+    >(
+        query,
+        aliasedTable,
+        fromDelegate,
+        toDelegate,
+        false,
+        JoinType.RIGHT
+    );
 
-    const newJoins : (
-        JoinArrayUtil.ToNullable<QueryT["_joins"]>[number] |
-        Join<{
-            aliasedTable : AliasedTableT,
-            columns : AliasedTableT["columns"],
-            nullable : false,
-        }>
-    )[] = [
-        ...JoinArrayUtil.toNullable(query._joins as QueryT["_joins"]),
-        new Join(
-            {
-                aliasedTable,
-                columns : aliasedTable.columns,
-                nullable : false,
-            },
-            JoinType.RIGHT,
-            from,
-            to,
-        ),
-    ];
+    //Pretty sure the last join is the one right join we just
+    //added
+    const lastJoin = _joins[_joins.length-1] as Join<{
+        aliasedTable : AliasedTableT,
+        columns : AliasedTableT["columns"],
+        nullable : false,
+    }>;
 
     return new Query({
         _distinct,
         _sqlCalcFoundRows,
 
-        _joins : newJoins,
+        _joins : [
+            ...JoinArrayUtil.toNullable(query._joins as QueryT["_joins"]),
+            lastJoin,
+        ],
         _parentJoins,
         _selects,
         _where,

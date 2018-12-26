@@ -4,7 +4,7 @@ import {
     IQuery,
     QueryData,
 } from "../query";
-import {ExprUtil} from "../../expr";
+import {ExprUtil, IAnonymousTypedExpr} from "../../expr";
 import {JoinArrayUtil} from "../../join-array";
 import {SelectItemArrayUtil} from "../../select-item-array";
 import {IJoin} from "../../join";
@@ -12,7 +12,7 @@ import {SelectItem, AnonymousTypedSingleValueSelectItem, SelectItemUtil} from ".
 import {IAliasedTable} from "../../aliased-table";
 import {isObjectWithKeys} from "../../type";
 import {ColumnIdentifierUtil} from "../../column-identifier";
-import {OrderUtil} from "../../order";
+import {OrderUtil, Order} from "../../order";
 import { ColumnUtil } from "../../column";
 import { ColumnIdentifierRefUtil } from "../../column-identifier-ref";
 
@@ -128,6 +128,24 @@ export type BeforeUnionClause = IQuery<QueryData & { _unions : undefined }>;
 export type AfterUnionClause = IQuery<QueryData & { _unions : UnionQuery[] }>;
 export type BeforeSelectClause = IQuery<QueryData & { _selects : undefined }>;
 export type AfterSelectClause = IQuery<QueryData & { _selects : SelectItem[] }>;
+export type BeforeWhereClause = IQuery<QueryData & { _where : undefined }>;
+export type AfterWhereClause = IQuery<QueryData & { _where : IAnonymousTypedExpr<boolean> }>;
+export type BeforeHavingClause = IQuery<QueryData & { _where : undefined }>;
+export type AfterHavingClause = IQuery<QueryData & { _where : IAnonymousTypedExpr<boolean> }>;
+export type BeforeOrderByClause = IQuery<QueryData & { _orders : undefined }>;
+export type AfterOrderByClause = IQuery<QueryData & { _orders : Order[] }>;
+export type BeforeUnionOrderByClause = IQuery<QueryData & { _unionOrders : undefined }>;
+export type AfterUnionOrderByClause = IQuery<QueryData & { _unionOrders : Order[] }>;
+export type CanWidenColumnTypes = IQuery<
+    QueryData &
+    {
+        _selects : SelectItem[],
+        _where : undefined,
+        _having : undefined,
+        _orders : undefined,
+        _unionOrders : undefined,
+    }
+>;
 export type OneRowQuery = (
     BeforeFromClause &
     BeforeUnionClause
@@ -171,6 +189,39 @@ export function isBeforeSelectClause (query : IQuery) : query is BeforeSelectCla
 }
 export function isAfterSelectClause (query : IQuery) : query is AfterSelectClause {
     return query._selects != undefined;
+}
+export function isBeforeWhereClause (query : IQuery) : query is BeforeWhereClause {
+    return query._where == undefined;
+}
+export function isAfterWhereClause (query : IQuery) : query is AfterWhereClause {
+    return query._where != undefined;
+}
+export function isBeforeHavingClause (query : IQuery) : query is BeforeHavingClause {
+    return query._having == undefined;
+}
+export function isAfterHavingClause (query : IQuery) : query is AfterHavingClause {
+    return query._having != undefined;
+}
+export function isBeforeOrderByClause (query : IQuery) : query is BeforeOrderByClause {
+    return query._orders == undefined;
+}
+export function isAfterOrderByClause (query : IQuery) : query is AfterOrderByClause {
+    return query._orders != undefined;
+}
+export function isBeforeUnionOrderByClause (query : IQuery) : query is BeforeUnionOrderByClause {
+    return query._unionOrders == undefined;
+}
+export function isAfterUnionOrderByClause (query : IQuery) : query is AfterUnionOrderByClause {
+    return query._unionOrders != undefined;
+}
+export function canWidenColumnTypes (query : IQuery) : query is CanWidenColumnTypes {
+    return (
+        isBeforeSelectClause(query) &&
+        isBeforeWhereClause(query) &&
+        isBeforeHavingClause(query) &&
+        isBeforeOrderByClause(query) &&
+        isBeforeUnionOrderByClause(query)
+    )
 }
 export function isOneRowQuery (query : IQuery) : query is OneRowQuery {
     return isBeforeFromClause(query) && isBeforeUnionClause(query);

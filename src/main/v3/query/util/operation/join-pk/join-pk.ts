@@ -1,16 +1,22 @@
-import {IAliasedTable} from "../../../aliased-table";
-import {ITable} from "../../../table";
-import {ColumnUtil} from "../../../column";
-import {AssertValidJoinTargetImpl} from "../predicate";
-import {JoinType} from "../../../join";
-import {JoinDeclaration} from "../../join-declaration";
-import {invokeJoinDelegate} from "./join-delegate";
+import {AfterFromClause, AssertValidJoinTargetImpl} from "../../predicate";
+import {IAliasedTable} from "../../../../aliased-table";
+import {ITable} from "../../../../table";
+import {ColumnUtil} from "../../../../column";
+import {JoinType} from "../../../../join";
+import {JoinResult, join} from "../join";
 
-export type AssertValidJoinUsingPkTargetImpl<
+export type AssertValidJoinPkImpl<
     FromTableT extends IAliasedTable,
     ToTableT extends ITable & { primaryKey : string[] }
 > = (
-    AssertValidJoinTargetImpl<FromTableT, ToTableT> &
+    (
+        Extract<FromTableT["alias"], ToTableT["alias"]> extends never ?
+        unknown :
+        [
+            "Cannot join two tables with the same name",
+            Extract<FromTableT["alias"], ToTableT["alias"]>
+        ]
+    ) &
     (
         ToTableT["primaryKey"][number] extends ColumnUtil.FromColumnMap<FromTableT["columns"]>["name"] ?
         (
@@ -79,34 +85,84 @@ export type AssertValidJoinUsingPkTargetImpl<
         ]
     )
 );
-//TODO-REFACTOR Remove this, Use the one in QueryUtil
-export type AssertValidJoinUsingPkTarget<
+export type AssertValidJoinPk<
     FromTableT extends IAliasedTable,
     ToTableT extends ITable & { primaryKey : string[] }
 > = (
     ToTableT &
-    AssertValidJoinUsingPkTargetImpl<FromTableT, ToTableT>
+    AssertValidJoinPkImpl<FromTableT, ToTableT>
 );
+//TODO-REFACTOR Rename this
+export type AssertValidJoinPk_FromDelegate<
+    QueryT extends AfterFromClause,
+    DelegateT extends JoinPkDelegate<QueryT>,
+    ToTableT extends ITable & { primaryKey : string[] }
+> = (
+    AssertValidJoinTargetImpl<
+        QueryT,
+        ToTableT
+    > &
+    AssertValidJoinPk<
+        Extract<
+            QueryT["_joins"][number]["aliasedTable"],
+            ReturnType<DelegateT>
+        >,
+        ToTableT
+    >
+);
+export type JoinPkDelegate<
+    QueryT extends AfterFromClause
+> = (
+    (
+        tables : {
+            [tableAlias in QueryT["_joins"][number]["aliasedTable"]["alias"]] : (
+                {
+                    alias : tableAlias
+                }
+            )
 
-export function invokeJoinUsingPk<
-    FromTableT extends IAliasedTable,
+        }
+    ) => {
+        alias : QueryT["_joins"][number]["aliasedTable"]["alias"]
+    }
+);
+export function joinPk<
+    QueryT extends AfterFromClause,
+    DelegateT extends JoinPkDelegate<QueryT>,
     ToTableT extends ITable & { primaryKey : string[] },
     NullableT extends boolean
 > (
-    fromTable : FromTableT,
-    toTable : AssertValidJoinUsingPkTarget<FromTableT, ToTableT>,
+    query : QueryT,
+    delegate : DelegateT,
+    toTable : AssertValidJoinPk_FromDelegate<
+        QueryT,
+        DelegateT,
+        ToTableT
+    >,
     nullable : NullableT,
-    joinType : JoinType.INNER|JoinType.LEFT
+    joinType : JoinType
 ) : (
-    JoinDeclaration<{
-        readonly fromTable : FromTableT;
-        readonly toTable : ToTableT,
-        readonly nullable : NullableT,
-    }>
+    JoinResult<
+        QueryT,
+        ToTableT,
+        NullableT
+    >
 ) {
-    return invokeJoinDelegate(
-        fromTable,
-        toTable as any,
+    const tables : {
+        [tableAlias : string] : IAliasedTable
+    } = {};
+    for (let join of query._joins) {
+        tables[join.aliasedTable.alias] = join.aliasedTable;
+    }
+    let delegateResult = delegate(tables as any);
+    if (!(delegateResult.alias in tables)) {
+        throw new Error(`Invalid from table ${delegateResult.alias}`);
+    }
+    const fromTable = tables[delegateResult.alias];
+
+    return join(
+        query,
+        toTable,
         () => toTable.primaryKey.map(
             columnName => fromTable.columns[columnName]
         ) as any,

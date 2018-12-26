@@ -1,11 +1,15 @@
-import {AfterFromClause, AssertValidJoinTarget, assertValidJoinTarget} from "../predicate";
-import {IAliasedTable} from "../../../aliased-table";
-import {IJoin} from "../../../join";
-import {ColumnRefUtil} from "../../../column-ref";
-import {IColumn, ColumnUtil} from "../../../column";
-import {NonEmptyTuple} from "../../../tuple";
-import {ColumnMapUtil} from "../../../column-map";
-import {StringUtil} from "../../../string";
+import {AfterFromClause, AssertValidJoinTarget} from "../../predicate";
+import {IAliasedTable} from "../../../../aliased-table";
+import {IJoin, JoinType} from "../../../../join";
+import {ColumnRefUtil} from "../../../../column-ref";
+import {IColumn, ColumnUtil} from "../../../../column";
+import {NonEmptyTuple} from "../../../../tuple";
+import {ColumnMapUtil} from "../../../../column-map";
+import {StringUtil} from "../../../../string";
+import {
+    JoinResult,
+    join
+} from "../join";
 
 export type JoinUsingColumnUnion<
     ColumnT extends IColumn,
@@ -76,20 +80,24 @@ export type JoinUsingDelegate<
         )>
     )
 );
-export function invokeJoinUsingDelegate<
+export function joinUsing<
     QueryT extends AfterFromClause,
     AliasedTableT extends IAliasedTable,
-    UsingDelegateT extends JoinUsingDelegate<QueryT["_joins"], AliasedTableT>
+    UsingDelegateT extends JoinUsingDelegate<QueryT["_joins"], AliasedTableT>,
+    NullableT extends boolean
 >(
     query : QueryT,
     aliasedTable : AssertValidJoinTarget<QueryT, AliasedTableT>,
-    usingDelegate : UsingDelegateT
-) : ReturnType<UsingDelegateT> {
-    if (query._joins == undefined) {
-        throw new Error(`Cannot JOIN before FROM clause`);
-    }
-    assertValidJoinTarget(query, aliasedTable);
-
+    usingDelegate : UsingDelegateT,
+    nullable : NullableT,
+    joinType : JoinType
+) : (
+    JoinResult<
+        QueryT,
+        AliasedTableT,
+        NullableT
+    >
+) {
     const usingColumns : JoinUsingColumnUnion<
         ColumnUtil.FromJoinArray<QueryT["_joins"]>,
         AliasedTableT
@@ -103,7 +111,19 @@ export function invokeJoinUsingDelegate<
             ColumnMapUtil.fromColumnArray(usingColumns) :
             ColumnRefUtil.fromColumnArray(usingColumns)
         ) as any
+    ) as ReturnType<UsingDelegateT>;
+
+    return join<
+        QueryT,
+        AliasedTableT,
+        () => ReturnType<UsingDelegateT>,
+        NullableT
+    >(
+        query,
+        aliasedTable,
+        () => using,
+        () => using.map(c => aliasedTable.columns[c.name]) as any,
+        nullable,
+        joinType
     );
-    ColumnUtil.Array.assertIsColumnArray(using);
-    return using as ReturnType<UsingDelegateT>;
 }
