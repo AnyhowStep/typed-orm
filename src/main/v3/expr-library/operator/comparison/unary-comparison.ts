@@ -3,6 +3,7 @@ import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {NonNullPrimitiveExpr} from "../../../primitive-expr";
 import {RawExprUtil} from "../../../raw-expr";
+import * as dataType from "../../../data-type";
 
 export type UnaryComparison = (
     <
@@ -24,7 +25,7 @@ export function unaryComparison (postFixOperator : string) : UnaryComparison {
         return new Expr(
             {
                 usedRef : RawExprUtil.usedRef(rawExpr),
-                assertDelegate : sd.numberToBoolean(),
+                assertDelegate : dataType.boolean(),
             },
             [
                 RawExprUtil.queryTree(rawExpr),

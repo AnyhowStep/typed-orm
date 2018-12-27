@@ -5,6 +5,7 @@ import {RawExprUtil} from "../../../raw-expr";
 import {NonNullPrimitiveExpr} from "../../../primitive-expr";
 import {Tuple} from "../../../tuple";
 import {FunctionCall} from "../../../query-tree";
+import * as dataType from "../../../data-type";
 
 //https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_in
 function In<
@@ -29,7 +30,7 @@ function In<
     return new Expr(
         {
             usedRef : RawExprUtil.intersectUsedRefTuple(left, arg0, ...(args as any)),
-            assertDelegate : sd.numberToBoolean(),
+            assertDelegate : dataType.boolean(),
         },
         [
             RawExprUtil.queryTree(left),

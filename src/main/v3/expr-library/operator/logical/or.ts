@@ -3,6 +3,7 @@ import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr, ExprUtil} from "../../../expr";
 import {Tuple} from "../../../tuple";
 import {Parentheses, QueryTreeArray} from "../../../query-tree";
+import * as dataType from "../../../data-type";
 
 function tryGetOrQueryTree (rawExpr : RawExpr<boolean>) : QueryTreeArray|undefined {
     const falseLiteral = RawExprUtil.queryTree(false);
@@ -73,7 +74,7 @@ export function or<ArrT extends Tuple<RawExpr<boolean>>> (
         return new Expr(
             {
                 usedRef : usedRef,
-                assertDelegate : sd.numberToBoolean(),
+                assertDelegate : dataType.boolean(),
             },
             RawExprUtil.queryTree(false)
         );
@@ -81,7 +82,7 @@ export function or<ArrT extends Tuple<RawExpr<boolean>>> (
         return new Expr(
             {
                 usedRef : usedRef,
-                assertDelegate : sd.numberToBoolean(),
+                assertDelegate : dataType.boolean(),
             },
             queryTree
         );

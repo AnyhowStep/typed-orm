@@ -4,6 +4,7 @@ import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
 import {FunctionCall} from "../../../query-tree";
 import {Tuple} from "../../../tuple";
+import * as dataType from "../../../data-type";
 
 //https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_interval
 export function interval<
@@ -22,13 +23,13 @@ export function interval<
             RawExprUtil.UsedRef<Arg1> &
             RawExprUtil.IntersectUsedRefTuple<Args>
         ),
-        assertDelegate : sd.AssertDelegate<number>,
+        assertDelegate : sd.AssertDelegate<bigint>,
     }>
 ) {
     return new Expr(
         {
             usedRef : RawExprUtil.intersectUsedRefTuple(arg0, arg1, ...(args as any)),
-            assertDelegate : sd.naturalNumber(),
+            assertDelegate : dataType.bigint(),
         },
         new FunctionCall(
             "INTERVAL",

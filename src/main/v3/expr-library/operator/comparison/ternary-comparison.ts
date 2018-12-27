@@ -3,6 +3,7 @@ import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {NonNullPrimitiveExpr} from "../../../primitive-expr";
 import {RawExprUtil} from "../../../raw-expr";
+import * as dataType from "../../../data-type";
 
 export type TernaryComparison = (
     <
@@ -33,7 +34,7 @@ export function ternaryComparison (leftOperator : string, rightOperator : string
                 usedRef : RawExprUtil.intersectUsedRefTuple(
                     left, mid, right
                 ),
-                assertDelegate : sd.numberToBoolean(),
+                assertDelegate : dataType.boolean(),
             },
             [
                 RawExprUtil.queryTree(left),

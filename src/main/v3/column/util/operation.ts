@@ -149,9 +149,9 @@ export type As<ColumnT extends IColumn, AliasT extends string> = (
             const table = o.table(
                 "table",
                 {
-                    x : sd.boolean(),
+                    x : o.boolean(),
                     y : sd.string(),
-                    z : sd.boolean(),
+                    z : o.boolean(),
                 }
             );
 

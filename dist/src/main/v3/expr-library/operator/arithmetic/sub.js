@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
 const raw_expr_1 = require("../../../raw-expr");
 const expr_1 = require("../../../expr");
 const query_tree_1 = require("../../../query-tree");
+const dataType = require("../../../data-type");
 //https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_minus
 function tryGetSubQueryTree(rawExpr) {
     if (expr_1.ExprUtil.isExpr(rawExpr)) {
@@ -52,13 +52,13 @@ function sub(...arr) {
         //By convention, the subtraction of zero numbers is zero
         return new expr_1.Expr({
             usedRef: usedRef,
-            assertDelegate: sd.number(),
+            assertDelegate: dataType.double(),
         }, raw_expr_1.RawExprUtil.queryTree(0));
     }
     else {
         return new expr_1.Expr({
             usedRef: usedRef,
-            assertDelegate: sd.number(),
+            assertDelegate: dataType.double(),
         }, queryTree);
     }
 }

@@ -3,6 +3,7 @@ import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr, ExprUtil} from "../../../expr";
 import {Tuple} from "../../../tuple";
 import {Parentheses, QueryTreeArray} from "../../../query-tree";
+import * as dataType from "../../../data-type";
 
 //https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_times
 function tryGetMulQueryTree (rawExpr : RawExpr<number>) : QueryTreeArray|undefined {
@@ -59,7 +60,7 @@ export function mul<ArrT extends Tuple<RawExpr<number>>> (
         return new Expr(
             {
                 usedRef : usedRef,
-                assertDelegate : sd.number(),
+                assertDelegate : dataType.double(),
             },
             RawExprUtil.queryTree(1)
         );
@@ -67,7 +68,7 @@ export function mul<ArrT extends Tuple<RawExpr<number>>> (
         return new Expr(
             {
                 usedRef : usedRef,
-                assertDelegate : sd.number(),
+                assertDelegate : dataType.double(),
             },
             queryTree
         );

@@ -4,6 +4,7 @@ import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
 import {FunctionCall} from "../../../query-tree";
 import {Tuple} from "../../../tuple";
+import * as dataType from "../../../data-type";
 
 //https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_field
 export function field<
@@ -31,7 +32,7 @@ export function field<
                 arg0,
                 ...(args as any)
             ),
-            assertDelegate : sd.naturalNumber(),
+            assertDelegate : dataType.bigint(),
         },
         new FunctionCall(
             "FIELD",

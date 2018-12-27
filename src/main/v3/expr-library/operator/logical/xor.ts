@@ -2,6 +2,7 @@ import * as sd from "schema-decorator";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr} from "../../../expr";
 import {ColumnRefUtil} from "../../../column-ref";
+import * as dataType from "../../../data-type";
 
 export function xor<
     LeftT extends RawExpr<boolean>,
@@ -24,7 +25,7 @@ export function xor<
                 RawExprUtil.usedRef(left),
                 RawExprUtil.usedRef(right)
             ),
-            assertDelegate : sd.numberToBoolean(),
+            assertDelegate : dataType.boolean(),
         },
         [
             RawExprUtil.queryTree(left),

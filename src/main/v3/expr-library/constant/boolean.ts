@@ -10,7 +10,7 @@ let falseCache : Expr<{
     assertDelegate: sd.AssertDelegate<false>;
 }>|undefined = undefined;
 
-function getTrue () {
+function trueLiteral () {
     if (trueCache == undefined) {
         trueCache = ExprUtil.fromRawExpr(true as true);
     }
@@ -24,6 +24,6 @@ function getFalse () {
 }
 
 export {
-    getTrue as true,
-    getFalse as false,
+    trueLiteral as trueLiteral,
+    getFalse as falseLiteral,
 };

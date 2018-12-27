@@ -3,6 +3,7 @@ import {Expr} from "../../../../expr";
 import {RawExpr} from "../../../../raw-expr";
 import {RawExprUtil} from "../../../../raw-expr";
 import {ColumnRefUtil} from "../../../../column-ref";
+import * as dataType from "../../../../data-type";
 
 //https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html#operator_like
 export function like<
@@ -37,7 +38,7 @@ export function like<
                 RawExprUtil.usedRef(rawExpr),
                 RawExprUtil.usedRef(pattern)
             ),
-            assertDelegate : sd.numberToBoolean(),
+            assertDelegate : dataType.boolean(),
         },
         [
             RawExprUtil.queryTree(rawExpr),
@@ -53,7 +54,7 @@ export function like<
                     RawExprUtil.usedRef(rawExpr),
                     RawExprUtil.usedRef(pattern)
                 ),
-                assertDelegate : sd.numberToBoolean(),
+                assertDelegate : dataType.boolean(),
             },
             [
                 RawExprUtil.queryTree(rawExpr),

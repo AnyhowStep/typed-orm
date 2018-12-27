@@ -69,12 +69,12 @@ var RawExprUtil;
         if (typeof rawExpr == "boolean") {
             //MySQL returns `number` instead of `boolean`
             return (rawExpr ?
-                sd.numberToTrue() :
-                sd.numberToFalse());
+                dataType.true() :
+                dataType.false());
         }
         if (rawExpr instanceof Date) {
             //TODO-DEBATE Have a delegate that checks for the exact date given?
-            return data_type_1.dateTime(3);
+            return dataType.dateTime(3);
         }
         if (rawExpr instanceof Buffer) {
             //TODO-DEBATE Have a delegate that checks for the exact buffer given?
@@ -104,7 +104,9 @@ var RawExprUtil;
     function queryTree(rawExpr) {
         //Check primitive cases first
         if (typeof rawExpr == "number") {
-            return sqlstring_1.escape(rawExpr);
+            //This technically gives us DECIMAL in MySQL,
+            //Not double
+            return rawExpr.toString();
         }
         if (typeof rawExpr == "bigint") {
             return rawExpr.toString();

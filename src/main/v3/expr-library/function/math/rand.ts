@@ -3,6 +3,7 @@ import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
 import {FunctionCall} from "../../../query-tree";
+import * as dataType from "../../../data-type";
 
 //https://dev.mysql.com/doc/refman/8.0/en/mathematical-functions.html#function_rand
 //0 <= v < 1.0
@@ -25,7 +26,7 @@ export function rand (seed? : RawExpr<bigint>) {
         return new Expr(
             {
                 usedRef : {},
-                assertDelegate : sd.number(),
+                assertDelegate : dataType.double(),
             },
             new FunctionCall(
                 "RAND",
@@ -36,7 +37,7 @@ export function rand (seed? : RawExpr<bigint>) {
         return new Expr(
             {
                 usedRef : RawExprUtil.usedRef(seed),
-                assertDelegate : sd.number(),
+                assertDelegate : dataType.double(),
             },
             new FunctionCall(
                 "RAND",

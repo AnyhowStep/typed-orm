@@ -3,6 +3,7 @@ import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr, ExprUtil} from "../../../expr";
 import {Parentheses} from "../../../query-tree";
 import * as constant from "../../constant";
+import * as dataType from "../../../data-type";
 
 export function not<RawExprT extends RawExpr<boolean>> (
     rawExpr : RawExprT
@@ -14,11 +15,11 @@ export function not<RawExprT extends RawExpr<boolean>> (
 ) {
     if (rawExpr === true) {
         //NOT TRUE === FALSE
-        return constant.false() as any;
+        return constant.falseLiteral() as any;
     }
     if (rawExpr === false) {
         //NOT FALSE === TRUE
-        return constant.true() as any;
+        return constant.trueLiteral() as any;
     }
 
     if (ExprUtil.isExpr(rawExpr)) {
@@ -30,7 +31,7 @@ export function not<RawExprT extends RawExpr<boolean>> (
                     return new Expr(
                         {
                             usedRef : RawExprUtil.usedRef(rawExpr),
-                            assertDelegate : sd.numberToBoolean(),
+                            assertDelegate : dataType.boolean(),
                         },
                         tree[1]
                     );
@@ -39,16 +40,16 @@ export function not<RawExprT extends RawExpr<boolean>> (
             }
         } else if (rawExpr.queryTree == RawExprUtil.queryTree(true)) {
             //NOT TRUE === FALSE
-            return constant.false() as any;
+            return constant.falseLiteral() as any;
         } else if (rawExpr.queryTree == RawExprUtil.queryTree(false)) {
             //NOT FALSE === TRUE
-            return constant.true() as any;
+            return constant.trueLiteral() as any;
         }
     }
     return new Expr(
         {
             usedRef : RawExprUtil.usedRef(rawExpr),
-            assertDelegate : sd.numberToBoolean(),
+            assertDelegate : dataType.boolean(),
         },
         [
             "NOT",

@@ -2,8 +2,9 @@ import * as sd from "schema-decorator";
 import {Expr} from "../../../expr";
 import {FunctionCall, QueryTree} from "../../../query-tree";
 import {IQuery, QueryUtil} from "../../../query";
-import { IJoin } from "../../../join";
-import { ColumnRefUtil } from "../../../column-ref";
+import {IJoin} from "../../../join";
+import {ColumnRefUtil} from "../../../column-ref";
+import * as dataType from "../../../data-type";
 
 //https://dev.mysql.com/doc/refman/8.0/en/exists-and-not-exists-subqueries.html
 export function exists<QueryT extends QueryUtil.AfterFromClause|QueryUtil.AfterSelectClause> (
@@ -27,7 +28,7 @@ export function exists<QueryT extends QueryUtil.AfterFromClause|QueryUtil.AfterS
         ColumnRefUtil.FromJoinArray<QueryT["_parentJoins"]> :
         {}
     );
-    const assertDelegate = sd.numberToBoolean();
+    const assertDelegate = dataType.boolean();
     let queryTree : QueryTree|undefined = undefined;
     if (QueryUtil.isAfterFromClause(query)) {
         //EXISTS (... FROM table)

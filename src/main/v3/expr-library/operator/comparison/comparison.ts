@@ -4,6 +4,7 @@ import {RawExpr} from "../../../raw-expr";
 import {NonNullPrimitiveExpr} from "../../../primitive-expr";
 import {RawExprUtil} from "../../../raw-expr";
 import {ColumnRefUtil} from "../../../column-ref";
+import * as dataType from "../../../data-type";
 
 export type Comparison = (
     <
@@ -33,7 +34,7 @@ export function comparison (operator : string) : Comparison {
                     RawExprUtil.usedRef(left),
                     RawExprUtil.usedRef(right)
                 ),
-                assertDelegate : sd.numberToBoolean(),
+                assertDelegate : dataType.boolean(),
             },
             [
                 RawExprUtil.queryTree(left),

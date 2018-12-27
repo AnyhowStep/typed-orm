@@ -10,7 +10,7 @@ import {ColumnRef} from "./column-ref";
 import {OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery} from "./query/util";
 import {IQuery, QueryUtil} from "./query";
 import {IJoin} from "./join";
-import {dateTime, DateTimeUtil} from "./data-type";
+import {DateTimeUtil} from "./data-type";
 import * as dataType from "./data-type";
 import {IAnonymousTypedExprSelectItem, IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 import {Parentheses} from "./query-tree";
@@ -132,13 +132,13 @@ export namespace RawExprUtil {
         if (typeof rawExpr == "boolean") {
             //MySQL returns `number` instead of `boolean`
             return (rawExpr ?
-                sd.numberToTrue() :
-                sd.numberToFalse()
+                dataType.true() :
+                dataType.false()
             ) as any;
         }
         if (rawExpr instanceof Date) {
             //TODO-DEBATE Have a delegate that checks for the exact date given?
-            return dateTime(3) as any;
+            return dataType.dateTime(3) as any;
         }
         if (rawExpr instanceof Buffer) {
             //TODO-DEBATE Have a delegate that checks for the exact buffer given?
@@ -175,7 +175,9 @@ export namespace RawExprUtil {
     export function queryTree (rawExpr : RawExpr<any>) : QueryTree {
         //Check primitive cases first
         if (typeof rawExpr == "number") {
-            return escape(rawExpr);
+            //This technically gives us DECIMAL in MySQL,
+            //Not double
+            return rawExpr.toString();
         }
         if (typeof rawExpr == "bigint") {
             return rawExpr.toString();

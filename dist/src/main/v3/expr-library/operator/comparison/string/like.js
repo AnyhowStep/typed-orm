@@ -4,11 +4,12 @@ const sd = require("schema-decorator");
 const expr_1 = require("../../../../expr");
 const raw_expr_1 = require("../../../../raw-expr");
 const column_ref_1 = require("../../../../column-ref");
+const dataType = require("../../../../data-type");
 //https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html#operator_like
 function like(rawExpr, pattern) {
     const result = new expr_1.Expr({
         usedRef: column_ref_1.ColumnRefUtil.intersect(raw_expr_1.RawExprUtil.usedRef(rawExpr), raw_expr_1.RawExprUtil.usedRef(pattern)),
-        assertDelegate: sd.numberToBoolean(),
+        assertDelegate: dataType.boolean(),
     }, [
         raw_expr_1.RawExprUtil.queryTree(rawExpr),
         "LIKE",
@@ -18,7 +19,7 @@ function like(rawExpr, pattern) {
         escapeChar = sd.varChar(0, 1)("escapeChar", escapeChar);
         return new expr_1.Expr({
             usedRef: column_ref_1.ColumnRefUtil.intersect(raw_expr_1.RawExprUtil.usedRef(rawExpr), raw_expr_1.RawExprUtil.usedRef(pattern)),
-            assertDelegate: sd.numberToBoolean(),
+            assertDelegate: dataType.boolean(),
         }, [
             raw_expr_1.RawExprUtil.queryTree(rawExpr),
             "LIKE",

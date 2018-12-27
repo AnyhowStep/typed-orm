@@ -97,3 +97,160 @@ tape(__filename + "-count(*)-returns-bigint-string", async (t) => {
 
     t.end();
 });
+
+
+tape(__filename + "-boolean-returns-bigint-string", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        await connection.rawQuery("DROP TABLE IF EXISTS t");
+        await connection.rawQuery(`
+            CREATE TABLE t (
+                value INT UNSIGNED NOT NULL
+            )
+        `);
+        await connection.rawQuery("INSERT INTO t (value) VALUES (4294967295)");
+        await connection.rawQuery("INSERT INTO t (value) VALUES (4294967294)");
+        await connection.rawQuery("INSERT INTO t (value) VALUES (4294967293)");
+        return connection.rawQuery("SELECT EXISTS(SELECT * FROM t) AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "1");
+
+    t.end();
+});
+
+tape(__filename + "-boolean-returns-bigint-string", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT TRUE AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "1");
+
+    t.end();
+});
+
+tape(__filename + "-boolean-returns-bigint-string", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT FALSE AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "0");
+
+    t.end();
+});
+
+tape(__filename + "-bigint-literal", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT 314159265 AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "314159265");
+
+    t.end();
+});
+
+tape(__filename + "-decimal-literal", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT 3.14159265 AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "3.14159265");
+
+    t.end();
+});
+
+tape(__filename + "-decimal-literal", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT 3.1415926535897932384626433832795028841971693993751 AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "3.1415926535897932384626433832795028841971693993751");
+
+    t.end();
+});
+
+tape(__filename + "-double-column-becomes-number", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        await connection.rawQuery("DROP TABLE IF EXISTS d");
+        await connection.rawQuery(`
+            CREATE TABLE d (
+                value DOUBLE NOT NULL
+            )
+        `);
+        await connection.rawQuery("INSERT INTO d (value) VALUES (3.1415926535897932384626433832795028841971693993751)");
+        return connection.rawQuery("SELECT value AS v FROM d");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, 3.141592653589793);
+
+    t.end();
+});
+
+tape(__filename + "-add-0e0-to-cast-to-double-becomes-number", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT 3.1415926535897932384626433832795028841971693993751 + 0e0 AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, 3.141592653589793);
+
+    t.end();
+});
+
+tape(__filename + "-decimal-literal-add-zero-literal", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT 3.1415926535897932384626433832795028841971693993751+0 AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "3.1415926535897932384626433832795028841971693993751");
+
+    t.end();
+});
+
+tape(__filename + "-ceil-gives-bigint-string", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT CEIL(3.1415926535897932384626433832795028841971693993751) AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "4");
+
+    t.end();
+});
+
+tape(__filename + "-floor-gives-bigint-string", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT FLOOR(3.1415926535897932384626433832795028841971693993751) AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "3");
+
+    t.end();
+});
+
+tape(__filename + "-round-gives-bigint-string", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT ROUND(3.1415926535897932384626433832795028841971693993751) AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "3");
+
+    t.end();
+});
+
+tape(__filename + "-ascii-gives-bigint-string", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT ASCII('Hello, world') AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "72");
+
+    t.end();
+});
+
+tape(__filename + "-interval-gives-bigint-string", async (t) => {
+    const {results} = await pool.acquire(async (connection) => {
+        return connection.rawQuery("SELECT INTERVAL(5, 1,2,3,4,6,7,8) AS v");
+    });
+    t.deepEqual(results.length, 1);
+    t.deepEqual(results[0].v, "4");
+
+    t.end();
+});

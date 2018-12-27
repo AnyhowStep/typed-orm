@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
 const raw_expr_1 = require("../../../raw-expr");
 const expr_1 = require("../../../expr");
 const query_tree_1 = require("../../../query-tree");
+const dataType = require("../../../data-type");
 //https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_times
 function tryGetMulQueryTree(rawExpr) {
     if (expr_1.ExprUtil.isExpr(rawExpr)) {
@@ -52,13 +52,13 @@ function mul(...arr) {
         //By convention, multiplying zero numbers is one.
         return new expr_1.Expr({
             usedRef: usedRef,
-            assertDelegate: sd.number(),
+            assertDelegate: dataType.double(),
         }, raw_expr_1.RawExprUtil.queryTree(1));
     }
     else {
         return new expr_1.Expr({
             usedRef: usedRef,
-            assertDelegate: sd.number(),
+            assertDelegate: dataType.double(),
         }, queryTree);
     }
 }

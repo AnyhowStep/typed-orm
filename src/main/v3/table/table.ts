@@ -41,7 +41,7 @@ export interface TableData extends AliasedTableData {
         const t1 = table(
             "tableName",
             {
-                column : sd.nullable(sd.naturalNumber())
+                column : sd.nullable(o.bigint())
             }
         );
 
@@ -49,7 +49,7 @@ export interface TableData extends AliasedTableData {
         "column" is is nullable.
 
         const t2 = t1.addColumns({
-            column : sd.naturalNumber()
+            column : o.bigint()
         });
 
         t2.isNullable is now [] because

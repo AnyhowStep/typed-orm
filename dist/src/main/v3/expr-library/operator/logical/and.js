@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
 const raw_expr_1 = require("../../../raw-expr");
 const expr_1 = require("../../../expr");
 const query_tree_1 = require("../../../query-tree");
+const dataType = require("../../../data-type");
 function tryGetAndQueryTree(rawExpr) {
     const trueLiteral = raw_expr_1.RawExprUtil.queryTree(true);
     if (expr_1.ExprUtil.isExpr(rawExpr)) {
@@ -65,13 +65,13 @@ function and(...arr) {
     if (queryTree.length == 0) {
         return new expr_1.Expr({
             usedRef,
-            assertDelegate: sd.numberToBoolean(),
+            assertDelegate: dataType.boolean(),
         }, raw_expr_1.RawExprUtil.queryTree(true));
     }
     else {
         return new expr_1.Expr({
             usedRef,
-            assertDelegate: sd.numberToBoolean(),
+            assertDelegate: dataType.boolean(),
         }, queryTree);
     }
 }

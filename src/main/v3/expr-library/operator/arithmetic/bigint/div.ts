@@ -2,6 +2,7 @@ import * as sd from "schema-decorator";
 import {RawExpr, RawExprUtil} from "../../../../raw-expr";
 import {Expr} from "../../../../expr";
 import {ColumnRefUtil} from "../../../../column-ref";
+import * as dataType from "../../../../data-type";
 
 //https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_divide
 export function bigIntDiv<
@@ -27,7 +28,7 @@ export function bigIntDiv<
                 RawExprUtil.usedRef(left),
                 RawExprUtil.usedRef(right)
             ),
-            assertDelegate : sd.nullable(sd.number()),
+            assertDelegate : sd.nullable(dataType.double()),
         },
         [
             RawExprUtil.queryTree(left),
