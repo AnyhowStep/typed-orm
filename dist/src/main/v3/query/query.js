@@ -226,6 +226,10 @@ class Query {
     paginate(connection, rawArgs) {
         return QueryUtil.paginate(this, connection, rawArgs);
     }
+    printSql() {
+        QueryUtil.printSql(this);
+        return this;
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

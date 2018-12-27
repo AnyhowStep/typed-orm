@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import {IQuery} from "../query";
-import {QueryTreeArray, QueryTree, Parentheses} from "../../query-tree";
+import {QueryTreeArray, QueryTree, Parentheses, QueryTreeUtil} from "../../query-tree";
 import {AliasedTable} from "../../aliased-table";
 import {IColumn, ColumnUtil} from "../../column";
 import {AfterSelectClause, BeforeSelectClause, OneSelectItemQuery, OneRowQuery, isOneRowQuery, ZeroOrOneRowQuery} from "./predicate";
@@ -487,4 +487,11 @@ export function assertDelegate<
     } else {
         return sd.nullable(rawExpr._selects[0].assertDelegate) as any;
     }
+}
+
+export function printSql (
+    query : AfterSelectClause
+) {
+    const sql = QueryTreeUtil.toSqlPretty(queryTree(query));
+    console.log(sql);
 }

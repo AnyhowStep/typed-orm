@@ -10,6 +10,7 @@
 + INSERT statements
   + Polymorphic Insert
   + ON DUPLICATE KEY UPDATE
+  + INSERT ... SELECT
 + UPDATE statements
 + DELETE statements
 

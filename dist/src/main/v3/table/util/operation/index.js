@@ -14,6 +14,7 @@ __export(require("./as"));
 __export(require("./candidate-key-assert-delegate"));
 __export(require("./disallow-delete"));
 __export(require("./disallow-insert"));
+__export(require("./eq-candidate-key"));
 __export(require("./set-alias"));
 __export(require("./set-auto-increment"));
 __export(require("./set-id"));

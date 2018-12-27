@@ -496,4 +496,9 @@ function assertDelegate(rawExpr) {
     }
 }
 exports.assertDelegate = assertDelegate;
+function printSql(query) {
+    const sql = query_tree_1.QueryTreeUtil.toSqlPretty(queryTree(query));
+    console.log(sql);
+}
+exports.printSql = printSql;
 //# sourceMappingURL=query.js.map

@@ -27,6 +27,9 @@ class Insert {
     execute(connection) {
         return InsertUtil.execute(this, connection);
     }
+    executeAndFetch(connection) {
+        return InsertUtil.executeAndFetch(this, connection);
+    }
     printSql() {
         InsertUtil.printSql(this);
         return this;

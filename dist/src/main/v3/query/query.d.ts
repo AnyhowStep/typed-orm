@@ -133,6 +133,7 @@ export declare class Query<DataT extends QueryData> {
     fetchValue(this: Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>, connection: IConnection): (Promise<QueryUtil.FetchValue<Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>>>);
     fetchZeroOrOne(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection): (Promise<QueryUtil.FetchZeroOrOne<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>>);
     paginate(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection, rawArgs: QueryUtil.RawPaginateArgs): (Promise<QueryUtil.Paginate<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>>);
+    printSql(this: Extract<this, QueryUtil.AfterSelectClause>): this;
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertValidJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 export declare function select<SelectDelegateT extends QueryUtil.SelectDelegate<QueryUtil.NewInstance>>(delegate: QueryUtil.AssertValidSelectDelegate<QueryUtil.NewInstance, SelectDelegateT>): (QueryUtil.Select<QueryUtil.NewInstance, SelectDelegateT>);

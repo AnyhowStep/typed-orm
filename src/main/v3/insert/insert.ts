@@ -1,7 +1,8 @@
 import {ITable, TableUtil} from "../table"
 import {RawExprNoUsedRef} from "../raw-expr";
 import * as InsertUtil from "./util";
-import { IConnection } from "../execution";
+import {IConnection} from "../execution";
+import {TypeMapUtil} from "../type-map";
 
 export type InsertRow<TableT extends ITable> = (
     {
@@ -85,6 +86,14 @@ export class Insert<DataT extends InsertData> implements IInsert<DataT> {
         >>
     ) {
         return InsertUtil.execute(this, connection);
+    }
+    executeAndFetch (
+        this : Extract<this, IInsert & { _values : InsertRow<ITable>[] }>,
+        connection : IConnection
+    ) : (
+        Promise<TypeMapUtil.FromTable<this["_table"]>>
+    ) {
+        return InsertUtil.executeAndFetch(this, connection);
     }
     printSql (
         this : Extract<this, IInsert & { _values : InsertRow<ITable>[] }>

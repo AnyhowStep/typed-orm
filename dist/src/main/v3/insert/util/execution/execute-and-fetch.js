@@ -7,7 +7,7 @@ async function executeAndFetch(insert, connection) {
         const result = await execute_1.execute(insert, connection);
         if (result.insertId > 0n && insert._table.autoIncrement != undefined) {
             //Prefer auto-increment id, if possible
-            return query_1.QueryUtil.fetchZeroOrOneByCk(connection, insert._table, {
+            return query_1.QueryUtil.fetchOneByCk(connection, insert._table, {
                 [insert._table.autoIncrement]: result.insertId
             });
         }
@@ -15,7 +15,7 @@ async function executeAndFetch(insert, connection) {
             //*Try* and get a candidate key.
             //May fail if the candidate keys are Expr
             const lastRow = insert._values[insert._values.length - 1];
-            return query_1.QueryUtil.fetchZeroOrOneByCk(connection, insert._table, lastRow);
+            return query_1.QueryUtil.fetchOneByCk(connection, insert._table, lastRow);
         }
     });
 }

@@ -143,6 +143,7 @@ var ColumnRefUtil;
         return result;
     }
     ColumnRefUtil.fromQuery = fromQuery;
+    //TODO This belongs to ColumnRefIdentifierUtil
     function assertIsSubset(a, b) {
         for (let tableAliasA in a) {
             const columnMapA = a[tableAliasA];

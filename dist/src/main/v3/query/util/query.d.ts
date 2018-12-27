@@ -23,4 +23,5 @@ export declare function queryTreeUnionLimit(query: IQuery): QueryTreeArray;
 export declare type TypeOf<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> = (QueryT extends OneRowQuery ? SelectItemUtil.TypeOf<QueryT["_selects"][0]> : null | SelectItemUtil.TypeOf<QueryT["_selects"][0]>);
 export declare type AssertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> = (sd.AssertDelegate<TypeOf<QueryT>>);
 export declare function assertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery>(rawExpr: QueryT): AssertDelegate<QueryT>;
+export declare function printSql(query: AfterSelectClause): void;
 //# sourceMappingURL=query.d.ts.map

@@ -1586,6 +1586,12 @@ export class Query<DataT extends QueryData> {
     ) {
         return QueryUtil.paginate(this, connection, rawArgs);
     }
+    printSql (
+        this : Extract<this, QueryUtil.AfterSelectClause>
+    ) : this {
+        QueryUtil.printSql(this);
+        return this;
+    }
 }
 
 export function from<AliasedTableT extends IAliasedTable> (

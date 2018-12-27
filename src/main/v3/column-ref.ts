@@ -7,7 +7,7 @@ import {ColumnIdentifierMapUtil} from "./column-identifier-map";
 import {ColumnIdentifier} from "./column-identifier";
 import {Writable} from "./type";
 import {Tuple} from "./tuple";
-import {ColumnIdentifierRefUtil} from "./column-identifier-ref";
+import {ColumnIdentifierRefUtil, ColumnIdentifierRef} from "./column-identifier-ref";
 import {SelectItem} from "./select-item";
 import {IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 
@@ -321,7 +321,8 @@ export namespace ColumnRefUtil {
         return result as FromQuery<QueryT>;
     }
 
-    export function assertIsSubset (a : ColumnRef, b : ColumnRef) {
+    //TODO This belongs to ColumnRefIdentifierUtil
+    export function assertIsSubset (a : ColumnIdentifierRef, b : ColumnIdentifierRef) {
         for (let tableAliasA in a) {
             const columnMapA = a[tableAliasA];
             const columnMapB = b[tableAliasA];

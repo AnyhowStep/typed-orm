@@ -2,6 +2,7 @@ import { ITable, TableUtil } from "../table";
 import { RawExprNoUsedRef } from "../raw-expr";
 import * as InsertUtil from "./util";
 import { IConnection } from "../execution";
+import { TypeMapUtil } from "../type-map";
 export declare type InsertRow<TableT extends ITable> = ({
     [name in TableUtil.RequiredColumnNames<TableT>]: (RawExprNoUsedRef<ReturnType<TableT["columns"][name]["assertDelegate"]>>);
 } & {
@@ -41,6 +42,9 @@ export declare class Insert<DataT extends InsertData> implements IInsert<DataT> 
     }>, connection: IConnection): (Promise<InsertUtil.Execute<Extract<this, IInsert & {
         _values: InsertRow<ITable>[];
     }>>>);
+    executeAndFetch(this: Extract<this, IInsert & {
+        _values: InsertRow<ITable>[];
+    }>, connection: IConnection): (Promise<TypeMapUtil.FromTable<this["_table"]>>);
     printSql(this: Extract<this, IInsert & {
         _values: InsertRow<ITable>[];
     }>): this;

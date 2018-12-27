@@ -3,7 +3,7 @@ import {TypeMapUtil} from "../../../../type-map";
 import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
 
-export function fetchZeroOrOneByCk<
+export function fetchOneByCk<
     TableT extends ITable
 > (
     connection : IConnection,
@@ -14,5 +14,5 @@ export function fetchZeroOrOneByCk<
         .from(table as any)
         .where(() => TableUtil.eqCandidateKey(table, ck) as any)
         .select(c => [c])
-        .fetchZeroOrOne(connection) as any;
+        .fetchOne(connection) as any;
 }

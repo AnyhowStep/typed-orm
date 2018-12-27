@@ -5,7 +5,7 @@ import { IColumn, ColumnUtil } from "./column";
 import { IQuery } from "./query";
 import { ColumnIdentifier } from "./column-identifier";
 import { Tuple } from "./tuple";
-import { ColumnIdentifierRefUtil } from "./column-identifier-ref";
+import { ColumnIdentifierRefUtil, ColumnIdentifierRef } from "./column-identifier-ref";
 import { SelectItem } from "./select-item";
 import { IExprSelectItem } from "./expr-select-item";
 export declare type ColumnRef = {
@@ -65,7 +65,7 @@ export declare namespace ColumnRefUtil {
     function fromQuerySelects<QueryT extends IQuery>(query: QueryT): FromQuerySelects<QueryT>;
     type FromQuery<QueryT extends IQuery> = (FromQueryJoins<QueryT> & FromQuerySelects<QueryT>);
     function fromQuery<QueryT extends IQuery>(query: QueryT): FromQuery<QueryT>;
-    function assertIsSubset(a: ColumnRef, b: ColumnRef): void;
+    function assertIsSubset(a: ColumnIdentifierRef, b: ColumnIdentifierRef): void;
     type HasColumnIdentifier<ColumnRefT extends ColumnRef, ColumnIdentifierT extends ColumnIdentifier> = (ColumnIdentifierRefUtil.HasColumnIdentifier<ColumnRefT, ColumnIdentifierT>);
     function hasColumnIdentifier<ColumnRefT extends ColumnRef, ColumnIdentifierT extends ColumnIdentifier>(columnRef: ColumnRefT, columnIdentifier: ColumnIdentifierT): (HasColumnIdentifier<ColumnRefT, ColumnIdentifierT>);
     function assertHasColumnIdentifier(columnRef: ColumnRef, columnIdentifier: ColumnIdentifier): void;

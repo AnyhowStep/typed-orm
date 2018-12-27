@@ -9,6 +9,7 @@ export * from "./as";
 export * from "./candidate-key-assert-delegate";
 export * from "./disallow-delete";
 export * from "./disallow-insert";
+export * from "./eq-candidate-key";
 export * from "./set-alias";
 export * from "./set-auto-increment";
 export * from "./set-id";

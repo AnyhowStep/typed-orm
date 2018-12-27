@@ -2,9 +2,9 @@ import {Query} from "../../query";
 import {AfterFromClause} from "../predicate";
 import {IAnonymousTypedExpr} from "../../../expr";
 import {and} from "../../../expr-library";
-import {nullSafeEq} from "../../../expr-library";
 import {ITable, Table, TableUtil} from "../../../table";
 import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
+import {ColumnRefUtil} from "../../../column-ref";
 
 export type WhereEqCandidateKey<
     QueryT extends AfterFromClause,
@@ -58,19 +58,8 @@ export function whereEqCandidateKey<
     const ref = ColumnIdentifierRefUtil.fromJoinArray(
         query._joins
     );
-    const exprArr : IAnonymousTypedExpr<boolean>[] = [];
-    for (let columnName of Object.keys(key).sort()) {
-        const column = table.columns[columnName];
-        ColumnIdentifierRefUtil.assertHasColumnIdentifier(
-            ref,
-            column
-        );
-        const value = (key as any)[columnName];
-        exprArr.push(nullSafeEq(
-            column,
-            value
-        ));
-    }
+    const condition = TableUtil.eqCandidateKey(table, key);
+    ColumnRefUtil.assertIsSubset(condition.usedRef, ref);
 
     const {
         _distinct,
@@ -103,8 +92,8 @@ export function whereEqCandidateKey<
             _selects,
             _where : (
                 query._where == undefined ?
-                and(...(exprArr as any)) :
-                and(query._where, ...(exprArr as any))
+                condition :
+                and(query._where, condition)
             ) as IAnonymousTypedExpr<boolean>,
 
             _grouped,
