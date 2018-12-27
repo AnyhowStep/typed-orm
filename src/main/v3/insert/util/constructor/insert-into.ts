@@ -1,7 +1,7 @@
 import {ITable} from "../../../table";
 import {Insert} from "../../insert";
 
-export function insert<TableT extends ITable & { insertAllowed : true }> (
+export function insertInto<TableT extends ITable & { insertAllowed : true }> (
     table : TableT
 ) : (
     Insert<{

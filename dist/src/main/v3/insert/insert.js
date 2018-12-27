@@ -24,6 +24,10 @@ class Insert {
     execute(connection) {
         return InsertUtil.execute(this, connection);
     }
+    printSql() {
+        InsertUtil.printSql(this);
+        return this;
+    }
 }
 exports.Insert = Insert;
 //# sourceMappingURL=insert.js.map

@@ -7,5 +7,7 @@ __export(require("./insert"));
 const InsertUtil = require("./util");
 exports.InsertUtil = InsertUtil;
 const util_1 = require("./util");
-exports.insert = util_1.insert;
+exports.insertIgnoreInto = util_1.insertIgnoreInto;
+exports.insertInto = util_1.insertInto;
+exports.replaceInto = util_1.replaceInto;
 //# sourceMappingURL=index.js.map

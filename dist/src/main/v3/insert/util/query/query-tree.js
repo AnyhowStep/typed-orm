@@ -13,11 +13,11 @@ function queryTreeRow(insert, row) {
         }
         const value = row[columnName];
         if (value === undefined) {
-            if (table_1.TableUtil.isOptional(insert._table, columnName)) {
-                result.push("DEFAULT");
+            if (table_1.TableUtil.isRequired(insert._table, columnName)) {
+                throw new Error(`Expected a value for ${insert._table.alias}.${columnName}; received undefined`);
             }
             else {
-                throw new Error(`Expected a value for ${insert._table.alias}.${columnName}; received undefined`);
+                result.push("DEFAULT");
             }
         }
         else {
@@ -56,9 +56,9 @@ function queryTree(insert) {
     }
     result.push(sqlstring_1.escapeId(insert._table.alias));
     result.push("(");
-    for (let columnName of columnNames) {
-        result.push(sqlstring_1.escapeId(columnName));
-    }
+    result.push(columnNames
+        .map(columnName => sqlstring_1.escapeId(columnName))
+        .join(","));
     result.push(")");
     result.push("VALUES");
     result.push(queryTreeValues(insert));

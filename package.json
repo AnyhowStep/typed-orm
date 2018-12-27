@@ -7,6 +7,7 @@
   "scripts": {
     "test-sandbox": "ts-node ./src/main/sandbox/select-builder-v2",
     "test": "ts-node -P ./test/run-time/tsconfig.json",
+    "test-exec": "ts-node -P ./test/execution/tsconfig.json",
     "check": "  tsc --noEmit --diagnostics",
     "check2": "node --max-old-space-size=8192 ./node_modules/typescript/lib/tsc.js --noEmit --noErrorTruncation --diagnostics",
     "clean": "rm -r ./dist || true",

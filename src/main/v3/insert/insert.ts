@@ -83,4 +83,10 @@ export class Insert<DataT extends InsertData> implements IInsert<DataT> {
     ) {
         return InsertUtil.execute(this, connection);
     }
+    printSql (
+        this : Extract<this, IInsert & { _values : InsertRow<ITable>[] }>
+    ) : this {
+        InsertUtil.printSql(this);
+        return this;
+    }
 }

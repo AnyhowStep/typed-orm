@@ -69,7 +69,7 @@ export interface SelectResult {
 export interface InsertResult {
     fieldCount: number;
     affectedRows: number;
-    insertId: number;
+    insertId: bigint;
     serverStatus: number;
     warningCount: number;
     message: string;

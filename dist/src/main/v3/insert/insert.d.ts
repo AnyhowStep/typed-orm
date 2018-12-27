@@ -41,5 +41,8 @@ export declare class Insert<DataT extends InsertData> implements IInsert<DataT> 
     }>, connection: IConnection): (Promise<InsertUtil.Execute<Extract<this, IInsert & {
         _values: InsertRow<ITable>[];
     }>>>);
+    printSql(this: Extract<this, IInsert & {
+        _values: InsertRow<ITable>[];
+    }>): this;
 }
 //# sourceMappingURL=insert.d.ts.map

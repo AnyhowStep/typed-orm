@@ -175,7 +175,10 @@ class Connection {
                     reject(new Error(`Expected results`));
                     return;
                 }
-                resolve(results);
+                resolve({
+                    ...results,
+                    insertId: BigInt(results.insertId),
+                });
             });
         });
     }

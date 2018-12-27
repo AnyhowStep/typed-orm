@@ -17,10 +17,10 @@ export function queryTreeRow (
         }
         const value = (row as any)[columnName];
         if (value === undefined) {
-            if (TableUtil.isOptional(insert._table, columnName)) {
-                result.push("DEFAULT");
-            } else {
+            if (TableUtil.isRequired(insert._table, columnName)) {
                 throw new Error(`Expected a value for ${insert._table.alias}.${columnName}; received undefined`);
+            } else {
+                result.push("DEFAULT");
             }
         } else {
             result.push(RawExprUtil.queryTree(value));
@@ -60,9 +60,11 @@ export function queryTree (
     result.push(escapeId(insert._table.alias));
 
     result.push("(");
-    for (let columnName of columnNames) {
-        result.push(escapeId(columnName));
-    }
+    result.push(
+        columnNames
+            .map(columnName => escapeId(columnName))
+            .join(",")
+    );
     result.push(")");
 
     result.push("VALUES");
