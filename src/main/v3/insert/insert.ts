@@ -89,7 +89,18 @@ export class Insert<DataT extends InsertData> implements IInsert<DataT> {
     }
     executeAndFetch (
         this : Extract<this, IInsert & { _values : InsertRow<ITable>[] }>,
-        connection : IConnection
+        connection : (
+            IConnection &
+            (
+                this["_table"]["candidateKeys"][number] extends never ?
+                [
+                    "Table",
+                    this["_table"]["alias"],
+                    "has no candidate keys"
+                ] :
+                unknown
+            )
+        )
     ) : (
         Promise<TypeMapUtil.FromTable<this["_table"]>>
     ) {

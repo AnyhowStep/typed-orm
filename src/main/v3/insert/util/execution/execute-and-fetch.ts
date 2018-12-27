@@ -9,7 +9,18 @@ export async function executeAndFetch<
     InsertT extends IInsert & { _values : InsertRow<ITable>[] }
 > (
     insert : InsertT,
-    connection : IConnection
+    connection : (
+        IConnection &
+        (
+            InsertT["_table"]["candidateKeys"][number] extends never ?
+            [
+                "Table",
+                InsertT["_table"]["alias"],
+                "has no candidate keys"
+            ] :
+            unknown
+        )
+    )
 ) : (
     Promise<TypeMapUtil.FromTable<InsertT["_table"]>>
 ) {
