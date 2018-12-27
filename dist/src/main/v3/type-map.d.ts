@@ -1,6 +1,7 @@
 import * as sd from "schema-decorator";
 import { CandidateKey } from "./candidate-key";
 import { ColumnMap } from "./column-map";
+import { ITable } from "./table";
 export declare namespace TypeMapUtil {
     type UnionFromCandidateKey<CandidateKeyT extends CandidateKey, ColumnMapT extends ColumnMap> = (CandidateKeyT extends CandidateKey ? {
         readonly [columnName in Extract<keyof ColumnMapT, CandidateKeyT[number]>]: (ReturnType<ColumnMapT[columnName]["assertDelegate"]>);
@@ -18,5 +19,8 @@ export declare namespace TypeMapUtil {
     type SuperKeyUnionFromCandidateKeyArray<CandidateKeyArrayT extends CandidateKey[], ColumnMapT extends ColumnMap> = (SuperKeyUnionFromCandidateKey<CandidateKeyArrayT[number], ColumnMapT>);
     type SuperKeyAssertDelegateFromCandidateKeyArray<CandidateKeyArrayT extends CandidateKey[], ColumnMapT extends ColumnMap> = (sd.AssertDelegate<SuperKeyUnionFromCandidateKeyArray<CandidateKeyArrayT, ColumnMapT>>);
     function superKeyAssertDelegateFromCandidateKeyArray<CandidateKeyArrayT extends CandidateKey[], ColumnMapT extends ColumnMap>(candidateKeyTuple: CandidateKeyArrayT, columnMap: ColumnMapT): (SuperKeyAssertDelegateFromCandidateKeyArray<CandidateKeyArrayT, ColumnMapT>);
+    type FromTable<TableT extends ITable> = ({
+        readonly [columnName in Extract<keyof TableT["columns"], string>]: (ReturnType<TableT["columns"][columnName]["assertDelegate"]>);
+    });
 }
 //# sourceMappingURL=type-map.d.ts.map

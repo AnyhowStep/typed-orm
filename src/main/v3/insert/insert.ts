@@ -57,6 +57,9 @@ export class Insert<DataT extends InsertData> implements IInsert<DataT> {
     constructor (
         data : DataT
     ) {
+        if (!data._table.insertAllowed) {
+            throw new Error(`Cannot insert into table ${data._table.alias}`);
+        }
         this._table = data._table;
         this._values = data._values;
         this._modifier = data._modifier;

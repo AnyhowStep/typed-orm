@@ -1,3 +1,5 @@
+export * from "./convenience";
+
 export * from "./assert-exists";
 export * from "./count";
 export * from "./cursor";

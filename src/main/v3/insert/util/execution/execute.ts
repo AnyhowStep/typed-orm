@@ -4,7 +4,6 @@ import {IConnection, InsertResult} from "../../../execution";
 import { QueryTreeUtil } from "../../../query-tree";
 import {queryTree} from "../query";
 
-//TODO
 export type Execute<
     InsertT extends IInsert & { _values : InsertRow<ITable>[] }
 > = (

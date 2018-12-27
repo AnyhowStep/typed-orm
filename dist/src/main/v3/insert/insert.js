@@ -8,6 +8,9 @@ var InsertModifier;
 })(InsertModifier = exports.InsertModifier || (exports.InsertModifier = {}));
 class Insert {
     constructor(data) {
+        if (!data._table.insertAllowed) {
+            throw new Error(`Cannot insert into table ${data._table.alias}`);
+        }
         this._table = data._table;
         this._values = data._values;
         this._modifier = data._modifier;

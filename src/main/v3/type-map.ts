@@ -1,6 +1,7 @@
 import * as sd from "schema-decorator";
 import {CandidateKey} from "./candidate-key";
 import {ColumnMap} from "./column-map";
+import { ITable } from "./table";
 
 export namespace TypeMapUtil {
     export type UnionFromCandidateKey<
@@ -190,4 +191,12 @@ export namespace TypeMapUtil {
                 ))
         ) as any;
     }
+
+    export type FromTable<TableT extends ITable> = (
+        {
+            readonly [columnName in Extract<keyof TableT["columns"], string>] : (
+                ReturnType<TableT["columns"][columnName]["assertDelegate"]>
+            )
+        }
+    );
 }
