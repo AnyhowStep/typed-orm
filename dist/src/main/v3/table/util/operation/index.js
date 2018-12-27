@@ -17,6 +17,7 @@ __export(require("./disallow-insert"));
 __export(require("./eq-candidate-key"));
 __export(require("./set-alias"));
 __export(require("./set-auto-increment"));
+__export(require("./set-database-name"));
 __export(require("./set-id"));
 __export(require("./set-immutable"));
 __export(require("./set-mutable"));

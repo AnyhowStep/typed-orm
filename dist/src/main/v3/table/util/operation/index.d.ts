@@ -12,6 +12,7 @@ export * from "./disallow-insert";
 export * from "./eq-candidate-key";
 export * from "./set-alias";
 export * from "./set-auto-increment";
+export * from "./set-database-name";
 export * from "./set-id";
 export * from "./set-immutable";
 export * from "./set-mutable";

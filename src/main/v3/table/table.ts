@@ -243,6 +243,13 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
             DelegateT
         >(this, delegate);
     }
+    setDatabaseName (
+        newDatabaseName : string
+    ) : (
+        TableUtil.SetDatabaseName<this>
+    ) {
+        return TableUtil.setDatabaseName(this, newDatabaseName);
+    }
     setId<
         DelegateT extends TableUtil.IdDelegate<this>
     > (

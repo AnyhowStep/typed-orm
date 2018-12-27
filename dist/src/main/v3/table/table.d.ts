@@ -62,6 +62,7 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     addColumns<FieldsT extends sd.AnyField[]>(fields: FieldsT): (TableUtil.AddColumnsFromFieldTuple<this, FieldsT>);
     addColumns<AssertMapT extends AssertMap>(assertMap: AssertMapT): (TableUtil.AddColumnsFromAssertMap<this, AssertMapT>);
     setAutoIncrement<DelegateT extends TableUtil.AutoIncrementDelegate<this>>(delegate: DelegateT): TableUtil.SetAutoIncrement<this, DelegateT>;
+    setDatabaseName(newDatabaseName: string): (TableUtil.SetDatabaseName<this>);
     setId<DelegateT extends TableUtil.IdDelegate<this>>(delegate: DelegateT): (TableUtil.SetId<this, DelegateT>);
     setPrimaryKey<DelegateT extends TableUtil.PrimaryKeyDelegate<this>>(delegate: TableUtil.AssertValidCandidateKeyDelegate<this, DelegateT>): (TableUtil.SetPrimaryKey<this, DelegateT>);
     addCandidateKey<DelegateT extends TableUtil.CandidateKeyDelegate<this>>(delegate: TableUtil.AssertValidCandidateKeyDelegate<this, DelegateT>): (TableUtil.AddCandidateKey<this, DelegateT>);

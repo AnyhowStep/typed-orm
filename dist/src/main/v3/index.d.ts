@@ -5,6 +5,8 @@ export * from "./column-map";
 export * from "./data-type";
 export * from "./expr-library";
 export * from "./formatter";
+import * as informationSchema from "./information-schema";
+export { informationSchema };
 export * from "./insert";
 export * from "./join-declaration";
 export * from "./order";

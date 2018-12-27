@@ -10,6 +10,8 @@ __export(require("./column-map"));
 __export(require("./data-type"));
 __export(require("./expr-library"));
 __export(require("./formatter"));
+const informationSchema = require("./information-schema");
+exports.informationSchema = informationSchema;
 __export(require("./insert"));
 __export(require("./join-declaration"));
 __export(require("./order"));

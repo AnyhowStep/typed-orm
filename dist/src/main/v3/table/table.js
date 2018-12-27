@@ -43,6 +43,9 @@ class Table {
     setAutoIncrement(delegate) {
         return TableUtil.setAutoIncrement(this, delegate);
     }
+    setDatabaseName(newDatabaseName) {
+        return TableUtil.setDatabaseName(this, newDatabaseName);
+    }
     setId(delegate) {
         return TableUtil.setId(this, delegate);
     }
