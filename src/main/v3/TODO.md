@@ -9,13 +9,12 @@
 
 + INSERT statements
   + Polymorphic Insert
+  + ON DUPLICATE KEY UPDATE
 + UPDATE statements
 + DELETE statements
 
 + Validate table declarations
 + Log table pattern
-+ Pooled connection
-+ Transactions
 
 + String collation safety
   + _utf8'some string' COLLATE utf8_danish_ci

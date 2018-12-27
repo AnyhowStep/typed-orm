@@ -8,4 +8,5 @@ export declare function isObjectWithKeys<T>(raw: any, keys: Extract<keyof T, str
 };
 export declare type MAX_SAFE_INTEGER = 9007199254740991;
 export declare const MAX_SAFE_INTEGER: MAX_SAFE_INTEGER;
+export declare type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 //# sourceMappingURL=type.d.ts.map

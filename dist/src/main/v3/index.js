@@ -10,6 +10,7 @@ __export(require("./column-map"));
 __export(require("./data-type"));
 __export(require("./expr-library"));
 __export(require("./formatter"));
+__export(require("./insert"));
 __export(require("./join-declaration"));
 __export(require("./order"));
 __export(require("./query"));
@@ -26,5 +27,6 @@ __export(require("./query-tree"));
 __export(require("./select-item-array"));
 __export(require("./select-item"));
 __export(require("./string"));
+__export(require("./type"));
 __export(require("./execution"));
 //# sourceMappingURL=index.js.map

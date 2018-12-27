@@ -67,6 +67,16 @@ export interface SelectResult {
         [name : string] : IFieldInfo
     },
 }
+export interface InsertResult {
+    fieldCount   : number;
+    affectedRows : number;
+    insertId     : number;
+    serverStatus : number;
+    warningCount : number;
+    message      : string;
+    protocol41   : boolean;
+    changedRows  : number;
+}
 
 export interface IConnection {
     isInTransaction () : this is ITransactionConnection;
@@ -79,7 +89,7 @@ export interface IConnection {
 
     rawQuery (sql : string) : Promise<RawQueryResult>;
     select (sql : string) : Promise<SelectResult>;
-    //TODO insert
+    insert (sql : string) : Promise<InsertResult>;
     //TODO update
     //TODO delete
 }

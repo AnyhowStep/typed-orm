@@ -7,7 +7,7 @@ import {escape} from "sqlstring";
 import {QueryTree} from "./query-tree";
 import {Tuple} from "./tuple";
 import {ColumnRef} from "./column-ref";
-import {OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery} from "./query/util";
+import {OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery, MainQuery} from "./query/util";
 import {IQuery, QueryUtil} from "./query";
 import {IJoin} from "./join";
 import {DateTimeUtil} from "./data-type";
@@ -29,6 +29,29 @@ export type RawExpr<TypeT> = (
         (OneSelectItemQuery<TypeT> & OneRowQuery)
     ) |
     IAnonymousTypedExprSelectItem<TypeT>
+);
+
+export type RawExprNoUsedRef<TypeT> = (
+    (
+        TypeT extends PrimitiveExpr ?
+            TypeT :
+            never
+    ) |
+    IExpr<{
+        usedRef : {},
+        assertDelegate : sd.AssertDelegate<TypeT>,
+    }> |
+    (
+        null extends TypeT ?
+        (OneSelectItemQuery<TypeT> & ZeroOrOneRowQuery & MainQuery) :
+        (OneSelectItemQuery<TypeT> & OneRowQuery & MainQuery)
+    ) |
+    IExprSelectItem<{
+        usedRef : {},
+        assertDelegate : sd.AssertDelegate<TypeT>,
+        tableAlias : string,
+        alias : string,
+    }>
 );
 
 export namespace RawExprUtil {

@@ -5,7 +5,8 @@ import {
     IConnection,
     ITransactionConnection,
     RawQueryResult,
-    SelectResult
+    SelectResult,
+    InsertResult
 } from "../connection";
 
 export class Connection implements IConnection, ITransactionConnection {
@@ -175,6 +176,24 @@ export class Connection implements IConnection, ITransactionConnection {
                         rows   : results,
                         fields : fieldObj,
                     });
+                }
+            );
+        });
+    }
+    insert (sql : string) : Promise<InsertResult> {
+        return new Promise<InsertResult>((resolve, reject) => {
+            this.connection.query(
+                sql,
+                (err, results) => {
+                    if (err != undefined) {
+                        reject(err);
+                        return;
+                    }
+                    if (results == undefined) {
+                        reject(new Error(`Expected results`));
+                        return;
+                    }
+                    resolve(results);
                 }
             );
         });

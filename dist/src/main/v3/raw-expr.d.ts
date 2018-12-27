@@ -6,11 +6,20 @@ import { ColumnRefUtil } from "./column-ref";
 import { QueryTree } from "./query-tree";
 import { Tuple } from "./tuple";
 import { ColumnRef } from "./column-ref";
-import { OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery } from "./query/util";
+import { OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery, MainQuery } from "./query/util";
 import { IQuery, QueryUtil } from "./query";
 import { IJoin } from "./join";
 import { IAnonymousTypedExprSelectItem, IExprSelectItem } from "./expr-select-item";
 export declare type RawExpr<TypeT> = ((TypeT extends PrimitiveExpr ? TypeT : never) | IAnonymousTypedExpr<TypeT> | IAnonymousTypedColumn<TypeT> | (null extends TypeT ? (OneSelectItemQuery<TypeT> & ZeroOrOneRowQuery) : (OneSelectItemQuery<TypeT> & OneRowQuery)) | IAnonymousTypedExprSelectItem<TypeT>);
+export declare type RawExprNoUsedRef<TypeT> = ((TypeT extends PrimitiveExpr ? TypeT : never) | IExpr<{
+    usedRef: {};
+    assertDelegate: sd.AssertDelegate<TypeT>;
+}> | (null extends TypeT ? (OneSelectItemQuery<TypeT> & ZeroOrOneRowQuery & MainQuery) : (OneSelectItemQuery<TypeT> & OneRowQuery & MainQuery)) | IExprSelectItem<{
+    usedRef: {};
+    assertDelegate: sd.AssertDelegate<TypeT>;
+    tableAlias: string;
+    alias: string;
+}>);
 export declare namespace RawExprUtil {
     type UsedRef<RawExprT extends RawExpr<any>> = (RawExprT extends PrimitiveExpr ? {} : RawExprT extends IExpr ? RawExprT["usedRef"] : RawExprT extends IColumn ? ColumnRefUtil.FromColumn<RawExprT> : RawExprT extends IQuery ? (RawExprT["_parentJoins"] extends IJoin[] ? ColumnRefUtil.FromJoinArray<Extract<RawExprT["_parentJoins"], IJoin[]>> : {}) : RawExprT extends IExprSelectItem ? RawExprT["usedRef"] : never);
     function usedRef<RawExprT extends RawExpr<any>>(rawExpr: RawExprT): UsedRef<RawExprT>;

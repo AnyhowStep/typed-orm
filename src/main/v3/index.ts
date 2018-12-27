@@ -7,6 +7,7 @@ export * from "./column-map";
 export * from "./data-type";
 export * from "./expr-library";
 export * from "./formatter";
+export * from "./insert";
 export * from "./join-declaration";
 export * from "./order";
 export * from "./query";
@@ -24,5 +25,6 @@ export * from "./query-tree";
 export * from "./select-item-array";
 export * from "./select-item";
 export * from "./string";
+export * from "./type";
 
 export * from "./execution";

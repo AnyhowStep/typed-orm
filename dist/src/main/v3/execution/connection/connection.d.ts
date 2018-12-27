@@ -66,12 +66,23 @@ export interface SelectResult {
         [name: string]: IFieldInfo;
     };
 }
+export interface InsertResult {
+    fieldCount: number;
+    affectedRows: number;
+    insertId: number;
+    serverStatus: number;
+    warningCount: number;
+    message: string;
+    protocol41: boolean;
+    changedRows: number;
+}
 export interface IConnection {
     isInTransaction(): this is ITransactionConnection;
     transaction<ResultT>(callback: TransactionCallback<ResultT>): Promise<ResultT>;
     transactionIfNotInOne<ResultT>(callback: TransactionCallback<ResultT>): Promise<ResultT>;
     rawQuery(sql: string): Promise<RawQueryResult>;
     select(sql: string): Promise<SelectResult>;
+    insert(sql: string): Promise<InsertResult>;
 }
 export interface ITransactionConnection extends IConnection {
     rollback(): Promise<void>;
