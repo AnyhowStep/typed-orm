@@ -91,15 +91,7 @@ export class Insert<DataT extends InsertData> implements IInsert<DataT> {
         this : Extract<this, IInsert & { _values : InsertRow<ITable>[] }>,
         connection : (
             IConnection &
-            (
-                this["_table"]["candidateKeys"][number] extends never ?
-                [
-                    "Table",
-                    this["_table"]["alias"],
-                    "has no candidate keys"
-                ] :
-                unknown
-            )
+            TableUtil.AssertHasCandidateKey<this["_table"]>
         )
     ) : (
         Promise<TypeMapUtil.FromTable<this["_table"]>>

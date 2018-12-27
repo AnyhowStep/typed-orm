@@ -1,4 +1,4 @@
-import {ITable} from "../../../table";
+import {ITable, TableUtil} from "../../../table";
 import {IInsert, InsertRow} from "../../insert";
 import {IConnection} from "../../../execution";
 import {execute} from "./execute";
@@ -11,15 +11,7 @@ export async function executeAndFetch<
     insert : InsertT,
     connection : (
         IConnection &
-        (
-            InsertT["_table"]["candidateKeys"][number] extends never ?
-            [
-                "Table",
-                InsertT["_table"]["alias"],
-                "has no candidate keys"
-            ] :
-            unknown
-        )
+        TableUtil.AssertHasCandidateKey<InsertT["_table"]>
     )
 ) : (
     Promise<TypeMapUtil.FromTable<InsertT["_table"]>>
