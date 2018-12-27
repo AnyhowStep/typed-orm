@@ -1,0 +1,9 @@
+export declare const hasExplicitDefaultValue_someId: true;
+export declare const hasExplicitDefaultValue_parentSpecific: false;
+export declare const hasExplicitDefaultValue_nullableParentSpecific: false;
+export declare const hasExplicitDefaultValue_childSpecific: false;
+export declare const hasExplicitDefaultValue_nullableChildSpecific: false;
+export declare const hasExplicitDefaultValue_nullableParentRequiredChild: false;
+export declare const hasExplicitDefaultValue_nullableParentAndChild: false;
+export declare const hasExplicitDefaultValue_requiredParentAndChild: false;
+export declare const hasExplicitDefaultValue_doesNotExist: false;

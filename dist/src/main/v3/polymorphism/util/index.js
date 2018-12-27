@@ -4,5 +4,6 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./execution"));
+__export(require("./predicate"));
 __export(require("./query"));
 //# sourceMappingURL=index.js.map

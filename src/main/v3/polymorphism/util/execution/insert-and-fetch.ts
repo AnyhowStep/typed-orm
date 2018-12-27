@@ -1,6 +1,6 @@
 import {RawExprNoUsedRef} from "../../../raw-expr";
 import {ITable, TableUtil} from "../../../table";
-import {RequiredColumnNames, OptionalColumnNames, uniqueGeneratedColumnNames, tryGetGeneratedNonAutoIncrementColumn, assertDelegate} from "../query";
+import {RequiredColumnNames, OptionalColumnNames, uniqueGeneratedColumnNames, tryGetGeneratedNonAutoIncrementColumn, assertDelegate, ColumnType, TypeMap} from "../query";
 import {IConnection} from "../../../execution";
 import {InsertUtil} from "../../../insert";
 import * as informationSchema from "../../../information-schema";
@@ -9,14 +9,14 @@ export type InsertRow<TableT extends ITable> = (
     {
         [name in RequiredColumnNames<TableT>] : (
             RawExprNoUsedRef<
-                ReturnType<TableT["columns"][name]["assertDelegate"]>
+                ColumnType<TableT, name>
             >
         )
     } &
     {
         [name in OptionalColumnNames<TableT>]? : (
             RawExprNoUsedRef<
-                ReturnType<TableT["columns"][name]["assertDelegate"]>
+                ColumnType<TableT, name>
             >
         )
     }
@@ -24,12 +24,12 @@ export type InsertRow<TableT extends ITable> = (
 export type InsertRowLiteral<TableT extends ITable> = (
     {
         [name in RequiredColumnNames<TableT>] : (
-            ReturnType<TableT["columns"][name]["assertDelegate"]>
+            ColumnType<TableT, name>
         )
     } &
     {
         [name in OptionalColumnNames<TableT>]? : (
-            ReturnType<TableT["columns"][name]["assertDelegate"]>
+            ColumnType<TableT, name>
         )
     }
 );
@@ -39,13 +39,13 @@ export async function insertAndFetch<
     connection : IConnection & TableUtil.AssertHasCandidateKey<TableT>,
     table : TableT,
     rawInsertRow : InsertRow<TableT>
-) {
+) : Promise<TypeMap<TableT>> {
     if (table.parents.length == 0) {
         return InsertUtil.insertAndFetch(
             connection,
             table,
             rawInsertRow as any
-        );
+        ) as any;
     }
     let insertRow : any = {...rawInsertRow};
     for (let g of uniqueGeneratedColumnNames(table)) {

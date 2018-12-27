@@ -1,5 +1,21 @@
 import {ITable} from "../../../table";
 
+export type ParentAliases<TableT extends ITable> = (
+    TableT["parents"][number]["alias"]
+);
+export type ParentAliasesExcept<TableT extends ITable, ExceptT extends string> = (
+    Exclude<
+        ParentAliases<TableT>,
+        ExceptT
+    >
+);
+export type FindParent<TableT extends ITable, AliasT extends string> = (
+    Extract<
+        TableT["parents"][number],
+        { alias : AliasT }
+    >
+);
+
 export type TableAliases<TableT extends ITable> = (
     (
         TableT |
