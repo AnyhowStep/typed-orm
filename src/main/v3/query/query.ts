@@ -1475,6 +1475,44 @@ export class Query<DataT extends QueryData> {
         >(this, arr);
     }
 
+    assertExists (
+        this : Extract<this, QueryUtil.MainQuery>,
+        connection : IConnection
+    ) : Promise<void> {
+        return QueryUtil.assertExists(this, connection);
+    }
+    count (
+        this : Extract<this, QueryUtil.MainQuery>,
+        connection : IConnection
+    ) : Promise<bigint> {
+        return QueryUtil.count(this, connection);
+    }
+    cursor (
+        this : Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>,
+        connection : IConnection
+    ) : (
+        QueryUtil.Cursor<
+            Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>
+        >
+    ) {
+        return QueryUtil.cursor(this, connection);
+    }
+    exists(
+        this : Extract<this, QueryUtil.MainQuery>,
+        connection : IConnection
+    ) : Promise<boolean> {
+        return QueryUtil.exists(this, connection);
+    }
+    fetchAllUnmapped (
+        this : Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>,
+        connection : IConnection
+    ) : (
+        Promise<QueryUtil.FetchAllUnmapped<
+            Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>
+        >>
+    ) {
+        return QueryUtil.fetchAllUnmapped(this, connection);
+    }
     fetchAll (
         this : Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>,
         connection : IConnection
@@ -1485,9 +1523,68 @@ export class Query<DataT extends QueryData> {
             >
         >
     ) {
-        return QueryUtil.fetchAll<
+        return QueryUtil.fetchAll(this, connection);
+    }
+    fetchOne (
+        this : Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>,
+        connection : IConnection
+    ) : (
+        Promise<QueryUtil.FetchOne<
             Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>
-        >(this, connection);
+        >>
+    ) {
+        return QueryUtil.fetchOne(this, connection);
+    }
+    fetchValueArray (
+        this : Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>,
+        connection : IConnection
+    ) : (
+        Promise<QueryUtil.FetchValueArray<
+            Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>
+        >>
+    ) {
+        return QueryUtil.fetchValueArray(this, connection);
+    }
+    fetchValueOrUndefined (
+        this : Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>,
+        connection : IConnection
+    ) : (
+        Promise<QueryUtil.FetchValueOrUndefined<
+            Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>
+        >>
+    ) {
+        return QueryUtil.fetchValueOrUndefined(this, connection);
+    }
+    fetchValue (
+        this : Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>,
+        connection : IConnection
+    ) : (
+        Promise<QueryUtil.FetchValue<
+            Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>
+        >>
+    ) {
+        return QueryUtil.fetchValue(this, connection);
+    }
+    fetchZeroOrOne (
+        this : Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>,
+        connection : IConnection
+    ) : (
+        Promise<QueryUtil.FetchZeroOrOne<
+            Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>
+        >>
+    ) {
+        return QueryUtil.fetchZeroOrOne(this, connection);
+    }
+    paginate (
+        this : Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>,
+        connection : IConnection,
+        rawArgs : QueryUtil.RawPaginateArgs
+    ) : (
+        Promise<QueryUtil.Paginate<
+            Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>
+        >>
+    ) {
+        return QueryUtil.paginate(this, connection, rawArgs);
     }
 }
 

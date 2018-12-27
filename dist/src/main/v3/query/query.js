@@ -190,8 +190,41 @@ class Query {
     useJoins(...arr) {
         return QueryUtil.useJoins(this, arr);
     }
+    assertExists(connection) {
+        return QueryUtil.assertExists(this, connection);
+    }
+    count(connection) {
+        return QueryUtil.count(this, connection);
+    }
+    cursor(connection) {
+        return QueryUtil.cursor(this, connection);
+    }
+    exists(connection) {
+        return QueryUtil.exists(this, connection);
+    }
+    fetchAllUnmapped(connection) {
+        return QueryUtil.fetchAllUnmapped(this, connection);
+    }
     fetchAll(connection) {
         return QueryUtil.fetchAll(this, connection);
+    }
+    fetchOne(connection) {
+        return QueryUtil.fetchOne(this, connection);
+    }
+    fetchValueArray(connection) {
+        return QueryUtil.fetchValueArray(this, connection);
+    }
+    fetchValueOrUndefined(connection) {
+        return QueryUtil.fetchValueOrUndefined(this, connection);
+    }
+    fetchValue(connection) {
+        return QueryUtil.fetchValue(this, connection);
+    }
+    fetchZeroOrOne(connection) {
+        return QueryUtil.fetchZeroOrOne(this, connection);
+    }
+    paginate(connection, rawArgs) {
+        return QueryUtil.paginate(this, connection, rawArgs);
     }
 }
 exports.Query = Query;
