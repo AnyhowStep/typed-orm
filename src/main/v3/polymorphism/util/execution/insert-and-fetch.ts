@@ -1,7 +1,6 @@
-export const TODO = true;
-/*import {RawExprNoUsedRef} from "../../../raw-expr";
+import {RawExprNoUsedRef} from "../../../raw-expr";
 import {ITable, TableUtil} from "../../../table";
-import {RequiredColumnNames, OptionalColumnNames, uniqueGeneratedColumnNames, tryGetGeneratedNonAutoIncrementColumn} from "../query";
+import {RequiredColumnNames, OptionalColumnNames, uniqueGeneratedColumnNames, tryGetGeneratedNonAutoIncrementColumn, assertDelegate} from "../query";
 import {IConnection} from "../../../execution";
 import {InsertUtil} from "../../../insert";
 import * as informationSchema from "../../../information-schema";
@@ -105,4 +104,4 @@ export async function insertAndFetch<
             result
         );
     });
-}*/
+}

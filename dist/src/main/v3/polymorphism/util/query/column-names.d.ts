@@ -2,6 +2,7 @@ import { ITable } from "../../../table";
 import { ColumnUtil } from "../../../column";
 import { IsNullable, HasExplicitDefaultValue } from "../predicate";
 export declare type ColumnNames<TableT extends ITable> = (ColumnUtil.Name.FromColumnMap<TableT["columns"] | TableT["parents"][number]["columns"]>);
+export declare function uniqueColumnNames(table: ITable): string[];
 export declare type GeneratedColumnNames<TableT extends ITable> = ((TableT | TableT["parents"][number])["generated"][number]);
 export declare function uniqueGeneratedColumnNames(table: ITable): string[];
 export declare type NonGeneratedColumnNames<TableT extends ITable> = (Exclude<ColumnNames<TableT>, GeneratedColumnNames<TableT>>);

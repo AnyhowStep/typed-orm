@@ -15,6 +15,7 @@ exports.informationSchema = informationSchema;
 __export(require("./insert"));
 __export(require("./join-declaration"));
 __export(require("./order"));
+__export(require("./polymorphism"));
 __export(require("./query"));
 __export(require("./table"));
 __export(require("./assert-map"));

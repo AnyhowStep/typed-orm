@@ -12,6 +12,7 @@ export {informationSchema};
 export * from "./insert";
 export * from "./join-declaration";
 export * from "./order";
+export * from "./polymorphism";
 export * from "./query";
 export * from "./table";
 

@@ -1,90 +1,38 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TODO = true;
-/*import {RawExprNoUsedRef} from "../../../raw-expr";
-import {ITable, TableUtil} from "../../../table";
-import {RequiredColumnNames, OptionalColumnNames, uniqueGeneratedColumnNames, tryGetGeneratedNonAutoIncrementColumn} from "../query";
-import {IConnection} from "../../../execution";
-import {InsertUtil} from "../../../insert";
-import * as informationSchema from "../../../information-schema";
-
-export type InsertRow<TableT extends ITable> = (
-    {
-        [name in RequiredColumnNames<TableT>] : (
-            RawExprNoUsedRef<
-                ReturnType<TableT["columns"][name]["assertDelegate"]>
-            >
-        )
-    } &
-    {
-        [name in OptionalColumnNames<TableT>]? : (
-            RawExprNoUsedRef<
-                ReturnType<TableT["columns"][name]["assertDelegate"]>
-            >
-        )
-    }
-);
-export type InsertRowLiteral<TableT extends ITable> = (
-    {
-        [name in RequiredColumnNames<TableT>] : (
-            ReturnType<TableT["columns"][name]["assertDelegate"]>
-        )
-    } &
-    {
-        [name in OptionalColumnNames<TableT>]? : (
-            ReturnType<TableT["columns"][name]["assertDelegate"]>
-        )
-    }
-);
-export async function insertAndFetch<
-    TableT extends ITable & { insertAllowed : true }
-> (
-    connection : IConnection & TableUtil.AssertHasCandidateKey<TableT>,
-    table : TableT,
-    rawInsertRow : InsertRow<TableT>
-) {
+const query_1 = require("../query");
+const insert_1 = require("../../../insert");
+const informationSchema = require("../../../information-schema");
+async function insertAndFetch(connection, table, rawInsertRow) {
     if (table.parents.length == 0) {
-        return InsertUtil.insertAndFetch(
-            connection,
-            table,
-            rawInsertRow as any
-        );
+        return insert_1.InsertUtil.insertAndFetch(connection, table, rawInsertRow);
     }
-    let insertRow : any = {...rawInsertRow};
-    for (let g of uniqueGeneratedColumnNames(table)) {
-        const column = tryGetGeneratedNonAutoIncrementColumn(table, g);
+    let insertRow = { ...rawInsertRow };
+    for (let g of query_1.uniqueGeneratedColumnNames(table)) {
+        const column = query_1.tryGetGeneratedNonAutoIncrementColumn(table, g);
         if (column == undefined) {
             continue;
-        } else {
-            const generationExpression = await informationSchema.fetchGenerationExpression(
-                connection,
-                column
-            );
+        }
+        else {
+            const generationExpression = await informationSchema.fetchGenerationExpression(connection, column);
             //This will be a `string`.
             //It's up to the individual assert delegates to
             //cast this to the appropriate data types.
             insertRow[g] = generationExpression;
         }
     }
-
     return connection.transactionIfNotInOne(async (connection) => {
         //In the event of diamond inheritance,
         //don't insert multiple rows for the base type
-        const alreadyInserted = new Set<string>();
-
+        const alreadyInserted = new Set();
         for (let p of table.parents) {
             if (alreadyInserted.has(p.alias)) {
                 continue;
             }
             alreadyInserted.add(p.alias);
-
-            const result : any = await InsertUtil.insertAndFetch(
-                connection as any,
-                p as any,
-                insertRow as any
-            );
+            const result = await insert_1.InsertUtil.insertAndFetch(connection, p, insertRow);
             insertRow = {
-                ...(insertRow as any),
+                ...insertRow,
                 //We want to overwrite any Expr<> instances with
                 //actual values, if applicable
                 ...result,
@@ -92,20 +40,12 @@ export async function insertAndFetch<
         }
         //We *should* have gotten rid of any Expr<> instances by now
         const result = {
-            ...(insertRow as any),
-            ...(
-                await InsertUtil.insertAndFetch(
-                    connection as any,
-                    table,
-                    insertRow as any
-                )
-            ) as any,
+            ...insertRow,
+            ...(await insert_1.InsertUtil.insertAndFetch(connection, table, insertRow)),
         };
         //One final effort to check we really have all the correct values
-        return assertDelegate(table)(
-            `${table.alias}`,
-            result
-        );
+        return query_1.assertDelegate(table)(`${table.alias}`, result);
     });
-}*/ 
+}
+exports.insertAndFetch = insertAndFetch;
 //# sourceMappingURL=insert-and-fetch.js.map

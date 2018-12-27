@@ -8,6 +8,18 @@ export type ColumnNames<TableT extends ITable> = (
         TableT["parents"][number]["columns"]
     >
 );
+export function uniqueColumnNames (table : ITable) : string[] {
+    const result = new Set<string>();
+    for (let c in table.columns) {
+        result.add(c);
+    }
+    for (let p of table.parents) {
+        for (let c in p.columns) {
+            result.add(c);
+        }
+    }
+    return [...result];
+}
 export type GeneratedColumnNames<TableT extends ITable> = (
     (TableT|TableT["parents"][number])["generated"][number]
 );
