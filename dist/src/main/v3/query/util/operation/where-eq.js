@@ -13,9 +13,6 @@ function whereEq(query, delegate, value) {
     if (query._joins == undefined) {
         throw new Error(`Cannot use whereEq() before FROM clause`);
     }
-    if (query._selects != undefined) {
-        throw new Error(`Cannot use whereEq() after SELECT clause`);
-    }
     if (value === null) {
         throw new Error(`Value to compare against cannot be null`);
     }

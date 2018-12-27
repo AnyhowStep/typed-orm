@@ -3,9 +3,5 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(require("./execution"));
-__export(require("./columns"));
-__export(require("./key-column-usage"));
-__export(require("./statistics"));
-__export(require("./tables"));
+__export(require("./fetch-generation-expression"));
 //# sourceMappingURL=index.js.map

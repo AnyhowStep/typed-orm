@@ -175,7 +175,7 @@ export declare const COLUMNS: import("../table").Table<{
     readonly autoIncrement: undefined;
     readonly id: undefined;
     readonly primaryKey: undefined;
-    readonly candidateKeys: [];
+    readonly candidateKeys: ("TABLE_SCHEMA" | "TABLE_NAME" | "COLUMN_NAME")[][];
     readonly generated: [];
     readonly isNullable: ("COLUMN_DEFAULT" | "CHARACTER_MAXIMUM_LENGTH" | "CHARACTER_OCTET_LENGTH" | "NUMERIC_PRECISION" | "NUMERIC_SCALE" | "DATETIME_PRECISION" | "CHARACTER_SET_NAME" | "COLLATION_NAME")[];
     readonly hasExplicitDefaultValue: [];

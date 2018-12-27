@@ -1,12 +1,12 @@
 import * as sd from "schema-decorator";
 import { Query } from "../../query";
-import { AfterFromClause, BeforeSelectClause } from "../predicate";
+import { AfterFromClause } from "../predicate";
 import { ColumnRefUtil } from "../../../column-ref";
 import { ColumnUtil, Column } from "../../../column";
 import { IAnonymousTypedExpr } from "../../../expr";
 import { JoinArrayUtil } from "../../../join-array";
-export declare type WhereIsNotNullDelegate<QueryT extends AfterFromClause & BeforeSelectClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromJoinArray<QueryT["_joins"]>>) => (ColumnUtil.ExtractNullable<ColumnUtil.FromColumnRef<ColumnRefUtil.FromJoinArray<QueryT["_joins"]>>>));
-export declare type WhereIsNotNull<QueryT extends AfterFromClause & BeforeSelectClause, DelegateT extends WhereIsNotNullDelegate<QueryT>> = (Query<{
+export declare type WhereIsNotNullDelegate<QueryT extends AfterFromClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromJoinArray<QueryT["_joins"]>>) => (ColumnUtil.ExtractNullable<ColumnUtil.FromColumnRef<ColumnRefUtil.FromJoinArray<QueryT["_joins"]>>>));
+export declare type WhereIsNotNull<QueryT extends AfterFromClause, DelegateT extends WhereIsNotNullDelegate<QueryT>> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];
     readonly _joins: (JoinArrayUtil.ReplaceColumn<QueryT["_joins"], Column<{
@@ -26,5 +26,5 @@ export declare type WhereIsNotNull<QueryT extends AfterFromClause & BeforeSelect
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare function whereIsNotNull<QueryT extends AfterFromClause & BeforeSelectClause, DelegateT extends WhereIsNotNullDelegate<QueryT>>(query: QueryT, delegate: DelegateT): WhereIsNotNull<QueryT, DelegateT>;
+export declare function whereIsNotNull<QueryT extends AfterFromClause, DelegateT extends WhereIsNotNullDelegate<QueryT>>(query: QueryT, delegate: DelegateT): WhereIsNotNull<QueryT, DelegateT>;
 //# sourceMappingURL=where-is-not-null.d.ts.map

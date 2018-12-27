@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import {Query} from "../../query";
-import {AfterFromClause, BeforeSelectClause} from "../predicate";
+import {AfterFromClause} from "../predicate";
 import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil, Column} from "../../../column";
 import {IAnonymousTypedExpr} from "../../../expr";
@@ -13,7 +13,7 @@ import {RawExprUtil} from "../../../raw-expr";
 import {IJoin} from "../../../join";
 
 export type WhereNullSafeEqDelegate<
-    QueryT extends AfterFromClause & BeforeSelectClause
+    QueryT extends AfterFromClause
 > = (
     (
         columns : ColumnRefUtil.ToConvenient<
@@ -26,7 +26,7 @@ export type WhereNullSafeEqDelegate<
     )
 );
 export type WhereNullSafeEq<
-    QueryT extends AfterFromClause & BeforeSelectClause,
+    QueryT extends AfterFromClause,
     DelegateT extends WhereNullSafeEqDelegate<QueryT>,
     ValueT extends PrimitiveExpr
 > = (
@@ -61,7 +61,7 @@ export type WhereNullSafeEq<
 );
 
 export type AssertValidNullSafeEqTarget<
-    QueryT extends AfterFromClause & BeforeSelectClause,
+    QueryT extends AfterFromClause,
     DelegateT extends WhereNullSafeEqDelegate<QueryT>,
     ValueT extends PrimitiveExpr
 > = (
@@ -78,7 +78,7 @@ export type AssertValidNullSafeEqTarget<
 );
 
 export function whereNullSafeEq<
-    QueryT extends AfterFromClause & BeforeSelectClause,
+    QueryT extends AfterFromClause,
     DelegateT extends WhereNullSafeEqDelegate<QueryT>,
     ValueT extends PrimitiveExpr
 > (
@@ -88,9 +88,6 @@ export function whereNullSafeEq<
 ) : WhereNullSafeEq<QueryT, DelegateT, ValueT> {
     if (query._joins == undefined) {
         throw new Error(`Cannot use whereNullSafeEq() before FROM clause`);
-    }
-    if (query._selects != undefined) {
-        throw new Error(`Cannot use whereNullSafeEq() after SELECT clause`);
     }
 
     const queryRef = ColumnRefUtil.fromJoinArray(query._joins as QueryT["_joins"]);

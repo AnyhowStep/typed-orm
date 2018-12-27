@@ -26,6 +26,11 @@ exports.COLUMNS = table_1.table("COLUMNS", {
     //Seems to be an empty string when there is no generation expression
     GENERATION_EXPRESSION: sd.string(),
 })
+    .addCandidateKey(c => [
+    c.TABLE_SCHEMA,
+    c.TABLE_NAME,
+    c.COLUMN_NAME,
+])
     .disallowInsert()
     .disallowDelete()
     .setImmutable()

@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import {Query} from "../../query";
-import {AfterFromClause, BeforeSelectClause} from "../predicate";
+import {AfterFromClause} from "../predicate";
 import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil, Column} from "../../../column";
 import {IAnonymousTypedExpr} from "../../../expr";
@@ -10,7 +10,7 @@ import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
 import {isNotNull} from "../../../expr-library";
 
 export type WhereIsNotNullDelegate<
-    QueryT extends AfterFromClause & BeforeSelectClause
+    QueryT extends AfterFromClause
 > = (
     (
         columns : ColumnRefUtil.ToConvenient<
@@ -25,7 +25,7 @@ export type WhereIsNotNullDelegate<
     )
 );
 export type WhereIsNotNull<
-    QueryT extends AfterFromClause & BeforeSelectClause,
+    QueryT extends AfterFromClause,
     DelegateT extends WhereIsNotNullDelegate<QueryT>
 > = (
     Query<{
@@ -64,7 +64,7 @@ export type WhereIsNotNull<
 );
 
 export function whereIsNotNull<
-    QueryT extends AfterFromClause & BeforeSelectClause,
+    QueryT extends AfterFromClause,
     DelegateT extends WhereIsNotNullDelegate<QueryT>
 > (
     query : QueryT,
@@ -72,9 +72,6 @@ export function whereIsNotNull<
 ) : WhereIsNotNull<QueryT, DelegateT> {
     if (query._joins == undefined) {
         throw new Error(`Cannot use whereIsNotNull() before FROM clause`);
-    }
-    if (query._selects != undefined) {
-        throw new Error(`Cannot use whereIsNotNull() after SELECT clause`);
     }
     const queryRef = ColumnRefUtil.fromJoinArray(query._joins as QueryT["_joins"]);
     const rawColumn : ReturnType<DelegateT> = delegate(

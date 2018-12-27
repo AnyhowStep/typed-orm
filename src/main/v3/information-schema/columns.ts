@@ -37,6 +37,11 @@ export const COLUMNS = table(
         GENERATION_EXPRESSION : sd.string(),
     }
 )
+    .addCandidateKey(c => [
+        c.TABLE_SCHEMA,
+        c.TABLE_NAME,
+        c.COLUMN_NAME,
+    ])
     .disallowInsert()
     .disallowDelete()
     .setImmutable()

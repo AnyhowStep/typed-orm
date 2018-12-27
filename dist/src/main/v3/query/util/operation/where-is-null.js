@@ -12,9 +12,6 @@ function whereIsNull(query, delegate) {
     if (query._joins == undefined) {
         throw new Error(`Cannot use whereIsNull() before FROM clause`);
     }
-    if (query._selects != undefined) {
-        throw new Error(`Cannot use whereIsNull() after SELECT clause`);
-    }
     const queryRef = column_ref_1.ColumnRefUtil.fromJoinArray(query._joins);
     const rawColumn = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef));
     column_identifier_ref_1.ColumnIdentifierRefUtil.assertHasColumnIdentifier(queryRef, rawColumn);

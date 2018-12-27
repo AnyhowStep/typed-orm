@@ -1331,64 +1331,64 @@ export class Query<DataT extends QueryData> {
 
     whereIsNull<
         DelegateT extends QueryUtil.WhereIsNullDelegate<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>
+            Extract<this, QueryUtil.AfterFromClause>
         >
     > (
-        this : Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+        this : Extract<this, QueryUtil.AfterFromClause>,
         delegate : DelegateT
     ) : (
         QueryUtil.WhereIsNull<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            Extract<this, QueryUtil.AfterFromClause>,
             DelegateT
         >
     ) {
         return QueryUtil.whereIsNull<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            Extract<this, QueryUtil.AfterFromClause>,
             DelegateT
         >(this, delegate)
     }
 
     whereIsNotNull<
         DelegateT extends QueryUtil.WhereIsNotNullDelegate<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>
+            Extract<this, QueryUtil.AfterFromClause>
         >
     > (
-        this : Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+        this : Extract<this, QueryUtil.AfterFromClause>,
         delegate : DelegateT
     ) : (
         QueryUtil.WhereIsNotNull<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            Extract<this, QueryUtil.AfterFromClause>,
             DelegateT
         >
     ) {
         return QueryUtil.whereIsNotNull<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            Extract<this, QueryUtil.AfterFromClause>,
             DelegateT
         >(this, delegate);
     }
 
     whereEq<
         DelegateT extends QueryUtil.WhereEqDelegate<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>
+            Extract<this, QueryUtil.AfterFromClause>
         >,
         ValueT extends NonNullPrimitiveExpr
     > (
-        this : Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+        this : Extract<this, QueryUtil.AfterFromClause>,
         delegate : DelegateT,
         value : QueryUtil.AssertValidEqTarget<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            Extract<this, QueryUtil.AfterFromClause>,
             DelegateT,
             ValueT
         >
     ) : (
         QueryUtil.WhereEq<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            Extract<this, QueryUtil.AfterFromClause>,
             DelegateT,
             ValueT
         >
     ) {
         return QueryUtil.whereEq<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            Extract<this, QueryUtil.AfterFromClause>,
             DelegateT,
             ValueT
         >(this, delegate, value);
@@ -1396,26 +1396,26 @@ export class Query<DataT extends QueryData> {
 
     whereNullSafeEq<
         DelegateT extends QueryUtil.WhereNullSafeEqDelegate<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>
+            Extract<this, QueryUtil.AfterFromClause>
         >,
         ValueT extends PrimitiveExpr
     > (
-        this : Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+        this : Extract<this, QueryUtil.AfterFromClause>,
         delegate : DelegateT,
         value : QueryUtil.AssertValidNullSafeEqTarget<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            Extract<this, QueryUtil.AfterFromClause>,
             DelegateT,
             ValueT
         >
     ) : (
         QueryUtil.WhereNullSafeEq<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            Extract<this, QueryUtil.AfterFromClause>,
             DelegateT,
             ValueT
         >
     ) {
         return QueryUtil.whereNullSafeEq<
-            Extract<this, QueryUtil.AfterFromClause & QueryUtil.BeforeSelectClause>,
+            Extract<this, QueryUtil.AfterFromClause>,
             DelegateT,
             ValueT
         >(this, delegate, value);

@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import {Query} from "../../query";
-import {AfterFromClause, BeforeSelectClause} from "../predicate";
+import {AfterFromClause} from "../predicate";
 import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil, Column} from "../../../column";
 import {IAnonymousTypedExpr} from "../../../expr";
@@ -13,7 +13,7 @@ import {RawExprUtil} from "../../../raw-expr";
 import {IJoin} from "../../../join";
 
 export type WhereEqDelegate<
-    QueryT extends AfterFromClause & BeforeSelectClause
+    QueryT extends AfterFromClause
 > = (
     (
         columns : ColumnRefUtil.ToConvenient<
@@ -28,7 +28,7 @@ export type WhereEqDelegate<
     )
 );
 export type WhereEq<
-    QueryT extends AfterFromClause & BeforeSelectClause,
+    QueryT extends AfterFromClause,
     DelegateT extends WhereEqDelegate<QueryT>,
     ValueT extends NonNullPrimitiveExpr
 > = (
@@ -63,7 +63,7 @@ export type WhereEq<
 );
 
 export type AssertValidEqTarget<
-    QueryT extends AfterFromClause & BeforeSelectClause,
+    QueryT extends AfterFromClause,
     DelegateT extends WhereEqDelegate<QueryT>,
     ValueT extends NonNullPrimitiveExpr
 > = (
@@ -80,7 +80,7 @@ export type AssertValidEqTarget<
 );
 
 export function whereEq<
-    QueryT extends AfterFromClause & BeforeSelectClause,
+    QueryT extends AfterFromClause,
     DelegateT extends WhereEqDelegate<QueryT>,
     ValueT extends NonNullPrimitiveExpr
 > (
@@ -90,9 +90,6 @@ export function whereEq<
 ) : WhereEq<QueryT, DelegateT, ValueT> {
     if (query._joins == undefined) {
         throw new Error(`Cannot use whereEq() before FROM clause`);
-    }
-    if (query._selects != undefined) {
-        throw new Error(`Cannot use whereEq() after SELECT clause`);
     }
     if (value === null) {
         throw new Error(`Value to compare against cannot be null`);
