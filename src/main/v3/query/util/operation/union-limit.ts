@@ -22,15 +22,18 @@ export type UnionLimit<
         readonly _unions : QueryT["_unions"],
         readonly _unionOrders : QueryT["_unionOrders"],
         readonly _unionLimit : (
-            QueryT["_unionLimit"] extends LimitData ?
-            {
-                readonly maxRowCount : MaxRowCountT,
-                readonly offset : QueryT["_unionLimit"]["offset"],
-            } :
-            {
-                readonly maxRowCount : MaxRowCountT,
-                readonly offset : 0,
-            }
+            Extract<
+                QueryT["_unionLimit"] extends LimitData ?
+                {
+                    readonly maxRowCount : MaxRowCountT,
+                    readonly offset : QueryT["_unionLimit"]["offset"],
+                } :
+                {
+                    readonly maxRowCount : MaxRowCountT,
+                    readonly offset : 0,
+                },
+                LimitData
+            >
         ),
 
         readonly _mapDelegate : QueryT["_mapDelegate"],

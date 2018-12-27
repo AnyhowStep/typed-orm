@@ -8,6 +8,7 @@ __export(require("./cast"));
 __export(require("./comparison"));
 __export(require("./control-flow"));
 __export(require("./date-time"));
+__export(require("./information"));
 __export(require("./math"));
 __export(require("./string"));
 __export(require("./sub-query"));

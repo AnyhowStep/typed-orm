@@ -12,13 +12,13 @@ export declare type UnionLimit<QueryT extends IQuery, MaxRowCountT extends numbe
     readonly _limit: QueryT["_limit"];
     readonly _unions: QueryT["_unions"];
     readonly _unionOrders: QueryT["_unionOrders"];
-    readonly _unionLimit: (QueryT["_unionLimit"] extends LimitData ? {
+    readonly _unionLimit: (Extract<QueryT["_unionLimit"] extends LimitData ? {
         readonly maxRowCount: MaxRowCountT;
         readonly offset: QueryT["_unionLimit"]["offset"];
     } : {
         readonly maxRowCount: MaxRowCountT;
         readonly offset: 0;
-    });
+    }, LimitData>);
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function unionLimit<QueryT extends IQuery, MaxRowCountT extends number>(query: QueryT, maxRowCount: MaxRowCountT): UnionLimit<QueryT, MaxRowCountT>;
