@@ -1,0 +1,9 @@
+export declare const hasExplicitDefaultValue_row0: true;
+export declare const hasExplicitDefaultValue_row1: true;
+export declare const hasExplicitDefaultValue_row2: true;
+export declare const hasExplicitDefaultValue_row3: false;
+export declare const hasExplicitDefaultValue_row4: false;
+export declare const hasExplicitDefaultValue_row5: false;
+export declare const hasExplicitDefaultValue_row6: true;
+export declare const hasExplicitDefaultValue_row7: false;
+export declare const hasExplicitDefaultValue_row8: false;
