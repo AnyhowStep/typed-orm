@@ -5,9 +5,9 @@ import {pool} from "../../pool";
 
 tape(__filename, async (t) => {
     const result = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS bigintTable");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS bigintTable");
         await connection.rawQuery(`
-            CREATE TABLE bigintTable (
+            CREATE TEMPORARY TABLE bigintTable (
                 value BIGINT NOT NULL
             )
         `);

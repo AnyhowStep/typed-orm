@@ -4,9 +4,9 @@ import {pool} from "../../pool";
 
 tape(__filename, async (t) => {
     const result = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS autoIdIgnore");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS autoIdIgnore");
         await connection.rawQuery(`
-            CREATE TABLE autoIdIgnore (
+            CREATE TEMPORARY TABLE autoIdIgnore (
                 \`someId\` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 \`other\` BIGINT UNSIGNED NOT NULL,
                 PRIMARY KEY(\`someId\`),

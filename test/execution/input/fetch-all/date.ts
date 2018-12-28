@@ -31,9 +31,9 @@ tape(__filename, async (t) => {
 
 tape(__filename, async (t) => {
     const result = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS dateTable");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS dateTable");
         await connection.rawQuery(`
-            CREATE TABLE dateTable (
+            CREATE TEMPORARY TABLE dateTable (
                 value DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
             )
         `);
@@ -57,9 +57,9 @@ tape(__filename, async (t) => {
 
 tape(__filename, async (t) => {
     const result = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS dateTable3");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS dateTable3");
         await connection.rawQuery(`
-            CREATE TABLE dateTable3 (
+            CREATE TEMPORARY TABLE dateTable3 (
                 value3 DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
             )
         `);

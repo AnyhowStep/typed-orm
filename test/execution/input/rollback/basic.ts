@@ -5,9 +5,9 @@ import {pool} from "../../pool";
 
 tape(__filename, async (t) => {
     const result = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS tableA");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS tableA");
         await connection.rawQuery(`
-            CREATE TABLE tableA (
+            CREATE TEMPORARY TABLE tableA (
                 tableAId INT,
                 name VARCHAR(256)
             )

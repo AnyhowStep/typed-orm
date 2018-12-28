@@ -5,10 +5,10 @@ import {pool} from "../../../pool";
 
 tape(__filename, async (t) => {
     const result = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS child");
-        await connection.rawQuery("DROP TABLE IF EXISTS parent");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS child");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS parent");
         await connection.rawQuery(`
-            CREATE TABLE parent (
+            CREATE TEMPORARY TABLE parent (
                 \`someId\` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 sharedValue VARCHAR(255) NOT NULL,
                 parentSpecific VARCHAR(255) NOT NULL,
@@ -19,7 +19,7 @@ tape(__filename, async (t) => {
             ) AUTO_INCREMENT = 1;
         `);
         await connection.rawQuery(`
-            CREATE TABLE child (
+            CREATE TEMPORARY TABLE child (
                 \`someId\` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 sharedValue VARCHAR(255) NOT NULL,
                 childSpecific VARCHAR(255) NOT NULL,

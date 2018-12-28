@@ -5,9 +5,9 @@ import {pool} from "../../pool";
 
 tape(__filename + "-bigint-always-received-as-string", async (t) => {
     const result = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS bigintTable");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS bigintTable");
         await connection.rawQuery(`
-            CREATE TABLE bigintTable (
+            CREATE TEMPORARY TABLE bigintTable (
                 value BIGINT NOT NULL
             )
         `);
@@ -30,9 +30,9 @@ tape(__filename + "-bigint-always-received-as-string", async (t) => {
 
 tape(__filename + "-cast-to-bigint-on-client", async (t) => {
     const result = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS bigintTable");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS bigintTable");
         await connection.rawQuery(`
-            CREATE TABLE bigintTable (
+            CREATE TEMPORARY TABLE bigintTable (
                 value BIGINT NOT NULL
             )
         `);
@@ -56,9 +56,9 @@ tape(__filename + "-cast-to-bigint-on-client", async (t) => {
 
 tape(__filename + "-int-and-smaller-always-received-as-number", async (t) => {
     const result = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS unsignedIntTable");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS unsignedIntTable");
         await connection.rawQuery(`
-            CREATE TABLE unsignedIntTable (
+            CREATE TEMPORARY TABLE unsignedIntTable (
                 value INT UNSIGNED NOT NULL
             )
         `);
@@ -81,9 +81,9 @@ tape(__filename + "-int-and-smaller-always-received-as-number", async (t) => {
 
 tape(__filename + "-count(*)-returns-bigint-string", async (t) => {
     const {results} = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS t");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS t");
         await connection.rawQuery(`
-            CREATE TABLE t (
+            CREATE TEMPORARY TABLE t (
                 value INT UNSIGNED NOT NULL
             )
         `);
@@ -101,9 +101,9 @@ tape(__filename + "-count(*)-returns-bigint-string", async (t) => {
 
 tape(__filename + "-boolean-returns-bigint-string", async (t) => {
     const {results} = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS t");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS t");
         await connection.rawQuery(`
-            CREATE TABLE t (
+            CREATE TEMPORARY TABLE t (
                 value INT UNSIGNED NOT NULL
             )
         `);
@@ -170,9 +170,9 @@ tape(__filename + "-decimal-literal", async (t) => {
 
 tape(__filename + "-double-column-becomes-number", async (t) => {
     const {results} = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS d");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS d");
         await connection.rawQuery(`
-            CREATE TABLE d (
+            CREATE TEMPORARY TABLE d (
                 value DOUBLE NOT NULL
             )
         `);

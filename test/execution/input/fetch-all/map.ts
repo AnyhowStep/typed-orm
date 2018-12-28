@@ -5,18 +5,18 @@ import {pool} from "../../pool";
 
 tape(__filename, async (t) => {
     const result = await pool.acquire(async (connection) => {
-        await connection.rawQuery("DROP TABLE IF EXISTS tableA");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS tableA");
         await connection.rawQuery(`
-            CREATE TABLE tableA (
+            CREATE TEMPORARY TABLE tableA (
                 tableAId INT,
                 name VARCHAR(256)
             )
         `);
         await connection.rawQuery("INSERT INTO tableA (tableAId, name) VALUES (1, 'hello')");
         await connection.rawQuery("INSERT INTO tableA (tableAId, name) VALUES (2, 'goodbye')");
-        await connection.rawQuery("DROP TABLE IF EXISTS tableB");
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS tableB");
         await connection.rawQuery(`
-            CREATE TABLE tableB (
+            CREATE TEMPORARY TABLE tableB (
                 tableBId INT,
                 name VARCHAR(256)
             )
