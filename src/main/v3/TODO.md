@@ -8,10 +8,10 @@
 + Implement replaceTable()
 
 + INSERT statements
-  + Polymorphic Insert
   + ON DUPLICATE KEY UPDATE
   + INSERT ... SELECT
 + UPDATE statements
+  + Polymorphic Update
 + DELETE statements
 
 + Validate table declarations

@@ -12,6 +12,9 @@ tape(__filename, async (t) => {
                 \`someId\` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 sharedValue VARCHAR(255) NOT NULL,
                 parentSpecific VARCHAR(255) NOT NULL,
+                \`generatedParentOnly\` BIGINT UNSIGNED AS (888) STORED NOT NULL,
+                generatedParentRequiredChild BIGINT UNSIGNED AS (123) STORED NOT NULL,
+                generatedChildRequiredParent BIGINT UNSIGNED NOT NULL,
                 PRIMARY KEY(\`someId\`)
             ) AUTO_INCREMENT = 1;
         `);
@@ -21,7 +24,9 @@ tape(__filename, async (t) => {
                 sharedValue VARCHAR(255) NOT NULL,
                 childSpecific VARCHAR(255) NOT NULL,
                 nullableChild VARCHAR(255) NULL,
-                \`generated\` BIGINT UNSIGNED AS (99) STORED NOT NULL,
+                \`generatedChildOnly\` BIGINT UNSIGNED AS (99) STORED NOT NULL,
+                generatedParentRequiredChild BIGINT UNSIGNED NOT NULL,
+                generatedChildRequiredParent BIGINT UNSIGNED AS (456) STORED NOT NULL,
                 PRIMARY KEY(\`someId\`)
             );
         `);
@@ -31,8 +36,15 @@ tape(__filename, async (t) => {
                 someId : o.bigint(),
                 sharedValue : sd.string(),
                 parentSpecific : sd.string(),
+                generatedParentOnly : o.bigint(),
+                generatedParentRequiredChild : o.bigint(),
+                generatedChildRequiredParent : o.bigint()
             }
-        ).setAutoIncrement(c => c.someId);
+        ).setAutoIncrement(
+            c => c.someId
+        ).addGenerated(
+            c => [c.generatedParentOnly, c.generatedParentRequiredChild]
+        );
         const child = o.table(
             "child",
             {
@@ -40,12 +52,15 @@ tape(__filename, async (t) => {
                 sharedValue : sd.string(),
                 childSpecific : sd.string(),
                 nullableChild : sd.nullable(sd.string()),
-                generated : o.bigint(),
+                generatedChildOnly : o.bigint(),
+                generatedParentRequiredChild : o.bigint(),
+                generatedChildRequiredParent : o.bigint(),
+
             }
         ).setId(
             c => c.someId
         ).addGenerated(
-            c => [c.generated]
+            c => [c.generatedChildOnly, c.generatedChildRequiredParent]
         ).addParent(
             parent
         );
@@ -68,7 +83,10 @@ tape(__filename, async (t) => {
             parentSpecific : "parentOnly",
             childSpecific : "childOnly",
             nullableChild : null,
-            generated : 99n
+            generatedChildOnly : 99n,
+            generatedParentOnly : 888n,
+            generatedParentRequiredChild : 123n,
+            generatedChildRequiredParent : 456n,
         }
     );
 
