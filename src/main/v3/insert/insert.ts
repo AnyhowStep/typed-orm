@@ -39,9 +39,9 @@ export enum InsertModifier {
 }
 
 export interface InsertData {
-    _table : ITable & { insertAllowed : true },
-    _values : InsertRow<ITable>[]|undefined,
-    _modifier : InsertModifier|undefined,
+    readonly _table : ITable & { insertAllowed : true },
+    readonly _values : InsertRow<ITable>[]|undefined,
+    readonly _modifier : InsertModifier|undefined,
 }
 
 export interface IInsert<DataT extends InsertData=InsertData> {

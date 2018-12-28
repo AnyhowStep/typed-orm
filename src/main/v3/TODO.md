@@ -16,6 +16,7 @@
 
 + Validate table declarations
 + Log table pattern
++ START TRANSACTION READ ONLY
 
 + String collation safety
   + _utf8'some string' COLLATE utf8_danish_ci

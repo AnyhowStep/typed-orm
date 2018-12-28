@@ -13,6 +13,7 @@ import {RawExpr, RawExprUtil} from "../raw-expr";
 import {PrimitiveExpr, NonNullPrimitiveExpr} from "../primitive-expr";
 import {IJoinDeclaration} from "../join-declaration";
 import {IConnection} from "../execution";
+import {InsertSelectRowDelegate} from "../insert-select";
 
 export interface UnionQuery {
     //Defaults to true
@@ -1591,6 +1592,69 @@ export class Query<DataT extends QueryData> {
     ) : this {
         QueryUtil.printSql(this);
         return this;
+    }
+    insertIgnoreInto<
+        TableT extends ITable & { insertAllowed : true }
+    > (
+        this : Extract<this, QueryUtil.AfterSelectClause>,
+        table : TableT,
+        delegate : InsertSelectRowDelegate<
+            Extract<this, QueryUtil.AfterSelectClause>,
+            TableT
+        >
+    ) : (
+        QueryUtil.InsertIgnoreInto<
+            Extract<this, QueryUtil.AfterSelectClause>,
+            TableT
+        >
+    ) {
+        return QueryUtil.insertIgnoreInto(
+            this,
+            table,
+            delegate
+        );
+    }
+    insertInto<
+        TableT extends ITable & { insertAllowed : true }
+    > (
+        this : Extract<this, QueryUtil.AfterSelectClause>,
+        table : TableT,
+        delegate : InsertSelectRowDelegate<
+            Extract<this, QueryUtil.AfterSelectClause>,
+            TableT
+        >
+    ) : (
+        QueryUtil.InsertInto<
+            Extract<this, QueryUtil.AfterSelectClause>,
+            TableT
+        >
+    ) {
+        return QueryUtil.insertInto(
+            this,
+            table,
+            delegate
+        );
+    }
+    replaceInto<
+        TableT extends ITable & { insertAllowed : true }
+    > (
+        this : Extract<this, QueryUtil.AfterSelectClause>,
+        table : TableT,
+        delegate : InsertSelectRowDelegate<
+            Extract<this, QueryUtil.AfterSelectClause>,
+            TableT
+        >
+    ) : (
+        QueryUtil.ReplaceInto<
+            Extract<this, QueryUtil.AfterSelectClause>,
+            TableT
+        >
+    ) {
+        return QueryUtil.replaceInto(
+            this,
+            table,
+            delegate
+        );
     }
 }
 

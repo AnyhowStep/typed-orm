@@ -230,6 +230,15 @@ class Query {
         QueryUtil.printSql(this);
         return this;
     }
+    insertIgnoreInto(table, delegate) {
+        return QueryUtil.insertIgnoreInto(this, table, delegate);
+    }
+    insertInto(table, delegate) {
+        return QueryUtil.insertInto(this, table, delegate);
+    }
+    replaceInto(table, delegate) {
+        return QueryUtil.replaceInto(this, table, delegate);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {
