@@ -17,7 +17,7 @@ export function fetchGenerationExpression (connection : IConnection, column : IC
             column.tableAlias
         )
         .whereEq(
-            c => c.COLUMN_COMMENT,
+            c => c.COLUMN_NAME,
             column.name
         )
         .fetchValue(connection);

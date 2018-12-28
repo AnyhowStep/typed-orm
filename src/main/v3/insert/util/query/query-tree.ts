@@ -15,6 +15,10 @@ export function queryTreeRow (
         if (result.length > 0) {
             result.push(",");
         }
+        if (insert._table.generated.indexOf(columnName) >= 0) {
+            result.push("DEFAULT");
+            continue;
+        }
         const value = (row as any)[columnName];
         if (value === undefined) {
             if (TableUtil.isRequired(insert._table, columnName)) {

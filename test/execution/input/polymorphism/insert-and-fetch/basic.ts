@@ -13,7 +13,7 @@ tape(__filename, async (t) => {
                 sharedValue VARCHAR(255) NOT NULL,
                 parentSpecific VARCHAR(255) NOT NULL,
                 PRIMARY KEY(\`someId\`)
-            ) AUTO_INCREMENT = 0;
+            ) AUTO_INCREMENT = 1;
         `);
         await connection.rawQuery(`
             CREATE TABLE child (
@@ -21,6 +21,7 @@ tape(__filename, async (t) => {
                 sharedValue VARCHAR(255) NOT NULL,
                 childSpecific VARCHAR(255) NOT NULL,
                 nullableChild VARCHAR(255) NULL,
+                \`generated\` BIGINT UNSIGNED AS (99) STORED NOT NULL,
                 PRIMARY KEY(\`someId\`)
             );
         `);
@@ -39,15 +40,17 @@ tape(__filename, async (t) => {
                 sharedValue : sd.string(),
                 childSpecific : sd.string(),
                 nullableChild : sd.nullable(sd.string()),
+                generated : o.bigint(),
             }
-        ).setId(c => c.someId)
-        .addParent(parent);
-        const inil : o.PolymorphismUtil.IsNullable<typeof child, "childSpecific"> = null as any;
-        const hedv : o.PolymorphismUtil.HasExplicitDefaultValue<typeof child, "childSpecific"> = null as any;
-        const rcn : o.PolymorphismUtil.RequiredColumnNames<typeof child> = null as any;
-        const ocn : o.PolymorphismUtil.OptionalColumnNames<typeof child> = null as any;
-        const ir : o.PolymorphismUtil.InsertRowLiteral<typeof child> = null as any;
-        const insertResult = await o.PolymorphismUtil.insertAndFetch(
+        ).setId(
+            c => c.someId
+        ).addGenerated(
+            c => [c.generated]
+        ).addParent(
+            parent
+        );
+
+        return o.PolymorphismUtil.insertAndFetch(
             connection,
             child,
             {
@@ -56,26 +59,18 @@ tape(__filename, async (t) => {
                 childSpecific : "childOnly",
             }
         );
-        t.deepEqual(
-            insertResult,
-            {
-                fieldCount: 0,
-                affectedRows: 1,
-                insertId: 18446744073709551614n,
-                serverStatus: 2,
-                warningCount: 0,
-                message: "",
-                protocol41: true,
-                changedRows: 0,
-                someId : 18446744073709551614n,
-            }
-        );
-        return o.from(autoId)
-            .select(c => [c])
-            .fetchAll(connection);
     });
-    t.deepEqual(result.length, 1);
-    t.deepEqual(result[0].someId, 18446744073709551614n);
+    t.deepEqual(
+        result,
+        {
+            someId : 1n,
+            sharedValue : "thisIsShared",
+            parentSpecific : "parentOnly",
+            childSpecific : "childOnly",
+            nullableChild : null,
+            generated : 99n
+        }
+    );
 
     t.end();
 });
