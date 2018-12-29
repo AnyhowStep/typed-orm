@@ -10,12 +10,11 @@
 + INSERT statements
   + ON DUPLICATE KEY UPDATE
 + UPDATE statements
-  + Single table update
-  + Multi-table update
   + Polymorphic Update
 + DELETE statements
   + Single table delete
   + Polymorphic delete
++ CTE
 
 + Validate table declarations
 + Log table pattern
