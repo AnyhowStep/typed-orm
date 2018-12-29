@@ -1,6 +1,7 @@
 import * as UpdateUtil from "./util";
 import { RawExpr } from "../raw-expr";
 import { PrimitiveExpr } from "../primitive-expr";
+import { IConnection, UpdateResult } from "../execution";
 export declare enum UpdateModifier {
     IGNORE = "IGNORE"
 }
@@ -24,5 +25,7 @@ export declare class Update<DataT extends UpdateData> implements IUpdate<DataT> 
     readonly _assignments: DataT["_assignments"];
     readonly _modifier: DataT["_modifier"];
     constructor(data: DataT);
+    execute(this: Extract<this, UpdateUtil.ExecutableUpdate>, connection: IConnection): (Promise<UpdateResult>);
+    printSql(this: Extract<this, UpdateUtil.ExecutableUpdate>): this;
 }
 //# sourceMappingURL=update.d.ts.map

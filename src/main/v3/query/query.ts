@@ -14,6 +14,7 @@ import {PrimitiveExpr, NonNullPrimitiveExpr} from "../primitive-expr";
 import {IJoinDeclaration} from "../join-declaration";
 import {IConnection} from "../execution";
 import {InsertSelectRowDelegate} from "../insert-select";
+import { UpdateUtil } from "../update";
 
 export interface UnionQuery {
     //Defaults to true
@@ -1655,6 +1656,27 @@ export class Query<DataT extends QueryData> {
             table,
             delegate
         );
+    }
+    set<
+        DelegateT extends UpdateUtil.SetDelegate<
+            Extract<this, UpdateUtil.UpdatableQuery>
+        >
+    > (
+        this : (
+            Extract<this, UpdateUtil.UpdatableQuery> &
+            UpdateUtil.AssertValidSetDelegate_Hack<
+                Extract<this, UpdateUtil.UpdatableQuery>,
+                DelegateT
+            >
+        ),
+        delegate : DelegateT
+    ) : (
+        QueryUtil.Set<Extract<this, UpdateUtil.UpdatableQuery>>
+    ) {
+        return QueryUtil.set<
+            Extract<this, UpdateUtil.UpdatableQuery>,
+            DelegateT
+        >(this, delegate);
     }
 }
 

@@ -239,6 +239,9 @@ class Query {
     replaceInto(table, delegate) {
         return QueryUtil.replaceInto(this, table, delegate);
     }
+    set(delegate) {
+        return QueryUtil.set(this, delegate);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

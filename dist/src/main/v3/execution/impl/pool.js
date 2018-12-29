@@ -195,6 +195,8 @@ class Connection {
                 }
                 resolve({
                     ...results,
+                    foundRowCount: results.affectedRows,
+                    updatedRowCount: results.changedRows,
                 });
             });
         });

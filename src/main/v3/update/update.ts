@@ -1,6 +1,7 @@
 import * as UpdateUtil from "./util";
 import {RawExpr} from "../raw-expr";
 import {PrimitiveExpr} from "../primitive-expr";
+import {IConnection, UpdateResult} from "../execution";
 
 export enum UpdateModifier {
     IGNORE = "IGNORE",
@@ -35,5 +36,18 @@ export class Update<DataT extends UpdateData> implements IUpdate<DataT> {
         this._modifier = data._modifier;
     }
 
-
+    execute (
+        this : Extract<this, UpdateUtil.ExecutableUpdate>,
+        connection : IConnection
+    ) : (
+        Promise<UpdateResult>
+    ) {
+        return UpdateUtil.execute(this, connection);
+    }
+    printSql (
+        this : Extract<this, UpdateUtil.ExecutableUpdate>
+    ) : this {
+        UpdateUtil.printSql(this);
+        return this;
+    }
 }

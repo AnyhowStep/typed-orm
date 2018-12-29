@@ -35,12 +35,16 @@ export function queryTree (update : ExecutableUpdate) : QueryTreeArray {
 
     result.push("UPDATE");
 
+    if (update._modifier == UpdateModifier.IGNORE) {
+        result.push("IGNORE");
+    }
+
     result.push(QueryUtil.queryTreeJoins(update._query));
-    result.push(QueryUtil.queryTreeWhere(update._query));
 
     result.push("SET");
-
     result.push(queryTree_Assignments(update._assignments));
+
+    result.push(QueryUtil.queryTreeWhere(update._query));
 
     return result;
 }

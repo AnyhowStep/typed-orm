@@ -4,12 +4,11 @@ import {IAnonymousTypedExpr} from "../../../expr";
 import {MapDelegate} from "../../../map-delegate";
 import { ColumnRefUtil } from "../../../column-ref";
 import { PrimitiveExpr } from "../../../primitive-expr";
-import { ColumnUtil } from "../../../column";
 import { RawExpr, RawExprUtil } from "../../../raw-expr";
 import { JoinArrayUtil } from "../../../join-array";
 import {ITable, TableUtil} from "../../../table";
 import { Update, UpdateModifier, Assignment } from "../../update";
-import { ColumnIdentifier } from "../../../column-identifier";
+import { ColumnIdentifier, ColumnIdentifierUtil } from "../../../column-identifier";
 
 //`Updatable` is used because it's used by MySQL docs.
 //`Updateable` doesn't see as much use.
@@ -56,7 +55,7 @@ export type AssignmentRef<QueryT extends UpdatableQuery> = (
                             JoinArrayUtil.FindWithTableAlias<
                                 QueryT["_joins"],
                                 tableAlias
-                            >["columns"][columnName]["assertDelegate"]
+                            >["aliasedTable"]["columns"][columnName]["assertDelegate"]
                         >
                     >
                 )
@@ -163,15 +162,15 @@ export type AssertValidSetDelegate_Hack<
 > = (
     (
         Exclude<
-            ColumnUtil.FromColumnRef<RawExprUtil.UsedRef<ExtractRawExpr<ReturnType<DelegateT>>>>,
-            ColumnUtil.FromColumnRef<ColumnRefUtil.FromJoinArray<QueryT["_joins"]>>
+            ColumnIdentifierUtil.FromColumnRef<RawExprUtil.UsedRef<ExtractRawExpr<ReturnType<DelegateT>>>>,
+            ColumnIdentifierUtil.FromJoin<QueryT["_joins"][number]>
         > extends never ?
         unknown :
         [
             "The following referenced columns are not allowed",
             Exclude<
-                ColumnUtil.FromColumnRef<RawExprUtil.UsedRef<ExtractRawExpr<ReturnType<DelegateT>>>>,
-                ColumnUtil.FromColumnRef<ColumnRefUtil.FromJoinArray<QueryT["_joins"]>>
+                ColumnIdentifierUtil.FromColumnRef<RawExprUtil.UsedRef<ExtractRawExpr<ReturnType<DelegateT>>>>,
+                ColumnIdentifierUtil.FromJoin<QueryT["_joins"][number]>
             >
         ]
     ) &
@@ -193,8 +192,8 @@ export type AssertValidSetDelegate_Hack<
 
 export function update<
     QueryT extends UpdatableQuery,
-    DelegateT extends SetDelegate<QueryT>,
-    ModifierT extends UpdateModifier|undefined
+    ModifierT extends UpdateModifier|undefined,
+    DelegateT extends SetDelegate<QueryT>
 > (
     query : QueryT & AssertValidSetDelegate_Hack<QueryT, DelegateT>,
     modifier : ModifierT,

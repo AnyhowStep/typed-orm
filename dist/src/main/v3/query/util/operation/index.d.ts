@@ -5,6 +5,7 @@ export * from "./join-ck-using";
 export * from "./join-from-pk";
 export * from "./join-pk";
 export * from "./join-using";
+export * from "./update";
 export * from "./and-having";
 export * from "./as";
 export * from "./coalesce";

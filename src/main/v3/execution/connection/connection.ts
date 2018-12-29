@@ -80,14 +80,17 @@ export interface InsertResult {
 export interface UpdateResult {
     fieldCount   : number;
     affectedRows : number;
-    insertId     : bigint;
+    //Should always be zero
+    insertId     : number;
     serverStatus : number;
     warningCount : number;
     message      : string;
     protocol41   : boolean;
     changedRows  : number;
 
+    //Alias for affectedRows
     foundRowCount : number;
+    //Alias for changedRows
     updatedRowCount : number;
 }
 

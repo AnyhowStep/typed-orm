@@ -10,6 +10,7 @@ __export(require("./join-ck-using"));
 __export(require("./join-from-pk"));
 __export(require("./join-pk"));
 __export(require("./join-using"));
+__export(require("./update"));
 __export(require("./and-having"));
 __export(require("./as"));
 __export(require("./coalesce"));

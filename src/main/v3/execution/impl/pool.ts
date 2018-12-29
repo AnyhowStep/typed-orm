@@ -217,6 +217,8 @@ export class Connection implements IConnection, ITransactionConnection {
                     }
                     resolve({
                         ...results,
+                        foundRowCount : results.affectedRows,
+                        updatedRowCount : results.changedRows,
                     });
                 }
             );

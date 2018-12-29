@@ -79,7 +79,7 @@ export interface InsertResult {
 export interface UpdateResult {
     fieldCount: number;
     affectedRows: number;
-    insertId: bigint;
+    insertId: number;
     serverStatus: number;
     warningCount: number;
     message: string;

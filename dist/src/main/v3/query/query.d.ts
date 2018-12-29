@@ -13,6 +13,7 @@ import { PrimitiveExpr, NonNullPrimitiveExpr } from "../primitive-expr";
 import { IJoinDeclaration } from "../join-declaration";
 import { IConnection } from "../execution";
 import { InsertSelectRowDelegate } from "../insert-select";
+import { UpdateUtil } from "../update";
 export interface UnionQuery {
     readonly distinct: boolean;
     readonly query: QueryUtil.AfterSelectClause;
@@ -144,6 +145,7 @@ export declare class Query<DataT extends QueryData> {
     replaceInto<TableT extends ITable & {
         insertAllowed: true;
     }>(this: Extract<this, QueryUtil.AfterSelectClause>, table: TableT, delegate: InsertSelectRowDelegate<Extract<this, QueryUtil.AfterSelectClause>, TableT>): (QueryUtil.ReplaceInto<Extract<this, QueryUtil.AfterSelectClause>, TableT>);
+    set<DelegateT extends UpdateUtil.SetDelegate<Extract<this, UpdateUtil.UpdatableQuery>>>(this: (Extract<this, UpdateUtil.UpdatableQuery> & UpdateUtil.AssertValidSetDelegate_Hack<Extract<this, UpdateUtil.UpdatableQuery>, DelegateT>), delegate: DelegateT): (QueryUtil.Set<Extract<this, UpdateUtil.UpdatableQuery>>);
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertValidJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 export declare function select<SelectDelegateT extends QueryUtil.SelectDelegate<QueryUtil.NewInstance>>(delegate: QueryUtil.AssertValidSelectDelegate<QueryUtil.NewInstance, SelectDelegateT>): (QueryUtil.Select<QueryUtil.NewInstance, SelectDelegateT>);

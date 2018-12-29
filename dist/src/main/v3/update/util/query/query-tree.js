@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const update_1 = require("../../update");
 const query_1 = require("../../../query");
 const sqlstring_1 = require("sqlstring");
 const raw_expr_1 = require("../../../raw-expr");
@@ -24,10 +25,13 @@ exports.queryTree_Assignments = queryTree_Assignments;
 function queryTree(update) {
     const result = [];
     result.push("UPDATE");
+    if (update._modifier == update_1.UpdateModifier.IGNORE) {
+        result.push("IGNORE");
+    }
     result.push(query_1.QueryUtil.queryTreeJoins(update._query));
-    result.push(query_1.QueryUtil.queryTreeWhere(update._query));
     result.push("SET");
     result.push(queryTree_Assignments(update._assignments));
+    result.push(query_1.QueryUtil.queryTreeWhere(update._query));
     return result;
 }
 exports.queryTree = queryTree;
