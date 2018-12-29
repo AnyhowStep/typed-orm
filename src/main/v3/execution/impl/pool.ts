@@ -6,7 +6,8 @@ import {
     ITransactionConnection,
     RawQueryResult,
     SelectResult,
-    InsertResult
+    InsertResult,
+    UpdateResult
 } from "../connection";
 
 export class Connection implements IConnection, ITransactionConnection {
@@ -196,6 +197,26 @@ export class Connection implements IConnection, ITransactionConnection {
                     resolve({
                         ...results,
                         insertId : BigInt(results.insertId),
+                    });
+                }
+            );
+        });
+    }
+    update (sql : string) : Promise<UpdateResult> {
+        return new Promise<UpdateResult>((resolve, reject) => {
+            this.connection.query(
+                sql,
+                (err, results) => {
+                    if (err != undefined) {
+                        reject(err);
+                        return;
+                    }
+                    if (results == undefined) {
+                        reject(new Error(`Expected results`));
+                        return;
+                    }
+                    resolve({
+                        ...results,
                     });
                 }
             );

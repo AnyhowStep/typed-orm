@@ -5,5 +5,6 @@ export declare namespace CandidateKeyUtil {
     type IsSubKey<A extends CandidateKey, B extends CandidateKey> = (A extends CandidateKey ? (B extends CandidateKey ? (A[number] extends B[number] ? true : false) : never) : never);
     function isSubKey<A extends CandidateKey, B extends CandidateKey>(a: A, b: B): IsSubKey<A, B>;
     function isEqual(a: CandidateKey, b: CandidateKey): boolean;
+    function isCandidateKey(raw: any): raw is CandidateKey;
 }
 //# sourceMappingURL=util.d.ts.map

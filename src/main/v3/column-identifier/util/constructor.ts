@@ -6,6 +6,7 @@ import {ColumnRef} from "../../column-ref";
 import {IJoin} from "../../join";
 import {IQuery} from "../../query";
 import {ColumnIdentifierMap} from "../../column-identifier-map";
+import {ColumnIdentifierRef} from "../../column-identifier-ref";
 
 export type FromColumn<ColumnT extends IColumn> = (
     ColumnT extends IColumn ?
@@ -55,6 +56,11 @@ export type FromColumnMap<ColumnMapT extends ColumnMap> = (
 export type FromColumnIdentifierMap<ColumnMapT extends ColumnIdentifierMap> = (
     ColumnMapT extends ColumnIdentifierMap ?
     ColumnMapT[Extract<keyof ColumnMapT, string>] :
+    never
+);
+export type FromColumnIdentifierRef<RefT extends ColumnIdentifierRef> = (
+    RefT extends ColumnIdentifierRef ?
+    FromColumnIdentifierMap<RefT[Extract<keyof RefT, string>]> :
     never
 );
 export type FromSelectItem<SelectItemT extends SelectItem> = (

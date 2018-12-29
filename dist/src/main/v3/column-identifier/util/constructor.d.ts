@@ -6,6 +6,7 @@ import { ColumnRef } from "../../column-ref";
 import { IJoin } from "../../join";
 import { IQuery } from "../../query";
 import { ColumnIdentifierMap } from "../../column-identifier-map";
+import { ColumnIdentifierRef } from "../../column-identifier-ref";
 export declare type FromColumn<ColumnT extends IColumn> = (ColumnT extends IColumn ? {
     readonly tableAlias: ColumnT["tableAlias"];
     readonly name: ColumnT["name"];
@@ -18,6 +19,7 @@ export declare type FromExprSelectItem<ExprSelectItemT extends IExprSelectItem> 
 export declare function fromExprSelectItem<ExprSelectItemT extends IExprSelectItem>(exprSelectItem: ExprSelectItemT): FromExprSelectItem<ExprSelectItemT>;
 export declare type FromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? FromColumn<ColumnMapT[Extract<keyof ColumnMapT, string>]> : never);
 export declare type FromColumnIdentifierMap<ColumnMapT extends ColumnIdentifierMap> = (ColumnMapT extends ColumnIdentifierMap ? ColumnMapT[Extract<keyof ColumnMapT, string>] : never);
+export declare type FromColumnIdentifierRef<RefT extends ColumnIdentifierRef> = (RefT extends ColumnIdentifierRef ? FromColumnIdentifierMap<RefT[Extract<keyof RefT, string>]> : never);
 export declare type FromSelectItem<SelectItemT extends SelectItem> = (SelectItemT extends SelectItem ? (FromColumn<Extract<SelectItemT, IColumn>> | FromExprSelectItem<Extract<SelectItemT, IExprSelectItem>> | FromColumnMap<Extract<SelectItemT, ColumnMap>> | FromColumnRef<Extract<SelectItemT, ColumnRef>>) : never);
 export declare type FromSelectItemArrayIgnoreIndex<SelectsT extends SelectItem[], IgnoreIndexT extends Extract<keyof SelectsT, string>> = ({
     [index in Exclude<Extract<keyof SelectsT, string>, IgnoreIndexT>]: (SelectsT[index] extends SelectItem ? FromSelectItem<SelectsT[index]> : never);

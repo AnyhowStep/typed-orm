@@ -16,6 +16,7 @@ class AliasedTable {
     }
 }
 exports.AliasedTable = AliasedTable;
+//TODO Move this to AliasedTableUtil
 (function (AliasedTable) {
     /*
         `name`

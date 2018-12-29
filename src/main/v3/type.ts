@@ -43,3 +43,15 @@ export type MAX_SAFE_INTEGER = 9007199254740991;
 export const MAX_SAFE_INTEGER : MAX_SAFE_INTEGER = 9007199254740991;
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+
+export function isStringArray (raw : any) : raw is string[] {
+    if (!(raw instanceof Array)) {
+        return false;
+    }
+    for (let item of raw) {
+        if (typeof item != "string") {
+            return false;
+        }
+    }
+    return true;
+}

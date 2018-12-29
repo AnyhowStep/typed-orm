@@ -54,5 +54,17 @@ var CandidateKeyArrayUtil;
         return false;
     }
     CandidateKeyArrayUtil.hasKey = hasKey;
+    function isCandidateKeyArray(raw) {
+        if (!(raw instanceof Array)) {
+            return false;
+        }
+        for (let item of raw) {
+            if (!candidate_key_1.CandidateKeyUtil.isCandidateKey(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    CandidateKeyArrayUtil.isCandidateKeyArray = isCandidateKeyArray;
 })(CandidateKeyArrayUtil = exports.CandidateKeyArrayUtil || (exports.CandidateKeyArrayUtil = {}));
 //# sourceMappingURL=util.js.map

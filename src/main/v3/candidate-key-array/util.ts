@@ -150,4 +150,16 @@ export namespace CandidateKeyArrayUtil {
         }
         return false as HasKey<ArrT, KeyT>;
     }
+
+    export function isCandidateKeyArray (raw : any) : raw is CandidateKey[] {
+        if (!(raw instanceof Array)) {
+            return false;
+        }
+        for (let item of raw) {
+            if (!CandidateKeyUtil.isCandidateKey(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

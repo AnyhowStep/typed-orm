@@ -11,5 +11,17 @@ var CandidateKeyUtil;
             isSubKey(b, a));
     }
     CandidateKeyUtil.isEqual = isEqual;
+    function isCandidateKey(raw) {
+        if (!(raw instanceof Array)) {
+            return false;
+        }
+        for (let item of raw) {
+            if (typeof item != "string") {
+                return false;
+            }
+        }
+        return true;
+    }
+    CandidateKeyUtil.isCandidateKey = isCandidateKey;
 })(CandidateKeyUtil = exports.CandidateKeyUtil || (exports.CandidateKeyUtil = {}));
 //# sourceMappingURL=util.js.map

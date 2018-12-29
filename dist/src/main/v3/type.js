@@ -16,4 +16,16 @@ function isObjectWithKeys(raw, keys) {
 }
 exports.isObjectWithKeys = isObjectWithKeys;
 exports.MAX_SAFE_INTEGER = 9007199254740991;
+function isStringArray(raw) {
+    if (!(raw instanceof Array)) {
+        return false;
+    }
+    for (let item of raw) {
+        if (typeof item != "string") {
+            return false;
+        }
+    }
+    return true;
+}
+exports.isStringArray = isStringArray;
 //# sourceMappingURL=type.js.map

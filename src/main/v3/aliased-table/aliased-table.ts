@@ -46,6 +46,7 @@ export class AliasedTable<DataT extends AliasedTableData> implements IAliasedTab
         return AliasedTable.queryTree(this);
     }
 }
+//TODO Move this to AliasedTableUtil
 export namespace AliasedTable {
     /*
         `name`

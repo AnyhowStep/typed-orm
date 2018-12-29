@@ -76,6 +76,18 @@ export interface InsertResult {
     protocol41: boolean;
     changedRows: number;
 }
+export interface UpdateResult {
+    fieldCount: number;
+    affectedRows: number;
+    insertId: bigint;
+    serverStatus: number;
+    warningCount: number;
+    message: string;
+    protocol41: boolean;
+    changedRows: number;
+    foundRowCount: number;
+    updatedRowCount: number;
+}
 export interface IConnection {
     isInTransaction(): this is ITransactionConnection;
     transaction<ResultT>(callback: TransactionCallback<ResultT>): Promise<ResultT>;
@@ -83,6 +95,7 @@ export interface IConnection {
     rawQuery(sql: string): Promise<RawQueryResult>;
     select(sql: string): Promise<SelectResult>;
     insert(sql: string): Promise<InsertResult>;
+    update(sql: string): Promise<UpdateResult>;
 }
 export interface ITransactionConnection extends IConnection {
     rollback(): Promise<void>;
