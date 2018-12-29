@@ -14,6 +14,9 @@
 + DELETE statements
   + Single table delete
   + Polymorphic delete
+  + Aliasing a table currently makes it ineligible for deletes
+    TODO: Fix it?
+    Alising a table shouldn't erase the fact it can be deleted from?
 + CTE
 
 + Validate table declarations

@@ -7,7 +7,8 @@ import {
     RawQueryResult,
     SelectResult,
     InsertResult,
-    UpdateResult
+    UpdateResult,
+    DeleteResult
 } from "../connection";
 
 export class Connection implements IConnection, ITransactionConnection {
@@ -219,6 +220,28 @@ export class Connection implements IConnection, ITransactionConnection {
                         ...results,
                         foundRowCount : results.affectedRows,
                         updatedRowCount : results.changedRows,
+                    });
+                }
+            );
+        });
+    }
+    delete (sql : string) : Promise<DeleteResult> {
+        return new Promise<DeleteResult>((resolve, reject) => {
+            this.connection.query(
+                sql,
+                (err, results) => {
+                    if (err != undefined) {
+                        reject(err);
+                        return;
+                    }
+                    if (results == undefined) {
+                        reject(new Error(`Expected results`));
+                        return;
+                    }
+                    resolve({
+                        ...results,
+                        foundRowCount : results.affectedRows,
+                        deletedRowCount : results.changedRows,
                     });
                 }
             );

@@ -201,6 +201,25 @@ class Connection {
             });
         });
     }
+    delete(sql) {
+        return new Promise((resolve, reject) => {
+            this.connection.query(sql, (err, results) => {
+                if (err != undefined) {
+                    reject(err);
+                    return;
+                }
+                if (results == undefined) {
+                    reject(new Error(`Expected results`));
+                    return;
+                }
+                resolve({
+                    ...results,
+                    foundRowCount: results.affectedRows,
+                    deletedRowCount: results.changedRows,
+                });
+            });
+        });
+    }
 }
 exports.Connection = Connection;
 class Pool {

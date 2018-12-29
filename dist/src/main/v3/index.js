@@ -8,6 +8,7 @@ __export(require("./column"));
 __export(require("./column-identifier"));
 __export(require("./column-map"));
 __export(require("./data-type"));
+__export(require("./delete"));
 __export(require("./expr-library"));
 __export(require("./formatter"));
 const informationSchema = require("./information-schema");

@@ -1,3 +1,4 @@
+export * from "./delete";
 export * from "./insert";
 export * from "./join";
 export * from "./join-ck";

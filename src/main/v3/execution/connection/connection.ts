@@ -93,6 +93,22 @@ export interface UpdateResult {
     //Alias for changedRows
     updatedRowCount : number;
 }
+export interface DeleteResult {
+    fieldCount   : number;
+    affectedRows : number;
+    //Should always be zero
+    insertId     : number;
+    serverStatus : number;
+    warningCount : number;
+    message      : string;
+    protocol41   : boolean;
+    changedRows  : number;
+
+    //Alias for affectedRows
+    foundRowCount : number;
+    //Alias for changedRows
+    deletedRowCount : number;
+}
 
 export interface IConnection {
     isInTransaction () : this is ITransactionConnection;
@@ -107,7 +123,7 @@ export interface IConnection {
     select (sql : string) : Promise<SelectResult>;
     insert (sql : string) : Promise<InsertResult>;
     update (sql : string) : Promise<UpdateResult>;
-    //TODO delete
+    delete (sql : string) : Promise<DeleteResult>;
 }
 export interface ITransactionConnection extends IConnection {
     rollback () : Promise<void>;

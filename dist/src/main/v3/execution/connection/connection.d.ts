@@ -88,6 +88,18 @@ export interface UpdateResult {
     foundRowCount: number;
     updatedRowCount: number;
 }
+export interface DeleteResult {
+    fieldCount: number;
+    affectedRows: number;
+    insertId: number;
+    serverStatus: number;
+    warningCount: number;
+    message: string;
+    protocol41: boolean;
+    changedRows: number;
+    foundRowCount: number;
+    deletedRowCount: number;
+}
 export interface IConnection {
     isInTransaction(): this is ITransactionConnection;
     transaction<ResultT>(callback: TransactionCallback<ResultT>): Promise<ResultT>;
@@ -96,6 +108,7 @@ export interface IConnection {
     select(sql: string): Promise<SelectResult>;
     insert(sql: string): Promise<InsertResult>;
     update(sql: string): Promise<UpdateResult>;
+    delete(sql: string): Promise<DeleteResult>;
 }
 export interface ITransactionConnection extends IConnection {
     rollback(): Promise<void>;

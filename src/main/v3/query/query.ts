@@ -15,6 +15,7 @@ import {IJoinDeclaration} from "../join-declaration";
 import {IConnection} from "../execution";
 import {InsertSelectRowDelegate} from "../insert-select";
 import { UpdateUtil } from "../update";
+import { DeletableQuery, DeleteUtil, Delete, DeleteModifier } from "../delete";
 
 export interface UnionQuery {
     //Defaults to true
@@ -1677,6 +1678,30 @@ export class Query<DataT extends QueryData> {
             Extract<this, UpdateUtil.UpdatableQuery>,
             DelegateT
         >(this, delegate);
+    }
+    delete (
+        this : Extract<this, DeletableQuery>,
+        delegate : DeleteUtil.DeleteDelegate<Extract<this, DeletableQuery>>
+    ) : (
+        Delete<{
+            _query : DeletableQuery,
+            _tables : (ITable & { deleteAllowed : true })[],
+            _modifier : undefined,
+        }>
+    ) {
+        return QueryUtil.delete(this, delegate);
+    }
+    deleteIgnore (
+        this : Extract<this, DeletableQuery>,
+        delegate : DeleteUtil.DeleteDelegate<Extract<this, DeletableQuery>>
+    ) : (
+        Delete<{
+            _query : DeletableQuery,
+            _tables : (ITable & { deleteAllowed : true })[],
+            _modifier : DeleteModifier.IGNORE,
+        }>
+    ) {
+        return QueryUtil.deleteIgnore(this, delegate);
     }
 }
 

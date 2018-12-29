@@ -3,6 +3,7 @@ export * from "./column";
 export * from "./column-identifier";
 export * from "./column-map";
 export * from "./data-type";
+export * from "./delete";
 export * from "./expr-library";
 export * from "./formatter";
 import * as informationSchema from "./information-schema";

@@ -242,6 +242,12 @@ class Query {
     set(delegate) {
         return QueryUtil.set(this, delegate);
     }
+    delete(delegate) {
+        return QueryUtil.delete(this, delegate);
+    }
+    deleteIgnore(delegate) {
+        return QueryUtil.deleteIgnore(this, delegate);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {
