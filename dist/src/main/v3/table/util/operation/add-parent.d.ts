@@ -15,7 +15,7 @@ export declare type AddParent<TableT extends ITable, ParentT extends ITable> = (
     readonly generated: TableT["generated"];
     readonly isNullable: TableT["isNullable"];
     readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
-    readonly mutable: TableT["hasExplicitDefaultValue"];
+    readonly mutable: TableT["mutable"];
     readonly parents: (TableT["parents"][number] | ParentT["parents"][number] | ParentT)[];
     readonly insertAllowed: TableT["insertAllowed"];
     readonly deleteAllowed: TableT["deleteAllowed"];

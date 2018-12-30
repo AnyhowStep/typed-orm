@@ -7,4 +7,5 @@ __export(require("./has-explicit-default-value"));
 __export(require("./is-generated"));
 __export(require("./is-mutable"));
 __export(require("./is-nullable"));
+__export(require("./parents-have-column-name"));
 //# sourceMappingURL=index.js.map

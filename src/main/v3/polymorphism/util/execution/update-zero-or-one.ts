@@ -1,21 +1,20 @@
-/*import {RawExprNoUsedRef, RawExpr} from "../../../raw-expr";
+import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {ITable, TableUtil} from "../../../table";
-import {RequiredColumnNames, OptionalColumnNames, uniqueGeneratedColumnNames, tryGetGeneratedNonAutoIncrementColumn, assertDelegate, ColumnType, TypeMap, MutableColumnNames} from "../query";
+import {ColumnType, MutableColumnNames} from "../query";
 import {IConnection, UpdateResult} from "../../../execution";
-import {InsertUtil} from "../../../insert";
-import * as informationSchema from "../../../information-schema";
 import {ColumnRefUtil} from "../../../column-ref";
-import {IJoin} from "../../../join";
 import {ColumnUtil, IColumn} from "../../../column";
-import { QueryUtil, IQuery } from "../../../query";
-import { CandidateKey } from "../../../candidate-key";
-import { UpdateUtil } from "../../../update";
-import { AssignmentRef, UpdatableQuery } from "../../../update/util";
-import { Writable } from "../../../type";
+import {QueryUtil} from "../../../query";
+import {CandidateKey} from "../../../candidate-key";
+import {UpdateUtil, UpdatableQuery} from "../../../update";
+import {AssignmentRef} from "../../../update/util";
+import {Writable} from "../../../type";
+import { ColumnIdentifierUtil } from "../../../column-identifier";
+import { PrimitiveExpr } from "../../../primitive-expr";
 
 export type AssignmentMap<TableT extends ITable> = (
     {
-        [name in MutableColumnNames<TableT>] : (
+        [name in MutableColumnNames<TableT>]? : (
             RawExpr<
                 ColumnType<TableT, name>
             >
@@ -34,6 +33,15 @@ export type SetDelegate<TableT extends ITable> = (
             >
         >
     ) => AssignmentMap<TableT>
+);
+export type SetDelegateExtractRawExpr<
+    TableT extends ITable,
+    DelegateT extends SetDelegate<TableT>
+> = (
+    Extract<
+        ReturnType<DelegateT>[keyof ReturnType<DelegateT>],
+        RawExpr<PrimitiveExpr>
+    >
 );
 
 function toAssignmentRef (query : UpdatableQuery, map : AssignmentMap<ITable>) : AssignmentRef<UpdatableQuery> {
@@ -95,20 +103,84 @@ function tryGetJoinCkUsingColumnArray (
     return undefined;
 }
 
-export async function updateZeroOrOne<
-    TableT extends ITable
+
+//https://github.com/Microsoft/TypeScript/issues/29133
+export type AssertValidSetDelegate_Hack<
+    TableT extends ITable,
+    DelegateT extends SetDelegate<TableT>,
+    ResultT
+> = (
+    (
+        Exclude<
+            ColumnIdentifierUtil.FromColumnRef<
+                RawExprUtil.UsedRef<
+                    SetDelegateExtractRawExpr<
+                        TableT,
+                        DelegateT
+                    >
+                >
+            >,
+            ColumnIdentifierUtil.FromColumnMap<
+                TableT["columns"] |
+                TableT["parents"][number]["columns"]
+            >
+        > extends never ?
+        (
+            Exclude<
+                Extract<keyof ReturnType<DelegateT>, string>,
+                MutableColumnNames<TableT>
+            > extends never ?
+            ResultT :
+            [
+                "The following columns cannot be updated",
+                Exclude<
+                    Extract<keyof ReturnType<DelegateT>, string>,
+                    MutableColumnNames<TableT>
+                >
+            ]
+        ) :
+        [
+            "The following referenced columns are not allowed",
+            Exclude<
+                ColumnIdentifierUtil.FromColumnRef<
+                    RawExprUtil.UsedRef<
+                        SetDelegateExtractRawExpr<
+                            TableT,
+                            DelegateT
+                        >
+                    >
+                >,
+                ColumnIdentifierUtil.FromColumnMap<
+                    TableT["columns"] |
+                    TableT["parents"][number]["columns"]
+                >
+            >
+        ]
+    )
+);
+
+
+export function updateZeroOrOne<
+    TableT extends ITable,
+    DelegateT extends SetDelegate<TableT>
 > (
     connection : IConnection & TableUtil.AssertHasCandidateKey<TableT>,
     table : TableT,
     ck : TableUtil.CandidateKey<TableT>,
-    delegate : SetDelegate<TableT>
-) : Promise<UpdateResult> {
+    delegate : DelegateT
+) : (
+    AssertValidSetDelegate_Hack<
+        TableT,
+        DelegateT,
+        Promise<UpdateResult>
+    >
+ ) {
     if (table.parents.length == 0) {
-        return InsertUtil.insertAndFetch(
-            connection,
-            table,
-            rawInsertRow as any
-        ) as any;
+        return QueryUtil.newInstance()
+            .from(table as any)
+            .whereEqCandidateKey(table, ck)
+            .set(delegate as any)
+            .execute(connection) as any;
     }
     let query : UpdatableQuery = QueryUtil.newInstance()
         .from(table as any);
@@ -142,5 +214,5 @@ export async function updateZeroOrOne<
         query,
         () => toAssignmentRef(query, assignmentMap)
     );
-    return UpdateUtil.execute(update, connection);
-}*/
+    return UpdateUtil.execute(update, connection) as any;
+}

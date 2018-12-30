@@ -72,7 +72,7 @@ export type AddParent<
         readonly generated : TableT["generated"];
         readonly isNullable : TableT["isNullable"];
         readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
-        readonly mutable : TableT["hasExplicitDefaultValue"];
+        readonly mutable : TableT["mutable"];
 
         readonly parents : (
             TableT["parents"][number] |

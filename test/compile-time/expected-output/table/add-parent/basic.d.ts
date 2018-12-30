@@ -69,7 +69,7 @@ export declare const table: o.Table<{
     readonly generated: [];
     readonly isNullable: never[];
     readonly hasExplicitDefaultValue: [];
-    readonly mutable: [];
+    readonly mutable: ("x" | "y" | "z")[];
     readonly parents: o.Table<{
         readonly usedRef: {};
         readonly alias: "parent";

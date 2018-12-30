@@ -35,7 +35,7 @@ export declare const parent: o.Table<{
     readonly generated: [];
     readonly isNullable: never[];
     readonly hasExplicitDefaultValue: [];
-    readonly mutable: [];
+    readonly mutable: ("x" | "y" | "z")[];
     readonly parents: o.Table<{
         readonly usedRef: {};
         readonly alias: "parent2";
@@ -124,7 +124,7 @@ export declare const t2: o.Table<{
     readonly generated: [];
     readonly isNullable: never[];
     readonly hasExplicitDefaultValue: [];
-    readonly mutable: [];
+    readonly mutable: ("x" | "y" | "z" | "w")[];
     readonly parents: (o.Table<{
         readonly usedRef: {};
         readonly alias: "parent2";
@@ -201,7 +201,7 @@ export declare const t2: o.Table<{
         readonly generated: [];
         readonly isNullable: never[];
         readonly hasExplicitDefaultValue: [];
-        readonly mutable: [];
+        readonly mutable: ("x" | "y" | "z")[];
         readonly parents: o.Table<{
             readonly usedRef: {};
             readonly alias: "parent2";
