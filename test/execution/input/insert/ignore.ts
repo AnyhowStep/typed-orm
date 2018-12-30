@@ -37,6 +37,7 @@ tape(__filename, async (t) => {
                 protocol41: true,
                 changedRows: 0,
                 someId : 18446744073709551604n,
+                insertedRowCount : 1,
             }
         );
         const insertIgnoreResult = await o.insertIgnoreInto(autoIdIgnore)
@@ -65,6 +66,7 @@ tape(__filename, async (t) => {
                 protocol41: true,
                 changedRows: 3,
                 someId : 18446744073709551605n,
+                insertedRowCount : 1,
             }
         );
         const insertIgnoreResult2 = await o.insertIgnoreInto(autoIdIgnore)
@@ -90,6 +92,7 @@ tape(__filename, async (t) => {
                 protocol41: true,
                 changedRows: 2,
                 someId : 18446744073709551609n,
+                insertedRowCount : 1,
             }
         );
         const insertIgnoreResult3 = await o.insertIgnoreInto(autoIdIgnore)
@@ -109,6 +112,7 @@ tape(__filename, async (t) => {
                 protocol41: true,
                 changedRows: 0,
                 someId : undefined,
+                insertedRowCount : 0,
             }
         );
         return o.from(autoIdIgnore)

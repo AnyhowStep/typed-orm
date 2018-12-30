@@ -37,35 +37,23 @@ tape(__filename, async (t) => {
                 insertedRowCount : 2,
             }
         );
-        const updateResult = await o.from(bigintTable)
-            .set(
-                c => {
-                    return {
-                        bigintTable : {
-                            value : o.if(
-                                o.eq(c.value, "32"),
-                                o.concat(c.value, "1"),
-                                c.value
-                            )
-                        }
-                    }
-                }
-            )
+        const deleteResult = await o.from(bigintTable)
+            .delete(t => [t.bigintTable])
             .execute(connection);
         t.deepEqual(
-            updateResult,
+            deleteResult,
             {
                 fieldCount: 0,
                 affectedRows: 2,
                 insertId: 0,
                 serverStatus: 34,
                 warningCount: 0,
-                message: "(Rows matched: 2  Changed: 1  Warnings: 0",
+                message: "",
                 protocol41: true,
-                changedRows: 1,
+                changedRows: 0,
 
                 foundRowCount : 2,
-                updatedRowCount : 1,
+                deletedRowCount : 2,
             }
         );
         return o.from(bigintTable)
@@ -73,13 +61,9 @@ tape(__filename, async (t) => {
             .orderBy(c => [c.value.asc()])
             .fetchAll(connection);
     });
-    t.deepEqual(result.length, 2);
     t.deepEqual(
         result,
-        [
-            { value : "33" },
-            { value : "321" },
-        ]
+        []
     );
 
     t.end();

@@ -178,6 +178,7 @@ class Connection {
                 resolve({
                     ...results,
                     insertId: BigInt(results.insertId),
+                    insertedRowCount: results.affectedRows,
                 });
             });
         });
@@ -214,8 +215,8 @@ class Connection {
                 }
                 resolve({
                     ...results,
-                    foundRowCount: results.affectedRows,
-                    deletedRowCount: results.changedRows,
+                    foundRowCount: results.affectedRows + results.warningCount,
+                    deletedRowCount: results.affectedRows,
                 });
             });
         });

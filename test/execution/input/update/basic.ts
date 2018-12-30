@@ -33,7 +33,8 @@ tape(__filename, async (t) => {
                 warningCount: 0,
                 message: "&Records: 2  Duplicates: 0  Warnings: 0",
                 protocol41: true,
-                changedRows: 0
+                changedRows: 0,
+                insertedRowCount : 2,
             }
         );
         const updateResult = await o.from(bigintTable)

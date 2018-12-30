@@ -75,6 +75,7 @@ export interface InsertResult {
     message: string;
     protocol41: boolean;
     changedRows: number;
+    insertedRowCount: number;
 }
 export interface UpdateResult {
     fieldCount: number;

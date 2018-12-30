@@ -61,7 +61,8 @@ tape(__filename, async (t) => {
                 warningCount: 0,
                 message: "&Records: 8  Duplicates: 0  Warnings: 0",
                 protocol41: true,
-                changedRows: 0
+                changedRows: 0,
+                insertedRowCount : 8,
             }
         );
         return o.from(insertSelectTable)

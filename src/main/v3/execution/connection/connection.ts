@@ -76,6 +76,9 @@ export interface InsertResult {
     message      : string;
     protocol41   : boolean;
     changedRows  : number;
+
+    //alias for affectedRows
+    insertedRowCount : number;
 }
 export interface UpdateResult {
     fieldCount   : number;
@@ -102,11 +105,12 @@ export interface DeleteResult {
     warningCount : number;
     message      : string;
     protocol41   : boolean;
+    //Should always be zero
     changedRows  : number;
 
-    //Alias for affectedRows
+    //Alias for affectedRows + warningCount
     foundRowCount : number;
-    //Alias for changedRows
+    //Alias for affectedRows
     deletedRowCount : number;
 }
 

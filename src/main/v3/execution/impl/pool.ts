@@ -198,6 +198,7 @@ export class Connection implements IConnection, ITransactionConnection {
                     resolve({
                         ...results,
                         insertId : BigInt(results.insertId),
+                        insertedRowCount : results.affectedRows,
                     });
                 }
             );
@@ -240,8 +241,8 @@ export class Connection implements IConnection, ITransactionConnection {
                     }
                     resolve({
                         ...results,
-                        foundRowCount : results.affectedRows,
-                        deletedRowCount : results.changedRows,
+                        foundRowCount : results.affectedRows + results.warningCount,
+                        deletedRowCount : results.affectedRows,
                     });
                 }
             );

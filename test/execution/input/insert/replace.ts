@@ -33,6 +33,7 @@ tape(__filename, async (t) => {
                 protocol41: true,
                 changedRows: 0,
                 someId : 18446744073709551614n,
+                insertedRowCount : 1,
             }
         );
         return o.from(autoId)
