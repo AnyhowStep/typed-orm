@@ -1,5 +1,4 @@
-import { IUpdate, UpdateModifier, Assignment } from "../../update";
-import { UpdatableQuery } from "../constructor";
+import { IUpdate, UpdateModifier, Assignment, UpdatableQuery } from "../../update";
 import { QueryTreeArray } from "../../../query-tree";
 export declare function queryTree_Assignments(assignments: Assignment[]): QueryTreeArray;
 export declare type ExecutableUpdate = IUpdate<{

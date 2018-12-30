@@ -14,6 +14,7 @@ export * from "./order";
 export * from "./polymorphism";
 export * from "./query";
 export * from "./table";
+export * from "./update";
 export * from "./assert-map";
 export * from "./expr-select-item";
 export * from "./expr";

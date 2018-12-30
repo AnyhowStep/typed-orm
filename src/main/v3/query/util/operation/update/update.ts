@@ -1,7 +1,7 @@
-import {UpdateUtil, Update, Assignment} from "../../../../update";
+import {UpdateUtil, Update, Assignment, UpdatableQuery} from "../../../../update";
 
 export type Set<
-    QueryT extends UpdateUtil.UpdatableQuery
+    QueryT extends UpdatableQuery
 > = (
     Update<{
         _query : QueryT,
@@ -10,21 +10,44 @@ export type Set<
     }>
 );
 export function set<
-    QueryT extends UpdateUtil.UpdatableQuery,
+    QueryT extends UpdatableQuery,
+    DelegateT extends UpdateUtil.SingleTableSetDelegate<QueryT>
+> (
+    query : (
+        QueryT &
+        UpdateUtil.AssertValidSingleTableSetDelegate_Hack<QueryT, DelegateT> &
+        UpdateUtil.AssertValidSingleTableUpdatableQuery<QueryT>
+    ),
+    delegate : DelegateT
+) : (
+    Set<QueryT>
+);
+export function set<
+    QueryT extends UpdatableQuery,
     DelegateT extends UpdateUtil.SetDelegate<QueryT>,
 > (
     query : QueryT & UpdateUtil.AssertValidSetDelegate_Hack<QueryT, DelegateT>,
     delegate : DelegateT
 ) : (
     Set<QueryT>
+);
+export function set (
+    query : UpdatableQuery,
+    delegate : () => any
+) : (
+    Set<UpdatableQuery>
 ) {
-    return UpdateUtil.update<
-        QueryT,
-        undefined,
-        DelegateT
-    >(
-        query,
-        undefined,
-        delegate
-    );
+    if (UpdateUtil.isSingleTableUpdatableQuery(query)) {
+        return UpdateUtil.singleTableUpdate(
+            query as any,
+            undefined,
+            delegate
+        );
+    } else {
+        return UpdateUtil.multiTableUpdate(
+            query as any,
+            undefined,
+            delegate
+        );
+    }
 }

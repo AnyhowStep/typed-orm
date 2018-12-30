@@ -1,5 +1,4 @@
-import {IUpdate, UpdateModifier, Assignment} from "../../update";
-import {UpdatableQuery} from "../constructor";
+import {IUpdate, UpdateModifier, Assignment, UpdatableQuery} from "../../update";
 import {QueryTreeArray} from "../../../query-tree";
 import {QueryUtil} from "../../../query";
 import {escapeId} from "sqlstring";

@@ -1,43 +1,11 @@
-import {IQuery} from "../../../query";
 import {IJoin} from "../../../join";
-import {IAnonymousTypedExpr} from "../../../expr";
-import {MapDelegate} from "../../../map-delegate";
 import { ColumnRefUtil } from "../../../column-ref";
 import { PrimitiveExpr } from "../../../primitive-expr";
 import { RawExpr, RawExprUtil } from "../../../raw-expr";
 import { JoinArrayUtil } from "../../../join-array";
 import {ITable, TableUtil} from "../../../table";
-import { Update, UpdateModifier, Assignment } from "../../update";
+import { Update, UpdateModifier, Assignment, UpdatableQuery } from "../../update";
 import { ColumnIdentifier, ColumnIdentifierUtil } from "../../../column-identifier";
-
-//`Updatable` is used because it's used by MySQL docs.
-//`Updateable` doesn't see as much use.
-export type UpdatableQuery = IQuery<{
-    readonly _distinct : false;
-    readonly _sqlCalcFoundRows : false;
-
-    readonly _joins : IJoin[];
-    readonly _parentJoins : undefined;
-    readonly _selects : undefined;
-    readonly _where : IAnonymousTypedExpr<boolean>|undefined;
-
-    readonly _grouped : undefined;
-    readonly _having : undefined;
-
-    //Technically allowed for single-table updates
-    //but they're too much of a hassle to support...
-    //For now?
-    //TODO-FEATURE Support ORDER BY, LIMIT for single-table updates
-    readonly _orders : undefined;
-    readonly _limit : undefined;
-
-    readonly _unions : undefined;
-    readonly _unionOrders : undefined;
-    readonly _unionLimit : undefined;
-
-    //You can set it but it'll be ignored
-    readonly _mapDelegate : MapDelegate|undefined;
-}>;
 
 export type AssignmentRefFromJoinArray<JoinArrT extends IJoin[]> = (
     {
@@ -110,7 +78,7 @@ export type ToMutableColumnIdentifier<QueryT extends UpdatableQuery> = (
         )
     }[Extract<QueryT["_joins"][number]["aliasedTable"], ITable>["alias"]]
 );
-export function mutableColumnIdentifiers (query : UpdatableQuery) : ColumnIdentifier[] {
+function mutableColumnIdentifiers (query : UpdatableQuery) : ColumnIdentifier[] {
     const result : ColumnIdentifier[] = [];
     for (let join of query._joins) {
         const table = join.aliasedTable;
@@ -126,7 +94,7 @@ export function mutableColumnIdentifiers (query : UpdatableQuery) : ColumnIdenti
     return result;
 }
 
-export function toAssignments (ref : AssignmentRef<UpdatableQuery>) : Assignment[] {
+function toAssignments (ref : AssignmentRef<UpdatableQuery>) : Assignment[] {
     const result : Assignment[] = [];
     for (let tableAlias in ref) {
         const map = ref[tableAlias];
@@ -196,7 +164,7 @@ export type AssertValidSetDelegate_Hack<
     )
 );
 
-export function update<
+export function multiTableUpdate<
     QueryT extends UpdatableQuery,
     ModifierT extends UpdateModifier|undefined,
     DelegateT extends SetDelegate<QueryT>

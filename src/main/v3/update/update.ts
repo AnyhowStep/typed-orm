@@ -2,6 +2,39 @@ import * as UpdateUtil from "./util";
 import {RawExpr} from "../raw-expr";
 import {PrimitiveExpr} from "../primitive-expr";
 import {IConnection, UpdateResult} from "../execution";
+import { IQuery } from "../query";
+import { IJoin } from "../join";
+import { IAnonymousTypedExpr } from "../expr";
+import { MapDelegate } from "../map-delegate";
+
+//`Updatable` is used because it's used by MySQL docs.
+//`Updateable` doesn't see as much use.
+export type UpdatableQuery = IQuery<{
+    readonly _distinct : false;
+    readonly _sqlCalcFoundRows : false;
+
+    readonly _joins : IJoin[];
+    readonly _parentJoins : undefined;
+    readonly _selects : undefined;
+    readonly _where : IAnonymousTypedExpr<boolean>|undefined;
+
+    readonly _grouped : undefined;
+    readonly _having : undefined;
+
+    //Technically allowed for single-table updates
+    //but they're too much of a hassle to support...
+    //For now?
+    //TODO-FEATURE Support ORDER BY, LIMIT for single-table updates
+    readonly _orders : undefined;
+    readonly _limit : undefined;
+
+    readonly _unions : undefined;
+    readonly _unionOrders : undefined;
+    readonly _unionLimit : undefined;
+
+    //You can set it but it'll be ignored
+    readonly _mapDelegate : MapDelegate|undefined;
+}>;
 
 export enum UpdateModifier {
     IGNORE = "IGNORE",
@@ -14,7 +47,7 @@ export interface Assignment {
     readonly value : RawExpr<PrimitiveExpr>
 }
 export interface UpdateData {
-    readonly _query : UpdateUtil.UpdatableQuery,
+    readonly _query : UpdatableQuery,
     readonly _assignments : Assignment[]|undefined,
     readonly _modifier : UpdateModifier|undefined,
 }

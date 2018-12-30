@@ -14,8 +14,8 @@ import {PrimitiveExpr, NonNullPrimitiveExpr} from "../primitive-expr";
 import {IJoinDeclaration} from "../join-declaration";
 import {IConnection} from "../execution";
 import {InsertSelectRowDelegate} from "../insert-select";
-import { UpdateUtil } from "../update";
-import { DeletableQuery, DeleteUtil, Delete, DeleteModifier } from "../delete";
+import {UpdateUtil, UpdatableQuery} from "../update";
+import {DeletableQuery, DeleteUtil, Delete, DeleteModifier} from "../delete";
 
 export interface UnionQuery {
     //Defaults to true
@@ -1659,25 +1659,44 @@ export class Query<DataT extends QueryData> {
         );
     }
     set<
-        DelegateT extends UpdateUtil.SetDelegate<
-            Extract<this, UpdateUtil.UpdatableQuery>
+        DelegateT extends UpdateUtil.SingleTableSetDelegate<
+            Extract<this, UpdatableQuery>
         >
     > (
         this : (
-            Extract<this, UpdateUtil.UpdatableQuery> &
+            Extract<this, UpdatableQuery> &
+            UpdateUtil.AssertValidSingleTableSetDelegate_Hack<
+                Extract<this, UpdatableQuery>,
+                DelegateT
+            > &
+            UpdateUtil.AssertValidSingleTableUpdatableQuery<
+                Extract<this, UpdatableQuery>
+            >
+        ),
+        delegate : DelegateT
+    ) : (
+        QueryUtil.Set<Extract<this, UpdatableQuery>>
+    );
+    set<
+        DelegateT extends UpdateUtil.SetDelegate<
+            Extract<this, UpdatableQuery>
+        >
+    > (
+        this : (
+            Extract<this, UpdatableQuery> &
             UpdateUtil.AssertValidSetDelegate_Hack<
-                Extract<this, UpdateUtil.UpdatableQuery>,
+                Extract<this, UpdatableQuery>,
                 DelegateT
             >
         ),
         delegate : DelegateT
     ) : (
-        QueryUtil.Set<Extract<this, UpdateUtil.UpdatableQuery>>
+        QueryUtil.Set<Extract<this, UpdatableQuery>>
+    );
+    set (delegate : () => any) : (
+        QueryUtil.Set<Extract<this, UpdatableQuery>>
     ) {
-        return QueryUtil.set<
-            Extract<this, UpdateUtil.UpdatableQuery>,
-            DelegateT
-        >(this, delegate);
+        return QueryUtil.set(this as any, delegate);
     }
     delete (
         this : Extract<this, DeletableQuery>,

@@ -13,7 +13,7 @@ import { PrimitiveExpr, NonNullPrimitiveExpr } from "../primitive-expr";
 import { IJoinDeclaration } from "../join-declaration";
 import { IConnection } from "../execution";
 import { InsertSelectRowDelegate } from "../insert-select";
-import { UpdateUtil } from "../update";
+import { UpdateUtil, UpdatableQuery } from "../update";
 import { DeletableQuery, DeleteUtil, Delete, DeleteModifier } from "../delete";
 export interface UnionQuery {
     readonly distinct: boolean;
@@ -146,7 +146,8 @@ export declare class Query<DataT extends QueryData> {
     replaceInto<TableT extends ITable & {
         insertAllowed: true;
     }>(this: Extract<this, QueryUtil.AfterSelectClause>, table: TableT, delegate: InsertSelectRowDelegate<Extract<this, QueryUtil.AfterSelectClause>, TableT>): (QueryUtil.ReplaceInto<Extract<this, QueryUtil.AfterSelectClause>, TableT>);
-    set<DelegateT extends UpdateUtil.SetDelegate<Extract<this, UpdateUtil.UpdatableQuery>>>(this: (Extract<this, UpdateUtil.UpdatableQuery> & UpdateUtil.AssertValidSetDelegate_Hack<Extract<this, UpdateUtil.UpdatableQuery>, DelegateT>), delegate: DelegateT): (QueryUtil.Set<Extract<this, UpdateUtil.UpdatableQuery>>);
+    set<DelegateT extends UpdateUtil.SingleTableSetDelegate<Extract<this, UpdatableQuery>>>(this: (Extract<this, UpdatableQuery> & UpdateUtil.AssertValidSingleTableSetDelegate_Hack<Extract<this, UpdatableQuery>, DelegateT> & UpdateUtil.AssertValidSingleTableUpdatableQuery<Extract<this, UpdatableQuery>>), delegate: DelegateT): (QueryUtil.Set<Extract<this, UpdatableQuery>>);
+    set<DelegateT extends UpdateUtil.SetDelegate<Extract<this, UpdatableQuery>>>(this: (Extract<this, UpdatableQuery> & UpdateUtil.AssertValidSetDelegate_Hack<Extract<this, UpdatableQuery>, DelegateT>), delegate: DelegateT): (QueryUtil.Set<Extract<this, UpdatableQuery>>);
     delete(this: Extract<this, DeletableQuery>, delegate: DeleteUtil.DeleteDelegate<Extract<this, DeletableQuery>>): (Delete<{
         _query: DeletableQuery;
         _tables: (ITable & {

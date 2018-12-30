@@ -19,7 +19,6 @@ function mutableColumnIdentifiers(query) {
     }
     return result;
 }
-exports.mutableColumnIdentifiers = mutableColumnIdentifiers;
 function toAssignments(ref) {
     const result = [];
     for (let tableAlias in ref) {
@@ -42,8 +41,7 @@ function toAssignments(ref) {
     }
     return result;
 }
-exports.toAssignments = toAssignments;
-function update(query, modifier, delegate) {
+function multiTableUpdate(query, modifier, delegate) {
     const ref = column_ref_1.ColumnRefUtil.fromJoinArray(query._joins);
     const assignmentRef = delegate(column_ref_1.ColumnRefUtil.toConvenient(ref));
     const mutableIdentifiers = mutableColumnIdentifiers(query);
@@ -75,7 +73,7 @@ function update(query, modifier, delegate) {
         _modifier: modifier,
     });
 }
-exports.update = update;
+exports.multiTableUpdate = multiTableUpdate;
 /*TODO Move to compile-time tests
 import * as o from "../../../index";
 import { ColumnIdentifierRefUtil } from "../../../column-identifier-ref";
@@ -104,4 +102,4 @@ const u = update(
     }
 )
 */ 
-//# sourceMappingURL=update.js.map
+//# sourceMappingURL=multi-table-update.js.map

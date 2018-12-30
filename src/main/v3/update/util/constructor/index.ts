@@ -1,1 +1,2 @@
-export * from "./update";
+export * from "./multi-table-update";
+export * from "./single-table-update";

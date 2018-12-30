@@ -19,6 +19,7 @@ __export(require("./order"));
 __export(require("./polymorphism"));
 __export(require("./query"));
 __export(require("./table"));
+__export(require("./update"));
 __export(require("./assert-map"));
 __export(require("./expr-select-item"));
 __export(require("./expr"));

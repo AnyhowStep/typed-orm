@@ -3,5 +3,6 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(require("./update"));
+__export(require("./multi-table-update"));
+__export(require("./single-table-update"));
 //# sourceMappingURL=index.js.map

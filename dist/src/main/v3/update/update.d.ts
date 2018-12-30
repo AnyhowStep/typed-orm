@@ -2,6 +2,26 @@ import * as UpdateUtil from "./util";
 import { RawExpr } from "../raw-expr";
 import { PrimitiveExpr } from "../primitive-expr";
 import { IConnection, UpdateResult } from "../execution";
+import { IQuery } from "../query";
+import { IJoin } from "../join";
+import { IAnonymousTypedExpr } from "../expr";
+import { MapDelegate } from "../map-delegate";
+export declare type UpdatableQuery = IQuery<{
+    readonly _distinct: false;
+    readonly _sqlCalcFoundRows: false;
+    readonly _joins: IJoin[];
+    readonly _parentJoins: undefined;
+    readonly _selects: undefined;
+    readonly _where: IAnonymousTypedExpr<boolean> | undefined;
+    readonly _grouped: undefined;
+    readonly _having: undefined;
+    readonly _orders: undefined;
+    readonly _limit: undefined;
+    readonly _unions: undefined;
+    readonly _unionOrders: undefined;
+    readonly _unionLimit: undefined;
+    readonly _mapDelegate: MapDelegate | undefined;
+}>;
 export declare enum UpdateModifier {
     IGNORE = "IGNORE"
 }
@@ -11,7 +31,7 @@ export interface Assignment {
     readonly value: RawExpr<PrimitiveExpr>;
 }
 export interface UpdateData {
-    readonly _query: UpdateUtil.UpdatableQuery;
+    readonly _query: UpdatableQuery;
     readonly _assignments: Assignment[] | undefined;
     readonly _modifier: UpdateModifier | undefined;
 }
