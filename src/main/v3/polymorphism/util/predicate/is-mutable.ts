@@ -2,15 +2,15 @@ import {ITable} from "../../../table";
 import {HasColumnName} from "./parents-have-column-name";
 import {TableAliases, FindTable} from "../query";
 
-//All tables must have it as nullable.
-export type IsNullable<TableT extends ITable, NameT extends string> = (
+//All tables must have it as mutable.
+export type IsMutable<TableT extends ITable, NameT extends string> = (
     HasColumnName<TableT, NameT> extends true ?
     (
         {
             [tableAlias in TableAliases<TableT>] : (
                 NameT extends keyof FindTable<TableT, tableAlias>["columns"] ?
                 (
-                    NameT extends FindTable<TableT, tableAlias>["isNullable"][number] ?
+                    NameT extends FindTable<TableT, tableAlias>["mutable"][number] ?
                     true :
                     false
                 ) :
@@ -22,26 +22,26 @@ export type IsNullable<TableT extends ITable, NameT extends string> = (
     ) :
     false
 );
-export function isNullable<TableT extends ITable, NameT extends string> (
+export function isMutable<TableT extends ITable, NameT extends string> (
     table : TableT,
     name : NameT
-) : IsNullable<TableT, NameT> {
+) : IsMutable<TableT, NameT> {
     if (
         (name in table.columns) &&
-        table.isNullable.indexOf(name) < 0
+        table.mutable.indexOf(name) < 0
     ) {
-        return false as IsNullable<TableT, NameT>;
+        return false as IsMutable<TableT, NameT>;
     }
 
     for (let p of table.parents) {
         if (
             (name in p.columns) &&
-            //TODO-DEBATE Consider using Set<string> instead
-            //of string[] ?
-            p.isNullable.indexOf(name) < 0
+            //TODO-DEBATE Consider naming it isMutable?
+            //TODO-DEBATE or renaming isNullable to nullable?
+            p.mutable.indexOf(name) < 0
         ) {
-            return false as IsNullable<TableT, NameT>;
+            return false as IsMutable<TableT, NameT>;
         }
     }
-    return true as IsNullable<TableT, NameT>;
+    return true as IsMutable<TableT, NameT>;
 }

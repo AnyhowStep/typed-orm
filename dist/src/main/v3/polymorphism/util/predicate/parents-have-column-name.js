@@ -9,4 +9,11 @@ function parentsHaveColumnName(table, columnName) {
     return false;
 }
 exports.parentsHaveColumnName = parentsHaveColumnName;
+function hasColumnName(table, columnName) {
+    if (!(columnName in table.columns)) {
+        return false;
+    }
+    return parentsHaveColumnName(table, columnName);
+}
+exports.hasColumnName = hasColumnName;
 //# sourceMappingURL=parents-have-column-name.js.map

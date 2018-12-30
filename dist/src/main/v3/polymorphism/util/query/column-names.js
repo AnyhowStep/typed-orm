@@ -59,4 +59,14 @@ function uniqueRequiredColumnNames(table) {
     return result;
 }
 exports.uniqueRequiredColumnNames = uniqueRequiredColumnNames;
+function uniqueMutableColumnNames(table) {
+    const result = new Set();
+    for (let c of uniqueColumnNames(table)) {
+        if (predicate_1.isMutable(table, c)) {
+            result.add(c);
+        }
+    }
+    return result;
+}
+exports.uniqueMutableColumnNames = uniqueMutableColumnNames;
 //# sourceMappingURL=column-names.js.map

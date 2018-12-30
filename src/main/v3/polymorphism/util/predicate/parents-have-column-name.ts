@@ -32,3 +32,18 @@ export type HasColumnName<
     true :
     false
 );
+export function hasColumnName<
+    TableT extends ITable,
+    NameT extends string
+> (
+    table : TableT,
+    columnName : NameT
+) : HasColumnName<TableT, NameT> {
+    if (!(columnName in table.columns)) {
+        return false as HasColumnName<TableT, NameT>;
+    }
+    return parentsHaveColumnName(
+        table,
+        columnName
+    ) as boolean as HasColumnName<TableT, NameT>;
+}

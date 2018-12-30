@@ -5,5 +5,6 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./has-explicit-default-value"));
 __export(require("./is-generated"));
+__export(require("./is-mutable"));
 __export(require("./is-nullable"));
 //# sourceMappingURL=index.js.map

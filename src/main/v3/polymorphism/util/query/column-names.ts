@@ -1,6 +1,6 @@
 import {ITable} from "../../../table";
 import {ColumnUtil} from "../../../column";
-import {IsNullable, HasExplicitDefaultValue, isNullable, hasExplicitDefaultValue} from "../predicate";
+import {IsNullable, HasExplicitDefaultValue, isNullable, hasExplicitDefaultValue, IsMutable, isMutable} from "../predicate";
 
 export type ParentColumnNames<TableT extends ITable> = (
     ColumnUtil.Name.FromColumnMap<
@@ -106,6 +106,27 @@ export function uniqueRequiredColumnNames<TableT extends ITable> (
     const result = new Set<string>();
     for (let c of uniqueNonGeneratedColumnNames(table)) {
         if (!isNullable(table, c) && !hasExplicitDefaultValue(table, c)) {
+            result.add(c);
+        }
+    }
+    return result as any;
+}
+
+export type MutableColumnNames<TableT extends ITable> = (
+    {
+        [columnName in ColumnNames<TableT>] : (
+            IsMutable<TableT, columnName> extends true ?
+            columnName :
+            never
+        )
+    }[ColumnNames<TableT>]
+);
+export function uniqueMutableColumnNames<TableT extends ITable> (
+    table : TableT
+) : Set<MutableColumnNames<TableT>> {
+    const result = new Set<string>();
+    for (let c of uniqueColumnNames(table)) {
+        if (isMutable(table, c)) {
             result.add(c);
         }
     }
