@@ -39,13 +39,13 @@ export type UpdatableQuery = IQuery<{
     readonly _mapDelegate : MapDelegate|undefined;
 }>;
 
-export type AssignmentRef<QueryT extends UpdatableQuery> = (
+export type AssignmentRefFromJoinArray<JoinArrT extends IJoin[]> = (
     {
-        readonly [tableAlias in JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>]? : (
+        readonly [tableAlias in JoinArrayUtil.ToTableAliasUnion<JoinArrT>]? : (
             {
                 readonly [columnName in Extract<
                     keyof JoinArrayUtil.FindWithTableAlias<
-                        QueryT["_joins"],
+                        JoinArrT,
                         tableAlias
                     >["columns"],
                     string
@@ -53,7 +53,7 @@ export type AssignmentRef<QueryT extends UpdatableQuery> = (
                     RawExpr<
                         ReturnType<
                             JoinArrayUtil.FindWithTableAlias<
-                                QueryT["_joins"],
+                                JoinArrT,
                                 tableAlias
                             >["aliasedTable"]["columns"][columnName]["assertDelegate"]
                         >
@@ -62,6 +62,9 @@ export type AssignmentRef<QueryT extends UpdatableQuery> = (
             }
         )
     }
+);
+export type AssignmentRef<QueryT extends UpdatableQuery> = (
+    AssignmentRefFromJoinArray<QueryT["_joins"]>
 );
 export type ExtractMap<RefT extends AssignmentRef<UpdatableQuery>> = (
     RefT[keyof RefT]
@@ -146,12 +149,15 @@ export function toAssignments (ref : AssignmentRef<UpdatableQuery>) : Assignment
     return result;
 }
 
-export type SetDelegate<QueryT extends UpdatableQuery> = (
+export type SetDelegateFromJoinArray<JoinArrT extends IJoin[]> = (
     (
         columns : ColumnRefUtil.ToConvenient<
-            ColumnRefUtil.FromJoinArray<QueryT["_joins"]>
+            ColumnRefUtil.FromJoinArray<JoinArrT>
         >
-    ) => AssignmentRef<QueryT>
+    ) => AssignmentRefFromJoinArray<JoinArrT>
+);
+export type SetDelegate<QueryT extends UpdatableQuery> = (
+    SetDelegateFromJoinArray<QueryT["_joins"]>
 );
 
 
