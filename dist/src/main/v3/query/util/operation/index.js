@@ -27,6 +27,7 @@ __export(require("./require-parent-joins"));
 __export(require("./select-expr"));
 __export(require("./select"));
 __export(require("./sql-calc-found-rows"));
+__export(require("./sub-query"));
 __export(require("./union-limit"));
 __export(require("./union-offset"));
 __export(require("./union-order-by"));

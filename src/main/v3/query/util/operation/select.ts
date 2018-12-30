@@ -17,7 +17,8 @@ export type SelectDelegate<
     (
         columns : ColumnRefUtil.ToConvenient<
             ColumnRefUtil.FromQueryJoins<QueryT>
-        >
+        >,
+        query : QueryT
     ) => NonEmptyTuple<SelectItem>
 );
 
@@ -239,7 +240,8 @@ export function select<
     }
     const queryRef = ColumnRefUtil.fromQueryJoins(query);
     const selects = delegate(
-        ColumnRefUtil.toConvenient(queryRef)
+        ColumnRefUtil.toConvenient(queryRef),
+        query
     );
 
     for (let selectItem of selects) {

@@ -13,7 +13,7 @@ function select(query, delegate) {
         throw new Error(`Cannot use SELECT after UNION clause`);
     }
     const queryRef = column_ref_1.ColumnRefUtil.fromQueryJoins(query);
-    const selects = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef));
+    const selects = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef), query);
     for (let selectItem of selects) {
         if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(selectItem)) {
             //+ If SelectItem is IExprSelectItem,

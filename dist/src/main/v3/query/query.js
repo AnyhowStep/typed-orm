@@ -248,6 +248,9 @@ class Query {
     deleteIgnore(delegate) {
         return QueryUtil.deleteIgnore(this, delegate);
     }
+    subQuery() {
+        return QueryUtil.subQuery(this);
+    }
 }
 exports.Query = Query;
 function from(aliasedTable) {

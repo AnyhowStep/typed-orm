@@ -162,6 +162,7 @@ export declare class Query<DataT extends QueryData> {
         })[];
         _modifier: DeleteModifier.IGNORE;
     }>);
+    subQuery(): QueryUtil.SubQueryResult<this>;
 }
 export declare function from<AliasedTableT extends IAliasedTable>(aliasedTable: QueryUtil.AssertValidJoinTarget<QueryUtil.NewInstance, AliasedTableT>): (QueryUtil.From<QueryUtil.NewInstance, AliasedTableT>);
 export declare function select<SelectDelegateT extends QueryUtil.SelectDelegate<QueryUtil.NewInstance>>(delegate: QueryUtil.AssertValidSelectDelegate<QueryUtil.NewInstance, SelectDelegateT>): (QueryUtil.Select<QueryUtil.NewInstance, SelectDelegateT>);

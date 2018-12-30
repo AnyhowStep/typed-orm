@@ -23,6 +23,7 @@ export * from "./require-parent-joins";
 export * from "./select-expr";
 export * from "./select";
 export * from "./sql-calc-found-rows";
+export * from "./sub-query";
 export * from "./union-limit";
 export * from "./union-offset";
 export * from "./union-order-by";

@@ -1722,6 +1722,9 @@ export class Query<DataT extends QueryData> {
     ) {
         return QueryUtil.deleteIgnore(this, delegate);
     }
+    subQuery () : QueryUtil.SubQueryResult<this> {
+        return QueryUtil.subQuery(this);
+    }
 }
 
 export function from<AliasedTableT extends IAliasedTable> (

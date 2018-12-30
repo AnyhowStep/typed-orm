@@ -8,7 +8,7 @@ import { SelectItem } from "../../../select-item";
 import { IExprSelectItem } from "../../../expr-select-item";
 import { IColumn, ColumnUtil } from "../../../column";
 import { ColumnIdentifierUtil } from "../../../column-identifier";
-export declare type SelectDelegate<QueryT extends BeforeUnionClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQueryJoins<QueryT>>) => NonEmptyTuple<SelectItem>);
+export declare type SelectDelegate<QueryT extends BeforeUnionClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQueryJoins<QueryT>>, query: QueryT) => NonEmptyTuple<SelectItem>);
 export declare type Select<QueryT extends BeforeUnionClause, SelectDelegateT extends SelectDelegate<QueryT>> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];

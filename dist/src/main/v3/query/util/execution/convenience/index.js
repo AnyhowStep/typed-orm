@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./fetch-one-by-ck"));
 __export(require("./fetch-one-by-pk"));
 __export(require("./fetch-one-by-sk"));
+__export(require("./fetch-value-or-undefined-by-ck"));
 __export(require("./fetch-zero-or-one-by-ck"));
 __export(require("./fetch-zero-or-one-by-pk"));
 __export(require("./fetch-zero-or-one-by-sk"));
