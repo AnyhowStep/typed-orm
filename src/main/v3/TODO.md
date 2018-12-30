@@ -7,11 +7,48 @@
 
 + Implement replaceTable()
 
++ SELECT statements
+  + fetchZeroOrOneByPk()
+  + fetchZeroOrOneByCk()
+  + fetchZeroOrOneBySk()
+  + fetchOneByPk()
+  + fetchOneByCk()
+  + fetchOneBySk()
+  + fetchValueOrUndefinedByPk()
+  + fetchValueOrUndefinedByCk()
+  + fetchValueOrUndefinedBySk()
+  + fetchValueByPk()
+  + fetchValueByCk()
+  + fetchValueBySk()
+  + existsByPk()
+  + existsByCk()
+  + existsBySk()
+  + assertExistsByPk()
+  + assertExistsByCk()
+  + assertExistsBySk()
 + INSERT statements
   + ON DUPLICATE KEY UPDATE
+  + insertAndFetch()
 + UPDATE statements
-  + Polymorphic Update
+  + updateZeroOrOneByPk()
+  + updateZeroOrOneByCk()
+  + updateZeroOrOneBySk()
+  + updateOnePk()
+  + updateOneCk()
+  + updateOneSk()
+  + updateAndFetchZeroOrOneByPk()
+  + updateAndFetchZeroOrOneByCk()
+  + updateAndFetchZeroOrOneBySk()
+  + updateAndFetchOneByPk()
+  + updateAndFetchOneByCk()
+  + updateAndFetchOneBySk()
 + DELETE statements
+  + deleteZeroOrOneByPk()
+  + deleteZeroOrOneByCk()
+  + deleteZeroOrOneBySk()
+  + deleteOneByPk()
+  + deleteOneByCk()
+  + deleteOneBySk()
   + Polymorphic delete
   + Aliasing a table currently makes it ineligible for deletes
     TODO: Fix it?
