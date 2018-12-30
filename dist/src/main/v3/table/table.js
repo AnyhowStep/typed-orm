@@ -34,6 +34,12 @@ class Table {
         }
         return this.cachedSuperKeyAssertDelegate;
     }
+    primaryKeyAssertDelegate() {
+        if (this.cachedPrimaryKeyAssertDelegate == undefined) {
+            this.cachedPrimaryKeyAssertDelegate = (TableUtil.primaryKeyAssertDelegate(this));
+        }
+        return this.cachedPrimaryKeyAssertDelegate;
+    }
     setAlias(newAlias) {
         return TableUtil.setAlias(this, newAlias);
     }

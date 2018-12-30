@@ -208,6 +208,27 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
         }
         return this.cachedSuperKeyAssertDelegate;
     }
+    //A cache to re-use the assert delegate
+    private cachedPrimaryKeyAssertDelegate : (
+        undefined |
+        TableUtil.PrimaryKeyAssertDelegate<
+            Extract<this, ITable & { primaryKey : CandidateKey }>
+        >
+    );
+    primaryKeyAssertDelegate (
+        this : Extract<this, ITable & { primaryKey : CandidateKey }>
+    ) : (
+        TableUtil.PrimaryKeyAssertDelegate<
+            Extract<this, ITable & { primaryKey : CandidateKey }>
+        >
+    ) {
+        if (this.cachedPrimaryKeyAssertDelegate == undefined) {
+            this.cachedPrimaryKeyAssertDelegate = (
+                TableUtil.primaryKeyAssertDelegate(this)
+            );
+        }
+        return this.cachedPrimaryKeyAssertDelegate;
+    }
 
     setAlias<NewAliasT extends string>(
         newAlias : NewAliasT

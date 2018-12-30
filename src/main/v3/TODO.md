@@ -8,12 +8,6 @@
 + Implement replaceTable()
 
 + SELECT statements
-  + fetchZeroOrOneByPk()
-  + fetchZeroOrOneByCk()
-  + fetchZeroOrOneBySk()
-  + fetchOneByPk()
-  + fetchOneByCk()
-  + fetchOneBySk()
   + fetchValueOrUndefinedByPk()
   + fetchValueOrUndefinedByCk()
   + fetchValueOrUndefinedBySk()

@@ -58,6 +58,12 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     candidateKeyAssertDelegate(): TableUtil.CandidateKeyAssertDelegate<this>;
     private cachedSuperKeyAssertDelegate;
     superKeyAssertDelegate(): TableUtil.SuperKeyAssertDelegate<this>;
+    private cachedPrimaryKeyAssertDelegate;
+    primaryKeyAssertDelegate(this: Extract<this, ITable & {
+        primaryKey: CandidateKey;
+    }>): (TableUtil.PrimaryKeyAssertDelegate<Extract<this, ITable & {
+        primaryKey: CandidateKey;
+    }>>);
     setAlias<NewAliasT extends string>(newAlias: NewAliasT): TableUtil.SetAlias<this, NewAliasT>;
     addColumns<FieldsT extends sd.AnyField[]>(fields: FieldsT): (TableUtil.AddColumnsFromFieldTuple<this, FieldsT>);
     addColumns<AssertMapT extends AssertMap>(assertMap: AssertMapT): (TableUtil.AddColumnsFromAssertMap<this, AssertMapT>);

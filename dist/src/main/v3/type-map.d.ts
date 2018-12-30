@@ -22,5 +22,10 @@ export declare namespace TypeMapUtil {
     type FromTable<TableT extends ITable> = ({
         readonly [columnName in Extract<keyof TableT["columns"], string>]: (ReturnType<TableT["columns"][columnName]["assertDelegate"]>);
     });
+    type FromPrimaryKey<PrimaryKeyT extends CandidateKey, ColumnMapT extends ColumnMap> = (PrimaryKeyT extends CandidateKey ? {
+        readonly [columnName in Extract<keyof ColumnMapT, PrimaryKeyT[number]>]: (ReturnType<ColumnMapT[columnName]["assertDelegate"]>);
+    } : never);
+    type AssertDelegateFromPrimaryKey<PrimaryKeyT extends CandidateKey, ColumnMapT extends ColumnMap> = (sd.AssertDelegate<FromPrimaryKey<PrimaryKeyT, ColumnMapT>>);
+    function assertDelegateFromPrimaryKey<PrimaryKeyT extends CandidateKey, ColumnMapT extends ColumnMap>(primaryKey: PrimaryKeyT, columnMap: ColumnMapT): (AssertDelegateFromPrimaryKey<PrimaryKeyT, ColumnMapT>);
 }
 //# sourceMappingURL=type-map.d.ts.map
