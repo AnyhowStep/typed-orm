@@ -32,12 +32,6 @@
   + ON DUPLICATE KEY UPDATE
   + insertAndFetch()
 + UPDATE statements
-  + updateZeroOrOneByPk()
-  + updateZeroOrOneByCk()
-  + updateZeroOrOneBySk()
-  + updateOnePk()
-  + updateOneCk()
-  + updateOneSk()
   + updateAndFetchZeroOrOneByPk()
   + updateAndFetchZeroOrOneByCk()
   + updateAndFetchZeroOrOneBySk()
