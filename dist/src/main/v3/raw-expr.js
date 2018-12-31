@@ -58,7 +58,7 @@ var RawExprUtil;
     function assertDelegate(rawExpr) {
         //Check primitive cases first
         if (typeof rawExpr == "number") {
-            return sd.literal(rawExpr);
+            return dataType.double();
         }
         if (typeof rawExpr == "bigint") {
             return dataType.bigint();
@@ -67,18 +67,14 @@ var RawExprUtil;
             return sd.literal(rawExpr);
         }
         if (typeof rawExpr == "boolean") {
-            //MySQL returns `number` instead of `boolean`
             return (rawExpr ?
                 dataType.true() :
                 dataType.false());
         }
         if (rawExpr instanceof Date) {
-            //TODO-DEBATE Have a delegate that checks for the exact date given?
             return dataType.dateTime(3);
         }
         if (rawExpr instanceof Buffer) {
-            //TODO-DEBATE Have a delegate that checks for the exact buffer given?
-            //May not be desirable if the buffer is large...
             return sd.buffer();
         }
         if (rawExpr === null) {

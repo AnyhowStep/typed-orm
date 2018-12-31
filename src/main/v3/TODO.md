@@ -29,9 +29,6 @@
 + Implement replaceTable()
 
 + SELECT statements
-  + fetchValueOrUndefinedByPk()
-  + fetchValueOrUndefinedByCk()
-  + fetchValueOrUndefinedBySk()
   + fetchValueByPk()
   + fetchValueByCk()
   + fetchValueBySk()

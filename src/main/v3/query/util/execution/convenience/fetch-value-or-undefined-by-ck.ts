@@ -2,10 +2,7 @@ import {ITable, TableUtil} from "../../../../table";
 import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
 import {RawExprUtil} from "../../../../raw-expr";
-import {ColumnUtil} from "../../../../column";
-import {ExprUtil} from "../../../../expr";
-import {ExprSelectItemUtil} from "../../../../expr-select-item";
-import {SelectValueDelegate, AssertValidSelectValueDelegate} from "./select-value-delegate";
+import {SelectValueDelegate, AssertValidSelectValueDelegate, executeSelectValueDelegate} from "./select-value-delegate";
 
 export function fetchValueOrUndefinedByCk<
     TableT extends ITable,
@@ -24,18 +21,11 @@ export function fetchValueOrUndefinedByCk<
         .from(table as any)
         .where(() => TableUtil.eqCandidateKey(table, ck) as any)
         .select((columns, query) => {
-            const rawExpr = delegate(columns, query as any);
-            const selectItem = (
-                ColumnUtil.isColumn(rawExpr) ?
-                rawExpr :
-                ExprSelectItemUtil.isExprSelectItem(rawExpr) ?
-                rawExpr :
-                ExprUtil.as(
-                    ExprUtil.fromRawExpr(rawExpr),
-                    "value"
-                )
+            return executeSelectValueDelegate(
+                columns,
+                query,
+                delegate as any
             );
-            return [selectItem];
         })
         .fetchValueOrUndefined(connection) as any;
 }

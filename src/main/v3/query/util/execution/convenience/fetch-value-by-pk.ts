@@ -3,23 +3,24 @@ import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
 import {RawExprUtil} from "../../../../raw-expr";
 import {SelectValueDelegate, AssertValidSelectValueDelegate, executeSelectValueDelegate} from "./select-value-delegate";
+import {CandidateKey} from "../../../../candidate-key";
 
-export function fetchValueOrUndefinedBySk<
-    TableT extends ITable,
+export function fetchValueByPk<
+    TableT extends ITable & { primaryKey : CandidateKey },
     DelegateT extends SelectValueDelegate<TableT>
 > (
     connection : IConnection,
     table : TableT,
-    sk : TableUtil.SuperKey<TableT>,
+    pk : TableUtil.PrimaryKey<TableT>,
     delegate : AssertValidSelectValueDelegate<TableT, DelegateT>
 ) : (
     Promise<
-        RawExprUtil.TypeOf<ReturnType<DelegateT>>|undefined
+        RawExprUtil.TypeOf<ReturnType<DelegateT>>
     >
 ) {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqSuperKey(table, sk) as any)
+        .where(() => TableUtil.eqPrimaryKey(table, pk) as any)
         .select((columns, query) => {
             return executeSelectValueDelegate(
                 columns,
@@ -27,5 +28,5 @@ export function fetchValueOrUndefinedBySk<
                 delegate as any
             );
         })
-        .fetchValueOrUndefined(connection) as any;
+        .fetchValue(connection) as any;
 }

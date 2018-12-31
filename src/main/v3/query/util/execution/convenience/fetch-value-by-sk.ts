@@ -4,7 +4,7 @@ import {IConnection} from "../../../../execution";
 import {RawExprUtil} from "../../../../raw-expr";
 import {SelectValueDelegate, AssertValidSelectValueDelegate, executeSelectValueDelegate} from "./select-value-delegate";
 
-export function fetchValueOrUndefinedBySk<
+export function fetchValueBySk<
     TableT extends ITable,
     DelegateT extends SelectValueDelegate<TableT>
 > (
@@ -14,7 +14,7 @@ export function fetchValueOrUndefinedBySk<
     delegate : AssertValidSelectValueDelegate<TableT, DelegateT>
 ) : (
     Promise<
-        RawExprUtil.TypeOf<ReturnType<DelegateT>>|undefined
+        RawExprUtil.TypeOf<ReturnType<DelegateT>>
     >
 ) {
     return QueryUtil.newInstance()
@@ -27,5 +27,5 @@ export function fetchValueOrUndefinedBySk<
                 delegate as any
             );
         })
-        .fetchValueOrUndefined(connection) as any;
+        .fetchValue(connection) as any;
 }

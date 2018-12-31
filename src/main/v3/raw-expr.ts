@@ -144,7 +144,7 @@ export namespace RawExprUtil {
     ) : AssertDelegate<RawExprT> {
         //Check primitive cases first
         if (typeof rawExpr == "number") {
-            return sd.literal(rawExpr) as any;
+            return dataType.double() as any;
         }
         if (typeof rawExpr == "bigint") {
             return dataType.bigint() as any;
@@ -153,19 +153,15 @@ export namespace RawExprUtil {
             return sd.literal(rawExpr) as any;
         }
         if (typeof rawExpr == "boolean") {
-            //MySQL returns `number` instead of `boolean`
             return (rawExpr ?
                 dataType.true() :
                 dataType.false()
             ) as any;
         }
         if (rawExpr instanceof Date) {
-            //TODO-DEBATE Have a delegate that checks for the exact date given?
             return dataType.dateTime(3) as any;
         }
         if (rawExpr instanceof Buffer) {
-            //TODO-DEBATE Have a delegate that checks for the exact buffer given?
-            //May not be desirable if the buffer is large...
             return sd.buffer() as any;
         }
         if (rawExpr === null) {
