@@ -6,14 +6,15 @@ import {ColumnUtil} from "../../../../column";
 import {ExprUtil} from "../../../../expr";
 import {ExprSelectItemUtil} from "../../../../expr-select-item";
 import {SelectValueDelegate, AssertValidSelectValueDelegate} from "./select-value-delegate";
+import {CandidateKey} from "../../../../candidate-key";
 
-export function fetchValueOrUndefinedByCk<
-    TableT extends ITable,
+export function fetchValueOrUndefinedByPk<
+    TableT extends ITable & { primaryKey : CandidateKey },
     DelegateT extends SelectValueDelegate<TableT>
 > (
     connection : IConnection,
     table : TableT,
-    ck : TableUtil.CandidateKey<TableT>,
+    pk : TableUtil.PrimaryKey<TableT>,
     delegate : AssertValidSelectValueDelegate<TableT, DelegateT>
 ) : (
     Promise<
@@ -22,7 +23,7 @@ export function fetchValueOrUndefinedByCk<
 ) {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqCandidateKey(table, ck) as any)
+        .where(() => TableUtil.eqPrimaryKey(table, pk) as any)
         .select((columns, query) => {
             const rawExpr = delegate(columns, query as any);
             const selectItem = (
