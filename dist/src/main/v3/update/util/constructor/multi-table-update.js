@@ -19,32 +19,11 @@ function mutableColumnIdentifiers(query) {
     }
     return result;
 }
-function toAssignments(ref) {
-    const result = [];
-    for (let tableAlias in ref) {
-        const map = ref[tableAlias];
-        if (map == undefined) {
-            continue;
-        }
-        for (let columnName in map) {
-            const rawExpr = map[columnName];
-            //`null` is a valid rawExpr
-            if (rawExpr === undefined) {
-                continue;
-            }
-            result.push({
-                tableAlias,
-                columnName,
-                value: rawExpr,
-            });
-        }
-    }
-    return result;
-}
 function multiTableUpdate(query, modifier, delegate) {
     const ref = column_ref_1.ColumnRefUtil.fromJoinArray(query._joins);
     const assignmentRef = delegate(column_ref_1.ColumnRefUtil.toConvenient(ref));
     const mutableIdentifiers = mutableColumnIdentifiers(query);
+    const assignments = [];
     //usedRefs must be valid,
     //columns in assignment must be mutable
     for (let tableAlias in assignmentRef) {
@@ -56,7 +35,9 @@ function multiTableUpdate(query, modifier, delegate) {
             const isMutable = mutableIdentifiers.findIndex(i => (i.tableAlias == tableAlias &&
                 i.name == columnName)) >= 0;
             if (!isMutable) {
-                throw new Error(`${tableAlias}.${columnName} is not mutable`);
+                //throw new Error(`${tableAlias}.${columnName} is not mutable`);
+                //Ignore columns that cannot be modified.
+                continue;
             }
             const rawExpr = assignmentMap[columnName];
             //`null` is a valid RawExpr
@@ -65,11 +46,16 @@ function multiTableUpdate(query, modifier, delegate) {
             }
             const usedRef = raw_expr_1.RawExprUtil.usedRef(rawExpr);
             column_ref_1.ColumnRefUtil.assertIsSubset(usedRef, ref);
+            assignments.push({
+                tableAlias,
+                columnName,
+                value: rawExpr,
+            });
         }
     }
     return new update_1.Update({
         _query: query,
-        _assignments: toAssignments(assignmentRef),
+        _assignments: assignments,
         _modifier: modifier,
     });
 }

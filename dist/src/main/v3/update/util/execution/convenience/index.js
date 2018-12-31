@@ -4,4 +4,6 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./update-zero-or-one-by-ck"));
+__export(require("./update-zero-or-one-by-pk"));
+__export(require("./update-zero-or-one-by-sk"));
 //# sourceMappingURL=index.js.map

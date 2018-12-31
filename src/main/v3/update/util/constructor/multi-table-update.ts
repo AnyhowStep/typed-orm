@@ -94,29 +94,6 @@ function mutableColumnIdentifiers (query : UpdatableQuery) : ColumnIdentifier[] 
     return result;
 }
 
-function toAssignments (ref : AssignmentRef<UpdatableQuery>) : Assignment[] {
-    const result : Assignment[] = [];
-    for (let tableAlias in ref) {
-        const map = ref[tableAlias];
-        if (map == undefined) {
-            continue;
-        }
-        for (let columnName in map) {
-            const rawExpr = map[columnName];
-            //`null` is a valid rawExpr
-            if (rawExpr === undefined) {
-                continue;
-            }
-            result.push({
-                tableAlias,
-                columnName,
-                value : rawExpr,
-            });
-        }
-    }
-    return result;
-}
-
 export type SetDelegateFromJoinArray<JoinArrT extends IJoin[]> = (
     (
         columns : ColumnRefUtil.ToConvenient<
@@ -184,6 +161,7 @@ export function multiTableUpdate<
 
     const mutableIdentifiers = mutableColumnIdentifiers(query);
 
+    const assignments : Assignment[] = [];
     //usedRefs must be valid,
     //columns in assignment must be mutable
     for (let tableAlias in assignmentRef) {
@@ -199,7 +177,9 @@ export function multiTableUpdate<
                 )
             ) >= 0;
             if (!isMutable) {
-                throw new Error(`${tableAlias}.${columnName} is not mutable`);
+                //throw new Error(`${tableAlias}.${columnName} is not mutable`);
+                //Ignore columns that cannot be modified.
+                continue;
             }
             const rawExpr = assignmentMap[columnName];
             //`null` is a valid RawExpr
@@ -211,12 +191,17 @@ export function multiTableUpdate<
                 usedRef,
                 ref
             );
+            assignments.push({
+                tableAlias,
+                columnName,
+                value : rawExpr,
+            });
         }
     }
 
     return new Update({
         _query : query,
-        _assignments : toAssignments(assignmentRef),
+        _assignments : assignments,
         _modifier : modifier,
     });
 }
