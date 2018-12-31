@@ -1,34 +1,26 @@
 import {ITable, TableUtil} from "../../../../table";
 import {IConnection, UpdateZeroOrOneResult} from "../../../../execution";
-import {SetDelegateFromJoinArray} from "../../constructor";
-import {IJoin} from "../../../../join";
+import {SingleTableSetDelegateFromTable, AssertValidSingleTableSetDelegateFromTable_Hack} from "../../constructor";
 import {QueryUtil} from "../../../../query";
 
-/*
-    Uses a transaction to ensure you really update zero or one.
-
-    The benefit is never messing up.
-    The downside is requiring a transaction.
-
-    However, I err on the side of correctness and safety
-    over performance... For now.
-*/
-export async function updateZeroOrOneByCk<
-    TableT extends ITable
+export function updateZeroOrOneByCk<
+    TableT extends ITable,
+    DelegateT extends SingleTableSetDelegateFromTable<TableT>
 > (
-    connection : IConnection & TableUtil.AssertHasCandidateKey<TableT>,
-    table : TableT,
+    connection : IConnection,
+    table : TableT & TableUtil.AssertHasCandidateKey<TableT>,
     ck : TableUtil.CandidateKey<TableT>,
-    delegate : SetDelegateFromJoinArray<IJoin<{
-        readonly aliasedTable : TableT,
-        readonly columns : TableT["columns"],
-        readonly nullable : false,
-    }>[]>
-) : Promise<UpdateZeroOrOneResult> {
+    delegate : DelegateT
+) : (
+    AssertValidSingleTableSetDelegateFromTable_Hack<
+        TableT,
+        DelegateT,
+        Promise<UpdateZeroOrOneResult>
+    >
+) {
     return QueryUtil.newInstance()
         .from(table as any)
         .where(() => TableUtil.eqCandidateKey(table, ck) as any)
         .set(delegate as any)
-        .executeUpdateZeroOrOne(connection);
-
+        .executeUpdateZeroOrOne(connection) as any;
 }

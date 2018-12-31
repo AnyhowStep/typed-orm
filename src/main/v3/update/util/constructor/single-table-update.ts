@@ -26,6 +26,13 @@ export type SingleTableExtractRawExpr<MapT extends SingleTableAssignmentMap<ITab
     >
 );
 
+export type SingleTableSetDelegateFromTable<TableT extends ITable> = (
+    (
+        columns : TableT["columns"]
+    ) => SingleTableAssignmentMap<
+        TableT
+    >
+);
 export type SingleTableSetDelegate<QueryT extends UpdatableQuery> = (
     (
         columns : ColumnRefUtil.ToConvenient<
@@ -36,6 +43,44 @@ export type SingleTableSetDelegate<QueryT extends UpdatableQuery> = (
     >
 );
 
+
+//https://github.com/Microsoft/TypeScript/issues/29133
+export type AssertValidSingleTableSetDelegateFromTable_Hack<
+    TableT extends ITable,
+    DelegateT extends SingleTableSetDelegateFromTable<TableT>,
+    ResultT
+> = (
+    (
+        Exclude<
+            ColumnIdentifierUtil.FromColumnRef<RawExprUtil.UsedRef<SingleTableExtractRawExpr<ReturnType<DelegateT>>>>,
+            ColumnIdentifierUtil.FromColumnMap<TableT["columns"]>
+        > extends never ?
+        (
+            Extract<
+                keyof ReturnType<DelegateT>,
+                string
+            > extends TableT["mutable"][number] ?
+            ResultT :
+            [
+                "The following columns cannot be updated",
+                Exclude<
+                    Extract<
+                        keyof ReturnType<DelegateT>,
+                        string
+                    >,
+                    TableT["mutable"][number]
+                >
+            ]
+        ) :
+        [
+            "The following referenced columns are not allowed",
+            Exclude<
+                ColumnIdentifierUtil.FromColumnRef<RawExprUtil.UsedRef<SingleTableExtractRawExpr<ReturnType<DelegateT>>>>,
+                ColumnIdentifierUtil.FromColumnMap<TableT["columns"]>
+            >
+        ]
+    )
+);
 
 //https://github.com/Microsoft/TypeScript/issues/29133
 export type AssertValidSingleTableSetDelegate_Hack<
