@@ -77,7 +77,7 @@ export interface InsertResult {
     changedRows: number;
     insertedRowCount: number;
 }
-export interface UpdateResult {
+export interface RawUpdateResult {
     fieldCount: number;
     affectedRows: number;
     insertId: number;
@@ -86,9 +86,24 @@ export interface UpdateResult {
     message: string;
     protocol41: boolean;
     changedRows: number;
-    foundRowCount: number;
-    updatedRowCount: number;
+    rawFoundRowCount: number;
+    rawUpdatedRowCount: number;
 }
+export interface UpdateResult extends RawUpdateResult {
+    updatedTableCount: number;
+    foundRowCount: number;
+}
+export declare type UpdateZeroOrOneResult = (UpdateResult & ({
+    foundRowCount: 0;
+    updatedRowCount: 0;
+} | {
+    foundRowCount: 1;
+    updatedRowCount: 0 | 1;
+}));
+export declare type UpdateOneResult = (UpdateResult & {
+    foundRowCount: 1;
+    updatedRowCount: 0 | 1;
+});
 export interface DeleteResult {
     fieldCount: number;
     affectedRows: number;
@@ -108,7 +123,7 @@ export interface IConnection {
     rawQuery(sql: string): Promise<RawQueryResult>;
     select(sql: string): Promise<SelectResult>;
     insert(sql: string): Promise<InsertResult>;
-    update(sql: string): Promise<UpdateResult>;
+    update(sql: string): Promise<RawUpdateResult>;
     delete(sql: string): Promise<DeleteResult>;
 }
 export interface ITransactionConnection extends IConnection {

@@ -28,16 +28,6 @@
 
 + Implement replaceTable()
 
-+ SELECT statements
-  + fetchValueByPk()
-  + fetchValueByCk()
-  + fetchValueBySk()
-  + existsByPk()
-  + existsByCk()
-  + existsBySk()
-  + assertExistsByPk()
-  + assertExistsByCk()
-  + assertExistsBySk()
 + INSERT statements
   + ON DUPLICATE KEY UPDATE
   + insertAndFetch()

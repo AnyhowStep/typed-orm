@@ -80,7 +80,7 @@ export interface InsertResult {
     //alias for affectedRows
     insertedRowCount : number;
 }
-export interface UpdateResult {
+export interface RawUpdateResult {
     fieldCount   : number;
     affectedRows : number;
     //Should always be zero
@@ -91,11 +91,50 @@ export interface UpdateResult {
     protocol41   : boolean;
     changedRows  : number;
 
+    /*
+        Prefixed with `raw` because MySQL is weird
+        with how it returns results.
+    */
     //Alias for affectedRows
-    foundRowCount : number;
+    rawFoundRowCount : number;
     //Alias for changedRows
-    updatedRowCount : number;
+    rawUpdatedRowCount : number;
 }
+export interface UpdateResult extends RawUpdateResult {
+    updatedTableCount : number;
+    /*
+        foundRowCount = rawFoundRowCount / updatedTableCount
+    */
+    foundRowCount : number;
+    /*
+        We cannot reasonably derive this value
+        in the general case.
+
+        With multiple tables, especially.
+        Refer to
+        execution/input/update/multi-4 and
+        execution/input/update/multi-6
+
+        They have the same updateResult but update
+        very different rows.
+
+        If updatedTableCount == 1,
+        then you may use rawUpdatedRowCount
+        as the "real" number of rows updated.
+    */
+    //updatedRowCount : number;
+}
+export type UpdateZeroOrOneResult = (
+    UpdateResult &
+    (
+        { foundRowCount : 0, updatedRowCount : 0 } |
+        { foundRowCount : 1, updatedRowCount : 0|1 }
+    )
+);
+export type UpdateOneResult = (
+    UpdateResult &
+    { foundRowCount : 1, updatedRowCount : 0|1 }
+);
 export interface DeleteResult {
     fieldCount   : number;
     affectedRows : number;
@@ -126,7 +165,7 @@ export interface IConnection {
     rawQuery (sql : string) : Promise<RawQueryResult>;
     select (sql : string) : Promise<SelectResult>;
     insert (sql : string) : Promise<InsertResult>;
-    update (sql : string) : Promise<UpdateResult>;
+    update (sql : string) : Promise<RawUpdateResult>;
     delete (sql : string) : Promise<DeleteResult>;
 }
 export interface ITransactionConnection extends IConnection {

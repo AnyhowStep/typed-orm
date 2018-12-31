@@ -25,3 +25,10 @@ export class TooManyColumnsSelectedError extends Error {
         Object.setPrototypeOf(this, RowNotFoundError.prototype);
     }
 }
+
+export class TooManyRowsUpdatedError extends Error {
+    constructor (message : string) {
+        super(message);
+        Object.setPrototypeOf(this, TooManyRowsUpdatedError.prototype);
+    }
+}

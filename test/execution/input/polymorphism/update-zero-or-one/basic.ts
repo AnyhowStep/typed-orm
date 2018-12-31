@@ -111,8 +111,11 @@ tape(__filename, async (t) => {
                 protocol41: true,
                 changedRows: 2,
 
-                foundRowCount : 2,
-                updatedRowCount : 2,
+                rawFoundRowCount : 2,
+                rawUpdatedRowCount : 2,
+
+                updatedTableCount : 2,
+                foundRowCount : 1,
             }
         );
     });

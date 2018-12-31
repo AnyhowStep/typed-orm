@@ -1,7 +1,7 @@
 import * as UpdateUtil from "./util";
 import { RawExpr } from "../raw-expr";
 import { PrimitiveExpr } from "../primitive-expr";
-import { IConnection, UpdateResult } from "../execution";
+import { IConnection, UpdateResult, UpdateZeroOrOneResult, UpdateOneResult } from "../execution";
 import { IQuery } from "../query";
 import { IJoin } from "../join";
 import { IAnonymousTypedExpr } from "../expr";
@@ -46,6 +46,8 @@ export declare class Update<DataT extends UpdateData> implements IUpdate<DataT> 
     readonly _modifier: DataT["_modifier"];
     constructor(data: DataT);
     execute(this: Extract<this, UpdateUtil.ExecutableUpdate>, connection: IConnection): (Promise<UpdateResult>);
+    executeUpdateZeroOrOne(this: Extract<this, UpdateUtil.ExecutableUpdate>, connection: IConnection): (Promise<UpdateZeroOrOneResult>);
+    executeUpdateOne(this: Extract<this, UpdateUtil.ExecutableUpdate>, connection: IConnection): (Promise<UpdateOneResult>);
     printSql(this: Extract<this, UpdateUtil.ExecutableUpdate>): this;
 }
 //# sourceMappingURL=update.d.ts.map

@@ -62,8 +62,11 @@ tape(__filename, async (t) => {
                 protocol41: true,
                 changedRows: 1,
 
+                rawFoundRowCount : 2,
+                rawUpdatedRowCount : 1,
+
+                updatedTableCount : 1,
                 foundRowCount : 2,
-                updatedRowCount : 1,
             }
         );
         return o.from(bigintTable)

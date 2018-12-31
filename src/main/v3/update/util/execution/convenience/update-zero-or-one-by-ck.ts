@@ -1,10 +1,19 @@
 import {ITable, TableUtil} from "../../../../table";
-import {IConnection, UpdateResult} from "../../../../execution";
+import {IConnection, UpdateZeroOrOneResult} from "../../../../execution";
 import {SetDelegateFromJoinArray} from "../../constructor";
 import {IJoin} from "../../../../join";
 import {QueryUtil} from "../../../../query";
 
-export async function updateZeroOrOne<
+/*
+    Uses a transaction to ensure you really update zero or one.
+
+    The benefit is never messing up.
+    The downside is requiring a transaction.
+
+    However, I err on the side of correctness and safety
+    over performance... For now.
+*/
+export async function updateZeroOrOneByCk<
     TableT extends ITable
 > (
     connection : IConnection & TableUtil.AssertHasCandidateKey<TableT>,
@@ -15,13 +24,11 @@ export async function updateZeroOrOne<
         readonly columns : TableT["columns"],
         readonly nullable : false,
     }>[]>
-) : Promise<UpdateResult> {
+) : Promise<UpdateZeroOrOneResult> {
     return QueryUtil.newInstance()
         .from(table as any)
-        .whereEqCandidateKey(
-            table,
-            ck
-        )
+        .where(() => TableUtil.eqCandidateKey(table, ck) as any)
         .set(delegate as any)
-        .execute(connection);
+        .executeUpdateZeroOrOne(connection);
+
 }

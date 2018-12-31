@@ -28,4 +28,11 @@ class TooManyColumnsSelectedError extends Error {
     }
 }
 exports.TooManyColumnsSelectedError = TooManyColumnsSelectedError;
+class TooManyRowsUpdatedError extends Error {
+    constructor(message) {
+        super(message);
+        Object.setPrototypeOf(this, TooManyRowsUpdatedError.prototype);
+    }
+}
+exports.TooManyRowsUpdatedError = TooManyRowsUpdatedError;
 //# sourceMappingURL=error.js.map

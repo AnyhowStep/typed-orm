@@ -14,6 +14,12 @@ class Update {
     execute(connection) {
         return UpdateUtil.execute(this, connection);
     }
+    executeUpdateZeroOrOne(connection) {
+        return UpdateUtil.executeUpdateZeroOrOne(this, connection);
+    }
+    executeUpdateOne(connection) {
+        return UpdateUtil.executeUpdateOne(this, connection);
+    }
     printSql() {
         UpdateUtil.printSql(this);
         return this;

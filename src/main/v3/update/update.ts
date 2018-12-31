@@ -1,11 +1,11 @@
 import * as UpdateUtil from "./util";
 import {RawExpr} from "../raw-expr";
 import {PrimitiveExpr} from "../primitive-expr";
-import {IConnection, UpdateResult} from "../execution";
-import { IQuery } from "../query";
-import { IJoin } from "../join";
-import { IAnonymousTypedExpr } from "../expr";
-import { MapDelegate } from "../map-delegate";
+import {IConnection, UpdateResult, UpdateZeroOrOneResult, UpdateOneResult} from "../execution";
+import {IQuery} from "../query";
+import {IJoin} from "../join";
+import {IAnonymousTypedExpr} from "../expr";
+import {MapDelegate} from "../map-delegate";
 
 //`Updatable` is used because it's used by MySQL docs.
 //`Updateable` doesn't see as much use.
@@ -76,6 +76,22 @@ export class Update<DataT extends UpdateData> implements IUpdate<DataT> {
         Promise<UpdateResult>
     ) {
         return UpdateUtil.execute(this, connection);
+    }
+    executeUpdateZeroOrOne (
+        this : Extract<this, UpdateUtil.ExecutableUpdate>,
+        connection : IConnection
+    ) : (
+        Promise<UpdateZeroOrOneResult>
+    ) {
+        return UpdateUtil.executeUpdateZeroOrOne(this, connection);
+    }
+    executeUpdateOne (
+        this : Extract<this, UpdateUtil.ExecutableUpdate>,
+        connection : IConnection
+    ) : (
+        Promise<UpdateOneResult>
+    ) {
+        return UpdateUtil.executeUpdateOne(this, connection);
     }
     printSql (
         this : Extract<this, UpdateUtil.ExecutableUpdate>
