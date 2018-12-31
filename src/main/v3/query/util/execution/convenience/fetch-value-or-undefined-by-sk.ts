@@ -17,7 +17,7 @@ export function fetchValueOrUndefinedBySk<
     delegate : AssertValidSelectValueDelegate<TableT, DelegateT>
 ) : (
     Promise<
-        RawExprUtil.TypeOf<ReturnType<DelegateT>>
+        RawExprUtil.TypeOf<ReturnType<DelegateT>>|undefined
     >
 ) {
     return QueryUtil.newInstance()
