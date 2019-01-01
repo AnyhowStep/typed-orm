@@ -104,7 +104,7 @@ export declare type UpdateOneResult = (UpdateResult & {
     foundRowCount: 1;
     updatedRowCount: 0 | 1;
 });
-export interface DeleteResult {
+export interface RawDeleteResult {
     fieldCount: number;
     affectedRows: number;
     insertId: number;
@@ -113,9 +113,23 @@ export interface DeleteResult {
     message: string;
     protocol41: boolean;
     changedRows: number;
-    foundRowCount: number;
-    deletedRowCount: number;
+    rawFoundRowCount: number;
+    rawDeletedRowCount: number;
 }
+export interface DeleteResult {
+    deletedTableCount: number;
+}
+export declare type DeleteZeroOrOneResult = (RawDeleteResult & ({
+    foundRowCount: 0;
+    deletedRowCount: 0;
+} | {
+    foundRowCount: 1;
+    deletedRowCount: 1;
+}));
+export declare type DeleteOneResult = (RawDeleteResult & {
+    foundRowCount: 1;
+    deletedRowCount: 1;
+});
 export interface IConnection {
     isInTransaction(): this is ITransactionConnection;
     transaction<ResultT>(callback: TransactionCallback<ResultT>): Promise<ResultT>;
@@ -124,7 +138,7 @@ export interface IConnection {
     select(sql: string): Promise<SelectResult>;
     insert(sql: string): Promise<InsertResult>;
     update(sql: string): Promise<RawUpdateResult>;
-    delete(sql: string): Promise<DeleteResult>;
+    delete(sql: string): Promise<RawDeleteResult>;
 }
 export interface ITransactionConnection extends IConnection {
     rollback(): Promise<void>;

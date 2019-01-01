@@ -215,8 +215,8 @@ class Connection {
                 }
                 resolve({
                     ...results,
-                    foundRowCount: results.affectedRows + results.warningCount,
-                    deletedRowCount: results.affectedRows,
+                    rawFoundRowCount: results.affectedRows + results.warningCount,
+                    rawDeletedRowCount: results.affectedRows,
                 });
             });
         });

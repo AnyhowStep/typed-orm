@@ -1,4 +1,4 @@
 import { ExecutableDelete } from "../../delete";
-import { IConnection, DeleteResult } from "../../../execution";
-export declare function execute(del: ExecutableDelete, connection: IConnection): (Promise<DeleteResult>);
+import { IConnection, RawDeleteResult } from "../../../execution";
+export declare function execute(del: ExecutableDelete, connection: IConnection): (Promise<RawDeleteResult>);
 //# sourceMappingURL=execute.d.ts.map

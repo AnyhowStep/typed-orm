@@ -1,7 +1,7 @@
 import * as mysql from "mysql";
 import { IPool, ConnectionCallback, TransactionCallback } from "../pool";
 import { CharSet } from "../../data-type";
-import { IConnection, ITransactionConnection, RawQueryResult, SelectResult, InsertResult, RawUpdateResult, DeleteResult } from "../connection";
+import { IConnection, ITransactionConnection, RawQueryResult, SelectResult, InsertResult, RawUpdateResult, RawDeleteResult } from "../connection";
 export declare class Connection implements IConnection, ITransactionConnection {
     private readonly connection;
     constructor(connection: mysql.PoolConnection);
@@ -15,7 +15,7 @@ export declare class Connection implements IConnection, ITransactionConnection {
     select(sql: string): Promise<SelectResult>;
     insert(sql: string): Promise<InsertResult>;
     update(sql: string): Promise<RawUpdateResult>;
-    delete(sql: string): Promise<DeleteResult>;
+    delete(sql: string): Promise<RawDeleteResult>;
 }
 export interface PoolArgs {
     host: string;

@@ -135,7 +135,7 @@ export type UpdateOneResult = (
     UpdateResult &
     { foundRowCount : 1, updatedRowCount : 0|1 }
 );
-export interface DeleteResult {
+export interface RawDeleteResult {
     fieldCount   : number;
     affectedRows : number;
     //Should always be zero
@@ -148,10 +148,31 @@ export interface DeleteResult {
     changedRows  : number;
 
     //Alias for affectedRows + warningCount
-    foundRowCount : number;
+    rawFoundRowCount : number;
     //Alias for affectedRows
-    deletedRowCount : number;
+    rawDeletedRowCount : number;
 }
+export interface DeleteResult {
+    deletedTableCount : number;
+    /*
+        In general, we cannot deduce this correctly.
+    */
+    //foundRowCount
+    //deletedRowCount
+}
+//Not used with IGNORE modifier. Therefore, found == deleted
+export type DeleteZeroOrOneResult = (
+    RawDeleteResult &
+    (
+        { foundRowCount : 0, deletedRowCount : 0 } |
+        { foundRowCount : 1, deletedRowCount : 1 }
+    )
+);
+//Not used with IGNORE modifier. Therefore, found == deleted
+export type DeleteOneResult = (
+    RawDeleteResult &
+    { foundRowCount : 1, deletedRowCount : 1 }
+);
 
 export interface IConnection {
     isInTransaction () : this is ITransactionConnection;
@@ -166,7 +187,7 @@ export interface IConnection {
     select (sql : string) : Promise<SelectResult>;
     insert (sql : string) : Promise<InsertResult>;
     update (sql : string) : Promise<RawUpdateResult>;
-    delete (sql : string) : Promise<DeleteResult>;
+    delete (sql : string) : Promise<RawDeleteResult>;
 }
 export interface ITransactionConnection extends IConnection {
     rollback () : Promise<void>;

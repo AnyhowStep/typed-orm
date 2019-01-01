@@ -100,8 +100,8 @@ tape(__filename, async (t) => {
                 protocol41: true,
                 changedRows: 0,
 
-                foundRowCount : 4,
-                deletedRowCount : 4,
+                rawFoundRowCount : 4,
+                rawDeletedRowCount : 4,
             }
         );
         return {

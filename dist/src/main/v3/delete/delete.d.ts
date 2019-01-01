@@ -3,7 +3,7 @@ import { IJoin } from "../join";
 import { IAnonymousTypedExpr } from "../expr";
 import { MapDelegate } from "../map-delegate";
 import { ITable } from "../table";
-import { IConnection, DeleteResult } from "../execution";
+import { IConnection, RawDeleteResult } from "../execution";
 export declare type DeletableQuery = IQuery<{
     readonly _distinct: false;
     readonly _sqlCalcFoundRows: false;
@@ -40,7 +40,7 @@ export declare class Delete<DataT extends DeleteData> implements IDelete<DataT> 
     readonly _tables: DataT["_tables"];
     readonly _modifier: DataT["_modifier"];
     constructor(data: DataT);
-    execute(this: Extract<this, ExecutableDelete>, connection: IConnection): (Promise<DeleteResult>);
+    execute(this: Extract<this, ExecutableDelete>, connection: IConnection): (Promise<RawDeleteResult>);
     printSql(this: Extract<this, ExecutableDelete>): (this);
 }
 export declare type ExecutableDelete = IDelete<{
