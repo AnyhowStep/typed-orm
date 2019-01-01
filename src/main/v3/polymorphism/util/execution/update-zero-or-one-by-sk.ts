@@ -1,15 +1,16 @@
 import {ITable, TableUtil} from "../../../table";
 import {IConnection, UpdateZeroOrOneResult} from "../../../execution";
 import {SetDelegate, AssertValidSetDelegate_Hack} from "./update";
+import {SuperKey, eqSuperKey} from "../operation";
 import {updateZeroOrOne} from "./update-zero-or-one";
 
-export function updateZeroOrOneByCk<
+export function updateZeroOrOneBySk<
     TableT extends ITable,
     DelegateT extends SetDelegate<TableT>
 > (
     connection : IConnection,
     table : TableT & TableUtil.AssertHasCandidateKey<TableT>,
-    ck : TableUtil.CandidateKey<TableT>,
+    sk : SuperKey<TableT>,
     delegate : DelegateT
 ) : (
     AssertValidSetDelegate_Hack<
@@ -21,7 +22,7 @@ export function updateZeroOrOneByCk<
     return updateZeroOrOne<TableT, DelegateT>(
         connection,
         table,
-        TableUtil.eqCandidateKey(table, ck),
+        eqSuperKey(table, sk),
         delegate
     );
 }

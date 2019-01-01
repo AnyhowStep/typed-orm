@@ -1,5 +1,5 @@
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
-import {ITable, TableUtil} from "../../../table";
+import {ITable} from "../../../table";
 import {ColumnType, MutableColumnNames} from "../query";
 import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil,} from "../../../column";
@@ -121,7 +121,7 @@ export function update<
     TableT extends ITable,
     DelegateT extends SetDelegate<TableT>
 > (
-    table : TableT & TableUtil.AssertHasCandidateKey<TableT>,
+    table : TableT,
     where : IAnonymousTypedExpr<boolean>,
     delegate : DelegateT
 ) : (
