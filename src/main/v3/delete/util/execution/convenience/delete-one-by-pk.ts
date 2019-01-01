@@ -1,19 +1,20 @@
 import {ITable, TableUtil} from "../../../../table";
 import {IConnection, DeleteOneResult} from "../../../../execution";
 import {deleteOne} from "./delete-one";
+import {CandidateKey} from "../../../../candidate-key";
 
-export function deleteOneByCk<
-    TableT extends ITable & { deleteAllowed : true }
+export function deleteOneByPk<
+    TableT extends ITable & { deleteAllowed : true, primaryKey : CandidateKey }
 > (
     connection : IConnection,
-    table : TableT & TableUtil.AssertHasCandidateKey<TableT>,
-    ck : TableUtil.CandidateKey<TableT>
+    table : TableT,
+    pk : TableUtil.PrimaryKey<TableT>
 ) : (
     Promise<DeleteOneResult>
 ) {
     return deleteOne(
         connection,
         table,
-        TableUtil.eqCandidateKey(table, ck)
+        TableUtil.eqPrimaryKey(table, pk)
     );
 }

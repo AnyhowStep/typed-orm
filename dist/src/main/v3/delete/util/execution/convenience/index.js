@@ -4,5 +4,11 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./delete-one-by-ck"));
+__export(require("./delete-one-by-pk"));
+__export(require("./delete-one-by-sk"));
+__export(require("./delete-one"));
 __export(require("./delete-zero-or-one-by-ck"));
+__export(require("./delete-zero-or-one-by-pk"));
+__export(require("./delete-zero-or-one-by-sk"));
+__export(require("./delete-zero-or-one"));
 //# sourceMappingURL=index.js.map

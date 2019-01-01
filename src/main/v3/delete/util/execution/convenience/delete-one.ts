@@ -4,6 +4,7 @@ import {QueryUtil} from "../../../../query";
 import {TooManyRowsFoundError, RowNotFoundError} from "../../../../query/util";
 import {IAnonymousTypedExpr} from "../../../../expr";
 
+//Not meant to be called directly
 export function deleteOne<
     TableT extends ITable & { deleteAllowed : true }
 > (

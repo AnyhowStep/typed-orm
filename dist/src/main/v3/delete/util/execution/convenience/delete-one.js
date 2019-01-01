@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const query_1 = require("../../../../query");
 const util_1 = require("../../../../query/util");
+//Not meant to be called directly
 function deleteOne(connection, table, where) {
     return connection.transactionIfNotInOne(async (connection) => {
         const result = await query_1.QueryUtil.newInstance()
