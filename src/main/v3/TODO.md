@@ -30,7 +30,6 @@
 
 + INSERT statements
   + ON DUPLICATE KEY UPDATE
-  + insertAndFetch()
 + DELETE statements
   + deleteZeroOrOneByPk()
   + deleteZeroOrOneByCk()
