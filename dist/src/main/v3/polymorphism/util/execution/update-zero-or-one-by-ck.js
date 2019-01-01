@@ -20,7 +20,7 @@ function toAssignmentRef(query, map) {
     }
     return ref;
 }
-function updateZeroOrOne(connection, table, ck, delegate) {
+function updateZeroOrOneByCk(connection, table, ck, delegate) {
     if (table.parents.length == 0) {
         return query_1.QueryUtil.newInstance()
             .from(table)
@@ -35,5 +35,5 @@ function updateZeroOrOne(connection, table, ck, delegate) {
     const update = query_1.QueryUtil.set(query, () => toAssignmentRef(query, assignmentMap));
     return update_1.UpdateUtil.execute(update, connection);
 }
-exports.updateZeroOrOne = updateZeroOrOne;
-//# sourceMappingURL=update-zero-or-one.js.map
+exports.updateZeroOrOneByCk = updateZeroOrOneByCk;
+//# sourceMappingURL=update-zero-or-one-by-ck.js.map

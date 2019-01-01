@@ -117,7 +117,7 @@ export type AssertValidSetDelegate_Hack<
 );
 
 
-export function updateZeroOrOne<
+export function updateZeroOrOneByCk<
     TableT extends ITable,
     DelegateT extends SetDelegate<TableT>
 > (

@@ -4,5 +4,5 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./insert-and-fetch"));
-__export(require("./update-zero-or-one"));
+__export(require("./update-zero-or-one-by-ck"));
 //# sourceMappingURL=index.js.map

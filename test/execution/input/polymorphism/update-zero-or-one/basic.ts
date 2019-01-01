@@ -89,7 +89,7 @@ tape(__filename, async (t) => {
                 generatedChildRequiredParent : 456n,
             }
         );
-        const updateResult = await o.PolymorphismUtil.updateZeroOrOne(
+        const updateResult = await o.PolymorphismUtil.updateZeroOrOneByCk(
             connection,
             child,
             { someId : 1n },
