@@ -9,5 +9,5 @@ export declare type InsertAndFetchResult<TableT extends ITable & {
 });
 export declare function insertAndFetch<TableT extends ITable & {
     insertAllowed: true;
-}, RowT extends InsertRow<TableT>>(connection: (IConnection & TableUtil.AssertHasCandidateKey<TableT>), table: TableT, insertRow: RowT): Promise<InsertAndFetchResult<TableT, RowT>>;
+}, RowT extends InsertRow<TableT>>(connection: IConnection, table: TableT & TableUtil.AssertHasCandidateKey<TableT>, insertRow: RowT): Promise<InsertAndFetchResult<TableT, RowT>>;
 //# sourceMappingURL=insert-and-fetch.d.ts.map

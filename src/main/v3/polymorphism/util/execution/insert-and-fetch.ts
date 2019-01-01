@@ -36,14 +36,14 @@ export type InsertRowLiteral<TableT extends ITable> = (
 export async function insertAndFetch<
     TableT extends ITable & { insertAllowed : true }
 > (
-    connection : IConnection & TableUtil.AssertHasCandidateKey<TableT>,
-    table : TableT,
+    connection : IConnection,
+    table : TableT & TableUtil.AssertHasCandidateKey<TableT>,
     rawInsertRow : InsertRow<TableT>
 ) : Promise<TypeMap<TableT>> {
     if (table.parents.length == 0) {
         return InsertUtil.insertAndFetch(
             connection,
-            table,
+            table as any,
             rawInsertRow as any
         ) as any;
     }
@@ -93,7 +93,7 @@ export async function insertAndFetch<
             ...(
                 await InsertUtil.insertAndFetch(
                     connection as any,
-                    table,
+                    table as any,
                     insertRow as any
                 )
             ) as any,
