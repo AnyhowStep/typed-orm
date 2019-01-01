@@ -4,6 +4,8 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./update-and-fetch-zero-or-one-by-ck"));
+__export(require("./update-and-fetch-zero-or-one-by-pk"));
+__export(require("./update-and-fetch-zero-or-one-by-sk"));
 __export(require("./update-one-by-ck"));
 __export(require("./update-one-by-pk"));
 __export(require("./update-one-by-sk"));

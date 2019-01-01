@@ -2,16 +2,16 @@ import {ITable, TableUtil} from "../../../../table";
 import {IConnection, UpdateZeroOrOneResult} from "../../../../execution";
 import {SingleTableSetDelegateFromTable, AssertValidSingleTableSetDelegateFromTable_Hack} from "../../constructor";
 import {QueryUtil} from "../../../../query";
-import {updateZeroOrOneByCk} from "./update-zero-or-one-by-ck";
+import {updateZeroOrOneBySk} from "./update-zero-or-one-by-sk";
 import {UpdateAndFetchZeroOrOneResult} from "./update-and-fetch-zero-or-one";
 
-export function updateAndFetchZeroOrOneByCk<
+export function updateAndFetchZeroOrOneBySk<
     TableT extends ITable,
     DelegateT extends SingleTableSetDelegateFromTable<TableT>
 > (
     connection : IConnection,
     table : TableT & TableUtil.AssertHasCandidateKey<TableT>,
-    ck : TableUtil.CandidateKey<TableT>,
+    sk : TableUtil.SuperKey<TableT>,
     delegate : DelegateT
 ) : (
     AssertValidSingleTableSetDelegateFromTable_Hack<
@@ -29,10 +29,10 @@ export function updateAndFetchZeroOrOneByCk<
             DelegateT
         >>
     ) => {
-        const updateResult : UpdateZeroOrOneResult = await updateZeroOrOneByCk(
+        const updateResult : UpdateZeroOrOneResult = await updateZeroOrOneBySk(
             connection,
             table,
-            ck,
+            sk,
             delegate
         ) as any;
         if (updateResult.foundRowCount == 0) {
@@ -41,10 +41,10 @@ export function updateAndFetchZeroOrOneByCk<
                 row : undefined,
             };
         }
-        const row = await QueryUtil.fetchOneByCk(
+        const row = await QueryUtil.fetchOneBySk(
             connection,
             table,
-            ck
+            sk
         );
         return {
             ...updateResult,
