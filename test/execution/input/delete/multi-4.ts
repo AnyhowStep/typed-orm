@@ -102,6 +102,7 @@ tape(__filename, async (t) => {
 
                 rawFoundRowCount : 3,
                 rawDeletedRowCount : 3,
+                deletedTableCount : 2,
             }
         );
         return {

@@ -3,7 +3,7 @@ import {IJoin} from "../join";
 import {IAnonymousTypedExpr} from "../expr";
 import {MapDelegate} from "../map-delegate";
 import {ITable} from "../table";
-import { IConnection, RawDeleteResult } from "../execution";
+import { IConnection, DeleteResult } from "../execution";
 import * as DeleteUtil from "./util";
 
 export type DeletableQuery = IQuery<{
@@ -63,7 +63,7 @@ export class Delete<DataT extends DeleteData> implements IDelete<DataT> {
         this : Extract<this, ExecutableDelete>,
         connection : IConnection
     ) : (
-        Promise<RawDeleteResult>
+        Promise<DeleteResult>
     ) {
         return DeleteUtil.execute(this, connection);
     }

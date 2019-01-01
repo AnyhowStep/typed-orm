@@ -152,7 +152,7 @@ export interface RawDeleteResult {
     //Alias for affectedRows
     rawDeletedRowCount : number;
 }
-export interface DeleteResult {
+export interface DeleteResult extends RawDeleteResult {
     deletedTableCount : number;
     /*
         In general, we cannot deduce this correctly.

@@ -1,5 +1,5 @@
 import {ExecutableDelete} from "../../delete";
-import {IConnection, RawDeleteResult} from "../../../execution";
+import {IConnection, DeleteResult} from "../../../execution";
 import {QueryTreeUtil} from "../../../query-tree";
 import {queryTree} from "../query";
 
@@ -7,10 +7,13 @@ export async function execute (
     del : ExecutableDelete,
     connection : IConnection
 ) : (
-    Promise<RawDeleteResult>
+    Promise<DeleteResult>
 ) {
     const sql = QueryTreeUtil.toSqlPretty(queryTree(del));
     const result = await connection.delete(sql);
 
-    return result;
+    return {
+        ...result,
+        deletedTableCount : del._tables.length,
+    };
 }

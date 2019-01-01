@@ -1,26 +1,31 @@
 import * as sd from "schema-decorator";
 import * as tape from "tape";
-import * as o from "../../../../dist/src/main";
-import {pool} from "../../pool";
+import * as o from "../../../../../dist/src/main";
+import {pool} from "../../../pool";
 
 tape(__filename, async (t) => {
     const result = await pool.acquire(async (connection) => {
         await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS bigintTable");
         await connection.rawQuery(`
             CREATE TEMPORARY TABLE bigintTable (
-                value BIGINT NOT NULL
+                keyA VARCHAR(64) NOT NULL,
+                keyB VARCHAR(64) NOT NULL,
+                value BIGINT NOT NULL,
+                UNIQUE KEY (keyA, keyB)
             )
         `);
         const bigintTable = o.table(
             "bigintTable",
             {
-                value : sd.string(),
+                keyA : sd.string(),
+                keyB : sd.string(),
+                value : o.bigint(),
             }
-        );
+        ).addCandidateKey(c => [c.keyA, c.keyB]);
         const insertResult = await o.insertInto(bigintTable)
             .values(
-                { value : "32", },
-                { value : "33", }
+                { keyA : "hello", keyB : "world", value : 60n, },
+                { keyA : "good", keyB : "night", value : 61n, }
             )
             .execute(connection);
         t.deepEqual(
@@ -37,25 +42,29 @@ tape(__filename, async (t) => {
                 insertedRowCount : 2,
             }
         );
-        const deleteResult = await o.from(bigintTable)
-            .whereEq(c => c.value, "32")
-            .delete(t => [t.bigintTable])
-            .execute(connection);
+        const deleteResult = await o.DeleteUtil.deleteZeroOrOneByCk(
+            connection,
+            bigintTable,
+            { keyA : "does not", keyB : "exist" }
+        );
         t.deepEqual(
             deleteResult,
             {
                 fieldCount: 0,
-                affectedRows: 1,
+                affectedRows: 0,
                 insertId: 0,
-                serverStatus: 34,
+                serverStatus: 3,
                 warningCount: 0,
                 message: "",
                 protocol41: true,
                 changedRows: 0,
 
-                rawFoundRowCount : 1,
-                rawDeletedRowCount : 1,
+                rawFoundRowCount : 0,
+                rawDeletedRowCount : 0,
+
                 deletedTableCount : 1,
+                foundRowCount : 0,
+                deletedRowCount : 0,
             }
         );
         return o.from(bigintTable)
@@ -63,10 +72,12 @@ tape(__filename, async (t) => {
             .orderBy(c => [c.value.asc()])
             .fetchAll(connection);
     });
+    t.deepEqual(result.length, 2);
     t.deepEqual(
         result,
         [
-            { value : "33" },
+            { keyA : "hello", keyB : "world", value : 60n, },
+            { keyA : "good", keyB : "night", value : 61n, },
         ]
     );
 

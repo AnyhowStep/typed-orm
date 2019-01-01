@@ -5,7 +5,10 @@ const query_1 = require("../query");
 async function execute(del, connection) {
     const sql = query_tree_1.QueryTreeUtil.toSqlPretty(query_1.queryTree(del));
     const result = await connection.delete(sql);
-    return result;
+    return {
+        ...result,
+        deletedTableCount: del._tables.length,
+    };
 }
 exports.execute = execute;
 //# sourceMappingURL=execute.js.map

@@ -60,6 +60,7 @@ tape(__filename, async (t) => {
 
                 rawFoundRowCount : 2,
                 rawDeletedRowCount : 1,
+                deletedTableCount : 1,
             }
         );
     });
