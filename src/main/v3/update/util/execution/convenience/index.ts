@@ -1,3 +1,4 @@
+export * from "./update-and-fetch-zero-or-one-by-ck";
 export * from "./update-one-by-ck";
 export * from "./update-one-by-pk";
 export * from "./update-one-by-sk";
