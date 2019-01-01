@@ -31,13 +31,6 @@
 + INSERT statements
   + ON DUPLICATE KEY UPDATE
   + insertAndFetch()
-+ UPDATE statements
-  + updateAndFetchZeroOrOneByPk()
-  + updateAndFetchZeroOrOneByCk()
-  + updateAndFetchZeroOrOneBySk()
-  + updateAndFetchOneByPk()
-  + updateAndFetchOneByCk()
-  + updateAndFetchOneBySk()
 + DELETE statements
   + deleteZeroOrOneByPk()
   + deleteZeroOrOneByCk()
