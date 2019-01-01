@@ -105,7 +105,7 @@ tape(__filename, async (t) => {
                 fieldCount: 0,
                 affectedRows: 2,
                 insertId: 0,
-                serverStatus: 2,
+                serverStatus: 3,
                 warningCount: 0,
                 message: "(Rows matched: 2  Changed: 2  Warnings: 0",
                 protocol41: true,
@@ -116,6 +116,7 @@ tape(__filename, async (t) => {
 
                 updatedTableCount : 2,
                 foundRowCount : 1,
+                updatedRowCount : 1,
             }
         );
     });

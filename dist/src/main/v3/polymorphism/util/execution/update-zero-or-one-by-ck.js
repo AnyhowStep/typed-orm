@@ -26,14 +26,14 @@ function updateZeroOrOneByCk(connection, table, ck, delegate) {
             .from(table)
             .whereEqCandidateKey(table, ck)
             .set(delegate)
-            .execute(connection);
+            .executeUpdateZeroOrOne(connection);
     }
     let query = from_1.from(table);
     query = query_1.QueryUtil.whereEqCandidateKey(query, table, ck);
     const queryRef = column_ref_1.ColumnRefUtil.fromJoinArray(query._joins);
     const assignmentMap = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef));
     const update = query_1.QueryUtil.set(query, () => toAssignmentRef(query, assignmentMap));
-    return update_1.UpdateUtil.execute(update, connection);
+    return update_1.UpdateUtil.executeUpdateZeroOrOne(update, connection);
 }
 exports.updateZeroOrOneByCk = updateZeroOrOneByCk;
 //# sourceMappingURL=update-zero-or-one-by-ck.js.map

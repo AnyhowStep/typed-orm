@@ -1,7 +1,7 @@
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {ITable, TableUtil} from "../../../table";
 import {ColumnType, MutableColumnNames} from "../query";
-import {IConnection, UpdateResult} from "../../../execution";
+import {IConnection, UpdateZeroOrOneResult} from "../../../execution";
 import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil,} from "../../../column";
 import {QueryUtil} from "../../../query";
@@ -129,7 +129,7 @@ export function updateZeroOrOneByCk<
     AssertValidSetDelegate_Hack<
         TableT,
         DelegateT,
-        Promise<UpdateResult>
+        Promise<UpdateZeroOrOneResult>
     >
  ) {
     if (table.parents.length == 0) {
@@ -137,7 +137,7 @@ export function updateZeroOrOneByCk<
             .from(table as any)
             .whereEqCandidateKey(table, ck)
             .set(delegate as any)
-            .execute(connection) as any;
+            .executeUpdateZeroOrOne(connection) as any;
     }
     let query : UpdatableQuery = from(table as any);
     query = QueryUtil.whereEqCandidateKey(query, table, ck);
@@ -148,5 +148,5 @@ export function updateZeroOrOneByCk<
         query,
         () => toAssignmentRef(query, assignmentMap)
     );
-    return UpdateUtil.execute(update, connection) as any;
+    return UpdateUtil.executeUpdateZeroOrOne(update, connection) as any;
 }
