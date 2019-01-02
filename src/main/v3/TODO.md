@@ -33,7 +33,6 @@
 + INSERT statements
   + ON DUPLICATE KEY UPDATE
 + DELETE statements
-  + Polymorphic delete
   + Aliasing a table currently makes it ineligible for deletes
     TODO: Fix it?
     Aliasing a table shouldn't erase the fact it can be deleted from?
