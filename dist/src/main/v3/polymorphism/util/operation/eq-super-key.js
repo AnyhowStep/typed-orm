@@ -11,7 +11,10 @@ function eqSuperKey(table, sk) {
         if (columnName in table.columns) {
             return exprLib.nullSafeEq(table.columns[columnName], sk[columnName]);
         }
-        for (let p of table.parents) {
+        //TODO-DEBATE is it better to check downwards
+        //or upwards?
+        for (let i = table.parents.length - 1; i >= 0; --i) {
+            const p = table.parents[i];
             if (columnName in p.columns) {
                 return exprLib.nullSafeEq(p.columns[columnName], sk[columnName]);
             }

@@ -5,6 +5,10 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./from"));
 __export(require("./insert-and-fetch"));
+__export(require("./update-one-by-ck"));
+__export(require("./update-one-by-pk"));
+__export(require("./update-one-by-sk"));
+__export(require("./update-one"));
 __export(require("./update-zero-or-one-by-ck"));
 __export(require("./update-zero-or-one-by-sk"));
 __export(require("./update-zero-or-one"));
