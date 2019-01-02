@@ -17,7 +17,7 @@ export function updateZeroOrOneByCk<
         DelegateT,
         Promise<UpdateZeroOrOneResult>
     >
- ) {
+) {
     return updateZeroOrOne<TableT, DelegateT>(
         connection,
         table,

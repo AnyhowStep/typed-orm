@@ -18,7 +18,7 @@ export function updateZeroOrOne<
         DelegateT,
         Promise<UpdateZeroOrOneResult>
     >
- ) {
+) {
     const executableUpdate = update<
         TableT,
         DelegateT

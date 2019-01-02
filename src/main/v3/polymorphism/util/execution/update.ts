@@ -130,7 +130,7 @@ export function update<
         DelegateT,
         ExecutableUpdate
     >
- ) {
+) {
     if (table.parents.length == 0) {
         const result : ExecutableUpdate = QueryUtil.newInstance()
             .from(table as any)

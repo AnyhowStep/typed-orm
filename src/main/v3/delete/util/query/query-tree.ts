@@ -10,6 +10,9 @@ export function queryTree_Tables (tables : ITable[]) : QueryTreeArray {
         if (result.length > 0) {
             result.push(",");
         }
+        if (!table.deleteAllowed) {
+            throw new Error(`Cannot delete from table ${table.alias}; explicitly not allowed`);
+        }
         result.push(table.unaliasedQuery);
     }
 

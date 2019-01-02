@@ -18,7 +18,7 @@ export function updateOne<
         DelegateT,
         Promise<UpdateOneResult>
     >
- ) {
+) {
     const executableUpdate = update<
         TableT,
         DelegateT

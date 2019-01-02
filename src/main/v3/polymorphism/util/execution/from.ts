@@ -1,6 +1,6 @@
 import {ITable} from "../../../table";
 import {IColumn} from "../../../column";
-import {QueryUtil, IQuery} from "../../../query";
+import {QueryUtil, Query} from "../../../query";
 import {CandidateKey} from "../../../candidate-key";
 import {IJoin} from "../../../join";
 
@@ -58,7 +58,7 @@ export type ToJoin<TableT extends ITable> = (
 export type From<
     TableT extends ITable
 > = (
-    IQuery<{
+    Query<{
         readonly _distinct : false;
         readonly _sqlCalcFoundRows : false;
 
@@ -86,7 +86,7 @@ export function from<
     table : TableT
 ) : (
     From<TableT>
- ) {
+) {
     if (table.parents.length == 0) {
         return QueryUtil.newInstance()
             .from(table as any) as any;

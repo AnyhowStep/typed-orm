@@ -17,7 +17,7 @@ export function updateOneBySk<
         DelegateT,
         Promise<UpdateOneResult>
     >
- ) {
+) {
     return updateOne<TableT, DelegateT>(
         connection,
         table,

@@ -1,12 +1,12 @@
 import { ITable } from "../../../table";
-import { IQuery } from "../../../query";
+import { Query } from "../../../query";
 import { IJoin } from "../../../join";
 export declare type ToJoin<TableT extends ITable> = (TableT extends ITable ? IJoin<{
     readonly aliasedTable: TableT;
     readonly columns: TableT["columns"];
     readonly nullable: false;
 }> : never);
-export declare type From<TableT extends ITable> = (IQuery<{
+export declare type From<TableT extends ITable> = (Query<{
     readonly _distinct: false;
     readonly _sqlCalcFoundRows: false;
     readonly _joins: ToJoin<TableT | TableT["parents"][number]>[];

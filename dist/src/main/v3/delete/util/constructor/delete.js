@@ -26,6 +26,9 @@ function del(query, modifier, delegate) {
         if (table == undefined) {
             throw new Error(`Cannot delete from table ${s.alias}`);
         }
+        if (!table.deleteAllowed) {
+            throw new Error(`Cannot delete from table ${s.alias}; explicitly not allowed`);
+        }
         return table;
     });
     return new delete_1.Delete({
