@@ -119,14 +119,14 @@ export interface RawDeleteResult {
 export interface DeleteResult extends RawDeleteResult {
     deletedTableCount: number;
 }
-export declare type DeleteZeroOrOneResult = (RawDeleteResult & ({
+export declare type DeleteZeroOrOneResult = (DeleteResult & ({
     foundRowCount: 0;
     deletedRowCount: 0;
 } | {
     foundRowCount: 1;
     deletedRowCount: 1;
 }));
-export declare type DeleteOneResult = (RawDeleteResult & {
+export declare type DeleteOneResult = (DeleteResult & {
     foundRowCount: 1;
     deletedRowCount: 1;
 });

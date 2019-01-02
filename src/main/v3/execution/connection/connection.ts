@@ -162,7 +162,7 @@ export interface DeleteResult extends RawDeleteResult {
 }
 //Not used with IGNORE modifier. Therefore, found == deleted
 export type DeleteZeroOrOneResult = (
-    RawDeleteResult &
+    DeleteResult &
     (
         { foundRowCount : 0, deletedRowCount : 0 } |
         { foundRowCount : 1, deletedRowCount : 1 }
@@ -170,7 +170,7 @@ export type DeleteZeroOrOneResult = (
 );
 //Not used with IGNORE modifier. Therefore, found == deleted
 export type DeleteOneResult = (
-    RawDeleteResult &
+    DeleteResult &
     { foundRowCount : 1, deletedRowCount : 1 }
 );
 

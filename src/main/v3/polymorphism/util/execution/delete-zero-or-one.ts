@@ -4,7 +4,7 @@ import {IAnonymousTypedExpr} from "../../../expr";
 import {QueryUtil} from "../../../query";
 import {from} from "./from";
 import {DeleteUtil} from "../../../delete";
-import {TooManyRowsFoundError} from "../../../query/util";
+import {calculateDeleteOrder} from "./delete";
 
 export function deleteZeroOrOne<
     TableT extends ITable & { deleteAllowed : true }
@@ -17,29 +17,71 @@ export function deleteZeroOrOne<
         return DeleteUtil.deleteZeroOrOne(connection, table, where);
     }
     return connection.transactionIfNotInOne(async (connection) : Promise<DeleteZeroOrOneResult> => {
-        const result = await DeleteUtil.delete(
-            QueryUtil.where(
-                from(table),
-                () => where
+        const resultRef : any = await QueryUtil.fetchZeroOrOne(
+            QueryUtil.select(
+                QueryUtil.where(
+                    from(table),
+                    () => where
+                ),
+                ((c : any) => [c]) as any
             ),
-            undefined,
-            () => [...table.parents, table] as any
-        ).execute(connection);
-        const foundRowCount = result.rawFoundRowCount / result.deletedTableCount;
-        if (foundRowCount == 0) {
+            connection
+        );
+        //There may be tables in this array that cannot be deleted from.
+        //This is not so bad. We let run-time errors catch it for now.
+        //TODO-FEATURE, Implement way to check if a table and its parents
+        //can all be deleted, shouldn't be too hard.
+        const tables = calculateDeleteOrder(table);
+        if (resultRef == undefined) {
+            //Nothing to delete
             return {
-                ...result,
-                foundRowCount : foundRowCount,
-                deletedRowCount : foundRowCount,
+                fieldCount   : -1,
+                affectedRows : 0,
+                //Should always be zero
+                insertId     : 0,
+                serverStatus : -1,
+                warningCount : 0,
+                message      : `No rows found for ${table.alias}, no rows deleted`,
+                protocol41   : true,
+                //Should always be zero
+                changedRows  : 0,
+
+                //Alias for affectedRows + warningCount
+                rawFoundRowCount : 0,
+                //Alias for affectedRows
+                rawDeletedRowCount : 0,
+                deletedTableCount : tables.length,
+                foundRowCount : 0,
+                deletedRowCount : 0,
             };
         }
-        if (foundRowCount == 1) {
-            return {
-                ...result,
-                foundRowCount : foundRowCount,
-                deletedRowCount : foundRowCount,
-            };
+        for (let t of tables) {
+            await DeleteUtil.deleteOneByCk(
+                connection,
+                t as any,
+                //This should have all the candidate key values we need.
+                resultRef[t.alias]
+            );
         }
-        throw new TooManyRowsFoundError(`Expected to delete zero or one row of ${table.alias}; found ${foundRowCount} rows`);
+        return {
+            fieldCount   : -1,
+            affectedRows : tables.length,
+            //Should always be zero
+            insertId     : 0,
+            serverStatus : -1,
+            warningCount : 0,
+            message      : ``,
+            protocol41   : true,
+            //Should always be zero
+            changedRows  : 0,
+
+            //Alias for affectedRows + warningCount
+            rawFoundRowCount : tables.length,
+            //Alias for affectedRows
+            rawDeletedRowCount : tables.length,
+            deletedTableCount : tables.length,
+            foundRowCount : 1,
+            deletedRowCount : 1,
+        };
     });
 }
