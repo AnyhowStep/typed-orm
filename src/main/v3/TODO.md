@@ -26,6 +26,8 @@
     .execute(connection);
   ```
 
++ Rename `PolymorphismUtil` to `TptUtil` or something.
+
 + Implement replaceTable()
 
 + INSERT statements

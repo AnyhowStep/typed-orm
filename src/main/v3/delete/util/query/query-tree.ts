@@ -6,7 +6,13 @@ import { QueryUtil } from "../../../query";
 export function queryTree_Tables (tables : ITable[]) : QueryTreeArray {
     const result : QueryTreeArray = [];
 
+    const alreadyAdded = new Set<string>();
     for (let table of tables) {
+        if (alreadyAdded.has(table.alias)) {
+            continue;
+        }
+        alreadyAdded.add(table.alias);
+
         if (result.length > 0) {
             result.push(",");
         }

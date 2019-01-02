@@ -4,7 +4,12 @@ const delete_1 = require("../../delete");
 const query_1 = require("../../../query");
 function queryTree_Tables(tables) {
     const result = [];
+    const alreadyAdded = new Set();
     for (let table of tables) {
+        if (alreadyAdded.has(table.alias)) {
+            continue;
+        }
+        alreadyAdded.add(table.alias);
         if (result.length > 0) {
             result.push(",");
         }

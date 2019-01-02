@@ -21,7 +21,13 @@ function del(query, modifier, delegate) {
     if (selected.length == 0) {
         throw new Error(`Cannot delete from zero tables`);
     }
-    const tables = selected.map(s => {
+    const tables = [];
+    const alreadySeen = new Set();
+    for (let s of selected) {
+        if (alreadySeen.has(s.alias)) {
+            continue;
+        }
+        alreadySeen.add(s.alias);
         const table = options.find(o => o.alias == s.alias);
         if (table == undefined) {
             throw new Error(`Cannot delete from table ${s.alias}`);
@@ -29,8 +35,8 @@ function del(query, modifier, delegate) {
         if (!table.deleteAllowed) {
             throw new Error(`Cannot delete from table ${s.alias}; explicitly not allowed`);
         }
-        return table;
-    });
+        tables.push(table);
+    }
     return new delete_1.Delete({
         _query: query,
         _tables: tables,
