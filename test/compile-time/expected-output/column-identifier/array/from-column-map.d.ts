@@ -2,20 +2,20 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 export declare const columnMap: {
-    readonly y: o.Column<{
-        tableAlias: "someTable";
-        name: "y";
-        assertDelegate: sd.AssertDelegate<Date> & {
-            __accepts: Date;
-            __canAccept: string | number | Date;
-        };
-    }>;
     readonly x: o.Column<{
         tableAlias: "someTable";
         name: "x";
         assertDelegate: sd.AssertDelegate<number> & {
             __accepts: number;
             __canAccept: number;
+        };
+    }>;
+    readonly y: o.Column<{
+        tableAlias: "someTable";
+        name: "y";
+        assertDelegate: sd.AssertDelegate<Date> & {
+            __accepts: Date;
+            __canAccept: string | number | Date;
         };
     }>;
     readonly z: o.Column<{
@@ -29,10 +29,10 @@ export declare const columnMap: {
 };
 export declare const columnIdentifierArray: ({
     readonly tableAlias: "someTable";
-    readonly name: "y";
+    readonly name: "x";
 } | {
     readonly tableAlias: "someTable";
-    readonly name: "x";
+    readonly name: "y";
 } | {
     readonly tableAlias: "someTable";
     readonly name: "z";

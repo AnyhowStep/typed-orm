@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '{ x: number; }' is not assignable to parameter of type '{ readonly y: string | null; readonly x: number; }'.",
+      "messageText": "Argument of type '{ x: number; }' is not assignable to parameter of type '{ readonly x: number; readonly y: string | null; }'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Property 'y' is missing in type '{ x: number; }' but required in type '{ readonly y: string | null; readonly x: number; }'.",
+        "messageText": "Property 'y' is missing in type '{ x: number; }' but required in type '{ readonly x: number; readonly y: string | null; }'.",
         "category": 1,
         "code": 2741
       }

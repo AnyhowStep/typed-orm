@@ -4,17 +4,17 @@ export declare const t: o.Table<{
     readonly usedRef: {};
     readonly alias: "name";
     readonly columns: {
-        readonly y: o.Column<{
+        readonly x: o.Column<{
             tableAlias: "name";
-            name: "y";
+            name: "x";
             assertDelegate: sd.AssertDelegate<number> & {
                 __accepts: number;
                 __canAccept: number;
             };
         }>;
-        readonly x: o.Column<{
+        readonly y: o.Column<{
             tableAlias: "name";
-            name: "x";
+            name: "y";
             assertDelegate: sd.AssertDelegate<number> & {
                 __accepts: number;
                 __canAccept: number;
@@ -28,7 +28,7 @@ export declare const t: o.Table<{
     readonly generated: [];
     readonly isNullable: never[];
     readonly hasExplicitDefaultValue: [];
-    readonly mutable: ("y" | "x")[];
+    readonly mutable: ("x" | "y")[];
     readonly parents: [];
     readonly insertAllowed: true;
     readonly deleteAllowed: true;
@@ -38,17 +38,17 @@ export declare const t3: o.Table<{
     readonly usedRef: {};
     readonly alias: "232";
     readonly columns: {
-        readonly y: o.Column<{
+        readonly x: o.Column<{
             tableAlias: "232";
-            name: "y";
+            name: "x";
             assertDelegate: sd.AssertDelegate<number> & {
                 __accepts: number;
                 __canAccept: number;
             };
         }>;
-        readonly x: o.Column<{
+        readonly y: o.Column<{
             tableAlias: "232";
-            name: "x";
+            name: "y";
             assertDelegate: sd.AssertDelegate<number> & {
                 __accepts: number;
                 __canAccept: number;

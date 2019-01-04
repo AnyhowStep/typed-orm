@@ -39,12 +39,6 @@ export type SetStaticDefaultValue<
         readonly doNotCopy : LogT["doNotCopy"];
         readonly copy : LogT["copy"];
         readonly staticDefaultValue : {
-            [columnName in Extract<keyof MapT, string>] : (
-                undefined extends MapT[columnName] ?
-                [MapT[columnName], MapT, columnName, undefined extends true ? "y" : "n"] :
-                columnName
-            )
-        }/*{
             readonly [columnName in {
                 [columnName in Extract<keyof MapT, string>] : (
                     undefined extends MapT[columnName] ?
@@ -54,7 +48,7 @@ export type SetStaticDefaultValue<
             }[Extract<keyof MapT, string>]] : (
                 MapT[columnName]
             )
-        };*/
+        };
         readonly dynamicDefaultValueDelegate : undefined;
     }>
 );

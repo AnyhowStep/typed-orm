@@ -5,7 +5,7 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"other\"; readonly columns: { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly b: Column<...>; readonly c: Column<...>; }; ... 10 more ...; readonly deleteAllowed: true;...' is not assignable to type 'Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>; readonly x: Column<...>; readonly z: Column<...>; }; ... 10 more ...; readonly...'.",
+        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"other\"; readonly columns: { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly b: Column<...>; readonly c: Column<...>; }; ... 10 more ...; readonly deleteAllowed: true;...' is not assignable to type 'Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 10 more ...; readonly deleteAllowed: true;...'.",
         "category": 1,
         "code": 2322,
         "next": {

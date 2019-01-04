@@ -42,17 +42,17 @@ export declare const eq2: o.Expr<{
 export declare const eq3: o.Expr<{
     usedRef: {
         readonly table: {
-            readonly y: o.Column<{
+            readonly x: o.Column<{
                 tableAlias: "table";
-                name: "y";
+                name: "x";
                 assertDelegate: sd.AssertDelegate<number> & {
                     __accepts: number;
                     __canAccept: number;
                 };
             }>;
-            readonly x: o.Column<{
+            readonly y: o.Column<{
                 tableAlias: "table";
-                name: "x";
+                name: "y";
                 assertDelegate: sd.AssertDelegate<number> & {
                     __accepts: number;
                     __canAccept: number;
@@ -82,17 +82,17 @@ export declare const eq4: o.Expr<{
                     __canAccept: boolean;
                 };
             }>;
-            readonly y: o.Column<{
+            readonly x: o.Column<{
                 tableAlias: "table";
-                name: "y";
+                name: "x";
                 assertDelegate: sd.AssertDelegate<number> & {
                     __accepts: number;
                     __canAccept: number;
                 };
             }>;
-            readonly x: o.Column<{
+            readonly y: o.Column<{
                 tableAlias: "table";
-                name: "x";
+                name: "y";
                 assertDelegate: sd.AssertDelegate<number> & {
                     __accepts: number;
                     __canAccept: number;
@@ -114,17 +114,17 @@ export declare const eq4: o.Expr<{
 export declare const eq5: o.Expr<{
     usedRef: {
         readonly table: {
-            readonly y: o.Column<{
+            readonly x: o.Column<{
                 tableAlias: "table";
-                name: "y";
+                name: "x";
                 assertDelegate: sd.AssertDelegate<number> & {
                     __accepts: number;
                     __canAccept: number;
                 };
             }>;
-            readonly x: o.Column<{
+            readonly y: o.Column<{
                 tableAlias: "table";
-                name: "x";
+                name: "y";
                 assertDelegate: sd.AssertDelegate<number> & {
                     __accepts: number;
                     __canAccept: number;

@@ -1,7 +1,7 @@
 [
   {
     "messageText": {
-      "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | number | Date; }; }>' is not assignable to type '{ readonly tableAlias: \"table\"; readonly name: \"y\"; } | { readonly tableAlias: \"table\"; readonly name: \"x\"; } | { readonly tableAlias: \"table\"; readonly name: \"z\"; } | { readonly tableAlias: \"joined1\"; readonly name: \"a\"; } | { ...; } | { ...; }'.",
+      "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | number | Date; }; }>' is not assignable to type '{ readonly tableAlias: \"table\"; readonly name: \"x\"; } | { readonly tableAlias: \"table\"; readonly name: \"y\"; } | { readonly tableAlias: \"table\"; readonly name: \"z\"; } | { readonly tableAlias: \"joined1\"; readonly name: \"a\"; } | { ...; } | { ...; }'.",
       "category": 1,
       "code": 2322,
       "next": {

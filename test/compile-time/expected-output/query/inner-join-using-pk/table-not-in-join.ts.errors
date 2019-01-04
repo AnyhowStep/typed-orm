@@ -1,7 +1,7 @@
 [
   {
     "messageText": {
-      "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"other\"; readonly columns: { readonly y: Column<{ tableAlias: \"other\"; name: \"y\"; assertDelegate: AssertDelegate<string> & { __accepts: string; __canAccept: string; }; }>; readonly x: Column<...>; readonly z: Column<...>; }; ... 10 more ...; readonly deleteAllowed: true;...' is not assignable to type '{ alias: \"table\"; }'.",
+      "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"other\"; readonly columns: { readonly x: Column<{ tableAlias: \"other\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 10 more ...; readonly deleteAllowed: true;...' is not assignable to type '{ alias: \"table\"; }'.",
       "category": 1,
       "code": 2322,
       "next": {

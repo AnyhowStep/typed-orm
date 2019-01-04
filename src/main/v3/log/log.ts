@@ -113,13 +113,9 @@ export interface CompletedLog {
         readonly [columnName : string] : any;
     };
     readonly dynamicDefaultValueDelegate : (
-        entityIdentifier : {
-            readonly [columnName : string] : any
-        },
+        entityIdentifier : any,
         connection : IConnection
-    ) => Promise<{
-        readonly [columnName : string] : any
-    }>;
+    ) => Promise<{}>;
 }
 export type EntityIdentifier<LogT extends ILog & { entityIdentifier : string[] }> = (
     {

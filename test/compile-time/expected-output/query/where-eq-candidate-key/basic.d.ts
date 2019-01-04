@@ -8,20 +8,20 @@ export declare const query: o.Query<{
             readonly usedRef: {};
             readonly alias: "table";
             readonly columns: {
-                readonly y: o.Column<{
-                    tableAlias: "table";
-                    name: "y";
-                    assertDelegate: sd.AssertDelegate<string | null> & {
-                        __accepts: string | null;
-                        __canAccept: string | null;
-                    };
-                }>;
                 readonly x: o.Column<{
                     tableAlias: "table";
                     name: "x";
                     assertDelegate: sd.AssertDelegate<number> & {
                         __accepts: number;
                         __canAccept: number;
+                    };
+                }>;
+                readonly y: o.Column<{
+                    tableAlias: "table";
+                    name: "y";
+                    assertDelegate: sd.AssertDelegate<string | null> & {
+                        __accepts: string | null;
+                        __canAccept: string | null;
                     };
                 }>;
                 readonly z: o.Column<{
@@ -36,30 +36,30 @@ export declare const query: o.Query<{
             readonly autoIncrement: undefined;
             readonly id: undefined;
             readonly primaryKey: undefined;
-            readonly candidateKeys: ("y" | "x")[][];
+            readonly candidateKeys: ("x" | "y")[][];
             readonly generated: [];
             readonly isNullable: "y"[];
             readonly hasExplicitDefaultValue: [];
-            readonly mutable: ("y" | "x" | "z")[];
+            readonly mutable: ("x" | "y" | "z")[];
             readonly parents: [];
             readonly insertAllowed: true;
             readonly deleteAllowed: true;
         }>;
         columns: {
-            readonly y: o.Column<{
-                tableAlias: "table";
-                name: "y";
-                assertDelegate: sd.AssertDelegate<string | null> & {
-                    __accepts: string | null;
-                    __canAccept: string | null;
-                };
-            }>;
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
                 assertDelegate: sd.AssertDelegate<number> & {
                     __accepts: number;
                     __canAccept: number;
+                };
+            }>;
+            readonly y: o.Column<{
+                tableAlias: "table";
+                name: "y";
+                assertDelegate: sd.AssertDelegate<string | null> & {
+                    __accepts: string | null;
+                    __canAccept: string | null;
                 };
             }>;
             readonly z: o.Column<{

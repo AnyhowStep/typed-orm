@@ -4,20 +4,20 @@ export declare const table: o.Table<{
     readonly usedRef: {};
     readonly alias: "t";
     readonly columns: {
-        readonly y: o.Column<{
-            tableAlias: "t";
-            name: "y";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
-        }>;
         readonly x: o.Column<{
             tableAlias: "t";
             name: "x";
             assertDelegate: sd.AssertDelegate<number> & {
                 __accepts: number;
                 __canAccept: number;
+            };
+        }>;
+        readonly y: o.Column<{
+            tableAlias: "t";
+            name: "y";
+            assertDelegate: sd.AssertDelegate<string> & {
+                __accepts: string;
+                __canAccept: string;
             };
         }>;
     };
@@ -28,7 +28,7 @@ export declare const table: o.Table<{
     readonly generated: [];
     readonly isNullable: never[];
     readonly hasExplicitDefaultValue: [];
-    readonly mutable: ("y" | "x")[];
+    readonly mutable: ("x" | "y")[];
     readonly parents: [];
     readonly insertAllowed: true;
     readonly deleteAllowed: true;
@@ -38,20 +38,20 @@ export declare const join: o.Join<{
         readonly usedRef: {};
         readonly alias: "t";
         readonly columns: {
-            readonly y: o.Column<{
-                tableAlias: "t";
-                name: "y";
-                assertDelegate: sd.AssertDelegate<string> & {
-                    __accepts: string;
-                    __canAccept: string;
-                };
-            }>;
             readonly x: o.Column<{
                 tableAlias: "t";
                 name: "x";
                 assertDelegate: sd.AssertDelegate<number> & {
                     __accepts: number;
                     __canAccept: number;
+                };
+            }>;
+            readonly y: o.Column<{
+                tableAlias: "t";
+                name: "y";
+                assertDelegate: sd.AssertDelegate<string> & {
+                    __accepts: string;
+                    __canAccept: string;
                 };
             }>;
         };
@@ -62,20 +62,12 @@ export declare const join: o.Join<{
         readonly generated: [];
         readonly isNullable: never[];
         readonly hasExplicitDefaultValue: [];
-        readonly mutable: ("y" | "x")[];
+        readonly mutable: ("x" | "y")[];
         readonly parents: [];
         readonly insertAllowed: true;
         readonly deleteAllowed: true;
     }>;
     columns: {
-        readonly y: o.Column<{
-            tableAlias: "t";
-            name: "y";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
-        }>;
         readonly x: o.Column<{
             tableAlias: "t";
             name: "x";
@@ -84,18 +76,18 @@ export declare const join: o.Join<{
                 __canAccept: number;
             };
         }>;
+        readonly y: o.Column<{
+            tableAlias: "t";
+            name: "y";
+            assertDelegate: sd.AssertDelegate<string> & {
+                __accepts: string;
+                __canAccept: string;
+            };
+        }>;
     };
     nullable: false;
 }>;
 export declare const columnMap: {
-    readonly y: o.Column<{
-        tableAlias: "t";
-        name: "y";
-        assertDelegate: sd.AssertDelegate<string> & {
-            __accepts: string;
-            __canAccept: string;
-        };
-    }>;
     readonly x: o.Column<{
         tableAlias: "t";
         name: "x";
@@ -104,26 +96,34 @@ export declare const columnMap: {
             __canAccept: number;
         };
     }>;
+    readonly y: o.Column<{
+        tableAlias: "t";
+        name: "y";
+        assertDelegate: sd.AssertDelegate<string> & {
+            __accepts: string;
+            __canAccept: string;
+        };
+    }>;
 };
 export declare const nullableJoin: o.Join<{
     aliasedTable: o.Table<{
         readonly usedRef: {};
         readonly alias: "t";
         readonly columns: {
-            readonly y: o.Column<{
-                tableAlias: "t";
-                name: "y";
-                assertDelegate: sd.AssertDelegate<string> & {
-                    __accepts: string;
-                    __canAccept: string;
-                };
-            }>;
             readonly x: o.Column<{
                 tableAlias: "t";
                 name: "x";
                 assertDelegate: sd.AssertDelegate<number> & {
                     __accepts: number;
                     __canAccept: number;
+                };
+            }>;
+            readonly y: o.Column<{
+                tableAlias: "t";
+                name: "y";
+                assertDelegate: sd.AssertDelegate<string> & {
+                    __accepts: string;
+                    __canAccept: string;
                 };
             }>;
         };
@@ -134,20 +134,12 @@ export declare const nullableJoin: o.Join<{
         readonly generated: [];
         readonly isNullable: never[];
         readonly hasExplicitDefaultValue: [];
-        readonly mutable: ("y" | "x")[];
+        readonly mutable: ("x" | "y")[];
         readonly parents: [];
         readonly insertAllowed: true;
         readonly deleteAllowed: true;
     }>;
     columns: {
-        readonly y: o.Column<{
-            tableAlias: "t";
-            name: "y";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
-        }>;
         readonly x: o.Column<{
             tableAlias: "t";
             name: "x";
@@ -156,19 +148,27 @@ export declare const nullableJoin: o.Join<{
                 __canAccept: number;
             };
         }>;
+        readonly y: o.Column<{
+            tableAlias: "t";
+            name: "y";
+            assertDelegate: sd.AssertDelegate<string> & {
+                __accepts: string;
+                __canAccept: string;
+            };
+        }>;
     };
     nullable: true;
 }>;
 export declare const nullableColumnMap: {
-    readonly y: o.Column<{
-        readonly tableAlias: "t";
-        readonly name: "y";
-        readonly assertDelegate: sd.AssertDelegate<string | null>;
-    }>;
     readonly x: o.Column<{
         readonly tableAlias: "t";
         readonly name: "x";
         readonly assertDelegate: sd.AssertDelegate<number | null>;
+    }>;
+    readonly y: o.Column<{
+        readonly tableAlias: "t";
+        readonly name: "y";
+        readonly assertDelegate: sd.AssertDelegate<string | null>;
     }>;
 };
 export declare const untypedJoin: o.IJoin;

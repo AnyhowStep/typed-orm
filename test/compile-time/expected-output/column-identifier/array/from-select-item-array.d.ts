@@ -6,10 +6,10 @@ export declare const arr: ({
     readonly name: "eq";
 } | {
     readonly tableAlias: "otherTable";
-    readonly name: "y";
+    readonly name: "x";
 } | {
     readonly tableAlias: "otherTable";
-    readonly name: "x";
+    readonly name: "y";
 } | {
     readonly tableAlias: "otherTable";
     readonly name: "z";
