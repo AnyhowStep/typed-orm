@@ -1,6 +1,7 @@
 import * as sd from "schema-decorator";
 import {ColumnMap} from "../column-map";
 import {IColumn, Column, ColumnUtil} from "../../column";
+import { Omit } from "../../type";
 
 export type WithTableAlias<
     ColumnMapT extends ColumnMap,
@@ -149,3 +150,34 @@ export type ToInterface<MapT extends ColumnMap> = (
         )
     }
 );
+
+export function omit<
+    MapT extends ColumnMap,
+    ArrT extends string[]
+>(
+    map : MapT,
+    arr : ArrT
+) : Omit<MapT, ArrT[number]> {
+    const result : any = {};
+    for (let columnName in map) {
+        if (arr.indexOf(columnName) < 0) {
+            result[columnName] = map[columnName];
+        }
+    }
+    return result;
+}
+export function pick<
+    MapT extends ColumnMap,
+    ArrT extends string[]
+>(
+    map : MapT,
+    arr : ArrT
+) : Pick<MapT, ArrT[number]> {
+    const result : any = {};
+    for (let columnName in map) {
+        if (arr.indexOf(columnName) >= 0) {
+            result[columnName] = map[columnName];
+        }
+    }
+    return result;
+}

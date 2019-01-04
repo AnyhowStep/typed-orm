@@ -184,6 +184,9 @@ class Query {
     whereEqCandidateKey(table, key) {
         return QueryUtil.whereEqCandidateKey(this, table, key);
     }
+    whereEqColumns(table, columns) {
+        return QueryUtil.whereEqColumns(this, table, columns);
+    }
     useJoin(joinDecl) {
         return QueryUtil.useJoin(this, joinDecl);
     }

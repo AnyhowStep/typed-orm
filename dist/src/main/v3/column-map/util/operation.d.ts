@@ -1,6 +1,7 @@
 import * as sd from "schema-decorator";
 import { ColumnMap } from "../column-map";
 import { IColumn, ColumnUtil } from "../../column";
+import { Omit } from "../../type";
 export declare type WithTableAlias<ColumnMapT extends ColumnMap, NewTableAliasT extends string> = ({
     readonly [columnName in Extract<keyof ColumnMapT, string>]: (ColumnUtil.WithTableAlias<ColumnMapT[columnName], NewTableAliasT>);
 });
@@ -24,4 +25,6 @@ export declare function toNullable<ColumnMapT extends ColumnMap>(columnMap: Colu
 export declare type ToInterface<MapT extends ColumnMap> = ({
     readonly [columnName in keyof MapT]: (ColumnUtil.ToInterface<MapT[columnName]>);
 });
+export declare function omit<MapT extends ColumnMap, ArrT extends string[]>(map: MapT, arr: ArrT): Omit<MapT, ArrT[number]>;
+export declare function pick<MapT extends ColumnMap, ArrT extends string[]>(map: MapT, arr: ArrT): Pick<MapT, ArrT[number]>;
 //# sourceMappingURL=operation.d.ts.map

@@ -15,6 +15,7 @@ const informationSchema = require("./information-schema");
 exports.informationSchema = informationSchema;
 __export(require("./insert"));
 __export(require("./join-declaration"));
+__export(require("./log"));
 __export(require("./order"));
 __export(require("./polymorphism"));
 __export(require("./query"));

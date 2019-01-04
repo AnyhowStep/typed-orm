@@ -42,6 +42,9 @@
 + Log table pattern
 + START TRANSACTION READ ONLY
 
++ SELECT clause must be before adding map delegates, too
++ Derived tables cannot have `_parentJoins`
+
 + String collation safety
   + _utf8'some string' COLLATE utf8_danish_ci
 

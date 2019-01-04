@@ -12,6 +12,7 @@ import * as informationSchema from "./information-schema";
 export {informationSchema};
 export * from "./insert";
 export * from "./join-declaration";
+export * from "./log";
 export * from "./order";
 export * from "./polymorphism";
 export * from "./query";

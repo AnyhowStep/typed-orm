@@ -64,6 +64,25 @@ export function makeDirectorySync (rootDir : string, relativePath : string, rela
     }
 }
 
+export function copyFileSync (fromRootDir : string, toRootDir : string, relativePath : string) {
+    makeDirectorySync(toRootDir, relativePath, true);
+
+    const path = fromRootDir + relativePath;
+    {
+        const data = fs.readFileSync(path);
+        fs.writeFileSync(
+            toRootDir + relativePath,
+            data
+        );
+    }
+    if (fs.existsSync(path.replace(".d.ts", ".ts.errors"))) {
+        const data = fs.readFileSync(path.replace(".d.ts", ".ts.errors"));
+        fs.writeFileSync(
+            toRootDir + relativePath.replace(".d.ts", ".ts.errors"),
+            data
+        );
+    }
+}
 export function copyAllFilesAndDirectoriesSync (fromRootDir : string, toRootDir : string) {
     const paths = getAllTsFiles(fromRootDir);
     for (let path of paths) {

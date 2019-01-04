@@ -53,4 +53,24 @@ function toNullable(columnMap) {
     return result;
 }
 exports.toNullable = toNullable;
+function omit(map, arr) {
+    const result = {};
+    for (let columnName in map) {
+        if (arr.indexOf(columnName) < 0) {
+            result[columnName] = map[columnName];
+        }
+    }
+    return result;
+}
+exports.omit = omit;
+function pick(map, arr) {
+    const result = {};
+    for (let columnName in map) {
+        if (arr.indexOf(columnName) >= 0) {
+            result[columnName] = map[columnName];
+        }
+    }
+    return result;
+}
+exports.pick = pick;
 //# sourceMappingURL=operation.js.map

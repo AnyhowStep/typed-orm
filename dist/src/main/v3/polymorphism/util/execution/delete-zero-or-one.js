@@ -9,7 +9,7 @@ function deleteZeroOrOne(connection, table, where) {
         return delete_1.DeleteUtil.deleteZeroOrOne(connection, table, where);
     }
     return connection.transactionIfNotInOne(async (connection) => {
-        const resultRef = await query_1.QueryUtil.fetchZeroOrOne(query_1.QueryUtil.select(query_1.QueryUtil.where(from_1.from(table), () => where), ((c) => [c])), connection);
+        const resultRef = await query_1.QueryUtil.fetchZeroOrOne(query_1.QueryUtil.select(query_1.QueryUtil.where(from_1.from(table), (() => where)), ((c) => [c])), connection);
         //There may be tables in this array that cannot be deleted from.
         //This is not so bad. We let run-time errors catch it for now.
         //TODO-FEATURE, Implement way to check if a table and its parents

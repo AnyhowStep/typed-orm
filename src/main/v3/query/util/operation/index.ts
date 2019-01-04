@@ -31,6 +31,7 @@ export * from "./union";
 export * from "./use-join";
 export * from "./use-joins";
 export * from "./where-eq-candidate-key";
+export * from "./where-eq-columns";
 export * from "./where-eq";
 export * from "./where-is-not-null";
 export * from "./where-is-null";

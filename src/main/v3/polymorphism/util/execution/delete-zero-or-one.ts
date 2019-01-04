@@ -21,7 +21,7 @@ export function deleteZeroOrOne<
             QueryUtil.select(
                 QueryUtil.where(
                     from(table),
-                    () => where
+                    (() => where) as any
                 ),
                 ((c : any) => [c]) as any
             ),

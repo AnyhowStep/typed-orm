@@ -9,7 +9,7 @@ async function fetchOne(connection, table, where) {
             .where(() => where)
             .select(c => [c]), connection);
     }
-    const rawResult = await query_1.QueryUtil.fetchOne(query_1.QueryUtil.select(query_1.QueryUtil.where(from_1.from(table), () => where), ((c) => [c])), connection);
+    const rawResult = await query_1.QueryUtil.fetchOne(query_1.QueryUtil.select(query_1.QueryUtil.where(from_1.from(table), (() => where)), ((c) => [c])), connection);
     const result = {};
     const alreadyCopied = new Set();
     for (let p of table.parents) {

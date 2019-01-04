@@ -9,7 +9,7 @@ async function fetchZeroOrOne(connection, table, where) {
             .where(() => where)
             .select(c => [c]), connection);
     }
-    const rawResult = await query_1.QueryUtil.fetchZeroOrOne(query_1.QueryUtil.select(query_1.QueryUtil.where(from_1.from(table), () => where), ((c) => [c])), connection);
+    const rawResult = await query_1.QueryUtil.fetchZeroOrOne(query_1.QueryUtil.select(query_1.QueryUtil.where(from_1.from(table), (() => where)), ((c) => [c])), connection);
     if (rawResult == undefined) {
         return undefined;
     }

@@ -16,6 +16,7 @@ import {IConnection} from "../execution";
 import {InsertSelectRowDelegate} from "../insert-select";
 import {UpdateUtil, UpdatableQuery} from "../update";
 import {DeletableQuery, DeleteUtil, Delete, DeleteModifier} from "../delete";
+import { TypeMapUtil } from "../type-map";
 
 export interface UnionQuery {
     //Defaults to true
@@ -1436,6 +1437,19 @@ export class Query<DataT extends QueryData> {
             table,
             key
         );
+    }
+
+    whereEqColumns<
+        TableT extends ITable,
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        table : TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
+        columns : Partial<TypeMapUtil.FromTable<TableT>>
+    ) : QueryUtil.WhereEqColumns<Extract<this, QueryUtil.AfterFromClause>> {
+        return QueryUtil.whereEqColumns<
+            Extract<this, QueryUtil.AfterFromClause>,
+            TableT
+        >(this, table, columns);
     }
 
     useJoin<

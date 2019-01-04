@@ -15,6 +15,7 @@ __export(require("./candidate-key-assert-delegate"));
 __export(require("./disallow-delete"));
 __export(require("./disallow-insert"));
 __export(require("./eq-candidate-key"));
+__export(require("./eq-columns"));
 __export(require("./eq-primary-key"));
 __export(require("./eq-super-key"));
 __export(require("./primary-key-assert-delegate"));

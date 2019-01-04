@@ -35,6 +35,7 @@ __export(require("./union"));
 __export(require("./use-join"));
 __export(require("./use-joins"));
 __export(require("./where-eq-candidate-key"));
+__export(require("./where-eq-columns"));
 __export(require("./where-eq"));
 __export(require("./where-is-not-null"));
 __export(require("./where-is-null"));

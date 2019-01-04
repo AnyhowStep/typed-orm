@@ -158,6 +158,10 @@ if (allDiffResults.length > 0) {
         console.log("====================================");
         console.error(JSON.stringify(diffResult, null, 2));
     }
+    for (let diffResult of allDiffResults) {
+        console.log(diffResult.relativePath);
+    }
+    console.error("Found discrepancies in", allDiffResults.length, "out of", rootNames.length,"files");
     process.exit(1);
 }
 console.log("tested", rootNames.length, "files");
