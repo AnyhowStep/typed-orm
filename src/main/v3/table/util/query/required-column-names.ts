@@ -1,6 +1,6 @@
 import {ITable} from "../../table";
 import {ColumnUtil} from "../../../column";
-import { columnNames } from "./column-names";
+import {columnNames} from "./column-names";
 
 export type RequiredColumnNames<TableT extends ITable> = (
     Exclude<

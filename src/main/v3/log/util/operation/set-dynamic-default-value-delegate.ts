@@ -3,6 +3,7 @@ import {ITable, TableUtil} from "../../../table";
 import {IColumn} from "../../../column";
 import {SortDirection} from "../../../order";
 import {IConnection} from "../../../execution";
+import {entityIdentifierAssertDelegate} from "./entity-identifier-assert-delegate";
 
 export type LogMustSetDynamicDefaultValueDelegate = (
     ILog<{
@@ -89,6 +90,52 @@ export function setDynamicDefaultValueDelegate<
         LogT
     >
 ) {
+    const requiredColumnNames = TableUtil.requiredColumnNames(log.table)
+        .filter(columnName => (
+            (
+                log.tracked.indexOf(columnName) >= 0 ||
+                log.copy.indexOf(columnName) >= 0
+            ) &&
+            (log.staticDefaultValue[columnName] === undefined)
+        ));
+    const optionalColumnNames = TableUtil.optionalColumnNames(log.table)
+        .filter(columnName => (
+            (
+                log.tracked.indexOf(columnName) >= 0 ||
+                log.copy.indexOf(columnName) >= 0
+            ) &&
+            (log.staticDefaultValue[columnName] === undefined)
+        ));
+    const wrappedDynamicDefaultValueDelegate : DynamicDefaultValueDelegate<LogT> = (entityIdentifier, connection) => {
+        const assertDelegate = entityIdentifierAssertDelegate(log);
+        entityIdentifier = assertDelegate(
+            `${log.table.alias}.entityIdentifier`,
+            entityIdentifier
+        );
+        const rawResult = dynamicDefaultValueDelegate(entityIdentifier, connection);
+        const result : any = {};
+        for (let columnName of requiredColumnNames) {
+            const rawValue = rawResult[columnName];
+            if (rawValue === undefined) {
+                throw new Error(`Expected a value for ${log.table.alias}.${columnName}`);
+            }
+            result[columnName] = log.table.columns[columnName].assertDelegate(
+                `${log.table.alias}.${columnName}`,
+                rawValue
+            );
+        }
+        for (let columnName of optionalColumnNames) {
+            const rawValue = rawResult[columnName];
+            if (rawValue === undefined) {
+                continue;
+            }
+            result[columnName] = log.table.columns[columnName].assertDelegate(
+                `${log.table.alias}.${columnName}`,
+                rawValue
+            );
+        }
+        return result;
+    };
     const {
         table,
         entityIdentifier,
@@ -106,6 +153,6 @@ export function setDynamicDefaultValueDelegate<
         doNotCopy,
         copy,
         staticDefaultValue,
-        dynamicDefaultValueDelegate,
+        dynamicDefaultValueDelegate : wrappedDynamicDefaultValueDelegate,
     });
 }

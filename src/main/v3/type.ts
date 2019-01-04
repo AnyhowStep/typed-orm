@@ -55,3 +55,9 @@ export function isStringArray (raw : any) : raw is string[] {
     }
     return true;
 }
+
+export type PromiseResult<P extends Promise<any>> = (
+    P extends Promise<infer R> ?
+    R :
+    never
+);

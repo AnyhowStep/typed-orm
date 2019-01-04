@@ -6,7 +6,6 @@ const entityBanned = o.table(
         entityId : o.bigint(),
         updatedAt : o.dateTime(),
         banned : o.boolean(),
-        updatedBy : o.bigint(),
     }
 ).addCandidateKey(
     c => [c.entityId, c.updatedAt]
@@ -17,7 +16,7 @@ export const entityBannedLog = o.log(entityBanned)
     .setEntityIdentifier(c => [c.entityId])
     .setLatestOrder(c => c.updatedAt.desc())
     .setTracked(c => [c.banned])
-    .setDoNotCopy(c => [c.updatedBy])
+    .setDoNotCopy(() => [])
     .setStaticDefaultValue({
         banned : true,
     })
