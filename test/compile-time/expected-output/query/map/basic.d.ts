@@ -8,20 +8,20 @@ export declare const query: o.Query<{
             readonly usedRef: {};
             readonly alias: "table";
             readonly columns: {
-                readonly x: o.Column<{
-                    tableAlias: "table";
-                    name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
-                }>;
                 readonly y: o.Column<{
                     tableAlias: "table";
                     name: "y";
                     assertDelegate: sd.AssertDelegate<string> & {
                         __accepts: string;
                         __canAccept: string;
+                    };
+                }>;
+                readonly x: o.Column<{
+                    tableAlias: "table";
+                    name: "x";
+                    assertDelegate: sd.AssertDelegate<number> & {
+                        __accepts: number;
+                        __canAccept: number;
                     };
                 }>;
                 readonly z: o.Column<{
@@ -40,26 +40,26 @@ export declare const query: o.Query<{
             readonly generated: [];
             readonly isNullable: never[];
             readonly hasExplicitDefaultValue: [];
-            readonly mutable: ("x" | "y" | "z")[];
+            readonly mutable: ("y" | "x" | "z")[];
             readonly parents: [];
             readonly insertAllowed: true;
             readonly deleteAllowed: true;
         }>;
         columns: {
-            readonly x: o.Column<{
-                tableAlias: "table";
-                name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
-            }>;
             readonly y: o.Column<{
                 tableAlias: "table";
                 name: "y";
                 assertDelegate: sd.AssertDelegate<string> & {
                     __accepts: string;
                     __canAccept: string;
+                };
+            }>;
+            readonly x: o.Column<{
+                tableAlias: "table";
+                name: "x";
+                assertDelegate: sd.AssertDelegate<number> & {
+                    __accepts: number;
+                    __canAccept: number;
                 };
             }>;
             readonly z: o.Column<{
@@ -107,20 +107,20 @@ export declare const query1: o.Query<{
             readonly usedRef: {};
             readonly alias: "table";
             readonly columns: {
-                readonly x: o.Column<{
-                    tableAlias: "table";
-                    name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
-                }>;
                 readonly y: o.Column<{
                     tableAlias: "table";
                     name: "y";
                     assertDelegate: sd.AssertDelegate<string> & {
                         __accepts: string;
                         __canAccept: string;
+                    };
+                }>;
+                readonly x: o.Column<{
+                    tableAlias: "table";
+                    name: "x";
+                    assertDelegate: sd.AssertDelegate<number> & {
+                        __accepts: number;
+                        __canAccept: number;
                     };
                 }>;
                 readonly z: o.Column<{
@@ -139,26 +139,26 @@ export declare const query1: o.Query<{
             readonly generated: [];
             readonly isNullable: never[];
             readonly hasExplicitDefaultValue: [];
-            readonly mutable: ("x" | "y" | "z")[];
+            readonly mutable: ("y" | "x" | "z")[];
             readonly parents: [];
             readonly insertAllowed: true;
             readonly deleteAllowed: true;
         }>;
         columns: {
-            readonly x: o.Column<{
-                tableAlias: "table";
-                name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
-            }>;
             readonly y: o.Column<{
                 tableAlias: "table";
                 name: "y";
                 assertDelegate: sd.AssertDelegate<string> & {
                     __accepts: string;
                     __canAccept: string;
+                };
+            }>;
+            readonly x: o.Column<{
+                tableAlias: "table";
+                name: "x";
+                assertDelegate: sd.AssertDelegate<number> & {
+                    __accepts: number;
+                    __canAccept: number;
                 };
             }>;
             readonly z: o.Column<{
@@ -197,14 +197,14 @@ export declare const query1: o.Query<{
     readonly _unionOrders: undefined;
     readonly _unionLimit: undefined;
     readonly _mapDelegate: (row: {
-        readonly x: number;
         readonly y: string;
+        readonly x: number;
     }, originalRow: {
-        readonly x: number;
         readonly y: string;
+        readonly x: number;
     }) => Promise<{
-        x: number;
         y: string;
+        x: number;
         hello: "world";
     }>;
 }>;
@@ -216,20 +216,20 @@ export declare const query2: o.Query<{
             readonly usedRef: {};
             readonly alias: "table";
             readonly columns: {
-                readonly x: o.Column<{
-                    tableAlias: "table";
-                    name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
-                }>;
                 readonly y: o.Column<{
                     tableAlias: "table";
                     name: "y";
                     assertDelegate: sd.AssertDelegate<string> & {
                         __accepts: string;
                         __canAccept: string;
+                    };
+                }>;
+                readonly x: o.Column<{
+                    tableAlias: "table";
+                    name: "x";
+                    assertDelegate: sd.AssertDelegate<number> & {
+                        __accepts: number;
+                        __canAccept: number;
                     };
                 }>;
                 readonly z: o.Column<{
@@ -248,26 +248,26 @@ export declare const query2: o.Query<{
             readonly generated: [];
             readonly isNullable: never[];
             readonly hasExplicitDefaultValue: [];
-            readonly mutable: ("x" | "y" | "z")[];
+            readonly mutable: ("y" | "x" | "z")[];
             readonly parents: [];
             readonly insertAllowed: true;
             readonly deleteAllowed: true;
         }>;
         columns: {
-            readonly x: o.Column<{
-                tableAlias: "table";
-                name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
-            }>;
             readonly y: o.Column<{
                 tableAlias: "table";
                 name: "y";
                 assertDelegate: sd.AssertDelegate<string> & {
                     __accepts: string;
                     __canAccept: string;
+                };
+            }>;
+            readonly x: o.Column<{
+                tableAlias: "table";
+                name: "x";
+                assertDelegate: sd.AssertDelegate<number> & {
+                    __accepts: number;
+                    __canAccept: number;
                 };
             }>;
             readonly z: o.Column<{
@@ -306,24 +306,24 @@ export declare const query2: o.Query<{
     readonly _unionOrders: undefined;
     readonly _unionLimit: undefined;
     readonly _mapDelegate: (row: {
-        readonly x: number;
         readonly y: string;
+        readonly x: number;
     }, originalRow: {
-        readonly x: number;
         readonly y: string;
+        readonly x: number;
     }) => Promise<{
-        x: number;
         y: string;
+        x: number;
         hello: "world";
     }>;
 }>;
 export declare const result1: Promise<{
-    x: number;
     y: string;
+    x: number;
     hello: "world";
 }>;
 export declare const result2: Promise<{
-    x: number;
     y: string;
+    x: number;
     hello: "world";
 }>;

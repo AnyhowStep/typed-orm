@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '[import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join-declaration/join-declaration\").JoinDeclaration<{ readonly fromTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: import(\"/...' is not assignable to parameter of type '[import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join-declaration/join-declaration\").JoinDeclaration<{ readonly fromTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: import(\"/...'.",
+      "messageText": "Argument of type '[import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join-declaration/join-declaration\").JoinDeclaration<{ readonly fromTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly y: import(\"/...' is not assignable to parameter of type '[import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join-declaration/join-declaration\").JoinDeclaration<{ readonly fromTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly y: import(\"/...'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '[JoinDeclaration<{ readonly fromTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 10 ...' is not assignable to type '[\"Duplicate JOIN targets not allowed\", \"joined1\"]'.",
+        "messageText": "Type '[JoinDeclaration<{ readonly fromTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string> & { __accepts: string; __canAccept: string; }; }>; readonly x: Column<...>; readonly z: Column<...>; }; ... 10 ...' is not assignable to type '[\"Duplicate JOIN targets not allowed\", \"joined1\"]'.",
         "category": 1,
         "code": 2322,
         "next": {
@@ -13,7 +13,7 @@
           "category": 1,
           "code": 2326,
           "next": {
-            "messageText": "Type 'JoinDeclaration<{ readonly fromTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<...>; readonly z: Column<...>; }; ... 10 m...' is not assignable to type '\"Duplicate JOIN targets not allowed\"'.",
+            "messageText": "Type 'JoinDeclaration<{ readonly fromTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string> & { __accepts: string; __canAccept: string; }; }>; readonly x: Column<...>; readonly z: Column<...>; }; ... 10 m...' is not assignable to type '\"Duplicate JOIN targets not allowed\"'.",
             "category": 1,
             "code": 2322
           }

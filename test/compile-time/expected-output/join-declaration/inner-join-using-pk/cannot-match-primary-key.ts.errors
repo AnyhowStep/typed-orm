@@ -5,7 +5,7 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | number | Date; }; }>; readonly x: Column<...>; readonly y: Column<...>; readonly z: Column<...>; }; ... 1...' is missing the following properties from type '[\"table\", \"is missing columns\", \"a\"]': 0, 1, 2, length, and 31 more.",
+        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | number | Date; }; }>; readonly y: Column<...>; readonly x: Column<...>; readonly z: Column<...>; }; ... 1...' is missing the following properties from type '[\"table\", \"is missing columns\", \"a\"]': 0, 1, 2, length, and 31 more.",
         "category": 1,
         "code": 2740
       }

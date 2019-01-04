@@ -23,6 +23,7 @@
         "noErrorTruncation": true,
 
         "strict": true,
+        "strictNullChecks": true,
 
         "module": "commonjs",
         "moduleResolution": "node",
@@ -35,6 +36,8 @@
     "include": [
         "./runner.ts",
         "./accept-actual.ts",
+        "./accept-one.ts",
+        "./interactive.ts",
         "./util.ts"
     ]
 }

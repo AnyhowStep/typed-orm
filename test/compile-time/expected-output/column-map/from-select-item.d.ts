@@ -24,20 +24,20 @@ export declare const item: o.IExprSelectItem<{
     readonly alias: "someAlias";
 }>;
 export declare const columnMap: {
-    readonly x: o.Column<{
-        tableAlias: "someTable";
-        name: "x";
-        assertDelegate: sd.AssertDelegate<number> & {
-            __accepts: number;
-            __canAccept: number;
-        };
-    }>;
     readonly y: o.Column<{
         tableAlias: "someTable";
         name: "y";
         assertDelegate: sd.AssertDelegate<Date> & {
             __accepts: Date;
             __canAccept: string | number | Date;
+        };
+    }>;
+    readonly x: o.Column<{
+        tableAlias: "someTable";
+        name: "x";
+        assertDelegate: sd.AssertDelegate<number> & {
+            __accepts: number;
+            __canAccept: number;
         };
     }>;
     readonly z: o.Column<{
@@ -103,20 +103,20 @@ export declare const fromItem: {
     }>;
 };
 export declare const fromColumnMap: {
-    readonly x: o.Column<{
-        tableAlias: "someTable";
-        name: "x";
-        assertDelegate: sd.AssertDelegate<number> & {
-            __accepts: number;
-            __canAccept: number;
-        };
-    }>;
     readonly y: o.Column<{
         tableAlias: "someTable";
         name: "y";
         assertDelegate: sd.AssertDelegate<Date> & {
             __accepts: Date;
             __canAccept: string | number | Date;
+        };
+    }>;
+    readonly x: o.Column<{
+        tableAlias: "someTable";
+        name: "x";
+        assertDelegate: sd.AssertDelegate<number> & {
+            __accepts: number;
+            __canAccept: number;
         };
     }>;
     readonly z: o.Column<{

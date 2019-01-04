@@ -2,20 +2,20 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../dist/src/main";
 export declare const columnMap: {
-    readonly x: o.Column<{
-        tableAlias: "someTable";
-        name: "x";
-        assertDelegate: sd.AssertDelegate<number> & {
-            __accepts: number;
-            __canAccept: number;
-        };
-    }>;
     readonly y: o.Column<{
         tableAlias: "someTable";
         name: "y";
         assertDelegate: sd.AssertDelegate<Date> & {
             __accepts: Date;
             __canAccept: string | number | Date;
+        };
+    }>;
+    readonly x: o.Column<{
+        tableAlias: "someTable";
+        name: "x";
+        assertDelegate: sd.AssertDelegate<number> & {
+            __accepts: number;
+            __canAccept: number;
         };
     }>;
     readonly z: o.Column<{
@@ -28,20 +28,20 @@ export declare const columnMap: {
     }>;
 };
 export declare const columnMapWithTableAlias: {
-    readonly x: o.Column<{
-        readonly tableAlias: "someAlias";
-        readonly name: "x";
-        readonly assertDelegate: sd.AssertDelegate<number> & {
-            __accepts: number;
-            __canAccept: number;
-        };
-    }>;
     readonly y: o.Column<{
         readonly tableAlias: "someAlias";
         readonly name: "y";
         readonly assertDelegate: sd.AssertDelegate<Date> & {
             __accepts: Date;
             __canAccept: string | number | Date;
+        };
+    }>;
+    readonly x: o.Column<{
+        readonly tableAlias: "someAlias";
+        readonly name: "x";
+        readonly assertDelegate: sd.AssertDelegate<number> & {
+            __accepts: number;
+            __canAccept: number;
         };
     }>;
     readonly z: o.Column<{

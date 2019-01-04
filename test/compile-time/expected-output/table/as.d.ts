@@ -4,20 +4,20 @@ export declare const aliased: o.AliasedTable<{
     readonly usedRef: {};
     readonly alias: "aliasedTable";
     readonly columns: {
-        readonly x: o.Column<{
-            readonly tableAlias: "aliasedTable";
-            readonly name: "x";
-            readonly assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
-        }>;
         readonly y: o.Column<{
             readonly tableAlias: "aliasedTable";
             readonly name: "y";
             readonly assertDelegate: sd.AssertDelegate<string> & {
                 __accepts: string;
                 __canAccept: string;
+            };
+        }>;
+        readonly x: o.Column<{
+            readonly tableAlias: "aliasedTable";
+            readonly name: "x";
+            readonly assertDelegate: sd.AssertDelegate<number> & {
+                __accepts: number;
+                __canAccept: number;
             };
         }>;
         readonly z: o.Column<{
