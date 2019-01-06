@@ -10,4 +10,5 @@ export declare type MAX_SAFE_INTEGER = 9007199254740991;
 export declare const MAX_SAFE_INTEGER: MAX_SAFE_INTEGER;
 export declare type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export declare function isStringArray(raw: any): raw is string[];
+export declare type PromiseResult<P extends Promise<any>> = (P extends Promise<infer R> ? R : never);
 //# sourceMappingURL=type.d.ts.map

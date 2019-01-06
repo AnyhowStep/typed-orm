@@ -32,3 +32,32 @@ export function isNonNullPrimitiveExpr (raw : unknown) : raw is NonNullPrimitive
     }
     return isPrimitiveExpr(raw);
 }
+export namespace PrimitiveExprUtil {
+    export function isEqual (a : PrimitiveExpr, b : PrimitiveExpr) : boolean {
+        if (a === b) {
+            return true;
+        }
+
+        if (a instanceof Date) {
+            if (b instanceof Date) {
+                if (isNaN(a.getTime()) && isNaN(b.getTime())) {
+                    return true;
+                }
+                return a.getTime() === b.getTime();
+            } else {
+                return false;
+            }
+        }
+
+        if (a instanceof Buffer) {
+            if (b instanceof Buffer) {
+                return a.equals(b);
+            } else {
+                return false;
+            }
+        }
+
+        //No idea, assume not equal
+        return false;
+    }
+}

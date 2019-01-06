@@ -7,20 +7,24 @@ function setDoNotCopy(log, delegate) {
     const columns = column_map_1.ColumnMapUtil.pick(log.table.columns, log.copy);
     const doNotCopy = delegate(columns);
     column_identifier_map_1.ColumnIdentifierMapUtil.assertHasColumnIdentifiers(columns, doNotCopy);
-    const { table, entityIdentifier, latestOrder, tracked, staticDefaultValue, dynamicDefaultValueDelegate, } = log;
+    const { table, entity, entityIdentifier, joinDeclaration, latestOrder, tracked, trackedDefaults, } = log;
     const copy = log.copy
         .filter((columnName) => {
         return !doNotCopy.some(c => c.name == columnName);
     });
     return new log_1.Log({
         table,
+        entity,
         entityIdentifier,
+        joinDeclaration,
         latestOrder,
         tracked,
         doNotCopy: doNotCopy.map(c => c.name),
         copy,
-        staticDefaultValue,
-        dynamicDefaultValueDelegate,
+        copyDefaultsDelegate: ((copy.length == 0) ?
+            (() => Promise.resolve({})) :
+            undefined),
+        trackedDefaults,
     });
 }
 exports.setDoNotCopy = setDoNotCopy;

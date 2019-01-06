@@ -3,25 +3,33 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const log_1 = require("../../log");
 const column_identifier_map_1 = require("../../../column-identifier-map");
 const column_map_1 = require("../../../column-map");
+const candidate_key_array_1 = require("../../../candidate-key-array");
 function setLatestOrder(log, delegate) {
-    const columns = column_map_1.ColumnMapUtil.omit(log.table.columns, log.entityIdentifier);
+    const columns = column_map_1.ColumnMapUtil.pick(log.table.columns, log.copy);
     const latestOrder = delegate(columns);
-    column_identifier_map_1.ColumnIdentifierMapUtil.assertHasColumnIdentifiers(columns, latestOrder[0]);
-    const { table, entityIdentifier, tracked, doNotCopy, staticDefaultValue, dynamicDefaultValueDelegate, } = log;
+    column_identifier_map_1.ColumnIdentifierMapUtil.assertHasColumnIdentifier(columns, latestOrder[0]);
+    const logCk = [...log.entityIdentifier, latestOrder[0].name];
+    if (!candidate_key_array_1.CandidateKeyArrayUtil.hasKey(log.entity.candidateKeys, logCk)) {
+        throw new Error(`${logCk.join("|")} must be a candidate key of ${log.table.alias}`);
+    }
+    const { table, entity, entityIdentifier, joinDeclaration, tracked, doNotCopy, copyDefaultsDelegate, trackedDefaults, } = log;
     const copy = log.copy
         .filter((columnName) => {
         return columnName != latestOrder[0].name;
     });
-    return new log_1.Log({
+    const result = new log_1.Log({
         table,
+        entity,
         entityIdentifier,
+        joinDeclaration,
         latestOrder,
         tracked,
         doNotCopy,
         copy,
-        staticDefaultValue,
-        dynamicDefaultValueDelegate,
+        copyDefaultsDelegate,
+        trackedDefaults,
     });
+    return result;
 }
 exports.setLatestOrder = setLatestOrder;
 /*

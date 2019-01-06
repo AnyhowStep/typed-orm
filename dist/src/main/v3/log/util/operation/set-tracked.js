@@ -7,20 +7,22 @@ function setTracked(log, delegate) {
     const columns = column_map_1.ColumnMapUtil.pick(log.table.columns, log.copy);
     const tracked = delegate(columns);
     column_identifier_map_1.ColumnIdentifierMapUtil.assertHasColumnIdentifiers(columns, tracked);
-    const { table, entityIdentifier, latestOrder, doNotCopy, staticDefaultValue, dynamicDefaultValueDelegate, } = log;
+    const { table, entity, entityIdentifier, joinDeclaration, latestOrder, doNotCopy, copyDefaultsDelegate, trackedDefaults, } = log;
     const copy = log.copy
         .filter((columnName) => {
         return !tracked.some(c => c.name == columnName);
     });
     return new log_1.Log({
         table,
+        entity,
         entityIdentifier,
+        joinDeclaration,
         latestOrder,
         tracked: tracked.map(c => c.name),
         doNotCopy,
         copy,
-        staticDefaultValue,
-        dynamicDefaultValueDelegate,
+        copyDefaultsDelegate,
+        trackedDefaults,
     });
 }
 exports.setTracked = setTracked;

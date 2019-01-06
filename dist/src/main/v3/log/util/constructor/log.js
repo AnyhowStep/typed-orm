@@ -4,14 +4,16 @@ const log_1 = require("../../log");
 function log(table) {
     return new log_1.Log({
         table,
+        entity: undefined,
         entityIdentifier: undefined,
+        joinDeclaration: undefined,
         latestOrder: undefined,
         tracked: undefined,
         doNotCopy: undefined,
         copy: Object.keys(table.columns)
             .filter(columnName => table.generated.indexOf(columnName) < 0),
-        staticDefaultValue: undefined,
-        dynamicDefaultValueDelegate: undefined,
+        copyDefaultsDelegate: undefined,
+        trackedDefaults: undefined,
     });
 }
 exports.log = log;

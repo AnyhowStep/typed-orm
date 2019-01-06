@@ -4,13 +4,18 @@ const LogUtil = require("./util");
 class Log {
     constructor(data) {
         this.table = data.table;
+        this.entity = data.entity;
         this.entityIdentifier = data.entityIdentifier;
+        this.joinDeclaration = data.joinDeclaration;
         this.latestOrder = data.latestOrder;
         this.tracked = data.tracked;
         this.doNotCopy = data.doNotCopy;
         this.copy = data.copy;
-        this.staticDefaultValue = data.staticDefaultValue;
-        this.dynamicDefaultValueDelegate = data.dynamicDefaultValueDelegate;
+        this.copyDefaultsDelegate = data.copyDefaultsDelegate;
+        this.trackedDefaults = data.trackedDefaults;
+    }
+    setEntity(entity) {
+        return LogUtil.setEntity(this, entity);
     }
     setEntityIdentifier(delegate) {
         return LogUtil.setEntityIdentifier(this, delegate);
@@ -24,11 +29,11 @@ class Log {
     setDoNotCopy(delegate) {
         return LogUtil.setDoNotCopy(this, delegate);
     }
-    setStaticDefaultValue(rawMap) {
-        return LogUtil.setStaticDefaultValue(this, rawMap);
+    setCopyDefaultsDelegate(dynamicDefaultValueDelegate) {
+        return LogUtil.setCopyDefaultsDelegate(this, dynamicDefaultValueDelegate);
     }
-    setDynamicDefaultValueDelegate(dynamicDefaultValueDelegate) {
-        return LogUtil.setDynamicDefaultValueDelegate(this, dynamicDefaultValueDelegate);
+    setTrackedDefaults(rawMap) {
+        return LogUtil.setTrackedDefaults(this, rawMap);
     }
     latestQuery(entityIdentifier) {
         return LogUtil.latestQuery(this, entityIdentifier);

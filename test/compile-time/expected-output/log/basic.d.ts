@@ -49,7 +49,109 @@ export declare const entityBannedLog: o.Log<{
         readonly insertAllowed: true;
         readonly deleteAllowed: true;
     }>;
+    readonly entity: o.Table<{
+        readonly usedRef: {};
+        readonly alias: "entity";
+        readonly columns: {
+            readonly entityId: o.Column<{
+                tableAlias: "entity";
+                name: "entityId";
+                assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
+                    __accepts: string | number | bigint;
+                    __canAccept: string | number | bigint;
+                };
+            }>;
+        };
+        readonly autoIncrement: undefined;
+        readonly id: undefined;
+        readonly primaryKey: undefined;
+        readonly candidateKeys: "entityId"[][];
+        readonly generated: [];
+        readonly isNullable: never[];
+        readonly hasExplicitDefaultValue: [];
+        readonly mutable: "entityId"[];
+        readonly parents: [];
+        readonly insertAllowed: true;
+        readonly deleteAllowed: true;
+    }>;
     readonly entityIdentifier: "entityId"[];
+    readonly joinDeclaration: o.JoinDeclaration<{
+        fromTable: o.Table<{
+            readonly usedRef: {};
+            readonly alias: "entityBanned";
+            readonly columns: {
+                readonly entityId: o.Column<{
+                    tableAlias: "entityBanned";
+                    name: "entityId";
+                    assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
+                        __accepts: string | number | bigint;
+                        __canAccept: string | number | bigint;
+                    };
+                }>;
+                readonly updatedAt: o.Column<{
+                    tableAlias: "entityBanned";
+                    name: "updatedAt";
+                    assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
+                        __accepts: Date;
+                        __canAccept: Date;
+                    };
+                }>;
+                readonly banned: o.Column<{
+                    tableAlias: "entityBanned";
+                    name: "banned";
+                    assertDelegate: import("schema-decorator").AssertDelegate<boolean> & {
+                        __accepts: boolean | 0 | 1 | "0" | "1";
+                        __canAccept: boolean | 0 | 1 | "0" | "1";
+                    };
+                }>;
+                readonly updatedBy: o.Column<{
+                    tableAlias: "entityBanned";
+                    name: "updatedBy";
+                    assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
+                        __accepts: string | number | bigint;
+                        __canAccept: string | number | bigint;
+                    };
+                }>;
+            };
+            readonly autoIncrement: undefined;
+            readonly id: undefined;
+            readonly primaryKey: undefined;
+            readonly candidateKeys: ("entityId" | "updatedAt")[][];
+            readonly generated: [];
+            readonly isNullable: never[];
+            readonly hasExplicitDefaultValue: "updatedAt"[];
+            readonly mutable: ("entityId" | "updatedAt" | "banned" | "updatedBy")[];
+            readonly parents: [];
+            readonly insertAllowed: true;
+            readonly deleteAllowed: true;
+        }>;
+        toTable: o.Table<{
+            readonly usedRef: {};
+            readonly alias: "entity";
+            readonly columns: {
+                readonly entityId: o.Column<{
+                    tableAlias: "entity";
+                    name: "entityId";
+                    assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
+                        __accepts: string | number | bigint;
+                        __canAccept: string | number | bigint;
+                    };
+                }>;
+            };
+            readonly autoIncrement: undefined;
+            readonly id: undefined;
+            readonly primaryKey: undefined;
+            readonly candidateKeys: "entityId"[][];
+            readonly generated: [];
+            readonly isNullable: never[];
+            readonly hasExplicitDefaultValue: [];
+            readonly mutable: "entityId"[];
+            readonly parents: [];
+            readonly insertAllowed: true;
+            readonly deleteAllowed: true;
+        }>;
+        nullable: false;
+    }>;
     readonly latestOrder: [o.Column<{
         tableAlias: "entityBanned";
         name: "updatedAt";
@@ -61,12 +163,15 @@ export declare const entityBannedLog: o.Log<{
     readonly tracked: "banned"[];
     readonly doNotCopy: "updatedBy"[];
     readonly copy: never[];
-    readonly staticDefaultValue: {
+    readonly copyDefaultsDelegate: (args: {
+        entityIdentifier: {
+            readonly entityId: bigint;
+        };
+        connection: o.IConnection;
+    }) => Promise<{}>;
+    readonly trackedDefaults: {
         readonly banned: true;
     };
-    readonly dynamicDefaultValueDelegate: (entityIdentifier: {
-        readonly entityId: bigint;
-    }, connection: o.IConnection) => Promise<{} & {}>;
 }>;
 export declare const latestQuery: o.Query<{
     readonly _distinct: false;

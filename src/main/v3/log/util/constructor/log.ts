@@ -6,7 +6,9 @@ export function log<TableT extends ITable> (
 ) : (
     Log<{
         readonly table : TableT,
+        readonly entity : undefined,
         readonly entityIdentifier : undefined;
+        readonly joinDeclaration : undefined;
         readonly latestOrder : undefined;
         readonly tracked : undefined;
         readonly doNotCopy : undefined;
@@ -14,13 +16,15 @@ export function log<TableT extends ITable> (
             Extract<keyof TableT["columns"], string>,
             TableT["generated"][number]
         >[];
-        readonly staticDefaultValue : undefined;
-        readonly dynamicDefaultValueDelegate : undefined;
+        readonly copyDefaultsDelegate : undefined;
+        readonly trackedDefaults : undefined;
     }>
 ) {
     return new Log({
         table,
+        entity : undefined,
         entityIdentifier : undefined,
+        joinDeclaration : undefined,
         latestOrder : undefined,
         tracked : undefined,
         doNotCopy : undefined,
@@ -28,7 +32,7 @@ export function log<TableT extends ITable> (
             .filter(
                 columnName => table.generated.indexOf(columnName) < 0
             ) as any,
-        staticDefaultValue : undefined,
-        dynamicDefaultValueDelegate : undefined,
+        copyDefaultsDelegate : undefined,
+        trackedDefaults : undefined,
     });
 }

@@ -1,20 +1,30 @@
-import {ILog, Log} from "../../log";
+import {ILog, Log, EntityIdentifier} from "../../log";
 import {ITable} from "../../../table";
 import {ColumnUtil, IColumn} from "../../../column";
 import {ColumnIdentifierMapUtil} from "../../../column-identifier-map";
 import {SortDirection} from "../../../order";
 import {ColumnMapUtil} from "../../../column-map";
+import {IJoinDeclaration} from "../../../join-declaration";
+import {IConnection} from "../../../execution";
 
 export type LogMustSetDoNotCopy = (
     ILog<{
         readonly table : ITable;
+        readonly entity : ITable;
         readonly entityIdentifier : string[];
+        readonly joinDeclaration : IJoinDeclaration<{
+            //From `table`
+            readonly fromTable : ITable,
+            //To `entity`
+            readonly toTable : ITable,
+            readonly nullable : false,
+        }>;
         readonly latestOrder : [IColumn, SortDirection];
         readonly tracked : string[];
         readonly doNotCopy : undefined;
         readonly copy : string[];
-        readonly staticDefaultValue : undefined;
-        readonly dynamicDefaultValueDelegate : undefined;
+        readonly copyDefaultsDelegate : undefined;
+        readonly trackedDefaults : undefined;
     }>
 );
 export type SetDoNotCopyDelegate<
@@ -38,7 +48,9 @@ export type SetDoNotCopy<
 > = (
     Log<{
         readonly table : LogT["table"];
+        readonly entity : LogT["entity"];
         readonly entityIdentifier : LogT["entityIdentifier"];
+        readonly joinDeclaration : LogT["joinDeclaration"];
         readonly latestOrder : LogT["latestOrder"];
         readonly tracked : LogT["tracked"];
         readonly doNotCopy : ReturnType<DelegateT>[number]["name"][];
@@ -46,8 +58,20 @@ export type SetDoNotCopy<
             LogT["copy"][number],
             ReturnType<DelegateT>[number]["name"]
         >[];
-        readonly staticDefaultValue : undefined;
-        readonly dynamicDefaultValueDelegate : undefined;
+        readonly copyDefaultsDelegate : (
+            Exclude<
+                LogT["copy"][number],
+                ReturnType<DelegateT>[number]["name"]
+            > extends never ?
+            (
+                args : {
+                    entityIdentifier : EntityIdentifier<LogT>,
+                    connection : IConnection,
+                }
+            ) => Promise<{}> :
+            undefined
+        );
+        readonly trackedDefaults : undefined;
     }>
 );
 export function setDoNotCopy<
@@ -62,12 +86,7 @@ export function setDoNotCopy<
         DelegateT
     >
 ) {
-    const columns = ColumnMapUtil.pick<
-        LogT["table"]["columns"],
-        (
-            LogT["copy"][number]
-        )[]
-    >(
+    const columns = ColumnMapUtil.pick(
         log.table.columns,
         log.copy
     );
@@ -78,11 +97,12 @@ export function setDoNotCopy<
     );
     const {
         table,
+        entity,
         entityIdentifier,
+        joinDeclaration,
         latestOrder,
         tracked,
-        staticDefaultValue,
-        dynamicDefaultValueDelegate,
+        trackedDefaults,
     } = log;
     const copy = log.copy
         .filter((columnName) : columnName is (
@@ -97,12 +117,18 @@ export function setDoNotCopy<
         });
     return new Log({
         table,
+        entity,
         entityIdentifier,
+        joinDeclaration,
         latestOrder,
         tracked,
         doNotCopy : doNotCopy.map(c => c.name),
         copy,
-        staticDefaultValue,
-        dynamicDefaultValueDelegate,
+        copyDefaultsDelegate : (
+            (copy.length == 0) ?
+            (() => Promise.resolve({})) :
+            undefined
+        ) as any,
+        trackedDefaults,
     });
 }

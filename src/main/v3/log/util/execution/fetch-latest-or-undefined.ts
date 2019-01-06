@@ -1,10 +1,10 @@
-import {CompletedLog, EntityIdentifier} from "../../log";
+import {LogNoTrackedDefaults, EntityIdentifier} from "../../log";
 import {QueryUtil} from "../../../query";
 import {TypeMapUtil} from "../../../type-map";
 import {latestQuery} from "./latest-query";
 import {IConnection} from "../../../execution";
 
-export function fetchLatestOrUndefined<LogT extends CompletedLog> (
+export function fetchLatestOrUndefined<LogT extends LogNoTrackedDefaults> (
     log : LogT,
     entityIdentifier : EntityIdentifier<LogT>,
     connection : IConnection

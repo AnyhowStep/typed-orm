@@ -5,17 +5,26 @@ import {ColumnUtil, IColumn} from "../../../column";
 import {ColumnIdentifierMapUtil} from "../../../column-identifier-map";
 import {SortDirection} from "../../../order";
 import {ColumnMapUtil} from "../../../column-map";
+import {IJoinDeclaration} from "../../../join-declaration";
 
 export type LogMustSetTracked = (
     ILog<{
         readonly table : ITable;
+        readonly entity : ITable;
         readonly entityIdentifier : string[];
+        readonly joinDeclaration : IJoinDeclaration<{
+            //From `table`
+            readonly fromTable : ITable,
+            //To `entity`
+            readonly toTable : ITable,
+            readonly nullable : false,
+        }>;
         readonly latestOrder : [IColumn, SortDirection];
         readonly tracked : undefined;
         readonly doNotCopy : undefined;
         readonly copy : string[];
-        readonly staticDefaultValue : undefined;
-        readonly dynamicDefaultValueDelegate : undefined;
+        readonly copyDefaultsDelegate : undefined;
+        readonly trackedDefaults : undefined;
     }>
 );
 export type SetTrackedDelegate<
@@ -39,7 +48,9 @@ export type SetTracked<
 > = (
     Log<{
         readonly table : LogT["table"];
+        readonly entity : LogT["entity"];
         readonly entityIdentifier : LogT["entityIdentifier"];
+        readonly joinDeclaration : LogT["joinDeclaration"];
         readonly latestOrder : LogT["latestOrder"];
         readonly tracked : ReturnType<DelegateT>[number]["name"][];
         readonly doNotCopy : undefined;
@@ -47,8 +58,8 @@ export type SetTracked<
             LogT["copy"][number],
             ReturnType<DelegateT>[number]["name"]
         >[];
-        readonly staticDefaultValue : undefined;
-        readonly dynamicDefaultValueDelegate : undefined;
+        readonly copyDefaultsDelegate : undefined;
+        readonly trackedDefaults : undefined;
     }>
 );
 export function setTracked<
@@ -63,12 +74,7 @@ export function setTracked<
         DelegateT
     >
 ) {
-    const columns = ColumnMapUtil.pick<
-        LogT["table"]["columns"],
-        (
-            LogT["copy"][number]
-        )[]
-    >(
+    const columns = ColumnMapUtil.pick(
         log.table.columns,
         log.copy
     );
@@ -79,11 +85,13 @@ export function setTracked<
     );
     const {
         table,
+        entity,
         entityIdentifier,
+        joinDeclaration,
         latestOrder,
         doNotCopy,
-        staticDefaultValue,
-        dynamicDefaultValueDelegate,
+        copyDefaultsDelegate,
+        trackedDefaults,
     } = log;
     const copy = log.copy
         .filter((columnName) : columnName is (
@@ -98,12 +106,14 @@ export function setTracked<
         });
     return new Log({
         table,
+        entity,
         entityIdentifier,
+        joinDeclaration,
         latestOrder,
         tracked : tracked.map(c => c.name),
         doNotCopy,
         copy,
-        staticDefaultValue,
-        dynamicDefaultValueDelegate,
+        copyDefaultsDelegate,
+        trackedDefaults,
     });
 }

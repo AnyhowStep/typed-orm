@@ -1,11 +1,20 @@
 import * as o from "../../../../dist/src/main";
 
+const entity = o.table(
+    "entity",
+    {
+        entityId : o.bigint(),
+    }
+).addCandidateKey(
+    c => [c.entityId]
+);
 const entityBanned = o.table(
     "entityBanned",
     {
         entityId : o.bigint(),
         updatedAt : o.dateTime(),
         banned : o.boolean(),
+        someOtherEntityId : o.bigint(),
     }
 ).addCandidateKey(
     c => [c.entityId, c.updatedAt]
@@ -13,17 +22,18 @@ const entityBanned = o.table(
     c => [c.updatedAt]
 );
 export const entityBannedLog = o.log(entityBanned)
+    .setEntity(entity)
     .setEntityIdentifier(c => [c.entityId])
     .setLatestOrder(c => c.updatedAt.desc())
     .setTracked(c => [c.banned])
     .setDoNotCopy(() => [])
-    .setStaticDefaultValue({
-    })
-    .setDynamicDefaultValueDelegate(() => {
+    .setCopyDefaultsDelegate(() => {
         return Promise.resolve({
-            banned : true,
-            thisIsAnExtraField : true,
+            someOtherEntityId : 1n,
         });
+    })
+    .setTrackedDefaults({
+        banned : true,
     });
 export const latestQuery = entityBannedLog.latestQuery({
     entityId : 1n

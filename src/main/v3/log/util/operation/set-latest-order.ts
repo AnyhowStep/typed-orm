@@ -3,35 +3,43 @@ import {ITable} from "../../../table";
 import {ColumnUtil} from "../../../column";
 import {ColumnIdentifierMapUtil} from "../../../column-identifier-map";
 import {SortDirection} from "../../../order";
-import {Omit} from "../../../type";
 import {ColumnMapUtil} from "../../../column-map";
 import {CandidateKeyArrayUtil} from "../../../candidate-key-array";
+import {IJoinDeclaration} from "../../../join-declaration";
 
 export type LogMustSetLatestOrder = (
     ILog<{
         readonly table : ITable;
+        readonly entity : ITable;
         readonly entityIdentifier : string[];
+        readonly joinDeclaration : IJoinDeclaration<{
+            //From `table`
+            readonly fromTable : ITable,
+            //To `entity`
+            readonly toTable : ITable,
+            readonly nullable : false,
+        }>;
         readonly latestOrder : undefined;
         readonly tracked : undefined;
         readonly doNotCopy : undefined;
         readonly copy : string[];
-        readonly staticDefaultValue : undefined;
-        readonly dynamicDefaultValueDelegate : undefined;
+        readonly copyDefaultsDelegate : undefined;
+        readonly trackedDefaults : undefined;
     }>
 );
 export type SetLatestOrderDelegate<
     LogT extends LogMustSetLatestOrder
 > = (
     (
-        columns : Omit<
+        columns : Pick<
             LogT["table"]["columns"],
-            LogT["entityIdentifier"][number]
+            LogT["copy"][number]
         >,
     ) => [
         ColumnUtil.FromColumnMap<
-            Omit<
+            Pick<
                 LogT["table"]["columns"],
-                LogT["entityIdentifier"][number]
+                LogT["copy"][number]
             >
         >,
         SortDirection
@@ -59,7 +67,7 @@ export type AssertValidSetOrderDelegateImpl<
     ]
 );
 //https://github.com/Microsoft/TypeScript/issues/29133
-export type AssertValidSetOrderDelegate_Hack<
+export type AssertValidSetLatestOrderDelegate_Hack<
     LogT extends LogMustSetLatestOrder,
     DelegateT extends SetLatestOrderDelegate<LogT>,
     ResultT
@@ -79,7 +87,7 @@ export type AssertValidSetOrderDelegate_Hack<
         )[],
         "must be a candidate key of",
         LogT["table"]["alias"]
-    ]
+    ]|void
 );
 export type SetLatestOrder<
     LogT extends LogMustSetLatestOrder,
@@ -87,7 +95,9 @@ export type SetLatestOrder<
 > = (
     Log<{
         readonly table : LogT["table"];
+        readonly entity : LogT["entity"];
         readonly entityIdentifier : LogT["entityIdentifier"];
+        readonly joinDeclaration : LogT["joinDeclaration"];
         readonly latestOrder : ReturnType<DelegateT>;
         readonly tracked : undefined;
         readonly doNotCopy : undefined;
@@ -95,8 +105,8 @@ export type SetLatestOrder<
             LogT["copy"][number],
             ReturnType<DelegateT>[0]["name"]
         >[];
-        readonly staticDefaultValue : undefined;
-        readonly dynamicDefaultValueDelegate : undefined;
+        readonly copyDefaultsDelegate : undefined;
+        readonly trackedDefaults : undefined;
     }>
 );
 export function setLatestOrder<
@@ -106,7 +116,7 @@ export function setLatestOrder<
     log : LogT,
     delegate : DelegateT
 ) : (
-    AssertValidSetOrderDelegate_Hack<
+    AssertValidSetLatestOrderDelegate_Hack<
         LogT,
         DelegateT,
         SetLatestOrder<
@@ -115,22 +125,32 @@ export function setLatestOrder<
         >
     >
 ) {
-    const columns = ColumnMapUtil.omit<
-        LogT["table"]["columns"],
-        LogT["entityIdentifier"]
-    >(log.table.columns, log.entityIdentifier);
-    const latestOrder : ReturnType<DelegateT> = delegate(columns) as any;
-    ColumnIdentifierMapUtil.assertHasColumnIdentifiers(
-        columns,
-        latestOrder[0] as any
+    const columns = ColumnMapUtil.pick(
+        log.table.columns,
+        log.copy
     );
+    const latestOrder : ReturnType<DelegateT> = delegate(columns) as any;
+    ColumnIdentifierMapUtil.assertHasColumnIdentifier(
+        columns,
+        latestOrder[0]
+    );
+    const logCk = [...log.entityIdentifier, latestOrder[0].name];
+    if (!CandidateKeyArrayUtil.hasKey(
+        log.entity.candidateKeys,
+        logCk
+    )) {
+        throw new Error(`${logCk.join("|")} must be a candidate key of ${log.table.alias}`);
+    }
+
     const {
         table,
+        entity,
         entityIdentifier,
+        joinDeclaration,
         tracked,
         doNotCopy,
-        staticDefaultValue,
-        dynamicDefaultValueDelegate,
+        copyDefaultsDelegate,
+        trackedDefaults,
     } = log;
     const copy = log.copy
         .filter((columnName) : columnName is (
@@ -141,19 +161,22 @@ export function setLatestOrder<
         ) => {
             return columnName != latestOrder[0].name;
         });
-    return new Log({
+    const result : SetLatestOrder<
+        LogT,
+        DelegateT
+    > = new Log({
         table,
+        entity,
         entityIdentifier,
+        joinDeclaration,
         latestOrder,
         tracked,
         doNotCopy,
         copy,
-        staticDefaultValue,
-        dynamicDefaultValueDelegate,
-    }) as SetLatestOrder<
-        LogT,
-        DelegateT
-    > as any;
+        copyDefaultsDelegate,
+        trackedDefaults,
+    });
+    return result as any;
 }
 /*
 import * as o from "../../../index";

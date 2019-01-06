@@ -1,5 +1,13 @@
 import * as o from "../../../../dist/src/main";
 
+const entity = o.table(
+    "entity",
+    {
+        entityId : o.bigint(),
+    }
+).addCandidateKey(
+    c => [c.entityId]
+);
 const entityBanned = o.table(
     "entityBanned",
     {
@@ -13,15 +21,13 @@ const entityBanned = o.table(
     c => [c.updatedAt]
 );
 export const entityBannedLog = o.log(entityBanned)
+    .setEntity(entity)
     .setEntityIdentifier(c => [c.entityId])
     .setLatestOrder(c => c.updatedAt.desc())
     .setTracked(c => [c.banned])
     .setDoNotCopy(() => [])
-    .setStaticDefaultValue({
+    .setTrackedDefaults({
         banned : true,
-    })
-    .setDynamicDefaultValueDelegate(() => {
-        return Promise.resolve({});
     });
 export const latestQuery = entityBannedLog.latestQuery({
     entityId : 1n

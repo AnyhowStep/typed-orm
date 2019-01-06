@@ -1,8 +1,8 @@
-import {CompletedLog, EntityIdentifier} from "../../log";
+import {EntityIdentifier, LogNoTrackedDefaults} from "../../log";
 import {QueryUtil} from "../../../query";
 import {entityIdentifierAssertDelegate} from "../operation";
 
-export type LatestQuery<LogT extends CompletedLog> = (
+export type LatestQuery<LogT extends LogNoTrackedDefaults> = (
     QueryUtil.Limit<
         QueryUtil.OrderBy<
             QueryUtil.WhereEqColumns<
@@ -15,7 +15,7 @@ export type LatestQuery<LogT extends CompletedLog> = (
         1
     >
 );
-export function latestQuery<LogT extends CompletedLog> (
+export function latestQuery<LogT extends LogNoTrackedDefaults> (
     log : LogT,
     entityIdentifier : EntityIdentifier<LogT>
 ) : (

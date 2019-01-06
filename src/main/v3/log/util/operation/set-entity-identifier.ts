@@ -4,17 +4,21 @@ import {NonEmptyTuple} from "../../../tuple";
 import {ColumnUtil} from "../../../column";
 import {ColumnIdentifierMapUtil} from "../../../column-identifier-map";
 import {ColumnMapUtil} from "../../../column-map";
+import {JoinDeclaration, innerJoinCkUsing} from "../../../join-declaration";
+import {CandidateKeyArrayUtil} from "../../../candidate-key-array";
 
 export type LogMustSetEntityIdentifier = (
     ILog<{
         readonly table : ITable;
+        readonly entity : ITable;
         readonly entityIdentifier : undefined;
+        readonly joinDeclaration : undefined;
         readonly latestOrder : undefined;
         readonly tracked : undefined;
         readonly doNotCopy : undefined;
         readonly copy : string[];
-        readonly staticDefaultValue : undefined;
-        readonly dynamicDefaultValueDelegate : undefined;
+        readonly copyDefaultsDelegate : undefined;
+        readonly trackedDefaults : undefined;
     }>
 );
 export type SetEntityIdentifierDelegate<
@@ -38,7 +42,13 @@ export type SetEntityIdentifier<
 > = (
     Log<{
         readonly table : LogT["table"];
+        readonly entity : LogT["entity"];
         readonly entityIdentifier : ReturnType<DelegateT>[number]["name"][];
+        readonly joinDeclaration : JoinDeclaration<{
+            fromTable : LogT["table"],
+            toTable : LogT["entity"],
+            nullable : false,
+        }>;
         readonly latestOrder : undefined;
         readonly tracked : undefined;
         readonly doNotCopy : undefined;
@@ -46,9 +56,30 @@ export type SetEntityIdentifier<
             LogT["copy"][number],
             ReturnType<DelegateT>[number]["name"]
         >[];
-        readonly staticDefaultValue : undefined;
-        readonly dynamicDefaultValueDelegate : undefined;
+        readonly copyDefaultsDelegate : undefined;
+        readonly trackedDefaults : undefined;
     }>
+);
+//https://github.com/Microsoft/TypeScript/issues/29133
+export type AssertValidSetEntityIdentifierDelegate_Hack<
+    LogT extends LogMustSetEntityIdentifier,
+    DelegateT extends SetEntityIdentifierDelegate<LogT>,
+    ResultT
+> = (
+    CandidateKeyArrayUtil.HasKey<
+        LogT["entity"]["candidateKeys"],
+        (
+            ReturnType<DelegateT>[number]["name"]
+        )[]
+    > extends true ?
+    ResultT :
+    [
+        (
+            ReturnType<DelegateT>[number]["name"]
+        )[],
+        "must be a candidate key of",
+        LogT["entity"]["alias"]
+    ]|void
 );
 export function setEntityIdentifier<
     LogT extends LogMustSetEntityIdentifier,
@@ -57,27 +88,40 @@ export function setEntityIdentifier<
     log : LogT,
     delegate : DelegateT
 ) : (
-    SetEntityIdentifier<
+    AssertValidSetEntityIdentifierDelegate_Hack<
         LogT,
-        DelegateT
+        DelegateT,
+        SetEntityIdentifier<
+            LogT,
+            DelegateT
+        >
     >
 ) {
     const columns = ColumnMapUtil.pick(
         log.table.columns,
         log.copy
     );
-    const entityIdentifier = delegate(columns);
+    const rawEntityIdentifier = delegate(columns);
     ColumnIdentifierMapUtil.assertHasColumnIdentifiers(
         columns,
-        entityIdentifier
+        rawEntityIdentifier
     );
+    const entityIdentifier = rawEntityIdentifier.map(c => c.name);
+    if (!CandidateKeyArrayUtil.hasKey(
+        log.entity.candidateKeys,
+        entityIdentifier
+    )) {
+        throw new Error(`${entityIdentifier.join("|")} must be a candidate key of ${log.entity.alias}`);
+    }
+
     const {
         table,
+        entity,
         latestOrder,
         tracked,
         doNotCopy,
-        staticDefaultValue,
-        dynamicDefaultValueDelegate,
+        copyDefaultsDelegate,
+        trackedDefaults,
     } = log;
     const copy = log.copy
         .filter((columnName) : columnName is (
@@ -86,18 +130,26 @@ export function setEntityIdentifier<
                 ReturnType<DelegateT>[number]["name"]
             >
         ) => {
-            return !entityIdentifier.some(
-                c => c.name == columnName
-            )
+            return entityIdentifier.indexOf(columnName) < 0;
         });
-    return new Log({
+    const result : SetEntityIdentifier<
+        LogT,
+        DelegateT
+    > = new Log({
         table,
-        entityIdentifier : entityIdentifier.map(c => c.name),
+        entity,
+        entityIdentifier,
+        joinDeclaration : innerJoinCkUsing(
+            log.table as any,
+            log.entity as any,
+            () => rawEntityIdentifier as any
+        ) as any,
         latestOrder,
         tracked,
         doNotCopy,
         copy,
-        staticDefaultValue,
-        dynamicDefaultValueDelegate,
+        copyDefaultsDelegate,
+        trackedDefaults,
     });
+    return result as any;
 }

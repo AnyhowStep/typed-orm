@@ -1,22 +1,19 @@
-import {CompletedLog, EntityIdentifier} from "../../log";
+import {CompletedLog, EntityIdentifier, PreviousRow} from "../../log";
 import {TypeMapUtil} from "../../../type-map";
 import {IConnection} from "../../../execution";
-import {PromiseResult} from "../../../type";
 import {fetchLatestOrUndefined} from "./fetch-latest-or-undefined";
-import {entityIdentifierAssertDelegate} from "../operation";
+import {fetchDefault} from "./fetch-default";
 
 export type FetchLatestOrDefaultResult<LogT extends CompletedLog> = (
     {
         isDefault : false,
         latest : TypeMapUtil.FromTable<LogT["table"]>,
+        row : PreviousRow<LogT>,
     } |
     {
         isDefault : true,
-        default : (
-            EntityIdentifier<LogT> &
-            LogT["staticDefaultValue"] &
-            PromiseResult<ReturnType<LogT["dynamicDefaultValueDelegate"]>>
-        )
+        default : PreviousRow<LogT>,
+        row : PreviousRow<LogT>,
     }
 );
 export function fetchLatestOrDefault<LogT extends CompletedLog> (
@@ -24,31 +21,22 @@ export function fetchLatestOrDefault<LogT extends CompletedLog> (
     entityIdentifier : EntityIdentifier<LogT>,
     connection : IConnection
 ) : Promise<FetchLatestOrDefaultResult<LogT>> {
-    const assertDelegate = entityIdentifierAssertDelegate(log);
-    entityIdentifier = assertDelegate(
-        `${log.table.alias}.entityIdentifier`,
-        entityIdentifier
-    );
     return fetchLatestOrUndefined(log, entityIdentifier, connection)
         .then((latest) : Promise<FetchLatestOrDefaultResult<LogT>> => {
             if (latest != undefined) {
                 return Promise.resolve({
                     isDefault : false as false,
                     latest,
+                    row : latest as PreviousRow<LogT>,
                 });
             }
-            return log.dynamicDefaultValueDelegate(
-                entityIdentifier,
-                connection
-            ).then((dynamicDefaultValue) : FetchLatestOrDefaultResult<LogT> => {
-                return {
-                    isDefault : true as true,
-                    default : {
-                        ...dynamicDefaultValue,
-                        ...log.staticDefaultValue,
-                        ...entityIdentifier,
-                    } as any,
-                };
-            });
+            return fetchDefault<LogT>(log, entityIdentifier, connection)
+                .then((def) : FetchLatestOrDefaultResult<LogT> => {
+                    return {
+                        isDefault : true,
+                        default : def,
+                        row : def,
+                    };
+                });
         });
 }
