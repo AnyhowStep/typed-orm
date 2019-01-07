@@ -1,7 +1,7 @@
 import {AfterFromClause, AssertValidJoinTarget} from "../../predicate";
 import {JoinFromDelegate, JoinToDelegate, JoinResult, join} from "../join";
 import {ITable} from "../../../../table";
-import {CandidateKeyArrayUtil} from "../../../../candidate-key-array";
+import {CandidateKeyUtil} from "../../../../candidate-key";
 import {JoinType} from "../../../../join";
 
 //https://github.com/Microsoft/TypeScript/issues/29133
@@ -12,7 +12,7 @@ export type AssertValidJoinCkDelegate_Hack<
     ToDelegateT extends JoinToDelegate<QueryT, TableT, FromDelegateT>,
     ResultT
 > = (
-    CandidateKeyArrayUtil.HasKey<
+    CandidateKeyUtil.Array.HasKey<
         TableT["candidateKeys"],
         ReturnType<ToDelegateT>[number]["name"][]
     > extends true ?
@@ -61,7 +61,7 @@ export function joinCk<
     const lastJoin = result._joins[result._joins.length-1];
 
     const toKey = lastJoin.to.map(c => c.name);
-    if (!CandidateKeyArrayUtil.hasKey(
+    if (!CandidateKeyUtil.Array.hasKey(
         table.candidateKeys,
         toKey
     )) {

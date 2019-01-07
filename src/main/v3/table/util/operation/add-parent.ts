@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import {Table, ITable} from "../../table";
 import {ToUnknownIfAllFieldsNever} from "../../../type";
-import {CandidateKeyArrayUtil} from "../../../candidate-key-array";
+import {CandidateKeyUtil} from "../../../candidate-key";
 
 export type Parent<
     TableT extends ITable,
@@ -9,7 +9,7 @@ export type Parent<
 > = (
     ParentT &
     (
-        CandidateKeyArrayUtil.CommonCandidateKeyUnion<
+        CandidateKeyUtil.Array.Intersect<
             TableT["candidateKeys"],
             ParentT["candidateKeys"]
         > extends never ?
@@ -96,7 +96,7 @@ export function addParent<
 ) : (
     AddParent<TableT, ParentT>
 ) {
-    if (!CandidateKeyArrayUtil.hasCommonCandidateKeys(
+    if (CandidateKeyUtil.Array.isDisjoint(
         table.candidateKeys,
         parent.candidateKeys
     )) {

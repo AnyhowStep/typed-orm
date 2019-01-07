@@ -3,13 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const log_1 = require("../../log");
 const column_identifier_map_1 = require("../../../column-identifier-map");
 const column_map_1 = require("../../../column-map");
-const candidate_key_array_1 = require("../../../candidate-key-array");
+const candidate_key_1 = require("../../../candidate-key");
 function setLatestOrder(log, delegate) {
     const columns = column_map_1.ColumnMapUtil.pick(log.table.columns, log.copy);
     const latestOrder = delegate(columns);
     column_identifier_map_1.ColumnIdentifierMapUtil.assertHasColumnIdentifier(columns, latestOrder[0]);
     const logCk = [...log.entityIdentifier, latestOrder[0].name];
-    if (!candidate_key_array_1.CandidateKeyArrayUtil.hasKey(log.entity.candidateKeys, logCk)) {
+    if (!candidate_key_1.CandidateKeyUtil.Array.hasKey(log.entity.candidateKeys, logCk)) {
         throw new Error(`${logCk.join("|")} must be a candidate key of ${log.table.alias}`);
     }
     const { table, entity, entityIdentifier, joinDeclaration, tracked, doNotCopy, copyDefaultsDelegate, trackedDefaults, } = log;

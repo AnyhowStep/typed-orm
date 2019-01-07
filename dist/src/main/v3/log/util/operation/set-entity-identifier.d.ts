@@ -3,7 +3,7 @@ import { ITable } from "../../../table";
 import { NonEmptyTuple } from "../../../tuple";
 import { ColumnUtil } from "../../../column";
 import { JoinDeclaration } from "../../../join-declaration";
-import { CandidateKeyArrayUtil } from "../../../candidate-key-array";
+import { CandidateKeyUtil } from "../../../candidate-key";
 export declare type LogMustSetEntityIdentifier = (ILog<{
     readonly table: ITable;
     readonly entity: ITable;
@@ -33,6 +33,6 @@ export declare type SetEntityIdentifier<LogT extends LogMustSetEntityIdentifier,
     readonly copyDefaultsDelegate: undefined;
     readonly trackedDefaults: undefined;
 }>);
-export declare type AssertValidSetEntityIdentifierDelegate_Hack<LogT extends LogMustSetEntityIdentifier, DelegateT extends SetEntityIdentifierDelegate<LogT>, ResultT> = (CandidateKeyArrayUtil.HasKey<LogT["entity"]["candidateKeys"], (ReturnType<DelegateT>[number]["name"])[]> extends true ? ResultT : [(ReturnType<DelegateT>[number]["name"])[], "must be a candidate key of", LogT["entity"]["alias"]] | void);
+export declare type AssertValidSetEntityIdentifierDelegate_Hack<LogT extends LogMustSetEntityIdentifier, DelegateT extends SetEntityIdentifierDelegate<LogT>, ResultT> = (CandidateKeyUtil.Array.HasKey<LogT["entity"]["candidateKeys"], (ReturnType<DelegateT>[number]["name"])[]> extends true ? ResultT : [(ReturnType<DelegateT>[number]["name"])[], "must be a candidate key of", LogT["entity"]["alias"]] | void);
 export declare function setEntityIdentifier<LogT extends LogMustSetEntityIdentifier, DelegateT extends SetEntityIdentifierDelegate<LogT>>(log: LogT, delegate: DelegateT): (AssertValidSetEntityIdentifierDelegate_Hack<LogT, DelegateT, SetEntityIdentifier<LogT, DelegateT>>);
 //# sourceMappingURL=set-entity-identifier.d.ts.map

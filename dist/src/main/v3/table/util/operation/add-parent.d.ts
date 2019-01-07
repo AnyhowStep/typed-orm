@@ -1,7 +1,7 @@
 import { Table, ITable } from "../../table";
 import { ToUnknownIfAllFieldsNever } from "../../../type";
-import { CandidateKeyArrayUtil } from "../../../candidate-key-array";
-export declare type Parent<TableT extends ITable, ParentT extends ITable> = (ParentT & (CandidateKeyArrayUtil.CommonCandidateKeyUnion<TableT["candidateKeys"], ParentT["candidateKeys"]> extends never ? ["No common candidate keys found between table and parent", "Candidate keys: ", TableT["candidateKeys"][number], "Parent candidate keys: ", ParentT["candidateKeys"][number]] | void : unknown) & (ToUnknownIfAllFieldsNever<{
+import { CandidateKeyUtil } from "../../../candidate-key";
+export declare type Parent<TableT extends ITable, ParentT extends ITable> = (ParentT & (CandidateKeyUtil.Array.Intersect<TableT["candidateKeys"], ParentT["candidateKeys"]> extends never ? ["No common candidate keys found between table and parent", "Candidate keys: ", TableT["candidateKeys"][number], "Parent candidate keys: ", ParentT["candidateKeys"][number]] | void : unknown) & (ToUnknownIfAllFieldsNever<{
     [columnName in Extract<keyof TableT["columns"], keyof ParentT["columns"]>]: (ReturnType<TableT["columns"][columnName]["assertDelegate"]> extends ReturnType<ParentT["columns"][columnName]["assertDelegate"]> ? never : ["Column", columnName, "has incompatible types", ReturnType<TableT["columns"][columnName]["assertDelegate"]>, ReturnType<ParentT["columns"][columnName]["assertDelegate"]>] | void);
 }>) & (ParentT["alias"] extends TableT["alias"] ? "Parent cannot have same alias as table" | void : unknown) & (ParentT["alias"] extends TableT["parents"][number]["alias"] ? "Parent already added to table" | void : unknown));
 export declare type AddParent<TableT extends ITable, ParentT extends ITable> = (Table<{

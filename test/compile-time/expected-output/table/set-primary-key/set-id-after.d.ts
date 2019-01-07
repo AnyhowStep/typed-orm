@@ -49,7 +49,7 @@ export declare const i: o.Table<{
     readonly autoIncrement: undefined;
     readonly id: "b";
     readonly primaryKey: "b"[];
-    readonly candidateKeys: ("b"[] | "y"[] | ("c" | "d")[])[];
+    readonly candidateKeys: (("c" | "d")[] | "b"[] | "y"[])[];
     readonly generated: [];
     readonly isNullable: never[];
     readonly hasExplicitDefaultValue: [];

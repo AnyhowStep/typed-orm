@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import {Table, ITable} from "../../table";
-import {CandidateKeyArrayUtil} from "../../../candidate-key-array";
+import {CandidateKeyUtil} from "../../../candidate-key";
 import {ColumnMapUtil} from "../../../column-map";
 import {IAnonymousTypedColumn} from "../../../column";
 import {NonNullPrimitiveExpr} from "../../../primitive-expr";
@@ -78,13 +78,13 @@ export function setId<
     }
 
     const key = [id.name];
-    if (CandidateKeyArrayUtil.hasSubKey(
+    if (CandidateKeyUtil.Array.hasSubKey(
         table.candidateKeys,
         key
     )) {
         throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a super key of some candidate key`);
     }
-    if (CandidateKeyArrayUtil.hasSuperKey(
+    if (CandidateKeyUtil.Array.hasSuperKey(
         table.candidateKeys,
         key
     )) {

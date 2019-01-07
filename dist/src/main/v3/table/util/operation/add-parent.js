@@ -2,13 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 const table_1 = require("../../table");
-const candidate_key_array_1 = require("../../../candidate-key-array");
+const candidate_key_1 = require("../../../candidate-key");
 //+ Must share at least one unique key
 //+ Duplicate columns must be assignable from child to parent
 //  Example: child.type = "red"|"blue", parent.type = "red"|"blue"|"green"
 //+ No duplicates
 function addParent(table, parent) {
-    if (!candidate_key_array_1.CandidateKeyArrayUtil.hasCommonCandidateKeys(table.candidateKeys, parent.candidateKeys)) {
+    if (candidate_key_1.CandidateKeyUtil.Array.isDisjoint(table.candidateKeys, parent.candidateKeys)) {
         throw new Error(`No common candidate keys found between table ${table.alias} and parent ${parent.alias}`);
     }
     ;

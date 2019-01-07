@@ -1,7 +1,6 @@
 import {AliasedTableUtil} from "../../../aliased-table";
 import {ITable} from "../../table";
 import {CandidateKeyUtil} from "../../../candidate-key";
-import {CandidateKeyArrayUtil} from "../../../candidate-key-array";
 import {isStringArray} from "../../../type";
 
 export function isTableArray (raw : any) : raw is ITable[] {
@@ -35,7 +34,7 @@ export function isTable (raw : any) : raw is ITable {
         (raw.autoIncrement === undefined || typeof raw.autoIncrement == "string") &&
         (raw.id === undefined || typeof raw.id == "string") &&
         (raw.primaryKey === undefined || CandidateKeyUtil.isCandidateKey(raw.primaryKey)) &&
-        (raw.candidateKeys === undefined || CandidateKeyArrayUtil.isCandidateKeyArray(raw.candidateKeys)) &&
+        (raw.candidateKeys === undefined || CandidateKeyUtil.Array.isCandidateKeyArray(raw.candidateKeys)) &&
 
         (isStringArray(raw.generated)) &&
         (isStringArray(raw.isNullable)) &&

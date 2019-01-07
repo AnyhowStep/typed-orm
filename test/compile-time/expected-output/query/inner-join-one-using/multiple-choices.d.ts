@@ -146,7 +146,7 @@ export declare const query: o.Query<{
             readonly autoIncrement: undefined;
             readonly id: undefined;
             readonly primaryKey: undefined;
-            readonly candidateKeys: (("b" | "y")[] | ("a" | "b")[])[];
+            readonly candidateKeys: (("a" | "b")[] | ("b" | "y")[])[];
             readonly generated: [];
             readonly isNullable: never[];
             readonly hasExplicitDefaultValue: [];
