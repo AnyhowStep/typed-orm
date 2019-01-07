@@ -1,6 +1,7 @@
 import {ColumnIdentifierRef} from "../column-identifier-ref";
-import {ColumnIdentifier, ColumnIdentifierUtil} from "../../column-identifier";
+import {ColumnIdentifier} from "../../column-identifier";
 import {ColumnIdentifierMapUtil} from "../../column-identifier-map";
+import {ColumnNames} from "./query";
 
 export type HasColumnIdentifier<
     ColumnIdentifierRefT extends ColumnIdentifierRef,
@@ -19,7 +20,7 @@ export type HasColumnIdentifier<
             (
                 string extends ColumnIdentifierT["name"] ?
                 boolean :
-                ColumnIdentifierT["name"] extends ColumnIdentifierUtil.Name.FromColumnIdentifierRef<ColumnIdentifierRefT> ?
+                ColumnIdentifierT["name"] extends ColumnNames<ColumnIdentifierRefT> ?
                 boolean :
                 false
             ) :
