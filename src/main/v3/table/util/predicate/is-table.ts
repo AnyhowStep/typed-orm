@@ -1,4 +1,4 @@
-import {AliasedTable} from "../../../aliased-table";
+import {AliasedTableUtil} from "../../../aliased-table";
 import {ITable} from "../../table";
 import {CandidateKeyUtil} from "../../../candidate-key";
 import {CandidateKeyArrayUtil} from "../../../candidate-key-array";
@@ -17,7 +17,7 @@ export function isTableArray (raw : any) : raw is ITable[] {
 }
 export function isTable (raw : any) : raw is ITable {
     return (
-        (AliasedTable.isAliasedTable(raw) as boolean) &&
+        (AliasedTableUtil.isAliasedTable(raw) as boolean) &&
         ("autoIncrement" in raw) &&
         ("id" in raw) &&
         ("primaryKey" in raw) &&

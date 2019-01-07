@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import {IQuery} from "../query";
 import {QueryTreeArray, QueryTree, Parentheses, QueryTreeUtil} from "../../query-tree";
-import {AliasedTable} from "../../aliased-table";
+import {AliasedTableUtil} from "../../aliased-table";
 import {IColumn, ColumnUtil} from "../../column";
 import {AfterSelectClause, BeforeSelectClause, OneSelectItemQuery, OneRowQuery, isOneRowQuery, ZeroOrOneRowQuery} from "./predicate";
 import {ExprSelectItemUtil} from "../../expr-select-item";
@@ -144,11 +144,11 @@ export function queryTreeJoins (query : IQuery) : QueryTreeArray {
         return [];
     }
     const result : QueryTreeArray = [];
-    result.push(AliasedTable.queryTree(joins[0].aliasedTable));
+    result.push(AliasedTableUtil.queryTree(joins[0].aliasedTable));
     for (let i=1; i<joins.length; ++i) {
         const join = joins[i];
         result.push(`${join.joinType} JOIN`);
-        result.push(AliasedTable.queryTree(join.aliasedTable));
+        result.push(AliasedTableUtil.queryTree(join.aliasedTable));
         if (join.from.length == 0) {
             continue;
         }

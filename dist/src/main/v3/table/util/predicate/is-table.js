@@ -17,7 +17,7 @@ function isTableArray(raw) {
 }
 exports.isTableArray = isTableArray;
 function isTable(raw) {
-    return (aliased_table_1.AliasedTable.isAliasedTable(raw) &&
+    return (aliased_table_1.AliasedTableUtil.isAliasedTable(raw) &&
         ("autoIncrement" in raw) &&
         ("id" in raw) &&
         ("primaryKey" in raw) &&

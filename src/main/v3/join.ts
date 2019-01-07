@@ -1,4 +1,4 @@
-import {IAliasedTable, AliasedTable} from "./aliased-table";
+import {IAliasedTable, AliasedTableUtil} from "./aliased-table";
 import {ColumnMap, ColumnMapUtil} from "./column-map";
 import {IColumn, ColumnUtil} from "./column";
 import * as e from "enum-util";
@@ -76,7 +76,7 @@ export namespace Join {
             ("joinType" in raw) &&
             ("from" in raw) &&
             ("to" in raw) &&
-            AliasedTable.isAliasedTable(raw.aliasedTable) &&
+            AliasedTableUtil.isAliasedTable(raw.aliasedTable) &&
             ColumnMapUtil.isColumnMap(raw.columns) &&
             (typeof raw.nullable == "boolean") &&
             JoinTypeUtil.isValue(raw.joinType) &&

@@ -13,7 +13,7 @@ tape(__filename, (t) => {
     );
     const table = tableSrc.setAlias("renamed")
 
-    t.true(o.AliasedTable.isAliasedTable(table));
+    t.true(o.AliasedTableUtil.isAliasedTable(table));
     t.deepEqual(table.alias, "renamed");
 
     t.true(o.ColumnMapUtil.isColumnMap(table.columns));
@@ -42,7 +42,7 @@ tape(__filename, (t) => {
     );
     const table = tableSrc.setAlias("emptyRenamed")
 
-    t.true(o.AliasedTable.isAliasedTable(table));
+    t.true(o.AliasedTableUtil.isAliasedTable(table));
     t.deepEqual(table.alias, "emptyRenamed");
 
     t.true(o.ColumnMapUtil.isColumnMap(table.columns));

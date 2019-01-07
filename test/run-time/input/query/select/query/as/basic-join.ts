@@ -21,7 +21,7 @@ tape(__filename, (t) => {
     const query = o.from(selectItem)
         .select(c => [c.x]);
 
-    t.true(o.AliasedTable.isAliasedTable(selectItem));
+    t.true(o.AliasedTableUtil.isAliasedTable(selectItem));
     t.true(o.ExprSelectItemUtil.isExprSelectItem(selectItem));
 
     const formatter = new o.SqlFormatter();

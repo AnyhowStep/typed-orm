@@ -10,7 +10,7 @@ tape(__filename, (t) => {
         selectItem
     ]);
 
-    t.true(o.AliasedTable.isAliasedTable(selectItem));
+    t.true(o.AliasedTableUtil.isAliasedTable(selectItem));
     t.true(o.ExprSelectItemUtil.isExprSelectItem(selectItem));
 
     const formatter = new o.SqlFormatter();

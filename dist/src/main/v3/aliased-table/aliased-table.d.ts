@@ -22,8 +22,4 @@ export declare class AliasedTable<DataT extends AliasedTableData> implements IAl
     });
     queryTree(): QueryTree;
 }
-export declare namespace AliasedTable {
-    function queryTree({ alias, unaliasedQuery, }: IAliasedTable): QueryTree;
-    function isAliasedTable(raw: any): raw is IAliasedTable;
-}
 //# sourceMappingURL=aliased-table.d.ts.map

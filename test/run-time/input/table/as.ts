@@ -13,7 +13,7 @@ tape(__filename, (t) => {
     );
     const table = tableSrc.as("aliasedTable")
 
-    t.true(o.AliasedTable.isAliasedTable(table));
+    t.true(o.AliasedTableUtil.isAliasedTable(table));
     t.deepEqual(table.alias, "aliasedTable");
 
 
@@ -43,7 +43,7 @@ tape(__filename, (t) => {
     );
     const table = tableSrc.as("emptyAliasedTable")
 
-    t.true(o.AliasedTable.isAliasedTable(table));
+    t.true(o.AliasedTableUtil.isAliasedTable(table));
     t.deepEqual(table.alias, "emptyAliasedTable");
 
 

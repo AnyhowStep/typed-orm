@@ -3,7 +3,7 @@ import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 
 tape(__filename + "-aliased-table", (t) => {
-    t.true(o.AliasedTable.isAliasedTable(new o.AliasedTable(
+    t.true(o.AliasedTableUtil.isAliasedTable(new o.AliasedTable(
         {
             usedRef : {},
             alias : "name",
@@ -17,7 +17,7 @@ tape(__filename + "-aliased-table", (t) => {
             unaliasedQuery : "`name`",
         }
     )));
-    t.true(o.AliasedTable.isAliasedTable({
+    t.true(o.AliasedTableUtil.isAliasedTable({
         usedRef : {},
         alias : "name",
         name : "name",
@@ -27,7 +27,7 @@ tape(__filename + "-aliased-table", (t) => {
         }),
         unaliasedQuery : "`name`",
     }));
-    t.false(o.AliasedTable.isAliasedTable({
+    t.false(o.AliasedTableUtil.isAliasedTable({
         alias : () => "name",
         name : "name",
         columns : o.ColumnMapUtil.fromAssertMap("name", {
@@ -35,32 +35,32 @@ tape(__filename + "-aliased-table", (t) => {
             y : sd.naturalNumber(),
         }),
     }));
-    t.false(o.AliasedTable.isAliasedTable({
+    t.false(o.AliasedTableUtil.isAliasedTable({
         name : "name",
         columns : o.ColumnMapUtil.fromAssertMap("name", {
             x : sd.naturalNumber(),
             y : sd.naturalNumber(),
         }),
     }));
-    t.false(o.AliasedTable.isAliasedTable({
+    t.false(o.AliasedTableUtil.isAliasedTable({
         alias : "name",
         columns : o.ColumnMapUtil.fromAssertMap("name", {
             x : sd.naturalNumber(),
             y : sd.naturalNumber(),
         }),
     }));
-    t.false(o.AliasedTable.isAliasedTable({
+    t.false(o.AliasedTableUtil.isAliasedTable({
         alias : "name",
         name : "name",
     }));
-    t.true(o.AliasedTable.isAliasedTable({
+    t.true(o.AliasedTableUtil.isAliasedTable({
         usedRef : {},
         alias : "name",
         name : "name",
         columns : {},
         unaliasedQuery : "`name`",
     }));
-    t.true(o.AliasedTable.isAliasedTable({
+    t.true(o.AliasedTableUtil.isAliasedTable({
         usedRef : {
             someTable : {
                 someColumn : o.column("someTable", "someColumn", sd.boolean())
@@ -72,7 +72,7 @@ tape(__filename + "-aliased-table", (t) => {
         unaliasedQuery : "`name`",
     }));
 
-    t.false(o.AliasedTable.isAliasedTable(new o.AliasedTable(
+    t.false(o.AliasedTableUtil.isAliasedTable(new o.AliasedTable(
         {
             usedRef : ("test" as any),
             alias : "name",
@@ -86,7 +86,7 @@ tape(__filename + "-aliased-table", (t) => {
             unaliasedQuery : "`name`",
         }
     )));
-    t.false(o.AliasedTable.isAliasedTable({
+    t.false(o.AliasedTableUtil.isAliasedTable({
         alias : "name",
         name : "name",
         columns : o.ColumnMapUtil.fromAssertMap("name", {
@@ -94,12 +94,12 @@ tape(__filename + "-aliased-table", (t) => {
             y : sd.naturalNumber(),
         }),
     }));
-    t.false(o.AliasedTable.isAliasedTable({
+    t.false(o.AliasedTableUtil.isAliasedTable({
         alias : "name",
         name : "name",
         columns : {},
     }));
-    t.false(o.AliasedTable.isAliasedTable({
+    t.false(o.AliasedTableUtil.isAliasedTable({
         usedRef : {
             someColumn : o.column("someTable", "someColumn", sd.boolean())
         },
@@ -107,7 +107,7 @@ tape(__filename + "-aliased-table", (t) => {
         name : "name",
         columns : {},
     }));
-    t.false(o.AliasedTable.isAliasedTable({
+    t.false(o.AliasedTableUtil.isAliasedTable({
         usedRef : {
             someTable : o.column("someTable", "someColumn", sd.boolean())
         },
@@ -117,7 +117,7 @@ tape(__filename + "-aliased-table", (t) => {
     }));
 
 
-    t.false(o.AliasedTable.isAliasedTable(new o.AliasedTable(
+    t.false(o.AliasedTableUtil.isAliasedTable(new o.AliasedTable(
         {
             usedRef : {},
             alias : "name",
@@ -131,7 +131,7 @@ tape(__filename + "-aliased-table", (t) => {
             unaliasedQuery : (54 as any),
         }
     )));
-    t.false(o.AliasedTable.isAliasedTable({
+    t.false(o.AliasedTableUtil.isAliasedTable({
         usedRef : {},
         alias : "name",
         name : "name",
@@ -140,13 +140,13 @@ tape(__filename + "-aliased-table", (t) => {
             y : sd.naturalNumber(),
         }),
     }));
-    t.false(o.AliasedTable.isAliasedTable({
+    t.false(o.AliasedTableUtil.isAliasedTable({
         usedRef : {},
         alias : "name",
         name : "name",
         columns : {},
     }));
-    t.false(o.AliasedTable.isAliasedTable({
+    t.false(o.AliasedTableUtil.isAliasedTable({
         usedRef : {
             someTable : {
                 someColumn : o.column("someTable", "someColumn", sd.boolean())

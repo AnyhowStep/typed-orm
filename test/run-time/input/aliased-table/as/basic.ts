@@ -20,7 +20,7 @@ tape(__filename, (t) => {
 
     const formatter = new o.SqlFormatter();
     const sql = o.QueryTreeUtil.toSql(
-        o.AliasedTable.queryTree(aliased)
+        o.AliasedTableUtil.queryTree(aliased)
     );
     const actual = formatter.format(sql);
     t.deepEqual(

@@ -1,7 +1,7 @@
-import {ColumnMap, ColumnMapUtil} from "../column-map";
-import {escapeId} from "sqlstring";
-import {ColumnRefUtil, ColumnRef} from "../column-ref";
-import {QueryTree, QueryTreeUtil} from "../query-tree";
+import {ColumnMap} from "../column-map";
+import {ColumnRef} from "../column-ref";
+import {QueryTree} from "../query-tree";
+import * as AliasedTableUtil from "./util";
 
 export interface AliasedTableData {
     readonly usedRef : ColumnRef;
@@ -43,47 +43,6 @@ export class AliasedTable<DataT extends AliasedTableData> implements IAliasedTab
     }
 
     queryTree () {
-        return AliasedTable.queryTree(this);
-    }
-}
-//TODO Move this to AliasedTableUtil
-export namespace AliasedTable {
-    /*
-        `name`
-        `name` AS `alias`
-        (SELECT x) AS `alias`
-    */
-    export function queryTree (
-        {
-            alias,
-            unaliasedQuery,
-        } : IAliasedTable
-    ) : QueryTree {
-        const escapedAlias = escapeId(alias);
-
-        if (unaliasedQuery === escapedAlias) {
-            return unaliasedQuery;
-        }
-
-        return [
-            unaliasedQuery,
-            "AS",
-            escapeId(alias),
-        ];
-    }
-    export function isAliasedTable (raw : any) : raw is IAliasedTable {
-        return (
-            raw != undefined &&
-            (raw instanceof Object) &&
-            ("usedRef" in raw) &&
-            ("alias" in raw) &&
-            ("columns" in raw) &&
-            ("unaliasedQuery" in raw) &&
-
-            ColumnRefUtil.isColumnRef(raw.usedRef) &&
-            (typeof raw.alias == "string") &&
-            ColumnMapUtil.isColumnMap(raw.columns) &&
-            QueryTreeUtil.isQueryTree(raw.unaliasedQuery)
-        );
+        return AliasedTableUtil.queryTree(this);
     }
 }

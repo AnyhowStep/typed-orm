@@ -153,11 +153,11 @@ function queryTreeJoins(query) {
         return [];
     }
     const result = [];
-    result.push(aliased_table_1.AliasedTable.queryTree(joins[0].aliasedTable));
+    result.push(aliased_table_1.AliasedTableUtil.queryTree(joins[0].aliasedTable));
     for (let i = 1; i < joins.length; ++i) {
         const join = joins[i];
         result.push(`${join.joinType} JOIN`);
-        result.push(aliased_table_1.AliasedTable.queryTree(join.aliasedTable));
+        result.push(aliased_table_1.AliasedTableUtil.queryTree(join.aliasedTable));
         if (join.from.length == 0) {
             continue;
         }

@@ -17,7 +17,7 @@ tape(__filename, (t) => {
     const aliased = query
         .as("aliased");
 
-    t.true(o.AliasedTable.isAliasedTable(aliased));
+    t.true(o.AliasedTableUtil.isAliasedTable(aliased));
 
     t.deepEqual(aliased.usedRef, {});
     t.deepEqual(aliased.alias, "aliased");

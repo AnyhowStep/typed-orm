@@ -36,7 +36,7 @@ exports.Join = Join;
             ("joinType" in raw) &&
             ("from" in raw) &&
             ("to" in raw) &&
-            aliased_table_1.AliasedTable.isAliasedTable(raw.aliasedTable) &&
+            aliased_table_1.AliasedTableUtil.isAliasedTable(raw.aliasedTable) &&
             column_map_1.ColumnMapUtil.isColumnMap(raw.columns) &&
             (typeof raw.nullable == "boolean") &&
             exports.JoinTypeUtil.isValue(raw.joinType) &&

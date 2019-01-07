@@ -22,7 +22,7 @@ tape(__filename, (t) => {
         ]) as any)
     });
 
-    t.true(o.AliasedTable.isAliasedTable(selectItem));
+    t.true(o.AliasedTableUtil.isAliasedTable(selectItem));
     t.false(o.ExprSelectItemUtil.isExprSelectItem(selectItem));
 
     t.end();
