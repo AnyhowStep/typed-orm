@@ -120,7 +120,6 @@ export function whereEq<
                     RawExprUtil.assertDelegate(value as any)
                 ),
             },
-            rawColumn.__subTableName,
             rawColumn.__isInSelectClause
         )
     );

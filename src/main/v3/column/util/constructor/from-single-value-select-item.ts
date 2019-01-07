@@ -19,7 +19,6 @@ export function fromSingleValueSelectItem<ItemT extends SingleValueSelectItem> (
     item : ItemT
 ) : FromSingleValueSelectItem<ItemT> {
     if (isColumn(item)) {
-        //TODO-DEBATE, shouldn't this copy __isSelectItem?
         return new Column(item) as any;
     } else if (ExprSelectItemUtil.isExprSelectItem(item)) {
         return fromExprSelectItem(item) as any;

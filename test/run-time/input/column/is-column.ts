@@ -9,7 +9,6 @@ tape(__filename, (t) => {
             name : "name",
             assertDelegate : sd.naturalNumber()
         },
-        undefined,
         undefined
     );
 
@@ -18,7 +17,6 @@ tape(__filename, (t) => {
         tableAlias : "tableAlias",
         name : "name",
         assertDelegate : sd.naturalNumber(),
-        __subTableName : undefined,
         __isInSelectClause : true,
     }));
 
@@ -26,32 +24,27 @@ tape(__filename, (t) => {
         tableAlias : "tableAlias",
         name : "name",
         assertDelegate : sd.naturalNumber(),
-        __subTableName : undefined,
         __isInSelectClause : undefined,
     }));
     t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         name : "name",
-        __subTableName : undefined,
         __isInSelectClause : true,
     }));
     t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         assertDelegate : sd.naturalNumber(),
-        __subTableName : undefined,
         __isInSelectClause : true,
     }));
     t.false(o.ColumnUtil.isColumn({
         name : "name",
         assertDelegate : sd.naturalNumber(),
-        __subTableName : undefined,
         __isInSelectClause : true,
     }));
     t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         name : "name",
         assertDelegate : sd.naturalNumber(),
-        __subTableName : undefined,
     }));
 
     t.end();

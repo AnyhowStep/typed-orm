@@ -10,7 +10,6 @@ tape(__filename, (t) => {
                 name : "name",
                 assertDelegate : sd.naturalNumber()
             },
-            undefined,
             undefined
         ).queryTree(),
         "`tableAlias`.`name`"
@@ -22,7 +21,6 @@ tape(__filename, (t) => {
                 name : "name`",
                 assertDelegate : sd.naturalNumber()
             },
-            undefined,
             undefined
         ).queryTree(),
         "`tableAlias```.`name```"
@@ -48,51 +46,6 @@ tape(__filename, (t) => {
                 name : "name`",
                 assertDelegate : sd.naturalNumber()
             },
-            undefined,
-            undefined
-        ).queryTree(),
-        "`"+o.ALIASED+"--name```"
-    );
-
-    t.end();
-});
-tape(__filename + "-subtable-name", (t) => {
-    t.deepEqual(
-        new o.Column(
-            {
-                tableAlias : "tableAlias",
-                name : "name",
-                assertDelegate : sd.naturalNumber()
-            },
-            "subTable",
-            undefined
-        ).queryTree(),
-        "`tableAlias`.`subTable--name`"
-    );
-    t.deepEqual(
-        new o.Column(
-            {
-                tableAlias : "tableAlias`",
-                name : "name`",
-                assertDelegate : sd.naturalNumber()
-            },
-            "subTable`",
-            undefined
-        ).queryTree(),
-        "`tableAlias```.`subTable``--name```"
-    );
-    /*
-        TODO Is this correct?
-        Do we ever encounter this case?
-    */
-    t.deepEqual(
-        new o.Column(
-            {
-                tableAlias : o.ALIASED,
-                name : "name`",
-                assertDelegate : sd.naturalNumber()
-            },
-            "subTable`",
             undefined
         ).queryTree(),
         "`"+o.ALIASED+"--name```"
@@ -108,7 +61,6 @@ tape(__filename + "-is-in-select-clause", (t) => {
                 name : "name",
                 assertDelegate : sd.naturalNumber()
             },
-            undefined,
             true
         ).queryTree(),
         "`tableAlias--name`"
@@ -120,7 +72,6 @@ tape(__filename + "-is-in-select-clause", (t) => {
                 name : "name`",
                 assertDelegate : sd.naturalNumber()
             },
-            undefined,
             true
         ).queryTree(),
         "`tableAlias``--name```"
@@ -132,51 +83,6 @@ tape(__filename + "-is-in-select-clause", (t) => {
                 name : "name`",
                 assertDelegate : sd.naturalNumber()
             },
-            undefined,
-            true
-        ).queryTree(),
-        "`"+o.ALIASED+"--name```"
-    );
-
-    t.end();
-});
-tape(__filename + "-subtable-name-is-in-select-clause", (t) => {
-    t.deepEqual(
-        new o.Column(
-            {
-                tableAlias : "tableAlias",
-                name : "name",
-                assertDelegate : sd.naturalNumber()
-            },
-            "subTable",
-            true
-        ).queryTree(),
-        "`tableAlias`.`subTable--name`"
-    );
-    t.deepEqual(
-        new o.Column(
-            {
-                tableAlias : "tableAlias`",
-                name : "name`",
-                assertDelegate : sd.naturalNumber()
-            },
-            "subTable`",
-            true
-        ).queryTree(),
-        "`tableAlias```.`subTable``--name```"
-    );
-    /*
-        TODO Is this correct?
-        Do we ever encounter this case?
-    */
-    t.deepEqual(
-        new o.Column(
-            {
-                tableAlias : o.ALIASED,
-                name : "name`",
-                assertDelegate : sd.naturalNumber()
-            },
-            "subTable`",
             true
         ).queryTree(),
         "`"+o.ALIASED+"--name```"

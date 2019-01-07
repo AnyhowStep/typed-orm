@@ -6,7 +6,6 @@ export function queryTree (
     {
         tableAlias,
         name,
-        __subTableName,
         __isInSelectClause,
     } : IColumn
 ) : string {
@@ -26,48 +25,16 @@ export function queryTree (
         */
         return escapeId(`${tableAlias}${SEPARATOR}${name}`);
     } else {
-        if (__subTableName == undefined) {
-            if (__isInSelectClause) {
-                return escapeId(`${tableAlias}${SEPARATOR}${name}`);
-            } else {
-                /*
-                    The most common case, I think.
-                */
-                return (
-                    escapeId(tableAlias) +
-                    "." +
-                    escapeId(name)
-                );
-            }
+        if (__isInSelectClause) {
+            return escapeId(`${tableAlias}${SEPARATOR}${name}`);
         } else {
             /*
-                {
-                    "tableAlias":"otherUser",
-                    "name":"externalUserId",
-                    "subTableName":"user",
-                    "isSelectReference":false,
-                    "fullName":"`otherUser`.`user--externalUserId`"
-                }
-
-                SELECT
-                    `otherUser`.`user--externalUserId` AS `otherUser--externalUserId`
-                FROM
-                    `app`
-                INNER JOIN
-                    (
-                        SELECT
-                            `user`.`appId` AS `user--appId`,
-                            `user`.`externalUserId` AS `user--externalUserId`
-                        FROM
-                            `user`
-                    ) AS `otherUser`
-                ON
-                    `app`.`appId` = `otherUser`.`user--appId`
+                The most common case, I think.
             */
             return (
                 escapeId(tableAlias) +
                 "." +
-                escapeId(`${__subTableName}${SEPARATOR}${name}`)
+                escapeId(name)
             );
         }
     }

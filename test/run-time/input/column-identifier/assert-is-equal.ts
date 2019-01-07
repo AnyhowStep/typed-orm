@@ -9,7 +9,6 @@ tape(__filename, (t) => {
             name : "name",
             assertDelegate : sd.naturalNumber()
         },
-        undefined,
         undefined
     );
     const c2 = new o.Column(
@@ -18,7 +17,6 @@ tape(__filename, (t) => {
             name : "name",
             assertDelegate : sd.naturalNumber()
         },
-        undefined,
         undefined
     );
     const c3 = new o.Column(
@@ -27,7 +25,6 @@ tape(__filename, (t) => {
             name : "nameDifferent",
             assertDelegate : sd.naturalNumber()
         },
-        undefined,
         undefined
     );
     const c4 = new o.Column(
@@ -36,7 +33,6 @@ tape(__filename, (t) => {
             name : "nameDifferent",
             assertDelegate : sd.naturalNumber()
         },
-        undefined,
         undefined
     );
     //A different assertDelegate
@@ -48,10 +44,9 @@ tape(__filename, (t) => {
             //This is different
             assertDelegate : sd.string()
         },
-        undefined,
         undefined
     );
-    //A different __subTableName, __isInSelectClause
+    //A different __isInSelectClause
     //isn't checked by assertIsEqual()
     const c6 = new o.Column(
         {
@@ -60,7 +55,6 @@ tape(__filename, (t) => {
             //This is different
             assertDelegate : sd.string()
         },
-        "",
         true
     );
 

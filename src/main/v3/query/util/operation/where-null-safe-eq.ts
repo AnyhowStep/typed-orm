@@ -112,7 +112,6 @@ export function whereNullSafeEq<
                     RawExprUtil.assertDelegate(value as any)
                 ),
             },
-            rawColumn.__subTableName,
             rawColumn.__isInSelectClause
         )
     );

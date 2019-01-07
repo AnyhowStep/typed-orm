@@ -23,7 +23,7 @@ function whereIsNull(query, delegate) {
         tableAlias: rawColumn.tableAlias,
         name: rawColumn.name,
         assertDelegate: sd.nil(),
-    }, rawColumn.__subTableName, rawColumn.__isInSelectClause));
+    }, rawColumn.__isInSelectClause));
     const { _distinct, _sqlCalcFoundRows, _parentJoins, _selects, _grouped, _having, _orders, _limit, _unions, _unionOrders, _unionLimit, _mapDelegate, } = query;
     return new query_1.Query({
         _distinct,

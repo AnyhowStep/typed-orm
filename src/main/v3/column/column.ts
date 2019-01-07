@@ -12,8 +12,6 @@ export interface IColumn<DataT extends ColumnData=ColumnData> {
     readonly name : DataT["name"];
     readonly assertDelegate : DataT["assertDelegate"];
 
-    //HACK for JOINING with nested queries
-    readonly __subTableName : string|undefined;
     //HACK for referencing selected columns
     readonly __isInSelectClause : boolean;
 }
@@ -28,23 +26,17 @@ export class Column<DataT extends ColumnData> implements IColumn<DataT> {
     readonly name : DataT["name"];
     readonly assertDelegate : DataT["assertDelegate"];
 
-    //TODO-REMOVE, Unneeded
-    //HACK for JOINING with nested queries
-    readonly __subTableName : string|undefined;
     //HACK for referencing selected columns
     readonly __isInSelectClause : boolean;
 
     constructor (
         data : DataT,
-        __subTableName? : string,
         __isInSelectClause? : boolean
     ) {
         this.tableAlias = data.tableAlias;
         this.name = data.name;
         this.assertDelegate = data.assertDelegate;
 
-        //HACK
-        this.__subTableName = __subTableName;
         //HACK
         this.__isInSelectClause = (__isInSelectClause === true);
     }

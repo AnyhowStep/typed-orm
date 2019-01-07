@@ -5,5 +5,5 @@ export declare type WithType<ColumnT extends IColumn, NewAssertDelegateT extends
     readonly name: ColumnT["name"];
     readonly assertDelegate: sd.ToAssertDelegate<NewAssertDelegateT>;
 }> : never);
-export declare function withType<ColumnT extends IColumn, NewAssertFuncT extends sd.AnyAssertFunc>({ tableAlias, name, __subTableName, __isInSelectClause, }: ColumnT, newAssertFunc: NewAssertFuncT): (WithType<ColumnT, NewAssertFuncT>);
+export declare function withType<ColumnT extends IColumn, NewAssertFuncT extends sd.AnyAssertFunc>({ tableAlias, name, __isInSelectClause, }: ColumnT, newAssertFunc: NewAssertFuncT): (WithType<ColumnT, NewAssertFuncT>);
 //# sourceMappingURL=with-type.d.ts.map

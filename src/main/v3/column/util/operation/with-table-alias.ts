@@ -26,7 +26,6 @@ export function withTableAlias<
     {
         name,
         assertDelegate,
-        __subTableName,
         __isInSelectClause,
     } : ColumnT,
     newTableAlias : NewTableAliasT
@@ -39,7 +38,6 @@ export function withTableAlias<
             name,
             assertDelegate,
         },
-        __subTableName,
         __isInSelectClause
     );
     return result as WithTableAlias<ColumnT, NewTableAliasT>;

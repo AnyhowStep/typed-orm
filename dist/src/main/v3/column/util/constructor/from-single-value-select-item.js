@@ -6,7 +6,6 @@ const expr_select_item_1 = require("../../../expr-select-item");
 const from_expr_select_item_1 = require("./from-expr-select-item");
 function fromSingleValueSelectItem(item) {
     if (predicate_1.isColumn(item)) {
-        //TODO-DEBATE, shouldn't this copy __isSelectItem?
         return new column_1.Column(item);
     }
     else if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(item)) {

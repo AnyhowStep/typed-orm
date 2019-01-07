@@ -6,7 +6,6 @@ export function setIsInSelectClause<ColumnT extends IColumn> (
 ) : Column<ColumnT> {
     return new Column(
         column,
-        column.__subTableName,
         __isInSelectClause
     );
 }

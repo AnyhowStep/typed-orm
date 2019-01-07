@@ -77,7 +77,6 @@ export function leftIntersect<
                         columnMapB[columnName].assertDelegate
                     ),
                 },
-                columnA.__subTableName,
                 columnA.__isInSelectClause
             );
         } else {

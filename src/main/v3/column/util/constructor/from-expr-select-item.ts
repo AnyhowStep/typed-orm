@@ -18,7 +18,6 @@ export function fromExprSelectItem<ItemT extends IExprSelectItem> (
             name : item.alias,
             assertDelegate : item.assertDelegate,
         },
-        undefined,
         //TODO-UNHACK Find some way to not need this hack
         true
     );

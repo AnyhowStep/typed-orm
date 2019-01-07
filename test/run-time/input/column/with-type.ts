@@ -9,7 +9,6 @@ tape(__filename, (t) => {
             name : "name",
             assertDelegate : sd.naturalNumber()
         },
-        undefined,
         undefined
     );
 

@@ -9,8 +9,6 @@ function isColumn(raw) {
         (typeof raw.tableAlias == "string") &&
         (typeof raw.name == "string") &&
         (typeof raw.assertDelegate == "function") &&
-        (raw.__subTableName === undefined ||
-            typeof raw.__subTableName == "string") &&
         ("__isInSelectClause" in raw) &&
         (typeof raw.__isInSelectClause == "boolean"));
 }

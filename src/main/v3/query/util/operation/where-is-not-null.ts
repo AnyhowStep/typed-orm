@@ -92,7 +92,6 @@ export function whereIsNotNull<
                 name : rawColumn.name,
                 assertDelegate : sd.notNullable(rawColumn.assertDelegate),
             },
-            rawColumn.__subTableName,
             rawColumn.__isInSelectClause
         )
     );

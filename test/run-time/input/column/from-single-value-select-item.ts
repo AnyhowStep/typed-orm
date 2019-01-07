@@ -70,7 +70,6 @@ tape(__filename, (t) => {
             name : "name",
             assertDelegate : sd.naturalNumber()
         },
-        undefined,
         undefined
     );
     const c3 = o.ColumnUtil.fromSingleValueSelectItem(c2);
