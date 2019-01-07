@@ -29,7 +29,7 @@ export const parent = o.table(
 
 export const t2 = table.addParent(parent);
 
-export const tm = o.PolymorphismUtil.assertDelegate(table);
-export const tm2 = o.PolymorphismUtil.assertDelegate(parent2);
-export const tm3 = o.PolymorphismUtil.assertDelegate(parent);
-export const tm4 = o.PolymorphismUtil.assertDelegate(t2);
+export const tm = o.TablePerTypeUtil.assertDelegate(table);
+export const tm2 = o.TablePerTypeUtil.assertDelegate(parent2);
+export const tm3 = o.TablePerTypeUtil.assertDelegate(parent);
+export const tm4 = o.TablePerTypeUtil.assertDelegate(t2);

@@ -33,25 +33,25 @@ const child = o.table(
 ).setId(c => c.someId)
 .addParent(parent);
 
-export const isNullable_someId = o.PolymorphismUtil.isNullable(child, "someId");
+export const isNullable_someId = o.TablePerTypeUtil.isNullable(child, "someId");
 
-export const isNullable_parentSpecific = o.PolymorphismUtil.isNullable(child, "parentSpecific");
-export const isNullable_nullableParentSpecific = o.PolymorphismUtil.isNullable(child, "nullableParentSpecific");
+export const isNullable_parentSpecific = o.TablePerTypeUtil.isNullable(child, "parentSpecific");
+export const isNullable_nullableParentSpecific = o.TablePerTypeUtil.isNullable(child, "nullableParentSpecific");
 
-export const isNullable_childSpecific = o.PolymorphismUtil.isNullable(child, "childSpecific");
-export const isNullable_nullableChildSpecific = o.PolymorphismUtil.isNullable(child, "nullableChildSpecific");
+export const isNullable_childSpecific = o.TablePerTypeUtil.isNullable(child, "childSpecific");
+export const isNullable_nullableChildSpecific = o.TablePerTypeUtil.isNullable(child, "nullableChildSpecific");
 
-export const isNullable_nullableParentRequiredChild = o.PolymorphismUtil.isNullable(child, "nullableParentRequiredChild");
-export const isNullable_nullableParentAndChild = o.PolymorphismUtil.isNullable(child, "nullableParentAndChild");
-export const isNullable_requiredParentAndChild = o.PolymorphismUtil.isNullable(child, "requiredParentAndChild");
+export const isNullable_nullableParentRequiredChild = o.TablePerTypeUtil.isNullable(child, "nullableParentRequiredChild");
+export const isNullable_nullableParentAndChild = o.TablePerTypeUtil.isNullable(child, "nullableParentAndChild");
+export const isNullable_requiredParentAndChild = o.TablePerTypeUtil.isNullable(child, "requiredParentAndChild");
 
-export const isNullable_doesNotExist = o.PolymorphismUtil.isNullable(child, "doesNotExist");
+export const isNullable_doesNotExist = o.TablePerTypeUtil.isNullable(child, "doesNotExist");
 
-//export const hedv : o.PolymorphismUtil.HasExplicitDefaultValue<typeof child, "childSpecific"> = null as any;
-//export const rcn : o.PolymorphismUtil.RequiredColumnNames<typeof child> = null as any;
-//export const ocn : o.PolymorphismUtil.OptionalColumnNames<typeof child> = null as any;
-//export const ir : o.PolymorphismUtil.InsertRowLiteral<typeof child> = null as any;
-/*export const insertResult = o.PolymorphismUtil.insertAndFetch(
+//export const hedv : o.TablePerTypeUtil.HasExplicitDefaultValue<typeof child, "childSpecific"> = null as any;
+//export const rcn : o.TablePerTypeUtil.RequiredColumnNames<typeof child> = null as any;
+//export const ocn : o.TablePerTypeUtil.OptionalColumnNames<typeof child> = null as any;
+//export const ir : o.TablePerTypeUtil.InsertRowLiteral<typeof child> = null as any;
+/*export const insertResult = o.TablePerTypeUtil.insertAndFetch(
     null as any,
     child,
     {

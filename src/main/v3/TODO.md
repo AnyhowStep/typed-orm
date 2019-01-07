@@ -26,8 +26,6 @@
     .execute(connection);
   ```
 
-+ Rename `PolymorphismUtil` to `TptUtil` or something.
-
 + Implement replaceTable()
 
 + INSERT statements
@@ -39,7 +37,6 @@
 + CTE
 
 + Validate table declarations
-+ Log table pattern
 + START TRANSACTION READ ONLY
 
 + SELECT clause must be before adding map delegates, too

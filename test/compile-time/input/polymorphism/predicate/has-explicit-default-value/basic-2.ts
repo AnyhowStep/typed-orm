@@ -53,12 +53,12 @@ const child = o.table(
     c.row6
 ]);
 
-export const hasExplicitDefaultValue_row0 = o.PolymorphismUtil.hasExplicitDefaultValue(child, "row0");
-export const hasExplicitDefaultValue_row1 = o.PolymorphismUtil.hasExplicitDefaultValue(child, "row1");
-export const hasExplicitDefaultValue_row2 = o.PolymorphismUtil.hasExplicitDefaultValue(child, "row2");
-export const hasExplicitDefaultValue_row3 = o.PolymorphismUtil.hasExplicitDefaultValue(child, "row3");
-export const hasExplicitDefaultValue_row4 = o.PolymorphismUtil.hasExplicitDefaultValue(child, "row4");
-export const hasExplicitDefaultValue_row5 = o.PolymorphismUtil.hasExplicitDefaultValue(child, "row5");
-export const hasExplicitDefaultValue_row6 = o.PolymorphismUtil.hasExplicitDefaultValue(child, "row6");
-export const hasExplicitDefaultValue_row7 = o.PolymorphismUtil.hasExplicitDefaultValue(child, "row7");
-export const hasExplicitDefaultValue_row8 = o.PolymorphismUtil.hasExplicitDefaultValue(child, "row8");
+export const hasExplicitDefaultValue_row0 = o.TablePerTypeUtil.hasExplicitDefaultValue(child, "row0");
+export const hasExplicitDefaultValue_row1 = o.TablePerTypeUtil.hasExplicitDefaultValue(child, "row1");
+export const hasExplicitDefaultValue_row2 = o.TablePerTypeUtil.hasExplicitDefaultValue(child, "row2");
+export const hasExplicitDefaultValue_row3 = o.TablePerTypeUtil.hasExplicitDefaultValue(child, "row3");
+export const hasExplicitDefaultValue_row4 = o.TablePerTypeUtil.hasExplicitDefaultValue(child, "row4");
+export const hasExplicitDefaultValue_row5 = o.TablePerTypeUtil.hasExplicitDefaultValue(child, "row5");
+export const hasExplicitDefaultValue_row6 = o.TablePerTypeUtil.hasExplicitDefaultValue(child, "row6");
+export const hasExplicitDefaultValue_row7 = o.TablePerTypeUtil.hasExplicitDefaultValue(child, "row7");
+export const hasExplicitDefaultValue_row8 = o.TablePerTypeUtil.hasExplicitDefaultValue(child, "row8");

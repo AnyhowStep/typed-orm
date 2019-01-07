@@ -14,9 +14,9 @@ export * from "./insert";
 export * from "./join-declaration";
 export * from "./log";
 export * from "./order";
-export * from "./polymorphism";
 export * from "./query";
 export * from "./table";
+export * from "./table-per-type";
 export * from "./update";
 
 export * from "./assert-map";

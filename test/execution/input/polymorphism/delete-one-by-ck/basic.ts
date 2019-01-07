@@ -51,7 +51,7 @@ tape(__filename, async (t) => {
         ).addCandidateKey(c => [c.value])
         .addParent(fkA);
 
-        const deleteResult = await o.PolymorphismUtil.deleteOneByCk(
+        const deleteResult = await o.TablePerTypeUtil.deleteOneByCk(
             connection,
             fkB,
             { value : "32" }

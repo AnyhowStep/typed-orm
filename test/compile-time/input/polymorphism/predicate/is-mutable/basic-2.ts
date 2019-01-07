@@ -53,12 +53,12 @@ const child = o.table(
     c.row6
 ]);
 
-export const isMutable_row0 = o.PolymorphismUtil.isMutable(child, "row0");
-export const isMutable_row1 = o.PolymorphismUtil.isMutable(child, "row1");
-export const isMutable_row2 = o.PolymorphismUtil.isMutable(child, "row2");
-export const isMutable_row3 = o.PolymorphismUtil.isMutable(child, "row3");
-export const isMutable_row4 = o.PolymorphismUtil.isMutable(child, "row4");
-export const isMutable_row5 = o.PolymorphismUtil.isMutable(child, "row5");
-export const isMutable_row6 = o.PolymorphismUtil.isMutable(child, "row6");
-export const isMutable_row7 = o.PolymorphismUtil.isMutable(child, "row7");
-export const isMutable_row8 = o.PolymorphismUtil.isMutable(child, "row8");
+export const isMutable_row0 = o.TablePerTypeUtil.isMutable(child, "row0");
+export const isMutable_row1 = o.TablePerTypeUtil.isMutable(child, "row1");
+export const isMutable_row2 = o.TablePerTypeUtil.isMutable(child, "row2");
+export const isMutable_row3 = o.TablePerTypeUtil.isMutable(child, "row3");
+export const isMutable_row4 = o.TablePerTypeUtil.isMutable(child, "row4");
+export const isMutable_row5 = o.TablePerTypeUtil.isMutable(child, "row5");
+export const isMutable_row6 = o.TablePerTypeUtil.isMutable(child, "row6");
+export const isMutable_row7 = o.TablePerTypeUtil.isMutable(child, "row7");
+export const isMutable_row8 = o.TablePerTypeUtil.isMutable(child, "row8");

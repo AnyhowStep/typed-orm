@@ -65,7 +65,7 @@ tape(__filename, async (t) => {
             parent
         );
 
-        return o.PolymorphismUtil.insertAndFetch(
+        return o.TablePerTypeUtil.insertAndFetch(
             connection,
             child,
             {

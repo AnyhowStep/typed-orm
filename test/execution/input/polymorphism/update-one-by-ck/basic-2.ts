@@ -66,7 +66,7 @@ tape(__filename, async (t) => {
         );
         child.mutable
 
-        const insertResult = await o.PolymorphismUtil.insertAndFetch(
+        const insertResult = await o.TablePerTypeUtil.insertAndFetch(
             connection,
             child,
             {
@@ -89,7 +89,7 @@ tape(__filename, async (t) => {
                 generatedChildRequiredParent : 456n,
             }
         );
-        await o.PolymorphismUtil.updateOneByCk(
+        await o.TablePerTypeUtil.updateOneByCk(
             connection,
             child,
             //Does not exist
