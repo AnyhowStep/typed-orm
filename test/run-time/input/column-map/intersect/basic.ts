@@ -3,6 +3,7 @@ import * as tape from "tape";
 import * as o from "../../../../../src/main";
 
 tape(__filename, (t) => {
+    console.log("test-start");
     const columnMapA = o.ColumnMapUtil.fromAssertMap(
         "someTableA",
         {
@@ -76,5 +77,6 @@ tape(__filename, (t) => {
         intersect.differentB.assertDelegate("", null);
     });
 
+    console.log("test-end");
     t.end();
 });

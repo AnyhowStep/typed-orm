@@ -22,7 +22,8 @@
     "test-all": "(npm run test-compile-time) && (npm run test-run-time) && (npm run test-execution)",
     "sanity-check": "(npm run rebuild) && (npm run test-all)",
     "c8-run-time": "c8 npm run test-run-time",
-    "c8-execution": "c8 npm run test-execution"
+    "c8-execution": "c8 npm run test-execution",
+    "c8-report": "c8 report"
   },
   "author": "anyhowstep",
   "license": "ISC",

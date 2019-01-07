@@ -1,3 +1,4 @@
 export * from "./candidate-key";
-export * from "./util";
+import * as CandidateKeyUtil from "./util";
+export { CandidateKeyUtil };
 //# sourceMappingURL=index.d.ts.map
