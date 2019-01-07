@@ -26,7 +26,7 @@ export function withTableAlias<
     {
         name,
         assertDelegate,
-        __isInSelectClause,
+        __isFromExprSelectItem,
     } : ColumnT,
     newTableAlias : NewTableAliasT
 ) : (
@@ -38,7 +38,7 @@ export function withTableAlias<
             name,
             assertDelegate,
         },
-        __isInSelectClause
+        __isFromExprSelectItem
     );
     return result as WithTableAlias<ColumnT, NewTableAliasT>;
 }

@@ -3,7 +3,7 @@ export * from "./asc";
 export * from "./desc";
 export * from "./exclude-nullable";
 export * from "./extract-nullable";
-export * from "./set-is-in-select-clause";
+export * from "./set-is-from-expr-select-item";
 export * from "./sort";
 export * from "./to-interface";
 export * from "./to-nullable";

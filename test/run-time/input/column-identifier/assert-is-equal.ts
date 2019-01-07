@@ -46,7 +46,7 @@ tape(__filename, (t) => {
         },
         undefined
     );
-    //A different __isInSelectClause
+    //A different __isFromExprSelectItem
     //isn't checked by assertIsEqual()
     const c6 = new o.Column(
         {

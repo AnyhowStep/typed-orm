@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const sqlstring_1 = require("sqlstring");
 const constants_1 = require("../../../constants");
-function queryTree({ tableAlias, name, __isInSelectClause, }) {
+function queryTree({ tableAlias, name, __isFromExprSelectItem, }) {
     if (tableAlias == constants_1.ALIASED) {
         /*
             When you want to write,
@@ -20,7 +20,7 @@ function queryTree({ tableAlias, name, __isInSelectClause, }) {
         return sqlstring_1.escapeId(`${tableAlias}${constants_1.SEPARATOR}${name}`);
     }
     else {
-        if (__isInSelectClause) {
+        if (__isFromExprSelectItem) {
             return sqlstring_1.escapeId(`${tableAlias}${constants_1.SEPARATOR}${name}`);
         }
         else {

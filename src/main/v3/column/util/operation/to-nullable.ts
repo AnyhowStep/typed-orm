@@ -25,7 +25,7 @@ export function toNullable<ColumnT extends IColumn> (
         tableAlias,
         name,
         assertDelegate,
-        __isInSelectClause,
+        __isFromExprSelectItem,
     } : ColumnT
 ) : (
     ToNullable<ColumnT>
@@ -36,6 +36,6 @@ export function toNullable<ColumnT extends IColumn> (
             name,
             assertDelegate : sd.nullable(assertDelegate),
         },
-        __isInSelectClause
+        __isFromExprSelectItem
     ) as IColumn as ToNullable<ColumnT>;
 }

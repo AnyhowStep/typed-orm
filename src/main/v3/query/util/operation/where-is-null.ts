@@ -87,7 +87,7 @@ export function whereIsNull<
                 name : rawColumn.name,
                 assertDelegate : sd.nil(),
             },
-            rawColumn.__isInSelectClause
+            rawColumn.__isFromExprSelectItem
         )
     );
 

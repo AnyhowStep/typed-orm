@@ -1,11 +1,11 @@
 import {IColumn, Column} from "../../column";
 
-export function setIsInSelectClause<ColumnT extends IColumn> (
+export function setIsFromExprSelectItem<ColumnT extends IColumn> (
     column : ColumnT,
-    __isInSelectClause : boolean,
+    __isFromExprSelectItem : boolean,
 ) : Column<ColumnT> {
     return new Column(
         column,
-        __isInSelectClause
+        __isFromExprSelectItem
     );
 }

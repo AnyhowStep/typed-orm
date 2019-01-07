@@ -30,7 +30,7 @@ export function withType<
     {
         tableAlias,
         name,
-        __isInSelectClause,
+        __isFromExprSelectItem,
     } : ColumnT,
     newAssertFunc : NewAssertFuncT,
 ) : (
@@ -42,6 +42,6 @@ export function withType<
             name,
             assertDelegate : sd.toAssertDelegate(newAssertFunc),
         },
-        __isInSelectClause
+        __isFromExprSelectItem
     ) as WithType<ColumnT, NewAssertFuncT>;
 }

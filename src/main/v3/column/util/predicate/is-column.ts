@@ -10,7 +10,7 @@ export function isColumn (raw : any) : raw is IColumn {
         (typeof raw.tableAlias == "string") &&
         (typeof raw.name == "string") &&
         (typeof raw.assertDelegate == "function") &&
-        ("__isInSelectClause" in raw) &&
-        (typeof raw.__isInSelectClause == "boolean")
+        ("__isFromExprSelectItem" in raw) &&
+        (typeof raw.__isFromExprSelectItem == "boolean")
     );
 }

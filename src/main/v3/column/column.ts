@@ -12,8 +12,8 @@ export interface IColumn<DataT extends ColumnData=ColumnData> {
     readonly name : DataT["name"];
     readonly assertDelegate : DataT["assertDelegate"];
 
-    //HACK for referencing selected columns
-    readonly __isInSelectClause : boolean;
+    //HACK for referencing IExprSelectItem
+    readonly __isFromExprSelectItem : boolean;
 }
 export type IAnonymousTypedColumn<T> = IColumn<{
     readonly tableAlias : string,
@@ -26,19 +26,19 @@ export class Column<DataT extends ColumnData> implements IColumn<DataT> {
     readonly name : DataT["name"];
     readonly assertDelegate : DataT["assertDelegate"];
 
-    //HACK for referencing selected columns
-    readonly __isInSelectClause : boolean;
+    //HACK for referencing IExprSelectItem
+    readonly __isFromExprSelectItem : boolean;
 
     constructor (
         data : DataT,
-        __isInSelectClause? : boolean
+        __isFromExprSelectItem? : boolean
     ) {
         this.tableAlias = data.tableAlias;
         this.name = data.name;
         this.assertDelegate = data.assertDelegate;
 
         //HACK
-        this.__isInSelectClause = (__isInSelectClause === true);
+        this.__isFromExprSelectItem = (__isFromExprSelectItem === true);
     }
 
     queryTree () {

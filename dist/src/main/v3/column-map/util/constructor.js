@@ -83,7 +83,7 @@ function fromSelectItemArray(selects, tableAlias) {
         const map = fromSelectItem(item);
         for (let columnName in map) {
             //HACK A hack to undo other hacks...
-            result[columnName] = column_1.ColumnUtil.setIsInSelectClause(column_1.ColumnUtil.withTableAlias(map[columnName], tableAlias), false);
+            result[columnName] = column_1.ColumnUtil.setIsFromExprSelectItem(column_1.ColumnUtil.withTableAlias(map[columnName], tableAlias), false);
         }
     }
     return result;

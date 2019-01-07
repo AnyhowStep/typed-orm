@@ -17,29 +17,29 @@ tape(__filename, (t) => {
         tableAlias : "tableAlias",
         name : "name",
         assertDelegate : sd.naturalNumber(),
-        __isInSelectClause : true,
+        __isFromExprSelectItem : true,
     }));
 
     t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         name : "name",
         assertDelegate : sd.naturalNumber(),
-        __isInSelectClause : undefined,
+        __isFromExprSelectItem : undefined,
     }));
     t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         name : "name",
-        __isInSelectClause : true,
+        __isFromExprSelectItem : true,
     }));
     t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         assertDelegate : sd.naturalNumber(),
-        __isInSelectClause : true,
+        __isFromExprSelectItem : true,
     }));
     t.false(o.ColumnUtil.isColumn({
         name : "name",
         assertDelegate : sd.naturalNumber(),
-        __isInSelectClause : true,
+        __isFromExprSelectItem : true,
     }));
     t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",

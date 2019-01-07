@@ -20,7 +20,7 @@ function leftIntersect(columnMapA, columnMapB) {
                 tableAlias: columnA.tableAlias,
                 name: columnA.name,
                 assertDelegate: sd.and(columnA.assertDelegate, columnMapB[columnName].assertDelegate),
-            }, columnA.__isInSelectClause);
+            }, columnA.__isFromExprSelectItem);
         }
         else {
             result[columnName] = columnA;

@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./as"));
 __export(require("./asc"));
 __export(require("./desc"));
-__export(require("./set-is-in-select-clause"));
+__export(require("./set-is-from-expr-select-item"));
 __export(require("./sort"));
 __export(require("./to-nullable"));
 __export(require("./with-table-alias"));

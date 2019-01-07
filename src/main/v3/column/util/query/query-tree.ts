@@ -6,7 +6,7 @@ export function queryTree (
     {
         tableAlias,
         name,
-        __isInSelectClause,
+        __isFromExprSelectItem,
     } : IColumn
 ) : string {
     if (tableAlias == ALIASED) {
@@ -25,7 +25,7 @@ export function queryTree (
         */
         return escapeId(`${tableAlias}${SEPARATOR}${name}`);
     } else {
-        if (__isInSelectClause) {
+        if (__isFromExprSelectItem) {
             return escapeId(`${tableAlias}${SEPARATOR}${name}`);
         } else {
             /*

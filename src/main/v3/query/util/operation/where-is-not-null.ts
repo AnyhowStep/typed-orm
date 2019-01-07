@@ -92,7 +92,7 @@ export function whereIsNotNull<
                 name : rawColumn.name,
                 assertDelegate : sd.notNullable(rawColumn.assertDelegate),
             },
-            rawColumn.__isInSelectClause
+            rawColumn.__isFromExprSelectItem
         )
     );
 

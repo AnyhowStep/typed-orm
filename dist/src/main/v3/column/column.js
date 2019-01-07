@@ -3,12 +3,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 const ColumnUtil = require("./util");
 class Column {
-    constructor(data, __isInSelectClause) {
+    constructor(data, __isFromExprSelectItem) {
         this.tableAlias = data.tableAlias;
         this.name = data.name;
         this.assertDelegate = data.assertDelegate;
         //HACK
-        this.__isInSelectClause = (__isInSelectClause === true);
+        this.__isFromExprSelectItem = (__isFromExprSelectItem === true);
     }
     queryTree() {
         return ColumnUtil.queryTree(this);

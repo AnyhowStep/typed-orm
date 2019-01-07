@@ -77,7 +77,7 @@ export function leftIntersect<
                         columnMapB[columnName].assertDelegate
                     ),
                 },
-                columnA.__isInSelectClause
+                columnA.__isFromExprSelectItem
             );
         } else {
             result[columnName] = columnA;

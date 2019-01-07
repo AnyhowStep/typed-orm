@@ -120,7 +120,7 @@ export function whereEq<
                     RawExprUtil.assertDelegate(value as any)
                 ),
             },
-            rawColumn.__isInSelectClause
+            rawColumn.__isFromExprSelectItem
         )
     );
 

@@ -228,7 +228,7 @@ export function fromSelectItemArray<SelectsT extends SelectItem[], TableAliasT e
         const map = fromSelectItem(item);
         for (let columnName in map) {
             //HACK A hack to undo other hacks...
-            result[columnName] = ColumnUtil.setIsInSelectClause(
+            result[columnName] = ColumnUtil.setIsFromExprSelectItem(
                 ColumnUtil.withTableAlias(
                     map[columnName],
                     tableAlias

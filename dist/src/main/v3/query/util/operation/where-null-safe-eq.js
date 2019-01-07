@@ -21,7 +21,7 @@ function whereNullSafeEq(query, delegate, value) {
         tableAlias: rawColumn.tableAlias,
         name: rawColumn.name,
         assertDelegate: sd.chain(rawColumn.assertDelegate, raw_expr_1.RawExprUtil.assertDelegate(value)),
-    }, rawColumn.__isInSelectClause));
+    }, rawColumn.__isFromExprSelectItem));
     const { _distinct, _sqlCalcFoundRows, _parentJoins, _selects, _grouped, _having, _orders, _limit, _unions, _unionOrders, _unionLimit, _mapDelegate, } = query;
     return new query_1.Query({
         _distinct,

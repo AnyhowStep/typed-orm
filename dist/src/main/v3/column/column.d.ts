@@ -10,7 +10,7 @@ export interface IColumn<DataT extends ColumnData = ColumnData> {
     readonly tableAlias: DataT["tableAlias"];
     readonly name: DataT["name"];
     readonly assertDelegate: DataT["assertDelegate"];
-    readonly __isInSelectClause: boolean;
+    readonly __isFromExprSelectItem: boolean;
 }
 export declare type IAnonymousTypedColumn<T> = IColumn<{
     readonly tableAlias: string;
@@ -21,8 +21,8 @@ export declare class Column<DataT extends ColumnData> implements IColumn<DataT> 
     readonly tableAlias: DataT["tableAlias"];
     readonly name: DataT["name"];
     readonly assertDelegate: DataT["assertDelegate"];
-    readonly __isInSelectClause: boolean;
-    constructor(data: DataT, __isInSelectClause?: boolean);
+    readonly __isFromExprSelectItem: boolean;
+    constructor(data: DataT, __isFromExprSelectItem?: boolean);
     queryTree(): string;
     toNullable(): ColumnUtil.ToNullable<this>;
     withTableAlias<NewTableAliasT extends string>(newTableAlias: NewTableAliasT): (ColumnUtil.WithTableAlias<this, NewTableAliasT>);
