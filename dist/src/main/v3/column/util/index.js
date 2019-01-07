@@ -9,6 +9,7 @@ __export(require("./predicate"));
 __export(require("./query"));
 const Array = require("./array");
 exports.Array = Array;
+//TODO Refactor this `Name` thing
 const Name = require("./name");
 exports.Name = Name;
 //# sourceMappingURL=index.js.map

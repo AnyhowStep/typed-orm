@@ -28,6 +28,7 @@ export class Column<DataT extends ColumnData> implements IColumn<DataT> {
     readonly name : DataT["name"];
     readonly assertDelegate : DataT["assertDelegate"];
 
+    //TODO-REMOVE, Unneeded
     //HACK for JOINING with nested queries
     readonly __subTableName : string|undefined;
     //HACK for referencing selected columns

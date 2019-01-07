@@ -5,5 +5,6 @@ export * from "./query";
 
 import * as Array from "./array";
 export {Array};
+//TODO Refactor this `Name` thing
 import * as Name from "./name";
 export {Name};
