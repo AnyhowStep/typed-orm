@@ -586,11 +586,11 @@ export namespace ColumnRefUtil {
             [tableAlias in Extract<keyof RefT, string>] : (
                 Extract<
                     //Get the column names of this ColumnMap
-                    ColumnUtil.Name.FromColumnMap<
+                    ColumnMapUtil.ColumnNames<
                         RefT[tableAlias]
                     >,
                     //Get the column names of all other ColumnMap
-                    ColumnUtil.Name.FromColumnMap<
+                    ColumnMapUtil.ColumnNames<
                         RefT[Exclude<
                             Extract<keyof RefT, string>,
                             tableAlias
@@ -613,4 +613,27 @@ export namespace ColumnRefUtil {
             )
         }
     );
+
+    //Technically, this could be wrong.
+    //But it shouldn't be wrong, in general.
+    export type ColumnNames<RefT extends ColumnRef> = (
+        RefT extends ColumnRef ?
+        ColumnMapUtil.ColumnNames<
+            RefT[Extract<keyof RefT, string>]
+        > :
+        never
+    );
+    export function columnNames<RefT extends ColumnRef> (
+        columnRef : RefT
+    ) : ColumnNames<RefT>[] {
+        const result = Object.keys(columnRef).reduce<string[]>(
+            (memo, tableAlias) => {
+                memo.push(...ColumnMapUtil.columnNames(columnRef[tableAlias]));
+                return memo;
+            },
+            []
+        );
+        return result as ColumnNames<RefT>[];
+    }
+
 }

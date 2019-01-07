@@ -1,7 +1,6 @@
 import { Table, ITable } from "../../table";
 import { AssertMap } from "../../../assert-map";
 import { ColumnMapUtil } from "../../../column-map";
-import { ColumnUtil } from "../../../column";
 export declare type AddColumnsFromAssertMap<TableT extends ITable, AssertMapT extends AssertMap> = (Table<{
     readonly usedRef: TableT["usedRef"];
     readonly alias: TableT["alias"];
@@ -11,7 +10,7 @@ export declare type AddColumnsFromAssertMap<TableT extends ITable, AssertMapT ex
     readonly primaryKey: TableT["primaryKey"];
     readonly candidateKeys: TableT["candidateKeys"];
     readonly generated: TableT["generated"];
-    readonly isNullable: ColumnUtil.Name.NullableFromColumnMap<ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>>>[];
+    readonly isNullable: ColumnMapUtil.NullableColumnNames<ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>>>[];
     readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
     readonly mutable: TableT["mutable"];
     readonly parents: TableT["parents"];

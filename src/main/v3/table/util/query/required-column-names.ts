@@ -1,10 +1,10 @@
 import {ITable} from "../../table";
-import {ColumnUtil} from "../../../column";
+import {ColumnMapUtil} from "../../../column-map";
 import {columnNames} from "./column-names";
 
 export type RequiredColumnNames<TableT extends ITable> = (
     Exclude<
-        ColumnUtil.Name.FromColumnMap<TableT["columns"]>,
+        ColumnMapUtil.ColumnNames<TableT["columns"]>,
         (
             TableT["generated"][number] |
             TableT["isNullable"][number] |

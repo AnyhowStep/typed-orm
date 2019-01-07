@@ -1,8 +1,8 @@
 import { ITable } from "../../../table";
-import { ColumnUtil } from "../../../column";
+import { ColumnMapUtil } from "../../../column-map";
 import { IsNullable, HasExplicitDefaultValue, IsMutable } from "../predicate";
-export declare type ParentColumnNames<TableT extends ITable> = (ColumnUtil.Name.FromColumnMap<TableT["parents"][number]["columns"]>);
-export declare type ColumnNames<TableT extends ITable> = (ColumnUtil.Name.FromColumnMap<TableT["columns"] | TableT["parents"][number]["columns"]>);
+export declare type ParentColumnNames<TableT extends ITable> = (ColumnMapUtil.ColumnNames<TableT["parents"][number]["columns"]>);
+export declare type ColumnNames<TableT extends ITable> = (ColumnMapUtil.ColumnNames<TableT["columns"] | TableT["parents"][number]["columns"]>);
 export declare function uniqueColumnNames<TableT extends ITable>(table: TableT): Set<ColumnNames<TableT>>;
 export declare type GeneratedColumnNames<TableT extends ITable> = ((TableT | TableT["parents"][number])["generated"][number]);
 export declare function uniqueGeneratedColumnNames<TableT extends ITable>(table: TableT): Set<GeneratedColumnNames<TableT>>;

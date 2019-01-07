@@ -96,11 +96,13 @@ export declare namespace ColumnRefUtil {
     type FindWithColumnName<RefT extends ColumnRef, ColumnNameT extends string> = (RefT extends ColumnRef ? ColumnMapUtil.FindWithColumnName<RefT[Extract<keyof RefT, string>], ColumnNameT> : never);
     function getSortedColumnArray(columnRef: ColumnRef): IColumn[];
     type DuplicateColumnName<RefT extends ColumnRef> = ({
-        [tableAlias in Extract<keyof RefT, string>]: (Extract<ColumnUtil.Name.FromColumnMap<RefT[tableAlias]>, ColumnUtil.Name.FromColumnMap<RefT[Exclude<Extract<keyof RefT, string>, tableAlias>]>>);
+        [tableAlias in Extract<keyof RefT, string>]: (Extract<ColumnMapUtil.ColumnNames<RefT[tableAlias]>, ColumnMapUtil.ColumnNames<RefT[Exclude<Extract<keyof RefT, string>, tableAlias>]>>);
     }[Extract<keyof RefT, string>]);
     type HasDuplicateColumnName<RefT extends ColumnRef> = (DuplicateColumnName<RefT> extends never ? false : true);
     type ToInterface<RefT extends ColumnRef> = ({
         readonly [tableAlias in keyof RefT]: (ColumnMapUtil.ToInterface<RefT[tableAlias]>);
     });
+    type ColumnNames<RefT extends ColumnRef> = (RefT extends ColumnRef ? ColumnMapUtil.ColumnNames<RefT[Extract<keyof RefT, string>]> : never);
+    function columnNames<RefT extends ColumnRef>(columnRef: RefT): ColumnNames<RefT>[];
 }
 //# sourceMappingURL=column-ref.d.ts.map

@@ -11,6 +11,7 @@ import {SelectItemArrayUtil} from "../../select-item-array";
 import {IExprSelectItem, ExprSelectItemUtil} from "../../expr-select-item";
 import {AssertMap} from "../../assert-map";
 import {ColumnRef, ColumnRefUtil} from "../../column-ref";
+import {ColumnNames} from "./query";
 
 /*
     In general, having any[] -> {} conversions
@@ -143,7 +144,7 @@ export type FromSelectItem<SelectItemT extends SelectItem> = (
     SelectItemT :
     SelectItemT extends ColumnRef ?
     {
-        [columnName in ColumnUtil.Name.FromColumnRef<SelectItemT>] : (
+        [columnName in ColumnRefUtil.ColumnNames<SelectItemT>] : (
             ColumnRefUtil.FindWithColumnName<
                 SelectItemT,
                 columnName
@@ -195,7 +196,7 @@ export type FromSelectItemArray<SelectsT extends SelectItem[], TableAliasT exten
                 TableAliasT
             > :
 
-            columnName extends ColumnUtil.Name.FromColumnMap<Extract<SelectsT[number], ColumnMap>> ?
+            columnName extends ColumnNames<Extract<SelectsT[number], ColumnMap>> ?
             ColumnUtil.WithTableAlias<
                 FindWithColumnName<
                     Extract<SelectsT[number], ColumnMap>,
@@ -204,7 +205,7 @@ export type FromSelectItemArray<SelectsT extends SelectItem[], TableAliasT exten
                 TableAliasT
             > :
 
-            columnName extends ColumnUtil.Name.FromColumnRef<Extract<SelectsT[number], ColumnRef>> ?
+            columnName extends ColumnRefUtil.ColumnNames<Extract<SelectsT[number], ColumnRef>> ?
             ColumnUtil.WithTableAlias<
                 ColumnRefUtil.FindWithColumnName<
                     Extract<SelectsT[number], ColumnRef>,

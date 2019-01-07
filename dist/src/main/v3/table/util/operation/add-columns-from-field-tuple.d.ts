@@ -1,7 +1,6 @@
 import * as sd from "schema-decorator";
 import { Table, ITable } from "../../table";
 import { ColumnMapUtil } from "../../../column-map";
-import { ColumnUtil } from "../../../column";
 export declare type AddColumnsFromFieldTuple<TableT extends ITable, FieldsT extends sd.AnyField[]> = (Table<{
     readonly usedRef: TableT["usedRef"];
     readonly alias: TableT["alias"];
@@ -11,7 +10,7 @@ export declare type AddColumnsFromFieldTuple<TableT extends ITable, FieldsT exte
     readonly primaryKey: TableT["primaryKey"];
     readonly candidateKeys: TableT["candidateKeys"];
     readonly generated: TableT["generated"];
-    readonly isNullable: ColumnUtil.Name.NullableFromColumnMap<ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>>>[];
+    readonly isNullable: ColumnMapUtil.NullableColumnNames<ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>>>[];
     readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
     readonly mutable: TableT["mutable"];
     readonly parents: TableT["parents"];

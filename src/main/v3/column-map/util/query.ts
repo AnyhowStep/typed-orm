@@ -1,3 +1,4 @@
+import * as sd from "schema-decorator";
 import {ColumnMap} from "../column-map";
 import {IColumn} from "../../column";
 
@@ -43,3 +44,37 @@ export type FindWithTableAlias<ColumnMapT extends ColumnMap, TableAliasT extends
     > :
     never
 );
+
+//Technically, this could be wrong.
+//But it shouldn't be wrong, in general.
+export type ColumnNames<MapT extends ColumnMap> = (
+    MapT extends ColumnMap ?
+    Extract<keyof MapT, string> :
+    never
+);
+export function columnNames<MapT extends ColumnMap> (
+    columnMap : MapT
+) : ColumnNames<MapT>[] {
+    //Technically, this could be wrong.
+    //But it shouldn't be wrong, in general.
+    return Object.keys(columnMap) as ColumnNames<MapT>[];
+}
+export type NullableColumnNames<MapT extends ColumnMap> = (
+    MapT extends ColumnMap ?
+    {
+        [columnName in Extract<keyof MapT, string>] : (
+            null extends ReturnType<MapT[columnName]["assertDelegate"]> ?
+            columnName :
+            never
+        )
+    }[Extract<keyof MapT, string>] :
+    never
+);
+export function nullableColumnNames<MapT extends ColumnMap> (
+    columnMap : MapT
+) : NullableColumnNames<MapT>[] {
+    return Object.keys(columnMap)
+        .filter(columnName => sd.isNullable(
+            columnMap[columnName].assertDelegate
+        )) as NullableColumnNames<MapT>[];
+}

@@ -1,14 +1,14 @@
 import {ITable} from "../../../table";
-import {ColumnUtil} from "../../../column";
+import {ColumnMapUtil} from "../../../column-map";
 import {IsNullable, HasExplicitDefaultValue, isNullable, hasExplicitDefaultValue, IsMutable, isMutable} from "../predicate";
 
 export type ParentColumnNames<TableT extends ITable> = (
-    ColumnUtil.Name.FromColumnMap<
+    ColumnMapUtil.ColumnNames<
         TableT["parents"][number]["columns"]
     >
 );
 export type ColumnNames<TableT extends ITable> = (
-    ColumnUtil.Name.FromColumnMap<
+    ColumnMapUtil.ColumnNames<
         TableT["columns"] |
         TableT["parents"][number]["columns"]
     >

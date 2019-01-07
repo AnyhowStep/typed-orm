@@ -1,1 +1,1 @@
-{"version":3,"file":"column-names.js","sourceRoot":"","sources":["../../../../../../../src/main/v3/table/util/query/column-names.ts"],"names":[],"mappings":";;AACA,4CAA2C;AAK3C,SAAgB,WAAW,CACvB,KAAc;IAEd,OAAO,mBAAU,CAAC,IAAI,CAAC,KAAK,CAAC,aAAa,CAExC,KAAK,CAAC,OAAO,CAAC,CAAC;AACrB,CAAC;AAND,kCAMC"}
+{"version":3,"file":"column-names.js","sourceRoot":"","sources":["../../../../../../../src/main/v3/table/util/query/column-names.ts"],"names":[],"mappings":";;AACA,oDAAkD;AAKlD,SAAgB,WAAW,CACvB,KAAc;IAEd,OAAO,0BAAa,CAAC,WAAW,CAE9B,KAAK,CAAC,OAAO,CAAC,CAAC;AACrB,CAAC;AAND,kCAMC"}

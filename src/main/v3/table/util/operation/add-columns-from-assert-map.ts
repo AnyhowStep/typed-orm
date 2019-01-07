@@ -1,7 +1,6 @@
 import {Table, ITable} from "../../table";
 import {AssertMap} from "../../../assert-map";
 import {ColumnMapUtil} from "../../../column-map";
-import {ColumnUtil} from "../../../column";
 
 export type AddColumnsFromAssertMap<
     TableT extends ITable,
@@ -21,7 +20,7 @@ export type AddColumnsFromAssertMap<
         readonly candidateKeys : TableT["candidateKeys"];
 
         readonly generated : TableT["generated"];
-        readonly isNullable : ColumnUtil.Name.NullableFromColumnMap<
+        readonly isNullable : ColumnMapUtil.NullableColumnNames<
             ColumnMapUtil.Intersect<
                 TableT["columns"],
                 ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>
@@ -56,7 +55,7 @@ export function addColumnsFromAssertMap<
         tableColumns,
         ColumnMapUtil.fromAssertMap(table.alias, assertMap)
     );
-    const isNullable = ColumnUtil.Name.Array.nullableFromColumnMap(columns);
+    const isNullable = ColumnMapUtil.nullableColumnNames(columns);
 
     const {
         usedRef,

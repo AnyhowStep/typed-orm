@@ -1,7 +1,6 @@
 import * as sd from "schema-decorator";
 import {Table, ITable} from "../../table";
 import {ColumnMapUtil} from "../../../column-map";
-import {ColumnUtil} from "../../../column";
 
 export type AddColumnsFromFieldTuple<
     TableT extends ITable,
@@ -21,7 +20,7 @@ export type AddColumnsFromFieldTuple<
         readonly candidateKeys : TableT["candidateKeys"];
 
         readonly generated : TableT["generated"];
-        readonly isNullable : ColumnUtil.Name.NullableFromColumnMap<
+        readonly isNullable : ColumnMapUtil.NullableColumnNames<
             ColumnMapUtil.Intersect<
                 TableT["columns"],
                 ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>
@@ -60,7 +59,7 @@ export function addColumnsFromFieldTuple<
         tableColumns,
         columnMapFromFieldArray
     );
-    const isNullable = ColumnUtil.Name.Array.nullableFromColumnMap(columns);
+    const isNullable = ColumnMapUtil.nullableColumnNames(columns);
 
     const {
         usedRef,

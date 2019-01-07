@@ -26,9 +26,9 @@ export namespace SelectItemUtil {
         SelectItemT extends IExprSelectItem ?
         SelectItemT["alias"] :
         SelectItemT extends ColumnMap ?
-        ColumnUtil.Name.FromColumnMap<SelectItemT> :
+        ColumnMapUtil.ColumnNames<SelectItemT> :
         SelectItemT extends ColumnRef ?
-        ColumnUtil.Name.FromColumnRef<SelectItemT> :
+        ColumnRefUtil.ColumnNames<SelectItemT> :
         never
     );
     export function getColumnNames (item : SelectItem) : string[] {
@@ -37,9 +37,9 @@ export namespace SelectItemUtil {
         } else if (ExprSelectItemUtil.isExprSelectItem(item)) {
             return [item.alias];
         } else if (ColumnMapUtil.isColumnMap(item)) {
-            return ColumnUtil.Name.Array.fromColumnMap(item);
+            return ColumnMapUtil.columnNames(item);
         } else if (ColumnRefUtil.isColumnRef(item)) {
-            return ColumnUtil.Name.Array.fromColumnRef(item);
+            return ColumnRefUtil.columnNames(item);
         } else {
             throw new Error("Unknown select item");
         }

@@ -1,13 +1,13 @@
 import {ITable} from "../../table";
-import {ColumnUtil} from "../../../column";
+import {ColumnMapUtil} from "../../../column-map";
 
 export type ColumnNames<TableT extends ITable> = (
-    ColumnUtil.Name.FromColumnMap<TableT["columns"]>
+    ColumnMapUtil.ColumnNames<TableT["columns"]>
 );
 export function columnNames<TableT extends ITable> (
     table : TableT
 ) : ColumnNames<TableT>[] {
-    return ColumnUtil.Name.Array.fromColumnMap<
+    return ColumnMapUtil.columnNames<
         TableT["columns"]
     >(table.columns);
 }

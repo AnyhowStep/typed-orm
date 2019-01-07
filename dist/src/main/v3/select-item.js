@@ -14,10 +14,10 @@ var SelectItemUtil;
             return [item.alias];
         }
         else if (column_map_1.ColumnMapUtil.isColumnMap(item)) {
-            return column_1.ColumnUtil.Name.Array.fromColumnMap(item);
+            return column_map_1.ColumnMapUtil.columnNames(item);
         }
         else if (column_ref_1.ColumnRefUtil.isColumnRef(item)) {
-            return column_1.ColumnUtil.Name.Array.fromColumnRef(item);
+            return column_ref_1.ColumnRefUtil.columnNames(item);
         }
         else {
             throw new Error("Unknown select item");

@@ -229,5 +229,13 @@ var ColumnRefUtil;
         return result;
     }
     ColumnRefUtil.getSortedColumnArray = getSortedColumnArray;
+    function columnNames(columnRef) {
+        const result = Object.keys(columnRef).reduce((memo, tableAlias) => {
+            memo.push(...column_map_1.ColumnMapUtil.columnNames(columnRef[tableAlias]));
+            return memo;
+        }, []);
+        return result;
+    }
+    ColumnRefUtil.columnNames = columnNames;
 })(ColumnRefUtil = exports.ColumnRefUtil || (exports.ColumnRefUtil = {}));
 //# sourceMappingURL=column-ref.js.map
