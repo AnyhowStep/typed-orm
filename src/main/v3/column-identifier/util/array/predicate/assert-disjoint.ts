@@ -1,7 +1,7 @@
 import {ColumnIdentifier} from "../../../column-identifier";
 import {isEqual} from "../../predicate";
 
-export function assertNoOverlap (
+export function assertDisjoint (
     arrA : ColumnIdentifier[],
     arrB : ColumnIdentifier[]
 ) {

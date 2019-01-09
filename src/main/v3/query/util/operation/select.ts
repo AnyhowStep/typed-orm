@@ -306,7 +306,7 @@ export function select<
         //+ Duplicates not allowed with existing selects
         const querySelectColumnIdentifiers = ColumnIdentifierUtil.Array
             .fromSelectItemArray(query._selects);
-        ColumnIdentifierUtil.Array.assertNoOverlap(
+        ColumnIdentifierUtil.Array.assertDisjoint(
             selectColumnIdentifiers,
             querySelectColumnIdentifiers
         );

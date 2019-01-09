@@ -74,7 +74,7 @@ function select(query, delegate) {
         //+ Duplicates not allowed with existing selects
         const querySelectColumnIdentifiers = column_identifier_1.ColumnIdentifierUtil.Array
             .fromSelectItemArray(query._selects);
-        column_identifier_1.ColumnIdentifierUtil.Array.assertNoOverlap(selectColumnIdentifiers, querySelectColumnIdentifiers);
+        column_identifier_1.ColumnIdentifierUtil.Array.assertDisjoint(selectColumnIdentifiers, querySelectColumnIdentifiers);
     }
     const newSelects = ((query._selects == undefined) ?
         selects :
