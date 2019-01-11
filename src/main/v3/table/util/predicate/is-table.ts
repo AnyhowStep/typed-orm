@@ -1,5 +1,5 @@
 import {AliasedTableUtil} from "../../../aliased-table";
-import {ITable} from "../../table";
+import {ITable, DeletableTable} from "../../table";
 import {CandidateKeyUtil} from "../../../candidate-key";
 import {isStringArray} from "../../../type";
 
@@ -45,4 +45,7 @@ export function isTable (raw : any) : raw is ITable {
         (typeof raw.insertAllowed == "boolean") &&
         (typeof raw.deleteAllowed == "boolean")
     );
+}
+export function isDeletableTable (raw : any) : raw is DeletableTable {
+    return isTable(raw) && (raw.deleteAllowed === true)
 }

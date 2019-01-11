@@ -13,6 +13,7 @@ const column_identifier_ref_1 = require("../../column-identifier-ref");
 const expr_1 = require("../../expr");
 const raw_expr_1 = require("../../raw-expr");
 const column_ref_1 = require("../../column-ref");
+const table_1 = require("../../table");
 function queryTreeSelectItem_Column(column) {
     const result = [];
     result.push(column_1.ColumnUtil.queryTree(column));
@@ -501,4 +502,14 @@ function printSql(query) {
     console.log(sql);
 }
 exports.printSql = printSql;
+function deletableTableArray(query) {
+    const result = [];
+    for (let join of query._joins) {
+        if (table_1.TableUtil.isDeletableTable(join.aliasedTable)) {
+            result.push(join.aliasedTable);
+        }
+    }
+    return result;
+}
+exports.deletableTableArray = deletableTableArray;
 //# sourceMappingURL=query.js.map

@@ -41,4 +41,8 @@ function isTable(raw) {
         (typeof raw.deleteAllowed == "boolean"));
 }
 exports.isTable = isTable;
+function isDeletableTable(raw) {
+    return isTable(raw) && (raw.deleteAllowed === true);
+}
+exports.isDeletableTable = isDeletableTable;
 //# sourceMappingURL=is-table.js.map

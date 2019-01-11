@@ -2,7 +2,7 @@ import { IQuery } from "../query";
 import { IJoin } from "../join";
 import { IAnonymousTypedExpr } from "../expr";
 import { MapDelegate } from "../map-delegate";
-import { ITable } from "../table";
+import { DeletableTable } from "../table";
 import { IConnection, DeleteResult } from "../execution";
 export declare type DeletableQuery = IQuery<{
     readonly _distinct: false;
@@ -25,9 +25,7 @@ export declare enum DeleteModifier {
 }
 export interface DeleteData {
     readonly _query: DeletableQuery;
-    readonly _tables: (ITable & {
-        deleteAllowed: true;
-    })[] | undefined;
+    readonly _tables: DeletableTable[] | undefined;
     readonly _modifier: DeleteModifier | undefined;
 }
 export interface IDelete<DataT extends DeleteData = DeleteData> {
@@ -45,9 +43,7 @@ export declare class Delete<DataT extends DeleteData> implements IDelete<DataT> 
 }
 export declare type ExecutableDelete = IDelete<{
     readonly _query: DeletableQuery;
-    readonly _tables: (ITable & {
-        deleteAllowed: true;
-    })[];
+    readonly _tables: DeletableTable[];
     readonly _modifier: DeleteModifier | undefined;
 }>;
 //# sourceMappingURL=delete.d.ts.map

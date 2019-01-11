@@ -3,6 +3,8 @@ import { IQuery } from "../query";
 import { QueryTreeArray, QueryTree } from "../../query-tree";
 import { AfterSelectClause, BeforeSelectClause, OneSelectItemQuery, OneRowQuery, ZeroOrOneRowQuery } from "./predicate";
 import { SelectItemUtil } from "../../select-item";
+import { DeletableQuery } from "../../delete";
+import { DeletableTable } from "../../table";
 export declare function queryTreeSelects(query: AfterSelectClause): QueryTreeArray;
 export declare function queryTreeSelects_RawExpr(query: OneSelectItemQuery<any>): QueryTreeArray;
 export declare function queryTreeSelects_As(query: AfterSelectClause): QueryTreeArray;
@@ -24,4 +26,6 @@ export declare type TypeOf<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRow
 export declare type AssertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> = (sd.AssertDelegate<TypeOf<QueryT>>);
 export declare function assertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery>(rawExpr: QueryT): AssertDelegate<QueryT>;
 export declare function printSql(query: AfterSelectClause): void;
+export declare type DeletableTables<QueryT extends DeletableQuery> = (Extract<QueryT["_joins"][number]["aliasedTable"], DeletableTable>);
+export declare function deletableTableArray<QueryT extends DeletableQuery>(query: QueryT): DeletableTables<QueryT>[];
 //# sourceMappingURL=query.d.ts.map

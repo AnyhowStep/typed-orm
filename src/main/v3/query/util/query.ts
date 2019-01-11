@@ -13,6 +13,8 @@ import {ExprUtil} from "../../expr";
 import {RawExprUtil} from "../../raw-expr";
 import {ColumnRef, ColumnRefUtil} from "../../column-ref";
 import {SelectItemUtil} from "../../select-item";
+import {DeletableQuery} from "../../delete";
+import {DeletableTable, TableUtil} from "../../table";
 
 function queryTreeSelectItem_Column (column : IColumn) : QueryTreeArray {
     const result : QueryTreeArray = [];
@@ -494,4 +496,27 @@ export function printSql (
 ) {
     const sql = QueryTreeUtil.toSqlPretty(queryTree(query));
     console.log(sql);
+}
+
+
+export type DeletableTables<
+    QueryT extends DeletableQuery
+> = (
+    Extract<
+        QueryT["_joins"][number]["aliasedTable"],
+        DeletableTable
+    >
+);
+export function deletableTableArray<
+    QueryT extends DeletableQuery
+> (
+    query : QueryT
+) : DeletableTables<QueryT>[] {
+    const result : DeletableTables<QueryT>[] = [];
+    for (let join of query._joins) {
+        if (TableUtil.isDeletableTable(join.aliasedTable)) {
+            result.push(join.aliasedTable as any);
+        }
+    }
+    return result as DeletableTables<QueryT>[];
 }

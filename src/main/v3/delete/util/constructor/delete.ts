@@ -1,33 +1,13 @@
-import { DeletableQuery, Delete, DeleteModifier } from "../../delete";
-import { ITable, TableUtil } from "../../../table";
-import { NonEmptyTuple } from "../../../tuple";
+import {DeletableQuery, Delete, DeleteModifier} from "../../delete";
+import {DeletableTable} from "../../../table";
+import {NonEmptyTuple} from "../../../tuple";
+import {QueryUtil} from "../../../query";
 
-export type DeletableTable<
-    QueryT extends DeletableQuery
-> = (
-    Extract<
-        QueryT["_joins"][number]["aliasedTable"],
-        ITable & { deleteAllowed : true }
-    >
-);
-export function deletableTableArray<
-    QueryT extends DeletableQuery
-> (
-    query : QueryT
-) : DeletableTable<QueryT>[] {
-    const result : DeletableTable<QueryT>[] = [];
-    for (let join of query._joins) {
-        if (TableUtil.isTable(join.aliasedTable) && join.aliasedTable.deleteAllowed) {
-            result.push(join.aliasedTable as any);
-        }
-    }
-    return result as DeletableTable<QueryT>[];
-}
 export type DeletableTableMap<
     QueryT extends DeletableQuery
 > = (
     {
-        [tableAlias in DeletableTable<QueryT>["alias"]] : (
+        [tableAlias in QueryUtil.DeletableTables<QueryT>["alias"]] : (
             {
                 alias : tableAlias,
             }
@@ -39,7 +19,7 @@ export type DeleteDelegate<
 > = (
     (
         tables : DeletableTableMap<QueryT>
-    ) => NonEmptyTuple<{ alias : DeletableTable<QueryT>["alias"] }>
+    ) => NonEmptyTuple<{ alias : QueryUtil.DeletableTables<QueryT>["alias"] }>
 );
 
 function del<
@@ -52,11 +32,11 @@ function del<
 ) : (
     Delete<{
         _query : DeletableQuery,
-        _tables : (ITable & { deleteAllowed : true })[],
+        _tables : DeletableTable[],
         _modifier : ModifierT,
     }>
 ) {
-    const options = deletableTableArray(query);
+    const options = QueryUtil.deletableTableArray(query);
     const selected = delegate(options.reduce<DeletableTableMap<QueryT>>(
         (memo, table) => {
             (memo as any)[table.alias] = table;
@@ -67,7 +47,7 @@ function del<
     if (selected.length == 0) {
         throw new Error(`Cannot delete from zero tables`);
     }
-    const tables : (ITable & { deleteAllowed : true })[] = [];
+    const tables : DeletableTable[] = [];
     const alreadySeen = new Set<string>();
     for (let s of selected) {
         if (alreadySeen.has(s.alias)) {

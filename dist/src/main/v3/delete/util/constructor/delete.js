@@ -1,19 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const delete_1 = require("../../delete");
-const table_1 = require("../../../table");
-function deletableTableArray(query) {
-    const result = [];
-    for (let join of query._joins) {
-        if (table_1.TableUtil.isTable(join.aliasedTable) && join.aliasedTable.deleteAllowed) {
-            result.push(join.aliasedTable);
-        }
-    }
-    return result;
-}
-exports.deletableTableArray = deletableTableArray;
+const query_1 = require("../../../query");
 function del(query, modifier, delegate) {
-    const options = deletableTableArray(query);
+    const options = query_1.QueryUtil.deletableTableArray(query);
     const selected = delegate(options.reduce((memo, table) => {
         memo[table.alias] = table;
         return memo;

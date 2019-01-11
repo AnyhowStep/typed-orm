@@ -34,6 +34,9 @@ export interface ITable<DataT extends TableData = TableData> extends IAliasedTab
     readonly insertAllowed: DataT["insertAllowed"];
     readonly deleteAllowed: DataT["deleteAllowed"];
 }
+export declare type DeletableTable = (ITable & {
+    deleteAllowed: true;
+});
 export declare class Table<DataT extends TableData> implements ITable<DataT> {
     readonly usedRef: DataT["usedRef"];
     readonly alias: DataT["alias"];

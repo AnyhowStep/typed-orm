@@ -1,23 +1,18 @@
 import { DeletableQuery, Delete, DeleteModifier } from "../../delete";
-import { ITable } from "../../../table";
+import { DeletableTable } from "../../../table";
 import { NonEmptyTuple } from "../../../tuple";
-export declare type DeletableTable<QueryT extends DeletableQuery> = (Extract<QueryT["_joins"][number]["aliasedTable"], ITable & {
-    deleteAllowed: true;
-}>);
-export declare function deletableTableArray<QueryT extends DeletableQuery>(query: QueryT): DeletableTable<QueryT>[];
+import { QueryUtil } from "../../../query";
 export declare type DeletableTableMap<QueryT extends DeletableQuery> = ({
-    [tableAlias in DeletableTable<QueryT>["alias"]]: ({
+    [tableAlias in QueryUtil.DeletableTables<QueryT>["alias"]]: ({
         alias: tableAlias;
     });
 });
 export declare type DeleteDelegate<QueryT extends DeletableQuery> = ((tables: DeletableTableMap<QueryT>) => NonEmptyTuple<{
-    alias: DeletableTable<QueryT>["alias"];
+    alias: QueryUtil.DeletableTables<QueryT>["alias"];
 }>);
 declare function del<QueryT extends DeletableQuery, ModifierT extends DeleteModifier | undefined>(query: QueryT, modifier: ModifierT, delegate: DeleteDelegate<QueryT>): (Delete<{
     _query: DeletableQuery;
-    _tables: (ITable & {
-        deleteAllowed: true;
-    })[];
+    _tables: DeletableTable[];
     _modifier: ModifierT;
 }>);
 export { del as delete };
