@@ -7,7 +7,7 @@ import {Tuple} from "../../../tuple";
 import {TranscodingName} from "../../constant";
 
 //https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_char
-export function char<
+export function toChar<
     Arg0 extends RawExpr<number>,
     Args extends Tuple<RawExpr<number>>,
 >(

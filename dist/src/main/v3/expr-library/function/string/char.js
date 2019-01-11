@@ -6,7 +6,7 @@ const raw_expr_1 = require("../../../raw-expr");
 const query_tree_1 = require("../../../query-tree");
 const constant_1 = require("../../constant");
 //https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_char
-function char(arg0, ...args) {
+function toChar(arg0, ...args) {
     const result = new expr_1.Expr({
         usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple(arg0, ...args),
         assertDelegate: sd.buffer(),
@@ -38,5 +38,5 @@ function char(arg0, ...args) {
     };
     return result;
 }
-exports.char = char;
+exports.toChar = toChar;
 //# sourceMappingURL=char.js.map

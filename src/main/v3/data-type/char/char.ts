@@ -1,10 +1,53 @@
 import * as sd from "schema-decorator";
+
+export function strDelegate (
+    dataTypeStr : string,
+    absoluteMax : number,
+) : {
+    (minLength : number, maxLength : number) : sd.AssertDelegate<string>,
+    (maxLength : number) : sd.AssertDelegate<string>,
+    () : sd.AssertDelegate<string>,
+} {
+    return (a? : number, b? : number) => {
+        if (a == undefined) {
+            return sd.varChar(absoluteMax);
+        } else if (b == undefined) {
+            a = sd.chain(
+                sd.integer(),
+                sd.gtEq(1),
+                sd.ltEq(absoluteMax)
+            )("maxLength", a);
+            return sd.varChar(a);
+        } else {
+            a = sd.chain(
+                sd.integer(),
+                sd.gtEq(0),
+                sd.ltEq(absoluteMax)
+            )("minLength", a);
+            b = sd.chain(
+                sd.integer(),
+                sd.gtEq(1),
+                sd.ltEq(absoluteMax)
+            )("maxLength", b);
+            if (a > b) {
+                throw new Error(`${dataTypeStr} minLength must be <= maxLength`);
+            }
+            return sd.varChar(a, b);
+        }
+    }
+}
+export const char = strDelegate("CHAR", 255);
+export const varChar = strDelegate("VARCHAR", 65535);
+export const tinyText = strDelegate("TINYTEXT", 255);
+export const text = strDelegate("TEXT", 65535);
+export const mediumText = strDelegate("MEDIUMTEXT", 16777215);
+export const longText = strDelegate("LONGTEXT", 4294967295);
+
+/*import * as sd from "schema-decorator";
 import {DataType, IDataType, buildDataType} from "../data-type";
 import {Collation} from "../collation";
 import {escape} from "sqlstring";
 
-//Just a type alias since we don't support DATETIME(4/5/6)
-export type DateTime = Date;
 export function char (
     //[1,255]
     characterMaximumLength : number,
@@ -32,7 +75,7 @@ export function char (
             numericScale : null,
             dateTimePrecision : null,
             collationName : collation,
-            columnType : `char(128)`,
+            columnType : `char(${characterMaximumLength})`,
         }
     );
-}
+}*/

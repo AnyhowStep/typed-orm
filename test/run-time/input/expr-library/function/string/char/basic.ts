@@ -3,7 +3,7 @@ import * as o from "../../../../../../../dist/src/main";
 import * as fs from "fs";
 
 tape(__filename, (t) => {
-    const query = o.selectExpr(() => o.char(1, 77, 87.3))
+    const query = o.selectExpr(() => o.toChar(1, 77, 87.3))
 
     const formatter = new o.SqlFormatter();
     const sql = o.QueryTreeUtil.toSql(
