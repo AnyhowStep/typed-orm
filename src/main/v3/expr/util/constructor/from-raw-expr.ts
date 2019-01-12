@@ -1,6 +1,6 @@
-import {Expr} from "../expr";
-import {RawExpr, RawExprUtil} from "../../raw-expr";
-import {PrimitiveExpr} from "../../primitive-expr";
+import {Expr} from "../../expr";
+import {RawExpr, RawExprUtil} from "../../../raw-expr";
+import {PrimitiveExpr} from "../../../primitive-expr";
 
 export type FromRawExpr<RawExprT extends RawExpr<PrimitiveExpr>> = (
     Expr<{

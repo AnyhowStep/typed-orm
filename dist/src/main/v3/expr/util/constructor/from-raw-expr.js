@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const expr_1 = require("../expr");
-const raw_expr_1 = require("../../raw-expr");
+const expr_1 = require("../../expr");
+const raw_expr_1 = require("../../../raw-expr");
 function fromRawExpr(rawExpr) {
     if (rawExpr instanceof expr_1.Expr) {
         return rawExpr;
@@ -15,4 +15,4 @@ function fromRawExpr(rawExpr) {
     }, queryTree);
 }
 exports.fromRawExpr = fromRawExpr;
-//# sourceMappingURL=constructor.js.map
+//# sourceMappingURL=from-raw-expr.js.map

@@ -1,5 +1,5 @@
-import {IExpr} from "../expr";
-import {QueryTreeUtil} from "../../query-tree";
+import {IExpr} from "../../expr";
+import {QueryTreeUtil} from "../../../query-tree";
 
 export function isExpr (raw : any) : raw is IExpr {
     return (
