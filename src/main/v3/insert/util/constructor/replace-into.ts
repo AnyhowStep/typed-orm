@@ -1,7 +1,7 @@
-import {ITable} from "../../../table";
+import {InsertableTable} from "../../../table";
 import {Insert, InsertModifier} from "../../insert";
 
-export function replaceInto<TableT extends ITable & { insertAllowed : true }> (
+export function replaceInto<TableT extends InsertableTable> (
     table : TableT
 ) : (
     Insert<{

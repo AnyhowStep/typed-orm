@@ -17,6 +17,6 @@ FALSE     OR        NULL      UNKNOWN
 NULL      OR        NULL      UNKNOWN
 ```
 
-In general, if you find yourself using logical oeprators with
+In general, if you find yourself using logical operators with
 nullable expressions, you should consider using `COALESCE()`
 with your nullable expressions.

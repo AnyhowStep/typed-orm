@@ -1,11 +1,9 @@
 import * as sd from "schema-decorator";
-import { Table } from "../table";
-import { Column } from "../column";
-export declare const STATISTICS: Table<{
+export declare const STATISTICS: import("../table").Table<{
     readonly usedRef: {};
     readonly alias: "STATISTICS";
     readonly columns: {
-        readonly COLLATION: Column<{
+        readonly COLLATION: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "COLLATION";
             assertDelegate: sd.AssertDelegate<string | null> & {
@@ -13,7 +11,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string | null;
             };
         }>;
-        readonly COMMENT: Column<{
+        readonly COMMENT: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "COMMENT";
             assertDelegate: sd.AssertDelegate<string | null> & {
@@ -21,7 +19,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string | null;
             };
         }>;
-        readonly TABLE_CATALOG: Column<{
+        readonly TABLE_CATALOG: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "TABLE_CATALOG";
             assertDelegate: sd.AssertDelegate<string> & {
@@ -29,7 +27,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string;
             };
         }>;
-        readonly TABLE_SCHEMA: Column<{
+        readonly TABLE_SCHEMA: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "TABLE_SCHEMA";
             assertDelegate: sd.AssertDelegate<string> & {
@@ -37,7 +35,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string;
             };
         }>;
-        readonly TABLE_NAME: Column<{
+        readonly TABLE_NAME: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "TABLE_NAME";
             assertDelegate: sd.AssertDelegate<string> & {
@@ -45,7 +43,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string;
             };
         }>;
-        readonly COLUMN_NAME: Column<{
+        readonly COLUMN_NAME: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "COLUMN_NAME";
             assertDelegate: sd.AssertDelegate<string> & {
@@ -53,7 +51,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string;
             };
         }>;
-        readonly NON_UNIQUE: Column<{
+        readonly NON_UNIQUE: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "NON_UNIQUE";
             assertDelegate: sd.AssertDelegate<boolean> & {
@@ -61,7 +59,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: number | boolean;
             };
         }>;
-        readonly INDEX_SCHEMA: Column<{
+        readonly INDEX_SCHEMA: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "INDEX_SCHEMA";
             assertDelegate: sd.AssertDelegate<string> & {
@@ -69,7 +67,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string;
             };
         }>;
-        readonly INDEX_NAME: Column<{
+        readonly INDEX_NAME: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "INDEX_NAME";
             assertDelegate: sd.AssertDelegate<string> & {
@@ -77,7 +75,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string;
             };
         }>;
-        readonly SEQ_IN_INDEX: Column<{
+        readonly SEQ_IN_INDEX: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "SEQ_IN_INDEX";
             assertDelegate: sd.AssertDelegate<number> & {
@@ -85,7 +83,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string | number;
             };
         }>;
-        readonly CARDINALITY: Column<{
+        readonly CARDINALITY: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "CARDINALITY";
             assertDelegate: sd.AssertDelegate<string | null> & {
@@ -93,7 +91,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string | null;
             };
         }>;
-        readonly SUB_PART: Column<{
+        readonly SUB_PART: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "SUB_PART";
             assertDelegate: sd.AssertDelegate<number | null> & {
@@ -101,7 +99,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string | number | null;
             };
         }>;
-        readonly PACKED: Column<{
+        readonly PACKED: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "PACKED";
             assertDelegate: sd.AssertDelegate<string | null> & {
@@ -109,7 +107,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string | null;
             };
         }>;
-        readonly NULLABLE: Column<{
+        readonly NULLABLE: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "NULLABLE";
             assertDelegate: sd.AssertDelegate<string> & {
@@ -117,7 +115,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string;
             };
         }>;
-        readonly INDEX_TYPE: Column<{
+        readonly INDEX_TYPE: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "INDEX_TYPE";
             assertDelegate: sd.AssertDelegate<string> & {
@@ -125,7 +123,7 @@ export declare const STATISTICS: Table<{
                 __canAccept: string;
             };
         }>;
-        readonly INDEX_COMMENT: Column<{
+        readonly INDEX_COMMENT: import("..").Column<{
             tableAlias: "STATISTICS";
             name: "INDEX_COMMENT";
             assertDelegate: sd.AssertDelegate<string> & {

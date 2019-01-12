@@ -2,10 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const table_1 = require("../table");
 const sd = require("schema-decorator");
-const table_2 = require("../table");
-const column_1 = require("../column");
-table_2.Table;
-column_1.Column;
 exports.STATISTICS = table_1.table("STATISTICS", {
     TABLE_CATALOG: sd.varChar(512),
     TABLE_SCHEMA: sd.varChar(64),

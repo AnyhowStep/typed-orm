@@ -1,8 +1,6 @@
-import { ITable } from "../../../table";
+import { InsertableTable } from "../../../table";
 import { Insert, InsertModifier } from "../../insert";
-export declare function insertIgnoreInto<TableT extends ITable & {
-    insertAllowed: true;
-}>(table: TableT): (Insert<{
+export declare function insertIgnoreInto<TableT extends InsertableTable>(table: TableT): (Insert<{
     _table: TableT;
     _values: undefined;
     _modifier: InsertModifier.IGNORE;

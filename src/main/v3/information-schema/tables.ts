@@ -1,11 +1,6 @@
 import {table} from "../table";
 import * as sd from "schema-decorator";
 
-import {Table} from "../table";
-import {Column} from "../column";
-Table;
-Column;
-
 export const TABLES = table(
     "TABLES",
     {

@@ -127,6 +127,10 @@ export interface ITable<DataT extends TableData=TableData> extends IAliasedTable
     readonly deleteAllowed : DataT["deleteAllowed"];
 }
 
+export type InsertableTable = (
+    ITable &
+    { insertAllowed : true }
+);
 export type DeletableTable = (
     ITable &
     { deleteAllowed : true }

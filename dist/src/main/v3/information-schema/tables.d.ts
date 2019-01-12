@@ -1,11 +1,9 @@
 import * as sd from "schema-decorator";
-import { Table } from "../table";
-import { Column } from "../column";
-export declare const TABLES: Table<{
+export declare const TABLES: import("../table").Table<{
     readonly usedRef: {};
     readonly alias: "TABLES";
     readonly columns: {
-        readonly AUTO_INCREMENT: Column<{
+        readonly AUTO_INCREMENT: import("..").Column<{
             tableAlias: "TABLES";
             name: "AUTO_INCREMENT";
             assertDelegate: sd.AssertDelegate<number | null> & {
@@ -13,7 +11,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | number | null;
             };
         }>;
-        readonly CHECKSUM: Column<{
+        readonly CHECKSUM: import("..").Column<{
             tableAlias: "TABLES";
             name: "CHECKSUM";
             assertDelegate: sd.AssertDelegate<number | null> & {
@@ -21,7 +19,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | number | null;
             };
         }>;
-        readonly ENGINE: Column<{
+        readonly ENGINE: import("..").Column<{
             tableAlias: "TABLES";
             name: "ENGINE";
             assertDelegate: sd.AssertDelegate<string | null> & {
@@ -29,7 +27,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | null;
             };
         }>;
-        readonly ROW_FORMAT: Column<{
+        readonly ROW_FORMAT: import("..").Column<{
             tableAlias: "TABLES";
             name: "ROW_FORMAT";
             assertDelegate: sd.AssertDelegate<string | null> & {
@@ -37,7 +35,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | null;
             };
         }>;
-        readonly TABLE_CATALOG: Column<{
+        readonly TABLE_CATALOG: import("..").Column<{
             tableAlias: "TABLES";
             name: "TABLE_CATALOG";
             assertDelegate: sd.AssertDelegate<string> & {
@@ -45,7 +43,7 @@ export declare const TABLES: Table<{
                 __canAccept: string;
             };
         }>;
-        readonly TABLE_SCHEMA: Column<{
+        readonly TABLE_SCHEMA: import("..").Column<{
             tableAlias: "TABLES";
             name: "TABLE_SCHEMA";
             assertDelegate: sd.AssertDelegate<string> & {
@@ -53,7 +51,7 @@ export declare const TABLES: Table<{
                 __canAccept: string;
             };
         }>;
-        readonly TABLE_NAME: Column<{
+        readonly TABLE_NAME: import("..").Column<{
             tableAlias: "TABLES";
             name: "TABLE_NAME";
             assertDelegate: sd.AssertDelegate<string> & {
@@ -61,7 +59,7 @@ export declare const TABLES: Table<{
                 __canAccept: string;
             };
         }>;
-        readonly TABLE_TYPE: Column<{
+        readonly TABLE_TYPE: import("..").Column<{
             tableAlias: "TABLES";
             name: "TABLE_TYPE";
             assertDelegate: sd.AssertDelegate<string> & {
@@ -69,7 +67,7 @@ export declare const TABLES: Table<{
                 __canAccept: string;
             };
         }>;
-        readonly VERSION: Column<{
+        readonly VERSION: import("..").Column<{
             tableAlias: "TABLES";
             name: "VERSION";
             assertDelegate: sd.AssertDelegate<number | null> & {
@@ -77,7 +75,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | number | null;
             };
         }>;
-        readonly TABLE_ROWS: Column<{
+        readonly TABLE_ROWS: import("..").Column<{
             tableAlias: "TABLES";
             name: "TABLE_ROWS";
             assertDelegate: sd.AssertDelegate<number | null> & {
@@ -85,7 +83,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | number | null;
             };
         }>;
-        readonly AVG_ROW_LENGTH: Column<{
+        readonly AVG_ROW_LENGTH: import("..").Column<{
             tableAlias: "TABLES";
             name: "AVG_ROW_LENGTH";
             assertDelegate: sd.AssertDelegate<number | null> & {
@@ -93,7 +91,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | number | null;
             };
         }>;
-        readonly DATA_LENGTH: Column<{
+        readonly DATA_LENGTH: import("..").Column<{
             tableAlias: "TABLES";
             name: "DATA_LENGTH";
             assertDelegate: sd.AssertDelegate<number | null> & {
@@ -101,7 +99,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | number | null;
             };
         }>;
-        readonly MAX_DATA_LENGTH: Column<{
+        readonly MAX_DATA_LENGTH: import("..").Column<{
             tableAlias: "TABLES";
             name: "MAX_DATA_LENGTH";
             assertDelegate: sd.AssertDelegate<number | null> & {
@@ -109,7 +107,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | number | null;
             };
         }>;
-        readonly INDEX_LENGTH: Column<{
+        readonly INDEX_LENGTH: import("..").Column<{
             tableAlias: "TABLES";
             name: "INDEX_LENGTH";
             assertDelegate: sd.AssertDelegate<number | null> & {
@@ -117,7 +115,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | number | null;
             };
         }>;
-        readonly DATA_FREE: Column<{
+        readonly DATA_FREE: import("..").Column<{
             tableAlias: "TABLES";
             name: "DATA_FREE";
             assertDelegate: sd.AssertDelegate<number | null> & {
@@ -125,7 +123,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | number | null;
             };
         }>;
-        readonly CREATE_TIME: Column<{
+        readonly CREATE_TIME: import("..").Column<{
             tableAlias: "TABLES";
             name: "CREATE_TIME";
             assertDelegate: sd.AssertDelegate<Date | null> & {
@@ -133,7 +131,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | number | Date | null;
             };
         }>;
-        readonly UPDATE_TIME: Column<{
+        readonly UPDATE_TIME: import("..").Column<{
             tableAlias: "TABLES";
             name: "UPDATE_TIME";
             assertDelegate: sd.AssertDelegate<Date | null> & {
@@ -141,7 +139,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | number | Date | null;
             };
         }>;
-        readonly CHECK_TIME: Column<{
+        readonly CHECK_TIME: import("..").Column<{
             tableAlias: "TABLES";
             name: "CHECK_TIME";
             assertDelegate: sd.AssertDelegate<Date | null> & {
@@ -149,7 +147,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | number | Date | null;
             };
         }>;
-        readonly TABLE_COLLATION: Column<{
+        readonly TABLE_COLLATION: import("..").Column<{
             tableAlias: "TABLES";
             name: "TABLE_COLLATION";
             assertDelegate: sd.AssertDelegate<string | null> & {
@@ -157,7 +155,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | null;
             };
         }>;
-        readonly CREATE_OPTIONS: Column<{
+        readonly CREATE_OPTIONS: import("..").Column<{
             tableAlias: "TABLES";
             name: "CREATE_OPTIONS";
             assertDelegate: sd.AssertDelegate<string | null> & {
@@ -165,7 +163,7 @@ export declare const TABLES: Table<{
                 __canAccept: string | null;
             };
         }>;
-        readonly TABLE_COMMENT: Column<{
+        readonly TABLE_COMMENT: import("..").Column<{
             tableAlias: "TABLES";
             name: "TABLE_COMMENT";
             assertDelegate: sd.AssertDelegate<string> & {
