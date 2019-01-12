@@ -105,3 +105,9 @@ export class Insert<DataT extends InsertData> implements IInsert<DataT> {
         return this;
     }
 }
+
+export type ExecutableInsert = IInsert<{
+    readonly _table : ITable & { insertAllowed : true },
+    readonly _values : InsertRow<ITable>[],
+    readonly _modifier : InsertModifier|undefined,
+}>;

@@ -1,12 +1,12 @@
-import {ITable, TableUtil} from "../../../table";
-import {IInsert, InsertRow} from "../../insert";
+import {TableUtil} from "../../../table";
+import {ExecutableInsert} from "../../insert";
 import {IConnection} from "../../../execution";
 import {execute} from "./execute";
 import {TypeMapUtil} from "../../../type-map";
 import {QueryUtil} from "../../../query";
 
 export async function executeAndFetch<
-    InsertT extends IInsert & { _values : InsertRow<ITable>[] }
+    InsertT extends ExecutableInsert
 > (
     insert : InsertT,
     connection : (

@@ -1,6 +1,6 @@
 import {escapeId} from "sqlstring";
 import {ITable, TableUtil} from "../../../table";
-import {IInsert, InsertRow, InsertModifier} from "../../insert";
+import {IInsert, InsertRow, InsertModifier, ExecutableInsert} from "../../insert";
 import {QueryTree, QueryTreeArray} from "../../../query-tree";
 import {RawExprUtil} from "../../../raw-expr";
 
@@ -37,7 +37,7 @@ export function queryTreeRow (
     ];
 }
 export function queryTreeValues (
-    insert : IInsert & { _values : InsertRow<ITable>[] }
+    insert : ExecutableInsert
 ) {
     const result : QueryTreeArray = [];
     for (let row of insert._values) {
@@ -49,7 +49,7 @@ export function queryTreeValues (
     return result;
 }
 export function queryTree (
-    insert : IInsert & { _values : InsertRow<ITable>[] }
+    insert : ExecutableInsert
 ) : QueryTree {
     const columnNames = Object.keys(insert._table.columns).sort();
 

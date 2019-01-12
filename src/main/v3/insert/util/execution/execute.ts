@@ -1,11 +1,10 @@
-import {ITable} from "../../../table";
-import {IInsert, InsertRow, InsertModifier} from "../../insert";
+import {ExecutableInsert, InsertModifier} from "../../insert";
 import {IConnection, InsertResult} from "../../../execution";
-import { QueryTreeUtil } from "../../../query-tree";
+import {QueryTreeUtil} from "../../../query-tree";
 import {queryTree} from "../query";
 
 export type Execute<
-    InsertT extends IInsert & { _values : InsertRow<ITable>[] }
+    InsertT extends ExecutableInsert
 > = (
     InsertResult &
     (
@@ -25,7 +24,7 @@ export type Execute<
     )
 );
 export async function execute<
-    InsertT extends IInsert & { _values : InsertRow<ITable>[] }
+    InsertT extends ExecutableInsert
 > (
     insert : InsertT,
     connection : IConnection

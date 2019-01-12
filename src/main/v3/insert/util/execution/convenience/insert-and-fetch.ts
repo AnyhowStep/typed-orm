@@ -1,12 +1,12 @@
-import {ITable, TableUtil} from "../../../../table";
+import {InsertableTable, TableUtil} from "../../../../table";
 import {IConnection} from "../../../../execution";
 import {InsertRow} from "../../../insert";
 import {executeAndFetch} from "../execute-and-fetch";
 import {insertInto} from "../../constructor";
-import { RawExpr, RawExprUtil } from "../../../../raw-expr";
+import {RawExpr, RawExprUtil} from "../../../../raw-expr";
 
 export type InsertAndFetchResult<
-    TableT extends ITable & { insertAllowed : true },
+    TableT extends InsertableTable,
     RowT extends InsertRow<TableT>
 > = (
     {
@@ -24,7 +24,7 @@ export type InsertAndFetchResult<
     }
 );
 export async function insertAndFetch<
-    TableT extends ITable & { insertAllowed : true },
+    TableT extends InsertableTable,
     RowT extends InsertRow<TableT>
 > (
     connection : IConnection,

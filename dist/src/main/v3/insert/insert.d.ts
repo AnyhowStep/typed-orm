@@ -49,4 +49,11 @@ export declare class Insert<DataT extends InsertData> implements IInsert<DataT> 
         _values: InsertRow<ITable>[];
     }>): this;
 }
+export declare type ExecutableInsert = IInsert<{
+    readonly _table: ITable & {
+        insertAllowed: true;
+    };
+    readonly _values: InsertRow<ITable>[];
+    readonly _modifier: InsertModifier | undefined;
+}>;
 //# sourceMappingURL=insert.d.ts.map

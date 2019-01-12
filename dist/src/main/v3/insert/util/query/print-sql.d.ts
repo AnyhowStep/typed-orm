@@ -1,6 +1,3 @@
-import { ITable } from "../../../table";
-import { IInsert, InsertRow } from "../../insert";
-export declare function printSql(insert: IInsert & {
-    _values: InsertRow<ITable>[];
-}): void;
+import { ExecutableInsert } from "../../insert";
+export declare function printSql(insert: ExecutableInsert): void;
 //# sourceMappingURL=print-sql.d.ts.map
