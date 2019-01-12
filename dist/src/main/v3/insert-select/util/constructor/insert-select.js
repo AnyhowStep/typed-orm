@@ -4,6 +4,9 @@ const insert_select_1 = require("../../insert-select");
 const table_1 = require("../../../table");
 const column_ref_1 = require("../../../column-ref");
 function insertSelect(query, modifier, table, delegate) {
+    if (!table.insertAllowed) {
+        throw new Error(`Cannot SELECT ... INSERT into table ${table.alias}`);
+    }
     const ref = column_ref_1.ColumnRefUtil.fromSelectItemArray(query._selects);
     const row = delegate(column_ref_1.ColumnRefUtil.toConvenient(ref));
     for (let columnName of table_1.TableUtil.requiredColumnNames(table)) {

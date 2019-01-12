@@ -9,7 +9,28 @@ const query_1 = require("../../../query");
 const primitive_expr_1 = require("../../../primitive-expr");
 const util_1 = require("../../../column/util");
 const constants_1 = require("../../../constants");
-//TODO-REFACTOR
+function queryTree_Row(columnNames, insert) {
+    const result = [];
+    for (let columnName of columnNames) {
+        const expr = insert._row[columnName];
+        if (result.length > 0) {
+            result.push(",");
+        }
+        if (primitive_expr_1.isPrimitiveExpr(expr)) {
+            result.push(raw_expr_1.RawExprUtil.queryTree(expr));
+        }
+        else if (util_1.isColumn(expr)) {
+            result.push(sqlstring_1.escapeId("src"));
+            result.push(".");
+            result.push(sqlstring_1.escapeId(`${expr.tableAlias}${constants_1.SEPARATOR}${expr.name}`));
+        }
+        else {
+            throw new Error(`Unknown INSERT ... SELECT value, ${sd.toTypeStr(expr)}`);
+        }
+    }
+    return result;
+}
+exports.queryTree_Row = queryTree_Row;
 function queryTree(insert) {
     const columnNames = Object.keys(insert._table.columns).sort()
         .filter(columnName => insert._table.generated.indexOf(columnName) < 0)
@@ -39,25 +60,7 @@ function queryTree(insert) {
         .join(","));
     result.push(")");
     result.push("SELECT");
-    result.push(columnNames
-        .map((columnName, index) => {
-        const expr = insert._row[columnName];
-        const innerResult = (index == 0) ?
-            [] :
-            [","];
-        if (primitive_expr_1.isPrimitiveExpr(expr)) {
-            innerResult.push(raw_expr_1.RawExprUtil.queryTree(expr));
-        }
-        else if (util_1.isColumn(expr)) {
-            innerResult.push(sqlstring_1.escapeId("src"));
-            innerResult.push(".");
-            innerResult.push(sqlstring_1.escapeId(`${expr.tableAlias}${constants_1.SEPARATOR}${expr.name}`));
-        }
-        else {
-            throw new Error(`Unknown INSERT ... SELECT value, ${sd.toTypeStr(expr)}`);
-        }
-        return innerResult;
-    }));
+    result.push(queryTree_Row(columnNames, insert));
     result.push("FROM");
     result.push("(");
     result.push(query_1.QueryUtil.queryTree(insert._query));

@@ -10,6 +10,10 @@ export function replaceInto<TableT extends InsertableTable> (
         _modifier : InsertModifier.REPLACE,
     }>
 ) {
+    if (!table.insertAllowed) {
+        throw new Error(`Cannot INSERT into table ${table.alias}`);
+    }
+
     return new Insert({
         _table  : table,
         _values : undefined,

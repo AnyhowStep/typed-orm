@@ -1,17 +1,10 @@
-import {IInsertSelect, InsertSelectRow, InsertSelectModifier} from "../../insert-select";
+import {InsertSelectModifier, ExecutableInsertSelect} from "../../insert-select";
 import {IConnection, InsertResult} from "../../../execution";
-import {QueryUtil} from "../../../query";
-import {ITable} from "../../../table";
 import {QueryTreeUtil} from "../../../query-tree";
 import {queryTree} from "../query";
 
 export type Execute<
-    InsertT extends (
-        IInsertSelect &
-        {
-            _row : InsertSelectRow<QueryUtil.AfterSelectClause, ITable>
-        }
-    )
+    InsertT extends ExecutableInsertSelect
 > = (
     InsertResult &
     (
@@ -32,18 +25,16 @@ export type Execute<
 );
 
 export async function execute<
-    InsertT extends (
-        IInsertSelect &
-        {
-            _row : InsertSelectRow<QueryUtil.AfterSelectClause, ITable>
-        }
-    )
+    InsertT extends ExecutableInsertSelect
 > (
     insert : InsertT,
     connection : IConnection
 ) : (
     Promise<Execute<InsertT>>
 ) {
+    if (!insert._table.insertAllowed) {
+        throw new Error(`Cannot SELECT ... INSERT into table ${insert._table.alias}`);
+    }
     const sql = QueryTreeUtil.toSqlPretty(queryTree(insert));
     const result = await connection.insert(sql);
     if (insert._table.autoIncrement == undefined) {

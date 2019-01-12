@@ -4,6 +4,9 @@ const insert_1 = require("../../insert");
 const query_tree_1 = require("../../../query-tree");
 const query_1 = require("../query");
 async function execute(insert, connection) {
+    if (!insert._table.insertAllowed) {
+        throw new Error(`Cannot INSERT into table ${insert._table.alias}`);
+    }
     const sql = query_tree_1.QueryTreeUtil.toSqlPretty(query_1.queryTree(insert));
     const result = await connection.insert(sql);
     if (insert._table.autoIncrement == undefined) {

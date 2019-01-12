@@ -10,6 +10,10 @@ export function insertIgnoreInto<TableT extends InsertableTable> (
         _modifier : InsertModifier.IGNORE,
     }>
 ) {
+    if (!table.insertAllowed) {
+        throw new Error(`Cannot INSERT into table ${table.alias}`);
+    }
+
     return new Insert({
         _table  : table,
         _values : undefined,

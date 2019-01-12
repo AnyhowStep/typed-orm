@@ -1,23 +1,40 @@
 import * as sd from "schema-decorator";
 import {escapeId} from "sqlstring";
-import {ITable, TableUtil} from "../../../table";
-import {IInsertSelect, InsertSelectRow, InsertSelectModifier} from "../../insert-select";
-import {QueryTree, QueryTreeArray} from "../../../query-tree";
+import {TableUtil} from "../../../table";
+import {ExecutableInsertSelect, InsertSelectModifier} from "../../insert-select";
+import {QueryTreeArray} from "../../../query-tree";
 import {RawExprUtil} from "../../../raw-expr";
 import {QueryUtil} from "../../../query";
 import {isPrimitiveExpr} from "../../../primitive-expr";
 import {isColumn} from "../../../column/util";
 import {SEPARATOR} from "../../../constants";
 
-//TODO-REFACTOR
-export function queryTree (
-    insert : (
-        IInsertSelect &
-        {
-            _row : InsertSelectRow<QueryUtil.AfterSelectClause, ITable>
+export function queryTree_Row (
+    columnNames : string[],
+    insert : ExecutableInsertSelect
+) : QueryTreeArray {
+    const result : QueryTreeArray = [];
+    for (let columnName of columnNames) {
+        const expr = (insert._row as any)[columnName];
+        if (result.length > 0) {
+            result.push(",");
         }
-    )
-) : QueryTree {
+        if (isPrimitiveExpr(expr)) {
+            result.push(RawExprUtil.queryTree(expr));
+        } else if (isColumn(expr)) {
+            result.push(escapeId("src"));
+            result.push(".");
+            result.push(escapeId(`${expr.tableAlias}${SEPARATOR}${expr.name}`));
+        } else {
+            throw new Error(`Unknown INSERT ... SELECT value, ${sd.toTypeStr(expr)}`);
+        }
+    }
+    return result;
+}
+
+export function queryTree (
+    insert : ExecutableInsertSelect
+) : QueryTreeArray {
     const columnNames = Object.keys(insert._table.columns).sort()
         .filter(columnName => insert._table.generated.indexOf(columnName) < 0)
         .filter(columnName => {
@@ -50,24 +67,7 @@ export function queryTree (
 
     result.push("SELECT");
 
-    result.push(columnNames
-        .map((columnName, index) => {
-            const expr = (insert._row as any)[columnName];
-            const innerResult : QueryTreeArray = (index == 0) ?
-                [] :
-                [","];
-            if (isPrimitiveExpr(expr)) {
-                innerResult.push(RawExprUtil.queryTree(expr));
-            } else if (isColumn(expr)) {
-                innerResult.push(escapeId("src"));
-                innerResult.push(".");
-                innerResult.push(escapeId(`${expr.tableAlias}${SEPARATOR}${expr.name}`));
-            } else {
-                throw new Error(`Unknown INSERT ... SELECT value, ${sd.toTypeStr(expr)}`);
-            }
-            return innerResult;
-        })
-    );
+    result.push(queryTree_Row(columnNames, insert));
 
     result.push("FROM");
     result.push("(");

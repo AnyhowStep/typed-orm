@@ -10,6 +10,10 @@ export function insertInto<TableT extends InsertableTable> (
         _modifier : undefined,
     }>
 ) {
+    if (!table.insertAllowed) {
+        throw new Error(`Cannot INSERT into table ${table.alias}`);
+    }
+
     return new Insert({
         _table  : table,
         _values : undefined,

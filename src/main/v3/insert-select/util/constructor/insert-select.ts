@@ -1,11 +1,11 @@
 import {InsertSelectRowDelegate, InsertSelect, InsertSelectRow, InsertSelectModifier} from "../../insert-select";
 import {QueryUtil} from "../../../query";
-import {ITable, TableUtil} from "../../../table";
+import {TableUtil, InsertableTable} from "../../../table";
 import {ColumnRefUtil} from "../../../column-ref";
 
 export function insertSelect<
     QueryT extends QueryUtil.AfterSelectClause,
-    TableT extends ITable & { insertAllowed : true },
+    TableT extends InsertableTable,
     ModifierT extends InsertSelectModifier|undefined
 > (
     query : QueryT,
@@ -20,6 +20,10 @@ export function insertSelect<
         _modifier : ModifierT,
     }>
 ) {
+    if (!table.insertAllowed) {
+        throw new Error(`Cannot SELECT ... INSERT into table ${table.alias}`);
+    }
+
     const ref = ColumnRefUtil.fromSelectItemArray(query._selects);
     const row = delegate(ColumnRefUtil.toConvenient(ref) as any);
 

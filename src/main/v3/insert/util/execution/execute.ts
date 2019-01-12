@@ -31,6 +31,10 @@ export async function execute<
 ) : (
     Promise<Execute<InsertT>>
 ) {
+    if (!insert._table.insertAllowed) {
+        throw new Error(`Cannot INSERT into table ${insert._table.alias}`);
+    }
+
     const sql = QueryTreeUtil.toSqlPretty(queryTree(insert));
     const result = await connection.insert(sql);
     if (insert._table.autoIncrement == undefined) {

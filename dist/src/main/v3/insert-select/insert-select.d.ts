@@ -1,5 +1,5 @@
 import * as sd from "schema-decorator";
-import { ITable, TableUtil } from "../table";
+import { ITable, TableUtil, InsertableTable } from "../table";
 import * as InsertSelectUtil from "./util";
 import { QueryUtil } from "../query";
 import { ColumnUtil } from "../column";
@@ -26,9 +26,7 @@ export declare enum InsertSelectModifier {
 }
 export interface InsertSelectData {
     readonly _query: QueryUtil.AfterSelectClause;
-    readonly _table: ITable & {
-        insertAllowed: true;
-    };
+    readonly _table: InsertableTable;
     readonly _row: InsertSelectRow<QueryUtil.AfterSelectClause, ITable> | undefined;
     readonly _modifier: InsertSelectModifier | undefined;
 }
@@ -44,10 +42,12 @@ export declare class InsertSelect<DataT extends InsertSelectData> implements IIn
     readonly _row: DataT["_row"];
     readonly _modifier: DataT["_modifier"];
     constructor(data: DataT);
-    execute(this: Extract<this, (IInsertSelect & {
-        _row: InsertSelectRow<QueryUtil.AfterSelectClause, ITable>;
-    })>, connection: IConnection): (Promise<InsertSelectUtil.Execute<Extract<this, (IInsertSelect & {
-        _row: InsertSelectRow<QueryUtil.AfterSelectClause, ITable>;
-    })>>>);
+    execute(this: Extract<this, ExecutableInsertSelect>, connection: IConnection): (Promise<InsertSelectUtil.Execute<Extract<this, ExecutableInsertSelect>>>);
 }
+export declare type ExecutableInsertSelect = (IInsertSelect<{
+    readonly _query: QueryUtil.AfterSelectClause;
+    readonly _table: InsertableTable;
+    readonly _row: InsertSelectRow<QueryUtil.AfterSelectClause, ITable>;
+    readonly _modifier: InsertSelectModifier | undefined;
+}>);
 //# sourceMappingURL=insert-select.d.ts.map
