@@ -4,8 +4,8 @@ import {entityIdentifierAssertDelegate} from "../operation";
 
 export function fetchDefault<LogT extends CompletedLog> (
     log : LogT,
-    entityIdentifier : EntityIdentifier<LogT>,
-    connection : IConnection
+    connection : IConnection,
+    entityIdentifier : EntityIdentifier<LogT>
 ) : Promise<PreviousRow<LogT>> {
     const assertDelegate = entityIdentifierAssertDelegate(log);
     entityIdentifier = assertDelegate(

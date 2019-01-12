@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const query_1 = require("../../../query");
-const latest_query_1 = require("./latest-query");
-function fetchLatestOrUndefined(log, entityIdentifier, connection) {
+const of_entity_identifier_1 = require("./of-entity-identifier");
+function fetchLatestOrUndefined(log, connection, entityIdentifier) {
     return query_1.QueryUtil
-        .select(latest_query_1.latestQuery(log, entityIdentifier), ((c) => [c]))
+        .select(of_entity_identifier_1.latest(log, entityIdentifier), ((c) => [c]))
         .fetchZeroOrOne(connection);
 }
 exports.fetchLatestOrUndefined = fetchLatestOrUndefined;

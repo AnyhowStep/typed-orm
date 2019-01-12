@@ -1,13 +1,14 @@
-import {ITable} from "../table";
+import {ITable, InsertableTable} from "../table";
 import {SortDirection} from "../order";
 import {IConnection} from "../execution";
 import {IColumn} from "../column";
 import {IJoinDeclaration} from "../join-declaration";
 import {TypeMapUtil} from "../type-map";
+import {TrackRow} from "../track-row";
 import * as LogUtil from "./util";
 
 /*
-    Enables use of the audit log pattern.
+    Enables use of the audit log pattern/storing time-series data.
 
     We could be tracking a person's speed
     over time.
@@ -18,12 +19,18 @@ import * as LogUtil from "./util";
 
     -----
 
+    ### `table`
+    The table we will be using to store time-series data.
+
+    ### `entity`
+    The table that "owns" the time-series data.
+
     ### `entityIdentifier`
     Uniquely identifies each entity. The entity's PK/CK.
 
     ### `latestOrder`
     The `entityIdentifier` + `latestOrder` must be
-    a candidate key of the log table.
+    a candidate key of the `table`.
 
     ### `tracked`
     Tracked columns indicate that these values
@@ -35,6 +42,9 @@ import * as LogUtil from "./util";
     ### `doNotCopy`
     Values we do not want to copy when adding a row
     to the log.
+
+    When attempting to insert new data,
+    values for these columns must always be provided.
 
     Consider the following table,
 
@@ -70,16 +80,15 @@ import * as LogUtil from "./util";
     and `doNotCopy` are implicitly copied over
     when new rows are added.
 
-    ### `staticDefaultValue`
-    May contain the default values of `tracked`, `doNotCopy`,
-    and `copy`.
+    ### `copyDefaultsDelegate`
+    When invoked, returns default values of `copy` columns.
+    Each entity may have different default values
+    when no data is logged yet.
 
-    These default values apply to all entities
-    that have no rows logged yet.
-
-    ### `dynamicDefaultValueDelegate`
-    For default values that differ between entities,
-    this delegate should return all such values.
+    ### `trackedDefaults`
+    The default value of `tracked` columns.
+    These values apply to all entities with no data
+    logged yet.
 */
 export interface LogData {
     readonly table : ITable;
@@ -120,6 +129,31 @@ export interface ILog<DataT extends LogData=LogData> {
     readonly copy : DataT["copy"];
     readonly copyDefaultsDelegate : DataT["copyDefaultsDelegate"];
     readonly trackedDefaults : DataT["trackedDefaults"];
+}
+export interface InsertableLog {
+    readonly table : InsertableTable;
+    readonly entity : ITable;
+    readonly entityIdentifier : string[];
+    readonly joinDeclaration : IJoinDeclaration<{
+        //From `table`
+        readonly fromTable : ITable,
+        //To `entity`
+        readonly toTable : ITable,
+        readonly nullable : false,
+    }>;
+    readonly latestOrder : [IColumn, SortDirection];
+    readonly tracked : string[];
+    readonly doNotCopy : string[];
+    readonly copy : string[];
+    readonly copyDefaultsDelegate : (
+        args : {
+            entityIdentifier : any,
+            connection : IConnection,
+        }
+    ) => Promise<{}>;
+    readonly trackedDefaults : {
+        readonly [columnName : string] : any;
+    }|undefined;
 }
 export interface LogNoTrackedDefaults {
     readonly table : ITable;
@@ -329,24 +363,231 @@ export class Log<DataT extends LogData> implements ILog<DataT> {
     ) {
         return LogUtil.setTrackedDefaults(this, rawMap);
     }
-    latestQuery (
+
+    exists (
         this : Extract<this, LogNoTrackedDefaults>,
+        connection : IConnection,
         entityIdentifier : EntityIdentifier<Extract<this, LogNoTrackedDefaults>>
-    ) : LogUtil.LatestQuery<Extract<this, LogNoTrackedDefaults>> {
-        return LogUtil.latestQuery(
-            this,
-            entityIdentifier
-        );
+    ) : Promise<boolean> {
+        return LogUtil.exists(this, connection, entityIdentifier);
+    }
+
+    fetchDefault (
+        this : Extract<this, CompletedLog>,
+        connection : IConnection,
+        entityIdentifier : EntityIdentifier<Extract<this, CompletedLog>>
+    ) : Promise<PreviousRow<Extract<this, CompletedLog>>> {
+        return LogUtil.fetchDefault(this, connection, entityIdentifier);
+    }
+    fetchLatestOrDefault (
+        this : Extract<this, CompletedLog>,
+        connection : IConnection,
+        entityIdentifier : EntityIdentifier<Extract<this, CompletedLog>>
+    ) : Promise<LogUtil.FetchLatestOrDefaultResult<Extract<this, CompletedLog>>> {
+        return LogUtil.fetchLatestOrDefault(this, connection, entityIdentifier);
+    }
+    fetchLatestOrError (
+        this : Extract<this, LogNoTrackedDefaults>,
+        connection : IConnection,
+        entityIdentifier : EntityIdentifier<Extract<this, LogNoTrackedDefaults>>
+    ) : Promise<TypeMapUtil.FromTable<Extract<this, LogNoTrackedDefaults>["table"]>> {
+        return LogUtil.fetchLatestOrError(this, connection, entityIdentifier);
     }
     fetchLatestOrUndefined (
         this : Extract<this, LogNoTrackedDefaults>,
-        entityIdentifier : EntityIdentifier<Extract<this, LogNoTrackedDefaults>>,
-        connection : IConnection
+        connection : IConnection,
+        entityIdentifier : EntityIdentifier<Extract<this, LogNoTrackedDefaults>>
     ) : Promise<TypeMapUtil.FromTable<Extract<this, LogNoTrackedDefaults>["table"]>|undefined> {
-        return LogUtil.fetchLatestOrUndefined(
+        return LogUtil.fetchLatestOrUndefined(this, connection, entityIdentifier);
+    }
+
+    fetchLatestOrderOrError (
+        this : Extract<this, LogNoTrackedDefaults>,
+        connection : IConnection,
+        entityIdentifier : EntityIdentifier<Extract<this, LogNoTrackedDefaults>>
+    ) : Promise<
+        ReturnType<
+            Extract<this, LogNoTrackedDefaults>["latestOrder"][0]["assertDelegate"]
+        >
+    > {
+        return LogUtil.fetchLatestOrderOrError(this, connection, entityIdentifier);
+    }
+    fetchLatestOrderOrUndefined (
+        this : Extract<this, LogNoTrackedDefaults>,
+        connection : IConnection,
+        entityIdentifier : EntityIdentifier<Extract<this, LogNoTrackedDefaults>>
+    ) : Promise<
+        ReturnType<
+            Extract<this, LogNoTrackedDefaults>["latestOrder"][0]["assertDelegate"]
+        >|
+        undefined
+    > {
+        return LogUtil.fetchLatestOrderOrUndefined(this, connection, entityIdentifier);
+    }
+
+    fetchLatestValueOrDefault<
+        DelegateT extends LogUtil.LatestValueDelegate<Extract<this, CompletedLog>>
+    > (
+        this : Extract<this, CompletedLog>,
+        connection : IConnection,
+        entityIdentifier : EntityIdentifier<Extract<this, CompletedLog>>,
+        delegate : DelegateT
+    ) : Promise<
+        ReturnType<
+            Extract<this, CompletedLog>["table"]["columns"][
+                ReturnType<DelegateT>["name"]
+            ]["assertDelegate"]
+        >
+    > {
+        return LogUtil.fetchLatestValueOrDefault(
             this,
+            connection,
             entityIdentifier,
-            connection
+            delegate
         );
+    }
+    fetchLatestValueOrError<
+        DelegateT extends LogUtil.LatestValueDelegate<Extract<this, LogNoTrackedDefaults>>
+    > (
+        this : Extract<this, LogNoTrackedDefaults>,
+        connection : IConnection,
+        entityIdentifier : EntityIdentifier<Extract<this, LogNoTrackedDefaults>>,
+        delegate : DelegateT
+    ) : Promise<
+        ReturnType<
+            Extract<this, LogNoTrackedDefaults>["table"]["columns"][
+                ReturnType<DelegateT>["name"]
+            ]["assertDelegate"]
+        >
+    > {
+        return LogUtil.fetchLatestValueOrError(
+            this,
+            connection,
+            entityIdentifier,
+            delegate
+        );
+    }
+    fetchLatestValueOrUndefined<
+        DelegateT extends LogUtil.LatestValueDelegate<Extract<this, LogNoTrackedDefaults>>
+    > (
+        this : Extract<this, LogNoTrackedDefaults>,
+        connection : IConnection,
+        entityIdentifier : EntityIdentifier<Extract<this, LogNoTrackedDefaults>>,
+        delegate : DelegateT
+    ) : Promise<
+        ReturnType<
+            Extract<this, LogNoTrackedDefaults>["table"]["columns"][
+                ReturnType<DelegateT>["name"]
+            ]["assertDelegate"]
+        >|
+        undefined
+    > {
+        return LogUtil.fetchLatestValueOrUndefined(
+            this,
+            connection,
+            entityIdentifier,
+            delegate
+        );
+    }
+
+    latestOfEntity (
+        this : Extract<this, LogNoTrackedDefaults>
+    ) : (
+        LogUtil.LatestOfEntity<Extract<this, LogNoTrackedDefaults>>
+    ) {
+        return LogUtil.latestOfEntity(this);
+    }
+    latestOrderOfEntityOrNull (
+        this : Extract<this, LogNoTrackedDefaults>
+    ) : (
+        LogUtil.LatestOrderOfEntityOrNull<Extract<this, LogNoTrackedDefaults>>
+    ) {
+        return LogUtil.latestOrderOfEntityOrNull(this);
+    }
+    latestValueOfEntityOrNull<
+        DelegateT extends LogUtil.LatestValueDelegate<
+            Extract<this, LogNoTrackedDefaults>
+        >
+    > (
+        this : Extract<this, LogNoTrackedDefaults>,
+        delegate : DelegateT
+    ) : (
+        LogUtil.LatestValueOfEntityOrNull<
+            Extract<this, LogNoTrackedDefaults>,
+            DelegateT
+        >
+    ) {
+        return LogUtil.latestValueOfEntityOrNull(this, delegate);
+    }
+    latestValueOfEntity<
+        DelegateT extends LogUtil.LatestValueDelegate<
+            Extract<this, CompletedLog>
+        >
+    > (
+        this : Extract<this, CompletedLog>,
+        delegate : DelegateT
+    ) : (
+        LogUtil.LatestValueOfEntity<
+            Extract<this, CompletedLog>,
+            DelegateT
+        >
+    ) {
+        return LogUtil.latestValueOfEntity(this, delegate);
+    }
+
+    trackOrError (
+        this : Extract<this, LogNoTrackedDefaults & InsertableLog>,
+        connection : IConnection,
+        entityIdentifier : EntityIdentifier<
+            Extract<this, LogNoTrackedDefaults & InsertableLog>
+        >,
+        trackRow : TrackRow<
+            Extract<this, LogNoTrackedDefaults & InsertableLog>
+        >
+    ) : (
+        Promise<
+            LogUtil.TrackResult<
+                Extract<this, LogNoTrackedDefaults & InsertableLog>
+            >
+        >
+    ) {
+        return LogUtil.trackOrError(
+            this,
+            connection,
+            entityIdentifier,
+            trackRow
+        );
+    }
+    track (
+        this : Extract<this, CompletedLog & InsertableLog>,
+        connection : IConnection,
+        entityIdentifier : EntityIdentifier<
+            Extract<this, CompletedLog & InsertableLog>
+        >,
+        trackRow : TrackRow<
+            Extract<this, CompletedLog & InsertableLog>
+        >
+    ) : (
+        Promise<
+            LogUtil.TrackResult<
+                Extract<this, CompletedLog & InsertableLog>
+            >
+        >
+    ) {
+        return LogUtil.trackOrError(
+            this,
+            connection,
+            entityIdentifier,
+            trackRow
+        );
+    }
+
+    latest (
+        this : Extract<this, LogNoTrackedDefaults>,
+        entityIdentifier : EntityIdentifier<Extract<this, LogNoTrackedDefaults>>
+    ) : (
+        LogUtil.Latest<Extract<this, LogNoTrackedDefaults>>
+    ) {
+        return LogUtil.latest(this, entityIdentifier);
     }
 }

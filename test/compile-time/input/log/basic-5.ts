@@ -36,11 +36,11 @@ export const entityBannedLog = o.log(entityBanned)
     .setTrackedDefaults({
         banned : true,
     });
-export const latestQuery = entityBannedLog.latestQuery({
+export const latestQuery = entityBannedLog.latest({
     entityId : 1n
 });
 declare const connection : o.IConnection;
 export const fetchLatestOrUndefined = entityBannedLog.fetchLatestOrUndefined(
-    { entityId : 1n },
-    connection
+    connection,
+    { entityId : 1n }
 );

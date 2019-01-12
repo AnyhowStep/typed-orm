@@ -18,10 +18,10 @@ export type FetchLatestOrDefaultResult<LogT extends CompletedLog> = (
 );
 export function fetchLatestOrDefault<LogT extends CompletedLog> (
     log : LogT,
-    entityIdentifier : EntityIdentifier<LogT>,
-    connection : IConnection
+    connection : IConnection,
+    entityIdentifier : EntityIdentifier<LogT>
 ) : Promise<FetchLatestOrDefaultResult<LogT>> {
-    return fetchLatestOrUndefined(log, entityIdentifier, connection)
+    return fetchLatestOrUndefined(log, connection, entityIdentifier)
         .then((latest) : Promise<FetchLatestOrDefaultResult<LogT>> => {
             if (latest != undefined) {
                 return Promise.resolve({
@@ -30,7 +30,7 @@ export function fetchLatestOrDefault<LogT extends CompletedLog> (
                     row : latest as PreviousRow<LogT>,
                 });
             }
-            return fetchDefault<LogT>(log, entityIdentifier, connection)
+            return fetchDefault<LogT>(log, connection, entityIdentifier)
                 .then((def) : FetchLatestOrDefaultResult<LogT> => {
                     return {
                         isDefault : true,

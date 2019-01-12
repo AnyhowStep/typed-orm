@@ -5,8 +5,8 @@ import {QueryUtil} from "../../../query";
 
 export function exists<LogT extends LogNoTrackedDefaults> (
     log : LogT,
-    entityIdentifier : EntityIdentifier<LogT>,
-    connection : IConnection
+    connection : IConnection,
+    entityIdentifier : EntityIdentifier<LogT>
 ) : Promise<boolean> {
     const assertDelegate = entityIdentifierAssertDelegate(log);
     entityIdentifier = assertDelegate(

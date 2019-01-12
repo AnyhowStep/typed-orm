@@ -35,11 +35,56 @@ class Log {
     setTrackedDefaults(rawMap) {
         return LogUtil.setTrackedDefaults(this, rawMap);
     }
-    latestQuery(entityIdentifier) {
-        return LogUtil.latestQuery(this, entityIdentifier);
+    exists(connection, entityIdentifier) {
+        return LogUtil.exists(this, connection, entityIdentifier);
     }
-    fetchLatestOrUndefined(entityIdentifier, connection) {
-        return LogUtil.fetchLatestOrUndefined(this, entityIdentifier, connection);
+    fetchDefault(connection, entityIdentifier) {
+        return LogUtil.fetchDefault(this, connection, entityIdentifier);
+    }
+    fetchLatestOrDefault(connection, entityIdentifier) {
+        return LogUtil.fetchLatestOrDefault(this, connection, entityIdentifier);
+    }
+    fetchLatestOrError(connection, entityIdentifier) {
+        return LogUtil.fetchLatestOrError(this, connection, entityIdentifier);
+    }
+    fetchLatestOrUndefined(connection, entityIdentifier) {
+        return LogUtil.fetchLatestOrUndefined(this, connection, entityIdentifier);
+    }
+    fetchLatestOrderOrError(connection, entityIdentifier) {
+        return LogUtil.fetchLatestOrderOrError(this, connection, entityIdentifier);
+    }
+    fetchLatestOrderOrUndefined(connection, entityIdentifier) {
+        return LogUtil.fetchLatestOrderOrUndefined(this, connection, entityIdentifier);
+    }
+    fetchLatestValueOrDefault(connection, entityIdentifier, delegate) {
+        return LogUtil.fetchLatestValueOrDefault(this, connection, entityIdentifier, delegate);
+    }
+    fetchLatestValueOrError(connection, entityIdentifier, delegate) {
+        return LogUtil.fetchLatestValueOrError(this, connection, entityIdentifier, delegate);
+    }
+    fetchLatestValueOrUndefined(connection, entityIdentifier, delegate) {
+        return LogUtil.fetchLatestValueOrUndefined(this, connection, entityIdentifier, delegate);
+    }
+    latestOfEntity() {
+        return LogUtil.latestOfEntity(this);
+    }
+    latestOrderOfEntityOrNull() {
+        return LogUtil.latestOrderOfEntityOrNull(this);
+    }
+    latestValueOfEntityOrNull(delegate) {
+        return LogUtil.latestValueOfEntityOrNull(this, delegate);
+    }
+    latestValueOfEntity(delegate) {
+        return LogUtil.latestValueOfEntity(this, delegate);
+    }
+    trackOrError(connection, entityIdentifier, trackRow) {
+        return LogUtil.trackOrError(this, connection, entityIdentifier, trackRow);
+    }
+    track(connection, entityIdentifier, trackRow) {
+        return LogUtil.trackOrError(this, connection, entityIdentifier, trackRow);
+    }
+    latest(entityIdentifier) {
+        return LogUtil.latest(this, entityIdentifier);
     }
 }
 exports.Log = Log;

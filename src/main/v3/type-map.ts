@@ -192,6 +192,11 @@ export namespace TypeMapUtil {
         ) as any;
     }
 
+    /*
+        TODO Refactor to just Row<>.
+        Not TypeMaputil.Row<>.
+        Just Row<>.
+    */
     export type FromTable<TableT extends ITable> = (
         {
             readonly [columnName in Extract<keyof TableT["columns"], string>] : (

@@ -1,17 +1,17 @@
 import {EntityIdentifier, CompletedLog} from "../../log";
 import {QueryUtil} from "../../../query";
 import {IConnection} from "../../../execution";
-import {LatestValueDelegate} from "./latest-value-query";
-import {latestValueExpr} from "./latest-value-expr";
+import {LatestValueDelegate} from "./latest-value-delegate";
+import {latestValue} from "./of-entity-identifier";
 
 export function fetchLatestValueOrDefault<
     LogT extends CompletedLog,
     DelegateT extends LatestValueDelegate<LogT>
 > (
     log : LogT,
+    connection : IConnection,
     entityIdentifier : EntityIdentifier<LogT>,
-    delegate : DelegateT,
-    connection : IConnection
+    delegate : DelegateT
 ) : Promise<
     ReturnType<
         LogT["table"]["columns"][
@@ -21,6 +21,6 @@ export function fetchLatestValueOrDefault<
 > {
     return QueryUtil.selectExpr(
         QueryUtil.newInstance(),
-        (() => latestValueExpr(log, entityIdentifier, delegate)) as any
+        (() => latestValue(log, entityIdentifier, delegate)) as any
     ).fetchValue(connection);
 }
