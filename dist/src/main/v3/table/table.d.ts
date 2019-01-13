@@ -5,6 +5,7 @@ import { AssertMap } from "../assert-map";
 import { QueryTree } from "../query-tree";
 import { PrimaryKeyUtil } from "../primary-key";
 import { CandidateKeyUtil } from "../candidate-key";
+import { SuperKeyUtil } from "../super-key";
 import * as TableUtil from "./util";
 export interface TableData extends AliasedTableData {
     readonly autoIncrement: undefined | string;
@@ -68,7 +69,7 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     private cachedCandidateKeyAssertDelegate;
     candidateKeyAssertDelegate(): CandidateKeyUtil.AssertDelegate<this>;
     private cachedSuperKeyAssertDelegate;
-    superKeyAssertDelegate(): TableUtil.SuperKeyAssertDelegate<this>;
+    superKeyAssertDelegate(): SuperKeyUtil.AssertDelegate<this>;
     private cachedPrimaryKeyAssertDelegate;
     primaryKeyAssertDelegate(this: Extract<this, ITable & {
         primaryKey: Key;

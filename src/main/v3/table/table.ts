@@ -5,6 +5,7 @@ import {AssertMap} from "../assert-map";
 import {QueryTree} from "../query-tree";
 import {PrimaryKeyUtil} from "../primary-key";
 import {CandidateKeyUtil} from "../candidate-key";
+import {SuperKeyUtil} from "../super-key";
 import * as TableUtil from "./util";
 
 export interface TableData extends AliasedTableData {
@@ -213,12 +214,12 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     //A cache to re-use the assert delegate
     private cachedSuperKeyAssertDelegate : (
         undefined |
-        TableUtil.SuperKeyAssertDelegate<this>
+        SuperKeyUtil.AssertDelegate<this>
     );
-    superKeyAssertDelegate () : TableUtil.SuperKeyAssertDelegate<this> {
+    superKeyAssertDelegate () : SuperKeyUtil.AssertDelegate<this> {
         if (this.cachedSuperKeyAssertDelegate == undefined) {
             this.cachedSuperKeyAssertDelegate = (
-                TableUtil.superKeyAssertDelegate(this)
+                SuperKeyUtil.assertDelegate(this)
             );
         }
         return this.cachedSuperKeyAssertDelegate;

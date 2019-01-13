@@ -20,6 +20,7 @@ __export(require("./key"));
 __export(require("./log"));
 __export(require("./order"));
 __export(require("./query"));
+__export(require("./super-key"));
 __export(require("./table"));
 __export(require("./table-per-type"));
 __export(require("./update"));

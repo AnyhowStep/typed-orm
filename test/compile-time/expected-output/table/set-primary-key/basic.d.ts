@@ -57,20 +57,20 @@ export declare const ckad: sd.AssertDelegate<{
     readonly y: string;
     readonly z: boolean;
 }>;
-export declare const sk: o.TableUtil.SuperKey<typeof table>;
+export declare const sk: o.SuperKey<typeof table>;
 export declare const skad: sd.AssertDelegate<({
     readonly x: number;
     readonly y: string;
-} & {
-    z?: boolean | undefined;
-    w?: Date | undefined;
-}) | ({
+} & Partial<{
+    readonly z: boolean;
+    readonly w: Date;
+}>) | ({
     readonly y: string;
     readonly z: boolean;
-} & {
-    x?: number | undefined;
-    w?: Date | undefined;
-})>;
+} & Partial<{
+    readonly x: number;
+    readonly w: Date;
+}>)>;
 export declare const table2: o.Table<{
     readonly usedRef: {};
     readonly alias: "table";

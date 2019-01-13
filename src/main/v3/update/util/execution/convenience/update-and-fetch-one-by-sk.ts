@@ -4,6 +4,7 @@ import {SingleTableSetDelegateFromTable, AssertValidSingleTableSetDelegateFromTa
 import {QueryUtil} from "../../../../query";
 import {updateOneBySk} from "./update-one-by-sk";
 import {UpdateAndFetchOneResult} from "./update-and-fetch-one";
+import {SuperKey} from "../../../../super-key";
 
 export function updateAndFetchOneBySk<
     TableT extends ITable,
@@ -11,7 +12,7 @@ export function updateAndFetchOneBySk<
 > (
     connection : IConnection,
     table : TableT & TableUtil.AssertHasCandidateKey<TableT>,
-    sk : TableUtil.SuperKey<TableT>,
+    sk : SuperKey<TableT>,
     delegate : DelegateT
 ) : (
     AssertValidSingleTableSetDelegateFromTable_Hack<

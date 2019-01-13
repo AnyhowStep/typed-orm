@@ -1,13 +1,14 @@
 import {ITable, TableUtil} from "../../../../table";
 import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
+import {SuperKey} from "../../../../super-key";
 
 export function existsBySk<
     TableT extends ITable
 > (
     connection : IConnection,
     table : TableT,
-    sk : TableUtil.SuperKey<TableT>
+    sk : SuperKey<TableT>
 ) : (
     Promise<boolean>
 ) {

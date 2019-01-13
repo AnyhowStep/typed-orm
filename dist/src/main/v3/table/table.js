@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const primary_key_1 = require("../primary-key");
 const candidate_key_1 = require("../candidate-key");
+const super_key_1 = require("../super-key");
 const TableUtil = require("./util");
 class Table {
     constructor(data, { unaliasedQuery, }) {
@@ -32,7 +33,7 @@ class Table {
     }
     superKeyAssertDelegate() {
         if (this.cachedSuperKeyAssertDelegate == undefined) {
-            this.cachedSuperKeyAssertDelegate = (TableUtil.superKeyAssertDelegate(this));
+            this.cachedSuperKeyAssertDelegate = (super_key_1.SuperKeyUtil.assertDelegate(this));
         }
         return this.cachedSuperKeyAssertDelegate;
     }

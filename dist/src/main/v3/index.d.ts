@@ -15,6 +15,7 @@ export * from "./key";
 export * from "./log";
 export * from "./order";
 export * from "./query";
+export * from "./super-key";
 export * from "./table";
 export * from "./table-per-type";
 export * from "./update";

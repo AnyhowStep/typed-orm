@@ -3,6 +3,7 @@ import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
 import {RawExprUtil} from "../../../../raw-expr";
 import {SelectValueDelegate, AssertValidSelectValueDelegate, executeSelectValueDelegate} from "./select-value-delegate";
+import {SuperKey} from "../../../../super-key";
 
 export function fetchValueBySk<
     TableT extends ITable,
@@ -10,7 +11,7 @@ export function fetchValueBySk<
 > (
     connection : IConnection,
     table : TableT,
-    sk : TableUtil.SuperKey<TableT>,
+    sk : SuperKey<TableT>,
     delegate : AssertValidSelectValueDelegate<TableT, DelegateT>
 ) : (
     Promise<

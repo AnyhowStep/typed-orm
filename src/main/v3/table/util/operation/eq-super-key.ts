@@ -1,11 +1,10 @@
 import * as sd from "schema-decorator";
 import {Table, ITable} from "../../table";
 import * as exprLib from "../../../expr-library";
-import {superKeyAssertDelegate} from "./super-key-assert-delegate";
-import {SuperKey} from "./super-key-assert-delegate";
 import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil} from "../../../column";
 import {Expr} from "../../../expr";
+import {SuperKey, SuperKeyUtil} from "../../../super-key";
 
 export function eqSuperKey<
     TableT extends ITable
@@ -22,7 +21,7 @@ export function eqSuperKey<
 ) {
     const assertDelegate = (table instanceof Table) ?
         table.superKeyAssertDelegate() :
-        superKeyAssertDelegate(table);
+        SuperKeyUtil.assertDelegate(table);
 
     sk = assertDelegate(
         `${table.alias}.sk`,

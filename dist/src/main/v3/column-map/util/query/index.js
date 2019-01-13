@@ -7,4 +7,5 @@ __export(require("./assert-delegate"));
 __export(require("./column-names"));
 __export(require("./get-sorted-column-array"));
 __export(require("./nullable-column-names"));
+__export(require("./partial-assert-delegate"));
 //# sourceMappingURL=index.js.map

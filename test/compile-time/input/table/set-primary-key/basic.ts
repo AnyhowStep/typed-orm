@@ -22,7 +22,7 @@ export const table = o.table(
 
 export declare const ck : o.CandidateKey<typeof table>;
 export const ckad = table.candidateKeyAssertDelegate();
-export declare const sk : o.TableUtil.SuperKey<typeof table>;
+export declare const sk : o.SuperKey<typeof table>;
 export const skad = table.superKeyAssertDelegate();
 
 table.setPrimaryKey(c => [

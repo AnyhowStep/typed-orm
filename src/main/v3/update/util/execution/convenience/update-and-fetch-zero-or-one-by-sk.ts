@@ -4,6 +4,7 @@ import {SingleTableSetDelegateFromTable, AssertValidSingleTableSetDelegateFromTa
 import {QueryUtil} from "../../../../query";
 import {updateZeroOrOneBySk} from "./update-zero-or-one-by-sk";
 import {UpdateAndFetchZeroOrOneResult} from "./update-and-fetch-zero-or-one";
+import {SuperKey} from "../../../../super-key";
 
 export function updateAndFetchZeroOrOneBySk<
     TableT extends ITable,
@@ -11,7 +12,7 @@ export function updateAndFetchZeroOrOneBySk<
 > (
     connection : IConnection,
     table : TableT & TableUtil.AssertHasCandidateKey<TableT>,
-    sk : TableUtil.SuperKey<TableT>,
+    sk : SuperKey<TableT>,
     delegate : DelegateT
 ) : (
     AssertValidSingleTableSetDelegateFromTable_Hack<
