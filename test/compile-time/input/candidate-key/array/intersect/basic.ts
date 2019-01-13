@@ -1,6 +1,6 @@
 import * as o from "../../../../../../dist/src/main";
 
-export const a = o.CandidateKeyUtil.Array.intersect(
+export const a = o.KeyUtil.Array.intersect(
     [
         ["a", "b"] as ("a"|"b")[],
         ["c", "d"] as ("c"|"d")[]
@@ -10,7 +10,7 @@ export const a = o.CandidateKeyUtil.Array.intersect(
         ["x", "y"] as ("x"|"y")[]
     ]
 );
-export const a2 = o.CandidateKeyUtil.Array.intersect(
+export const a2 = o.KeyUtil.Array.intersect(
     [
         ["a", "b"] as ("a"|"b")[],
         ["c", "d"] as ("c"|"d")[]
@@ -20,7 +20,7 @@ export const a2 = o.CandidateKeyUtil.Array.intersect(
         ["a", "b"] as ("a"|"b")[]
     ]
 );
-export const b = o.CandidateKeyUtil.Array.intersect(
+export const b = o.KeyUtil.Array.intersect(
     [
         ["a", "b"] as ("a"|"b")[],
         ["c", "d"] as ("c"|"d")[]
@@ -30,7 +30,7 @@ export const b = o.CandidateKeyUtil.Array.intersect(
         ["c", "d"] as ("c"|"d")[]
     ]
 );
-export const b2 = o.CandidateKeyUtil.Array.intersect(
+export const b2 = o.KeyUtil.Array.intersect(
     [
         ["a", "b"] as ("a"|"b")[],
         ["c", "d"] as ("c"|"d")[]
@@ -41,7 +41,7 @@ export const b2 = o.CandidateKeyUtil.Array.intersect(
         ["extra", "candidate", "key"] as ("extra"|"candidate"|"key")[]
     ]
 );
-export const c = o.CandidateKeyUtil.Array.intersect(
+export const c = o.KeyUtil.Array.intersect(
     [
         ["a", "b"] as ("a"|"b")[],
         ["c", "d"] as ("c"|"d")[]
@@ -51,7 +51,7 @@ export const c = o.CandidateKeyUtil.Array.intersect(
         ["a", "c", "d"] as ("a"|"c"|"d")[]
     ]
 );
-export const d = o.CandidateKeyUtil.Array.intersect(
+export const d = o.KeyUtil.Array.intersect(
     [
         ["a", "b", "d"] as ("a"|"b"|"d")[],
         ["c", "d"] as ("c"|"d")[]
@@ -61,7 +61,7 @@ export const d = o.CandidateKeyUtil.Array.intersect(
         ["c", "d"] as ("c"|"d")[]
     ]
 );
-export const e = o.CandidateKeyUtil.Array.intersect(
+export const e = o.KeyUtil.Array.intersect(
     [
         ["a", "b"] as ("a"|"b")[],
         ["c", "d"] as ("c"|"d")[]
@@ -76,7 +76,7 @@ export const e = o.CandidateKeyUtil.Array.intersect(
 
     And we can no longer get the correct intersection.
 */
-export const thisIsWhyTheArrayCannotHaveSuperKeys = o.CandidateKeyUtil.Array.intersect(
+export const thisIsWhyTheArrayCannotHaveSuperKeys = o.KeyUtil.Array.intersect(
     [
         ["a", "b", "c", "d"] as ("a"|"b"|"c"|"d")[],
         ["c", "d"] as ("c"|"d")[]

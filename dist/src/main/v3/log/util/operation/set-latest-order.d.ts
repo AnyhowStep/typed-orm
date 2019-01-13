@@ -2,7 +2,7 @@ import { ILog, Log } from "../../log";
 import { ITable } from "../../../table";
 import { ColumnUtil } from "../../../column";
 import { SortDirection } from "../../../order";
-import { CandidateKeyUtil } from "../../../candidate-key";
+import { KeyUtil } from "../../../key";
 import { IJoinDeclaration } from "../../../join-declaration";
 export declare type LogMustSetLatestOrder = (ILog<{
     readonly table: ITable;
@@ -21,8 +21,8 @@ export declare type LogMustSetLatestOrder = (ILog<{
     readonly trackedDefaults: undefined;
 }>);
 export declare type SetLatestOrderDelegate<LogT extends LogMustSetLatestOrder> = ((columns: Pick<LogT["table"]["columns"], LogT["copy"][number]>) => [ColumnUtil.FromColumnMap<Pick<LogT["table"]["columns"], LogT["copy"][number]>>, SortDirection]);
-export declare type AssertValidSetOrderDelegateImpl<LogT extends LogMustSetLatestOrder, DelegateT extends SetLatestOrderDelegate<LogT>> = (CandidateKeyUtil.Array.HasKey<LogT["table"]["candidateKeys"], (LogT["entityIdentifier"][number] | ReturnType<DelegateT>[0]["name"])[]> extends true ? unknown : [(LogT["entityIdentifier"][number] | ReturnType<DelegateT>[0]["name"])[], "must be a candidate key of", LogT["table"]["alias"]]);
-export declare type AssertValidSetLatestOrderDelegate_Hack<LogT extends LogMustSetLatestOrder, DelegateT extends SetLatestOrderDelegate<LogT>, ResultT> = (CandidateKeyUtil.Array.HasKey<LogT["table"]["candidateKeys"], (LogT["entityIdentifier"][number] | ReturnType<DelegateT>[0]["name"])[]> extends true ? ResultT : [(LogT["entityIdentifier"][number] | ReturnType<DelegateT>[0]["name"])[], "must be a candidate key of", LogT["table"]["alias"]] | void);
+export declare type AssertValidSetOrderDelegateImpl<LogT extends LogMustSetLatestOrder, DelegateT extends SetLatestOrderDelegate<LogT>> = (KeyUtil.Array.HasKey<LogT["table"]["candidateKeys"], (LogT["entityIdentifier"][number] | ReturnType<DelegateT>[0]["name"])[]> extends true ? unknown : [(LogT["entityIdentifier"][number] | ReturnType<DelegateT>[0]["name"])[], "must be a candidate key of", LogT["table"]["alias"]]);
+export declare type AssertValidSetLatestOrderDelegate_Hack<LogT extends LogMustSetLatestOrder, DelegateT extends SetLatestOrderDelegate<LogT>, ResultT> = (KeyUtil.Array.HasKey<LogT["table"]["candidateKeys"], (LogT["entityIdentifier"][number] | ReturnType<DelegateT>[0]["name"])[]> extends true ? ResultT : [(LogT["entityIdentifier"][number] | ReturnType<DelegateT>[0]["name"])[], "must be a candidate key of", LogT["table"]["alias"]] | void);
 export declare type SetLatestOrder<LogT extends LogMustSetLatestOrder, DelegateT extends SetLatestOrderDelegate<LogT>> = (Log<{
     readonly table: LogT["table"];
     readonly entity: LogT["entity"];

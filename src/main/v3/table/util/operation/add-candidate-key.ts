@@ -1,6 +1,6 @@
 import {Table, ITable} from "../../table";
 import {ColumnMapUtil} from "../../../column-map";
-import {CandidateKeyUtil} from "../../../candidate-key";
+import {KeyUtil} from "../../../key";
 import {StringArrayUtil} from "../../../string-array";
 
 export type CandidateKeyDelegate<
@@ -16,12 +16,12 @@ export type AssertValidCandidateKeyDelegate<
 > = (
     DelegateT &
     (
-        CandidateKeyUtil.Array.FindSubKey<
+        KeyUtil.Array.FindSubKey<
             TableT["candidateKeys"],
             ReturnType<DelegateT>[number]["name"][]
         > extends never ?
         (
-            CandidateKeyUtil.Array.FindSuperKey<
+            KeyUtil.Array.FindSuperKey<
                 TableT["candidateKeys"],
                 ReturnType<DelegateT>[number]["name"][]
             > extends never ?
@@ -30,7 +30,7 @@ export type AssertValidCandidateKeyDelegate<
                 "Cannot add key as candidate key",
                 ReturnType<DelegateT>[number]["name"],
                 "is a sub key of",
-                CandidateKeyUtil.Array.FindSuperKey<
+                KeyUtil.Array.FindSuperKey<
                     TableT["candidateKeys"],
                     ReturnType<DelegateT>[number]["name"][]
                 >
@@ -40,7 +40,7 @@ export type AssertValidCandidateKeyDelegate<
             "Cannot add key as candidate key",
             ReturnType<DelegateT>[number]["name"],
             "is a super key of",
-            CandidateKeyUtil.Array.FindSubKey<
+            KeyUtil.Array.FindSubKey<
                 TableT["candidateKeys"],
                 ReturnType<DelegateT>[number]["name"][]
             >
@@ -99,13 +99,13 @@ export function addCandidateKey<
             candidateKeyColumn => candidateKeyColumn.name
         )
     );
-    if (CandidateKeyUtil.Array.hasSubKey(
+    if (KeyUtil.Array.hasSubKey(
         table.candidateKeys,
         key
     )) {
         throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a super key of some candidate key`);
     }
-    if (CandidateKeyUtil.Array.hasSuperKey(
+    if (KeyUtil.Array.hasSuperKey(
         table.candidateKeys,
         key
     )) {

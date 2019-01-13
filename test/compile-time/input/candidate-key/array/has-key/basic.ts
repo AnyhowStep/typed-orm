@@ -1,27 +1,27 @@
 import * as o from "../../../../../../dist/src/main";
 
-export const a = o.CandidateKeyUtil.Array.hasKey(
+export const a = o.KeyUtil.Array.hasKey(
     [
         ["a", "b"] as ("a"|"b")[],
         ["c", "d"] as ("c"|"d")[]
     ],
     ["a", "b"] as ("a"|"b")[]
 );
-export const b = o.CandidateKeyUtil.Array.hasKey(
+export const b = o.KeyUtil.Array.hasKey(
     [
         ["a", "b"] as ("a"|"b")[],
         ["c", "d"] as ("c"|"d")[]
     ],
     ["x", "y"] as ("x"|"y")[]
 );
-export const c = o.CandidateKeyUtil.Array.hasKey(
+export const c = o.KeyUtil.Array.hasKey(
     [
         ["a", "b"] as ("a"|"b")[],
         ["c", "d"] as ("c"|"d")[]
     ],
     ["a"] as ("a")[]
 );
-export const d = o.CandidateKeyUtil.Array.hasKey(
+export const d = o.KeyUtil.Array.hasKey(
     [
         ["a", "b"] as ("a"|"b")[],
         ["c", "d"] as ("c"|"d")[]

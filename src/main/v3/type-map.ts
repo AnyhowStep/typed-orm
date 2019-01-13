@@ -1,5 +1,5 @@
 import * as sd from "schema-decorator";
-import {CandidateKey} from "./candidate-key";
+import {Key} from "./key";
 import {ColumnMap} from "./column-map";
 
 export namespace TypeMapUtil {
@@ -13,10 +13,10 @@ export namespace TypeMapUtil {
         never
     );
     export type UnionFromCandidateKey<
-        CandidateKeyT extends CandidateKey,
+        CandidateKeyT extends Key,
         ColumnMapT extends ColumnMap
     > = (
-        CandidateKeyT extends CandidateKey ?
+        CandidateKeyT extends Key ?
         {
             readonly [columnName in Extract<
                 keyof ColumnMapT,
@@ -28,7 +28,7 @@ export namespace TypeMapUtil {
         never
     );
     export type UnionFromCandidateKeyArray<
-        CandidateKeyArrayT extends CandidateKey[],
+        CandidateKeyArrayT extends Key[],
         ColumnMapT extends ColumnMap
     > = (
         UnionFromCandidateKey<
@@ -38,7 +38,7 @@ export namespace TypeMapUtil {
     );
 
     export type AssertDelegateFromCandidateKey<
-        CandidateKeyT extends CandidateKey,
+        CandidateKeyT extends Key,
         ColumnMapT extends ColumnMap
     > = (
         sd.AssertDelegate<
@@ -49,7 +49,7 @@ export namespace TypeMapUtil {
         >
     );
     export function assertDelegateFromCandidateKey<
-        CandidateKeyT extends CandidateKey,
+        CandidateKeyT extends Key,
         ColumnMapT extends ColumnMap
     > (
         candidateKey : CandidateKeyT,
@@ -76,7 +76,7 @@ export namespace TypeMapUtil {
     }
 
     export type AssertDelegateFromCandidateKeyArray<
-        CandidateKeyTupleT extends CandidateKey[],
+        CandidateKeyTupleT extends Key[],
         ColumnMapT extends ColumnMap
     > = (
         sd.AssertDelegate<
@@ -87,7 +87,7 @@ export namespace TypeMapUtil {
         >
     );
     export function assertDelegateFromCandidateKeyArray<
-        CandidateKeyTupleT extends CandidateKey[],
+        CandidateKeyTupleT extends Key[],
         ColumnMapT extends ColumnMap
     > (
         candidateKeyTuple : CandidateKeyTupleT,
@@ -105,10 +105,10 @@ export namespace TypeMapUtil {
     }
 
     export type SuperKeyUnionFromCandidateKey<
-        CandidateKeyT extends CandidateKey,
+        CandidateKeyT extends Key,
         ColumnMapT extends ColumnMap
     > = (
-        CandidateKeyT extends CandidateKey ?
+        CandidateKeyT extends Key ?
         (
             UnionFromCandidateKey<CandidateKeyT, ColumnMapT> &
             {
@@ -123,7 +123,7 @@ export namespace TypeMapUtil {
         never
     );
     export type SuperKeyAssertDelegateFromCandidateKey<
-        CandidateKeyT extends CandidateKey,
+        CandidateKeyT extends Key,
         ColumnMapT extends ColumnMap
     > = (
         sd.AssertDelegate<
@@ -134,7 +134,7 @@ export namespace TypeMapUtil {
         >
     );
     export function superKeyAssertDelegateFromCandidateKey<
-        CandidateKeyT extends CandidateKey,
+        CandidateKeyT extends Key,
         ColumnMapT extends ColumnMap
     > (
         candidateKey : CandidateKeyT,
@@ -166,7 +166,7 @@ export namespace TypeMapUtil {
     }
 
     export type SuperKeyUnionFromCandidateKeyArray<
-        CandidateKeyArrayT extends CandidateKey[],
+        CandidateKeyArrayT extends Key[],
         ColumnMapT extends ColumnMap
     > = (
         SuperKeyUnionFromCandidateKey<
@@ -175,7 +175,7 @@ export namespace TypeMapUtil {
         >
     );
     export type SuperKeyAssertDelegateFromCandidateKeyArray<
-        CandidateKeyArrayT extends CandidateKey[],
+        CandidateKeyArrayT extends Key[],
         ColumnMapT extends ColumnMap
     > = (
         sd.AssertDelegate<
@@ -183,7 +183,7 @@ export namespace TypeMapUtil {
         >
     );
     export function superKeyAssertDelegateFromCandidateKeyArray<
-        CandidateKeyArrayT extends CandidateKey[],
+        CandidateKeyArrayT extends Key[],
         ColumnMapT extends ColumnMap
     > (
         candidateKeyTuple : CandidateKeyArrayT,

@@ -4,7 +4,7 @@ import {ColumnUtil} from "../../../column";
 import {ColumnIdentifierMapUtil} from "../../../column-identifier-map";
 import {SortDirection} from "../../../order";
 import {ColumnMapUtil} from "../../../column-map";
-import {CandidateKeyUtil} from "../../../candidate-key";
+import {KeyUtil} from "../../../key";
 import {IJoinDeclaration} from "../../../join-declaration";
 
 export type LogMustSetLatestOrder = (
@@ -49,7 +49,7 @@ export type AssertValidSetOrderDelegateImpl<
     LogT extends LogMustSetLatestOrder,
     DelegateT extends SetLatestOrderDelegate<LogT>
 > = (
-    CandidateKeyUtil.Array.HasKey<
+    KeyUtil.Array.HasKey<
         LogT["table"]["candidateKeys"],
         (
             LogT["entityIdentifier"][number] |
@@ -72,7 +72,7 @@ export type AssertValidSetLatestOrderDelegate_Hack<
     DelegateT extends SetLatestOrderDelegate<LogT>,
     ResultT
 > = (
-    CandidateKeyUtil.Array.HasKey<
+    KeyUtil.Array.HasKey<
         LogT["table"]["candidateKeys"],
         (
             LogT["entityIdentifier"][number] |
@@ -135,7 +135,7 @@ export function setLatestOrder<
         latestOrder[0]
     );
     const logCk = [...log.entityIdentifier, latestOrder[0].name];
-    if (!CandidateKeyUtil.Array.hasKey(
+    if (!KeyUtil.Array.hasKey(
         log.entity.candidateKeys,
         logCk
     )) {

@@ -3,11 +3,11 @@ import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
 import {RawExprUtil} from "../../../../raw-expr";
 import {SelectValueDelegate, AssertValidSelectValueDelegate, executeSelectValueDelegate} from "./select-value-delegate";
-import {CandidateKey} from "../../../../candidate-key";
+import {Key} from "../../../../key";
 import {PrimaryKey} from "../../../../primary-key";
 
 export function fetchValueByPk<
-    TableT extends ITable & { primaryKey : CandidateKey },
+    TableT extends ITable & { primaryKey : Key },
     DelegateT extends SelectValueDelegate<TableT>
 > (
     connection : IConnection,

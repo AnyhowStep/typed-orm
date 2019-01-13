@@ -1,7 +1,7 @@
 import {ITable} from "../../../table";
 import {IColumn} from "../../../column";
 import {QueryUtil, Query} from "../../../query";
-import {CandidateKey} from "../../../candidate-key";
+import {Key} from "../../../key";
 import {IJoin} from "../../../join";
 
 function tryGetColumn (
@@ -20,7 +20,7 @@ function tryGetColumn (
 }
 function tryGetColumnArray (
     query : QueryUtil.AfterFromClause,
-    ck : CandidateKey
+    ck : Key
 ) : IColumn[]|undefined {
     const result : IColumn[] = [];
     for (let columnName of ck) {

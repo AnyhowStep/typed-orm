@@ -4,11 +4,11 @@ import {SingleTableSetDelegateFromTable, AssertValidSingleTableSetDelegateFromTa
 import {QueryUtil} from "../../../../query";
 import {updateZeroOrOneByPk} from "./update-zero-or-one-by-pk";
 import {UpdateAndFetchZeroOrOneResult} from "./update-and-fetch-zero-or-one";
-import {CandidateKey} from "../../../../candidate-key";
+import {Key} from "../../../../key";
 import {PrimaryKey} from "../../../../primary-key";
 
 export function updateAndFetchZeroOrOneByPk<
-    TableT extends ITable & { primaryKey : CandidateKey },
+    TableT extends ITable & { primaryKey : Key },
     DelegateT extends SingleTableSetDelegateFromTable<TableT>
 > (
     connection : IConnection,

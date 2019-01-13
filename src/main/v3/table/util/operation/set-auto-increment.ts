@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import {Table, ITable} from "../../table";
 import {IAnonymousTypedColumn} from "../../../column";
-import {CandidateKeyUtil} from "../../../candidate-key";
+import {KeyUtil} from "../../../key";
 import {ColumnMapUtil} from "../../../column-map";
 import {StringArrayUtil} from "../../../string-array";
 
@@ -88,13 +88,13 @@ export function setAutoIncrement<
     }
 
     const key = [autoIncrement.name];
-    if (CandidateKeyUtil.Array.hasSubKey(
+    if (KeyUtil.Array.hasSubKey(
         table.candidateKeys,
         key
     )) {
         throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a super key of some candidate key`);
     }
-    if (CandidateKeyUtil.Array.hasSuperKey(
+    if (KeyUtil.Array.hasSuperKey(
         table.candidateKeys,
         key
     )) {

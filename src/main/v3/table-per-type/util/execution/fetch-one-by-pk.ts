@@ -1,11 +1,11 @@
 import {ITable, TableUtil} from "../../../table";
 import {IConnection} from "../../../execution";
 import {FetchOneResult, fetchOne} from "./fetch-one";
-import {CandidateKey} from "../../../candidate-key";
+import {Key} from "../../../key";
 import {PrimaryKey} from "../../../primary-key";
 
 export function fetchOneByPk<
-    TableT extends ITable & { primaryKey : CandidateKey }
+    TableT extends ITable & { primaryKey : Key }
 > (
     connection : IConnection,
     table : TableT,

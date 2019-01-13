@@ -1,5 +1,5 @@
 import * as sd from "schema-decorator";
-import {CandidateKey} from "../candidate-key";
+import {Key} from "../key";
 import {AliasedTableData, IAliasedTable} from "../aliased-table";
 import {AssertMap} from "../assert-map";
 import {QueryTree} from "../query-tree";
@@ -29,8 +29,8 @@ export interface TableData extends AliasedTableData {
 
         "This is *the* candidate key I want to talk about by default"
     */
-    readonly primaryKey : undefined|CandidateKey;
-    readonly candidateKeys : CandidateKey[];
+    readonly primaryKey : undefined|Key;
+    readonly candidateKeys : Key[];
 
     //If a column is generated, you must specify as such manually.
     //Setting generated column values will not be allowed with INSERT statements.
@@ -138,7 +138,7 @@ export type DeletableTable = (
 );
 export type TableWithPk = (
     ITable &
-    { primaryKey : CandidateKey }
+    { primaryKey : Key }
 );
 
 export class Table<DataT extends TableData> implements ITable<DataT> {
@@ -226,14 +226,14 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     private cachedPrimaryKeyAssertDelegate : (
         undefined |
         PrimaryKeyUtil.AssertDelegate<
-            Extract<this, ITable & { primaryKey : CandidateKey }>
+            Extract<this, ITable & { primaryKey : Key }>
         >
     );
     primaryKeyAssertDelegate (
-        this : Extract<this, ITable & { primaryKey : CandidateKey }>
+        this : Extract<this, ITable & { primaryKey : Key }>
     ) : (
         PrimaryKeyUtil.AssertDelegate<
-            Extract<this, ITable & { primaryKey : CandidateKey }>
+            Extract<this, ITable & { primaryKey : Key }>
         >
     ) {
         if (this.cachedPrimaryKeyAssertDelegate == undefined) {

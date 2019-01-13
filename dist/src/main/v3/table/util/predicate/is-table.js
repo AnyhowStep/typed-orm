@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const aliased_table_1 = require("../../../aliased-table");
-const candidate_key_1 = require("../../../candidate-key");
+const key_1 = require("../../../key");
 const type_1 = require("../../../type");
 function isTableArray(raw) {
     if (!(raw instanceof Array)) {
@@ -30,8 +30,8 @@ function isTable(raw) {
         ("deleteAllowed" in raw) &&
         (raw.autoIncrement === undefined || typeof raw.autoIncrement == "string") &&
         (raw.id === undefined || typeof raw.id == "string") &&
-        (raw.primaryKey === undefined || candidate_key_1.CandidateKeyUtil.isCandidateKey(raw.primaryKey)) &&
-        (raw.candidateKeys === undefined || candidate_key_1.CandidateKeyUtil.Array.isCandidateKeyArray(raw.candidateKeys)) &&
+        (raw.primaryKey === undefined || key_1.KeyUtil.isKey(raw.primaryKey)) &&
+        (raw.candidateKeys === undefined || key_1.KeyUtil.Array.isKeyArray(raw.candidateKeys)) &&
         (type_1.isStringArray(raw.generated)) &&
         (type_1.isStringArray(raw.isNullable)) &&
         (type_1.isStringArray(raw.hasExplicitDefaultValue)) &&

@@ -4,7 +4,7 @@ import {ColumnUtil} from "../../../../column";
 import {QueryUtil} from "../../../../query";
 import {NonEmptyTuple} from "../../../../tuple";
 import {ColumnMapUtil} from "../../../../column-map";
-import {CandidateKeyUtil} from "../../../../candidate-key";
+import {KeyUtil} from "../../../../key";
 import {AssertValidJoinTarget} from "../../predicate";
 import {JoinDeclaration} from "../../../join-declaration";
 import {JoinType} from "../../../../join";
@@ -48,7 +48,7 @@ export type AssertValidJoinCkUsingDelegate_Hack<
     DelegateT extends JoinCkUsingDelegate<FromTableT, ToTableT>,
     ResultT
 > = (
-    CandidateKeyUtil.Array.HasKey<
+    KeyUtil.Array.HasKey<
         ToTableT["candidateKeys"],
         ReturnType<DelegateT>[number]["name"][]
     > extends true ?
@@ -97,7 +97,7 @@ export function joinCkUsing<
     );
 
     const toKey = result.to.map(c => c.name);
-    if (!CandidateKeyUtil.Array.hasKey(
+    if (!KeyUtil.Array.hasKey(
         result.toTable.candidateKeys,
         toKey
     )) {

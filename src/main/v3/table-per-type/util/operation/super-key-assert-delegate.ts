@@ -1,14 +1,14 @@
 import * as sd from "schema-decorator";
 import {ITable} from "../../../table";
 import {TypeMapUtil} from "../../../type-map";
-import { CandidateKey } from "../../../candidate-key";
+import { Key } from "../../../key";
 import { ColumnNames, ColumnType, uniqueColumnNames, getColumnsWithName } from "../query";
 
 export type SuperKeyUnionFromCandidateKey<
-    CandidateKeyT extends CandidateKey,
+    CandidateKeyT extends Key,
     TableT extends ITable
 > = (
-    CandidateKeyT extends CandidateKey ?
+    CandidateKeyT extends Key ?
     (
         TypeMapUtil.UnionFromCandidateKey<CandidateKeyT, TableT["columns"]> &
         {
@@ -23,7 +23,7 @@ export type SuperKeyUnionFromCandidateKey<
     never
 );
 function assertDelegateFromCandidateKey<
-    CandidateKeyT extends CandidateKey,
+    CandidateKeyT extends Key,
     TableT extends ITable
 > (candidateKey : CandidateKeyT, table : TableT) : (
     sd.AssertDelegate<SuperKeyUnionFromCandidateKey<CandidateKeyT, TableT>>
@@ -47,7 +47,7 @@ function assertDelegateFromCandidateKey<
     return sd.toSchema(assertMap) as any;
 }
 export type SuperKeyUnionFromCandidateKeyArray<
-    CandidateKeyArrayT extends CandidateKey[],
+    CandidateKeyArrayT extends Key[],
     TableT extends ITable
 > = (
     SuperKeyUnionFromCandidateKey<
@@ -56,7 +56,7 @@ export type SuperKeyUnionFromCandidateKeyArray<
     >
 );
 function assertDelegateFromCandidateKeyArray<
-    CandidateKeyArrayT extends CandidateKey[],
+    CandidateKeyArrayT extends Key[],
     TableT extends ITable
 > (candidateKeyArr : CandidateKeyArrayT, table : TableT) : (
     sd.AssertDelegate<SuperKeyUnionFromCandidateKeyArray<CandidateKeyArrayT, TableT>>

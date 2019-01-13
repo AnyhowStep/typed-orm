@@ -1,7 +1,7 @@
 import {AfterFromClause, AssertValidJoinTarget} from "../../predicate";
 import {ITable} from "../../../../table";
 import {JoinType} from "../../../../join";
-import {CandidateKeyUtil} from "../../../../candidate-key";
+import {KeyUtil} from "../../../../key";
 import {JoinResult} from "../join";
 import {JoinUsingDelegate, joinUsing} from "../join-using";
 import {joinCk} from "../join-ck";
@@ -13,7 +13,7 @@ export type AssertValidJoinCkUsingDelegate_Hack<
     UsingDelegateT extends JoinUsingDelegate<QueryT["_joins"], TableT>,
     ResultT
 > = (
-    CandidateKeyUtil.Array.HasKey<
+    KeyUtil.Array.HasKey<
         TableT["candidateKeys"],
         ReturnType<UsingDelegateT>[number]["name"][]
     > extends true ?

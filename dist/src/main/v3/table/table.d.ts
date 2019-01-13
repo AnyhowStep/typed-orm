@@ -1,5 +1,5 @@
 import * as sd from "schema-decorator";
-import { CandidateKey } from "../candidate-key";
+import { Key } from "../key";
 import { AliasedTableData, IAliasedTable } from "../aliased-table";
 import { AssertMap } from "../assert-map";
 import { QueryTree } from "../query-tree";
@@ -8,8 +8,8 @@ import * as TableUtil from "./util";
 export interface TableData extends AliasedTableData {
     readonly autoIncrement: undefined | string;
     readonly id: undefined | string;
-    readonly primaryKey: undefined | CandidateKey;
-    readonly candidateKeys: CandidateKey[];
+    readonly primaryKey: undefined | Key;
+    readonly candidateKeys: Key[];
     readonly generated: string[];
     readonly isNullable: string[];
     readonly hasExplicitDefaultValue: string[];
@@ -42,7 +42,7 @@ export declare type DeletableTable = (ITable & {
     deleteAllowed: true;
 });
 export declare type TableWithPk = (ITable & {
-    primaryKey: CandidateKey;
+    primaryKey: Key;
 });
 export declare class Table<DataT extends TableData> implements ITable<DataT> {
     readonly usedRef: DataT["usedRef"];
@@ -70,9 +70,9 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     superKeyAssertDelegate(): TableUtil.SuperKeyAssertDelegate<this>;
     private cachedPrimaryKeyAssertDelegate;
     primaryKeyAssertDelegate(this: Extract<this, ITable & {
-        primaryKey: CandidateKey;
+        primaryKey: Key;
     }>): (PrimaryKeyUtil.AssertDelegate<Extract<this, ITable & {
-        primaryKey: CandidateKey;
+        primaryKey: Key;
     }>>);
     setAlias<NewAliasT extends string>(newAlias: NewAliasT): TableUtil.SetAlias<this, NewAliasT>;
     addColumns<FieldsT extends sd.AnyField[]>(fields: FieldsT): (TableUtil.AddColumnsFromFieldTuple<this, FieldsT>);

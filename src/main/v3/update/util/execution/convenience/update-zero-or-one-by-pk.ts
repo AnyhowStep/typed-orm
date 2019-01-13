@@ -2,11 +2,11 @@ import {ITable, TableUtil} from "../../../../table";
 import {IConnection, UpdateZeroOrOneResult} from "../../../../execution";
 import {SingleTableSetDelegateFromTable, AssertValidSingleTableSetDelegateFromTable_Hack} from "../../constructor";
 import {QueryUtil} from "../../../../query";
-import {CandidateKey} from "../../../../candidate-key";
+import {Key} from "../../../../key";
 import {PrimaryKey} from "../../../../primary-key";
 
 export function updateZeroOrOneByPk<
-    TableT extends ITable & { primaryKey : CandidateKey },
+    TableT extends ITable & { primaryKey : Key },
     DelegateT extends SingleTableSetDelegateFromTable<TableT>
 > (
     connection : IConnection,

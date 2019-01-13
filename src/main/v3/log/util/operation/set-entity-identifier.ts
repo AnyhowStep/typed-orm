@@ -5,7 +5,7 @@ import {ColumnUtil} from "../../../column";
 import {ColumnIdentifierMapUtil} from "../../../column-identifier-map";
 import {ColumnMapUtil} from "../../../column-map";
 import {JoinDeclaration, innerJoinCkUsing} from "../../../join-declaration";
-import {CandidateKeyUtil} from "../../../candidate-key";
+import {KeyUtil} from "../../../key";
 
 export type LogMustSetEntityIdentifier = (
     ILog<{
@@ -66,7 +66,7 @@ export type AssertValidSetEntityIdentifierDelegate_Hack<
     DelegateT extends SetEntityIdentifierDelegate<LogT>,
     ResultT
 > = (
-    CandidateKeyUtil.Array.HasKey<
+    KeyUtil.Array.HasKey<
         LogT["entity"]["candidateKeys"],
         (
             ReturnType<DelegateT>[number]["name"]
@@ -107,7 +107,7 @@ export function setEntityIdentifier<
         rawEntityIdentifier
     );
     const entityIdentifier = rawEntityIdentifier.map(c => c.name);
-    if (!CandidateKeyUtil.Array.hasKey(
+    if (!KeyUtil.Array.hasKey(
         log.entity.candidateKeys,
         entityIdentifier
     )) {

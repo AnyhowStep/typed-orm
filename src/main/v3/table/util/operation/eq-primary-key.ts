@@ -4,11 +4,11 @@ import * as exprLib from "../../../expr-library";
 import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil} from "../../../column";
 import {Expr} from "../../../expr";
-import {CandidateKey} from "../../../candidate-key";
+import {Key} from "../../../key";
 import {PrimaryKey, PrimaryKeyUtil} from "../../../primary-key";
 
 export function eqPrimaryKey<
-    TableT extends ITable & { primaryKey : CandidateKey }
+    TableT extends ITable & { primaryKey : Key }
 > (
     table : TableT,
     ck : PrimaryKey<TableT>

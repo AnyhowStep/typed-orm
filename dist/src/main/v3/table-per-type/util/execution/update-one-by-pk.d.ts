@@ -1,9 +1,9 @@
 import { ITable } from "../../../table";
 import { IConnection, UpdateOneResult } from "../../../execution";
 import { SetDelegate, AssertValidSetDelegate_Hack } from "./update";
-import { CandidateKey } from "../../../candidate-key";
+import { Key } from "../../../key";
 import { PrimaryKey } from "../../../primary-key";
 export declare function updateOneByPk<TableT extends ITable & {
-    primaryKey: CandidateKey;
+    primaryKey: Key;
 }, DelegateT extends SetDelegate<TableT>>(connection: IConnection, table: TableT, pk: PrimaryKey<TableT>, delegate: DelegateT): (AssertValidSetDelegate_Hack<TableT, DelegateT, Promise<UpdateOneResult>>);
 //# sourceMappingURL=update-one-by-pk.d.ts.map
