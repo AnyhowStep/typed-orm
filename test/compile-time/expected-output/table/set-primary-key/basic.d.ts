@@ -49,7 +49,7 @@ export declare const table: o.Table<{
     readonly insertAllowed: true;
     readonly deleteAllowed: true;
 }>;
-export declare const ck: o.TableUtil.CandidateKey<typeof table>;
+export declare const ck: o.CandidateKey<typeof table>;
 export declare const ckad: sd.AssertDelegate<{
     readonly x: number;
     readonly y: string;

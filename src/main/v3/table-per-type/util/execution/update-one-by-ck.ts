@@ -2,6 +2,7 @@ import {ITable, TableUtil} from "../../../table";
 import {IConnection, UpdateOneResult} from "../../../execution";
 import {SetDelegate, AssertValidSetDelegate_Hack} from "./update";
 import {updateOne} from "./update-one";
+import {CandidateKey} from "../../../candidate-key";
 
 export function updateOneByCk<
     TableT extends ITable,
@@ -9,7 +10,7 @@ export function updateOneByCk<
 > (
     connection : IConnection,
     table : TableT & TableUtil.AssertHasCandidateKey<TableT>,
-    ck : TableUtil.CandidateKey<TableT>,
+    ck : CandidateKey<TableT>,
     delegate : DelegateT
 ) : (
     AssertValidSetDelegate_Hack<

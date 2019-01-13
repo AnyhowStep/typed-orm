@@ -11,7 +11,6 @@ __export(require("./add-generated"));
 __export(require("./add-has-explicit-default-value"));
 __export(require("./add-parent"));
 __export(require("./as"));
-__export(require("./candidate-key-assert-delegate"));
 __export(require("./disallow-delete"));
 __export(require("./disallow-insert"));
 __export(require("./eq-candidate-key"));

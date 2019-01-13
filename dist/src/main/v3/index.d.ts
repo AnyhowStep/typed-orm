@@ -1,5 +1,5 @@
 export * from "./aliased-table";
-export * from "./key";
+export * from "./candidate-key";
 export * from "./column";
 export * from "./column-identifier";
 export * from "./column-map";
@@ -11,6 +11,7 @@ import * as informationSchema from "./information-schema";
 export { informationSchema };
 export * from "./insert";
 export * from "./join-declaration";
+export * from "./key";
 export * from "./log";
 export * from "./order";
 export * from "./query";

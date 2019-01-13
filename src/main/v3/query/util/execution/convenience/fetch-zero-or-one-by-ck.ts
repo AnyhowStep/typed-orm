@@ -2,13 +2,14 @@ import {ITable, TableUtil} from "../../../../table";
 import {Row} from "../../../../row";
 import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
+import {CandidateKey} from "../../../../candidate-key";
 
 export function fetchZeroOrOneByCk<
     TableT extends ITable
 > (
     connection : IConnection,
     table : TableT,
-    ck : TableUtil.CandidateKey<TableT>
+    ck : CandidateKey<TableT>
 ) : Promise<Row<TableT>> {
     return QueryUtil.newInstance()
         .from(table as any)

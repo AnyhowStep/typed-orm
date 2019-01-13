@@ -1,8 +1,7 @@
 import * as sd from "schema-decorator";
 import {Table, ITable} from "../../table";
 import * as exprLib from "../../../expr-library";
-import {candidateKeyAssertDelegate} from "./candidate-key-assert-delegate";
-import {CandidateKey} from "./candidate-key-assert-delegate";
+import {CandidateKey, CandidateKeyUtil} from "../../../candidate-key";
 import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil} from "../../../column";
 import {Expr} from "../../../expr";
@@ -22,7 +21,7 @@ export function eqCandidateKey<
 ) {
     const assertDelegate = (table instanceof Table) ?
         table.candidateKeyAssertDelegate() :
-        candidateKeyAssertDelegate(table);
+        CandidateKeyUtil.assertDelegate(table);
 
     ck = assertDelegate(
         `${table.alias}.ck`,

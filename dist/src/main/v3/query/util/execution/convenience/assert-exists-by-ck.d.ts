@@ -1,4 +1,5 @@
-import { ITable, TableUtil } from "../../../../table";
+import { ITable } from "../../../../table";
 import { IConnection } from "../../../../execution";
-export declare function assertExistsByCk<TableT extends ITable>(connection: IConnection, table: TableT, ck: TableUtil.CandidateKey<TableT>): (Promise<void>);
+import { CandidateKey } from "../../../../candidate-key";
+export declare function assertExistsByCk<TableT extends ITable>(connection: IConnection, table: TableT, ck: CandidateKey<TableT>): (Promise<void>);
 //# sourceMappingURL=assert-exists-by-ck.d.ts.map

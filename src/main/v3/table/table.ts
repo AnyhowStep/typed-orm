@@ -4,6 +4,7 @@ import {AliasedTableData, IAliasedTable} from "../aliased-table";
 import {AssertMap} from "../assert-map";
 import {QueryTree} from "../query-tree";
 import {PrimaryKeyUtil} from "../primary-key";
+import {CandidateKeyUtil} from "../candidate-key";
 import * as TableUtil from "./util";
 
 export interface TableData extends AliasedTableData {
@@ -199,12 +200,12 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     //A cache to re-use the assert delegate
     private cachedCandidateKeyAssertDelegate : (
         undefined |
-        TableUtil.CandidateKeyAssertDelegate<this>
+        CandidateKeyUtil.AssertDelegate<this>
     );
-    candidateKeyAssertDelegate () : TableUtil.CandidateKeyAssertDelegate<this> {
+    candidateKeyAssertDelegate () : CandidateKeyUtil.AssertDelegate<this> {
         if (this.cachedCandidateKeyAssertDelegate == undefined) {
             this.cachedCandidateKeyAssertDelegate = (
-                TableUtil.candidateKeyAssertDelegate(this)
+                CandidateKeyUtil.assertDelegate(this)
             );
         }
         return this.cachedCandidateKeyAssertDelegate;

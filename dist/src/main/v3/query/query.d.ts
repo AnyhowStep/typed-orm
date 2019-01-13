@@ -7,7 +7,7 @@ import { ColumnIdentifier } from "../column-identifier";
 import { Order } from "../order";
 import { MapDelegate } from "../map-delegate";
 import { NonEmptyTuple } from "../tuple";
-import { ITable, TableUtil } from "../table";
+import { ITable } from "../table";
 import { RawExpr, RawExprUtil } from "../raw-expr";
 import { PrimitiveExpr, NonNullPrimitiveExpr } from "../primitive-expr";
 import { IJoinDeclaration } from "../join-declaration";
@@ -16,6 +16,7 @@ import { InsertSelectRowDelegate } from "../insert-select";
 import { UpdateUtil, UpdatableQuery } from "../update";
 import { DeletableQuery, DeleteUtil, Delete, DeleteModifier } from "../delete";
 import { Row } from "../row";
+import { CandidateKey } from "../candidate-key";
 export interface UnionQuery {
     readonly distinct: boolean;
     readonly query: QueryUtil.AfterSelectClause;
@@ -122,7 +123,7 @@ export declare class Query<DataT extends QueryData> {
     whereIsNotNull<DelegateT extends QueryUtil.WhereIsNotNullDelegate<Extract<this, QueryUtil.AfterFromClause>>>(this: Extract<this, QueryUtil.AfterFromClause>, delegate: DelegateT): (QueryUtil.WhereIsNotNull<Extract<this, QueryUtil.AfterFromClause>, DelegateT>);
     whereEq<DelegateT extends QueryUtil.WhereEqDelegate<Extract<this, QueryUtil.AfterFromClause>>, ValueT extends NonNullPrimitiveExpr>(this: Extract<this, QueryUtil.AfterFromClause>, delegate: DelegateT, value: QueryUtil.AssertValidEqTarget<Extract<this, QueryUtil.AfterFromClause>, DelegateT, ValueT>): (QueryUtil.WhereEq<Extract<this, QueryUtil.AfterFromClause>, DelegateT, ValueT>);
     whereNullSafeEq<DelegateT extends QueryUtil.WhereNullSafeEqDelegate<Extract<this, QueryUtil.AfterFromClause>>, ValueT extends PrimitiveExpr>(this: Extract<this, QueryUtil.AfterFromClause>, delegate: DelegateT, value: QueryUtil.AssertValidNullSafeEqTarget<Extract<this, QueryUtil.AfterFromClause>, DelegateT, ValueT>): (QueryUtil.WhereNullSafeEq<Extract<this, QueryUtil.AfterFromClause>, DelegateT, ValueT>);
-    whereEqCandidateKey<TableT extends ITable>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], key: TableUtil.CandidateKey<TableT>): QueryUtil.WhereEqCandidateKey<Extract<this, QueryUtil.AfterFromClause>>;
+    whereEqCandidateKey<TableT extends ITable>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], key: CandidateKey<TableT>): QueryUtil.WhereEqCandidateKey<Extract<this, QueryUtil.AfterFromClause>>;
     whereEqColumns<TableT extends ITable>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], columns: Partial<Row<TableT>>): QueryUtil.WhereEqColumns<Extract<this, QueryUtil.AfterFromClause>>;
     useJoin<JoinDeclT extends IJoinDeclaration>(this: Extract<this, QueryUtil.AfterFromClause>, joinDecl: QueryUtil.AssertValidJoinDeclaration<Extract<this, QueryUtil.AfterFromClause>, JoinDeclT>): (QueryUtil.UseJoin<Extract<this, QueryUtil.AfterFromClause>, JoinDeclT>);
     useJoins<ArrT extends NonEmptyTuple<IJoinDeclaration>>(this: Extract<this, QueryUtil.AfterFromClause>, ...arr: QueryUtil.AssertValidJoinDeclarationArray<Extract<this, QueryUtil.AfterFromClause>, ArrT>): (QueryUtil.UseJoins<Extract<this, QueryUtil.AfterFromClause>, ArrT>);

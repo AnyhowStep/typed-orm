@@ -1,13 +1,14 @@
 import {ITable, TableUtil} from "../../../../table";
 import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
+import {CandidateKey} from "../../../../candidate-key";
 
 export function assertExistsByCk<
     TableT extends ITable
 > (
     connection : IConnection,
     table : TableT,
-    ck : TableUtil.CandidateKey<TableT>
+    ck : CandidateKey<TableT>
 ) : (
     Promise<void>
 ) {

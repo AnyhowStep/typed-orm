@@ -1,8 +1,8 @@
 import * as sd from "schema-decorator";
 import {ITable} from "../../../table";
-import {TypeMapUtil} from "../../../type-map";
-import { Key } from "../../../key";
-import { ColumnNames, ColumnType, uniqueColumnNames, getColumnsWithName } from "../query";
+import {Key} from "../../../key";
+import {ColumnNames, ColumnType, uniqueColumnNames, getColumnsWithName} from "../query";
+import {CandidateKeyImpl} from "../../../candidate-key";
 
 export type SuperKeyUnionFromCandidateKey<
     CandidateKeyT extends Key,
@@ -10,7 +10,7 @@ export type SuperKeyUnionFromCandidateKey<
 > = (
     CandidateKeyT extends Key ?
     (
-        TypeMapUtil.UnionFromCandidateKey<CandidateKeyT, TableT["columns"]> &
+        CandidateKeyImpl<TableT["columns"], CandidateKeyT> &
         {
             [columnName in Exclude<
                 ColumnNames<TableT>,

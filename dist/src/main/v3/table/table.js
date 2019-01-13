@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const primary_key_1 = require("../primary-key");
+const candidate_key_1 = require("../candidate-key");
 const TableUtil = require("./util");
 class Table {
     constructor(data, { unaliasedQuery, }) {
@@ -25,7 +26,7 @@ class Table {
     }
     candidateKeyAssertDelegate() {
         if (this.cachedCandidateKeyAssertDelegate == undefined) {
-            this.cachedCandidateKeyAssertDelegate = (TableUtil.candidateKeyAssertDelegate(this));
+            this.cachedCandidateKeyAssertDelegate = (candidate_key_1.CandidateKeyUtil.assertDelegate(this));
         }
         return this.cachedCandidateKeyAssertDelegate;
     }

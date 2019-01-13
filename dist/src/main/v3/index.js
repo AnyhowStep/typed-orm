@@ -4,7 +4,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./aliased-table"));
-__export(require("./key"));
+__export(require("./candidate-key"));
 __export(require("./column"));
 __export(require("./column-identifier"));
 __export(require("./column-map"));
@@ -16,6 +16,7 @@ const informationSchema = require("./information-schema");
 exports.informationSchema = informationSchema;
 __export(require("./insert"));
 __export(require("./join-declaration"));
+__export(require("./key"));
 __export(require("./log"));
 __export(require("./order"));
 __export(require("./query"));

@@ -5,6 +5,7 @@ const expr_library_1 = require("../../../expr-library");
 const table_1 = require("../../../table");
 const column_identifier_ref_1 = require("../../../column-identifier-ref");
 const column_ref_1 = require("../../../column-ref");
+const candidate_key_1 = require("../../../candidate-key");
 /*
     If the CK is (id) but you pass (id, otherField) and
     somehow get it to compile, the run-time will ignore
@@ -16,7 +17,7 @@ function whereEqCandidateKey(query, table, key) {
     }
     const candidateKeyAssertDelegate = (table instanceof table_1.Table) ?
         table.candidateKeyAssertDelegate() :
-        table_1.TableUtil.candidateKeyAssertDelegate(table);
+        candidate_key_1.CandidateKeyUtil.assertDelegate(table);
     key = candidateKeyAssertDelegate(`${table.alias} CK`, key);
     const ref = column_identifier_ref_1.ColumnIdentifierRefUtil.fromJoinArray(query._joins);
     const condition = table_1.TableUtil.eqCandidateKey(table, key);

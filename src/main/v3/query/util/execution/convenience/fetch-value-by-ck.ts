@@ -3,6 +3,7 @@ import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
 import {RawExprUtil} from "../../../../raw-expr";
 import {SelectValueDelegate, AssertValidSelectValueDelegate, executeSelectValueDelegate} from "./select-value-delegate";
+import {CandidateKey} from "../../../../candidate-key";
 
 export function fetchValueByCk<
     TableT extends ITable,
@@ -10,7 +11,7 @@ export function fetchValueByCk<
 > (
     connection : IConnection,
     table : TableT,
-    ck : TableUtil.CandidateKey<TableT>,
+    ck : CandidateKey<TableT>,
     delegate : AssertValidSelectValueDelegate<TableT, DelegateT>
 ) : (
     Promise<

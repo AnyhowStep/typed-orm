@@ -2,6 +2,7 @@ import {ITable, TableUtil} from "../../../table";
 import {IConnection} from "../../../execution";
 import {SetDelegate, AssertValidSetDelegate_Hack} from "./update";
 import {UpdateAndFetchZeroOrOneResult, updateAndFetchZeroOrOne} from "./update-and-fetch-zero-or-one";
+import {CandidateKey} from "../../../candidate-key";
 
 export function updateAndFetchZeroOrOneByCk<
     TableT extends ITable,
@@ -9,7 +10,7 @@ export function updateAndFetchZeroOrOneByCk<
 > (
     connection : IConnection,
     table : TableT & TableUtil.AssertHasCandidateKey<TableT>,
-    ck : TableUtil.CandidateKey<TableT>,
+    ck : CandidateKey<TableT>,
     delegate : DelegateT
 ) : (
     AssertValidSetDelegate_Hack<

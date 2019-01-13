@@ -8,7 +8,7 @@ import {Order} from "../order";
 import {MapDelegate} from "../map-delegate";
 import {DISTINCT} from "../constants";
 import {NonEmptyTuple} from "../tuple";
-import {ITable, TableUtil} from "../table";
+import {ITable} from "../table";
 import {RawExpr, RawExprUtil} from "../raw-expr";
 import {PrimitiveExpr, NonNullPrimitiveExpr} from "../primitive-expr";
 import {IJoinDeclaration} from "../join-declaration";
@@ -17,6 +17,7 @@ import {InsertSelectRowDelegate} from "../insert-select";
 import {UpdateUtil, UpdatableQuery} from "../update";
 import {DeletableQuery, DeleteUtil, Delete, DeleteModifier} from "../delete";
 import {Row} from "../row";
+import {CandidateKey} from "../candidate-key";
 
 export interface UnionQuery {
     //Defaults to true
@@ -1430,7 +1431,7 @@ export class Query<DataT extends QueryData> {
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
         table : TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
-        key : TableUtil.CandidateKey<TableT>
+        key : CandidateKey<TableT>
     ) : QueryUtil.WhereEqCandidateKey<Extract<this, QueryUtil.AfterFromClause>> {
         return QueryUtil.whereEqCandidateKey(
             this,
