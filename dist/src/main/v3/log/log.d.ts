@@ -3,7 +3,7 @@ import { SortDirection } from "../order";
 import { IConnection } from "../execution";
 import { IColumn } from "../column";
 import { IJoinDeclaration } from "../join-declaration";
-import { TypeMapUtil } from "../type-map";
+import { Row } from "../row";
 import { TrackRow } from "../track-row";
 import * as LogUtil from "./util";
 export interface LogData {
@@ -132,8 +132,8 @@ export declare class Log<DataT extends LogData> implements ILog<DataT> {
     exists(this: Extract<this, LogNoTrackedDefaults>, connection: IConnection, entityIdentifier: EntityIdentifier<Extract<this, LogNoTrackedDefaults>>): Promise<boolean>;
     fetchDefault(this: Extract<this, CompletedLog>, connection: IConnection, entityIdentifier: EntityIdentifier<Extract<this, CompletedLog>>): Promise<PreviousRow<Extract<this, CompletedLog>>>;
     fetchLatestOrDefault(this: Extract<this, CompletedLog>, connection: IConnection, entityIdentifier: EntityIdentifier<Extract<this, CompletedLog>>): Promise<LogUtil.FetchLatestOrDefaultResult<Extract<this, CompletedLog>>>;
-    fetchLatestOrError(this: Extract<this, LogNoTrackedDefaults>, connection: IConnection, entityIdentifier: EntityIdentifier<Extract<this, LogNoTrackedDefaults>>): Promise<TypeMapUtil.FromTable<Extract<this, LogNoTrackedDefaults>["table"]>>;
-    fetchLatestOrUndefined(this: Extract<this, LogNoTrackedDefaults>, connection: IConnection, entityIdentifier: EntityIdentifier<Extract<this, LogNoTrackedDefaults>>): Promise<TypeMapUtil.FromTable<Extract<this, LogNoTrackedDefaults>["table"]> | undefined>;
+    fetchLatestOrError(this: Extract<this, LogNoTrackedDefaults>, connection: IConnection, entityIdentifier: EntityIdentifier<Extract<this, LogNoTrackedDefaults>>): Promise<Row<Extract<this, LogNoTrackedDefaults>["table"]>>;
+    fetchLatestOrUndefined(this: Extract<this, LogNoTrackedDefaults>, connection: IConnection, entityIdentifier: EntityIdentifier<Extract<this, LogNoTrackedDefaults>>): Promise<Row<Extract<this, LogNoTrackedDefaults>["table"]> | undefined>;
     fetchLatestOrderOrError(this: Extract<this, LogNoTrackedDefaults>, connection: IConnection, entityIdentifier: EntityIdentifier<Extract<this, LogNoTrackedDefaults>>): Promise<ReturnType<Extract<this, LogNoTrackedDefaults>["latestOrder"][0]["assertDelegate"]>>;
     fetchLatestOrderOrUndefined(this: Extract<this, LogNoTrackedDefaults>, connection: IConnection, entityIdentifier: EntityIdentifier<Extract<this, LogNoTrackedDefaults>>): Promise<ReturnType<Extract<this, LogNoTrackedDefaults>["latestOrder"][0]["assertDelegate"]> | undefined>;
     fetchLatestValueOrDefault<DelegateT extends LogUtil.LatestValueDelegate<Extract<this, CompletedLog>>>(this: Extract<this, CompletedLog>, connection: IConnection, entityIdentifier: EntityIdentifier<Extract<this, CompletedLog>>, delegate: DelegateT): Promise<ReturnType<Extract<this, CompletedLog>["table"]["columns"][ReturnType<DelegateT>["name"]]["assertDelegate"]>>;

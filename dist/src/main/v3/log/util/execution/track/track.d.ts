@@ -1,10 +1,10 @@
 import { CompletedLog, EntityIdentifier, InsertableLog } from "../../../log";
-import { TypeMapUtil } from "../../../../type-map";
+import { Row } from "../../../../row";
 import { IConnection } from "../../../../execution";
 import { TrackRow } from "../../../../track-row";
 export declare type TrackResult<LogT extends InsertableLog> = ({
     changed: true;
-    row: TypeMapUtil.FromTable<LogT["table"]>;
+    row: Row<LogT["table"]>;
 } | {
     changed: false;
     row: undefined;

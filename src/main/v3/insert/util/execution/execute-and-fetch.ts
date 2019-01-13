@@ -2,7 +2,7 @@ import {TableUtil} from "../../../table";
 import {ExecutableInsert} from "../../insert";
 import {IConnection} from "../../../execution";
 import {execute} from "./execute";
-import {TypeMapUtil} from "../../../type-map";
+import {Row} from "../../../row";
 import {QueryUtil} from "../../../query";
 
 export async function executeAndFetch<
@@ -14,7 +14,7 @@ export async function executeAndFetch<
         TableUtil.AssertHasCandidateKey<InsertT["_table"]>
     )
 ) : (
-    Promise<TypeMapUtil.FromTable<InsertT["_table"]>>
+    Promise<Row<InsertT["_table"]>>
 ) {
     return connection.transactionIfNotInOne(async (connection) => {
         const result = await execute(insert, connection);

@@ -15,7 +15,7 @@ import { IConnection } from "../execution";
 import { InsertSelectRowDelegate } from "../insert-select";
 import { UpdateUtil, UpdatableQuery } from "../update";
 import { DeletableQuery, DeleteUtil, Delete, DeleteModifier } from "../delete";
-import { TypeMapUtil } from "../type-map";
+import { Row } from "../row";
 export interface UnionQuery {
     readonly distinct: boolean;
     readonly query: QueryUtil.AfterSelectClause;
@@ -123,7 +123,7 @@ export declare class Query<DataT extends QueryData> {
     whereEq<DelegateT extends QueryUtil.WhereEqDelegate<Extract<this, QueryUtil.AfterFromClause>>, ValueT extends NonNullPrimitiveExpr>(this: Extract<this, QueryUtil.AfterFromClause>, delegate: DelegateT, value: QueryUtil.AssertValidEqTarget<Extract<this, QueryUtil.AfterFromClause>, DelegateT, ValueT>): (QueryUtil.WhereEq<Extract<this, QueryUtil.AfterFromClause>, DelegateT, ValueT>);
     whereNullSafeEq<DelegateT extends QueryUtil.WhereNullSafeEqDelegate<Extract<this, QueryUtil.AfterFromClause>>, ValueT extends PrimitiveExpr>(this: Extract<this, QueryUtil.AfterFromClause>, delegate: DelegateT, value: QueryUtil.AssertValidNullSafeEqTarget<Extract<this, QueryUtil.AfterFromClause>, DelegateT, ValueT>): (QueryUtil.WhereNullSafeEq<Extract<this, QueryUtil.AfterFromClause>, DelegateT, ValueT>);
     whereEqCandidateKey<TableT extends ITable>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], key: TableUtil.CandidateKey<TableT>): QueryUtil.WhereEqCandidateKey<Extract<this, QueryUtil.AfterFromClause>>;
-    whereEqColumns<TableT extends ITable>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], columns: Partial<TypeMapUtil.FromTable<TableT>>): QueryUtil.WhereEqColumns<Extract<this, QueryUtil.AfterFromClause>>;
+    whereEqColumns<TableT extends ITable>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], columns: Partial<Row<TableT>>): QueryUtil.WhereEqColumns<Extract<this, QueryUtil.AfterFromClause>>;
     useJoin<JoinDeclT extends IJoinDeclaration>(this: Extract<this, QueryUtil.AfterFromClause>, joinDecl: QueryUtil.AssertValidJoinDeclaration<Extract<this, QueryUtil.AfterFromClause>, JoinDeclT>): (QueryUtil.UseJoin<Extract<this, QueryUtil.AfterFromClause>, JoinDeclT>);
     useJoins<ArrT extends NonEmptyTuple<IJoinDeclaration>>(this: Extract<this, QueryUtil.AfterFromClause>, ...arr: QueryUtil.AssertValidJoinDeclarationArray<Extract<this, QueryUtil.AfterFromClause>, ArrT>): (QueryUtil.UseJoins<Extract<this, QueryUtil.AfterFromClause>, ArrT>);
     assertExists(this: Extract<this, QueryUtil.MainQuery>, connection: IConnection): Promise<void>;

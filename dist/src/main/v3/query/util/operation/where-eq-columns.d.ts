@@ -2,7 +2,7 @@ import { Query } from "../../query";
 import { AfterFromClause } from "../predicate";
 import { IAnonymousTypedExpr } from "../../../expr";
 import { ITable } from "../../../table";
-import { TypeMapUtil } from "../../../type-map";
+import { Row } from "../../../row";
 export declare type WhereEqColumns<QueryT extends AfterFromClause> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];
@@ -19,5 +19,5 @@ export declare type WhereEqColumns<QueryT extends AfterFromClause> = (Query<{
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare function whereEqColumns<QueryT extends AfterFromClause, TableT extends ITable>(query: QueryT, table: TableT & QueryT["_joins"][number]["aliasedTable"], columns: Partial<TypeMapUtil.FromTable<TableT>>): WhereEqColumns<QueryT>;
+export declare function whereEqColumns<QueryT extends AfterFromClause, TableT extends ITable>(query: QueryT, table: TableT & QueryT["_joins"][number]["aliasedTable"], columns: Partial<Row<TableT>>): WhereEqColumns<QueryT>;
 //# sourceMappingURL=where-eq-columns.d.ts.map

@@ -1,5 +1,5 @@
 import {ITable, TableUtil} from "../../../../table";
-import {TypeMapUtil} from "../../../../type-map";
+import {Row} from "../../../../row";
 import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
 
@@ -9,7 +9,7 @@ export function fetchOneBySk<
     connection : IConnection,
     table : TableT,
     sk : TableUtil.SuperKey<TableT>
-) : Promise<TypeMapUtil.FromTable<TableT>> {
+) : Promise<Row<TableT>> {
     return QueryUtil.newInstance()
         .from(table as any)
         .where(() => TableUtil.eqSuperKey(table, sk) as any)

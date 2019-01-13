@@ -1,5 +1,5 @@
 import {ITable, TableUtil} from "../../../../table";
-import {TypeMapUtil} from "../../../../type-map";
+import {Row} from "../../../../row";
 import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
 import { CandidateKey } from "../../../../candidate-key";
@@ -10,7 +10,7 @@ export function fetchZeroOrOneByPk<
     connection : IConnection,
     table : TableT,
     pk : TableUtil.PrimaryKey<TableT>
-) : Promise<TypeMapUtil.FromTable<TableT>> {
+) : Promise<Row<TableT>> {
     return QueryUtil.newInstance()
         .from(table as any)
         .where(() => TableUtil.eqPrimaryKey(table, pk) as any)

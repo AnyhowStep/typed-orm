@@ -5,7 +5,7 @@ import {and} from "../../../expr-library";
 import {ITable, TableUtil} from "../../../table";
 import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
 import {ColumnRefUtil} from "../../../column-ref";
-import {TypeMapUtil} from "../../../type-map";
+import {Row} from "../../../row";
 
 export type WhereEqColumns<
     QueryT extends AfterFromClause,
@@ -43,7 +43,7 @@ export function whereEqColumns<
 > (
     query : QueryT,
     table : TableT & QueryT["_joins"][number]["aliasedTable"],
-    columns : Partial<TypeMapUtil.FromTable<TableT>>
+    columns : Partial<Row<TableT>>
 ) : WhereEqColumns<QueryT> {
     if (query._joins == undefined) {
         throw new Error(`Cannot use whereEqColumns() before FROM clause`);

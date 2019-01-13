@@ -4,13 +4,13 @@ import * as exprLib from "../../../expr-library";
 import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil} from "../../../column";
 import {Expr} from "../../../expr";
-import { TypeMapUtil } from "../../../type-map";
+import {Row} from "../../../row";
 
 export function eqColumns<
     TableT extends ITable
 > (
     table : TableT,
-    columns : Partial<TypeMapUtil.FromTable<TableT>>
+    columns : Partial<Row<TableT>>
 ) : (
     Expr<{
         usedRef : ColumnRefUtil.FromColumnArray<

@@ -1,5 +1,5 @@
 import {CompletedLog, EntityIdentifier, InsertableLog} from "../../../log";
-import {TypeMapUtil} from "../../../../type-map";
+import {Row} from "../../../../row";
 import {IConnection} from "../../../../execution";
 import {InsertUtil} from "../../../../insert";
 import {TrackRow, TrackRowUtil} from "../../../../track-row";
@@ -8,7 +8,7 @@ import {fetchLatestOrDefault} from "../fetch-latest-or-default";
 export type TrackResult<LogT extends InsertableLog> = (
     {
         changed : true,
-        row : TypeMapUtil.FromTable<LogT["table"]>,
+        row : Row<LogT["table"]>,
     } |
     {
         changed : false,

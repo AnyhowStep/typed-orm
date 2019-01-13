@@ -1,5 +1,5 @@
 import { LogNoTrackedDefaults, EntityIdentifier } from "../../log";
-import { TypeMapUtil } from "../../../type-map";
+import { Row } from "../../../row";
 import { IConnection } from "../../../execution";
-export declare function fetchLatestOrUndefined<LogT extends LogNoTrackedDefaults>(log: LogT, connection: IConnection, entityIdentifier: EntityIdentifier<LogT>): Promise<TypeMapUtil.FromTable<LogT["table"]> | undefined>;
+export declare function fetchLatestOrUndefined<LogT extends LogNoTrackedDefaults>(log: LogT, connection: IConnection, entityIdentifier: EntityIdentifier<LogT>): Promise<Row<LogT["table"]> | undefined>;
 //# sourceMappingURL=fetch-latest-or-undefined.d.ts.map

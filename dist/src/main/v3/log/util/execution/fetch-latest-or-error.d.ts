@@ -1,5 +1,5 @@
 import { EntityIdentifier, LogNoTrackedDefaults } from "../../log";
-import { TypeMapUtil } from "../../../type-map";
+import { Row } from "../../../row";
 import { IConnection } from "../../../execution";
-export declare function fetchLatestOrError<LogT extends LogNoTrackedDefaults>(log: LogT, connection: IConnection, entityIdentifier: EntityIdentifier<LogT>): Promise<TypeMapUtil.FromTable<LogT["table"]>>;
+export declare function fetchLatestOrError<LogT extends LogNoTrackedDefaults>(log: LogT, connection: IConnection, entityIdentifier: EntityIdentifier<LogT>): Promise<Row<LogT["table"]>>;
 //# sourceMappingURL=fetch-latest-or-error.d.ts.map

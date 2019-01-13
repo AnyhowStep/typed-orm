@@ -3,7 +3,7 @@ import {SortDirection} from "../order";
 import {IConnection} from "../execution";
 import {IColumn} from "../column";
 import {IJoinDeclaration} from "../join-declaration";
-import {TypeMapUtil} from "../type-map";
+import {Row} from "../row";
 import {TrackRow} from "../track-row";
 import * as LogUtil from "./util";
 
@@ -390,14 +390,14 @@ export class Log<DataT extends LogData> implements ILog<DataT> {
         this : Extract<this, LogNoTrackedDefaults>,
         connection : IConnection,
         entityIdentifier : EntityIdentifier<Extract<this, LogNoTrackedDefaults>>
-    ) : Promise<TypeMapUtil.FromTable<Extract<this, LogNoTrackedDefaults>["table"]>> {
+    ) : Promise<Row<Extract<this, LogNoTrackedDefaults>["table"]>> {
         return LogUtil.fetchLatestOrError(this, connection, entityIdentifier);
     }
     fetchLatestOrUndefined (
         this : Extract<this, LogNoTrackedDefaults>,
         connection : IConnection,
         entityIdentifier : EntityIdentifier<Extract<this, LogNoTrackedDefaults>>
-    ) : Promise<TypeMapUtil.FromTable<Extract<this, LogNoTrackedDefaults>["table"]>|undefined> {
+    ) : Promise<Row<Extract<this, LogNoTrackedDefaults>["table"]>|undefined> {
         return LogUtil.fetchLatestOrUndefined(this, connection, entityIdentifier);
     }
 

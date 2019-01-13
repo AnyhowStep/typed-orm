@@ -1,5 +1,5 @@
 import {CompletedLog, EntityIdentifier, PreviousRow} from "../../log";
-import {TypeMapUtil} from "../../../type-map";
+import {Row} from "../../../row";
 import {IConnection} from "../../../execution";
 import {fetchLatestOrUndefined} from "./fetch-latest-or-undefined";
 import {fetchDefault} from "./fetch-default";
@@ -7,7 +7,7 @@ import {fetchDefault} from "./fetch-default";
 export type FetchLatestOrDefaultResult<LogT extends CompletedLog> = (
     {
         isDefault : false,
-        latest : TypeMapUtil.FromTable<LogT["table"]>,
+        latest : Row<LogT["table"]>,
         row : PreviousRow<LogT>,
     } |
     {

@@ -1,6 +1,6 @@
 import {LogNoTrackedDefaults, EntityIdentifier} from "../../log";
 import {QueryUtil} from "../../../query";
-import {TypeMapUtil} from "../../../type-map";
+import {Row} from "../../../row";
 import {latest} from "./of-entity-identifier";
 import {IConnection} from "../../../execution";
 
@@ -8,7 +8,7 @@ export function fetchLatestOrUndefined<LogT extends LogNoTrackedDefaults> (
     log : LogT,
     connection : IConnection,
     entityIdentifier : EntityIdentifier<LogT>
-) : Promise<TypeMapUtil.FromTable<LogT["table"]>|undefined> {
+) : Promise<Row<LogT["table"]>|undefined> {
     return QueryUtil
         .select(
             latest(log, entityIdentifier) as any,

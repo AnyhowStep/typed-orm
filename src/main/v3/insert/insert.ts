@@ -2,7 +2,7 @@ import {ITable, TableUtil} from "../table"
 import {RawExprNoUsedRef} from "../raw-expr";
 import * as InsertUtil from "./util";
 import {IConnection} from "../execution";
-import {TypeMapUtil} from "../type-map";
+import {Row} from "../row";
 
 export type InsertRow<TableT extends ITable> = (
     {
@@ -94,7 +94,7 @@ export class Insert<DataT extends InsertData> implements IInsert<DataT> {
             TableUtil.AssertHasCandidateKey<this["_table"]>
         )
     ) : (
-        Promise<TypeMapUtil.FromTable<this["_table"]>>
+        Promise<Row<this["_table"]>>
     ) {
         return InsertUtil.executeAndFetch(this, connection);
     }
