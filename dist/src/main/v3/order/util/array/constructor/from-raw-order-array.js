@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const order_1 = require("../../order");
+const order_1 = require("../../../order");
 function fromRawOrderArray(rawOrders) {
     return rawOrders.map((rawOrder) => {
         if (rawOrder instanceof Array) {
@@ -13,4 +13,4 @@ function fromRawOrderArray(rawOrders) {
     });
 }
 exports.fromRawOrderArray = fromRawOrderArray;
-//# sourceMappingURL=constructor.js.map
+//# sourceMappingURL=from-raw-order-array.js.map

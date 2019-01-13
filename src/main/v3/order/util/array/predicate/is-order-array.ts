@@ -1,5 +1,5 @@
-import {Order} from "../../order";
-import {isOrder} from "../predicate";
+import {Order} from "../../../order";
+import {isOrder} from "../../predicate";
 
 export function isOrderArray (raw : any) : raw is Order[] {
     if (!(raw instanceof Array)) {

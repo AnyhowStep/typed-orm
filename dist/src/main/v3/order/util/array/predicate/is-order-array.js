@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const predicate_1 = require("../predicate");
+const predicate_1 = require("../../predicate");
 function isOrderArray(raw) {
     if (!(raw instanceof Array)) {
         return false;
@@ -13,4 +13,4 @@ function isOrderArray(raw) {
     return true;
 }
 exports.isOrderArray = isOrderArray;
-//# sourceMappingURL=predicate.js.map
+//# sourceMappingURL=is-order-array.js.map
