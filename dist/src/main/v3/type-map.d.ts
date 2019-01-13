@@ -1,8 +1,10 @@
 import * as sd from "schema-decorator";
 import { CandidateKey } from "./candidate-key";
 import { ColumnMap } from "./column-map";
-import { ITable } from "./table";
 export declare namespace TypeMapUtil {
+    type FromColumnMap<MapT extends ColumnMap> = (MapT extends ColumnMap ? {
+        readonly [columnName in Extract<keyof MapT, string>]: (ReturnType<MapT[columnName]["assertDelegate"]>);
+    } : never);
     type UnionFromCandidateKey<CandidateKeyT extends CandidateKey, ColumnMapT extends ColumnMap> = (CandidateKeyT extends CandidateKey ? {
         readonly [columnName in Extract<keyof ColumnMapT, CandidateKeyT[number]>]: (ReturnType<ColumnMapT[columnName]["assertDelegate"]>);
     } : never);
@@ -19,13 +21,5 @@ export declare namespace TypeMapUtil {
     type SuperKeyUnionFromCandidateKeyArray<CandidateKeyArrayT extends CandidateKey[], ColumnMapT extends ColumnMap> = (SuperKeyUnionFromCandidateKey<CandidateKeyArrayT[number], ColumnMapT>);
     type SuperKeyAssertDelegateFromCandidateKeyArray<CandidateKeyArrayT extends CandidateKey[], ColumnMapT extends ColumnMap> = (sd.AssertDelegate<SuperKeyUnionFromCandidateKeyArray<CandidateKeyArrayT, ColumnMapT>>);
     function superKeyAssertDelegateFromCandidateKeyArray<CandidateKeyArrayT extends CandidateKey[], ColumnMapT extends ColumnMap>(candidateKeyTuple: CandidateKeyArrayT, columnMap: ColumnMapT): (SuperKeyAssertDelegateFromCandidateKeyArray<CandidateKeyArrayT, ColumnMapT>);
-    type FromTable<TableT extends ITable> = ({
-        readonly [columnName in Extract<keyof TableT["columns"], string>]: (ReturnType<TableT["columns"][columnName]["assertDelegate"]>);
-    });
-    type FromPrimaryKey<PrimaryKeyT extends CandidateKey, ColumnMapT extends ColumnMap> = (PrimaryKeyT extends CandidateKey ? {
-        readonly [columnName in Extract<keyof ColumnMapT, PrimaryKeyT[number]>]: (ReturnType<ColumnMapT[columnName]["assertDelegate"]>);
-    } : never);
-    type AssertDelegateFromPrimaryKey<PrimaryKeyT extends CandidateKey, ColumnMapT extends ColumnMap> = (sd.AssertDelegate<FromPrimaryKey<PrimaryKeyT, ColumnMapT>>);
-    function assertDelegateFromPrimaryKey<PrimaryKeyT extends CandidateKey, ColumnMapT extends ColumnMap>(primaryKey: PrimaryKeyT, columnMap: ColumnMapT): (AssertDelegateFromPrimaryKey<PrimaryKeyT, ColumnMapT>);
 }
 //# sourceMappingURL=type-map.d.ts.map

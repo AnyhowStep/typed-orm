@@ -1,9 +1,17 @@
 import * as sd from "schema-decorator";
 import {CandidateKey} from "./candidate-key";
 import {ColumnMap} from "./column-map";
-import { ITable } from "./table";
 
 export namespace TypeMapUtil {
+    export type FromColumnMap<MapT extends ColumnMap> = (
+        MapT extends ColumnMap ?
+        {
+            readonly [columnName in Extract<keyof MapT, string>] : (
+                ReturnType<MapT[columnName]["assertDelegate"]>
+            )
+        } :
+        never
+    );
     export type UnionFromCandidateKey<
         CandidateKeyT extends CandidateKey,
         ColumnMapT extends ColumnMap
@@ -190,55 +198,5 @@ export namespace TypeMapUtil {
                     columnMap
                 ))
         ) as any;
-    }
-
-    export type FromPrimaryKey<
-        PrimaryKeyT extends CandidateKey,
-        ColumnMapT extends ColumnMap
-    > = (
-        PrimaryKeyT extends CandidateKey ?
-        {
-            readonly [columnName in Extract<
-                keyof ColumnMapT,
-                PrimaryKeyT[number]
-            >] : (
-                ReturnType<ColumnMapT[columnName]["assertDelegate"]>
-            )
-        } :
-        never
-    );
-    export type AssertDelegateFromPrimaryKey<
-        PrimaryKeyT extends CandidateKey,
-        ColumnMapT extends ColumnMap
-    > = (
-        sd.AssertDelegate<
-            FromPrimaryKey<PrimaryKeyT, ColumnMapT>
-        >
-    );
-    export function assertDelegateFromPrimaryKey<
-        PrimaryKeyT extends CandidateKey,
-        ColumnMapT extends ColumnMap
-    > (
-        primaryKey : PrimaryKeyT,
-        columnMap : ColumnMapT
-    ) : (
-        AssertDelegateFromPrimaryKey<PrimaryKeyT, ColumnMapT>
-    ) {
-        const fields : sd.Field<any, any>[] = [];
-        for (let columnName in columnMap) {
-            /*
-                It's possible that this is not an IColumnUtil.
-                But, in general, if we pass in candidateKey and columnMap
-                without any outside hack-ery, this should be correct.
-            */
-            const column = columnMap[columnName];
-            if (primaryKey.indexOf(column.name) >= 0) {
-                fields.push(sd.field(
-                    column.name,
-                    column.assertDelegate
-                ));
-            }
-        }
-        return sd.schema(...fields) as any;
     }
 }

@@ -18,7 +18,6 @@ __export(require("./eq-candidate-key"));
 __export(require("./eq-columns"));
 __export(require("./eq-primary-key"));
 __export(require("./eq-super-key"));
-__export(require("./primary-key-assert-delegate"));
 __export(require("./set-alias"));
 __export(require("./set-auto-increment"));
 __export(require("./set-database-name"));

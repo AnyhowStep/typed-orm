@@ -13,7 +13,6 @@ export * from "./eq-candidate-key";
 export * from "./eq-columns";
 export * from "./eq-primary-key";
 export * from "./eq-super-key";
-export * from "./primary-key-assert-delegate";
 export * from "./set-alias";
 export * from "./set-auto-increment";
 export * from "./set-database-name";

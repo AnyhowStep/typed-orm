@@ -1,12 +1,11 @@
 import * as sd from "schema-decorator";
 import {Table, ITable} from "../../table";
 import * as exprLib from "../../../expr-library";
-import {primaryKeyAssertDelegate} from "./primary-key-assert-delegate";
-import {PrimaryKey} from "./primary-key-assert-delegate";
 import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil} from "../../../column";
 import {Expr} from "../../../expr";
 import {CandidateKey} from "../../../candidate-key";
+import {PrimaryKey, PrimaryKeyUtil} from "../../../primary-key";
 
 export function eqPrimaryKey<
     TableT extends ITable & { primaryKey : CandidateKey }
@@ -23,7 +22,7 @@ export function eqPrimaryKey<
 ) {
     const assertDelegate = (table instanceof Table) ?
         (table as any).primaryKeyAssertDelegate() :
-        primaryKeyAssertDelegate(table);
+        PrimaryKeyUtil.assertDelegate(table);
 
     ck = assertDelegate(
         `${table.alias}.ck`,

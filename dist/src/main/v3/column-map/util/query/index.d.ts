@@ -1,3 +1,4 @@
+export * from "./assert-delegate";
 export * from "./column-names";
 export * from "./find-with-column-name";
 export * from "./find-with-table-alias";

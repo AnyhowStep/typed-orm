@@ -4,6 +4,7 @@ import {IConnection} from "../../../../execution";
 import {RawExprUtil} from "../../../../raw-expr";
 import {SelectValueDelegate, AssertValidSelectValueDelegate, executeSelectValueDelegate} from "./select-value-delegate";
 import {CandidateKey} from "../../../../candidate-key";
+import {PrimaryKey} from "../../../../primary-key";
 
 export function fetchValueByPk<
     TableT extends ITable & { primaryKey : CandidateKey },
@@ -11,7 +12,7 @@ export function fetchValueByPk<
 > (
     connection : IConnection,
     table : TableT,
-    pk : TableUtil.PrimaryKey<TableT>,
+    pk : PrimaryKey<TableT>,
     delegate : AssertValidSelectValueDelegate<TableT, DelegateT>
 ) : (
     Promise<

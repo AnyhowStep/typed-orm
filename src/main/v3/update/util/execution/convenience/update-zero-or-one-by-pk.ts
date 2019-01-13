@@ -3,6 +3,7 @@ import {IConnection, UpdateZeroOrOneResult} from "../../../../execution";
 import {SingleTableSetDelegateFromTable, AssertValidSingleTableSetDelegateFromTable_Hack} from "../../constructor";
 import {QueryUtil} from "../../../../query";
 import {CandidateKey} from "../../../../candidate-key";
+import {PrimaryKey} from "../../../../primary-key";
 
 export function updateZeroOrOneByPk<
     TableT extends ITable & { primaryKey : CandidateKey },
@@ -10,7 +11,7 @@ export function updateZeroOrOneByPk<
 > (
     connection : IConnection,
     table : TableT,
-    pk : TableUtil.PrimaryKey<TableT>,
+    pk : PrimaryKey<TableT>,
     delegate : DelegateT
 ) : (
     AssertValidSingleTableSetDelegateFromTable_Hack<

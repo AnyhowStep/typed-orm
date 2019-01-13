@@ -3,6 +3,7 @@ import {IConnection} from "../../../execution";
 import {SetDelegate, AssertValidSetDelegate_Hack} from "./update";
 import {UpdateAndFetchOneResult, updateAndFetchOne} from "./update-and-fetch-one";
 import { CandidateKey } from "../../../candidate-key";
+import {PrimaryKey} from "../../../primary-key";
 
 export function updateAndFetchOneByPk<
     TableT extends ITable & { primaryKey : CandidateKey },
@@ -10,7 +11,7 @@ export function updateAndFetchOneByPk<
 > (
     connection : IConnection,
     table : TableT,
-    pk : TableUtil.PrimaryKey<TableT>,
+    pk : PrimaryKey<TableT>,
     delegate : DelegateT
 ) : (
     AssertValidSetDelegate_Hack<

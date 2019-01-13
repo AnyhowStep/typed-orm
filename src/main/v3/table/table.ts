@@ -3,6 +3,7 @@ import {CandidateKey} from "../candidate-key";
 import {AliasedTableData, IAliasedTable} from "../aliased-table";
 import {AssertMap} from "../assert-map";
 import {QueryTree} from "../query-tree";
+import {PrimaryKeyUtil} from "../primary-key";
 import * as TableUtil from "./util";
 
 export interface TableData extends AliasedTableData {
@@ -135,6 +136,10 @@ export type DeletableTable = (
     ITable &
     { deleteAllowed : true }
 );
+export type TableWithPk = (
+    ITable &
+    { primaryKey : CandidateKey }
+);
 
 export class Table<DataT extends TableData> implements ITable<DataT> {
     readonly usedRef : DataT["usedRef"];
@@ -220,20 +225,20 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     //A cache to re-use the assert delegate
     private cachedPrimaryKeyAssertDelegate : (
         undefined |
-        TableUtil.PrimaryKeyAssertDelegate<
+        PrimaryKeyUtil.AssertDelegate<
             Extract<this, ITable & { primaryKey : CandidateKey }>
         >
     );
     primaryKeyAssertDelegate (
         this : Extract<this, ITable & { primaryKey : CandidateKey }>
     ) : (
-        TableUtil.PrimaryKeyAssertDelegate<
+        PrimaryKeyUtil.AssertDelegate<
             Extract<this, ITable & { primaryKey : CandidateKey }>
         >
     ) {
         if (this.cachedPrimaryKeyAssertDelegate == undefined) {
             this.cachedPrimaryKeyAssertDelegate = (
-                TableUtil.primaryKeyAssertDelegate(this)
+                PrimaryKeyUtil.assertDelegate(this)
             );
         }
         return this.cachedPrimaryKeyAssertDelegate;

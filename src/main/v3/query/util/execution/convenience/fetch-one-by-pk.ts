@@ -2,14 +2,15 @@ import {ITable, TableUtil} from "../../../../table";
 import {Row} from "../../../../row";
 import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
-import { CandidateKey } from "../../../../candidate-key";
+import {CandidateKey} from "../../../../candidate-key";
+import {PrimaryKey} from "../../../../primary-key";
 
 export function fetchOneByPk<
     TableT extends ITable & { primaryKey : CandidateKey }
 > (
     connection : IConnection,
     table : TableT,
-    pk : TableUtil.PrimaryKey<TableT>
+    pk : PrimaryKey<TableT>
 ) : Promise<Row<TableT>> {
     return QueryUtil.newInstance()
         .from(table as any)

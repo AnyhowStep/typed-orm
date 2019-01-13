@@ -2,13 +2,14 @@ import {ITable, TableUtil} from "../../../../table";
 import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
 import {CandidateKey} from "../../../../candidate-key";
+import {PrimaryKey} from "../../../../primary-key";
 
 export function existsByPk<
     TableT extends ITable & { primaryKey : CandidateKey }
 > (
     connection : IConnection,
     table : TableT,
-    pk : TableUtil.PrimaryKey<TableT>
+    pk : PrimaryKey<TableT>
 ) : (
     Promise<boolean>
 ) {

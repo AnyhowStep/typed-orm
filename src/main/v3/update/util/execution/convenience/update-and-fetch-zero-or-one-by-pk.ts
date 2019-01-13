@@ -5,6 +5,7 @@ import {QueryUtil} from "../../../../query";
 import {updateZeroOrOneByPk} from "./update-zero-or-one-by-pk";
 import {UpdateAndFetchZeroOrOneResult} from "./update-and-fetch-zero-or-one";
 import {CandidateKey} from "../../../../candidate-key";
+import {PrimaryKey} from "../../../../primary-key";
 
 export function updateAndFetchZeroOrOneByPk<
     TableT extends ITable & { primaryKey : CandidateKey },
@@ -12,7 +13,7 @@ export function updateAndFetchZeroOrOneByPk<
 > (
     connection : IConnection,
     table : TableT & TableUtil.AssertHasCandidateKey<TableT>,
-    pk : TableUtil.PrimaryKey<TableT>,
+    pk : PrimaryKey<TableT>,
     delegate : DelegateT
 ) : (
     AssertValidSingleTableSetDelegateFromTable_Hack<

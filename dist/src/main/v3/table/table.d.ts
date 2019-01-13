@@ -3,6 +3,7 @@ import { CandidateKey } from "../candidate-key";
 import { AliasedTableData, IAliasedTable } from "../aliased-table";
 import { AssertMap } from "../assert-map";
 import { QueryTree } from "../query-tree";
+import { PrimaryKeyUtil } from "../primary-key";
 import * as TableUtil from "./util";
 export interface TableData extends AliasedTableData {
     readonly autoIncrement: undefined | string;
@@ -40,6 +41,9 @@ export declare type InsertableTable = (ITable & {
 export declare type DeletableTable = (ITable & {
     deleteAllowed: true;
 });
+export declare type TableWithPk = (ITable & {
+    primaryKey: CandidateKey;
+});
 export declare class Table<DataT extends TableData> implements ITable<DataT> {
     readonly usedRef: DataT["usedRef"];
     readonly alias: DataT["alias"];
@@ -67,7 +71,7 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     private cachedPrimaryKeyAssertDelegate;
     primaryKeyAssertDelegate(this: Extract<this, ITable & {
         primaryKey: CandidateKey;
-    }>): (TableUtil.PrimaryKeyAssertDelegate<Extract<this, ITable & {
+    }>): (PrimaryKeyUtil.AssertDelegate<Extract<this, ITable & {
         primaryKey: CandidateKey;
     }>>);
     setAlias<NewAliasT extends string>(newAlias: NewAliasT): TableUtil.SetAlias<this, NewAliasT>;
