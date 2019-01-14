@@ -5,6 +5,7 @@ import {AssertMap} from "../assert-map";
 import {FromAssertMap, fromAssertMap} from "./util";
 import {FromFieldTuple, fromFieldTuple} from "./util";
 import {FromTable, fromTable} from "./util";
+import {FromName, fromName} from "./util";
 
 export function table<
     NameT extends string,
@@ -24,6 +25,11 @@ export function table<
 ) : (
     FromFieldTuple<NameT, FieldsT>
 );
+export function table<NameT extends string> (
+    name : NameT
+) : (
+    FromName<NameT>
+);
 export function table<TableT extends ITable> (
     table : TableT
 ) : (
@@ -31,7 +37,11 @@ export function table<TableT extends ITable> (
 );
 export function table (arg0 : any, arg1? : any) {
     if (arg1 == undefined) {
-        return fromTable(arg0);
+        if (typeof arg0 == "string") {
+            return fromName(arg0);
+        } else {
+            return fromTable(arg0);
+        }
     }
 
     if (arg1 instanceof Array) {

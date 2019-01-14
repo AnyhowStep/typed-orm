@@ -5,5 +5,6 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./from-assert-map"));
 __export(require("./from-field-tuple"));
+__export(require("./from-name"));
 __export(require("./from-table"));
 //# sourceMappingURL=index.js.map
