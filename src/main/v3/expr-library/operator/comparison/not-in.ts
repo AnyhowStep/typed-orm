@@ -2,7 +2,7 @@ import * as sd from "schema-decorator";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
-import {NonNullPrimitiveExpr, isNonNullPrimitiveExprArray} from "../../../primitive-expr";
+import {NonNullPrimitiveExpr, PrimitiveExprUtil} from "../../../primitive-expr";
 import {Tuple} from "../../../tuple";
 import {FunctionCall} from "../../../query-tree";
 import * as dataType from "../../../data-type";
@@ -117,7 +117,7 @@ export function notIn<
     }>
 );
 export function notIn (left : RawExpr<NonNullPrimitiveExpr>, ...args : any[]) {
-    if (isNonNullPrimitiveExprArray(args)) {
+    if (PrimitiveExprUtil.isNonNullPrimitiveExprArray(args)) {
         return notInPrimitiveList(left, ...args);
     } else {
         return notInExprList(left, args[0], ...(args.slice(1) as any));

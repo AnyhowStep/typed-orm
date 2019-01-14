@@ -16,7 +16,7 @@ function queryTree_Row(columnNames, insert) {
         if (result.length > 0) {
             result.push(",");
         }
-        if (primitive_expr_1.isPrimitiveExpr(expr)) {
+        if (primitive_expr_1.PrimitiveExprUtil.isPrimitiveExpr(expr)) {
             result.push(raw_expr_1.RawExprUtil.queryTree(expr));
         }
         else if (util_1.isColumn(expr)) {

@@ -41,7 +41,7 @@ function notInExprList(left, arg0, ...args) {
     ]);
 }
 function notIn(left, ...args) {
-    if (primitive_expr_1.isNonNullPrimitiveExprArray(args)) {
+    if (primitive_expr_1.PrimitiveExprUtil.isNonNullPrimitiveExprArray(args)) {
         return notInPrimitiveList(left, ...args);
     }
     else {

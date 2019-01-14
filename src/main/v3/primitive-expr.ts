@@ -5,56 +5,57 @@
 export type PrimitiveExpr = bigint|number|string|boolean|Date|Buffer|null;
 export type NonNullPrimitiveExpr = Exclude<PrimitiveExpr, null>;
 
-export function isPrimitiveExprArray (raw : unknown) : raw is PrimitiveExpr[] {
-    if (!(raw instanceof Array)) {
-        return false;
-    }
-    for (let item of raw) {
-        if (!isPrimitiveExpr(item)) {
+export namespace PrimitiveExprUtil {
+    export function isPrimitiveExprArray (raw : unknown) : raw is PrimitiveExpr[] {
+        if (!(raw instanceof Array)) {
             return false;
         }
+        for (let item of raw) {
+            if (!isPrimitiveExpr(item)) {
+                return false;
+            }
+        }
+        return true;
     }
-    return true;
-}
-export function isPrimitiveExpr (raw : unknown) : raw is PrimitiveExpr {
-    switch (typeof raw) {
-        case "bigint":
-        case "number":
-        case "string":
-        case "boolean": {
+    export function isPrimitiveExpr (raw : unknown) : raw is PrimitiveExpr {
+        switch (typeof raw) {
+            case "bigint":
+            case "number":
+            case "string":
+            case "boolean": {
+                return true;
+            }
+        }
+        if (raw instanceof Date) {
             return true;
         }
-    }
-    if (raw instanceof Date) {
-        return true;
-    }
-    if (raw instanceof Buffer) {
-        return true;
-    }
-    if (raw === null) {
-        return true;
-    }
+        if (raw instanceof Buffer) {
+            return true;
+        }
+        if (raw === null) {
+            return true;
+        }
 
-    return false;
-}
-export function isNonNullPrimitiveExprArray (raw : unknown) : raw is NonNullPrimitiveExpr[] {
-    if (!(raw instanceof Array)) {
         return false;
     }
-    for (let item of raw) {
-        if (!isNonNullPrimitiveExpr(item)) {
+    export function isNonNullPrimitiveExprArray (raw : unknown) : raw is NonNullPrimitiveExpr[] {
+        if (!(raw instanceof Array)) {
             return false;
         }
+        for (let item of raw) {
+            if (!isNonNullPrimitiveExpr(item)) {
+                return false;
+            }
+        }
+        return true;
     }
-    return true;
-}
-export function isNonNullPrimitiveExpr (raw : unknown) : raw is NonNullPrimitiveExpr {
-    if (raw === null) {
-        return false;
+    export function isNonNullPrimitiveExpr (raw : unknown) : raw is NonNullPrimitiveExpr {
+        if (raw === null) {
+            return false;
+        }
+        return isPrimitiveExpr(raw);
     }
-    return isPrimitiveExpr(raw);
-}
-export namespace PrimitiveExprUtil {
+
     export function isEqual (a : PrimitiveExpr, b : PrimitiveExpr) : boolean {
         if (a === b) {
             return true;

@@ -5,7 +5,7 @@ import {ExecutableInsertSelect, InsertSelectModifier} from "../../insert-select"
 import {QueryTreeArray} from "../../../query-tree";
 import {RawExprUtil} from "../../../raw-expr";
 import {QueryUtil} from "../../../query";
-import {isPrimitiveExpr} from "../../../primitive-expr";
+import {PrimitiveExprUtil} from "../../../primitive-expr";
 import {isColumn} from "../../../column/util";
 import {SEPARATOR} from "../../../constants";
 
@@ -19,7 +19,7 @@ export function queryTree_Row (
         if (result.length > 0) {
             result.push(",");
         }
-        if (isPrimitiveExpr(expr)) {
+        if (PrimitiveExprUtil.isPrimitiveExpr(expr)) {
             result.push(RawExprUtil.queryTree(expr));
         } else if (isColumn(expr)) {
             result.push(escapeId("src"));

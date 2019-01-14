@@ -1,59 +1,59 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function isPrimitiveExprArray(raw) {
-    if (!(raw instanceof Array)) {
-        return false;
-    }
-    for (let item of raw) {
-        if (!isPrimitiveExpr(item)) {
-            return false;
-        }
-    }
-    return true;
-}
-exports.isPrimitiveExprArray = isPrimitiveExprArray;
-function isPrimitiveExpr(raw) {
-    switch (typeof raw) {
-        case "bigint":
-        case "number":
-        case "string":
-        case "boolean": {
-            return true;
-        }
-    }
-    if (raw instanceof Date) {
-        return true;
-    }
-    if (raw instanceof Buffer) {
-        return true;
-    }
-    if (raw === null) {
-        return true;
-    }
-    return false;
-}
-exports.isPrimitiveExpr = isPrimitiveExpr;
-function isNonNullPrimitiveExprArray(raw) {
-    if (!(raw instanceof Array)) {
-        return false;
-    }
-    for (let item of raw) {
-        if (!isNonNullPrimitiveExpr(item)) {
-            return false;
-        }
-    }
-    return true;
-}
-exports.isNonNullPrimitiveExprArray = isNonNullPrimitiveExprArray;
-function isNonNullPrimitiveExpr(raw) {
-    if (raw === null) {
-        return false;
-    }
-    return isPrimitiveExpr(raw);
-}
-exports.isNonNullPrimitiveExpr = isNonNullPrimitiveExpr;
 var PrimitiveExprUtil;
 (function (PrimitiveExprUtil) {
+    function isPrimitiveExprArray(raw) {
+        if (!(raw instanceof Array)) {
+            return false;
+        }
+        for (let item of raw) {
+            if (!isPrimitiveExpr(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    PrimitiveExprUtil.isPrimitiveExprArray = isPrimitiveExprArray;
+    function isPrimitiveExpr(raw) {
+        switch (typeof raw) {
+            case "bigint":
+            case "number":
+            case "string":
+            case "boolean": {
+                return true;
+            }
+        }
+        if (raw instanceof Date) {
+            return true;
+        }
+        if (raw instanceof Buffer) {
+            return true;
+        }
+        if (raw === null) {
+            return true;
+        }
+        return false;
+    }
+    PrimitiveExprUtil.isPrimitiveExpr = isPrimitiveExpr;
+    function isNonNullPrimitiveExprArray(raw) {
+        if (!(raw instanceof Array)) {
+            return false;
+        }
+        for (let item of raw) {
+            if (!isNonNullPrimitiveExpr(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    PrimitiveExprUtil.isNonNullPrimitiveExprArray = isNonNullPrimitiveExprArray;
+    function isNonNullPrimitiveExpr(raw) {
+        if (raw === null) {
+            return false;
+        }
+        return isPrimitiveExpr(raw);
+    }
+    PrimitiveExprUtil.isNonNullPrimitiveExpr = isNonNullPrimitiveExpr;
     function isEqual(a, b) {
         if (a === b) {
             return true;
