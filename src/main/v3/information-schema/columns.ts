@@ -1,6 +1,7 @@
 import * as sd from "schema-decorator";
 import {table} from "../table";
 import {lazyInit} from "../type";
+import * as dataType from "../data-type";
 
 const x = lazyInit(
     "COLUMNS",
@@ -18,8 +19,8 @@ const x = lazyInit(
                 sd.varChar(3)
             ),
             DATA_TYPE : sd.varChar(64),
-            CHARACTER_MAXIMUM_LENGTH : sd.nullable(sd.stringToNaturalNumber()),
-            CHARACTER_OCTET_LENGTH : sd.nullable(sd.stringToNaturalNumber()),
+            CHARACTER_MAXIMUM_LENGTH : sd.nullable(dataType.bigint()),
+            CHARACTER_OCTET_LENGTH : sd.nullable(dataType.bigint()),
             NUMERIC_PRECISION : sd.nullable(sd.stringToNaturalNumber()),
             NUMERIC_SCALE : sd.nullable(sd.stringToNaturalNumber()),
             DATETIME_PRECISION : sd.nullable(sd.stringToNaturalNumber()),

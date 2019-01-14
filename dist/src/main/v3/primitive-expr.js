@@ -1,5 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+function isPrimitiveExprArray(raw) {
+    if (!(raw instanceof Array)) {
+        return false;
+    }
+    for (let item of raw) {
+        if (!isPrimitiveExpr(item)) {
+            return false;
+        }
+    }
+    return true;
+}
+exports.isPrimitiveExprArray = isPrimitiveExprArray;
 function isPrimitiveExpr(raw) {
     switch (typeof raw) {
         case "bigint":
@@ -21,6 +33,18 @@ function isPrimitiveExpr(raw) {
     return false;
 }
 exports.isPrimitiveExpr = isPrimitiveExpr;
+function isNonNullPrimitiveExprArray(raw) {
+    if (!(raw instanceof Array)) {
+        return false;
+    }
+    for (let item of raw) {
+        if (!isNonNullPrimitiveExpr(item)) {
+            return false;
+        }
+    }
+    return true;
+}
+exports.isNonNullPrimitiveExprArray = isNonNullPrimitiveExprArray;
 function isNonNullPrimitiveExpr(raw) {
     if (raw === null) {
         return false;

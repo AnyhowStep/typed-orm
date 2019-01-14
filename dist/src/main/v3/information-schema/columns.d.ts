@@ -79,17 +79,17 @@ declare const x: {
             readonly CHARACTER_MAXIMUM_LENGTH: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "CHARACTER_MAXIMUM_LENGTH";
-                assertDelegate: sd.AssertDelegate<number | null> & {
-                    __accepts: number | null;
-                    __canAccept: string | number | null;
+                assertDelegate: sd.AssertDelegate<bigint | null> & {
+                    __accepts: string | number | bigint | null;
+                    __canAccept: string | number | bigint | null;
                 };
             }>;
             readonly CHARACTER_OCTET_LENGTH: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "CHARACTER_OCTET_LENGTH";
-                assertDelegate: sd.AssertDelegate<number | null> & {
-                    __accepts: number | null;
-                    __canAccept: string | number | null;
+                assertDelegate: sd.AssertDelegate<bigint | null> & {
+                    __accepts: string | number | bigint | null;
+                    __canAccept: string | number | bigint | null;
                 };
             }>;
             readonly NUMERIC_PRECISION: import("..").Column<{

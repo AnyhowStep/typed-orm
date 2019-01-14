@@ -7,17 +7,17 @@ declare const x: {
             readonly AUTO_INCREMENT: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "AUTO_INCREMENT";
-                assertDelegate: sd.AssertDelegate<number | null> & {
-                    __accepts: number | null;
-                    __canAccept: string | number | null;
+                assertDelegate: sd.AssertDelegate<bigint | null> & {
+                    __accepts: string | number | bigint | null;
+                    __canAccept: string | number | bigint | null;
                 };
             }>;
             readonly CHECKSUM: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "CHECKSUM";
-                assertDelegate: sd.AssertDelegate<number | null> & {
-                    __accepts: number | null;
-                    __canAccept: string | number | null;
+                assertDelegate: sd.AssertDelegate<bigint | null> & {
+                    __accepts: string | number | bigint | null;
+                    __canAccept: string | number | bigint | null;
                 };
             }>;
             readonly ENGINE: import("..").Column<{
@@ -71,57 +71,57 @@ declare const x: {
             readonly VERSION: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "VERSION";
-                assertDelegate: sd.AssertDelegate<number | null> & {
-                    __accepts: number | null;
-                    __canAccept: string | number | null;
+                assertDelegate: sd.AssertDelegate<bigint | null> & {
+                    __accepts: string | number | bigint | null;
+                    __canAccept: string | number | bigint | null;
                 };
             }>;
             readonly TABLE_ROWS: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "TABLE_ROWS";
-                assertDelegate: sd.AssertDelegate<number | null> & {
-                    __accepts: number | null;
-                    __canAccept: string | number | null;
+                assertDelegate: sd.AssertDelegate<bigint | null> & {
+                    __accepts: string | number | bigint | null;
+                    __canAccept: string | number | bigint | null;
                 };
             }>;
             readonly AVG_ROW_LENGTH: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "AVG_ROW_LENGTH";
-                assertDelegate: sd.AssertDelegate<number | null> & {
-                    __accepts: number | null;
-                    __canAccept: string | number | null;
+                assertDelegate: sd.AssertDelegate<bigint | null> & {
+                    __accepts: string | number | bigint | null;
+                    __canAccept: string | number | bigint | null;
                 };
             }>;
             readonly DATA_LENGTH: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "DATA_LENGTH";
-                assertDelegate: sd.AssertDelegate<number | null> & {
-                    __accepts: number | null;
-                    __canAccept: string | number | null;
+                assertDelegate: sd.AssertDelegate<bigint | null> & {
+                    __accepts: string | number | bigint | null;
+                    __canAccept: string | number | bigint | null;
                 };
             }>;
             readonly MAX_DATA_LENGTH: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "MAX_DATA_LENGTH";
-                assertDelegate: sd.AssertDelegate<number | null> & {
-                    __accepts: number | null;
-                    __canAccept: string | number | null;
+                assertDelegate: sd.AssertDelegate<bigint | null> & {
+                    __accepts: string | number | bigint | null;
+                    __canAccept: string | number | bigint | null;
                 };
             }>;
             readonly INDEX_LENGTH: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "INDEX_LENGTH";
-                assertDelegate: sd.AssertDelegate<number | null> & {
-                    __accepts: number | null;
-                    __canAccept: string | number | null;
+                assertDelegate: sd.AssertDelegate<bigint | null> & {
+                    __accepts: string | number | bigint | null;
+                    __canAccept: string | number | bigint | null;
                 };
             }>;
             readonly DATA_FREE: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "DATA_FREE";
-                assertDelegate: sd.AssertDelegate<number | null> & {
-                    __accepts: number | null;
-                    __canAccept: string | number | null;
+                assertDelegate: sd.AssertDelegate<bigint | null> & {
+                    __accepts: string | number | bigint | null;
+                    __canAccept: string | number | bigint | null;
                 };
             }>;
             readonly CREATE_TIME: import("..").Column<{

@@ -5,6 +5,17 @@
 export type PrimitiveExpr = bigint|number|string|boolean|Date|Buffer|null;
 export type NonNullPrimitiveExpr = Exclude<PrimitiveExpr, null>;
 
+export function isPrimitiveExprArray (raw : unknown) : raw is PrimitiveExpr[] {
+    if (!(raw instanceof Array)) {
+        return false;
+    }
+    for (let item of raw) {
+        if (!isPrimitiveExpr(item)) {
+            return false;
+        }
+    }
+    return true;
+}
 export function isPrimitiveExpr (raw : unknown) : raw is PrimitiveExpr {
     switch (typeof raw) {
         case "bigint":
@@ -25,6 +36,17 @@ export function isPrimitiveExpr (raw : unknown) : raw is PrimitiveExpr {
     }
 
     return false;
+}
+export function isNonNullPrimitiveExprArray (raw : unknown) : raw is NonNullPrimitiveExpr[] {
+    if (!(raw instanceof Array)) {
+        return false;
+    }
+    for (let item of raw) {
+        if (!isNonNullPrimitiveExpr(item)) {
+            return false;
+        }
+    }
+    return true;
 }
 export function isNonNullPrimitiveExpr (raw : unknown) : raw is NonNullPrimitiveExpr {
     if (raw === null) {

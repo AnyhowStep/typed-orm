@@ -87,9 +87,9 @@ declare const x: {
             readonly CARDINALITY: import("..").Column<{
                 tableAlias: "STATISTICS";
                 name: "CARDINALITY";
-                assertDelegate: sd.AssertDelegate<string | null> & {
-                    __accepts: string | null;
-                    __canAccept: string | null;
+                assertDelegate: sd.AssertDelegate<bigint | null> & {
+                    __accepts: string | number | bigint | null;
+                    __canAccept: string | number | bigint | null;
                 };
             }>;
             readonly SUB_PART: import("..").Column<{

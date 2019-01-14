@@ -9,8 +9,8 @@ export declare function fetchColumnsOfTable(connection: IConnection, tableName: 
     readonly COLUMN_DEFAULT: string | null;
     readonly IS_NULLABLE: string;
     readonly DATA_TYPE: string;
-    readonly CHARACTER_MAXIMUM_LENGTH: number | null;
-    readonly CHARACTER_OCTET_LENGTH: number | null;
+    readonly CHARACTER_MAXIMUM_LENGTH: bigint | null;
+    readonly CHARACTER_OCTET_LENGTH: bigint | null;
     readonly NUMERIC_PRECISION: number | null;
     readonly NUMERIC_SCALE: number | null;
     readonly DATETIME_PRECISION: number | null;

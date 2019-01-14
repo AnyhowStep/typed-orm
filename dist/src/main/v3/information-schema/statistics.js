@@ -2,6 +2,7 @@
 const sd = require("schema-decorator");
 const table_1 = require("../table");
 const type_1 = require("../type");
+const dataType = require("../data-type");
 const x = type_1.lazyInit("STATISTICS", () => table_1.table("STATISTICS", {
     TABLE_CATALOG: sd.varChar(512),
     TABLE_SCHEMA: sd.varChar(64),
@@ -12,7 +13,7 @@ const x = type_1.lazyInit("STATISTICS", () => table_1.table("STATISTICS", {
     SEQ_IN_INDEX: sd.stringToNaturalNumber(),
     COLUMN_NAME: sd.varChar(64),
     COLLATION: sd.nullable(sd.varChar(1)),
-    CARDINALITY: sd.nullable(sd.naturalNumberString()),
+    CARDINALITY: sd.nullable(dataType.bigint()),
     SUB_PART: sd.nullable(sd.stringToNaturalNumber()),
     PACKED: sd.nullable(sd.varChar(10)),
     NULLABLE: sd.or(sd.literal("YES", "NO"), sd.varChar(3)),

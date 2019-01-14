@@ -1,6 +1,7 @@
 import * as sd from "schema-decorator";
 import {table} from "../table";
 import {lazyInit} from "../type";
+import * as dataType from "../data-type";
 
 const x = lazyInit(
     "STATISTICS",
@@ -16,7 +17,7 @@ const x = lazyInit(
             SEQ_IN_INDEX : sd.stringToNaturalNumber(),
             COLUMN_NAME : sd.varChar(64),
             COLLATION : sd.nullable(sd.varChar(1)),
-            CARDINALITY : sd.nullable(sd.naturalNumberString()),
+            CARDINALITY : sd.nullable(dataType.bigint()),
             SUB_PART : sd.nullable(sd.stringToNaturalNumber()),
             PACKED : sd.nullable(sd.varChar(10)),
             NULLABLE : sd.or(

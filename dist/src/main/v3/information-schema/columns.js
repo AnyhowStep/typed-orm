@@ -2,6 +2,7 @@
 const sd = require("schema-decorator");
 const table_1 = require("../table");
 const type_1 = require("../type");
+const dataType = require("../data-type");
 const x = type_1.lazyInit("COLUMNS", () => table_1.table("COLUMNS", {
     TABLE_CATALOG: sd.varChar(512),
     TABLE_SCHEMA: sd.varChar(64),
@@ -11,8 +12,8 @@ const x = type_1.lazyInit("COLUMNS", () => table_1.table("COLUMNS", {
     COLUMN_DEFAULT: sd.nullable(sd.string()),
     IS_NULLABLE: sd.or(sd.literal("YES", "NO"), sd.varChar(3)),
     DATA_TYPE: sd.varChar(64),
-    CHARACTER_MAXIMUM_LENGTH: sd.nullable(sd.stringToNaturalNumber()),
-    CHARACTER_OCTET_LENGTH: sd.nullable(sd.stringToNaturalNumber()),
+    CHARACTER_MAXIMUM_LENGTH: sd.nullable(dataType.bigint()),
+    CHARACTER_OCTET_LENGTH: sd.nullable(dataType.bigint()),
     NUMERIC_PRECISION: sd.nullable(sd.stringToNaturalNumber()),
     NUMERIC_SCALE: sd.nullable(sd.stringToNaturalNumber()),
     DATETIME_PRECISION: sd.nullable(sd.stringToNaturalNumber()),
