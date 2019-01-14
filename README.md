@@ -2,6 +2,12 @@
 
 An experiment in structurally-safe MySQL query building using TypeScript.
 
+### Examples
+
+Examples may be found in `test/compile-time`, `test/run-time`, `test/execution`.
+
+Current code coverage is about 74%
+
 ### Tables
 
 ```ts
@@ -11,24 +17,26 @@ import * as sd from "schema-decorator";
 const app = o.table(
     "app",
     {
+        //Use the assert delegates from typed-orm
         appId : o.bigintUnsigned(),
         name : o.varChar(1, 255),
         description : o.varChar.nullable(1, 255)
     }
 )
-    .setAutoIncrement(c => c.appId)
-    .build();
+    .setAutoIncrement(c => c.appId);
 
 const user = o.table(
     "user",
     {
+        //Or use the ones from other packages.
+        //An assert delegate looks like,
+        //(name : string, raw : unknown) => ResultT
         userId : sd.naturalNumber(),
         firstName : sd.string(),
         lastName : sd.string(),
     }
 )
-    .setAutoIncrement(c => c.userId)
-    .build();
+    .setAutoIncrement(c => c.userId);
 
 const baseTable = o.table(
     "base",
@@ -36,17 +44,15 @@ const baseTable = o.table(
         baseId : sd.naturalNumber()
     }
 )
-    .setAutoIncrement(c => c.baseId)
-    .build();
+    .setAutoIncrement(c => c.baseId);
 
 //Table-per-concrete-class inheritance
 const derivedTable = o.table(baseTable)
-    .withName("derived")
+    .withAlias("derived")
     .addColumns({
         value0 : sd.boolean(),
         value1 : sd.date(),
     });
-    .build();
 
 //Table-per-type inheritance
 const derivedTable2 = o.table(
@@ -58,8 +64,7 @@ const derivedTable2 = o.table(
     }
 )
     .setId(c => c.baseId)
-    .addParent(baseTable)
-    .build();
+    .addParent(baseTable);
 
 ```
 
@@ -67,51 +72,61 @@ const derivedTable2 = o.table(
 
 ```ts
 import * as o from "typed-orm";
-const db = new o.PooledDatabase({
+const pool = new o.Pool({
     host     : "host",
     database : "database",
     user     : "username",
     password : "password",
+    charset  : "charset",
 });
-await db.utcOnly();
 ```
 
 ### Select
 
 ```ts
-db.from(app)
-    .selectAll()
-    .fetchAll()
-    .then(console.log);
+pool.acquire(async (connection) => {
+    await o.from(app)
+        .select(c => [c])
+        .fetchAll(connection)
+        .then(console.log);
 
-db.from(app)
-    .rightJoinUsing(user, c => [c.appId])
-    .selectAll()
-    .fetchAll()
-    .then(console.log);
+    await db.from(app)
+        .rightJoinPk(
+            t => t.app,
+            user
+        )
+        .select(c => [c.app.name, c.user.firstName])
+        .fetchAll(connection)
+        .then(console.log);
 
-db.from(app)
-    .selectAll()
-    .aggregate(async (row) => {
-        return {
-            ...row,
-            users : await db.from(user)
-                .whereIsEqual(c => c.appId, row.appId)
-                .selectAll()
-                .fetchAll()
-        };
-    })
-    .fetchAll()
-    .then(console.log);
+    await db.from(app)
+        .selectAll(c => [c])
+        .aggregate(async (row) => {
+            return {
+                ...row,
+                users : await db.from(user)
+                    .whereEq(c => c.appId, row.appId)
+                    .select(c => [c])
+                    .fetchAll(connection),
+            };
+        })
+        .fetchAll(connection)
+        .then(console.log);
+});
 ```
 
 ### Insert
 
 ```ts
-await db.insertValue(app, {
-    name : "new-app",
-})
-    .execute()
+db.insertInto(app)
+    .values(
+        { name : "new-app" },
+        { name : "other-app" }
+    )
+    .execute(connection)
+    .then(console.log);
+
+app.insert(connection, { name : "new-app" })
     .then(console.log);
 ```
 
@@ -119,39 +134,34 @@ await db.insertValue(app, {
 
 ```ts
 import * as o from "typed-orm";
-await db.update(
-    app,
+app.updateOneByPk(
+    connection,
+    { appId : 4 },
     () => ({
         name : "new-name"
-    }),
-    c => o.eq(c.appId, 4)
-)
-    .execute()
-    .then(console.log);
+    })
+).then(console.log);
 ```
 
 ### Delete
 
 ```ts
-db.deleteFrom(app, c => o.eq(c.appId, 1))
-    .execute()
+app.deleteOneByPk(connection, { appId : 4 })
     .then(console.log);
 ```
 
 ### Sub-query Expression
 
 ```ts
-await db.select(() => {
-    return [
-        db.select(() => [
-            o.NOW.as("now")
-        ]).asExpr("nowish")
-    ]
-})
-    .fetchOne()
+o.select(() => [
+    o.selectExpr(
+        () => o.utcTimestamp
+    ).as("nowish")
+])
+    .fetchOne(connection)
     .then(console.log);
 
-await db.from(app)
+o.from(app)
     .select((_c, s) => {
         return [
             s.subQuery()
@@ -162,7 +172,7 @@ await db.from(app)
         ];
     })
     .limit(1)
-    .fetchOne()
+    .fetchOne(connection)
     .then(console.log);
 ```
 
@@ -170,30 +180,30 @@ await db.from(app)
 
 ```ts
 /*snip*/
-    tryFetchOneAwaitingCreation () {
-        return this.dao.from(t.merchant)
+    tryFetchOneAwaitingCreation (connection : o.IConnection) {
+        return o.from(t.merchant)
             .useJoins(
-                j.merchantBelongsToOneAppPlatform,
-                j.merchantBelongsToOneBusiness,
-                j.businessBelongsToOneUser
+                j.merchant.belongsToOne.appPlatform,
+                j.merchant.belongsToOne.business,
+                j.business.belongsToOne.user
             )
-            .where(() => this.canStartCreationAttemptExpression())
-            .selectAll()
+            .where(() => this.canStartCreationAttempt())
+            .select(c => [c])
             .select(() => [
-                this.lastCreationAttemptAtExpression().as("lastCreationAttemptAt")
+                this.lastCreationAttemptAt()
             ])
             .orderBy(c => [
                 //We prioritize those that have not been attempted
-                [o.isNull(c.__expr.lastCreationAttemptAt), o.DESCENDING],
+                [o.isNull(c.__aliased.lastCreationAttemptAt), o.DESCENDING],
                 //For those that have been attempted,
                 //we get the earliest attempted
-                [c.__expr.lastCreationAttemptAt, o.ASCENDING],
+                [c.__aliased.lastCreationAttemptAt, o.ASCENDING],
                 //For those that have not been attempted,
                 //we get the earliest created
                 [c.merchant.createdAt, o.ASCENDING]
             ])
             .limit(1)
-            .fetchZeroOrOne();
+            .fetchZeroOrOne(connection);
     }
 /*snip*/
 ```
