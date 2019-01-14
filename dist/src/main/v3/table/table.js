@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const primary_key_1 = require("../primary-key");
 const candidate_key_1 = require("../candidate-key");
 const super_key_1 = require("../super-key");
+const query_1 = require("../query");
+const insert_1 = require("../insert");
 const TableUtil = require("./util");
 class Table {
     constructor(data, { unaliasedQuery, }) {
@@ -94,6 +96,72 @@ class Table {
     }
     validate(connection, result) {
         return TableUtil.validate(this, connection, result);
+    }
+    assertExistsByCk(connection, ck) {
+        return query_1.QueryUtil.assertExistsByCk(connection, this, ck);
+    }
+    assertExistsByPk(connection, pk) {
+        return query_1.QueryUtil.assertExistsByPk(connection, this, pk);
+    }
+    assertExistsBySk(connection, sk) {
+        return query_1.QueryUtil.assertExistsBySk(connection, this, sk);
+    }
+    existsByCk(connection, ck) {
+        return query_1.QueryUtil.existsByCk(connection, this, ck);
+    }
+    existsByPk(connection, pk) {
+        return query_1.QueryUtil.existsByPk(connection, this, pk);
+    }
+    existsBySk(connection, sk) {
+        return query_1.QueryUtil.existsBySk(connection, this, sk);
+    }
+    fetchOneByCk(connection, ck) {
+        return query_1.QueryUtil.fetchOneByCk(connection, this, ck);
+    }
+    fetchOneByPk(connection, pk) {
+        return query_1.QueryUtil.fetchOneByPk(connection, this, pk);
+    }
+    fetchOneBySk(connection, sk) {
+        return query_1.QueryUtil.fetchOneBySk(connection, this, sk);
+    }
+    fetchValueByCk(connection, ck, delegate) {
+        return query_1.QueryUtil.fetchValueByCk(connection, this, ck, delegate);
+    }
+    fetchValueByPk(connection, pk, delegate) {
+        return query_1.QueryUtil.fetchValueByPk(connection, this, pk, delegate);
+    }
+    fetchValueBySk(connection, sk, delegate) {
+        return query_1.QueryUtil.fetchValueBySk(connection, this, sk, delegate);
+    }
+    fetchValueOrUndefinedByCk(connection, ck, delegate) {
+        return query_1.QueryUtil.fetchValueOrUndefinedByCk(connection, this, ck, delegate);
+    }
+    fetchValueOrUndefinedByPk(connection, pk, delegate) {
+        return query_1.QueryUtil.fetchValueOrUndefinedByPk(connection, this, pk, delegate);
+    }
+    fetchValueOrUndefinedBySk(connection, sk, delegate) {
+        return query_1.QueryUtil.fetchValueOrUndefinedBySk(connection, this, sk, delegate);
+    }
+    fetchZeroOrOneByCk(connection, ck) {
+        return query_1.QueryUtil.fetchZeroOrOneByCk(connection, this, ck);
+    }
+    fetchZeroOrOneByPk(connection, pk) {
+        return query_1.QueryUtil.fetchZeroOrOneByPk(connection, this, pk);
+    }
+    fetchZeroOrOneBySk(connection, sk) {
+        return query_1.QueryUtil.fetchZeroOrOneBySk(connection, this, sk);
+    }
+    insertAndFetch(connection, insertRow) {
+        return insert_1.InsertUtil.insertAndFetch(connection, this, insertRow);
+    }
+    insertIgnore(connection, insertRow) {
+        return insert_1.InsertUtil.insertIgnore(connection, this, insertRow);
+    }
+    insert(connection, insertRow) {
+        return insert_1.InsertUtil.insert(connection, this, insertRow);
+    }
+    replace(connection, insertRow) {
+        return insert_1.InsertUtil.replace(connection, this, insertRow);
     }
 }
 exports.Table = Table;

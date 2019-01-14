@@ -36,7 +36,6 @@
     Aliasing a table shouldn't erase the fact it can be deleted from?
 + CTE
 
-+ Validate table declarations
 + START TRANSACTION READ ONLY
 
 + SELECT clause must be before adding map delegates, too

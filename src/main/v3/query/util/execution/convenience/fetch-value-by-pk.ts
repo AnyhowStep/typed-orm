@@ -1,13 +1,12 @@
-import {ITable, TableUtil} from "../../../../table";
+import {TableWithPk, TableUtil} from "../../../../table";
 import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
 import {RawExprUtil} from "../../../../raw-expr";
 import {SelectValueDelegate, AssertValidSelectValueDelegate, executeSelectValueDelegate} from "./select-value-delegate";
-import {Key} from "../../../../key";
 import {PrimaryKey} from "../../../../primary-key";
 
 export function fetchValueByPk<
-    TableT extends ITable & { primaryKey : Key },
+    TableT extends TableWithPk,
     DelegateT extends SelectValueDelegate<TableT>
 > (
     connection : IConnection,

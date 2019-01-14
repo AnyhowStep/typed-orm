@@ -10,7 +10,7 @@ export function fetchZeroOrOneBySk<
     connection : IConnection,
     table : TableT,
     sk : SuperKey<TableT>
-) : Promise<Row<TableT>> {
+) : Promise<Row<TableT>|undefined> {
     return QueryUtil.newInstance()
         .from(table as any)
         .where(() => TableUtil.eqSuperKey(table, sk) as any)

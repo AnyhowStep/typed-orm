@@ -16,3 +16,4 @@ export * from "./fetch-value-or-undefined-by-sk";
 export * from "./fetch-zero-or-one-by-ck";
 export * from "./fetch-zero-or-one-by-pk";
 export * from "./fetch-zero-or-one-by-sk";
+export * from "./select-value-delegate";

@@ -15,12 +15,6 @@ class Insert {
         this._values = data._values;
         this._modifier = data._modifier;
     }
-    ignore() {
-        return InsertUtil.ignore(this);
-    }
-    replace() {
-        return InsertUtil.replace(this);
-    }
     values(...values) {
         return InsertUtil.values(this, ...values);
     }

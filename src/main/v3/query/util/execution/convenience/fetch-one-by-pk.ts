@@ -1,12 +1,11 @@
-import {ITable, TableUtil} from "../../../../table";
+import {TableWithPk, TableUtil} from "../../../../table";
 import {Row} from "../../../../row";
 import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
-import {Key} from "../../../../key";
 import {PrimaryKey} from "../../../../primary-key";
 
 export function fetchOneByPk<
-    TableT extends ITable & { primaryKey : Key }
+    TableT extends TableWithPk
 > (
     connection : IConnection,
     table : TableT,

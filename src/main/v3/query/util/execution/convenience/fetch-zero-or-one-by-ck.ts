@@ -10,7 +10,7 @@ export function fetchZeroOrOneByCk<
     connection : IConnection,
     table : TableT,
     ck : CandidateKey<TableT>
-) : Promise<Row<TableT>> {
+) : Promise<Row<TableT>|undefined> {
     return QueryUtil.newInstance()
         .from(table as any)
         .where(() => TableUtil.eqCandidateKey(table, ck) as any)

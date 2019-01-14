@@ -1,17 +1,16 @@
-import {ITable, TableUtil} from "../../../../table";
+import {TableWithPk, TableUtil} from "../../../../table";
 import {Row} from "../../../../row";
 import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
-import {Key} from "../../../../key";
 import {PrimaryKey} from "../../../../primary-key";
 
 export function fetchZeroOrOneByPk<
-    TableT extends ITable & { primaryKey : Key }
+    TableT extends TableWithPk
 > (
     connection : IConnection,
     table : TableT,
     pk : PrimaryKey<TableT>
-) : Promise<Row<TableT>> {
+) : Promise<Row<TableT>|undefined> {
     return QueryUtil.newInstance()
         .from(table as any)
         .where(() => TableUtil.eqPrimaryKey(table, pk) as any)

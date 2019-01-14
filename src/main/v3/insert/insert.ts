@@ -1,4 +1,4 @@
-import {ITable, TableUtil} from "../table"
+import {ITable, TableUtil, InsertableTable} from "../table"
 import {RawExprNoUsedRef} from "../raw-expr";
 import * as InsertUtil from "./util";
 import {IConnection} from "../execution";
@@ -39,7 +39,7 @@ export enum InsertModifier {
 }
 
 export interface InsertData {
-    readonly _table : ITable & { insertAllowed : true },
+    readonly _table : InsertableTable,
     readonly _values : InsertRow<ITable>[]|undefined,
     readonly _modifier : InsertModifier|undefined,
 }
@@ -66,12 +66,6 @@ export class Insert<DataT extends InsertData> implements IInsert<DataT> {
         this._modifier = data._modifier;
     }
 
-    ignore () : InsertUtil.Ignore<this> {
-        return InsertUtil.ignore(this);
-    }
-    replace () : InsertUtil.Replace<this> {
-        return InsertUtil.replace(this);
-    }
     values (
         ...values : InsertRow<this["_table"]>[]
     ) : InsertUtil.Values<this> {
@@ -107,7 +101,7 @@ export class Insert<DataT extends InsertData> implements IInsert<DataT> {
 }
 
 export type ExecutableInsert = IInsert<{
-    readonly _table : ITable & { insertAllowed : true },
+    readonly _table : InsertableTable,
     readonly _values : InsertRow<ITable>[],
     readonly _modifier : InsertModifier|undefined,
 }>;
