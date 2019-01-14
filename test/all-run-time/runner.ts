@@ -1,4 +1,4 @@
-import {getAllTsFiles} from "./util";
+import {getAllTsFiles} from "../util";
 import * as tape from "tape";
 
 let assertCount = 0;
@@ -17,18 +17,20 @@ tape.createStream({ objectMode : true }).on("data", (row) => {
 });
 
 const start = new Date().getTime();
-const paths = getAllTsFiles(__dirname + "/input");
+const paths = [
+    ...getAllTsFiles(__dirname + "/../run-time/input"),
+    ...getAllTsFiles(__dirname + "/../execution/input"),
+];
+import {pool} from "../execution/pool";
 for (let i=0; i<paths.length; ++i) {
     const path = paths[i];
     console.log("path", i, "/", paths.length, path);
     require(path);
 }
-
-import {pool} from "./pool";
 tape(__filename, async (t) => {
     const end = new Date().getTime();
     const timeTaken = end-start;
-    console.log("Execution tests completed in", timeTaken/1000.0, "s");
+    console.log("Run-time tests completed in", timeTaken/1000.0, "s");
 
     console.log("Disconnecting");
     await pool.disconnect()
