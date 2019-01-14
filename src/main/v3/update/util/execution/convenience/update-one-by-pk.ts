@@ -1,12 +1,11 @@
-import {ITable, TableUtil} from "../../../../table";
+import {TableWithPk, TableUtil} from "../../../../table";
 import {IConnection, UpdateOneResult} from "../../../../execution";
 import {SingleTableSetDelegateFromTable, AssertValidSingleTableSetDelegateFromTable_Hack} from "../../constructor";
 import {QueryUtil} from "../../../../query";
-import { Key } from "../../../../key";
 import {PrimaryKey} from "../../../../primary-key";
 
 export function updateOneByPk<
-    TableT extends ITable & { primaryKey : Key },
+    TableT extends TableWithPk,
     DelegateT extends SingleTableSetDelegateFromTable<TableT>
 > (
     connection : IConnection,

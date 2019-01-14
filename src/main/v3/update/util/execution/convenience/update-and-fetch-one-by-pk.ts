@@ -1,14 +1,13 @@
-import {ITable, TableUtil} from "../../../../table";
+import {TableWithPk, TableUtil} from "../../../../table";
 import {IConnection, UpdateOneResult} from "../../../../execution";
 import {SingleTableSetDelegateFromTable, AssertValidSingleTableSetDelegateFromTable_Hack} from "../../constructor";
 import {QueryUtil} from "../../../../query";
 import {updateOneByPk} from "./update-one-by-pk";
 import {UpdateAndFetchOneResult} from "./update-and-fetch-one";
-import {Key} from "../../../../key";
 import {PrimaryKey} from "../../../../primary-key";
 
 export function updateAndFetchOneByPk<
-    TableT extends ITable & { primaryKey : Key },
+    TableT extends TableWithPk,
     DelegateT extends SingleTableSetDelegateFromTable<TableT>
 > (
     connection : IConnection,

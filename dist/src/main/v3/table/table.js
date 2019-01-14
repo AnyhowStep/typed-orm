@@ -5,6 +5,7 @@ const candidate_key_1 = require("../candidate-key");
 const super_key_1 = require("../super-key");
 const query_1 = require("../query");
 const insert_1 = require("../insert");
+const update_1 = require("../update");
 const TableUtil = require("./util");
 class Table {
     constructor(data, { unaliasedQuery, }) {
@@ -162,6 +163,42 @@ class Table {
     }
     replace(connection, insertRow) {
         return insert_1.InsertUtil.replace(connection, this, insertRow);
+    }
+    updateAndFetchOneByCk(connection, ck, delegate) {
+        return update_1.UpdateUtil.updateAndFetchOneByCk(connection, this, ck, delegate);
+    }
+    updateAndFetchOneByPk(connection, pk, delegate) {
+        return update_1.UpdateUtil.updateAndFetchOneByPk(connection, this, pk, delegate);
+    }
+    updateAndFetchOneBySk(connection, sk, delegate) {
+        return update_1.UpdateUtil.updateAndFetchOneBySk(connection, this, sk, delegate);
+    }
+    updateAndFetchZeroOrOneByCk(connection, ck, delegate) {
+        return update_1.UpdateUtil.updateAndFetchZeroOrOneByCk(connection, this, ck, delegate);
+    }
+    updateAndFetchZeroOrOneByPk(connection, pk, delegate) {
+        return update_1.UpdateUtil.updateAndFetchZeroOrOneByPk(connection, this, pk, delegate);
+    }
+    updateAndFetchZeroOrOneBySk(connection, sk, delegate) {
+        return update_1.UpdateUtil.updateAndFetchZeroOrOneBySk(connection, this, sk, delegate);
+    }
+    updateOneByCk(connection, ck, delegate) {
+        return update_1.UpdateUtil.updateOneByCk(connection, this, ck, delegate);
+    }
+    updateOneByPk(connection, pk, delegate) {
+        return update_1.UpdateUtil.updateOneByPk(connection, this, pk, delegate);
+    }
+    updateOneBySk(connection, sk, delegate) {
+        return update_1.UpdateUtil.updateOneBySk(connection, this, sk, delegate);
+    }
+    updateZeroOrOneByCk(connection, ck, delegate) {
+        return update_1.UpdateUtil.updateZeroOrOneByCk(connection, this, ck, delegate);
+    }
+    updateZeroOrOneByPk(connection, pk, delegate) {
+        return update_1.UpdateUtil.updateZeroOrOneByPk(connection, this, pk, delegate);
+    }
+    updateZeroOrOneBySk(connection, sk, delegate) {
+        return update_1.UpdateUtil.updateZeroOrOneBySk(connection, this, sk, delegate);
     }
 }
 exports.Table = Table;

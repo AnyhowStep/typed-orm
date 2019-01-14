@@ -6,11 +6,12 @@ import {QueryTree} from "../query-tree";
 import {PrimaryKey, PrimaryKeyUtil} from "../primary-key";
 import {CandidateKey, CandidateKeyUtil} from "../candidate-key";
 import {SuperKey, SuperKeyUtil} from "../super-key";
-import {IConnection} from "../execution";
+import {IConnection, UpdateOneResult, UpdateZeroOrOneResult} from "../execution";
 import {QueryUtil} from "../query";
 import {Row} from "../row";
 import {RawExprUtil} from "../raw-expr";
 import {InsertRow, InsertUtil} from "../insert";
+import {UpdateUtil} from "../update";
 import * as TableUtil from "./util";
 
 export interface TableData extends AliasedTableData {
@@ -633,5 +634,279 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
         Promise<InsertUtil.ReplaceResult<Extract<this, InsertableTable>>>
     ) {
         return InsertUtil.replace(connection, this, insertRow);
+    }
+
+    updateAndFetchOneByCk<
+        DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<this>
+    > (
+        this : this & TableUtil.AssertHasCandidateKey<this>,
+        connection : IConnection,
+        ck : CandidateKey<this>,
+        delegate : DelegateT
+    ) : (
+        UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<
+            this,
+            DelegateT,
+            Promise<UpdateUtil.UpdateAndFetchOneResult<
+                this,
+                DelegateT
+            >>
+        >
+    ) {
+        return UpdateUtil.updateAndFetchOneByCk<this, DelegateT>(
+            connection,
+            this,
+            ck,
+            delegate
+        );
+    }
+    updateAndFetchOneByPk<
+        DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<Extract<this, TableWithPk>>
+    > (
+        this : Extract<this, TableWithPk> & TableUtil.AssertHasCandidateKey<this>,
+        connection : IConnection,
+        pk : PrimaryKey<Extract<this, TableWithPk>>,
+        delegate : DelegateT
+    ) : (
+        UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<
+            Extract<this, TableWithPk>,
+            DelegateT,
+            Promise<UpdateUtil.UpdateAndFetchOneResult<
+                Extract<this, TableWithPk>,
+                DelegateT
+            >>
+        >
+    ) {
+        return UpdateUtil.updateAndFetchOneByPk<Extract<this, TableWithPk>, DelegateT>(
+            connection,
+            this,
+            pk,
+            delegate
+        );
+    }
+    updateAndFetchOneBySk<
+        DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<this>
+    > (
+        this : this & TableUtil.AssertHasCandidateKey<this>,
+        connection : IConnection,
+        sk : SuperKey<this>,
+        delegate : DelegateT
+    ) : (
+        UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<
+            this,
+            DelegateT,
+            Promise<UpdateUtil.UpdateAndFetchOneResult<
+                this,
+                DelegateT
+            >>
+        >
+    ) {
+        return UpdateUtil.updateAndFetchOneBySk<this, DelegateT>(
+            connection,
+            this,
+            sk,
+            delegate
+        );
+    }
+
+    updateAndFetchZeroOrOneByCk<
+        DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<this>
+    > (
+        this : this & TableUtil.AssertHasCandidateKey<this>,
+        connection : IConnection,
+        ck : CandidateKey<this>,
+        delegate : DelegateT
+    ) : (
+        UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<
+            this,
+            DelegateT,
+            Promise<UpdateUtil.UpdateAndFetchZeroOrOneResult<
+                this,
+                DelegateT
+            >>
+        >
+    ) {
+        return UpdateUtil.updateAndFetchZeroOrOneByCk<this, DelegateT>(
+            connection,
+            this,
+            ck,
+            delegate
+        );
+    }
+    updateAndFetchZeroOrOneByPk<
+        DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<Extract<this, TableWithPk>>
+    > (
+        this : Extract<this, TableWithPk> & TableUtil.AssertHasCandidateKey<this>,
+        connection : IConnection,
+        pk : PrimaryKey<Extract<this, TableWithPk>>,
+        delegate : DelegateT
+    ) : (
+        UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<
+            Extract<this, TableWithPk>,
+            DelegateT,
+            Promise<UpdateUtil.UpdateAndFetchZeroOrOneResult<
+                Extract<this, TableWithPk>,
+                DelegateT
+            >>
+        >
+    ) {
+        return UpdateUtil.updateAndFetchZeroOrOneByPk<Extract<this, TableWithPk>, DelegateT>(
+            connection,
+            this,
+            pk,
+            delegate
+        );
+    }
+    updateAndFetchZeroOrOneBySk<
+        DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<this>
+    > (
+        this : this & TableUtil.AssertHasCandidateKey<this>,
+        connection : IConnection,
+        sk : SuperKey<this>,
+        delegate : DelegateT
+    ) : (
+        UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<
+            this,
+            DelegateT,
+            Promise<UpdateUtil.UpdateAndFetchZeroOrOneResult<
+                this,
+                DelegateT
+            >>
+        >
+    ) {
+        return UpdateUtil.updateAndFetchZeroOrOneBySk<this, DelegateT>(
+            connection,
+            this,
+            sk,
+            delegate
+        );
+    }
+
+    updateOneByCk<
+        DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<this>
+    > (
+        this : this & TableUtil.AssertHasCandidateKey<this>,
+        connection : IConnection,
+        ck : CandidateKey<this>,
+        delegate : DelegateT
+    ) : (
+        UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<
+            this,
+            DelegateT,
+            Promise<UpdateOneResult>
+        >
+    ) {
+        return UpdateUtil.updateOneByCk<this, DelegateT>(
+            connection,
+            this,
+            ck,
+            delegate
+        );
+    }
+    updateOneByPk<
+        DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<Extract<this, TableWithPk>>
+    > (
+        this : Extract<this, TableWithPk> & TableUtil.AssertHasCandidateKey<this>,
+        connection : IConnection,
+        pk : PrimaryKey<Extract<this, TableWithPk>>,
+        delegate : DelegateT
+    ) : (
+        UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<
+            Extract<this, TableWithPk>,
+            DelegateT,
+            Promise<UpdateOneResult>
+        >
+    ) {
+        return UpdateUtil.updateOneByPk<Extract<this, TableWithPk>, DelegateT>(
+            connection,
+            this,
+            pk,
+            delegate
+        );
+    }
+    updateOneBySk<
+        DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<this>
+    > (
+        this : this & TableUtil.AssertHasCandidateKey<this>,
+        connection : IConnection,
+        sk : SuperKey<this>,
+        delegate : DelegateT
+    ) : (
+        UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<
+            this,
+            DelegateT,
+            Promise<UpdateOneResult>
+        >
+    ) {
+        return UpdateUtil.updateOneBySk<this, DelegateT>(
+            connection,
+            this,
+            sk,
+            delegate
+        );
+    }
+
+    updateZeroOrOneByCk<
+        DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<this>
+    > (
+        this : this & TableUtil.AssertHasCandidateKey<this>,
+        connection : IConnection,
+        ck : CandidateKey<this>,
+        delegate : DelegateT
+    ) : (
+        UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<
+            this,
+            DelegateT,
+            Promise<UpdateZeroOrOneResult>
+        >
+    ) {
+        return UpdateUtil.updateZeroOrOneByCk<this, DelegateT>(
+            connection,
+            this,
+            ck,
+            delegate
+        );
+    }
+    updateZeroOrOneByPk<
+        DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<Extract<this, TableWithPk>>
+    > (
+        this : Extract<this, TableWithPk> & TableUtil.AssertHasCandidateKey<this>,
+        connection : IConnection,
+        pk : PrimaryKey<Extract<this, TableWithPk>>,
+        delegate : DelegateT
+    ) : (
+        UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<
+            Extract<this, TableWithPk>,
+            DelegateT,
+            Promise<UpdateZeroOrOneResult>
+        >
+    ) {
+        return UpdateUtil.updateZeroOrOneByPk<Extract<this, TableWithPk>, DelegateT>(
+            connection,
+            this,
+            pk,
+            delegate
+        );
+    }
+    updateZeroOrOneBySk<
+        DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<this>
+    > (
+        this : this & TableUtil.AssertHasCandidateKey<this>,
+        connection : IConnection,
+        sk : SuperKey<this>,
+        delegate : DelegateT
+    ) : (
+        UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<
+            this,
+            DelegateT,
+            Promise<UpdateZeroOrOneResult>
+        >
+    ) {
+        return UpdateUtil.updateZeroOrOneBySk<this, DelegateT>(
+            connection,
+            this,
+            sk,
+            delegate
+        );
     }
 }
