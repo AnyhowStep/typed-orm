@@ -197,9 +197,3 @@ await db.from(app)
     }
 /*snip*/
 ```
-
-### TODO
-
-+ Better documentation
-+ Better examples
-+ Better tests
