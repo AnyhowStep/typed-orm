@@ -1,8 +1,8 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const table_1 = require("../table");
 const sd = require("schema-decorator");
-exports.KEY_COLUMN_USAGE = table_1.table("KEY_COLUMN_USAGE", {
+const table_1 = require("../table");
+const type_1 = require("../type");
+const x = type_1.lazyInit("KEY_COLUMN_USAGE", () => table_1.table("KEY_COLUMN_USAGE", {
     CONSTRAINT_CATALOG: sd.varChar(512),
     CONSTRAINT_SCHEMA: sd.varChar(64),
     CONSTRAINT_NAME: sd.varChar(64),
@@ -19,5 +19,6 @@ exports.KEY_COLUMN_USAGE = table_1.table("KEY_COLUMN_USAGE", {
     .disallowInsert()
     .disallowDelete()
     .setImmutable()
-    .setDatabaseName("information_schema");
+    .setDatabaseName("information_schema"));
+module.exports = x;
 //# sourceMappingURL=key-column-usage.js.map

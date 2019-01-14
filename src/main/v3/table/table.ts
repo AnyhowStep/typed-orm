@@ -6,6 +6,7 @@ import {QueryTree} from "../query-tree";
 import {PrimaryKeyUtil} from "../primary-key";
 import {CandidateKeyUtil} from "../candidate-key";
 import {SuperKeyUtil} from "../super-key";
+import {IConnection} from "../execution";
 import * as TableUtil from "./util";
 
 export interface TableData extends AliasedTableData {
@@ -375,5 +376,9 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     }
     disallowDelete () : TableUtil.DisallowDelete<this> {
         return TableUtil.disallowDelete(this);
+    }
+
+    validate (connection : IConnection, result : TableUtil.ValidateTableResult) {
+        return TableUtil.validate(this, connection, result);
     }
 }

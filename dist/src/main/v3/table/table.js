@@ -92,6 +92,9 @@ class Table {
     disallowDelete() {
         return TableUtil.disallowDelete(this);
     }
+    validate(connection, result) {
+        return TableUtil.validate(this, connection, result);
+    }
 }
 exports.Table = Table;
 //# sourceMappingURL=table.js.map

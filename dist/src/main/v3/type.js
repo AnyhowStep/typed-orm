@@ -28,4 +28,21 @@ function isStringArray(raw) {
     return true;
 }
 exports.isStringArray = isStringArray;
+/*
+    Getters are a good way to pretend that a function is a read-only variable.
+    They also help with resolving circular imports during run-time.
+*/
+function lazyInit(key, instantiate) {
+    let value = undefined;
+    const result = {
+        get [key]() {
+            if (value == undefined) {
+                value = instantiate();
+            }
+            return value;
+        }
+    };
+    return result;
+}
+exports.lazyInit = lazyInit;
 //# sourceMappingURL=type.js.map

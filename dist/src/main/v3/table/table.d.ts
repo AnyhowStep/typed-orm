@@ -6,6 +6,7 @@ import { QueryTree } from "../query-tree";
 import { PrimaryKeyUtil } from "../primary-key";
 import { CandidateKeyUtil } from "../candidate-key";
 import { SuperKeyUtil } from "../super-key";
+import { IConnection } from "../execution";
 import * as TableUtil from "./util";
 export interface TableData extends AliasedTableData {
     readonly autoIncrement: undefined | string;
@@ -91,5 +92,6 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     addParent<ParentT extends ITable>(parent: TableUtil.Parent<this, ParentT>): (TableUtil.AddParent<this, ParentT>);
     disallowInsert(): TableUtil.DisallowInsert<this>;
     disallowDelete(): TableUtil.DisallowDelete<this>;
+    validate(connection: IConnection, result: TableUtil.ValidateTableResult): Promise<void>;
 }
 //# sourceMappingURL=table.d.ts.map

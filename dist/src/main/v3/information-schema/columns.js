@@ -1,8 +1,8 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 const table_1 = require("../table");
-exports.COLUMNS = table_1.table("COLUMNS", {
+const type_1 = require("../type");
+const x = type_1.lazyInit("COLUMNS", () => table_1.table("COLUMNS", {
     TABLE_CATALOG: sd.varChar(512),
     TABLE_SCHEMA: sd.varChar(64),
     TABLE_NAME: sd.varChar(64),
@@ -34,5 +34,6 @@ exports.COLUMNS = table_1.table("COLUMNS", {
     .disallowInsert()
     .disallowDelete()
     .setImmutable()
-    .setDatabaseName("information_schema");
+    .setDatabaseName("information_schema"));
+module.exports = x;
 //# sourceMappingURL=columns.js.map

@@ -61,3 +61,24 @@ export type PromiseResult<P extends Promise<any>> = (
     R :
     never
 );
+
+/*
+    Getters are a good way to pretend that a function is a read-only variable.
+    They also help with resolving circular imports during run-time.
+*/
+export function lazyInit<K extends string, T> (
+    key : K,
+    instantiate : () => T
+) : { [k in K] : T } {
+    let value : T|undefined = undefined;
+
+    const result = {
+        get [key] () : T {
+            if (value == undefined) {
+                value = instantiate();
+            }
+            return value;
+        }
+    };
+    return result as any;
+}

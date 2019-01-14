@@ -1,1 +1,1 @@
-{"version":3,"file":"bigint.d.ts","sourceRoot":"","sources":["../../../../../../src/main/v3/data-type/int/bigint.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,MAAM,kBAAkB,CAAC;AAsCvC,wBAAgB,MAAM;;;EAErB"}
+{"version":3,"file":"bigint.d.ts","sourceRoot":"","sources":["../../../../../../src/main/v3/data-type/int/bigint.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,MAAM,kBAAkB,CAAC;AAsCvC,wBAAgB,MAAM;;;EAErB;AAaD,wBAAgB,YAAY;;;EAE3B;AAaD,wBAAgB,cAAc;;;EAE7B"}

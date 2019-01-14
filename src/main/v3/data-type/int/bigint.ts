@@ -39,3 +39,33 @@ const bigintDelegate = sd.or(
 export function bigint () {
     return bigintDelegate;
 }
+const bigintSignedDelegate = sd.chain(
+    bigintDelegate,
+    (name : string, value : bigint) => {
+        if (value < -9223372036854775808n) {
+            throw new Error(`${name} must be >= -9,223,372,036,854,775,808`);
+        }
+        if (value > 9223372036854775807n) {
+            throw new Error(`${name} must be <= 9,223,372,036,854,775,807`);
+        }
+        return value;
+    }
+);
+export function bigintSigned () {
+    return bigintSignedDelegate;
+}
+const bigintUnsignedDelegate = sd.chain(
+    bigintDelegate,
+    (name : string, value : bigint) => {
+        if (value < 0n) {
+            throw new Error(`${name} must be >= 0`);
+        }
+        if (value > 18446744073709551616n) {
+            throw new Error(`${name} must be <= 18,446,744,073,709,551,616`);
+        }
+        return value;
+    }
+);
+export function bigintUnsigned () {
+    return bigintUnsignedDelegate;
+}
