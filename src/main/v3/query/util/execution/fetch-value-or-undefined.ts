@@ -3,7 +3,7 @@ import {IConnection} from "../../../execution";
 import {limit} from "../operation";
 import {TooManyRowsFoundError} from "./error";
 import {SelectItemUtil} from "../../../select-item";
-import { fetchValueArray } from "./fetch-value-array";
+import {fetchValueArray} from "./fetch-value-array";
 
 export type FetchValueOrUndefined<
     QueryT extends MainQuery & OneSelectItemQuery<any>

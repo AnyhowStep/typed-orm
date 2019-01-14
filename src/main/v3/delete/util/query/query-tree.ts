@@ -1,7 +1,7 @@
-import { QueryTreeArray } from "../../../query-tree";
-import { ExecutableDelete, DeleteModifier } from "../../delete";
-import { ITable } from "../../../table";
-import { QueryUtil } from "../../../query";
+import {QueryTreeArray} from "../../../query-tree";
+import {ExecutableDelete, DeleteModifier} from "../../delete";
+import {ITable} from "../../../table";
+import {QueryUtil} from "../../../query";
 
 export function queryTree_Tables (tables : ITable[]) : QueryTreeArray {
     const result : QueryTreeArray = [];

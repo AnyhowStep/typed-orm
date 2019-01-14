@@ -2,8 +2,8 @@ import {Query} from "../../query";
 import {AfterSelectClause} from "../predicate";
 import {MapDelegate} from "../../../map-delegate";
 import {ColumnRefUtil, ColumnRef} from "../../../column-ref";
-import { ColumnMapUtil, ColumnMap } from "../../../column-map";
-import { SelectItem } from "../../../select-item";
+import {ColumnMapUtil, ColumnMap} from "../../../column-map";
+import {SelectItem} from "../../../select-item";
 import {SelectItemArrayUtil} from "../../../select-item-array";
 
 export type ToTypeRef<

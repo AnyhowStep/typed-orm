@@ -1,11 +1,11 @@
 import {IJoin} from "../../../join";
-import { ColumnRefUtil } from "../../../column-ref";
-import { PrimitiveExpr } from "../../../primitive-expr";
-import { RawExpr, RawExprUtil } from "../../../raw-expr";
-import { JoinArrayUtil } from "../../../join-array";
+import {ColumnRefUtil} from "../../../column-ref";
+import {PrimitiveExpr} from "../../../primitive-expr";
+import {RawExpr, RawExprUtil} from "../../../raw-expr";
+import {JoinArrayUtil} from "../../../join-array";
 import {ITable, TableUtil} from "../../../table";
-import { Update, UpdateModifier, Assignment, UpdatableQuery } from "../../update";
-import { ColumnIdentifier, ColumnIdentifierUtil } from "../../../column-identifier";
+import {Update, UpdateModifier, Assignment, UpdatableQuery} from "../../update";
+import {ColumnIdentifier, ColumnIdentifierUtil} from "../../../column-identifier";
 
 export type AssignmentRefFromJoinArray<JoinArrT extends IJoin[]> = (
     {
@@ -208,8 +208,8 @@ export function multiTableUpdate<
 
 /*TODO Move to compile-time tests
 import * as o from "../../../index";
-import { ColumnIdentifierRefUtil } from "../../../column-identifier-ref";
-import { ColumnIdentifierUtil } from "../../../column-identifier";
+import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
+import {ColumnIdentifierUtil} from "../../../column-identifier";
 
 const table = o.table(
     "table",

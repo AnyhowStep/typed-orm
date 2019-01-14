@@ -13,8 +13,8 @@ import {IAliasedTable} from "../../aliased-table";
 import {isObjectWithKeys} from "../../type";
 import {ColumnIdentifierUtil} from "../../column-identifier";
 import {OrderUtil, Order} from "../../order";
-import { ColumnUtil } from "../../column";
-import { ColumnIdentifierRefUtil } from "../../column-identifier-ref";
+import {ColumnUtil} from "../../column";
+import {ColumnIdentifierRefUtil} from "../../column-identifier-ref";
 
 export function isUnionQuery (raw : any) : raw is UnionQuery {
     return (

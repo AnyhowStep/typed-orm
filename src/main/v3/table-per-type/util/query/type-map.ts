@@ -2,7 +2,7 @@ import * as sd from "schema-decorator";
 import {ITable} from "../../../table";
 import {ColumnNames, uniqueColumnNames} from "./column-names";
 import {ColumnType} from "./column-type";
-import { getColumnsWithName } from "./get-columns-with-name";
+import {getColumnsWithName} from "./get-columns-with-name";
 
 export type TypeMap<TableT extends ITable> = (
     {

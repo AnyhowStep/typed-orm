@@ -181,7 +181,7 @@ export function setLatestOrder<
 /*
 import * as o from "../../../index";
 import {log} from "../constructor";
-import { setEntityIdentifier } from "./set-entity-identifier";
+import {setEntityIdentifier} from "./set-entity-identifier";
 const table = o.table("table", {
     x : o.bigint(),
     y : o.dateTime(),

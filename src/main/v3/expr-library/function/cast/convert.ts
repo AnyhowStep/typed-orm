@@ -3,7 +3,7 @@ import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
 import {TranscodingName} from "../../constant";
-import { FunctionCall } from "../../../query-tree";
+import {FunctionCall} from "../../../query-tree";
 
 export function convert<
     RawExprT extends RawExpr<string>

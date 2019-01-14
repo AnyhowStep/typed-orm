@@ -1,8 +1,8 @@
 import {LogNoTrackedDefaults, EntityIdentifier} from "../log";
 import {TableUtil} from "../table";
 import {TrackRow} from "../track-row";
-import { IConnection } from "../execution";
-import { InsertRowLiteral } from "../insert";
+import {IConnection} from "../execution";
+import {InsertRowLiteral} from "../insert";
 
 //Like TrackedRow but all `tracked` is set
 export type FilledTrackRow<LogT extends LogNoTrackedDefaults> = (

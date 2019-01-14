@@ -1,5 +1,5 @@
 import {SelectItem, SelectItemUtil} from "./select-item";
-import { ColumnRef, ColumnRefUtil } from "./column-ref";
+import {ColumnRef, ColumnRefUtil} from "./column-ref";
 
 export namespace SelectItemArrayUtil {
     export type ToColumnNameUnion<SelectsT extends SelectItem[]> = (

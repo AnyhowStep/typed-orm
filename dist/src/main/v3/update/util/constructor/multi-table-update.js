@@ -62,8 +62,8 @@ function multiTableUpdate(query, modifier, delegate) {
 exports.multiTableUpdate = multiTableUpdate;
 /*TODO Move to compile-time tests
 import * as o from "../../../index";
-import { ColumnIdentifierRefUtil } from "../../../column-identifier-ref";
-import { ColumnIdentifierUtil } from "../../../column-identifier";
+import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
+import {ColumnIdentifierUtil} from "../../../column-identifier";
 
 const table = o.table(
     "table",
