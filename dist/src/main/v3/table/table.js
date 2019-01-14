@@ -6,6 +6,7 @@ const super_key_1 = require("../super-key");
 const query_1 = require("../query");
 const insert_1 = require("../insert");
 const update_1 = require("../update");
+const delete_1 = require("../delete");
 const TableUtil = require("./util");
 class Table {
     constructor(data, { unaliasedQuery, }) {
@@ -199,6 +200,24 @@ class Table {
     }
     updateZeroOrOneBySk(connection, sk, delegate) {
         return update_1.UpdateUtil.updateZeroOrOneBySk(connection, this, sk, delegate);
+    }
+    deleteOneByCk(connection, ck) {
+        return delete_1.DeleteUtil.deleteOneByCk(connection, this, ck);
+    }
+    deleteOneByPk(connection, pk) {
+        return delete_1.DeleteUtil.deleteOneByPk(connection, this, pk);
+    }
+    deleteOneBySk(connection, sk) {
+        return delete_1.DeleteUtil.deleteOneBySk(connection, this, sk);
+    }
+    deleteZeroOrOneByCk(connection, ck) {
+        return delete_1.DeleteUtil.deleteZeroOrOneByCk(connection, this, ck);
+    }
+    deleteZeroOrOneByPk(connection, pk) {
+        return delete_1.DeleteUtil.deleteZeroOrOneByPk(connection, this, pk);
+    }
+    deleteZeroOrOneBySk(connection, sk) {
+        return delete_1.DeleteUtil.deleteZeroOrOneBySk(connection, this, sk);
     }
 }
 exports.Table = Table;

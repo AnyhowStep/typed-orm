@@ -1,10 +1,10 @@
-import {ITable, TableUtil} from "../../../../table";
+import {DeletableTable, TableUtil} from "../../../../table";
 import {IConnection, DeleteZeroOrOneResult} from "../../../../execution";
 import {deleteZeroOrOne} from "./delete-zero-or-one";
 import {CandidateKey} from "../../../../candidate-key";
 
 export function deleteZeroOrOneByCk<
-    TableT extends ITable & { deleteAllowed : true }
+    TableT extends DeletableTable
 > (
     connection : IConnection,
     table : TableT & TableUtil.AssertHasCandidateKey<TableT>,

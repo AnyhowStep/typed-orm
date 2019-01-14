@@ -6,7 +6,7 @@ import { QueryTree } from "../query-tree";
 import { PrimaryKey, PrimaryKeyUtil } from "../primary-key";
 import { CandidateKey, CandidateKeyUtil } from "../candidate-key";
 import { SuperKey, SuperKeyUtil } from "../super-key";
-import { IConnection, UpdateOneResult, UpdateZeroOrOneResult } from "../execution";
+import { IConnection, UpdateOneResult, UpdateZeroOrOneResult, DeleteOneResult, DeleteZeroOrOneResult } from "../execution";
 import { QueryUtil } from "../query";
 import { Row } from "../row";
 import { RawExprUtil } from "../raw-expr";
@@ -132,5 +132,11 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     updateZeroOrOneByCk<DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<this>>(this: this & TableUtil.AssertHasCandidateKey<this>, connection: IConnection, ck: CandidateKey<this>, delegate: DelegateT): (UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<this, DelegateT, Promise<UpdateZeroOrOneResult>>);
     updateZeroOrOneByPk<DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<Extract<this, TableWithPk>>>(this: Extract<this, TableWithPk> & TableUtil.AssertHasCandidateKey<this>, connection: IConnection, pk: PrimaryKey<Extract<this, TableWithPk>>, delegate: DelegateT): (UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<Extract<this, TableWithPk>, DelegateT, Promise<UpdateZeroOrOneResult>>);
     updateZeroOrOneBySk<DelegateT extends UpdateUtil.SingleTableSetDelegateFromTable<this>>(this: this & TableUtil.AssertHasCandidateKey<this>, connection: IConnection, sk: SuperKey<this>, delegate: DelegateT): (UpdateUtil.AssertValidSingleTableSetDelegateFromTable_Hack<this, DelegateT, Promise<UpdateZeroOrOneResult>>);
+    deleteOneByCk(this: Extract<this, DeletableTable> & TableUtil.AssertHasCandidateKey<this>, connection: IConnection, ck: CandidateKey<Extract<this, DeletableTable>>): (Promise<DeleteOneResult>);
+    deleteOneByPk(this: Extract<this, DeletableTable & TableWithPk>, connection: IConnection, pk: PrimaryKey<Extract<this, DeletableTable & TableWithPk>>): (Promise<DeleteOneResult>);
+    deleteOneBySk(this: Extract<this, DeletableTable> & TableUtil.AssertHasCandidateKey<this>, connection: IConnection, sk: SuperKey<Extract<this, DeletableTable>>): (Promise<DeleteOneResult>);
+    deleteZeroOrOneByCk(this: Extract<this, DeletableTable> & TableUtil.AssertHasCandidateKey<this>, connection: IConnection, ck: CandidateKey<Extract<this, DeletableTable>>): (Promise<DeleteZeroOrOneResult>);
+    deleteZeroOrOneByPk(this: Extract<this, DeletableTable & TableWithPk>, connection: IConnection, pk: PrimaryKey<Extract<this, DeletableTable & TableWithPk>>): (Promise<DeleteZeroOrOneResult>);
+    deleteZeroOrOneBySk(this: Extract<this, DeletableTable> & TableUtil.AssertHasCandidateKey<this>, connection: IConnection, sk: SuperKey<Extract<this, DeletableTable>>): (Promise<DeleteZeroOrOneResult>);
 }
 //# sourceMappingURL=table.d.ts.map

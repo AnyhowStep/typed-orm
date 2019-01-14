@@ -1,11 +1,10 @@
-import {ITable, TableUtil} from "../../../../table";
+import {TableWithPk, DeletableTable, TableUtil} from "../../../../table";
 import {IConnection, DeleteOneResult} from "../../../../execution";
 import {deleteOne} from "./delete-one";
-import {Key} from "../../../../key";
 import {PrimaryKey} from "../../../../primary-key";
 
 export function deleteOneByPk<
-    TableT extends ITable & { deleteAllowed : true, primaryKey : Key }
+    TableT extends DeletableTable & TableWithPk
 > (
     connection : IConnection,
     table : TableT,

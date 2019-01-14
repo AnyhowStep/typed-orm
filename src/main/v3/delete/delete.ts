@@ -3,7 +3,7 @@ import {IJoin} from "../join";
 import {IAnonymousTypedExpr} from "../expr";
 import {MapDelegate} from "../map-delegate";
 import {DeletableTable} from "../table";
-import { IConnection, DeleteResult } from "../execution";
+import {IConnection, DeleteResult} from "../execution";
 import * as DeleteUtil from "./util";
 
 export type DeletableQuery = IQuery<{

@@ -1,4 +1,4 @@
-import {ITable} from "../../../../table";
+import {DeletableTable} from "../../../../table";
 import {IConnection, DeleteOneResult} from "../../../../execution";
 import {QueryUtil} from "../../../../query";
 import {TooManyRowsFoundError, RowNotFoundError} from "../../../../query/util";
@@ -6,7 +6,7 @@ import {IAnonymousTypedExpr} from "../../../../expr";
 
 //Not meant to be called directly
 export function deleteOne<
-    TableT extends ITable & { deleteAllowed : true }
+    TableT extends DeletableTable
 > (
     connection : IConnection,
     table : TableT,

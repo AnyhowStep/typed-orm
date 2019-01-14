@@ -1,9 +1,5 @@
-import { ITable } from "../../../../table";
+import { TableWithPk, DeletableTable } from "../../../../table";
 import { IConnection, DeleteOneResult } from "../../../../execution";
-import { Key } from "../../../../key";
 import { PrimaryKey } from "../../../../primary-key";
-export declare function deleteOneByPk<TableT extends ITable & {
-    deleteAllowed: true;
-    primaryKey: Key;
-}>(connection: IConnection, table: TableT, pk: PrimaryKey<TableT>): (Promise<DeleteOneResult>);
+export declare function deleteOneByPk<TableT extends DeletableTable & TableWithPk>(connection: IConnection, table: TableT, pk: PrimaryKey<TableT>): (Promise<DeleteOneResult>);
 //# sourceMappingURL=delete-one-by-pk.d.ts.map
