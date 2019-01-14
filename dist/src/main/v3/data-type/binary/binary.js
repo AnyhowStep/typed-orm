@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 function bufferDelegate(dataTypeStr, absoluteMax) {
-    return (a, b) => {
+    const result = (a, b) => {
         if (a == undefined) {
             return sd.bufferLength(absoluteMax);
         }
@@ -19,6 +19,10 @@ function bufferDelegate(dataTypeStr, absoluteMax) {
             return sd.bufferLength(a, b);
         }
     };
+    result.nullable = (a, b) => {
+        return sd.nullable(result(a, b));
+    };
+    return result;
 }
 exports.bufferDelegate = bufferDelegate;
 exports.binary = bufferDelegate("BINARY", 255);

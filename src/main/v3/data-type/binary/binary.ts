@@ -1,5 +1,10 @@
 import * as sd from "schema-decorator";
 
+export interface BufferDelegateNullable {
+    (minLength : number, maxLength : number) : sd.AssertDelegate<Buffer|null>,
+    (maxLength : number) : sd.AssertDelegate<Buffer|null>,
+    () : sd.AssertDelegate<Buffer|null>,
+}
 export function bufferDelegate (
     dataTypeStr : string,
     absoluteMax : number,
@@ -7,8 +12,10 @@ export function bufferDelegate (
     (minLength : number, maxLength : number) : sd.AssertDelegate<Buffer>,
     (maxLength : number) : sd.AssertDelegate<Buffer>,
     () : sd.AssertDelegate<Buffer>,
+
+    nullable : BufferDelegateNullable,
 } {
-    return (a? : number, b? : number) => {
+    const result = (a? : number, b? : number) => {
         if (a == undefined) {
             return sd.bufferLength(absoluteMax);
         } else if (b == undefined) {
@@ -35,6 +42,10 @@ export function bufferDelegate (
             return sd.bufferLength(a, b);
         }
     }
+    result.nullable = (a? : number, b? : number) => {
+        return sd.nullable(result(a, b));
+    };
+    return result;
 }
 export const binary = bufferDelegate("BINARY", 255);
 export const varBinary = bufferDelegate("VARBINARY", 65535);

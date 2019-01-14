@@ -1,5 +1,10 @@
 import * as sd from "schema-decorator";
 
+export interface JsonDelegateNullable {
+    (minLength : number, maxLength : number) : sd.AssertDelegate<string|null>,
+    (maxLength : number) : sd.AssertDelegate<string|null>,
+    () : sd.AssertDelegate<string|null>,
+}
 export function jsonDelegate (
     dataTypeStr : string,
     absoluteMax : number,
@@ -8,8 +13,10 @@ export function jsonDelegate (
     (minLength : number, maxLength : number) : sd.AssertDelegate<string>,
     (maxLength : number) : sd.AssertDelegate<string>,
     () : sd.AssertDelegate<string>,
+
+    nullable : JsonDelegateNullable,
 } {
-    return (a? : number, b? : number) => {
+    const result =(a? : number, b? : number) => {
         if (a == undefined) {
             return sd.chain(
                 sd.jsonObjectStr(),
@@ -45,6 +52,10 @@ export function jsonDelegate (
             );
         }
     }
+    result.nullable = (a? : number, b? : number) => {
+        return sd.nullable(result(a, b));
+    };
+    return result;
 }
 
 /*

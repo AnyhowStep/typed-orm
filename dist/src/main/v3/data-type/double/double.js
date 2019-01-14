@@ -6,4 +6,5 @@ function double() {
     return assertDouble;
 }
 exports.double = double;
+double.nullable = () => sd.nullable(double());
 //# sourceMappingURL=double.js.map

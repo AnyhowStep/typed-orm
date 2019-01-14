@@ -39,6 +39,8 @@ const bigintDelegate = sd.or(
 export function bigint () {
     return bigintDelegate;
 }
+bigint.nullable = () => sd.nullable(bigint());
+
 const bigintSignedDelegate = sd.chain(
     bigintDelegate,
     (name : string, value : bigint) => {
@@ -54,6 +56,8 @@ const bigintSignedDelegate = sd.chain(
 export function bigintSigned () {
     return bigintSignedDelegate;
 }
+bigintSigned.nullable = () => sd.nullable(bigintSigned());
+
 const bigintUnsignedDelegate = sd.chain(
     bigintDelegate,
     (name : string, value : bigint) => {
@@ -69,3 +73,4 @@ const bigintUnsignedDelegate = sd.chain(
 export function bigintUnsigned () {
     return bigintUnsignedDelegate;
 }
+bigintUnsigned.nullable = () => sd.nullable(bigintUnsigned());

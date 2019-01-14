@@ -10,7 +10,7 @@ export const arr = o.ColumnIdentifierUtil.Array.fromSelectItemArray([
     o.ColumnMapUtil.fromAssertMap("otherTable", {
         x : sd.date(),
         y : sd.boolean(),
-        z : sd.nullable(sd.buffer())
+        z : o.binary.nullable()
     })
 ]);
 

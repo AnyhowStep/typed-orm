@@ -1,5 +1,10 @@
 import * as sd from "schema-decorator";
 
+export interface StrDelegateNullable {
+    (minLength : number, maxLength : number) : sd.AssertDelegate<string|null>,
+    (maxLength : number) : sd.AssertDelegate<string|null>,
+    () : sd.AssertDelegate<string|null>,
+}
 export function strDelegate (
     dataTypeStr : string,
     absoluteMax : number,
@@ -7,8 +12,10 @@ export function strDelegate (
     (minLength : number, maxLength : number) : sd.AssertDelegate<string>,
     (maxLength : number) : sd.AssertDelegate<string>,
     () : sd.AssertDelegate<string>,
+
+    nullable : StrDelegateNullable,
 } {
-    return (a? : number, b? : number) => {
+    const result = (a? : number, b? : number) => {
         if (a == undefined) {
             return sd.varChar(absoluteMax);
         } else if (b == undefined) {
@@ -35,6 +42,10 @@ export function strDelegate (
             return sd.varChar(a, b);
         }
     }
+    result.nullable = (a? : number, b? : number) => {
+        return sd.nullable(result(a, b));
+    };
+    return result;
 }
 export const char = strDelegate("CHAR", 255);
 export const varChar = strDelegate("VARCHAR", 65535);

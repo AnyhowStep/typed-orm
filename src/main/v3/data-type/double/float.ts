@@ -1,3 +1,4 @@
+import * as sd from "schema-decorator";
 import {double} from "./double";
 
 /*
@@ -7,3 +8,4 @@ import {double} from "./double";
 export function float () {
     return double();
 }
+float.nullable = () => sd.nullable(float());

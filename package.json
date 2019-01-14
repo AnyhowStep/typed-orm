@@ -1,7 +1,7 @@
 {
   "name": "typed-orm",
-  "version": "0.9.75",
-  "description": "A strongly typed MySQL ORM",
+  "version": "1.0.0",
+  "description": "A structurally-typed MySQL query-builder/ORM",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",
   "scripts": {
@@ -26,8 +26,8 @@
     "c8-execution": "c8 npm run test-execution",
     "c8-report": "c8 report"
   },
-  "author": "anyhowstep",
-  "license": "ISC",
+  "author": "Justin Ng",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/AnyhowStep/typed-orm"

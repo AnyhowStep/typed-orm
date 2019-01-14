@@ -7,3 +7,4 @@ const assertDouble = sd.or(
 export function double () {
     return assertDouble;
 }
+double.nullable = () => sd.nullable(double());

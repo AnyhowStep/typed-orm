@@ -60,3 +60,6 @@ export function dateTime (
         }
     );*/
 }
+dateTime.nullable = (
+    fractionalSecondPrecision : 0|1|2|3/*|4|5|6*/ = 0
+) => sd.nullable(dateTime(fractionalSecondPrecision));

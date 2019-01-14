@@ -50,4 +50,5 @@ function dateTime(fractionalSecondPrecision = 0) {
     );*/
 }
 exports.dateTime = dateTime;
+dateTime.nullable = (fractionalSecondPrecision = 0) => sd.nullable(dateTime(fractionalSecondPrecision));
 //# sourceMappingURL=date-time.js.map

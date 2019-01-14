@@ -9,4 +9,5 @@ function decimal() {
     return sd.or(sd.numberToString(), sd.match(/^(\+|\-)?\d+(\.\d+)?$/, name => `Expected ${name} to be a DECIMAL string`));
 }
 exports.decimal = decimal;
+decimal.nullable = () => sd.nullable(decimal());
 //# sourceMappingURL=decimal.js.map

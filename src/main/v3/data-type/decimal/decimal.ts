@@ -15,3 +15,4 @@ export function decimal () {
         )
     );
 }
+decimal.nullable = () => sd.nullable(decimal());

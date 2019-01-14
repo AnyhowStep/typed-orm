@@ -8,4 +8,5 @@ function enumDelegate(...elements) {
     return sd.literal(...elements);
 }
 exports.enum = enumDelegate;
+enumDelegate.nullable = (...elements) => (sd.nullable(enumDelegate(...elements)));
 //# sourceMappingURL=enum.js.map

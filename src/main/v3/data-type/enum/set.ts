@@ -23,3 +23,8 @@ export function set<ElementArr extends string[]> (
         }
     );
 }
+set.nullable = <ElementArr extends string[]> (
+    ...elements : ElementArr
+) : sd.AssertDelegate<string|null> => (
+    sd.nullable(set(...elements))
+);

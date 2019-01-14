@@ -33,6 +33,7 @@ function bigint() {
     return bigintDelegate;
 }
 exports.bigint = bigint;
+bigint.nullable = () => sd.nullable(bigint());
 const bigintSignedDelegate = sd.chain(bigintDelegate, (name, value) => {
     if (value < -9223372036854775808n) {
         throw new Error(`${name} must be >= -9,223,372,036,854,775,808`);
@@ -46,6 +47,7 @@ function bigintSigned() {
     return bigintSignedDelegate;
 }
 exports.bigintSigned = bigintSigned;
+bigintSigned.nullable = () => sd.nullable(bigintSigned());
 const bigintUnsignedDelegate = sd.chain(bigintDelegate, (name, value) => {
     if (value < 0n) {
         throw new Error(`${name} must be >= 0`);
@@ -59,4 +61,5 @@ function bigintUnsigned() {
     return bigintUnsignedDelegate;
 }
 exports.bigintUnsigned = bigintUnsigned;
+bigintUnsigned.nullable = () => sd.nullable(bigintUnsigned());
 //# sourceMappingURL=bigint.js.map

@@ -1,1 +1,1 @@
-{"version":3,"file":"float.d.ts","sourceRoot":"","sources":["../../../../../../src/main/v3/data-type/double/float.ts"],"names":[],"mappings":"AAMA,wBAAgB,KAAK;;;EAEpB"}
+{"version":3,"file":"float.d.ts","sourceRoot":"","sources":["../../../../../../src/main/v3/data-type/double/float.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,MAAM,kBAAkB,CAAC;AAOvC,wBAAgB,KAAK;;;EAEpB;yBAFe,KAAK"}

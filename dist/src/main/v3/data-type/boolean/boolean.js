@@ -37,12 +37,15 @@ function boolean() {
     return exports.assertBoolean;
 }
 exports.boolean = boolean;
+boolean.nullable = () => sd.nullable(boolean());
 function getTrue() {
     return exports.assertTrue;
 }
 exports.true = getTrue;
+getTrue.nullable = () => sd.nullable(getTrue());
 function getFalse() {
     return exports.assertFalse;
 }
 exports.false = getFalse;
+getFalse.nullable = () => sd.nullable(getFalse());
 //# sourceMappingURL=boolean.js.map

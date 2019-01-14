@@ -17,4 +17,5 @@ function set(...elements) {
     });
 }
 exports.set = set;
+set.nullable = (...elements) => (sd.nullable(set(...elements)));
 //# sourceMappingURL=set.js.map

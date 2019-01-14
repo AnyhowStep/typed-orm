@@ -1,6 +1,6 @@
 ### `typed-orm`
 
-An experiment in type-safe, and structurally-safe MySQL query building using TypeScript.
+An experiment in structurally-safe MySQL query building using TypeScript.
 
 ### Tables
 
@@ -11,9 +11,9 @@ import * as sd from "schema-decorator";
 const app = o.table(
     "app",
     {
-        appId : sd.naturalNumber(),
-        name : sd.string(),
-        description : sd.nullable(sd.string())
+        appId : o.bigintUnsigned(),
+        name : o.varChar(1, 255),
+        description : o.varChar.nullable(1, 255)
     }
 )
     .setAutoIncrement(c => c.appId)

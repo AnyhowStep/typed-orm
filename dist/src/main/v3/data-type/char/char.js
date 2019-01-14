@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 function strDelegate(dataTypeStr, absoluteMax) {
-    return (a, b) => {
+    const result = (a, b) => {
         if (a == undefined) {
             return sd.varChar(absoluteMax);
         }
@@ -19,6 +19,10 @@ function strDelegate(dataTypeStr, absoluteMax) {
             return sd.varChar(a, b);
         }
     };
+    result.nullable = (a, b) => {
+        return sd.nullable(result(a, b));
+    };
+    return result;
 }
 exports.strDelegate = strDelegate;
 exports.char = strDelegate("CHAR", 255);

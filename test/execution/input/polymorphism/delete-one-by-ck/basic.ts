@@ -40,7 +40,7 @@ tape(__filename, async (t) => {
         const fkA = o.table(
             "fkA",
             {
-                value : sd.nullable(sd.string()),
+                value : o.varChar.nullable(1, 255),
             }
         ).addCandidateKey(c => [c.value]);
         const fkB = o.table(

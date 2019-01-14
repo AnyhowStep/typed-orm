@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
 function jsonDelegate(dataTypeStr, absoluteMax, defaultSize) {
-    return (a, b) => {
+    const result = (a, b) => {
         if (a == undefined) {
             return sd.chain(sd.jsonObjectStr(), sd.varChar(defaultSize));
         }
@@ -19,6 +19,10 @@ function jsonDelegate(dataTypeStr, absoluteMax, defaultSize) {
             return sd.chain(sd.jsonObjectStr(), sd.varChar(a, b));
         }
     };
+    result.nullable = (a, b) => {
+        return sd.nullable(result(a, b));
+    };
+    return result;
 }
 exports.jsonDelegate = jsonDelegate;
 /*
