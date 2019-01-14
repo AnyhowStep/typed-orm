@@ -50,3 +50,24 @@
 + BIT support
 
 + Multi-database support?
+
+-----
+
+Better table inheritance support,
+
++ Concrete vs. Abstract (Can the base table be instantiated?)
++ Exclusive vs. Inclusive (Can a base table row be multiple derived types?)
+
+-----
+
+Table-per-type support,
+
++ Exclusive and inclusive
+
+-----
+
++ Better README?
++ More examples?
++ Documentation?
+
++ Polymorphic log tables?

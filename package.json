@@ -5,7 +5,6 @@
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",
   "scripts": {
-    "test-sandbox": "ts-node ./src/main/sandbox/select-builder-v2",
     "test": "ts-node -P ./test/run-time/tsconfig.json",
     "test-exec": "ts-node -P ./test/execution/tsconfig.json",
     "check": "  tsc --noEmit --diagnostics",
