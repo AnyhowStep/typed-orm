@@ -619,8 +619,29 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     fetchZeroOrOneBySk (
         connection : IConnection,
         sk : SuperKey<this>
-    ) : Promise<Row<this>|undefined> {
-        return QueryUtil.fetchZeroOrOneBySk(connection, this, sk);
+    ) : Promise<Row<this>|undefined>;
+    fetchZeroOrOneBySk<
+        DelegateT extends QueryUtil.SelectDelegate<
+            QueryUtil.From<QueryUtil.NewInstance, this>
+        >
+    > (
+        connection : IConnection,
+        sk : SuperKey<this>,
+        delegate : QueryUtil.AssertValidSelectDelegate<
+            QueryUtil.From<QueryUtil.NewInstance, this>,
+            DelegateT
+        >
+    ) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>|undefined>;
+    fetchZeroOrOneBySk (
+        connection : IConnection,
+        sk : SuperKey<this>,
+        delegate? : (...args : any[]) => any[]
+    ) {
+        if (delegate == undefined) {
+            return QueryUtil.fetchZeroOrOneBySk(connection, this, sk);
+        } else {
+            return QueryUtil.fetchZeroOrOneBySk(connection, this, sk, delegate as any);
+        }
     }
 
     insertAndFetch<

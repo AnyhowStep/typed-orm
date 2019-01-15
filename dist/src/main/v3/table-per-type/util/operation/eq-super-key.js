@@ -7,6 +7,7 @@ function eqSuperKey(table, sk) {
     sk = assertDelegate(`${table.alias}.sk`, sk);
     const arr = Object.keys(sk)
         .sort()
+        .filter(columnName => sk[columnName] !== undefined)
         .map(columnName => {
         if (columnName in table.columns) {
             return exprLib.nullSafeEq(table.columns[columnName], sk[columnName]);

@@ -29,6 +29,7 @@ export function eqSuperKey<
 
     const arr = Object.keys(sk)
         .sort()
+        .filter(columnName => (sk as any)[columnName] !== undefined)
         .map(columnName => {
             if (columnName in table.columns) {
                 return exprLib.nullSafeEq(

@@ -8,7 +8,10 @@ function eqSuperKey(table, sk) {
         table.superKeyAssertDelegate() :
         super_key_1.SuperKeyUtil.assertDelegate(table);
     sk = assertDelegate(`${table.alias}.sk`, sk);
-    const arr = Object.keys(sk).sort().map(columnName => exprLib.nullSafeEq(table.columns[columnName], sk[columnName]));
+    const arr = Object.keys(sk)
+        .sort()
+        .filter(columnName => sk[columnName] !== undefined)
+        .map(columnName => exprLib.nullSafeEq(table.columns[columnName], sk[columnName]));
     const condition = exprLib.and(...arr);
     return condition;
 }

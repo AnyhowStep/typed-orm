@@ -28,12 +28,15 @@ export function eqSuperKey<
         sk
     );
 
-    const arr = Object.keys(sk).sort().map(
-        columnName => exprLib.nullSafeEq(
-            table.columns[columnName],
-            (sk as any)[columnName]
-        )
-    );
+    const arr = Object.keys(sk)
+        .sort()
+        .filter(columnName => (sk as any)[columnName] !== undefined)
+        .map(
+            columnName => exprLib.nullSafeEq(
+                table.columns[columnName],
+                (sk as any)[columnName]
+            )
+        );
     const condition = exprLib.and(...(arr as any));
     return condition;
 }
