@@ -5,7 +5,8 @@ const column_identifier_map_1 = require("../../../column-identifier-map");
 const column_map_1 = require("../../../column-map");
 const key_1 = require("../../../key");
 function setLatestOrder(log, delegate) {
-    const columns = column_map_1.ColumnMapUtil.pick(log.table.columns, log.copy);
+    const columns = column_map_1.ColumnMapUtil.pick(log.table.columns, log.copy.filter(columnName => (log.table.hasExplicitDefaultValue.includes(columnName) ||
+        log.table.generated.includes(columnName))));
     const latestOrder = delegate(columns);
     column_identifier_map_1.ColumnIdentifierMapUtil.assertHasColumnIdentifier(columns, latestOrder[0]);
     const logCk = [...log.entityIdentifier, latestOrder[0].name];

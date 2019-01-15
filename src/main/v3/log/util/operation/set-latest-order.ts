@@ -33,13 +33,21 @@ export type SetLatestOrderDelegate<
     (
         columns : Pick<
             LogT["table"]["columns"],
-            LogT["copy"][number]
+            Extract<
+                LogT["copy"][number],
+                LogT["table"]["hasExplicitDefaultValue"][number] |
+                LogT["table"]["generated"][number]
+            >
         >,
     ) => [
         ColumnUtil.FromColumnMap<
             Pick<
                 LogT["table"]["columns"],
-                LogT["copy"][number]
+                Extract<
+                    LogT["copy"][number],
+                    LogT["table"]["hasExplicitDefaultValue"][number] |
+                    LogT["table"]["generated"][number]
+                >
             >
         >,
         SortDirection
@@ -127,7 +135,10 @@ export function setLatestOrder<
 ) {
     const columns = ColumnMapUtil.pick(
         log.table.columns,
-        log.copy
+        log.copy.filter(columnName => (
+            log.table.hasExplicitDefaultValue.includes(columnName) ||
+            log.table.generated.includes(columnName)
+        ))
     );
     const latestOrder : ReturnType<DelegateT> = delegate(columns) as any;
     ColumnIdentifierMapUtil.assertHasColumnIdentifier(
