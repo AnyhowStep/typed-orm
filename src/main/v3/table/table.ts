@@ -583,8 +583,29 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     fetchZeroOrOneByCk (
         connection : IConnection,
         ck : CandidateKey<this>
-    ) : Promise<Row<this>|undefined> {
-        return QueryUtil.fetchZeroOrOneByCk(connection, this, ck);
+    ) : Promise<Row<this>|undefined>;
+    fetchZeroOrOneByCk<
+        DelegateT extends QueryUtil.SelectDelegate<
+            QueryUtil.From<QueryUtil.NewInstance, this>
+        >
+    > (
+        connection : IConnection,
+        ck : CandidateKey<this>,
+        delegate : QueryUtil.AssertValidSelectDelegate<
+            QueryUtil.From<QueryUtil.NewInstance, this>,
+            DelegateT
+        >
+    ) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>|undefined>;
+    fetchZeroOrOneByCk (
+        connection : IConnection,
+        ck : CandidateKey<this>,
+        delegate? : (...args : any[]) => any[]
+    ) {
+        if (delegate == undefined) {
+            return QueryUtil.fetchZeroOrOneByCk(connection, this, ck);
+        } else {
+            return QueryUtil.fetchZeroOrOneByCk(connection, this, ck, delegate as any);
+        }
     }
     fetchZeroOrOneByPk (
         this : Extract<this, TableWithPk>,

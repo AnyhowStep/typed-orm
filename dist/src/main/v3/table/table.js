@@ -144,8 +144,13 @@ class Table {
     fetchValueOrUndefinedBySk(connection, sk, delegate) {
         return query_1.QueryUtil.fetchValueOrUndefinedBySk(connection, this, sk, delegate);
     }
-    fetchZeroOrOneByCk(connection, ck) {
-        return query_1.QueryUtil.fetchZeroOrOneByCk(connection, this, ck);
+    fetchZeroOrOneByCk(connection, ck, delegate) {
+        if (delegate == undefined) {
+            return query_1.QueryUtil.fetchZeroOrOneByCk(connection, this, ck);
+        }
+        else {
+            return query_1.QueryUtil.fetchZeroOrOneByCk(connection, this, ck, delegate);
+        }
     }
     fetchZeroOrOneByPk(connection, pk) {
         return query_1.QueryUtil.fetchZeroOrOneByPk(connection, this, pk);
