@@ -4,7 +4,7 @@ import {QueryUtil} from "../../..";
 import {IConnection} from "../../../../execution";
 import {SuperKey} from "../../../../super-key";
 
-export function fetchZeroOrOneBySk_EntireRow<
+function fetchZeroOrOneBySk_EntireRow<
     TableT extends ITable
 > (
     connection : IConnection,
@@ -37,6 +37,7 @@ function fetchZeroOrOneBySk_Select<
         .select(delegate as any)
         .fetchZeroOrOne(connection) as any;
 }
+
 export function fetchZeroOrOneBySk<
     TableT extends ITable
 > (

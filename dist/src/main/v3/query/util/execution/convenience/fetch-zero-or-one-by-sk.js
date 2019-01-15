@@ -9,7 +9,6 @@ function fetchZeroOrOneBySk_EntireRow(connection, table, sk) {
         .select(c => [c])
         .fetchZeroOrOne(connection);
 }
-exports.fetchZeroOrOneBySk_EntireRow = fetchZeroOrOneBySk_EntireRow;
 function fetchZeroOrOneBySk_Select(connection, table, sk, delegate) {
     return __1.QueryUtil.newInstance()
         .from(table)

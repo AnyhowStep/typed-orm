@@ -152,8 +152,13 @@ class Table {
             return query_1.QueryUtil.fetchZeroOrOneByCk(connection, this, ck, delegate);
         }
     }
-    fetchZeroOrOneByPk(connection, pk) {
-        return query_1.QueryUtil.fetchZeroOrOneByPk(connection, this, pk);
+    fetchZeroOrOneByPk(connection, pk, delegate) {
+        if (delegate == undefined) {
+            return query_1.QueryUtil.fetchZeroOrOneByPk(connection, this, pk);
+        }
+        else {
+            return query_1.QueryUtil.fetchZeroOrOneByPk(connection, this, pk, delegate);
+        }
     }
     fetchZeroOrOneBySk(connection, sk, delegate) {
         if (delegate == undefined) {
