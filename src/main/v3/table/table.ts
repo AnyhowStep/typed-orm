@@ -449,8 +449,29 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     fetchOneByCk (
         connection : IConnection,
         ck : CandidateKey<this>
-    ) : Promise<Row<this>> {
-        return QueryUtil.fetchOneByCk(connection, this, ck);
+    ) : Promise<Row<this>>;
+    fetchOneByCk<
+        DelegateT extends QueryUtil.SelectDelegate<
+            QueryUtil.From<QueryUtil.NewInstance, this>
+        >
+    > (
+        connection : IConnection,
+        ck : CandidateKey<this>,
+        delegate : QueryUtil.AssertValidSelectDelegate<
+            QueryUtil.From<QueryUtil.NewInstance, this>,
+            DelegateT
+        >
+    ) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>>;
+    fetchOneByCk (
+        connection : IConnection,
+        ck : CandidateKey<this>,
+        delegate? : (...args : any[]) => any[]
+    ) {
+        if (delegate == undefined) {
+            return QueryUtil.fetchOneByCk(connection, this, ck);
+        } else {
+            return QueryUtil.fetchOneByCk(connection, this, ck, delegate as any);
+        }
     }
     fetchOneByPk (
         this : Extract<this, TableWithPk>,
@@ -458,14 +479,58 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
         pk : PrimaryKey<Extract<this, TableWithPk>>
     ) : (
         Promise<Row<this>>
+    );
+    fetchOneByPk<
+        DelegateT extends QueryUtil.SelectDelegate<
+            QueryUtil.From<QueryUtil.NewInstance, Extract<this, TableWithPk>>
+        >
+    > (
+        this : Extract<this, TableWithPk>,
+        connection : IConnection,
+        pk : PrimaryKey<Extract<this, TableWithPk>>,
+        delegate : QueryUtil.AssertValidSelectDelegate<
+            QueryUtil.From<QueryUtil.NewInstance, Extract<this, TableWithPk>>,
+            DelegateT
+        >
+    ) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>>;
+    fetchOneByPk (
+        this : Extract<this, TableWithPk>,
+        connection : IConnection,
+        pk : PrimaryKey<Extract<this, TableWithPk>>,
+        delegate? : (...args : any[]) => any
     ) {
-        return QueryUtil.fetchOneByPk(connection, this, pk);
+        if (delegate == undefined) {
+            return QueryUtil.fetchOneByPk(connection, this, pk);
+        } else {
+            return QueryUtil.fetchOneByPk(connection, this, pk, delegate as any);
+        }
     }
     fetchOneBySk (
         connection : IConnection,
         sk : SuperKey<this>
-    ) : Promise<Row<this>> {
-        return QueryUtil.fetchOneBySk(connection, this, sk);
+    ) : Promise<Row<this>>;
+    fetchOneBySk<
+        DelegateT extends QueryUtil.SelectDelegate<
+            QueryUtil.From<QueryUtil.NewInstance, this>
+        >
+    > (
+        connection : IConnection,
+        sk : SuperKey<this>,
+        delegate : QueryUtil.AssertValidSelectDelegate<
+            QueryUtil.From<QueryUtil.NewInstance, this>,
+            DelegateT
+        >
+    ) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>>;
+    fetchOneBySk (
+        connection : IConnection,
+        sk : SuperKey<this>,
+        delegate? : (...args : any[]) => any[]
+    ) {
+        if (delegate == undefined) {
+            return QueryUtil.fetchOneBySk(connection, this, sk);
+        } else {
+            return QueryUtil.fetchOneBySk(connection, this, sk, delegate as any);
+        }
     }
 
     fetchValueByCk<

@@ -117,14 +117,29 @@ class Table {
     existsBySk(connection, sk) {
         return query_1.QueryUtil.existsBySk(connection, this, sk);
     }
-    fetchOneByCk(connection, ck) {
-        return query_1.QueryUtil.fetchOneByCk(connection, this, ck);
+    fetchOneByCk(connection, ck, delegate) {
+        if (delegate == undefined) {
+            return query_1.QueryUtil.fetchOneByCk(connection, this, ck);
+        }
+        else {
+            return query_1.QueryUtil.fetchOneByCk(connection, this, ck, delegate);
+        }
     }
-    fetchOneByPk(connection, pk) {
-        return query_1.QueryUtil.fetchOneByPk(connection, this, pk);
+    fetchOneByPk(connection, pk, delegate) {
+        if (delegate == undefined) {
+            return query_1.QueryUtil.fetchOneByPk(connection, this, pk);
+        }
+        else {
+            return query_1.QueryUtil.fetchOneByPk(connection, this, pk, delegate);
+        }
     }
-    fetchOneBySk(connection, sk) {
-        return query_1.QueryUtil.fetchOneBySk(connection, this, sk);
+    fetchOneBySk(connection, sk, delegate) {
+        if (delegate == undefined) {
+            return query_1.QueryUtil.fetchOneBySk(connection, this, sk);
+        }
+        else {
+            return query_1.QueryUtil.fetchOneBySk(connection, this, sk, delegate);
+        }
     }
     fetchValueByCk(connection, ck, delegate) {
         return query_1.QueryUtil.fetchValueByCk(connection, this, ck, delegate);
