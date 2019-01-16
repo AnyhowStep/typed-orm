@@ -11,6 +11,9 @@ async function fetchAllUnmapped(query, connection) {
     const rawResult = await connection.select(sql);
     const hasDuplicateColumnName = select_item_array_1.SelectItemArrayUtil
         .hasDuplicateColumnName(query._selects);
+    const hasNullableJoins = (query._joins == undefined) ?
+        false :
+        query._joins.some(j => j.nullable);
     const ref = column_ref_1.ColumnRefUtil.fromQuerySelects(query);
     const rows = [];
     for (let rawRow of rawResult.rows) {
@@ -29,7 +32,7 @@ async function fetchAllUnmapped(query, connection) {
                 }
             }
             const value = ref[tableAlias][columnName].assertDelegate(`${tableAlias}.${columnName}`, rawRow[k]);
-            if (hasDuplicateColumnName) {
+            if (hasDuplicateColumnName || hasNullableJoins) {
                 let table = row[tableAlias];
                 if (table == undefined) {
                     table = {};
@@ -39,6 +42,16 @@ async function fetchAllUnmapped(query, connection) {
             }
             else {
                 row[columnName] = value;
+            }
+        }
+        if (hasNullableJoins) {
+            for (let tableAlias in row) {
+                const map = row[tableAlias];
+                const allNull = Object.keys(map)
+                    .every(columnName => map[columnName] === null);
+                if (allNull) {
+                    row[tableAlias] = undefined;
+                }
             }
         }
         rows.push(row);

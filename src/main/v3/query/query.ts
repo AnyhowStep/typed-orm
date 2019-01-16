@@ -1318,7 +1318,7 @@ export class Query<DataT extends QueryData> {
                 Extract<this, QueryUtil.AfterSelectClause>
             >,
             QueryUtil.UnmappedType<
-                Extract<this, QueryUtil.AfterSelectClause>["_selects"]
+                Extract<this, QueryUtil.AfterSelectClause>
             >,
             any
         >
@@ -1817,3 +1817,10 @@ export function requireNullableParentJoins<
     return QueryUtil.newInstance()
         .requireNullableParentJoins<ArrT>(...(arr as any));
 }
+
+export type UnmappedFetchRow<QueryT extends QueryUtil.AfterSelectClause> = (
+    QueryUtil.UnmappedType<QueryT>
+);
+export type FetchRow<QueryT extends QueryUtil.AfterSelectClause> = (
+    QueryUtil.MappedType<QueryT>
+);

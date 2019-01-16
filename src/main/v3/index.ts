@@ -28,6 +28,8 @@ export * from "./table";
 export * from "./table-per-type";
 export * from "./track-row";
 export * from "./tuple";
+export * from "./unmapped-fetch-map";
+export * from "./unmapped-fetch-ref";
 export * from "./update";
 
 export * from "./assert-map";
@@ -46,4 +48,5 @@ export * from "./select-item";
 export * from "./string-array";
 export * from "./string";
 export * from "./type-map";
+export * from "./type-ref";
 export * from "./type";

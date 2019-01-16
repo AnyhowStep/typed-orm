@@ -30,7 +30,7 @@ function fetchZeroOrOneByCk_Select<
         QueryUtil.From<QueryUtil.NewInstance, TableT>,
         DelegateT
     >
-) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>|undefined> {
+) : Promise<QueryUtil.UnmappedTypeNoJoins<ReturnType<DelegateT>>|undefined> {
     return QueryUtil.newInstance()
         .from(table as any)
         .where(() => TableUtil.eqCandidateKey(table, ck) as any)
@@ -58,7 +58,7 @@ export function fetchZeroOrOneByCk<
         QueryUtil.From<QueryUtil.NewInstance, TableT>,
         DelegateT
     >
-) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>|undefined>;
+) : Promise<QueryUtil.UnmappedTypeNoJoins<ReturnType<DelegateT>>|undefined>;
 export function fetchZeroOrOneByCk (
     connection : IConnection,
     table : ITable,

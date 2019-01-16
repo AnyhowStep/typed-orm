@@ -1,11 +1,14 @@
 import {Query} from "../../query";
 import {AfterSelectClause} from "../predicate";
 import {MapDelegate} from "../../../map-delegate";
-import {ColumnRefUtil, ColumnRef} from "../../../column-ref";
-import {ColumnMapUtil, ColumnMap} from "../../../column-map";
+//import {ColumnRefUtil, ColumnRef} from "../../../column-ref";
+//import {ColumnMapUtil, ColumnMap} from "../../../column-map";
 import {SelectItem} from "../../../select-item";
 import {SelectItemArrayUtil} from "../../../select-item-array";
-
+import {IJoin} from "../../../join";
+import {UnmappedFetchRef} from "../../../unmapped-fetch-ref";
+import {UnmappedFetchMap} from "../../../unmapped-fetch-map";
+/*
 export type ToTypeRef<
     RefT extends ColumnRef
 > = (
@@ -27,15 +30,39 @@ export type ToTypeMap<
         )
     }
 );
-
-export type UnmappedType<
-    ArrT extends SelectItem[]
+*/
+export type UseUnmappedFetchRef<
+    SelectsT extends SelectItem[],
+    JoinsT extends IJoin[]
 > = (
-    SelectItemArrayUtil.HasDuplicateColumnName<ArrT> extends true ?
-    ToTypeRef<ColumnRefUtil.FromSelectItemArray<ArrT>> :
-    ToTypeMap<ColumnMapUtil.FromSelectItemArray<ArrT, "">>
+    true extends (
+        SelectItemArrayUtil.HasDuplicateColumnName<SelectsT> |
+        JoinsT[number]["nullable"]
+    ) ?
+    true :
+    false
 );
-
+export type UnmappedTypeNoJoins<
+    SelectsT extends SelectItem[]
+> = (
+    UseUnmappedFetchRef<SelectsT, []> extends true ?
+    UnmappedFetchRef<SelectsT, []> :
+    UnmappedFetchMap<SelectsT>
+);
+export type UnmappedType<
+    QueryT extends AfterSelectClause
+> = (
+    QueryT["_joins"] extends IJoin[] ?
+    (
+        UseUnmappedFetchRef<QueryT["_selects"], QueryT["_joins"]> extends true ?
+        UnmappedFetchRef<QueryT["_selects"], QueryT["_joins"]> :
+        UnmappedFetchMap<QueryT["_selects"]>
+    ) :
+    UnmappedTypeNoJoins<QueryT["_selects"]>
+    /*SelectItemArrayUtil.HasDuplicateColumnName<ArrT> extends true ?
+    ToTypeRef<ColumnRefUtil.FromSelectItemArray<ArrT>> :
+    ToTypeMap<ColumnMapUtil.FromSelectItemArray<ArrT, "">>*/
+);
 
 export type MappedType<
     QueryT extends AfterSelectClause
@@ -46,12 +73,12 @@ export type MappedType<
         R :
         ReturnType<QueryT["_mapDelegate"]>
     ) :
-    UnmappedType<QueryT["_selects"]>
+    UnmappedType<QueryT>
 )
 
 export type Map<
     QueryT extends AfterSelectClause,
-    DelegateT extends MapDelegate<MappedType<QueryT>, UnmappedType<QueryT["_selects"]>, any>
+    DelegateT extends MapDelegate<MappedType<QueryT>, UnmappedType<QueryT>, any>
 > = (
     Query<{
         readonly _distinct : QueryT["_distinct"];
@@ -73,8 +100,8 @@ export type Map<
         readonly _unionLimit : QueryT["_unionLimit"],
 
         readonly _mapDelegate : MapDelegate<
-            UnmappedType<QueryT["_selects"]>,
-            UnmappedType<QueryT["_selects"]>,
+            UnmappedType<QueryT>,
+            UnmappedType<QueryT>,
             ReturnType<DelegateT> extends Promise<any> ?
             ReturnType<DelegateT> :
             Promise<ReturnType<DelegateT>>
@@ -83,7 +110,7 @@ export type Map<
 );
 export function map<
     QueryT extends AfterSelectClause,
-    DelegateT extends MapDelegate<MappedType<QueryT>, UnmappedType<QueryT["_selects"]>, any>
+    DelegateT extends MapDelegate<MappedType<QueryT>, UnmappedType<QueryT>, any>
 > (
     query : QueryT,
     delegate : DelegateT
@@ -94,8 +121,8 @@ export function map<
 
     //TODO-UNHACK Not use all this hackery
     let newMapDelegate : MapDelegate<
-        UnmappedType<QueryT["_selects"]>,
-        UnmappedType<QueryT["_selects"]>,
+        UnmappedType<QueryT>,
+        UnmappedType<QueryT>,
         ReturnType<DelegateT> extends Promise<any> ?
         ReturnType<DelegateT> :
         Promise<ReturnType<DelegateT>>
@@ -104,8 +131,8 @@ export function map<
         newMapDelegate = (async (row, originalRow) => {
             return delegate(row as any, originalRow);
         }) as MapDelegate<
-            UnmappedType<QueryT["_selects"]>,
-            UnmappedType<QueryT["_selects"]>,
+            UnmappedType<QueryT>,
+            UnmappedType<QueryT>,
             ReturnType<DelegateT> extends Promise<any> ?
             ReturnType<DelegateT> :
             Promise<ReturnType<DelegateT>>
@@ -119,8 +146,8 @@ export function map<
             );
             return delegate(prvResult, originalRow);
         }) as MapDelegate<
-            UnmappedType<QueryT["_selects"]>,
-            UnmappedType<QueryT["_selects"]>,
+            UnmappedType<QueryT>,
+            UnmappedType<QueryT>,
             ReturnType<DelegateT> extends Promise<any> ?
             ReturnType<DelegateT> :
             Promise<ReturnType<DelegateT>>

@@ -461,7 +461,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
             QueryUtil.From<QueryUtil.NewInstance, this>,
             DelegateT
         >
-    ) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>>;
+    ) : Promise<QueryUtil.UnmappedTypeNoJoins<ReturnType<DelegateT>>>;
     fetchOneByCk (
         connection : IConnection,
         ck : CandidateKey<this>,
@@ -492,7 +492,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
             QueryUtil.From<QueryUtil.NewInstance, Extract<this, TableWithPk>>,
             DelegateT
         >
-    ) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>>;
+    ) : Promise<QueryUtil.UnmappedTypeNoJoins<ReturnType<DelegateT>>>;
     fetchOneByPk (
         this : Extract<this, TableWithPk>,
         connection : IConnection,
@@ -520,7 +520,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
             QueryUtil.From<QueryUtil.NewInstance, this>,
             DelegateT
         >
-    ) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>>;
+    ) : Promise<QueryUtil.UnmappedTypeNoJoins<ReturnType<DelegateT>>>;
     fetchOneBySk (
         connection : IConnection,
         sk : SuperKey<this>,
@@ -660,7 +660,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
             QueryUtil.From<QueryUtil.NewInstance, this>,
             DelegateT
         >
-    ) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>|undefined>;
+    ) : Promise<QueryUtil.UnmappedTypeNoJoins<ReturnType<DelegateT>>|undefined>;
     fetchZeroOrOneByCk (
         connection : IConnection,
         ck : CandidateKey<this>,
@@ -691,7 +691,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
             QueryUtil.From<QueryUtil.NewInstance, Extract<this, TableWithPk>>,
             DelegateT
         >
-    ) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>|undefined>;
+    ) : Promise<QueryUtil.UnmappedTypeNoJoins<ReturnType<DelegateT>>|undefined>;
     fetchZeroOrOneByPk (
         this : Extract<this, TableWithPk>,
         connection : IConnection,
@@ -719,7 +719,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
             QueryUtil.From<QueryUtil.NewInstance, this>,
             DelegateT
         >
-    ) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>|undefined>;
+    ) : Promise<QueryUtil.UnmappedTypeNoJoins<ReturnType<DelegateT>>|undefined>;
     fetchZeroOrOneBySk (
         connection : IConnection,
         sk : SuperKey<this>,

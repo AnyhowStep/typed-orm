@@ -30,7 +30,7 @@ function fetchOneBySk_Select<
         QueryUtil.From<QueryUtil.NewInstance, TableT>,
         DelegateT
     >
-) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>> {
+) : Promise<QueryUtil.UnmappedTypeNoJoins<ReturnType<DelegateT>>> {
     return QueryUtil.newInstance()
         .from(table as any)
         .where(() => TableUtil.eqSuperKey(table, sk) as any)
@@ -58,7 +58,7 @@ export function fetchOneBySk<
         QueryUtil.From<QueryUtil.NewInstance, TableT>,
         DelegateT
     >
-) : Promise<QueryUtil.UnmappedType<ReturnType<DelegateT>>>;
+) : Promise<QueryUtil.UnmappedTypeNoJoins<ReturnType<DelegateT>>>;
 export function fetchOneBySk (
     connection : IConnection,
     table : ITable,

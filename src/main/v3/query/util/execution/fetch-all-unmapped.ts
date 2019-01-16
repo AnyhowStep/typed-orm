@@ -11,7 +11,7 @@ import {DateTimeUtil} from "../../../data-type";
 export type FetchAllUnmapped<
     QueryT extends AfterSelectClause & MainQuery
 > = (
-    UnmappedType<QueryT["_selects"]>[]
+    UnmappedType<QueryT>[]
 );
 export async function fetchAllUnmapped<
     QueryT extends AfterSelectClause & MainQuery
@@ -26,6 +26,9 @@ export async function fetchAllUnmapped<
         .hasDuplicateColumnName(
             query._selects
         );
+    const hasNullableJoins = (query._joins == undefined) ?
+        false :
+        query._joins.some(j => j.nullable);
     const ref : ColumnRef = ColumnRefUtil.fromQuerySelects(query);
 
     const rows : any[] = [];
@@ -52,7 +55,7 @@ export async function fetchAllUnmapped<
                 `${tableAlias}.${columnName}`,
                 rawRow[k]
             );
-            if (hasDuplicateColumnName) {
+            if (hasDuplicateColumnName || hasNullableJoins) {
                 let table = row[tableAlias];
                 if (table == undefined) {
                     table = {};
@@ -61,6 +64,16 @@ export async function fetchAllUnmapped<
                 table[columnName] = value;
             } else {
                 row[columnName] = value;
+            }
+        }
+        if (hasNullableJoins) {
+            for (let tableAlias in row) {
+                const map = row[tableAlias];
+                const allNull = Object.keys(map)
+                    .every(columnName => map[columnName] === null);
+                if (allNull) {
+                    row[tableAlias] = undefined;
+                }
             }
         }
         rows.push(row);
