@@ -539,6 +539,15 @@ export namespace ColumnRefUtil {
         if (!(raw instanceof Object)) {
             return false;
         }
+        if (raw instanceof Array) {
+            return false;
+        }
+        if (raw instanceof Function) {
+            return false;
+        }
+        if (raw instanceof Date) {
+            return false;
+        }
         for (let tableAlias in raw) {
             const columnMap = raw[tableAlias];
             if (!ColumnMapUtil.isColumnMap(columnMap)) {

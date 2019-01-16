@@ -147,7 +147,7 @@ export function setLatestOrder<
     );
     const logCk = [...log.entityIdentifier, latestOrder[0].name];
     if (!KeyUtil.Array.hasKey(
-        log.entity.candidateKeys,
+        log.table.candidateKeys,
         logCk
     )) {
         throw new Error(`${logCk.join("|")} must be a candidate key of ${log.table.alias}`);

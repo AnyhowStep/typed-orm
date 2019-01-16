@@ -30,6 +30,7 @@ __export(require("./query"));
 __export(require("./super-key"));
 __export(require("./table"));
 __export(require("./table-per-type"));
+__export(require("./track-row"));
 __export(require("./tuple"));
 __export(require("./update"));
 __export(require("./assert-map"));

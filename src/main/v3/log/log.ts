@@ -574,7 +574,7 @@ export class Log<DataT extends LogData> implements ILog<DataT> {
             >
         >
     ) {
-        return LogUtil.trackOrError(
+        return LogUtil.track(
             this,
             connection,
             entityIdentifier,

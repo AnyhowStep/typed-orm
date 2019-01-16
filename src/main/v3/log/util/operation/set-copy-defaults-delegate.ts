@@ -91,13 +91,13 @@ export function setCopyDefaultsDelegate<
         .filter(columnName => (
             log.copy.indexOf(columnName) >= 0
         ));
-    const copyDefaultsDelegate : CopyDefaultsDelegate<LogT> = (args) => {
+    const copyDefaultsDelegate : CopyDefaultsDelegate<LogT> = async (args) => {
         const assertDelegate = entityIdentifierAssertDelegate(log);
         args.entityIdentifier = assertDelegate(
             `${log.table.alias}.entityIdentifier`,
             args.entityIdentifier
         );
-        const rawResult = rawCopyDefaultsDelegate(args);
+        const rawResult = await rawCopyDefaultsDelegate(args);
         const result : any = {};
         for (let columnName of requiredColumnNames) {
             const rawValue = rawResult[columnName];

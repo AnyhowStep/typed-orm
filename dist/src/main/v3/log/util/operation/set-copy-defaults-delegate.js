@@ -8,10 +8,10 @@ function setCopyDefaultsDelegate(log, rawCopyDefaultsDelegate) {
         .filter(columnName => (log.copy.indexOf(columnName) >= 0));
     const optionalColumnNames = table_1.TableUtil.optionalColumnNames(log.table)
         .filter(columnName => (log.copy.indexOf(columnName) >= 0));
-    const copyDefaultsDelegate = (args) => {
+    const copyDefaultsDelegate = async (args) => {
         const assertDelegate = entity_identifier_assert_delegate_1.entityIdentifierAssertDelegate(log);
         args.entityIdentifier = assertDelegate(`${log.table.alias}.entityIdentifier`, args.entityIdentifier);
-        const rawResult = rawCopyDefaultsDelegate(args);
+        const rawResult = await rawCopyDefaultsDelegate(args);
         const result = {};
         for (let columnName of requiredColumnNames) {
             const rawValue = rawResult[columnName];

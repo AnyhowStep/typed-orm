@@ -81,7 +81,7 @@ class Log {
         return LogUtil.trackOrError(this, connection, entityIdentifier, trackRow);
     }
     track(connection, entityIdentifier, trackRow) {
-        return LogUtil.trackOrError(this, connection, entityIdentifier, trackRow);
+        return LogUtil.track(this, connection, entityIdentifier, trackRow);
     }
     latest(entityIdentifier) {
         return LogUtil.latest(this, entityIdentifier);

@@ -26,6 +26,7 @@ export * from "./row";
 export * from "./super-key";
 export * from "./table";
 export * from "./table-per-type";
+export * from "./track-row";
 export * from "./tuple";
 export * from "./update";
 

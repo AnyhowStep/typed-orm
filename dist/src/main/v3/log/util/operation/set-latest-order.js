@@ -10,7 +10,7 @@ function setLatestOrder(log, delegate) {
     const latestOrder = delegate(columns);
     column_identifier_map_1.ColumnIdentifierMapUtil.assertHasColumnIdentifier(columns, latestOrder[0]);
     const logCk = [...log.entityIdentifier, latestOrder[0].name];
-    if (!key_1.KeyUtil.Array.hasKey(log.entity.candidateKeys, logCk)) {
+    if (!key_1.KeyUtil.Array.hasKey(log.table.candidateKeys, logCk)) {
         throw new Error(`${logCk.join("|")} must be a candidate key of ${log.table.alias}`);
     }
     const { table, entity, entityIdentifier, joinDeclaration, tracked, doNotCopy, copyDefaultsDelegate, trackedDefaults, } = log;

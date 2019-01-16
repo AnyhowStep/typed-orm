@@ -94,3 +94,21 @@ tape(__filename, (t) => {
 
     t.end();
 });
+tape(__filename, (t) => {
+    t.throws(() => {
+        o.ColumnUtil.fromSingleValueSelectItem(123 as any);
+    });
+    t.throws(() => {
+        o.ColumnUtil.fromSingleValueSelectItem([] as any);
+    });
+    t.throws(() => {
+        o.ColumnUtil.fromSingleValueSelectItem((()=>o.column("a", "b", o.bigint())) as any);
+    });
+    t.throws(() => {
+        o.ColumnUtil.fromSingleValueSelectItem((new Date()) as any);
+    });
+    t.throws(() => {
+        o.ColumnUtil.fromSingleValueSelectItem(({}) as any);
+    });
+    t.end();
+});
