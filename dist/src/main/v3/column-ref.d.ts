@@ -31,6 +31,7 @@ export declare namespace ColumnRefUtil {
         readonly [tableAlias in ColumnT["tableAlias"]]: {
             readonly [columnName in ColumnT["name"]]: (Extract<ColumnT, {
                 tableAlias: tableAlias;
+                name: columnName;
             }>);
         };
     });
@@ -45,7 +46,10 @@ export declare namespace ColumnRefUtil {
     type FromSelectItemArray_ColumnMapElement<ColumnMapT extends ColumnMap> = ({
         readonly [tableAlias in ColumnMapUtil.TableAlias<ColumnMapT>]: {
             readonly [columnName in ColumnMapUtil.FindWithTableAlias<ColumnMapT, tableAlias>["name"]]: (Extract<ColumnMapT, {
-                [k in columnName]: IColumn;
+                [k in columnName]: (IColumn & {
+                    tableAlias: tableAlias;
+                    name: columnName;
+                });
             }>[columnName]);
         };
     });

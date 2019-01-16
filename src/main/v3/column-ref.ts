@@ -193,7 +193,10 @@ export namespace ColumnRefUtil {
         {
             readonly [tableAlias in ColumnT["tableAlias"]] : {
                 readonly [columnName in ColumnT["name"]] : (
-                    Extract<ColumnT, { tableAlias : tableAlias }>
+                    Extract<ColumnT, {
+                        tableAlias : tableAlias,
+                        name : columnName,
+                    }>
                 )
             }
         }
@@ -220,7 +223,18 @@ export namespace ColumnRefUtil {
                     ColumnMapT,
                     tableAlias
                 >["name"]] : (
-                    Extract<ColumnMapT, { [k in columnName] : IColumn }>[columnName]
+                    Extract<
+                        ColumnMapT,
+                        {
+                            [k in columnName] : (
+                                IColumn &
+                                {
+                                    tableAlias : tableAlias,
+                                    name : columnName
+                                }
+                            )
+                        }
+                    >[columnName]
                 )
             }
         }
