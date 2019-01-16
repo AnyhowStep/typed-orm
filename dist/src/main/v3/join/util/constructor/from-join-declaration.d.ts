@@ -1,0 +1,8 @@
+import { IJoinDeclaration } from "../../../join-declaration";
+import { Join } from "../../join";
+export declare type FromJoinDeclaration<JoinDeclT extends IJoinDeclaration> = (JoinDeclT extends IJoinDeclaration ? Join<{
+    aliasedTable: JoinDeclT["toTable"];
+    columns: JoinDeclT["toTable"]["columns"];
+    nullable: JoinDeclT["nullable"];
+}> : never);
+//# sourceMappingURL=from-join-declaration.d.ts.map

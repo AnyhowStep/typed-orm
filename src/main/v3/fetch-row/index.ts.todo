@@ -1,0 +1,9 @@
+import {SelectItem} from "../select-item";
+import {IJoin, Join} from "../join";
+
+export type UnmappedFetchRef<
+    SelectsT extends SelectItem[],
+    JoinsT extends IJoin[]
+> = (
+
+);

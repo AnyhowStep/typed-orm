@@ -38,7 +38,6 @@ __export(require("./column-ref"));
 __export(require("./constants"));
 __export(require("./expr-select-item"));
 __export(require("./field-array"));
-__export(require("./join-array"));
 __export(require("./join"));
 __export(require("./primitive-expr"));
 __export(require("./query-tree"));

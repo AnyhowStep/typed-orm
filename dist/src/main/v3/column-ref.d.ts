@@ -1,6 +1,5 @@
 import { ColumnMap, ColumnMapUtil } from "./column-map";
-import { IJoin } from "./join";
-import { JoinArrayUtil } from "./join-array";
+import { IJoin, JoinUtil } from "./join";
 import { IColumn, ColumnUtil } from "./column";
 import { IQuery } from "./query";
 import { ColumnIdentifier } from "./column-identifier";
@@ -13,7 +12,7 @@ export declare type ColumnRef = {
 };
 export declare namespace ColumnRefUtil {
     type FromJoinArray<JoinsT extends IJoin[]> = ({
-        readonly [tableAlias in JoinArrayUtil.ToTableAliasUnion<JoinsT>]: (ColumnMapUtil.FromJoin<JoinArrayUtil.FindWithTableAlias<JoinsT, tableAlias>>);
+        readonly [tableAlias in JoinUtil.Array.TableAliases<JoinsT>]: (ColumnMapUtil.FromJoin<JoinUtil.Array.FindWithTableAlias<JoinsT, tableAlias>>);
     });
     function fromJoinArray<JoinsT extends IJoin[]>(joins: JoinsT): (FromJoinArray<JoinsT>);
     type HasOneTable<ColumnRefT extends ColumnRef> = (Extract<keyof ColumnRefT, string> extends never ? false : string extends Extract<keyof ColumnRefT, string> ? boolean : ({

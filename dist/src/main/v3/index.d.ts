@@ -35,7 +35,6 @@ export * from "./constants";
 export * from "./expr-select-item";
 export * from "./field-array";
 export * from "./field";
-export * from "./join-array";
 export * from "./join";
 export * from "./map-delegate";
 export * from "./primitive-expr";

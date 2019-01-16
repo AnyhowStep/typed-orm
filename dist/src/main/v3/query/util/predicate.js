@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const expr_1 = require("../../expr");
-const join_array_1 = require("../../join-array");
 const select_item_array_1 = require("../../select-item-array");
+const join_1 = require("../../join");
 const select_item_1 = require("../../select-item");
 const type_1 = require("../../type");
 const column_identifier_1 = require("../../column-identifier");
@@ -60,9 +60,9 @@ function isQuery(raw) {
     return ((typeof raw._distinct == "boolean") &&
         (typeof raw._sqlCalcFoundRows == "boolean") &&
         (raw._joins == undefined ||
-            join_array_1.JoinArrayUtil.isJoinArray(raw._joins)) &&
+            join_1.JoinUtil.Array.isJoinArray(raw._joins)) &&
         (raw._parentJoins == undefined ||
-            join_array_1.JoinArrayUtil.isJoinArray(raw._parentJoins)) &&
+            join_1.JoinUtil.Array.isJoinArray(raw._parentJoins)) &&
         (raw._selects == undefined ||
             select_item_array_1.SelectItemArrayUtil.isSelectItemArray(raw._selects)) &&
         (

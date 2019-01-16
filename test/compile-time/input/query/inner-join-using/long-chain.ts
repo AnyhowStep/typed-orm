@@ -246,7 +246,7 @@ export const query = o.from(table)
         joined21,
         c => [c.joined20.x]
     );
-export declare const tableAliasUnion : o.JoinArrayUtil.ToTableAliasUnion<typeof query._joins>;
+export declare const tableAliasUnion : o.JoinUtil.Array.TableAliases<typeof query._joins>;
 export const query2 = query
     .innerJoinUsing(
         joined22,

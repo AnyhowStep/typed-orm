@@ -5,9 +5,8 @@ import {
     QueryData,
 } from "../query";
 import {ExprUtil, IAnonymousTypedExpr} from "../../expr";
-import {JoinArrayUtil} from "../../join-array";
 import {SelectItemArrayUtil} from "../../select-item-array";
-import {IJoin} from "../../join";
+import {IJoin, JoinUtil} from "../../join";
 import {SelectItem, AnonymousTypedSingleValueSelectItem, SelectItemUtil} from "../../select-item";
 import {IAliasedTable} from "../../aliased-table";
 import {isObjectWithKeys} from "../../type";
@@ -71,11 +70,11 @@ export function isQuery (raw : any) : raw is IQuery {
         (typeof raw._sqlCalcFoundRows == "boolean") &&
         (
             raw._joins == undefined ||
-            JoinArrayUtil.isJoinArray(raw._joins)
+            JoinUtil.Array.isJoinArray(raw._joins)
         ) &&
         (
             raw._parentJoins == undefined ||
-            JoinArrayUtil.isJoinArray(raw._parentJoins)
+            JoinUtil.Array.isJoinArray(raw._parentJoins)
         ) &&
         (
             raw._selects == undefined ||
@@ -290,7 +289,7 @@ export type AssertValidJoinTargetImpl<
         (
             Extract<
                 AliasedTableT["alias"],
-                JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>
+                JoinUtil.Array.TableAliases<QueryT["_joins"]>
             > extends never ?
             unknown :
             //TODO-DEBATE remove the |void?
@@ -298,10 +297,10 @@ export type AssertValidJoinTargetImpl<
                 "Alias",
                 Extract<
                     AliasedTableT["alias"],
-                    JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>
+                    JoinUtil.Array.TableAliases<QueryT["_joins"]>
                 >,
                 "already used in previous JOINs",
-                JoinArrayUtil.ToTableAliasUnion<QueryT["_joins"]>
+                JoinUtil.Array.TableAliases<QueryT["_joins"]>
             ]|void
         ) :
         unknown
@@ -311,7 +310,7 @@ export type AssertValidJoinTargetImpl<
         (
             Extract<
                 AliasedTableT["alias"],
-                JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>
+                JoinUtil.Array.TableAliases<QueryT["_parentJoins"]>
             > extends never ?
             unknown :
             //TODO-DEBATE remove the |void?
@@ -319,10 +318,10 @@ export type AssertValidJoinTargetImpl<
                 "Alias",
                 Extract<
                     AliasedTableT["alias"],
-                    JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>
+                    JoinUtil.Array.TableAliases<QueryT["_parentJoins"]>
                 >,
                 "already used in parent JOINs",
-                JoinArrayUtil.ToTableAliasUnion<QueryT["_parentJoins"]>
+                JoinUtil.Array.TableAliases<QueryT["_parentJoins"]>
             ]|void
         ) :
         unknown

@@ -4,12 +4,12 @@ import { AfterFromClause } from "../predicate";
 import { ColumnRefUtil } from "../../../column-ref";
 import { ColumnUtil, Column } from "../../../column";
 import { IAnonymousTypedExpr } from "../../../expr";
-import { JoinArrayUtil } from "../../../join-array";
+import { JoinUtil } from "../../../join";
 export declare type WhereIsNotNullDelegate<QueryT extends AfterFromClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromJoinArray<QueryT["_joins"]>>) => (ColumnUtil.ExtractNullable<ColumnUtil.FromColumnRef<ColumnRefUtil.FromJoinArray<QueryT["_joins"]>>>));
 export declare type WhereIsNotNull<QueryT extends AfterFromClause, DelegateT extends WhereIsNotNullDelegate<QueryT>> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];
-    readonly _joins: (JoinArrayUtil.ReplaceColumn<QueryT["_joins"], Column<{
+    readonly _joins: (JoinUtil.Array.ReplaceColumn<QueryT["_joins"], Column<{
         tableAlias: ReturnType<DelegateT>["tableAlias"];
         name: ReturnType<DelegateT>["name"];
         assertDelegate: sd.AssertDelegate<Exclude<ReturnType<ReturnType<DelegateT>["assertDelegate"]>, null>>;

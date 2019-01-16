@@ -793,5 +793,5 @@ export declare const query: o.Query<{
     readonly _unionLimit: undefined;
     readonly _mapDelegate: undefined;
 }>;
-export declare const tableAliasUnion: o.JoinArrayUtil.ToTableAliasUnion<typeof query._joins>;
+export declare const tableAliasUnion: o.JoinUtil.Array.TableAliases<typeof query._joins>;
 export declare const query2: any;

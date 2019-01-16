@@ -1,14 +1,13 @@
-import { IJoin } from "../../../join";
+import { IJoin, JoinUtil } from "../../../join";
 import { ColumnRefUtil } from "../../../column-ref";
 import { PrimitiveExpr } from "../../../primitive-expr";
 import { RawExpr, RawExprUtil } from "../../../raw-expr";
-import { JoinArrayUtil } from "../../../join-array";
 import { ITable } from "../../../table";
 import { Update, UpdateModifier, Assignment, UpdatableQuery } from "../../update";
 import { ColumnIdentifierUtil } from "../../../column-identifier";
 export declare type AssignmentRefFromJoinArray<JoinArrT extends IJoin[]> = ({
-    readonly [tableAlias in JoinArrayUtil.ToTableAliasUnion<JoinArrT>]?: ({
-        readonly [columnName in Extract<keyof JoinArrayUtil.FindWithTableAlias<JoinArrT, tableAlias>["columns"], string>]?: (RawExpr<ReturnType<JoinArrayUtil.FindWithTableAlias<JoinArrT, tableAlias>["aliasedTable"]["columns"][columnName]["assertDelegate"]>>);
+    readonly [tableAlias in JoinUtil.Array.TableAliases<JoinArrT>]?: ({
+        readonly [columnName in Extract<keyof JoinUtil.Array.FindWithTableAlias<JoinArrT, tableAlias>["columns"], string>]?: (RawExpr<ReturnType<JoinUtil.Array.FindWithTableAlias<JoinArrT, tableAlias>["aliasedTable"]["columns"][columnName]["assertDelegate"]>>);
     });
 });
 export declare type AssignmentRef<QueryT extends UpdatableQuery> = (AssignmentRefFromJoinArray<QueryT["_joins"]>);
@@ -24,11 +23,11 @@ export declare type ToColumnIdentifier<RefT extends AssignmentRef<UpdatableQuery
 }[Extract<keyof RefT, string>]);
 export declare type ToMutableColumnIdentifier<QueryT extends UpdatableQuery> = ({
     [tableAlias in Extract<QueryT["_joins"][number]["aliasedTable"], ITable>["alias"]]: ({
-        [columnName in Extract<JoinArrayUtil.FindWithTableAlias<QueryT["_joins"], tableAlias>["aliasedTable"], ITable>["mutable"][number]]: ({
+        [columnName in Extract<JoinUtil.Array.FindWithTableAlias<QueryT["_joins"], tableAlias>["aliasedTable"], ITable>["mutable"][number]]: ({
             readonly tableAlias: tableAlias;
             readonly name: columnName;
         });
-    }[Extract<JoinArrayUtil.FindWithTableAlias<QueryT["_joins"], tableAlias>["aliasedTable"], ITable>["mutable"][number]]);
+    }[Extract<JoinUtil.Array.FindWithTableAlias<QueryT["_joins"], tableAlias>["aliasedTable"], ITable>["mutable"][number]]);
 }[Extract<QueryT["_joins"][number]["aliasedTable"], ITable>["alias"]]);
 export declare type SetDelegateFromJoinArray<JoinArrT extends IJoin[]> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromJoinArray<JoinArrT>>) => AssignmentRefFromJoinArray<JoinArrT>);
 export declare type SetDelegate<QueryT extends UpdatableQuery> = (SetDelegateFromJoinArray<QueryT["_joins"]>);

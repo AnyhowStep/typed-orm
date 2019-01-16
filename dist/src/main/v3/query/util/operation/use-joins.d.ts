@@ -1,13 +1,13 @@
 import { Query } from "../../query";
 import { AfterFromClause, AssertValidJoinTargetImpl } from "../predicate";
-import { Join } from "../../../join";
+import { JoinUtil } from "../../../join";
 import { IJoinDeclaration, JoinDeclarationUtil } from "../../../join-declaration";
 import { NonEmptyTuple } from "../../../tuple";
 import { ToUnknownIfAllFieldsNever } from "../../../type";
 export declare type UseJoins<QueryT extends AfterFromClause, ArrT extends NonEmptyTuple<IJoinDeclaration>> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];
-    readonly _joins: (QueryT["_joins"][number] | Join.FromJoinDeclaration<ArrT[number]>)[];
+    readonly _joins: (QueryT["_joins"][number] | JoinUtil.FromJoinDeclaration<ArrT[number]>)[];
     readonly _parentJoins: QueryT["_parentJoins"];
     readonly _selects: QueryT["_selects"];
     readonly _where: QueryT["_where"];

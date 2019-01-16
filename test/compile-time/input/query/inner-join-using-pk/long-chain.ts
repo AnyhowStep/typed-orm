@@ -235,7 +235,7 @@ export const query = o.from(table)
         t => t.joined19,
         joined20
     );
-export declare const tableAliasUnion : o.JoinArrayUtil.ToTableAliasUnion<typeof query._joins>;
+export declare const tableAliasUnion : o.JoinUtil.Array.TableAliases<typeof query._joins>;
 export const query2 = query
     .innerJoinPk(
         t => t.joined20,

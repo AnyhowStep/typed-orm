@@ -2,12 +2,11 @@ import { Query } from "../../../query";
 import { AfterFromClause, CanWidenColumnTypes, AssertValidJoinTarget } from "../../predicate";
 import { JoinFromDelegate, JoinToDelegate } from "./join";
 import { IAliasedTable } from "../../../../aliased-table";
-import { Join } from "../../../../join";
-import { JoinArrayUtil } from "../../../../join-array";
+import { Join, JoinUtil } from "../../../../join";
 export declare type RightJoin<QueryT extends AfterFromClause & CanWidenColumnTypes, AliasedTableT extends IAliasedTable> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];
-    readonly _joins: (JoinArrayUtil.ToNullable<QueryT["_joins"]>[number] | Join<{
+    readonly _joins: (JoinUtil.Array.ToNullable<QueryT["_joins"]>[number] | Join<{
         aliasedTable: AliasedTableT;
         columns: AliasedTableT["columns"];
         nullable: false;

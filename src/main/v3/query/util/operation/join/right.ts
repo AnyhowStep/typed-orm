@@ -2,8 +2,7 @@ import {Query} from "../../../query";
 import {AfterFromClause, CanWidenColumnTypes, canWidenColumnTypes, AssertValidJoinTarget} from "../../predicate";
 import {JoinFromDelegate, JoinToDelegate, join} from "./join";
 import {IAliasedTable} from "../../../../aliased-table";
-import {Join, JoinType} from "../../../../join";
-import {JoinArrayUtil} from "../../../../join-array";
+import {Join, JoinType, JoinUtil} from "../../../../join";
 
 /*
     We don't allow RIGHT JOIN after SELECT, WHERE, HAVING,
@@ -60,7 +59,7 @@ export type RightJoin<
         readonly _sqlCalcFoundRows : QueryT["_sqlCalcFoundRows"];
 
         readonly _joins : (
-            JoinArrayUtil.ToNullable<QueryT["_joins"]>[number] |
+            JoinUtil.Array.ToNullable<QueryT["_joins"]>[number] |
             Join<{
                 aliasedTable : AliasedTableT,
                 columns : AliasedTableT["columns"],
@@ -146,7 +145,7 @@ export function rightJoin<
         _sqlCalcFoundRows,
 
         _joins : [
-            ...JoinArrayUtil.toNullable(query._joins as QueryT["_joins"]),
+            ...JoinUtil.Array.toNullable(query._joins as QueryT["_joins"]),
             lastJoin,
         ],
         _parentJoins,

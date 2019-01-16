@@ -1,6 +1,5 @@
 import {ColumnMap, ColumnMapUtil} from "./column-map";
-import {IJoin} from "./join";
-import {JoinArrayUtil} from "./join-array";
+import {IJoin, JoinUtil} from "./join";
 import {IColumn, ColumnUtil} from "./column";
 import {IQuery} from "./query";
 import {ColumnIdentifierMapUtil} from "./column-identifier-map";
@@ -17,9 +16,9 @@ export type ColumnRef = {
 export namespace ColumnRefUtil {
     export type FromJoinArray<JoinsT extends IJoin[]> = (
         {
-            readonly [tableAlias in JoinArrayUtil.ToTableAliasUnion<JoinsT>] : (
+            readonly [tableAlias in JoinUtil.Array.TableAliases<JoinsT>] : (
                 ColumnMapUtil.FromJoin<
-                    JoinArrayUtil.FindWithTableAlias<JoinsT, tableAlias>
+                    JoinUtil.Array.FindWithTableAlias<JoinsT, tableAlias>
                 >
             )
         }

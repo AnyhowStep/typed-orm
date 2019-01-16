@@ -5,7 +5,7 @@ import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil, Column} from "../../../column";
 import {IAnonymousTypedExpr} from "../../../expr";
 import {and} from "../../../expr-library";
-import {JoinArrayUtil} from "../../../join-array";
+import {JoinUtil} from "../../../join";
 import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
 import {isNull} from "../../../expr-library";
 
@@ -33,7 +33,7 @@ export type WhereIsNull<
         readonly _sqlCalcFoundRows : QueryT["_sqlCalcFoundRows"];
 
         readonly _joins : (
-            JoinArrayUtil.ReplaceColumn<QueryT["_joins"], Column<{
+            JoinUtil.Array.ReplaceColumn<QueryT["_joins"], Column<{
                 tableAlias : ReturnType<DelegateT>["tableAlias"],
                 name : ReturnType<DelegateT>["name"],
                 assertDelegate : sd.AssertDelegate<null>,
@@ -79,7 +79,7 @@ export function whereIsNull<
     }
 
     const expr = isNull(rawColumn);
-    const newJoins = JoinArrayUtil.replaceColumn(
+    const newJoins = JoinUtil.Array.replaceColumn(
         query._joins,
         new Column(
             {

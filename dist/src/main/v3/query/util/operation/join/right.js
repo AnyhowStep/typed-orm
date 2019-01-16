@@ -4,7 +4,6 @@ const query_1 = require("../../../query");
 const predicate_1 = require("../../predicate");
 const join_1 = require("./join");
 const join_2 = require("../../../../join");
-const join_array_1 = require("../../../../join-array");
 function rightJoin(query, aliasedTable, fromDelegate, toDelegate) {
     if (!predicate_1.canWidenColumnTypes(query)) {
         throw new Error(`Cannot use RIGHT JOIN here`);
@@ -17,7 +16,7 @@ function rightJoin(query, aliasedTable, fromDelegate, toDelegate) {
         _distinct,
         _sqlCalcFoundRows,
         _joins: [
-            ...join_array_1.JoinArrayUtil.toNullable(query._joins),
+            ...join_2.JoinUtil.Array.toNullable(query._joins),
             lastJoin,
         ],
         _parentJoins,

@@ -5,12 +5,11 @@ import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil, Column} from "../../../column";
 import {IAnonymousTypedExpr} from "../../../expr";
 import {and} from "../../../expr-library";
-import {JoinArrayUtil} from "../../../join-array";
 import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
 import {eq} from "../../../expr-library";
 import {NonNullPrimitiveExpr} from "../../../primitive-expr";
 import {RawExprUtil} from "../../../raw-expr";
-import {IJoin} from "../../../join";
+import {IJoin, JoinUtil} from "../../../join";
 
 export type WhereEqDelegate<
     QueryT extends AfterFromClause
@@ -37,7 +36,7 @@ export type WhereEq<
         readonly _sqlCalcFoundRows : QueryT["_sqlCalcFoundRows"];
 
         readonly _joins : (
-            JoinArrayUtil.ReplaceColumn<QueryT["_joins"], Column<{
+            JoinUtil.Array.ReplaceColumn<QueryT["_joins"], Column<{
                 tableAlias : ReturnType<DelegateT>["tableAlias"],
                 name : ReturnType<DelegateT>["name"],
                 assertDelegate : sd.AssertDelegate<ValueT>,
@@ -109,7 +108,7 @@ export function whereEq<
         rawColumn,
         value as any
     );
-    const newJoins = JoinArrayUtil.replaceColumn(
+    const newJoins = JoinUtil.Array.replaceColumn(
         query._joins,
         new Column(
             {

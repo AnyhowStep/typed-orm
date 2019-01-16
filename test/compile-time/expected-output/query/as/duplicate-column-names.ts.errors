@@ -1,7 +1,7 @@
 [
   {
     "messageText": {
-      "messageText": "The 'this' context of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/query/query\").Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join\").Join<{ aliasedTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/sr...' is not assignable to method's 'this' of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/query/query\").Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join\").Join<{ aliasedTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/sr...'.",
+      "messageText": "The 'this' context of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/query/query\").Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join/join\").Join<{ aliasedTable: import(\"/home/anyhowstep/node-projects/typed-orm/di...' is not assignable to method's 'this' of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/query/query\").Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join/join\").Join<{ aliasedTable: import(\"/home/anyhowstep/node-projects/typed-orm/di...'.",
       "category": 1,
       "code": 2684,
       "next": {

@@ -1,7 +1,7 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/query/query\").Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join\").Join<{ aliasedTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/sr...' is not assignable to parameter of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/query/query\").Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join\").Join<{ aliasedTable: import(\"/home/anyhowstep/node-projects/typed-orm/dist/sr...'.",
+      "messageText": "Argument of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/query/query\").Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join/join\").Join<{ aliasedTable: import(\"/home/anyhowstep/node-projects/typed-orm/di...' is not assignable to parameter of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/query/query\").Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/join/join\").Join<{ aliasedTable: import(\"/home/anyhowstep/node-projects/typed-orm/di...'.",
       "category": 1,
       "code": 2345,
       "next": {

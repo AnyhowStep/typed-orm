@@ -1,18 +1,17 @@
-import {IJoin} from "../../../join";
+import {IJoin, JoinUtil} from "../../../join";
 import {ColumnRefUtil} from "../../../column-ref";
 import {PrimitiveExpr} from "../../../primitive-expr";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
-import {JoinArrayUtil} from "../../../join-array";
 import {ITable, TableUtil} from "../../../table";
 import {Update, UpdateModifier, Assignment, UpdatableQuery} from "../../update";
 import {ColumnIdentifier, ColumnIdentifierUtil} from "../../../column-identifier";
 
 export type AssignmentRefFromJoinArray<JoinArrT extends IJoin[]> = (
     {
-        readonly [tableAlias in JoinArrayUtil.ToTableAliasUnion<JoinArrT>]? : (
+        readonly [tableAlias in JoinUtil.Array.TableAliases<JoinArrT>]? : (
             {
                 readonly [columnName in Extract<
-                    keyof JoinArrayUtil.FindWithTableAlias<
+                    keyof JoinUtil.Array.FindWithTableAlias<
                         JoinArrT,
                         tableAlias
                     >["columns"],
@@ -20,7 +19,7 @@ export type AssignmentRefFromJoinArray<JoinArrT extends IJoin[]> = (
                 >]? : (
                     RawExpr<
                         ReturnType<
-                            JoinArrayUtil.FindWithTableAlias<
+                            JoinUtil.Array.FindWithTableAlias<
                                 JoinArrT,
                                 tableAlias
                             >["aliasedTable"]["columns"][columnName]["assertDelegate"]
@@ -63,7 +62,7 @@ export type ToMutableColumnIdentifier<QueryT extends UpdatableQuery> = (
         [tableAlias in Extract<QueryT["_joins"][number]["aliasedTable"], ITable>["alias"]] : (
             {
                 [columnName in Extract<
-                    JoinArrayUtil.FindWithTableAlias<QueryT["_joins"], tableAlias>["aliasedTable"],
+                    JoinUtil.Array.FindWithTableAlias<QueryT["_joins"], tableAlias>["aliasedTable"],
                     ITable
                 >["mutable"][number]] : (
                     {
@@ -72,7 +71,7 @@ export type ToMutableColumnIdentifier<QueryT extends UpdatableQuery> = (
                     }
                 )
             }[Extract<
-                JoinArrayUtil.FindWithTableAlias<QueryT["_joins"], tableAlias>["aliasedTable"],
+                JoinUtil.Array.FindWithTableAlias<QueryT["_joins"], tableAlias>["aliasedTable"],
                 ITable
             >["mutable"][number]]
         )

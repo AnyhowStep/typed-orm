@@ -5,12 +5,11 @@ import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil, Column} from "../../../column";
 import {IAnonymousTypedExpr} from "../../../expr";
 import {and} from "../../../expr-library";
-import {JoinArrayUtil} from "../../../join-array";
 import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
 import {nullSafeEq} from "../../../expr-library";
 import {PrimitiveExpr} from "../../../primitive-expr";
 import {RawExprUtil} from "../../../raw-expr";
-import {IJoin} from "../../../join";
+import {IJoin, JoinUtil} from "../../../join";
 
 export type WhereNullSafeEqDelegate<
     QueryT extends AfterFromClause
@@ -35,7 +34,7 @@ export type WhereNullSafeEq<
         readonly _sqlCalcFoundRows : QueryT["_sqlCalcFoundRows"];
 
         readonly _joins : (
-            JoinArrayUtil.ReplaceColumn<QueryT["_joins"], Column<{
+            JoinUtil.Array.ReplaceColumn<QueryT["_joins"], Column<{
                 tableAlias : ReturnType<DelegateT>["tableAlias"],
                 name : ReturnType<DelegateT>["name"],
                 assertDelegate : sd.AssertDelegate<ValueT>,
@@ -101,7 +100,7 @@ export function whereNullSafeEq<
         rawColumn,
         value as any
     );
-    const newJoins = JoinArrayUtil.replaceColumn(
+    const newJoins = JoinUtil.Array.replaceColumn(
         query._joins,
         new Column(
             {

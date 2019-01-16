@@ -5,7 +5,7 @@ const query_1 = require("../../query");
 const column_ref_1 = require("../../../column-ref");
 const column_1 = require("../../../column");
 const expr_library_1 = require("../../../expr-library");
-const join_array_1 = require("../../../join-array");
+const join_1 = require("../../../join");
 const column_identifier_ref_1 = require("../../../column-identifier-ref");
 const expr_library_2 = require("../../../expr-library");
 function whereIsNull(query, delegate) {
@@ -19,7 +19,7 @@ function whereIsNull(query, delegate) {
         throw new Error(`${rawColumn.tableAlias}.${rawColumn.name} is not nullable`);
     }
     const expr = expr_library_2.isNull(rawColumn);
-    const newJoins = join_array_1.JoinArrayUtil.replaceColumn(query._joins, new column_1.Column({
+    const newJoins = join_1.JoinUtil.Array.replaceColumn(query._joins, new column_1.Column({
         tableAlias: rawColumn.tableAlias,
         name: rawColumn.name,
         assertDelegate: sd.nil(),
