@@ -315,11 +315,14 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     setPrimaryKey<
         DelegateT extends TableUtil.PrimaryKeyDelegate<this>
     > (
-        delegate : TableUtil.AssertValidCandidateKeyDelegate<
-            this, DelegateT
-        >
+        delegate : TableUtil.AssertValidCandidateKeyDelegate<this, DelegateT>
     ) : (
-        TableUtil.SetPrimaryKey<this, DelegateT>
+        TableUtil.AssertValidCandidateKeyDelegate_Hack<
+            this,
+            DelegateT,
+            TableUtil.SetPrimaryKey<this, DelegateT>
+        >
+        //TableUtil.SetPrimaryKey<this, DelegateT>
     ) {
         return TableUtil.setPrimaryKey<
             this,
@@ -336,11 +339,14 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     addCandidateKey<
         DelegateT extends TableUtil.CandidateKeyDelegate<this>
     > (
-        delegate : TableUtil.AssertValidCandidateKeyDelegate<
-            this, DelegateT
-        >
+        delegate : TableUtil.AssertValidCandidateKeyDelegate<this, DelegateT>
     ) : (
-        TableUtil.AddCandidateKey<this, DelegateT>
+        TableUtil.AssertValidCandidateKeyDelegate_Hack<
+            this,
+            DelegateT,
+            TableUtil.AddCandidateKey<this, DelegateT>
+        >
+        //TableUtil.AddCandidateKey<this, DelegateT>
     ) {
         return TableUtil.addCandidateKey<this, DelegateT>(this, delegate);
     }

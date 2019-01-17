@@ -133,7 +133,7 @@ async function validateCandidateKeys(table, connection, result) {
 exports.validateCandidateKeys = validateCandidateKeys;
 async function validate(table, connection, result) {
     if (!await informationSchema.tableExists(connection, table.alias)) {
-        result.errors.push(`Table ${table.alias} does not exist`);
+        result.errors.push(`Table ${table.alias} exists in code; not on database`);
         return;
     }
     await validateColumns(table, connection, result);

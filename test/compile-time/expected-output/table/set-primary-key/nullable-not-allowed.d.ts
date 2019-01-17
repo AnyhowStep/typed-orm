@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
-export declare const joined2: o.Table<{
+export declare const joined2: void | o.Table<{
     readonly usedRef: {};
     readonly alias: "joined2";
     readonly columns: {
@@ -40,4 +40,4 @@ export declare const joined2: o.Table<{
     readonly parents: [];
     readonly insertAllowed: true;
     readonly deleteAllowed: true;
-}>;
+}> | [any, "is not a column of", "joined2"];

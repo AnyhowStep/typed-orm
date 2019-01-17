@@ -19,6 +19,7 @@ export declare class Connection implements IConnection, ITransactionConnection {
 }
 export interface PoolArgs {
     host: string;
+    port?: number;
     database: string;
     user: string;
     password: string;

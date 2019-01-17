@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const sd = require("schema-decorator");
+//import {IColumn} from "../../../column";
 const table_1 = require("../../table");
 const add_candidate_key_1 = require("./add-candidate-key");
 function setPrimaryKey(table, delegate) {

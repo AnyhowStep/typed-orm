@@ -1,8 +1,9 @@
 import * as sd from "schema-decorator";
+//import {IColumn} from "../../../column";
 import {Table, ITable} from "../../table";
 import {IAnonymousTypedColumn} from "../../../column";
 import {NonNullPrimitiveExpr} from "../../../primitive-expr";
-import {AssertValidCandidateKeyDelegate, addCandidateKey} from "./add-candidate-key";
+import {AssertValidCandidateKeyDelegate, AssertValidCandidateKeyDelegate_Hack, addCandidateKey, AddCandidateKey} from "./add-candidate-key";
 
 export type PrimaryKeyColumnMap<TableT extends ITable> = (
     {
@@ -22,12 +23,14 @@ export type PrimaryKeyDelegate<
     TableT extends ITable
 > = (
     (columnMap : PrimaryKeyColumnMap<TableT>) => (
-        TableT["columns"][string][]
+        //ColumnUtil.FromColumnMap<TableT["columns"]>[]
         /*(
             PrimaryKeyColumnMap<TableT>[
                 keyof PrimaryKeyColumnMap<TableT>
             ]
         )[]*/
+        TableT["columns"][string][]
+        //IColumn[]
     )
 );
 export type SetPrimaryKey<
@@ -65,10 +68,16 @@ export function setPrimaryKey<
 > (
     table : TableT,
     delegate : AssertValidCandidateKeyDelegate<
-        TableT, DelegateT
+        TableT,
+        DelegateT
     >
 ) : (
-    SetPrimaryKey<TableT, DelegateT>
+    AssertValidCandidateKeyDelegate_Hack<
+        TableT,
+        DelegateT,
+        SetPrimaryKey<TableT, DelegateT>
+    >
+    //SetPrimaryKey<TableT, DelegateT>
 ) {
     //https://github.com/Microsoft/TypeScript/issues/28592
     const columns : TableT["columns"] = table.columns;
@@ -84,7 +93,7 @@ export function setPrimaryKey<
     const withCandidateKey = addCandidateKey(
         table,
         (() => primaryKeyColumns) as any
-    );
+    ) as AddCandidateKey<TableT, DelegateT>;
 
     const {
         usedRef,
@@ -130,5 +139,5 @@ export function setPrimaryKey<
         },
         { unaliasedQuery }
     );
-    return result;
+    return result as any;
 }

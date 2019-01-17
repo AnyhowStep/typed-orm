@@ -161,7 +161,7 @@ export async function validate (table : ITable, connection : IConnection, result
         connection,
         table.alias
     )) {
-        result.errors.push(`Table ${table.alias} does not exist`);
+        result.errors.push(`Table ${table.alias} exists in code; not on database`);
         return;
     }
 

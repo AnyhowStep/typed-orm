@@ -1,5 +1,6 @@
 import {Table, ITable} from "../../table";
 import {ColumnMapUtil} from "../../../column-map";
+import {ColumnUtil} from "../../../column";
 import {KeyUtil} from "../../../key";
 import {StringArrayUtil} from "../../../string-array";
 
@@ -7,7 +8,9 @@ export type CandidateKeyDelegate<
     TableT extends ITable
 > = (
     (columnMap : TableT["columns"]) => (
+        //ColumnUtil.FromColumnMap<TableT["columns"]>[]
         TableT["columns"][string][]
+        //IColumn[]
     )
 );
 export type AssertValidCandidateKeyDelegate<
@@ -47,6 +50,54 @@ export type AssertValidCandidateKeyDelegate<
         ]
     )
 );
+
+//https://github.com/Microsoft/TypeScript/issues/29133
+export type AssertValidCandidateKeyDelegate_Hack<
+    TableT extends ITable,
+    DelegateT extends CandidateKeyDelegate<TableT>,
+    ResultT
+> = (
+    ReturnType<DelegateT>[number] extends ColumnUtil.FromColumnMap<TableT["columns"]> ?
+    (
+        KeyUtil.Array.FindSubKey<
+            TableT["candidateKeys"],
+            ReturnType<DelegateT>[number]["name"][]
+        > extends never ?
+        (
+            KeyUtil.Array.FindSuperKey<
+                TableT["candidateKeys"],
+                ReturnType<DelegateT>[number]["name"][]
+            > extends never ?
+            ResultT :
+            [
+                "Cannot add key as candidate key",
+                ReturnType<DelegateT>[number]["name"],
+                "is a sub key of",
+                KeyUtil.Array.FindSuperKey<
+                    TableT["candidateKeys"],
+                    ReturnType<DelegateT>[number]["name"][]
+                >
+            ]|void
+        ) :
+        [
+            "Cannot add key as candidate key",
+            ReturnType<DelegateT>[number]["name"],
+            "is a super key of",
+            KeyUtil.Array.FindSubKey<
+                TableT["candidateKeys"],
+                ReturnType<DelegateT>[number]["name"][]
+            >
+        ]|void
+    ) :
+    [
+        Exclude<
+            ReturnType<DelegateT>[number],
+            ColumnUtil.FromColumnMap<TableT["columns"]>
+        >,
+        "is not a column of",
+        TableT["alias"]
+    ]|void
+);
 export type AddCandidateKey<
     TableT extends ITable,
     DelegateT extends CandidateKeyDelegate<TableT>
@@ -80,10 +131,16 @@ export function addCandidateKey<
 > (
     table : TableT,
     delegate : AssertValidCandidateKeyDelegate<
-        TableT, DelegateT
+        TableT,
+        DelegateT
     >
 ) : (
-    AddCandidateKey<TableT, DelegateT>
+    AssertValidCandidateKeyDelegate_Hack<
+        TableT,
+        DelegateT,
+        AddCandidateKey<TableT, DelegateT>
+    >
+    //AddCandidateKey<TableT, DelegateT>
 ) {
     //https://github.com/Microsoft/TypeScript/issues/28592
     const columns : TableT["columns"] = table.columns;
@@ -159,5 +216,5 @@ export function addCandidateKey<
         },
         {unaliasedQuery}
     );
-    return result;
+    return result as any;
 }

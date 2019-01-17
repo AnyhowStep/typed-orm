@@ -88,8 +88,8 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     setAutoIncrement<DelegateT extends TableUtil.AutoIncrementDelegate<this>>(delegate: DelegateT): TableUtil.SetAutoIncrement<this, DelegateT>;
     setDatabaseName(newDatabaseName: string): (TableUtil.SetDatabaseName<this>);
     setId<DelegateT extends TableUtil.IdDelegate<this>>(delegate: DelegateT): (TableUtil.SetId<this, DelegateT>);
-    setPrimaryKey<DelegateT extends TableUtil.PrimaryKeyDelegate<this>>(delegate: TableUtil.AssertValidCandidateKeyDelegate<this, DelegateT>): (TableUtil.SetPrimaryKey<this, DelegateT>);
-    addCandidateKey<DelegateT extends TableUtil.CandidateKeyDelegate<this>>(delegate: TableUtil.AssertValidCandidateKeyDelegate<this, DelegateT>): (TableUtil.AddCandidateKey<this, DelegateT>);
+    setPrimaryKey<DelegateT extends TableUtil.PrimaryKeyDelegate<this>>(delegate: TableUtil.AssertValidCandidateKeyDelegate<this, DelegateT>): (TableUtil.AssertValidCandidateKeyDelegate_Hack<this, DelegateT, TableUtil.SetPrimaryKey<this, DelegateT>>);
+    addCandidateKey<DelegateT extends TableUtil.CandidateKeyDelegate<this>>(delegate: TableUtil.AssertValidCandidateKeyDelegate<this, DelegateT>): (TableUtil.AssertValidCandidateKeyDelegate_Hack<this, DelegateT, TableUtil.AddCandidateKey<this, DelegateT>>);
     addGenerated<DelegateT extends TableUtil.GeneratedDelegate<this>>(delegate: DelegateT): (TableUtil.AddGenerated<this, DelegateT>);
     addHasExplicitDefaultValue<DelegateT extends TableUtil.HasExplicitDefaultValueDelegate<this>>(delegate: DelegateT): (TableUtil.AddHasExplicitDefaultValue<this, DelegateT>);
     setImmutable(): TableUtil.SetImmutable<this>;
