@@ -53,7 +53,7 @@ export declare namespace ColumnRefUtil {
             }>[columnName]);
         };
     });
-    type FromSelectItemArray_ColumnRefElement<ColumnRefT extends ColumnRef> = ({
+    type FromSelectItemArray_ColumnRefElement<ColumnRefT extends ColumnRef> = (ColumnRefT[keyof ColumnRefT] extends ColumnMap ? {
         readonly [tableAlias in ColumnRefUtil.TableAlias<ColumnRefT>]: {
             readonly [columnName in ColumnRefUtil.FindWithTableAlias<ColumnRefT, tableAlias>["name"]]: (Extract<ColumnRefT, {
                 [ta in tableAlias]: {
@@ -61,7 +61,7 @@ export declare namespace ColumnRefUtil {
                 };
             }>[tableAlias][columnName]);
         };
-    });
+    } : {});
     type FromSelectItemArray<ArrT extends SelectItem[]> = (ArrT[number] extends never ? {} : (FromSelectItemArray_ColumnElement<Extract<ArrT[number], IColumn>> & FromSelectItemArray_ExprSelectItemElement<Extract<ArrT[number], IExprSelectItem>> & FromSelectItemArray_ColumnMapElement<Extract<ArrT[number], ColumnMap>> & FromSelectItemArray_ColumnRefElement<Extract<ArrT[number], ColumnRef>>));
     function fromSelectItemArray<ArrT extends SelectItem[]>(arr: ArrT): FromSelectItemArray<ArrT>;
     type FromQuerySelects<QueryT extends IQuery> = (QueryT["_selects"] extends SelectItem[] ? FromSelectItemArray<QueryT["_selects"]> : {});

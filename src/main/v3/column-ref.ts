@@ -240,6 +240,8 @@ export namespace ColumnRefUtil {
         }
     );
     export type FromSelectItemArray_ColumnRefElement<ColumnRefT extends ColumnRef> = (
+        //Unfortunately, {} & ColumnMap extends ColumnRef
+        ColumnRefT[keyof ColumnRefT] extends ColumnMap ?
         {
             readonly [tableAlias in ColumnRefUtil.TableAlias<ColumnRefT>] : {
                 readonly [columnName in ColumnRefUtil.FindWithTableAlias<
@@ -252,7 +254,8 @@ export namespace ColumnRefUtil {
                     >[tableAlias][columnName]
                 )
             }
-        }
+        } :
+        {}
     );
     export type FromSelectItemArray<ArrT extends SelectItem[]> = (
         ArrT[number] extends never ?
