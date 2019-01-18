@@ -12,6 +12,7 @@ __export(require("./column-identifier-ref"));
 __export(require("./column-map"));
 __export(require("./data-type"));
 __export(require("./delete"));
+__export(require("./event"));
 __export(require("./execution"));
 __export(require("./expr"));
 __export(require("./expr-library"));

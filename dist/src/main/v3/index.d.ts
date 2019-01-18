@@ -7,6 +7,7 @@ export * from "./column-identifier-ref";
 export * from "./column-map";
 export * from "./data-type";
 export * from "./delete";
+export * from "./event";
 export * from "./execution";
 export * from "./expr";
 export * from "./expr-library";
