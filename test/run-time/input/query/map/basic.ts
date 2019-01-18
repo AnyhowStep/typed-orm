@@ -34,6 +34,7 @@ tape(__filename, async (t) => {
             x : 32,
             y : "test"
         },
+        null as any,
         {
             x : 32,
             y : "test"
@@ -44,6 +45,7 @@ tape(__filename, async (t) => {
             x : 32,
             y : "test"
         },
+        null as any,
         {
             x : 32,
             y : "test"

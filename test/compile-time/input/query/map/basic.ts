@@ -27,5 +27,5 @@ export const query2 = query
             ...row,
         })
     });
-export const result1 = query1._mapDelegate(null as any, null as any);
-export const result2 = query2._mapDelegate(null as any, null as any);
+export const result1 = query1._mapDelegate(null as any, null as any, null as any);
+export const result2 = query2._mapDelegate(null as any, null as any, null as any);

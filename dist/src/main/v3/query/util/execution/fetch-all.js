@@ -12,7 +12,7 @@ async function fetchAll(query, connection) {
     else {
         const rows = [];
         for (let unmapped of unmappedRows) {
-            rows.push(await query._mapDelegate(unmapped, unmapped));
+            rows.push(await query._mapDelegate(unmapped, connection, unmapped));
         }
         return rows;
     }

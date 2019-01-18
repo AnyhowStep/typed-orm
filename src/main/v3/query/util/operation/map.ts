@@ -128,8 +128,8 @@ export function map<
         Promise<ReturnType<DelegateT>>
     >|undefined = undefined;
     if (query._mapDelegate == undefined) {
-        newMapDelegate = (async (row, originalRow) => {
-            return delegate(row as any, originalRow);
+        newMapDelegate = (async (row, connection, originalRow) => {
+            return delegate(row as any, connection, originalRow);
         }) as MapDelegate<
             UnmappedType<QueryT>,
             UnmappedType<QueryT>,
@@ -139,12 +139,13 @@ export function map<
         >;
     } else {
         const prvDelegate = query._mapDelegate;
-        newMapDelegate = (async (row, originalRow) => {
+        newMapDelegate = (async (row, connection, originalRow) => {
             const prvResult : MappedType<QueryT> = await prvDelegate(
                 row,
+                connection,
                 originalRow
             );
-            return delegate(prvResult, originalRow);
+            return delegate(prvResult, connection, originalRow);
         }) as MapDelegate<
             UnmappedType<QueryT>,
             UnmappedType<QueryT>,

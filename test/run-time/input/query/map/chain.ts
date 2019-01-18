@@ -61,10 +61,10 @@ tape(__filename, async (t) => {
         x : 32,
         y : "test",
     }
-    const result3 = await query3._mapDelegate(row, row).then(result => result);
-    const result4 = await query4._mapDelegate(row, row).then(result => result);
-    const result5 = await query5._mapDelegate(row, row).then(result => result);
-    const result6 = await query6._mapDelegate(row, row).then(result => result);
+    const result3 = await query3._mapDelegate(row, null as any, row).then(result => result);
+    const result4 = await query4._mapDelegate(row, null as any, row).then(result => result);
+    const result5 = await query5._mapDelegate(row, null as any, row).then(result => result);
+    const result6 = await query6._mapDelegate(row, null as any, row).then(result => result);
     t.deepEqual(result3, {
         x : 32,
         y : "test",

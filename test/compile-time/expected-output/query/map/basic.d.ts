@@ -199,7 +199,7 @@ export declare const query1: o.Query<{
     readonly _mapDelegate: (row: {
         readonly x: number;
         readonly y: string;
-    }, originalRow: {
+    }, connection: o.IConnection, originalRow: {
         readonly x: number;
         readonly y: string;
     }) => Promise<{
@@ -308,7 +308,7 @@ export declare const query2: o.Query<{
     readonly _mapDelegate: (row: {
         readonly x: number;
         readonly y: string;
-    }, originalRow: {
+    }, connection: o.IConnection, originalRow: {
         readonly x: number;
         readonly y: string;
     }) => Promise<{

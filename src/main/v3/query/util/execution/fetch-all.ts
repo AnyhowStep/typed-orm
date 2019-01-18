@@ -25,7 +25,7 @@ export async function fetchAll<
         const rows : any[] = [];
         for (let unmapped of unmappedRows) {
             rows.push(
-                await query._mapDelegate(unmapped, unmapped)
+                await query._mapDelegate(unmapped, connection, unmapped)
             );
         }
         return rows;

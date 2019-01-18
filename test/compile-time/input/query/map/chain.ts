@@ -55,7 +55,7 @@ const query6 = query2
             ...row
         })
     });
-export const result3 = query3._mapDelegate(null as any, null as any);
-export const result4 = query4._mapDelegate(null as any, null as any);
-export const result5 = query5._mapDelegate(null as any, null as any);
-export const result6 = query6._mapDelegate(null as any, null as any);
+export const result3 = query3._mapDelegate(null as any, null as any, null as any);
+export const result4 = query4._mapDelegate(null as any, null as any, null as any);
+export const result5 = query5._mapDelegate(null as any, null as any, null as any);
+export const result6 = query6._mapDelegate(null as any, null as any, null as any);
