@@ -44,6 +44,10 @@ export async function fetchAllUnmapped<
                 case Types.DATETIME2:
                 case Types.TIMESTAMP:
                 case Types.TIMESTAMP2: {
+                    if (rawRow[k] === null) {
+                        //The value is allowed to be `null`
+                        break;
+                    }
                     rawRow[k] = DateTimeUtil.fromSqlUtc(
                         rawRow[k],
                         rawResult.fields[k].decimals as 0|1|2|3

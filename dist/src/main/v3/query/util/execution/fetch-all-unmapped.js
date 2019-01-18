@@ -27,6 +27,10 @@ async function fetchAllUnmapped(query, connection) {
                 case 18 /* DATETIME2 */:
                 case 7 /* TIMESTAMP */:
                 case 17 /* TIMESTAMP2 */: {
+                    if (rawRow[k] === null) {
+                        //The value is allowed to be `null`
+                        break;
+                    }
                     rawRow[k] = data_type_1.DateTimeUtil.fromSqlUtc(rawRow[k], rawResult.fields[k].decimals);
                     break;
                 }
