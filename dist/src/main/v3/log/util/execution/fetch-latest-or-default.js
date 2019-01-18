@@ -16,8 +16,9 @@ function fetchLatestOrDefault(log, connection, entityIdentifier) {
             .then((def) => {
             return {
                 isDefault: true,
-                default: def,
+                latest: def,
                 row: def,
+                default: def,
             };
         });
     });

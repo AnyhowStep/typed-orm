@@ -12,8 +12,9 @@ export type FetchLatestOrDefaultResult<LogT extends CompletedLog> = (
     } |
     {
         isDefault : true,
-        default : PreviousRow<LogT>,
+        latest : PreviousRow<LogT>,
         row : PreviousRow<LogT>,
+        default : PreviousRow<LogT>,
     }
 );
 export function fetchLatestOrDefault<LogT extends CompletedLog> (
@@ -34,8 +35,9 @@ export function fetchLatestOrDefault<LogT extends CompletedLog> (
                 .then((def) : FetchLatestOrDefaultResult<LogT> => {
                     return {
                         isDefault : true,
-                        default : def,
+                        latest : def,
                         row : def,
+                        default : def,
                     };
                 });
         });

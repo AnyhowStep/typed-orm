@@ -7,8 +7,9 @@ export declare type FetchLatestOrDefaultResult<LogT extends CompletedLog> = ({
     row: PreviousRow<LogT>;
 } | {
     isDefault: true;
-    default: PreviousRow<LogT>;
+    latest: PreviousRow<LogT>;
     row: PreviousRow<LogT>;
+    default: PreviousRow<LogT>;
 });
 export declare function fetchLatestOrDefault<LogT extends CompletedLog>(log: LogT, connection: IConnection, entityIdentifier: EntityIdentifier<LogT>): Promise<FetchLatestOrDefaultResult<LogT>>;
 //# sourceMappingURL=fetch-latest-or-default.d.ts.map
