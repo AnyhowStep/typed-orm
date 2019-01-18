@@ -3,7 +3,7 @@ import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 import {pool} from "../../pool";
 
-tape(__filename + "-bigint-always-received-as-string", async (t) => {
+tape(__filename + "-bigint-always-received-as-number-or-bigint", async (t) => {
     const result = await pool.acquire(async (connection) => {
         await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS bigintTable");
         await connection.rawQuery(`
@@ -15,7 +15,7 @@ tape(__filename + "-bigint-always-received-as-string", async (t) => {
         const bigintTable = o.table(
             "bigintTable",
             {
-                value : sd.string(),
+                value : sd.any(),
             }
         );
         return o.from(bigintTable)
@@ -23,7 +23,31 @@ tape(__filename + "-bigint-always-received-as-string", async (t) => {
             .fetchAll(connection);
     });
     t.deepEqual(result.length, 1);
-    t.deepEqual(result[0].value, "32");
+    t.deepEqual(result[0].value, 32);
+
+    t.end();
+});
+tape(__filename + "-bigint-always-received-as-number-or-bigint", async (t) => {
+    const result = await pool.acquire(async (connection) => {
+        await connection.rawQuery("DROP TEMPORARY TABLE IF EXISTS bigintTable");
+        await connection.rawQuery(`
+            CREATE TEMPORARY TABLE bigintTable (
+                value BIGINT NOT NULL
+            )
+        `);
+        await connection.rawQuery("INSERT INTO bigintTable (value) VALUES (9223372036854775807)");
+        const bigintTable = o.table(
+            "bigintTable",
+            {
+                value : sd.any(),
+            }
+        );
+        return o.from(bigintTable)
+            .select(c => [c])
+            .fetchAll(connection);
+    });
+    t.deepEqual(result.length, 1);
+    t.deepEqual(result[0].value, 9223372036854775807n);
 
     t.end();
 });

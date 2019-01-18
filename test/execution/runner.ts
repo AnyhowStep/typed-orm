@@ -11,6 +11,9 @@ tape.createStream({ objectMode : true }).on("data", (row) => {
     if (row.type === "assert") {
         ++assertCount;
     }
+    /*if (row.type == "test") {
+        console.log(row);
+    }*/
 }).on("close", () => {
     console.log(assertCount, "assertions");
     console.log(failCount, "failures");

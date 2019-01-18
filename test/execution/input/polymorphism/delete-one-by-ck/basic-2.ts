@@ -40,13 +40,19 @@ tape(__filename, async (t) => {
         const fkA = o.table(
             "fkA",
             {
-                value : sd.nullable(sd.string()),
+                value : sd.nullable(sd.or(
+                    sd.numberToString(),
+                    sd.string()
+                )),
             }
         ).addCandidateKey(c => [c.value]);
         const fkB = o.table(
             "fkB",
             {
-                value : sd.nullable(sd.string()),
+                value : sd.nullable(sd.or(
+                    sd.numberToString(),
+                    sd.string()
+                )),
             }
         ).addCandidateKey(c => [c.value])
         .addParent(fkA);

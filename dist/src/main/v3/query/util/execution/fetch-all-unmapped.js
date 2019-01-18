@@ -34,6 +34,24 @@ async function fetchAllUnmapped(query, connection) {
                     rawRow[k] = data_type_1.DateTimeUtil.fromSqlUtc(rawRow[k], rawResult.fields[k].decimals);
                     break;
                 }
+                case 8 /* LONGLONG */: {
+                    if (rawRow[k] === null) {
+                        //The value is allowed to be `null`
+                        break;
+                    }
+                    if (typeof rawRow[k] === "string") {
+                        //We try to convert it to `number` first.
+                        //Then, bigint.
+                        const n = parseInt(rawRow[k]);
+                        if (n.toString() === rawRow[k]) {
+                            rawRow[k] = n;
+                        }
+                        else {
+                            rawRow[k] = BigInt(rawRow[k]);
+                        }
+                    }
+                    break;
+                }
             }
             const value = ref[tableAlias][columnName].assertDelegate(`${tableAlias}.${columnName}`, rawRow[k]);
             if (hasDuplicateColumnName || hasNullableJoins) {

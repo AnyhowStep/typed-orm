@@ -54,6 +54,23 @@ export async function fetchAllUnmapped<
                     );
                     break;
                 }
+                case Types.LONGLONG: {
+                    if (rawRow[k] === null) {
+                        //The value is allowed to be `null`
+                        break;
+                    }
+                    if (typeof rawRow[k] === "string") {
+                        //We try to convert it to `number` first.
+                        //Then, bigint.
+                        const n = parseInt(rawRow[k])
+                        if (n.toString() === rawRow[k]) {
+                            rawRow[k] = n;
+                        } else {
+                            rawRow[k] = BigInt(rawRow[k])
+                        }
+                    }
+                    break;
+                }
             }
             const value = ref[tableAlias][columnName].assertDelegate(
                 `${tableAlias}.${columnName}`,

@@ -16,7 +16,10 @@ tape(__filename, async (t) => {
         const bigintTable = o.table(
             "bigintTable",
             {
-                value : sd.string(),
+                value : sd.or(
+                    sd.numberToString(),
+                    sd.string()
+                ),
                 other : sd.string(),
                 other2 : sd.string(),
             }

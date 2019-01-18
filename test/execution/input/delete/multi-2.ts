@@ -20,13 +20,19 @@ tape(__filename, async (t) => {
         const multiA = o.table(
             "multiA",
             {
-                value : sd.string(),
+                value : sd.or(
+                    sd.numberToString(),
+                    sd.string()
+                ),
             }
         );
         const multiB = o.table(
             "multiB",
             {
-                value : sd.string(),
+                value : sd.or(
+                    sd.numberToString(),
+                    sd.string()
+                ),
             }
         );
         const insertResult = await o.insertInto(multiA)

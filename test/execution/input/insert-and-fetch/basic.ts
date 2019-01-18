@@ -14,7 +14,10 @@ tape(__filename, async (t) => {
         const bigintTable = o.table(
             "bigintTable",
             {
-                value : sd.string(),
+                value : sd.or(
+                    sd.numberToString(),
+                    sd.string()
+                ),
             }
         ).addCandidateKey(c => [c.value]);
         return o.InsertUtil.insertAndFetch(
