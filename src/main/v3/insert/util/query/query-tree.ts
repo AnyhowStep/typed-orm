@@ -3,6 +3,7 @@ import {ITable, TableUtil} from "../../../table";
 import {IInsert, InsertRow, InsertModifier, ExecutableInsert} from "../../insert";
 import {QueryTree, QueryTreeArray} from "../../../query-tree";
 import {RawExprUtil} from "../../../raw-expr";
+import {GenerationExpression} from "../../../generation-expression";
 
 export function queryTreeRow (
     insert : IInsert,
@@ -27,7 +28,11 @@ export function queryTreeRow (
                 result.push("DEFAULT");
             }
         } else {
-            result.push(RawExprUtil.queryTree(value));
+            if (value instanceof GenerationExpression) {
+                result.push(value.sql);
+            } else {
+                result.push(RawExprUtil.queryTree(value));
+            }
         }
     }
     return [

@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const query_1 = require("../query");
 const insert_1 = require("../../../insert");
 const informationSchema = require("../../../information-schema");
+const generation_expression_1 = require("../../../generation-expression");
 async function insertAndFetch(connection, table, rawInsertRow) {
     if (table.parents.length == 0) {
         return insert_1.InsertUtil.insertAndFetch(connection, table, rawInsertRow);
@@ -15,10 +16,9 @@ async function insertAndFetch(connection, table, rawInsertRow) {
         }
         else {
             const generationExpression = await informationSchema.fetchGenerationExpression(connection, column);
-            //This will be a `string`.
             //It's up to the individual assert delegates to
             //cast this to the appropriate data types.
-            insertRow[g] = generationExpression;
+            insertRow[g] = new generation_expression_1.GenerationExpression(generationExpression);
         }
     }
     return connection.transactionIfNotInOne(async (connection) => {

@@ -4,6 +4,7 @@ import {RequiredColumnNames, OptionalColumnNames, uniqueGeneratedColumnNames, tr
 import {IConnection} from "../../../execution";
 import {InsertUtil} from "../../../insert";
 import * as informationSchema from "../../../information-schema";
+import {GenerationExpression} from "../../../generation-expression";
 
 export type InsertRow<TableT extends ITable> = (
     {
@@ -53,14 +54,13 @@ export async function insertAndFetch<
         if (column == undefined) {
             continue;
         } else {
-            const generationExpression = await informationSchema.fetchGenerationExpression(
+            const generationExpression : string = await informationSchema.fetchGenerationExpression(
                 connection,
                 column
             );
-            //This will be a `string`.
             //It's up to the individual assert delegates to
             //cast this to the appropriate data types.
-            insertRow[g] = generationExpression;
+            insertRow[g] = new GenerationExpression(generationExpression);
         }
     }
 

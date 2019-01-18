@@ -4,6 +4,7 @@ const sqlstring_1 = require("sqlstring");
 const table_1 = require("../../../table");
 const insert_1 = require("../../insert");
 const raw_expr_1 = require("../../../raw-expr");
+const generation_expression_1 = require("../../../generation-expression");
 function queryTreeRow(insert, row) {
     const columnNames = Object.keys(insert._table.columns).sort();
     const result = [];
@@ -25,7 +26,12 @@ function queryTreeRow(insert, row) {
             }
         }
         else {
-            result.push(raw_expr_1.RawExprUtil.queryTree(value));
+            if (value instanceof generation_expression_1.GenerationExpression) {
+                result.push(value.sql);
+            }
+            else {
+                result.push(raw_expr_1.RawExprUtil.queryTree(value));
+            }
         }
     }
     return [
