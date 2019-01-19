@@ -490,6 +490,13 @@ export class Log<DataT extends LogData> implements ILog<DataT> {
         );
     }
 
+    existsOfEntity (
+        this : Extract<this, LogNoTrackedDefaults>
+    ) : (
+        LogUtil.ExistsOfEntity<Extract<this, LogNoTrackedDefaults>>
+    ) {
+        return LogUtil.existsOfEntity(this);
+    }
     latestOfEntity (
         this : Extract<this, LogNoTrackedDefaults>
     ) : (

@@ -65,6 +65,9 @@ class Log {
     fetchLatestValueOrUndefined(connection, entityIdentifier, delegate) {
         return LogUtil.fetchLatestValueOrUndefined(this, connection, entityIdentifier, delegate);
     }
+    existsOfEntity() {
+        return LogUtil.existsOfEntity(this);
+    }
     latestOfEntity() {
         return LogUtil.latestOfEntity(this);
     }
