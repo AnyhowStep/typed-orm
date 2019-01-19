@@ -83,4 +83,25 @@ export namespace PrimitiveExprUtil {
         //No idea, assume not equal
         return false;
     }
+
+    export type ToNonNullableSuperType<T extends NonNullPrimitiveExpr> = (
+        T extends bigint ?
+        bigint :
+        T extends number ?
+        number :
+        T extends string ?
+        string :
+        T extends boolean ?
+        boolean :
+        //Date|Buffer do not have literal types
+        T
+    );
+    export type ToSuperType<T extends PrimitiveExpr> = (
+        (
+            null extends T ?
+            null :
+            never
+        ) |
+        ToNonNullableSuperType<Exclude<T, null>>
+    );
 }

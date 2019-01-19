@@ -8,13 +8,13 @@ export declare type AssertValidJoinPkImpl<FromTableT extends IAliasedTable, ToTa
     primaryKey: string[];
 }> = ((Extract<FromTableT["alias"], ToTableT["alias"]> extends never ? unknown : ["Cannot join two tables with the same name", Extract<FromTableT["alias"], ToTableT["alias"]>]) & (ToTableT["primaryKey"][number] extends ColumnUtil.FromColumnMap<FromTableT["columns"]>["name"] ? ((ColumnUtil.ToInterface<ColumnUtil.WithTableAlias<ColumnUtil.ToNullable<Extract<ColumnUtil.FromColumnMap<ToTableT["columns"]>, {
     name: ToTableT["primaryKey"][number];
-}>>, string>>) extends (ColumnUtil.ToInterface<ColumnUtil.WithTableAlias<ColumnUtil.ToNullable<Extract<ColumnUtil.FromColumnMap<FromTableT["columns"]>, {
+}>>, string>>) extends (ColumnUtil.ToInterface<ColumnUtil.WithTableAlias<ColumnUtil.ToNullable<ColumnUtil.ToSuperType<Extract<ColumnUtil.FromColumnMap<FromTableT["columns"]>, {
     name: ToTableT["primaryKey"][number];
-}>>, string>>) ? unknown : [FromTableT["alias"], "has incompatible columns; expecting", Exclude<ColumnUtil.ToInterface<ColumnUtil.WithTableAlias<ColumnUtil.ToNullable<Extract<ColumnUtil.FromColumnMap<ToTableT["columns"]>, {
+}>>>, string>>) ? unknown : [FromTableT["alias"], "has incompatible columns; expecting", Exclude<ColumnUtil.ToInterface<ColumnUtil.WithTableAlias<ColumnUtil.ToNullable<Extract<ColumnUtil.FromColumnMap<ToTableT["columns"]>, {
     name: ToTableT["primaryKey"][number];
-}>>, string>>, ColumnUtil.ToInterface<ColumnUtil.WithTableAlias<ColumnUtil.ToNullable<Extract<ColumnUtil.FromColumnMap<FromTableT["columns"]>, {
+}>>, string>>, ColumnUtil.ToInterface<ColumnUtil.WithTableAlias<ColumnUtil.ToNullable<ColumnUtil.ToSuperType<Extract<ColumnUtil.FromColumnMap<FromTableT["columns"]>, {
     name: ToTableT["primaryKey"][number];
-}>>, string>>>]) : [FromTableT["alias"], "is missing columns", Exclude<ToTableT["primaryKey"][number], ColumnUtil.FromColumnMap<FromTableT["columns"]>["name"]>]));
+}>>>, string>>>]) : [FromTableT["alias"], "is missing columns", Exclude<ToTableT["primaryKey"][number], ColumnUtil.FromColumnMap<FromTableT["columns"]>["name"]>]));
 export declare type AssertValidJoinPk<FromTableT extends IAliasedTable, ToTableT extends ITable & {
     primaryKey: string[];
 }> = (ToTableT & AssertValidJoinPkImpl<FromTableT, ToTableT>);

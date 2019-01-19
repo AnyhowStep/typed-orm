@@ -36,9 +36,11 @@ export type AssertValidJoinPkImpl<
                 ColumnUtil.ToInterface<
                     ColumnUtil.WithTableAlias<
                         ColumnUtil.ToNullable<
-                            Extract<
-                                ColumnUtil.FromColumnMap<FromTableT["columns"]>,
-                                { name : ToTableT["primaryKey"][number] }
+                            ColumnUtil.ToSuperType<
+                                Extract<
+                                    ColumnUtil.FromColumnMap<FromTableT["columns"]>,
+                                    { name : ToTableT["primaryKey"][number] }
+                                >
                             >
                         >,
                         string
@@ -64,9 +66,11 @@ export type AssertValidJoinPkImpl<
                     ColumnUtil.ToInterface<
                         ColumnUtil.WithTableAlias<
                             ColumnUtil.ToNullable<
-                                Extract<
-                                    ColumnUtil.FromColumnMap<FromTableT["columns"]>,
-                                    { name : ToTableT["primaryKey"][number] }
+                                ColumnUtil.ToSuperType<
+                                    Extract<
+                                        ColumnUtil.FromColumnMap<FromTableT["columns"]>,
+                                        { name : ToTableT["primaryKey"][number] }
+                                    >
                                 >
                             >,
                             string
