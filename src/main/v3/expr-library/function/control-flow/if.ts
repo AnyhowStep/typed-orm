@@ -51,6 +51,6 @@ function If<
             ]
         )
     );
-    return result;
+    return result as any;
 }
 export {If as if};

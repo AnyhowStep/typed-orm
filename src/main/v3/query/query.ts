@@ -1787,7 +1787,7 @@ export function selectExpr<
     >
 ) {
     return QueryUtil.newInstance()
-        .selectExpr(delegate);
+        .selectExpr<SelectDelegateT>(delegate);
 }
 export function requireParentJoins<
     ArrT extends NonEmptyTuple<IAliasedTable>

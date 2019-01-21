@@ -139,7 +139,8 @@ export function orderBy<
         ColumnRefUtil.toConvenient(queryRef),
         query
     );
-    const orders = OrderUtil.Array.fromRawOrderArray(rawOrders);
+    //TODO-UNHACK This was fine in TS 3.3.0-dev.20190103
+    const orders = OrderUtil.Array.fromRawOrderArray(rawOrders as any);
 
     for (let order of orders) {
         const orderExpr = order[0];

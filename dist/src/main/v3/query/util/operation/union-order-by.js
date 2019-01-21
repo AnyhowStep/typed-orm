@@ -19,6 +19,7 @@ function unionOrderBy(query, delegate) {
     }
     const queryRef = column_ref_1.ColumnRefUtil.fromQuerySelects(query);
     const rawOrders = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef), query);
+    //TODO-UNHACK This was fine in TS 3.3.0-dev.20190103
     const orders = order_1.OrderUtil.Array.fromRawOrderArray(rawOrders);
     for (let order of orders) {
         const orderExpr = order[0];
