@@ -13,7 +13,7 @@ export type LatestOrderOfEntityOrNull<
     ExprUtil.As<
         IExpr<{
             usedRef : ColumnRefUtil.FromColumnArray<
-                ColumnUtil.FromColumnMap<LogT["table"]["columns"]>[]
+                ColumnUtil.FromColumnMap<LogT["entity"]["columns"]>[]
             >,
             assertDelegate : sd.AssertDelegate<
                 ReturnType<
