@@ -65,6 +65,15 @@ tape(__filename, async (t) => {
             .setTrackedDefaults({
                 enabled : true,
             });
+        await businessEnabledLog.fetchLatestValueOrDefault(
+            connection,
+            { businessId : 1n },
+            c => c.enabled
+        ).then(() => {
+            t.fail("Should throw");
+        }).catch((err) => {
+            t.pass(err.message);
+        });
         const insertResult = await o.insertInto(business)
             .values({
                 appId : 9001n
@@ -85,6 +94,13 @@ tape(__filename, async (t) => {
                 businessId : 1n,
             }
         );
+        await businessEnabledLog.fetchLatestValueOrDefault(
+            connection,
+            { businessId : 1n },
+            c => c.enabled
+        ).then((enabled) => {
+            t.true(enabled);
+        });
         const result = await businessEnabledLog.track(
             connection,
             { businessId : 1n },
@@ -97,6 +113,13 @@ tape(__filename, async (t) => {
                 row : undefined,
             }
         );
+        await businessEnabledLog.fetchLatestValueOrDefault(
+            connection,
+            { businessId : 1n },
+            c => c.enabled
+        ).then((enabled) => {
+            t.true(enabled);
+        });
         const result2 = await businessEnabledLog.track(
             connection,
             { businessId : 1n },
@@ -109,6 +132,13 @@ tape(__filename, async (t) => {
                 row : undefined,
             }
         );
+        await businessEnabledLog.fetchLatestValueOrDefault(
+            connection,
+            { businessId : 1n },
+            c => c.enabled
+        ).then((enabled) => {
+            t.true(enabled);
+        });
         const result3 = await businessEnabledLog.track(
             connection,
             { businessId : 1n },
@@ -128,59 +158,13 @@ tape(__filename, async (t) => {
                 }
             }
         );
-    });
-
-    t.end();
-});
-
-tape(__filename, (t) => {
-    const business = o.table("business")
-        .addColumns({
-            appId : o.bigintUnsigned(),
-            businessId : o.bigintUnsigned(),
-        })
-        .setAutoIncrement(c => c.businessId);
-    const businessEnabled = o.table("businessEnabled")
-        .addColumns({
-            appId : o.bigintUnsigned(),
-            businessEnabledId : o.bigintUnsigned(),
-            businessId : o.bigintUnsigned(),
-            enabled : o.boolean(),
-            updatedAt : o.dateTime(),
-            updatedByExternalUserId : o.varChar(255),
-        })
-        .setAutoIncrement(c => c.businessEnabledId)
-        .addCandidateKey(c => [c.businessId, c.updatedAt])
-        .addHasExplicitDefaultValue(c => [c.updatedAt]);
-    const businessEnabledLog = o.log(businessEnabled)
-        .setEntity(business)
-        .setEntityIdentifier(c => [c.businessId])
-        .setLatestOrder(c => c.updatedAt.desc())
-        .setTracked(c => [c.enabled])
-        .setDoNotCopy(c => [
-            c.updatedByExternalUserId
-        ])
-        .setCopyDefaultsDelegate(({entityIdentifier, connection}) => {
-            return business.fetchOneByCk(
-                connection,
-                entityIdentifier,
-                c => [c.appId]
-            );
-        })
-        .setTrackedDefaults({
-            enabled : true,
+        await businessEnabledLog.fetchLatestValueOrDefault(
+            connection,
+            { businessId : 1n },
+            c => c.enabled
+        ).then((enabled) => {
+            t.false(enabled);
         });
-
-    t.throws(() => {
-        o.TrackRowUtil.toInsertRowLiteral(
-            businessEnabledLog,
-            {} as any,
-            {
-                appId : 1n,
-                businessId : 1n,
-                enabled : true,
-            }
-        );
     });
 
     t.end();
