@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 import {RawExpr} from "../../../../../../../raw-expr";
-import {NonNullPrimitiveExpr} from "../../../../../../../primitive-expr";
+import {NonNullPrimitiveExpr, PrimitiveExprUtil} from "../../../../../../../primitive-expr";
 import {RawExprUtil} from "../../../../../../../raw-expr";
 import {ColumnRefUtil} from "../../../../../../../column-ref";
 import {ICaseValue, CaseValue} from "../../case-value";
@@ -24,7 +24,25 @@ export type When<
         result : (
             BuilderT["result"] extends sd.AssertDelegate<any> ?
             BuilderT["result"] :
-            sd.AssertDelegate<RawExprUtil.TypeOf<ThenT>>
+            sd.AssertDelegate<
+                /*
+                    We use ToSuperType<> so that the following works,
+
+                    case()
+                        .when(condition, 0n)
+                        .when(condition, bigint)
+
+                    Without ToSuperType<>,
+
+                    case()
+                        .when(condition, 0n)
+                        //Error, bigint not assignable to 0n
+                        .when(condition, bigint)
+                */
+                PrimitiveExprUtil.ToSuperType<
+                    RawExprUtil.TypeOf<ThenT>
+                >
+            >
         ),
     }>
 );
