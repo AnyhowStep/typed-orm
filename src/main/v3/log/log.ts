@@ -512,7 +512,7 @@ export class Log<DataT extends LogData> implements ILog<DataT> {
         return LogUtil.latestOrderOfEntityOrNull(this);
     }
     latestValueOfEntityOrNull<
-        DelegateT extends LogUtil.LatestValueDelegate<
+        DelegateT extends LogUtil.LatestValueOrNullDelegate<
             Extract<this, LogNoTrackedDefaults>
         >
     > (

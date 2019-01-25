@@ -13,4 +13,5 @@ export * from "./fetch-latest-value-or-default";
 export * from "./fetch-latest-value-or-error";
 export * from "./fetch-latest-value-or-undefined";
 export * from "./latest-value-delegate";
+export * from "./latest-value-or-null-delegate";
 //# sourceMappingURL=index.d.ts.map

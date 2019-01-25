@@ -8,11 +8,11 @@ import {ExprUtil, IExpr} from "../../../../expr";
 import {ColumnRefUtil} from "../../../../column-ref";
 import {ColumnUtil} from "../../../../column";
 import {ALIASED} from "../../../../constants";
-import {LatestValueDelegate} from "../latest-value-delegate";
+import {LatestValueOrNullDelegate} from "../latest-value-or-null-delegate";
 
 export type LatestValueOfEntityOrNull<
     LogT extends LogNoTrackedDefaults,
-    DelegateT extends LatestValueDelegate<LogT>
+    DelegateT extends LatestValueOrNullDelegate<LogT>
 > = (
     ExprUtil.As<
         IExpr<{
@@ -34,7 +34,7 @@ export type LatestValueOfEntityOrNull<
 );
 export function latestValueOfEntityOrNull<
     LogT extends LogNoTrackedDefaults,
-    DelegateT extends LatestValueDelegate<LogT>
+    DelegateT extends LatestValueOrNullDelegate<LogT>
 > (
     log : LogT,
     delegate : DelegateT
@@ -43,7 +43,10 @@ export function latestValueOfEntityOrNull<
 ) {
     const columns = ColumnMapUtil.pick(
         log.table.columns,
-        log.tracked
+        [
+            ...log.tracked,
+            ...log.doNotCopy,
+        ]
     );
     const column = delegate(columns);
     ColumnIdentifierMapUtil.assertHasColumnIdentifier(columns, column);
