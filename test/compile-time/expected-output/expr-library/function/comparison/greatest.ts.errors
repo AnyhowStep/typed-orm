@@ -8,11 +8,11 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to parameter of type 'number | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<number>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<number>; }> | (QueryData & ... 2 more ... & IQuery<...>) | IExprSelectItem<...>'.",
+      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<boolean>; }>' is not assignable to parameter of type 'number | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<number>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<number>; }> | (QueryData & ... 2 more ... & IQuery<...>) | IExprSelectItem<...>'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to type 'IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<number>; }>'.",
+        "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<boolean>; }>' is not assignable to type 'IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<number>; }>'.",
         "category": 1,
         "code": 2322,
         "next": {
@@ -20,7 +20,7 @@
           "category": 1,
           "code": 2326,
           "next": {
-            "messageText": "Type 'AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }' is not assignable to type 'AssertDelegate<number>'.",
+            "messageText": "Type 'AssertDelegate<boolean>' is not assignable to type 'AssertDelegate<number>'.",
             "category": 1,
             "code": 2322,
             "next": {

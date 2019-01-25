@@ -6,26 +6,17 @@ export declare const appPlatform: o.Table<{
         readonly appId: o.Column<{
             tableAlias: "appPlatform";
             name: "appId";
-            assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                __accepts: bigint;
-                __canAccept: string | number | bigint;
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
         }>;
         readonly platformId: o.Column<{
             tableAlias: "appPlatform";
             name: "platformId";
-            assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                __accepts: bigint;
-                __canAccept: string | number | bigint;
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
         }>;
         readonly createdAt: o.Column<{
             tableAlias: "appPlatform";
             name: "createdAt";
-            assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                __accepts: Date;
-                __canAccept: Date;
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<Date>;
         }>;
     };
     readonly autoIncrement: undefined;
@@ -51,26 +42,17 @@ export declare const q: o.Query<{
                 readonly appId: o.Column<{
                     tableAlias: "appPlatform";
                     name: "appId";
-                    assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                        __accepts: bigint;
-                        __canAccept: string | number | bigint;
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
                 }>;
                 readonly platformId: o.Column<{
                     tableAlias: "appPlatform";
                     name: "platformId";
-                    assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                        __accepts: bigint;
-                        __canAccept: string | number | bigint;
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
                 }>;
                 readonly createdAt: o.Column<{
                     tableAlias: "appPlatform";
                     name: "createdAt";
-                    assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                        __accepts: Date;
-                        __canAccept: Date;
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<Date>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -89,26 +71,17 @@ export declare const q: o.Query<{
             readonly appId: o.Column<{
                 tableAlias: "appPlatform";
                 name: "appId";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                    __accepts: bigint;
-                    __canAccept: string | number | bigint;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
             }>;
             readonly platformId: o.Column<{
                 tableAlias: "appPlatform";
                 name: "platformId";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                    __accepts: bigint;
-                    __canAccept: string | number | bigint;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
             }>;
             readonly createdAt: o.Column<{
                 tableAlias: "appPlatform";
                 name: "createdAt";
-                assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                    __accepts: Date;
-                    __canAccept: Date;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<Date>;
             }>;
         };
         nullable: false;
@@ -118,26 +91,17 @@ export declare const q: o.Query<{
         readonly appId: o.Column<{
             tableAlias: "appPlatform";
             name: "appId";
-            assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                __accepts: bigint;
-                __canAccept: string | number | bigint;
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
         }>;
         readonly platformId: o.Column<{
             tableAlias: "appPlatform";
             name: "platformId";
-            assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                __accepts: bigint;
-                __canAccept: string | number | bigint;
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
         }>;
         readonly createdAt: o.Column<{
             tableAlias: "appPlatform";
             name: "createdAt";
-            assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                __accepts: Date;
-                __canAccept: Date;
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<Date>;
         }>;
     }];
     readonly _where: undefined;

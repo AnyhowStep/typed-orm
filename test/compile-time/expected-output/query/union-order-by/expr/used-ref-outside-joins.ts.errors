@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; } & { ...; }) => [...]' is not assignable to parameter of type '((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; } & { ...; }) => [...]) & [...]'.",
+      "messageText": "Argument of type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; } & { ...; }) => [...]' is not assignable to parameter of type '((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; } & { ...; }) => [...]) & [...]'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; } & { ...; }) => [...]' is missing the following properties from type '[\"Invalid IExpr\", \"0\", Column<{ tableAlias: \"table2\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>]': 0, 1, 2, pop, and 30 more.",
+        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; } & { ...; }) => [...]' is missing the following properties from type '[\"Invalid IExpr\", \"0\", Column<{ tableAlias: \"table2\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>]': 0, 1, 2, pop, and 30 more.",
         "category": 1,
         "code": 2740
       }

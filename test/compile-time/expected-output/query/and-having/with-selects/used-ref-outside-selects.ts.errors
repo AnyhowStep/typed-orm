@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => Expr<...>' is not assignable to parameter of type '((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => Expr<...>) & [...]'.",
+      "messageText": "Argument of type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => Expr<...>' is not assignable to parameter of type '((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => Expr<...>) & [...]'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => Expr<...>' is missing the following properties from type '[\"HAVING expression contains some invalid columns; the following are not allowed:\", Column<{ readonly tableAlias: \"table\"; readonly name: \"test\"; readonly assertDelegate: AssertDelegate<string> & { ...; }; }>]': 0, 1, pop, push, and 29 more.",
+        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => Expr<...>' is missing the following properties from type '[\"HAVING expression contains some invalid columns; the following are not allowed:\", Column<{ readonly tableAlias: \"table\"; readonly name: \"test\"; readonly assertDelegate: AssertDelegate<string>; }>]': 0, 1, pop, push, and 29 more.",
         "category": 1,
         "code": 2740
       }

@@ -4,9 +4,9 @@ export declare type FromFieldArray<TableAliasT extends string, FieldsT extends s
     readonly [columnName in FieldsT[number]["name"]]: (Column<{
         tableAlias: TableAliasT;
         name: columnName;
-        assertDelegate: Extract<FieldsT[number], {
+        assertDelegate: sd.AssertDelegate<sd.TypeOf<Extract<FieldsT[number], {
             name: columnName;
-        }>["assertDelegate"];
+        }>["assertDelegate"]>>;
     }>);
 });
 export declare function fromFieldArray<TableAliasT extends string, FieldsT extends sd.AnyField[]>(tableAlias: TableAliasT, fields: FieldsT): (FromFieldArray<TableAliasT, FieldsT>);

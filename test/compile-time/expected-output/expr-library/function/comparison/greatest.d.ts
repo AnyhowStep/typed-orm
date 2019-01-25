@@ -6,10 +6,7 @@ export declare const expr1: o.Expr<{
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
     } & {
@@ -17,10 +14,7 @@ export declare const expr1: o.Expr<{
             readonly y: o.Column<{
                 tableAlias: "table";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
     } & {
@@ -28,10 +22,7 @@ export declare const expr1: o.Expr<{
             readonly z: o.Column<{
                 tableAlias: "table";
                 name: "z";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
     };
@@ -43,10 +34,7 @@ export declare const expr2: o.Expr<{
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
     } & {
@@ -54,10 +42,7 @@ export declare const expr2: o.Expr<{
             readonly y: o.Column<{
                 tableAlias: "table";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
     } & {
@@ -65,10 +50,7 @@ export declare const expr2: o.Expr<{
             readonly z: o.Column<{
                 tableAlias: "table";
                 name: "z";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
     };
@@ -85,10 +67,7 @@ export declare const expr5: o.Expr<{
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
     } & {
@@ -96,10 +75,7 @@ export declare const expr5: o.Expr<{
             readonly y: o.Column<{
                 tableAlias: "table";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
     };

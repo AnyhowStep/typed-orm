@@ -3,19 +3,13 @@ import * as o from "../../../../dist/src/main";
 export declare const column: o.Column<{
     readonly tableAlias: "tableAlias";
     readonly name: "name";
-    readonly assertDelegate: sd.AssertDelegate<number> & {
-        __accepts: number;
-        __canAccept: number;
-    };
+    readonly assertDelegate: sd.AssertDelegate<number>;
 }>;
 export declare const columnMap: {
     readonly name: o.Column<{
         readonly tableAlias: "tableAlias";
         readonly name: "name";
-        readonly assertDelegate: sd.AssertDelegate<number> & {
-            __accepts: number;
-            __canAccept: number;
-        };
+        readonly assertDelegate: sd.AssertDelegate<number>;
     }>;
 };
 export declare const untypedColumn: o.IColumn;

@@ -1,6 +1,6 @@
 [
   {
-    "messageText": "The 'this' context of type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly y: Column<...>; read...' is not assignable to method's 'this' of type 'never'.",
+    "messageText": "The 'this' context of type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<...>; }>; readonly y: Column<...>; readonly z: Col...' is not assignable to method's 'this' of type 'never'.",
     "code": 2684,
     "category": 1,
     "length": 13,

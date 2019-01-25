@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Type 'Column<{ tableAlias: \"table2\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to type 'IExpr<ExprData> | [IExpr<ExprData>, SortDirection] | Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }> | Column<...> | Column<...> | [...]'.",
+      "messageText": "Type 'Column<{ tableAlias: \"table2\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>' is not assignable to type 'IExpr<ExprData> | [IExpr<ExprData>, SortDirection] | Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }> | Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...>; }> | Column<...> | [...]'.",
       "category": 1,
       "code": 2322,
       "next": {
-        "messageText": "Type 'Column<{ tableAlias: \"table2\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>' is not assignable to type 'Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>'.",
+        "messageText": "Type 'Column<{ tableAlias: \"table2\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>' is not assignable to type 'Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>'.",
         "category": 1,
         "code": 2322,
         "next": {

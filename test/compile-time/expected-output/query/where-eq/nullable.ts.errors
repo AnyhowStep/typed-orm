@@ -1,7 +1,7 @@
 [
   {
     "messageText": {
-      "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string | null> & { __accepts: string | null; __canAccept: string | null; }; }>' is not assignable to type 'Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>'.",
+      "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string | null>; }>' is not assignable to type 'Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>'.",
       "category": 1,
       "code": 2322,
       "next": {

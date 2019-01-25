@@ -4,10 +4,7 @@ export declare const columnMap: {
     readonly x: o.Column<{
         tableAlias: "someTable";
         name: "x";
-        assertDelegate: sd.AssertDelegate<number> & {
-            __accepts: number;
-            __canAccept: number;
-        };
+        assertDelegate: sd.AssertDelegate<number>;
     }>;
 };
 declare type HasColumn<DataT extends o.ColumnData> = o.ColumnMapUtil.HasColumn<typeof columnMap, o.IColumn<DataT>>;

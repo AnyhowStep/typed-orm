@@ -11,26 +11,17 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "table";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
                 readonly y: o.Column<{
                     tableAlias: "table";
                     name: "y";
-                    assertDelegate: sd.AssertDelegate<string | null> & {
-                        __accepts: string | null;
-                        __canAccept: string | null;
-                    };
+                    assertDelegate: sd.AssertDelegate<string | null>;
                 }>;
                 readonly z: o.Column<{
                     tableAlias: "table";
                     name: "z";
-                    assertDelegate: sd.AssertDelegate<boolean | null> & {
-                        __accepts: boolean | null;
-                        __canAccept: boolean | null;
-                    };
+                    assertDelegate: sd.AssertDelegate<boolean | null>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -49,10 +40,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
             readonly y: o.Column<{
                 tableAlias: "table";
@@ -62,10 +50,7 @@ export declare const query: o.Query<{
             readonly z: o.Column<{
                 tableAlias: "table";
                 name: "z";
-                assertDelegate: sd.AssertDelegate<boolean | null> & {
-                    __accepts: boolean | null;
-                    __canAccept: boolean | null;
-                };
+                assertDelegate: sd.AssertDelegate<boolean | null>;
             }>;
         };
         readonly nullable: false;

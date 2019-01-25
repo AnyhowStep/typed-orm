@@ -35,6 +35,6 @@ export declare class Column<DataT extends ColumnData> implements IColumn<DataT> 
 export declare function column<TableAliasT extends string, NameT extends string, AssertFuncT extends sd.AnyAssertFunc>(tableAlias: TableAliasT, name: NameT, assertFunc: AssertFuncT): Column<{
     readonly tableAlias: TableAliasT;
     readonly name: NameT;
-    readonly assertDelegate: sd.ToAssertDelegate<AssertFuncT>;
+    readonly assertDelegate: sd.AssertDelegate<sd.TypeOf<AssertFuncT>>;
 }>;
 //# sourceMappingURL=column.d.ts.map

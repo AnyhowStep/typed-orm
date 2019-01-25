@@ -5,7 +5,7 @@ export declare type FromAssertMap<TableAliasT extends string, AssertMapT extends
     readonly [columnName in Extract<keyof AssertMapT, string>]: (Column<{
         tableAlias: TableAliasT;
         name: columnName;
-        assertDelegate: sd.ToAssertDelegate<AssertMapT[columnName]>;
+        assertDelegate: sd.AssertDelegate<sd.TypeOf<AssertMapT[columnName]>>;
     }>);
 });
 export declare function fromAssertMap<TableAliasT extends string, AssertMapT extends {

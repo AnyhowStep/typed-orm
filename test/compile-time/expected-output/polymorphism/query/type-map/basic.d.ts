@@ -6,26 +6,17 @@ export declare const parent: o.Table<{
         readonly x: o.Column<{
             tableAlias: "parent";
             name: "x";
-            assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                __accepts: string | number | bigint;
-                __canAccept: string | number | bigint;
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
         }>;
         readonly y: o.Column<{
             tableAlias: "parent";
             name: "y";
-            assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                __accepts: Date;
-                __canAccept: Date;
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<Date>;
         }>;
         readonly z: o.Column<{
             tableAlias: "parent";
             name: "z";
-            assertDelegate: import("schema-decorator").AssertDelegate<boolean> & {
-                __accepts: boolean | 0 | 1 | "0" | "1";
-                __canAccept: boolean | 0 | 1 | "0" | "1";
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
         }>;
     };
     readonly autoIncrement: undefined;
@@ -43,26 +34,17 @@ export declare const parent: o.Table<{
             readonly x: o.Column<{
                 tableAlias: "parent2";
                 name: "x";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                    __accepts: string | number | bigint;
-                    __canAccept: string | number | bigint;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
             }>;
             readonly y: o.Column<{
                 tableAlias: "parent2";
                 name: "y";
-                assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                    __accepts: Date;
-                    __canAccept: Date;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<Date>;
             }>;
             readonly w: o.Column<{
                 tableAlias: "parent2";
                 name: "w";
-                assertDelegate: import("schema-decorator").AssertDelegate<true> & {
-                    __accepts: true;
-                    __canAccept: true;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<true>;
             }>;
         };
         readonly autoIncrement: undefined;
@@ -87,34 +69,22 @@ export declare const t2: o.Table<{
         readonly x: o.Column<{
             tableAlias: "table";
             name: "x";
-            assertDelegate: import("schema-decorator").AssertDelegate<3n> & {
-                __accepts: 3n;
-                __canAccept: 3n;
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<3n>;
         }>;
         readonly y: o.Column<{
             tableAlias: "table";
             name: "y";
-            assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                __accepts: Date;
-                __canAccept: Date;
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<Date>;
         }>;
         readonly z: o.Column<{
             tableAlias: "table";
             name: "z";
-            assertDelegate: import("schema-decorator").AssertDelegate<boolean> & {
-                __accepts: boolean | 0 | 1 | "0" | "1";
-                __canAccept: boolean | 0 | 1 | "0" | "1";
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
         }>;
         readonly w: o.Column<{
             tableAlias: "table";
             name: "w";
-            assertDelegate: import("schema-decorator").AssertDelegate<boolean> & {
-                __accepts: boolean | 0 | 1 | "0" | "1";
-                __canAccept: boolean | 0 | 1 | "0" | "1";
-            };
+            assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
         }>;
     };
     readonly autoIncrement: undefined;
@@ -132,26 +102,17 @@ export declare const t2: o.Table<{
             readonly x: o.Column<{
                 tableAlias: "parent2";
                 name: "x";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                    __accepts: string | number | bigint;
-                    __canAccept: string | number | bigint;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
             }>;
             readonly y: o.Column<{
                 tableAlias: "parent2";
                 name: "y";
-                assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                    __accepts: Date;
-                    __canAccept: Date;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<Date>;
             }>;
             readonly w: o.Column<{
                 tableAlias: "parent2";
                 name: "w";
-                assertDelegate: import("schema-decorator").AssertDelegate<true> & {
-                    __accepts: true;
-                    __canAccept: true;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<true>;
             }>;
         };
         readonly autoIncrement: undefined;
@@ -172,26 +133,17 @@ export declare const t2: o.Table<{
             readonly x: o.Column<{
                 tableAlias: "parent";
                 name: "x";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                    __accepts: string | number | bigint;
-                    __canAccept: string | number | bigint;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
             }>;
             readonly y: o.Column<{
                 tableAlias: "parent";
                 name: "y";
-                assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                    __accepts: Date;
-                    __canAccept: Date;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<Date>;
             }>;
             readonly z: o.Column<{
                 tableAlias: "parent";
                 name: "z";
-                assertDelegate: import("schema-decorator").AssertDelegate<boolean> & {
-                    __accepts: boolean | 0 | 1 | "0" | "1";
-                    __canAccept: boolean | 0 | 1 | "0" | "1";
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
             }>;
         };
         readonly autoIncrement: undefined;
@@ -209,26 +161,17 @@ export declare const t2: o.Table<{
                 readonly x: o.Column<{
                     tableAlias: "parent2";
                     name: "x";
-                    assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                        __accepts: string | number | bigint;
-                        __canAccept: string | number | bigint;
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
                 }>;
                 readonly y: o.Column<{
                     tableAlias: "parent2";
                     name: "y";
-                    assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                        __accepts: Date;
-                        __canAccept: Date;
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<Date>;
                 }>;
                 readonly w: o.Column<{
                     tableAlias: "parent2";
                     name: "w";
-                    assertDelegate: import("schema-decorator").AssertDelegate<true> & {
-                        __accepts: true;
-                        __canAccept: true;
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<true>;
                 }>;
             };
             readonly autoIncrement: undefined;

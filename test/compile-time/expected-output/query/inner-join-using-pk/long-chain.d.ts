@@ -11,10 +11,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "table";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -33,10 +30,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -48,10 +42,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined1";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -70,10 +61,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined1";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -85,10 +73,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined2";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -107,10 +92,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined2";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -122,10 +104,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined3";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -144,10 +123,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined3";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -159,10 +135,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined4";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -181,10 +154,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined4";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -196,10 +166,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined5";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -218,10 +185,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined5";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -233,10 +197,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined6";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -255,10 +216,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined6";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -270,10 +228,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined7";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -292,10 +247,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined7";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -307,10 +259,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined8";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -329,10 +278,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined8";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -344,10 +290,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined9";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -366,10 +309,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined9";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -381,10 +321,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined10";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -403,10 +340,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined10";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -418,10 +352,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined11";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -440,10 +371,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined11";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -455,10 +383,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined12";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -477,10 +402,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined12";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -492,10 +414,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined13";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -514,10 +433,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined13";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -529,10 +445,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined14";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -551,10 +464,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined14";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -566,10 +476,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined15";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -588,10 +495,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined15";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -603,10 +507,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined16";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -625,10 +526,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined16";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -640,10 +538,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined17";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -662,10 +557,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined17";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -677,10 +569,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined18";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -699,10 +588,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined18";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -714,10 +600,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined19";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -736,10 +619,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined19";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;
@@ -751,10 +631,7 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "joined20";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number> & {
-                        __accepts: number;
-                        __canAccept: number;
-                    };
+                    assertDelegate: sd.AssertDelegate<number>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -773,10 +650,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "joined20";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
         nullable: false;

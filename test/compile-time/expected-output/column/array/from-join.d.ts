@@ -4,24 +4,15 @@ import * as o from "../../../../../dist/src/main";
 export declare const fromJoin: (o.Column<{
     tableAlias: "someTable";
     name: "x";
-    assertDelegate: sd.AssertDelegate<number> & {
-        __accepts: number;
-        __canAccept: number;
-    };
+    assertDelegate: sd.AssertDelegate<number>;
 }> | o.Column<{
     tableAlias: "someTable";
     name: "y";
-    assertDelegate: sd.AssertDelegate<Date> & {
-        __accepts: Date;
-        __canAccept: string | number | Date;
-    };
+    assertDelegate: sd.AssertDelegate<Date>;
 }> | o.Column<{
     tableAlias: "someTable";
     name: "z";
-    assertDelegate: sd.AssertDelegate<Buffer> & {
-        __accepts: Buffer;
-        __canAccept: Buffer;
-    };
+    assertDelegate: sd.AssertDelegate<Buffer>;
 }>)[];
 export declare const fromNullableJoin: (o.Column<{
     readonly tableAlias: "someTable";

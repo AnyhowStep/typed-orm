@@ -5,26 +5,17 @@ export declare const columnMap: {
     readonly x: o.Column<{
         tableAlias: "someTable";
         name: "x";
-        assertDelegate: sd.AssertDelegate<number> & {
-            __accepts: number;
-            __canAccept: number;
-        };
+        assertDelegate: sd.AssertDelegate<number>;
     }>;
     readonly y: o.Column<{
         tableAlias: "someTable";
         name: "y";
-        assertDelegate: sd.AssertDelegate<Date> & {
-            __accepts: Date;
-            __canAccept: string | number | Date;
-        };
+        assertDelegate: sd.AssertDelegate<Date>;
     }>;
     readonly z: o.Column<{
         tableAlias: "someTable";
         name: "z";
-        assertDelegate: sd.AssertDelegate<Buffer> & {
-            __accepts: Buffer;
-            __canAccept: Buffer;
-        };
+        assertDelegate: sd.AssertDelegate<Buffer>;
     }>;
 };
 export declare const columnMapHasOneColumn: false;
@@ -36,10 +27,7 @@ export declare const unitColumnMap: {
     readonly a: o.Column<{
         tableAlias: "someTable";
         name: "a";
-        assertDelegate: sd.AssertDelegate<string> & {
-            __accepts: string;
-            __canAccept: string;
-        };
+        assertDelegate: sd.AssertDelegate<string>;
     }>;
 };
 export declare const unitColumnMapHasOneColumn: false;

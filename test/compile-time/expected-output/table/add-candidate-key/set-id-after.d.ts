@@ -8,42 +8,27 @@ export declare const i: o.Table<{
         readonly a: o.Column<{
             tableAlias: "joined1";
             name: "a";
-            assertDelegate: sd.AssertDelegate<Date> & {
-                __accepts: Date;
-                __canAccept: string | number | Date;
-            };
+            assertDelegate: sd.AssertDelegate<Date>;
         }>;
         readonly b: o.Column<{
             tableAlias: "joined1";
             name: "b";
-            assertDelegate: sd.AssertDelegate<Buffer> & {
-                __accepts: Buffer;
-                __canAccept: Buffer;
-            };
+            assertDelegate: sd.AssertDelegate<Buffer>;
         }>;
         readonly y: o.Column<{
             tableAlias: "joined1";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
+            assertDelegate: sd.AssertDelegate<string>;
         }>;
         readonly c: o.Column<{
             tableAlias: "joined1";
             name: "c";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
+            assertDelegate: sd.AssertDelegate<string>;
         }>;
         readonly d: o.Column<{
             tableAlias: "joined1";
             name: "d";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
+            assertDelegate: sd.AssertDelegate<string>;
         }>;
     };
     readonly autoIncrement: undefined;

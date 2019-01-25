@@ -13,13 +13,13 @@ import {IColumn, Column} from "../../column";
 */
 export type WithType<
     ColumnT extends IColumn,
-    NewAssertDelegateT extends sd.AnyAssertFunc
+    NewAssertFuncT extends sd.AnyAssertFunc
 > = (
     ColumnT extends IColumn ?
     Column<{
         readonly tableAlias : ColumnT["tableAlias"],
         readonly name : ColumnT["name"],
-        readonly assertDelegate : sd.ToAssertDelegate<NewAssertDelegateT>,
+        readonly assertDelegate : sd.AssertDelegate<sd.TypeOf<NewAssertFuncT>>,
     }> :
     never
 );
@@ -40,7 +40,7 @@ export function withType<
         {
             tableAlias,
             name,
-            assertDelegate : sd.toAssertDelegate(newAssertFunc),
+            assertDelegate : sd.toAssertDelegate(newAssertFunc) as sd.AssertDelegate<sd.TypeOf<NewAssertFuncT>>,
         },
         __isFromExprSelectItem
     ) as WithType<ColumnT, NewAssertFuncT>;

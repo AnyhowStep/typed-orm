@@ -7,10 +7,7 @@ export declare const selectItem: o.IAliasedTable<{
         readonly x: o.Column<{
             readonly tableAlias: "test";
             readonly name: "x";
-            readonly assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
+            readonly assertDelegate: sd.AssertDelegate<number>;
         }>;
     };
 }> & {
@@ -29,10 +26,7 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 readonly tableAlias: "test";
                 readonly name: "x";
-                readonly assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                readonly assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
     }> & {

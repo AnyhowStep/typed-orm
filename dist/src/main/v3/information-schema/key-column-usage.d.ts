@@ -7,98 +7,62 @@ declare const x: {
             readonly TABLE_CATALOG: import("..").Column<{
                 tableAlias: "KEY_COLUMN_USAGE";
                 name: "TABLE_CATALOG";
-                assertDelegate: sd.AssertDelegate<string> & {
-                    __accepts: string;
-                    __canAccept: string;
-                };
+                assertDelegate: sd.AssertDelegate<string>;
             }>;
             readonly TABLE_SCHEMA: import("..").Column<{
                 tableAlias: "KEY_COLUMN_USAGE";
                 name: "TABLE_SCHEMA";
-                assertDelegate: sd.AssertDelegate<string> & {
-                    __accepts: string;
-                    __canAccept: string;
-                };
+                assertDelegate: sd.AssertDelegate<string>;
             }>;
             readonly TABLE_NAME: import("..").Column<{
                 tableAlias: "KEY_COLUMN_USAGE";
                 name: "TABLE_NAME";
-                assertDelegate: sd.AssertDelegate<string> & {
-                    __accepts: string;
-                    __canAccept: string;
-                };
+                assertDelegate: sd.AssertDelegate<string>;
             }>;
             readonly COLUMN_NAME: import("..").Column<{
                 tableAlias: "KEY_COLUMN_USAGE";
                 name: "COLUMN_NAME";
-                assertDelegate: sd.AssertDelegate<string> & {
-                    __accepts: string;
-                    __canAccept: string;
-                };
+                assertDelegate: sd.AssertDelegate<string>;
             }>;
             readonly ORDINAL_POSITION: import("..").Column<{
                 tableAlias: "KEY_COLUMN_USAGE";
                 name: "ORDINAL_POSITION";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: string | number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
             readonly CONSTRAINT_CATALOG: import("..").Column<{
                 tableAlias: "KEY_COLUMN_USAGE";
                 name: "CONSTRAINT_CATALOG";
-                assertDelegate: sd.AssertDelegate<string> & {
-                    __accepts: string;
-                    __canAccept: string;
-                };
+                assertDelegate: sd.AssertDelegate<string>;
             }>;
             readonly CONSTRAINT_SCHEMA: import("..").Column<{
                 tableAlias: "KEY_COLUMN_USAGE";
                 name: "CONSTRAINT_SCHEMA";
-                assertDelegate: sd.AssertDelegate<string> & {
-                    __accepts: string;
-                    __canAccept: string;
-                };
+                assertDelegate: sd.AssertDelegate<string>;
             }>;
             readonly CONSTRAINT_NAME: import("..").Column<{
                 tableAlias: "KEY_COLUMN_USAGE";
                 name: "CONSTRAINT_NAME";
-                assertDelegate: sd.AssertDelegate<string> & {
-                    __accepts: string;
-                    __canAccept: string;
-                };
+                assertDelegate: sd.AssertDelegate<string>;
             }>;
             readonly POSITION_IN_UNIQUE_CONSTRAINT: import("..").Column<{
                 tableAlias: "KEY_COLUMN_USAGE";
                 name: "POSITION_IN_UNIQUE_CONSTRAINT";
-                assertDelegate: sd.AssertDelegate<number | null> & {
-                    __accepts: number | null;
-                    __canAccept: string | number | null;
-                };
+                assertDelegate: sd.AssertDelegate<number | null>;
             }>;
             readonly REFERENCED_TABLE_SCHEMA: import("..").Column<{
                 tableAlias: "KEY_COLUMN_USAGE";
                 name: "REFERENCED_TABLE_SCHEMA";
-                assertDelegate: sd.AssertDelegate<string | null> & {
-                    __accepts: string | null;
-                    __canAccept: string | null;
-                };
+                assertDelegate: sd.AssertDelegate<string | null>;
             }>;
             readonly REFERENCED_TABLE_NAME: import("..").Column<{
                 tableAlias: "KEY_COLUMN_USAGE";
                 name: "REFERENCED_TABLE_NAME";
-                assertDelegate: sd.AssertDelegate<string | null> & {
-                    __accepts: string | null;
-                    __canAccept: string | null;
-                };
+                assertDelegate: sd.AssertDelegate<string | null>;
             }>;
             readonly REFERENCED_COLUMN_NAME: import("..").Column<{
                 tableAlias: "KEY_COLUMN_USAGE";
                 name: "REFERENCED_COLUMN_NAME";
-                assertDelegate: sd.AssertDelegate<string | null> & {
-                    __accepts: string | null;
-                    __canAccept: string | null;
-                };
+                assertDelegate: sd.AssertDelegate<string | null>;
             }>;
         };
         readonly autoIncrement: undefined;

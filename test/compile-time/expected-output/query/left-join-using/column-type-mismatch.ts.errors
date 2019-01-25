@@ -1,6 +1,6 @@
 [
   {
-    "messageText": "Property 'y' does not exist on type '{ readonly z: Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean> & { __accepts: boolean; __canAccept: boolean; }; }>; }'.",
+    "messageText": "Property 'y' does not exist on type '{ readonly z: Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>; }'.",
     "code": 2339,
     "category": 1,
     "length": 1,

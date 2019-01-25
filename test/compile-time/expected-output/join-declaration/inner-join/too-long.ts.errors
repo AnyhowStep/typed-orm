@@ -1,7 +1,7 @@
 [
   {
     "messageText": {
-      "messageText": "Type '[Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>, Column<{ tableAlias: \"joined1\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>, Column<...>]' is not assignable to type '[IColumn<{ tableAlias: \"joined1\"; name: \"a\" | \"b\" | \"y\"; assertDelegate: AssertDelegate<number | null>; }>, IColumn<{ tableAlias: \"joined1\"; name: \"a\" | \"b\" | \"y\"; assertDelegate: AssertDelegate<boolean | null>; }>]'.",
+      "messageText": "Type '[Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<number>; }>, Column<{ tableAlias: \"joined1\"; name: \"y\"; assertDelegate: AssertDelegate<boolean>; }>, Column<...>]' is not assignable to type '[IColumn<{ tableAlias: \"joined1\"; name: \"a\" | \"b\" | \"y\"; assertDelegate: AssertDelegate<number | null>; }>, IColumn<{ tableAlias: \"joined1\"; name: \"a\" | \"b\" | \"y\"; assertDelegate: AssertDelegate<boolean | null>; }>]'.",
       "category": 1,
       "code": 2322,
       "next": {

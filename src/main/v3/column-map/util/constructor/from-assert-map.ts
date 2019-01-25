@@ -13,7 +13,7 @@ export type FromAssertMap<
             Column<{
                 tableAlias : TableAliasT,
                 name : columnName,
-                assertDelegate : sd.ToAssertDelegate<AssertMapT[columnName]>
+                assertDelegate : sd.AssertDelegate<sd.TypeOf<AssertMapT[columnName]>>
             }>
         )
     }

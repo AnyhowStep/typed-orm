@@ -12,24 +12,15 @@ export declare const c: o.Column<{
 export declare const c2: o.Column<{
     readonly tableAlias: string;
     readonly name: string;
-    readonly assertDelegate: sd.AssertDelegate<Buffer> & {
-        __accepts: Buffer;
-        __canAccept: Buffer;
-    };
+    readonly assertDelegate: sd.AssertDelegate<Buffer>;
 }>;
 export declare const c3: o.Column<{
     readonly tableAlias: "tableAlias";
     readonly name: "columnName";
-    readonly assertDelegate: sd.AssertDelegate<string> & {
-        __accepts: string;
-        __canAccept: string;
-    };
+    readonly assertDelegate: sd.AssertDelegate<string>;
 }>;
 export declare const c4: o.Column<{
     readonly tableAlias: "tableAlias";
     readonly name: "columnName";
-    readonly assertDelegate: sd.AssertDelegate<Date> & {
-        __accepts: Date;
-        __canAccept: string | number | Date;
-    };
+    readonly assertDelegate: sd.AssertDelegate<Date>;
 }>;

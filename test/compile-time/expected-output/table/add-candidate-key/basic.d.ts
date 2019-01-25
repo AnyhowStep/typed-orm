@@ -7,34 +7,22 @@ export declare const table: o.Table<{
         readonly x: o.Column<{
             tableAlias: "table";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
+            assertDelegate: sd.AssertDelegate<number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "table";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
+            assertDelegate: sd.AssertDelegate<string>;
         }>;
         readonly z: o.Column<{
             tableAlias: "table";
             name: "z";
-            assertDelegate: sd.AssertDelegate<boolean> & {
-                __accepts: boolean;
-                __canAccept: boolean;
-            };
+            assertDelegate: sd.AssertDelegate<boolean>;
         }>;
         readonly w: o.Column<{
             tableAlias: "table";
             name: "w";
-            assertDelegate: sd.AssertDelegate<Date> & {
-                __accepts: Date;
-                __canAccept: string | number | Date;
-            };
+            assertDelegate: sd.AssertDelegate<Date>;
         }>;
     };
     readonly autoIncrement: undefined;
@@ -78,34 +66,22 @@ export declare const table2: o.Table<{
         readonly x: o.Column<{
             tableAlias: "table";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
+            assertDelegate: sd.AssertDelegate<number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "table";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
+            assertDelegate: sd.AssertDelegate<string>;
         }>;
         readonly z: o.Column<{
             tableAlias: "table";
             name: "z";
-            assertDelegate: sd.AssertDelegate<boolean> & {
-                __accepts: boolean;
-                __canAccept: boolean;
-            };
+            assertDelegate: sd.AssertDelegate<boolean>;
         }>;
         readonly w: o.Column<{
             tableAlias: "table";
             name: "w";
-            assertDelegate: sd.AssertDelegate<Date> & {
-                __accepts: Date;
-                __canAccept: string | number | Date;
-            };
+            assertDelegate: sd.AssertDelegate<Date>;
         }>;
     };
     readonly autoIncrement: undefined;

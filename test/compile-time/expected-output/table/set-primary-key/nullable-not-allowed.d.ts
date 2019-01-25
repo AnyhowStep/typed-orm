@@ -7,26 +7,17 @@ export declare const joined2: void | o.Table<{
         readonly a: o.Column<{
             tableAlias: "joined2";
             name: "a";
-            assertDelegate: sd.AssertDelegate<Date> & {
-                __accepts: Date;
-                __canAccept: string | number | Date;
-            };
+            assertDelegate: sd.AssertDelegate<Date>;
         }>;
         readonly b: o.Column<{
             tableAlias: "joined2";
             name: "b";
-            assertDelegate: sd.AssertDelegate<number | null> & {
-                __accepts: number | null;
-                __canAccept: number | null;
-            };
+            assertDelegate: sd.AssertDelegate<number | null>;
         }>;
         readonly y: o.Column<{
             tableAlias: "joined2";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
+            assertDelegate: sd.AssertDelegate<string>;
         }>;
     };
     readonly autoIncrement: undefined;

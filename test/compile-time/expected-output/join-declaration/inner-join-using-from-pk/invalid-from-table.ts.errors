@@ -5,7 +5,7 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'JoinDeclaration<{ readonly fromTable: Table<{ readonly usedRef: {}; readonly alias: \"joined2\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined2\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | ... 1 more ... | Date; }; }>; readonly b: Column<...>; readonly y: ...' is missing the following properties from type '[\"Invalid fromTable;\", \"joined2\", \"is not in joins\"]': 0, 1, 2, length, and 31 more.",
+        "messageText": "Type 'JoinDeclaration<{ readonly fromTable: Table<{ readonly usedRef: {}; readonly alias: \"joined2\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined2\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined2\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly ...' is missing the following properties from type '[\"Invalid fromTable;\", \"joined2\", \"is not in joins\"]': 0, 1, 2, length, and 31 more.",
         "category": 1,
         "code": 2740
       }

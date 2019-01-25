@@ -18,7 +18,9 @@ export type FromFieldArray<
             Column<{
                 tableAlias : TableAliasT,
                 name : columnName,
-                assertDelegate : Extract<FieldsT[number], { name : columnName }>["assertDelegate"]
+                assertDelegate : sd.AssertDelegate<sd.TypeOf<
+                    Extract<FieldsT[number], { name : columnName }>["assertDelegate"]
+                >>
             }>
         )
     }

@@ -7,18 +7,12 @@ export declare const t: o.Table<{
         readonly x: o.Column<{
             tableAlias: "name";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
+            assertDelegate: sd.AssertDelegate<number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "name";
             name: "y";
-            assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
+            assertDelegate: sd.AssertDelegate<number>;
         }>;
     };
     readonly autoIncrement: undefined;
@@ -41,18 +35,12 @@ export declare const t3: o.Table<{
         readonly x: o.Column<{
             tableAlias: "232";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
+            assertDelegate: sd.AssertDelegate<number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "232";
             name: "y";
-            assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
+            assertDelegate: sd.AssertDelegate<number>;
         }>;
     };
     readonly autoIncrement: "x";

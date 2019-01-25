@@ -7,26 +7,17 @@ export declare const parent: o.Table<{
         readonly x: o.Column<{
             tableAlias: "parent";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
+            assertDelegate: sd.AssertDelegate<number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "parent";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
+            assertDelegate: sd.AssertDelegate<string>;
         }>;
         readonly z: o.Column<{
             tableAlias: "parent";
             name: "z";
-            assertDelegate: sd.AssertDelegate<boolean> & {
-                __accepts: boolean;
-                __canAccept: boolean;
-            };
+            assertDelegate: sd.AssertDelegate<boolean>;
         }>;
     };
     readonly autoIncrement: undefined;

@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '(c: { readonly table: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }; readonly joined1:...' is not assignable to parameter of type '((c: { readonly table: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }; readonly joined1...'.",
+      "messageText": "Argument of type '(c: { readonly table: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }; readonly joined1: { ...; }; }) => [...]' is not assignable to parameter of type '((c: { readonly table: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }; readonly joined1: { ...; }; }) => [...]) & [...]'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly table: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }; readonly joined1:...' is missing the following properties from type '[\"Duplicate columns in SELECT clause\", { readonly tableAlias: \"table\"; readonly name: \"y\"; }]': 0, 1, pop, push, and 29 more.",
+        "messageText": "Type '(c: { readonly table: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }; readonly joined1: { ...; }; }) => [...]' is missing the following properties from type '[\"Duplicate columns in SELECT clause\", { readonly tableAlias: \"table\"; readonly name: \"y\"; }]': 0, 1, pop, push, and 29 more.",
         "category": 1,
         "code": 2740
       }

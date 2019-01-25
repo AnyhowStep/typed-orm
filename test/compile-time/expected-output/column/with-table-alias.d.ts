@@ -19,16 +19,10 @@ export declare const c2: o.Column<{
 export declare const c3: o.Column<{
     readonly tableAlias: "tableAlias";
     readonly name: "columnName";
-    readonly assertDelegate: sd.AssertDelegate<string> & {
-        __accepts: string;
-        __canAccept: string;
-    };
+    readonly assertDelegate: sd.AssertDelegate<string>;
 }>;
 export declare const c4: o.Column<{
     readonly tableAlias: "otherAlias";
     readonly name: "columnName";
-    readonly assertDelegate: sd.AssertDelegate<string> & {
-        __accepts: string;
-        __canAccept: string;
-    };
+    readonly assertDelegate: sd.AssertDelegate<string>;
 }>;

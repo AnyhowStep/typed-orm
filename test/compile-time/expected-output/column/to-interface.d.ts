@@ -3,15 +3,9 @@ import * as o from "../../../../dist/src/main";
 export declare const result: o.IColumn<{
     readonly tableAlias: "tableAlias";
     readonly name: "columnName";
-    readonly assertDelegate: sd.AssertDelegate<number> & {
-        __accepts: number;
-        __canAccept: number;
-    };
+    readonly assertDelegate: sd.AssertDelegate<number>;
 }> | o.IColumn<{
     readonly tableAlias: "tableAlias";
     readonly name: "columnName2";
-    readonly assertDelegate: sd.AssertDelegate<number | null> & {
-        __accepts: number | null;
-        __canAccept: number | null;
-    };
+    readonly assertDelegate: sd.AssertDelegate<number | null>;
 }>;

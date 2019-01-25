@@ -88,11 +88,11 @@ export function column<
 ) : Column<{
     readonly tableAlias : TableAliasT,
     readonly name : NameT,
-    readonly assertDelegate : sd.ToAssertDelegate<AssertFuncT>,
+    readonly assertDelegate : sd.AssertDelegate<sd.TypeOf<AssertFuncT>>,
 }> {
     return new Column({
         tableAlias,
         name,
-        assertDelegate : sd.toAssertDelegate(assertFunc),
+        assertDelegate : sd.toAssertDelegate(assertFunc) as sd.AssertDelegate<sd.TypeOf<AssertFuncT>>,
     });
 }

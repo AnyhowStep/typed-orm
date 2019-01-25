@@ -1,15 +1,15 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => [...]' is not assignable to parameter of type '(((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => [...]) & [...] & [...]) | (((c...'.",
+      "messageText": "Argument of type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is not assignable to parameter of type '(((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]) & [...] & [...]) | (((c: { ...; }) => [...]) & ... 1 more ... & [...])'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => [...]' is not assignable to type '((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => [...]) & [...] & [...]'.",
+        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is not assignable to type '((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]) & [...] & [...]'.",
         "category": 1,
         "code": 2322,
         "next": {
-          "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => [...]' is missing the following properties from type '[\"Invalid IColumn\", Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number | null> & { __accepts: number | null; __canAccept: number | null; }; }>]': 0, 1, pop, push, and 29 more.",
+          "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is missing the following properties from type '[\"Invalid IColumn\", Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number | null>; }>]': 0, 1, pop, push, and 29 more.",
           "category": 1,
           "code": 2740
         }
@@ -22,15 +22,15 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number | null> & { __accepts: number | null; __canAccept: number | null; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => [...]' is not assignable to parameter of type '(((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number | null> & { __accepts: number | null; __canAccept: number | null; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => [...]) & ...'.",
+      "messageText": "Argument of type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number | null>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is not assignable to parameter of type '(((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number | null>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]) & [...] & [...]) | (((c: { ...; }) => [...]) & ... 1 more ... & [...])'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number | null> & { __accepts: number | null; __canAccept: number | null; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => [...]' is not assignable to type '((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number | null> & { __accepts: number | null; __canAccept: number | null; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => [...]) & [...'.",
+        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number | null>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is not assignable to type '((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number | null>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]) & [...] & [...]'.",
         "category": 1,
         "code": 2322,
         "next": {
-          "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number | null> & { __accepts: number | null; __canAccept: number | null; }; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; readonly z: Column<...>; }) => [...]' is missing the following properties from type '[\"Invalid IColumn\", Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>]': 0, 1, pop, push, and 29 more.",
+          "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number | null>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is missing the following properties from type '[\"Invalid IColumn\", Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>]': 0, 1, pop, push, and 29 more.",
           "category": 1,
           "code": 2740
         }
@@ -47,7 +47,7 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly table: { readonly x: Column<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number | null>; }>; readonly y: Column<{ readonly tableAlias: \"table\"; readonly name: \"y\"; readonly assertDelegate: AssertDelegate<...>; }>; readonly z: Column<...>; }; readonly tabl...' is missing the following properties from type '[\"Invalid IColumn\", Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>]': 0, 1, pop, push, and 29 more.",
+        "messageText": "Type '(c: { readonly table: { readonly x: Column<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number | null>; }>; readonly y: Column<{ readonly tableAlias: \"table\"; readonly name: \"y\"; readonly assertDelegate: AssertDelegate<...>; }>; readonly z: Column<...>; }; readonly tabl...' is missing the following properties from type '[\"Invalid IColumn\", Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>]': 0, 1, pop, push, and 29 more.",
         "category": 1,
         "code": 2740
       }

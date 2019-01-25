@@ -7,26 +7,17 @@ export declare const entityBannedLog: o.Log<{
             readonly entityId: o.Column<{
                 tableAlias: "entityBanned";
                 name: "entityId";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                    __accepts: string | number | bigint;
-                    __canAccept: string | number | bigint;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
             }>;
             readonly updatedAt: o.Column<{
                 tableAlias: "entityBanned";
                 name: "updatedAt";
-                assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                    __accepts: Date;
-                    __canAccept: Date;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<Date>;
             }>;
             readonly banned: o.Column<{
                 tableAlias: "entityBanned";
                 name: "banned";
-                assertDelegate: import("schema-decorator").AssertDelegate<boolean> & {
-                    __accepts: boolean | 0 | 1 | "0" | "1";
-                    __canAccept: boolean | 0 | 1 | "0" | "1";
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
             }>;
         };
         readonly autoIncrement: undefined;
@@ -48,10 +39,7 @@ export declare const entityBannedLog: o.Log<{
             readonly entityId: o.Column<{
                 tableAlias: "entity";
                 name: "entityId";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                    __accepts: string | number | bigint;
-                    __canAccept: string | number | bigint;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
             }>;
         };
         readonly autoIncrement: undefined;
@@ -75,26 +63,17 @@ export declare const entityBannedLog: o.Log<{
                 readonly entityId: o.Column<{
                     tableAlias: "entityBanned";
                     name: "entityId";
-                    assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                        __accepts: string | number | bigint;
-                        __canAccept: string | number | bigint;
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
                 }>;
                 readonly updatedAt: o.Column<{
                     tableAlias: "entityBanned";
                     name: "updatedAt";
-                    assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                        __accepts: Date;
-                        __canAccept: Date;
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<Date>;
                 }>;
                 readonly banned: o.Column<{
                     tableAlias: "entityBanned";
                     name: "banned";
-                    assertDelegate: import("schema-decorator").AssertDelegate<boolean> & {
-                        __accepts: boolean | 0 | 1 | "0" | "1";
-                        __canAccept: boolean | 0 | 1 | "0" | "1";
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -116,10 +95,7 @@ export declare const entityBannedLog: o.Log<{
                 readonly entityId: o.Column<{
                     tableAlias: "entity";
                     name: "entityId";
-                    assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                        __accepts: string | number | bigint;
-                        __canAccept: string | number | bigint;
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -139,10 +115,7 @@ export declare const entityBannedLog: o.Log<{
     readonly latestOrder: [o.Column<{
         tableAlias: "entityBanned";
         name: "updatedAt";
-        assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-            __accepts: Date;
-            __canAccept: Date;
-        };
+        assertDelegate: import("schema-decorator").AssertDelegate<Date>;
     }>, "DESC"];
     readonly tracked: "banned"[];
     readonly doNotCopy: never[];
@@ -168,26 +141,17 @@ export declare const latestQuery: o.Query<{
                 readonly entityId: o.Column<{
                     tableAlias: "entityBanned";
                     name: "entityId";
-                    assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                        __accepts: string | number | bigint;
-                        __canAccept: string | number | bigint;
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
                 }>;
                 readonly updatedAt: o.Column<{
                     tableAlias: "entityBanned";
                     name: "updatedAt";
-                    assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                        __accepts: Date;
-                        __canAccept: Date;
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<Date>;
                 }>;
                 readonly banned: o.Column<{
                     tableAlias: "entityBanned";
                     name: "banned";
-                    assertDelegate: import("schema-decorator").AssertDelegate<boolean> & {
-                        __accepts: boolean | 0 | 1 | "0" | "1";
-                        __canAccept: boolean | 0 | 1 | "0" | "1";
-                    };
+                    assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -206,26 +170,17 @@ export declare const latestQuery: o.Query<{
             readonly entityId: o.Column<{
                 tableAlias: "entityBanned";
                 name: "entityId";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint> & {
-                    __accepts: string | number | bigint;
-                    __canAccept: string | number | bigint;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
             }>;
             readonly updatedAt: o.Column<{
                 tableAlias: "entityBanned";
                 name: "updatedAt";
-                assertDelegate: import("schema-decorator").AssertDelegate<Date> & {
-                    __accepts: Date;
-                    __canAccept: Date;
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<Date>;
             }>;
             readonly banned: o.Column<{
                 tableAlias: "entityBanned";
                 name: "banned";
-                assertDelegate: import("schema-decorator").AssertDelegate<boolean> & {
-                    __accepts: boolean | 0 | 1 | "0" | "1";
-                    __canAccept: boolean | 0 | 1 | "0" | "1";
-                };
+                assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
             }>;
         };
         nullable: false;

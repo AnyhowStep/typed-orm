@@ -6,17 +6,11 @@ export declare const aliased: o.IExprSelectItem<{
             readonly columnName: o.Column<{
                 readonly tableAlias: "tableAlias";
                 readonly name: "columnName";
-                readonly assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                readonly assertDelegate: sd.AssertDelegate<number>;
             }>;
         };
     };
-    readonly assertDelegate: sd.AssertDelegate<number> & {
-        __accepts: number;
-        __canAccept: number;
-    };
+    readonly assertDelegate: sd.AssertDelegate<number>;
     readonly tableAlias: "tableAlias";
     readonly alias: "newColumnName";
 }>;

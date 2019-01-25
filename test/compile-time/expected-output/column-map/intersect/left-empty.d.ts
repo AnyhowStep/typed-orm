@@ -5,67 +5,43 @@ export declare const columnMapB: {
     readonly commonA: o.Column<{
         tableAlias: "someTableB";
         name: "commonA";
-        assertDelegate: sd.AssertDelegate<string> & {
-            __accepts: string;
-            __canAccept: string;
-        };
+        assertDelegate: sd.AssertDelegate<string>;
     }>;
     readonly commonB: o.Column<{
         tableAlias: "someTableB";
         name: "commonB";
-        assertDelegate: sd.AssertDelegate<boolean> & {
-            __accepts: boolean;
-            __canAccept: boolean;
-        };
+        assertDelegate: sd.AssertDelegate<boolean>;
     }>;
     readonly commonC: o.Column<{
         tableAlias: "someTableB";
         name: "commonC";
-        assertDelegate: sd.AssertDelegate<boolean> & {
-            __accepts: boolean;
-            __canAccept: boolean;
-        };
+        assertDelegate: sd.AssertDelegate<boolean>;
     }>;
     readonly differentB: o.Column<{
         tableAlias: "someTableB";
         name: "differentB";
-        assertDelegate: sd.AssertDelegate<null> & {
-            __accepts: null;
-            __canAccept: null;
-        };
+        assertDelegate: sd.AssertDelegate<null>;
     }>;
 };
 export declare const intersect: {} & {
     readonly commonA: o.Column<{
         tableAlias: "someTableB";
         name: "commonA";
-        assertDelegate: sd.AssertDelegate<string> & {
-            __accepts: string;
-            __canAccept: string;
-        };
+        assertDelegate: sd.AssertDelegate<string>;
     }>;
     readonly commonB: o.Column<{
         tableAlias: "someTableB";
         name: "commonB";
-        assertDelegate: sd.AssertDelegate<boolean> & {
-            __accepts: boolean;
-            __canAccept: boolean;
-        };
+        assertDelegate: sd.AssertDelegate<boolean>;
     }>;
     readonly commonC: o.Column<{
         tableAlias: "someTableB";
         name: "commonC";
-        assertDelegate: sd.AssertDelegate<boolean> & {
-            __accepts: boolean;
-            __canAccept: boolean;
-        };
+        assertDelegate: sd.AssertDelegate<boolean>;
     }>;
     readonly differentB: o.Column<{
         tableAlias: "someTableB";
         name: "differentB";
-        assertDelegate: sd.AssertDelegate<null> & {
-            __accepts: null;
-            __canAccept: null;
-        };
+        assertDelegate: sd.AssertDelegate<null>;
     }>;
 };

@@ -5,7 +5,7 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly a: Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; ... 4 more ...; readonly c: C...' is missing the following properties from type '[\"SELECT clause length mismatch\", 3, \"!=\", 2]': 0, 1, 2, 3, and 31 more.",
+        "messageText": "Type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly a: Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<...>; }>; ... 4 more ...; readonly c: Column<...>;...' is missing the following properties from type '[\"SELECT clause length mismatch\", 3, \"!=\", 2]': 0, 1, 2, 3, and 31 more.",
         "category": 1,
         "code": 2740
       }

@@ -7,18 +7,12 @@ export declare const table: o.Table<{
         readonly x: o.Column<{
             tableAlias: "t";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
+            assertDelegate: sd.AssertDelegate<number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "t";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
+            assertDelegate: sd.AssertDelegate<string>;
         }>;
     };
     readonly autoIncrement: undefined;
@@ -41,18 +35,12 @@ export declare const join: o.Join<{
             readonly x: o.Column<{
                 tableAlias: "t";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
             readonly y: o.Column<{
                 tableAlias: "t";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<string> & {
-                    __accepts: string;
-                    __canAccept: string;
-                };
+                assertDelegate: sd.AssertDelegate<string>;
             }>;
         };
         readonly autoIncrement: undefined;
@@ -71,18 +59,12 @@ export declare const join: o.Join<{
         readonly x: o.Column<{
             tableAlias: "t";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
+            assertDelegate: sd.AssertDelegate<number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "t";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
+            assertDelegate: sd.AssertDelegate<string>;
         }>;
     };
     nullable: false;
@@ -91,18 +73,12 @@ export declare const columnMap: {
     readonly x: o.Column<{
         tableAlias: "t";
         name: "x";
-        assertDelegate: sd.AssertDelegate<number> & {
-            __accepts: number;
-            __canAccept: number;
-        };
+        assertDelegate: sd.AssertDelegate<number>;
     }>;
     readonly y: o.Column<{
         tableAlias: "t";
         name: "y";
-        assertDelegate: sd.AssertDelegate<string> & {
-            __accepts: string;
-            __canAccept: string;
-        };
+        assertDelegate: sd.AssertDelegate<string>;
     }>;
 };
 export declare const nullableJoin: o.Join<{
@@ -113,18 +89,12 @@ export declare const nullableJoin: o.Join<{
             readonly x: o.Column<{
                 tableAlias: "t";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
             readonly y: o.Column<{
                 tableAlias: "t";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<string> & {
-                    __accepts: string;
-                    __canAccept: string;
-                };
+                assertDelegate: sd.AssertDelegate<string>;
             }>;
         };
         readonly autoIncrement: undefined;
@@ -143,18 +113,12 @@ export declare const nullableJoin: o.Join<{
         readonly x: o.Column<{
             tableAlias: "t";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
+            assertDelegate: sd.AssertDelegate<number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "t";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
+            assertDelegate: sd.AssertDelegate<string>;
         }>;
     };
     nullable: true;

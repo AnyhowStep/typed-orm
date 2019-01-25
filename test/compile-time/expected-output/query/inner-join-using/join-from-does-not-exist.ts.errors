@@ -1,6 +1,6 @@
 [
   {
-    "messageText": "Property 'x' does not exist on type '{ readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string> & { __accepts: string; __canAccept: string; }; }>; }'.",
+    "messageText": "Property 'x' does not exist on type '{ readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; }'.",
     "code": 2339,
     "category": 1,
     "length": 1,

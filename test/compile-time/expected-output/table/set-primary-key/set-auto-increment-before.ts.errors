@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '(c: { a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | number | Date; }; }>; b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; y: Column<...>; c: Column<...>; d: Column<...>; }) => Column<...>[]' is not assignable to parameter of type '((c: { a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | number | Date; }; }>; b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; y: Column<...>; c: Column<...>; d: Column<...>; }) => Column<......'.",
+      "messageText": "Argument of type '(c: { a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<Buffer>; }>; y: Column<{ ...; }>; c: Column<...>; d: Column<...>; }) => Column<...>[]' is not assignable to parameter of type '((c: { a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<Buffer>; }>; y: Column<...>; c: Column<...>; d: Column<...>; }) => Column<...>[]) & [...]'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | number | Date; }; }>; b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; y: Column<...>; c: Column<...>; d: Column<...>; }) => Column<...>[]' is missing the following properties from type '[\"Cannot add key as candidate key\", \"y\", \"is a super key of\", \"y\"[]]': 0, 1, 2, 3, and 31 more.",
+        "messageText": "Type '(c: { a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<Buffer>; }>; y: Column<{ ...; }>; c: Column<...>; d: Column<...>; }) => Column<...>[]' is missing the following properties from type '[\"Cannot add key as candidate key\", \"y\", \"is a super key of\", \"y\"[]]': 0, 1, 2, 3, and 31 more.",
         "category": 1,
         "code": 2740
       }
@@ -17,11 +17,11 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type '(c: { a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | number | Date; }; }>; b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; y: Column<...>; c: Column<...>; d: Column<...>; }) => (Column<......' is not assignable to parameter of type '((c: { a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | number | Date; }; }>; b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; y: Column<...>; c: Column<...>; d: Column<...>; }) => (Column<.....'.",
+      "messageText": "Argument of type '(c: { a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<Buffer>; }>; y: Column<{ ...; }>; c: Column<...>; d: Column<...>; }) => (Column<...> | Column<...>)[]' is not assignable to parameter of type '((c: { a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<Buffer>; }>; y: Column<...>; c: Column<...>; d: Column<...>; }) => (Column<...> | Column<...>)[]) & [...]'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date> & { __accepts: Date; __canAccept: string | number | Date; }; }>; b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...> & { ...; }; }>; y: Column<...>; c: Column<...>; d: Column<...>; }) => (Column<......' is missing the following properties from type '[\"Cannot add key as candidate key\", \"y\" | \"d\", \"is a super key of\", \"y\"[]]': 0, 1, 2, 3, and 31 more.",
+        "messageText": "Type '(c: { a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<Buffer>; }>; y: Column<{ ...; }>; c: Column<...>; d: Column<...>; }) => (Column<...> | Column<...>)[]' is missing the following properties from type '[\"Cannot add key as candidate key\", \"y\" | \"d\", \"is a super key of\", \"y\"[]]': 0, 1, 2, 3, and 31 more.",
         "category": 1,
         "code": 2740
       }

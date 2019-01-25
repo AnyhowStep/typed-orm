@@ -7,7 +7,7 @@
     "start": 237
   },
   {
-    "messageText": "Property 'x' does not exist on type '{ y: Column<{ tableAlias: \"232\"; name: \"y\"; assertDelegate: AssertDelegate<number> & { __accepts: number; __canAccept: number; }; }>; }'.",
+    "messageText": "Property 'x' does not exist on type '{ y: Column<{ tableAlias: \"232\"; name: \"y\"; assertDelegate: AssertDelegate<number>; }>; }'.",
     "code": 2339,
     "category": 1,
     "length": 1,

@@ -6,26 +6,17 @@ export declare const aliased: o.IAliasedTable<{
             readonly a: o.Column<{
                 tableAlias: "parent";
                 name: "a";
-                assertDelegate: sd.AssertDelegate<number> & {
-                    __accepts: number;
-                    __canAccept: number;
-                };
+                assertDelegate: sd.AssertDelegate<number>;
             }>;
             readonly b: o.Column<{
                 tableAlias: "parent";
                 name: "b";
-                assertDelegate: sd.AssertDelegate<string> & {
-                    __accepts: string;
-                    __canAccept: string;
-                };
+                assertDelegate: sd.AssertDelegate<string>;
             }>;
             readonly c: o.Column<{
                 tableAlias: "parent";
                 name: "c";
-                assertDelegate: sd.AssertDelegate<boolean> & {
-                    __accepts: boolean;
-                    __canAccept: boolean;
-                };
+                assertDelegate: sd.AssertDelegate<boolean>;
             }>;
         };
     };
@@ -34,26 +25,17 @@ export declare const aliased: o.IAliasedTable<{
         readonly x: o.Column<{
             readonly tableAlias: "aliased";
             readonly name: "x";
-            readonly assertDelegate: sd.AssertDelegate<number> & {
-                __accepts: number;
-                __canAccept: number;
-            };
+            readonly assertDelegate: sd.AssertDelegate<number>;
         }>;
         readonly y: o.Column<{
             readonly tableAlias: "aliased";
             readonly name: "y";
-            readonly assertDelegate: sd.AssertDelegate<string> & {
-                __accepts: string;
-                __canAccept: string;
-            };
+            readonly assertDelegate: sd.AssertDelegate<string>;
         }>;
         readonly z: o.Column<{
             readonly tableAlias: "aliased";
             readonly name: "z";
-            readonly assertDelegate: sd.AssertDelegate<boolean> & {
-                __accepts: boolean;
-                __canAccept: boolean;
-            };
+            readonly assertDelegate: sd.AssertDelegate<boolean>;
         }>;
     };
 }>;
