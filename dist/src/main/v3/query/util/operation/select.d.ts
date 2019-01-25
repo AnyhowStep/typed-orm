@@ -42,4 +42,3 @@ export declare type AssertValidSelectDelegateImpl<QueryT extends BeforeUnionClau
 }>);
 export declare type AssertValidSelectDelegate<QueryT extends BeforeUnionClause, SelectDelegateT extends SelectDelegate<QueryT>> = (SelectDelegateT & AssertValidSelectDelegateImpl<QueryT, SelectDelegateT>);
 export declare function select<QueryT extends BeforeUnionClause, SelectDelegateT extends SelectDelegate<QueryT>>(query: QueryT, delegate: AssertValidSelectDelegate<QueryT, SelectDelegateT>): Select<QueryT, SelectDelegateT>;
-//# sourceMappingURL=select.d.ts.map

@@ -50,4 +50,3 @@ export declare type ExecutableInsert = IInsert<{
     readonly _values: InsertRow<ITable>[];
     readonly _modifier: InsertModifier | undefined;
 }>;
-//# sourceMappingURL=insert.d.ts.map

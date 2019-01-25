@@ -6,4 +6,3 @@ export declare type FromExprSelectItem<ItemT extends IExprSelectItem> = (Column<
     readonly assertDelegate: ItemT["assertDelegate"];
 }>);
 export declare function fromExprSelectItem<ItemT extends IExprSelectItem>(item: ItemT): FromExprSelectItem<ItemT>;
-//# sourceMappingURL=from-expr-select-item.d.ts.map

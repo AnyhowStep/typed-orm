@@ -29,4 +29,3 @@ export declare namespace bigintUnsigned {
         __canAccept: string | number | bigint | null;
     };
 }
-//# sourceMappingURL=bigint.d.ts.map

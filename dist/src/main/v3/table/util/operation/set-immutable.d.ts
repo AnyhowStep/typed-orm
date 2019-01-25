@@ -16,4 +16,3 @@ export declare type SetImmutable<TableT extends ITable> = (Table<{
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function setImmutable<TableT extends ITable>(table: TableT): (SetImmutable<TableT>);
-//# sourceMappingURL=set-immutable.d.ts.map

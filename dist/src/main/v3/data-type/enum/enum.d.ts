@@ -4,4 +4,3 @@ declare namespace enumDelegate {
     var nullable: <ElementArr extends string[]>(...elements: ElementArr) => sd.AssertDelegate<ElementArr[number] | null>;
 }
 export { enumDelegate as enum };
-//# sourceMappingURL=enum.d.ts.map

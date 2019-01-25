@@ -40,4 +40,3 @@ export declare type FromSelectItemArray_ColumnRefElement<ColumnRefT extends Colu
 export declare type FromSelectItemArray<ArrT extends SelectItem[]> = (ArrT[number] extends never ? {} : (FromSelectItemArray_ColumnElement<Extract<ArrT[number], IColumn>> & FromSelectItemArray_ExprSelectItemElement<Extract<ArrT[number], IExprSelectItem>> & FromSelectItemArray_ColumnMapElement<Extract<ArrT[number], ColumnMap>> & FromSelectItemArray_ColumnRefElement<Extract<ArrT[number], ColumnRef>>));
 export declare function appendSelectItemArray(ref: Writable<ColumnIdentifierRef>, arr: SelectItem[]): Writable<ColumnIdentifierRef>;
 export declare function fromSelectItemArray<ArrT extends SelectItem[]>(arr: ArrT): FromSelectItemArray<ArrT>;
-//# sourceMappingURL=from-select-item-array.d.ts.map

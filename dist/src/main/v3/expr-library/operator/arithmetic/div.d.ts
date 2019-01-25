@@ -6,4 +6,3 @@ export declare function div<LeftT extends RawExpr<number>, RightT extends RawExp
     usedRef: ColumnRefUtil.Intersect<RawExprUtil.UsedRef<LeftT>, RawExprUtil.UsedRef<RightT>>;
     assertDelegate: sd.AssertDelegate<number | null>;
 }>);
-//# sourceMappingURL=div.d.ts.map

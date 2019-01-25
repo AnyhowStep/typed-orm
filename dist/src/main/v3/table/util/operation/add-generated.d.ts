@@ -21,4 +21,3 @@ export declare type AddGenerated<TableT extends ITable, DelegateT extends Genera
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function addGenerated<TableT extends ITable, DelegateT extends GeneratedDelegate<TableT>>(table: TableT, delegate: DelegateT): (AddGenerated<TableT, DelegateT>);
-//# sourceMappingURL=add-generated.d.ts.map

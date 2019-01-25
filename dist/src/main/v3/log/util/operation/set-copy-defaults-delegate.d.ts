@@ -41,4 +41,3 @@ export declare type SetCopyDefaultsDelegate<LogT extends LogMustSetCopyDefaultsD
     readonly trackedDefaults: undefined;
 }>);
 export declare function setCopyDefaultsDelegate<LogT extends LogMustSetCopyDefaultsDelegate>(log: LogT, rawCopyDefaultsDelegate: CopyDefaultsDelegate<LogT>): (SetCopyDefaultsDelegate<LogT>);
-//# sourceMappingURL=set-copy-defaults-delegate.d.ts.map

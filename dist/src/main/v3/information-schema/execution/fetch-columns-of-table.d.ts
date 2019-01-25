@@ -22,4 +22,3 @@ export declare function fetchColumnsOfTable(connection: IConnection, tableName: 
     readonly COLUMN_COMMENT: string;
     readonly GENERATION_EXPRESSION: string;
 }[]>;
-//# sourceMappingURL=fetch-columns-of-table.d.ts.map

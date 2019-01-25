@@ -8,4 +8,3 @@ export declare type NullSafeUnaryComparison = (<RawExprT extends RawExpr<Primiti
     assertDelegate: sd.AssertDelegate<boolean>;
 }>));
 export declare function nullSafeUnaryComparison(postFixOperator: string): NullSafeUnaryComparison;
-//# sourceMappingURL=null-safe-unary-comparison.d.ts.map

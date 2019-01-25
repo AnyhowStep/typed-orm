@@ -5,4 +5,3 @@ export declare type IsMutable<TableT extends ITable, NameT extends string> = (Ha
     [tableAlias in TableAliases<TableT>]: (NameT extends keyof FindTable<TableT, tableAlias>["columns"] ? (NameT extends FindTable<TableT, tableAlias>["mutable"][number] ? true : false) : never);
 }[TableAliases<TableT>] extends true ? true : false) : false);
 export declare function isMutable<TableT extends ITable, NameT extends string>(table: TableT, name: NameT): IsMutable<TableT, NameT>;
-//# sourceMappingURL=is-mutable.d.ts.map

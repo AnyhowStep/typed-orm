@@ -28,4 +28,3 @@ export declare function assertDelegate<QueryT extends OneSelectItemQuery<any> & 
 export declare function printSql(query: AfterSelectClause): void;
 export declare type DeletableTables<QueryT extends DeletableQuery> = (Extract<QueryT["_joins"][number]["aliasedTable"], DeletableTable>);
 export declare function deletableTableArray<QueryT extends DeletableQuery>(query: QueryT): DeletableTables<QueryT>[];
-//# sourceMappingURL=query.d.ts.map

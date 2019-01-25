@@ -4,4 +4,3 @@ export * from "./latest-value-or-null";
 export * from "./latest-value-query";
 export * from "./latest-value";
 export * from "./latest";
-//# sourceMappingURL=index.d.ts.map

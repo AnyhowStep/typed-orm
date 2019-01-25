@@ -21,4 +21,3 @@ export declare type AddParent<TableT extends ITable, ParentT extends ITable> = (
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function addParent<TableT extends ITable, ParentT extends ITable>(table: TableT, parent: Parent<TableT, ParentT>): (AddParent<TableT, ParentT>);
-//# sourceMappingURL=add-parent.d.ts.map

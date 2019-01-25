@@ -23,4 +23,3 @@ export declare type From<QueryT extends BeforeFromClause, AliasedTableT extends 
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function from<QueryT extends BeforeFromClause, AliasedTableT extends IAliasedTable>(query: QueryT, aliasedTable: AssertValidJoinTarget<QueryT, AliasedTableT>): (From<QueryT, AliasedTableT>);
-//# sourceMappingURL=from.d.ts.map

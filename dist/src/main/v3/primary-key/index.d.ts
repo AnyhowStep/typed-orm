@@ -6,4 +6,3 @@ export declare namespace PrimaryKeyUtil {
     type AssertDelegate<TableT extends TableWithPk> = (sd.AssertDelegate<PrimaryKey<TableT>>);
     function assertDelegate<TableT extends TableWithPk>(table: TableT): (AssertDelegate<TableT>);
 }
-//# sourceMappingURL=index.d.ts.map

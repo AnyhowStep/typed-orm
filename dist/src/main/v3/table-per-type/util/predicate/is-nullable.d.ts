@@ -5,4 +5,3 @@ export declare type IsNullable<TableT extends ITable, NameT extends string> = (H
     [tableAlias in TableAliases<TableT>]: (NameT extends keyof FindTable<TableT, tableAlias>["columns"] ? (NameT extends FindTable<TableT, tableAlias>["isNullable"][number] ? true : false) : never);
 }[TableAliases<TableT>] extends true ? true : false) : false);
 export declare function isNullable<TableT extends ITable, NameT extends string>(table: TableT, name: NameT): IsNullable<TableT, NameT>;
-//# sourceMappingURL=is-nullable.d.ts.map

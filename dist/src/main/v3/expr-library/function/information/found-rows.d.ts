@@ -4,4 +4,3 @@ export declare function foundRows(): (Expr<{
     usedRef: {};
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=found-rows.d.ts.map

@@ -11,4 +11,3 @@ import { FromColumnMap } from "./from-column-map";
 import { FromColumnRef } from "./from-column-ref";
 export declare type FromSelectItem<SelectItemT extends SelectItem> = (SelectItemT extends IColumn ? FromColumn<SelectItemT> : SelectItemT extends IExprSelectItem ? FromExprSelectItem<SelectItemT> : SelectItemT extends ColumnMap ? FromColumnMap<SelectItemT> : SelectItemT extends ColumnRef ? FromColumnRef<SelectItemT> : never);
 export declare function appendSelectItem(ref: Writable<ColumnIdentifierRef>, item: SelectItem): Writable<ColumnIdentifierRef>;
-//# sourceMappingURL=from-select-item.d.ts.map

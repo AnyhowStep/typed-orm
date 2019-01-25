@@ -5,4 +5,3 @@ export declare type EmptyTuple<T> = (T[] & {
     length: 0;
 });
 export declare type Tuple<T> = (NonEmptyTuple<T> | EmptyTuple<T>);
-//# sourceMappingURL=tuple.d.ts.map

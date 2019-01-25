@@ -19,4 +19,3 @@ export declare function joinCkUsing<FromTableT extends IAliasedTable, ToTableT e
     readonly toTable: ToTableT;
     readonly nullable: NullableT;
 }>>);
-//# sourceMappingURL=join-ck-using.d.ts.map

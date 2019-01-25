@@ -20,4 +20,3 @@ export declare type WhereEqColumns<QueryT extends AfterFromClause> = (Query<{
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function whereEqColumns<QueryT extends AfterFromClause, TableT extends ITable>(query: QueryT, table: TableT & QueryT["_joins"][number]["aliasedTable"], columns: Partial<Row<TableT>>): WhereEqColumns<QueryT>;
-//# sourceMappingURL=where-eq-columns.d.ts.map

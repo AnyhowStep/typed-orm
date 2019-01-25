@@ -10,4 +10,3 @@ export declare type SuperKeyUnionFromCandidateKeyArray<CandidateKeyArrayT extend
 export declare type SuperKey<TableT extends ITable> = (SuperKeyUnionFromCandidateKeyArray<TableT["candidateKeys"], TableT>);
 export declare type SuperKeyAssertDelegate<TableT extends ITable> = (sd.AssertDelegate<SuperKey<TableT>>);
 export declare function superKeyAssertDelegate<TableT extends ITable>(table: TableT): (SuperKeyAssertDelegate<TableT>);
-//# sourceMappingURL=super-key-assert-delegate.d.ts.map

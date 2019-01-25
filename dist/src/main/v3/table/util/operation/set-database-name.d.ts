@@ -16,4 +16,3 @@ export declare type SetDatabaseName<TableT extends ITable> = (Table<{
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function setDatabaseName<TableT extends ITable>(table: TableT, newDatabaseName: string): (SetDatabaseName<TableT>);
-//# sourceMappingURL=set-database-name.d.ts.map

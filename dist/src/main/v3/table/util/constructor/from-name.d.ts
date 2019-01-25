@@ -16,4 +16,3 @@ export declare type FromName<NameT extends string> = (Table<{
     readonly deleteAllowed: true;
 }>);
 export declare function fromName<NameT extends string>(name: NameT): (FromName<NameT>);
-//# sourceMappingURL=from-name.d.ts.map

@@ -6,4 +6,3 @@ export declare type ToSuperType<ColumnT extends IColumn> = (ColumnT extends ICol
     readonly name: ColumnT["name"];
     readonly assertDelegate: sd.AssertDelegate<PrimitiveExprUtil.ToSuperType<ReturnType<ColumnT["assertDelegate"]>>>;
 }> : never);
-//# sourceMappingURL=to-super-type.d.ts.map

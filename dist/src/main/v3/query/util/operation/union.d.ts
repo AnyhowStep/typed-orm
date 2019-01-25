@@ -43,4 +43,3 @@ export declare type AssertUnionCompatibleSelectArray<A extends SelectItem[], B e
 }> : ["SELECT clause length mismatch", A["length"], "!=", B["length"]]) : ["SELECT clause length mismatch", A["length"], "!=", B["length"]]);
 export declare type AssertUnionCompatibleQuery<QueryT extends AfterSelectClause, OtherT extends AfterSelectClause> = (OtherT & AssertUnionCompatibleSelectArray<QueryT["_selects"], OtherT["_selects"]>);
 export declare function union<QueryT extends AfterSelectClause, OtherT extends AfterSelectClause>(query: QueryT, other: AssertUnionCompatibleQuery<QueryT, OtherT>, unionType?: UnionType): Union<QueryT>;
-//# sourceMappingURL=union.d.ts.map

@@ -4,4 +4,3 @@ export declare namespace TypeMapUtil {
         readonly [columnName in Extract<keyof MapT, string>]: (ReturnType<MapT[columnName]["assertDelegate"]>);
     } : never);
 }
-//# sourceMappingURL=type-map.d.ts.map

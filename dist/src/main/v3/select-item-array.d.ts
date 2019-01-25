@@ -15,4 +15,3 @@ export declare namespace SelectItemArrayUtil {
     function hasDuplicateColumnName(arr: SelectItem[]): boolean;
     function assertNoDuplicateColumnName(arr: SelectItem[]): void;
 }
-//# sourceMappingURL=select-item-array.d.ts.map

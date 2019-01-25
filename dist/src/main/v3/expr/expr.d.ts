@@ -26,4 +26,3 @@ export declare type IAnonymousTypedExpr<TypeT> = (IExpr<{
     usedRef: ColumnRef;
     assertDelegate: sd.AssertDelegate<TypeT>;
 }>);
-//# sourceMappingURL=expr.d.ts.map

@@ -4,4 +4,3 @@ export declare type Intersect<ColumnMapA extends ColumnMap, ColumnMapB extends C
     readonly [columnName in Exclude<Extract<keyof ColumnMapB, string>, keyof ColumnMapA>]: (ColumnMapB[columnName]);
 });
 export declare function intersect<ColumnMapA extends ColumnMap, ColumnMapB extends ColumnMap>(columnMapA: ColumnMapA, columnMapB: ColumnMapB): (Intersect<ColumnMapA, ColumnMapB>);
-//# sourceMappingURL=intersect.d.ts.map

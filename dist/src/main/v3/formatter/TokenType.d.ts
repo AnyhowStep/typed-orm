@@ -14,4 +14,3 @@ export declare enum TokenType {
     NUMBER = "number",
     PLACEHOLDER = "placeholder"
 }
-//# sourceMappingURL=TokenType.d.ts.map

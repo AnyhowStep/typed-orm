@@ -23,4 +23,3 @@ export declare type UnionOffset<QueryT extends IQuery, OffsetT extends number> =
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function unionOffset<QueryT extends IQuery, OffsetT extends number>(query: QueryT, offset: OffsetT): UnionOffset<QueryT, OffsetT>;
-//# sourceMappingURL=union-offset.d.ts.map

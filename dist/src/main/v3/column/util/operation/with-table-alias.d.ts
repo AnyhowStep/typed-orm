@@ -5,4 +5,3 @@ export declare type WithTableAlias<ColumnT extends IColumn, NewTableAliasT exten
     readonly assertDelegate: ColumnT["assertDelegate"];
 }> : never);
 export declare function withTableAlias<ColumnT extends IColumn, NewTableAliasT extends string>({ name, assertDelegate, __isFromExprSelectItem, }: ColumnT, newTableAlias: NewTableAliasT): (WithTableAlias<ColumnT, NewTableAliasT>);
-//# sourceMappingURL=with-table-alias.d.ts.map

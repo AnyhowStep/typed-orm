@@ -6,4 +6,3 @@ export declare type FromSelectItem<SelectItemT extends SelectItem> = (SelectItem
     [columnName in ColumnRefUtil.ColumnNames<SelectItemT>]: (ColumnRefUtil.FindWithColumnName<SelectItemT, columnName>);
 } : never);
 export declare function fromSelectItem<SelectItemT extends SelectItem>(selectItem: SelectItemT): FromSelectItem<SelectItemT>;
-//# sourceMappingURL=from-select-item.d.ts.map

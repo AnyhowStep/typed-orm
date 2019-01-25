@@ -8,4 +8,3 @@ export declare type Else<BuilderT extends AfterWhenCase, ElseT extends RawExpr<E
 }>);
 declare function ElseFunction<BuilderT extends AfterWhenCase, ElseT extends RawExpr<Exclude<ReturnType<BuilderT["result"]>, null>>>(builder: BuilderT, elseExpr: ElseT): (Else<BuilderT, ElseT>);
 export { ElseFunction as else };
-//# sourceMappingURL=else.d.ts.map

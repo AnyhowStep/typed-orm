@@ -24,4 +24,3 @@ export declare type SetId<TableT extends ITable, DelegateT extends IdDelegate<Ta
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function setId<TableT extends ITable, DelegateT extends IdDelegate<TableT>>(table: TableT, delegate: DelegateT): (SetId<TableT, DelegateT>);
-//# sourceMappingURL=set-id.d.ts.map

@@ -9,4 +9,3 @@ export declare type NullSafeComparison = (<LeftT extends RawExpr<PrimitiveExpr>,
     assertDelegate: sd.AssertDelegate<boolean>;
 }>));
 export declare function nullSafeComparison(operator: string): NullSafeComparison;
-//# sourceMappingURL=null-safe-comparison.d.ts.map

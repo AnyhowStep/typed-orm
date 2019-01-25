@@ -22,4 +22,3 @@ export declare class AliasedTable<DataT extends AliasedTableData> implements IAl
     });
     queryTree(): QueryTree;
 }
-//# sourceMappingURL=aliased-table.d.ts.map

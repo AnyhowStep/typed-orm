@@ -8,4 +8,3 @@ declare function If<ConditionT extends RawExpr<boolean>, ThenT extends RawExpr<P
     assertDelegate: sd.AssertDelegate<RawExprUtil.TypeOf<ThenT> | RawExprUtil.TypeOf<ElseT>>;
 }>);
 export { If as if };
-//# sourceMappingURL=if.d.ts.map

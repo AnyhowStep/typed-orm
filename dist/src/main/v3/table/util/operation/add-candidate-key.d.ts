@@ -21,4 +21,3 @@ export declare type AddCandidateKey<TableT extends ITable, DelegateT extends Can
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function addCandidateKey<TableT extends ITable, DelegateT extends CandidateKeyDelegate<TableT>>(table: TableT, delegate: AssertValidCandidateKeyDelegate<TableT, DelegateT>): (AssertValidCandidateKeyDelegate_Hack<TableT, DelegateT, AddCandidateKey<TableT, DelegateT>>);
-//# sourceMappingURL=add-candidate-key.d.ts.map

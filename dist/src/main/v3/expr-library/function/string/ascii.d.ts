@@ -6,4 +6,3 @@ export declare function ascii<RawExprT extends RawExpr<string>>(rawExpr: RawExpr
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=ascii.d.ts.map

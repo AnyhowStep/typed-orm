@@ -6,4 +6,3 @@ export declare function mul<ArrT extends Tuple<RawExpr<number>>>(...arr: ArrT): 
     usedRef: RawExprUtil.IntersectUsedRefTuple<ArrT>;
     assertDelegate: sd.AssertDelegate<number>;
 }>);
-//# sourceMappingURL=mul.d.ts.map

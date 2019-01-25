@@ -8,4 +8,3 @@ export declare type FromSingleValueSelectItem<ItemT extends SingleValueSelectIte
     readonly assertDelegate: ItemT["assertDelegate"];
 }> : ItemT extends IExprSelectItem ? FromExprSelectItem<ItemT> : never);
 export declare function fromSingleValueSelectItem<ItemT extends SingleValueSelectItem>(item: ItemT): FromSingleValueSelectItem<ItemT>;
-//# sourceMappingURL=from-single-value-select-item.d.ts.map

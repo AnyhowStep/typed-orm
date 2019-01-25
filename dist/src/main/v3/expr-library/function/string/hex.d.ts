@@ -6,4 +6,3 @@ export declare function hex<RawExprT extends RawExpr<bigint | number | string>>(
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<string>;
 }>);
-//# sourceMappingURL=hex.d.ts.map

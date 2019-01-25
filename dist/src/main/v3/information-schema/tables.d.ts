@@ -124,4 +124,3 @@ declare const x: {
     }>;
 };
 export = x;
-//# sourceMappingURL=tables.d.ts.map

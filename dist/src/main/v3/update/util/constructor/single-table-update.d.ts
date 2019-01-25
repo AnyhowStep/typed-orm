@@ -26,4 +26,3 @@ export declare function singleTableUpdate<QueryT extends UpdatableQuery, Modifie
     _assignments: Assignment[];
     _modifier: ModifierT;
 }>);
-//# sourceMappingURL=single-table-update.d.ts.map

@@ -6,4 +6,3 @@ export declare function charLength<RawExprT extends RawExpr<string>>(rawExpr: Ra
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=char-length.d.ts.map

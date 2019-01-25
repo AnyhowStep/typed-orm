@@ -6,4 +6,3 @@ export declare type ToInterface<AliasedTableT extends IAliasedTable> = (IAliased
     readonly alias: AliasedTableT["alias"];
     readonly columns: ColumnMapUtil.ToInterface<AliasedTableT["columns"]>;
 }>);
-//# sourceMappingURL=to-interface.d.ts.map

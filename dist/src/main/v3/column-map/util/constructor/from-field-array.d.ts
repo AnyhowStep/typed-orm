@@ -10,4 +10,3 @@ export declare type FromFieldArray<TableAliasT extends string, FieldsT extends s
     }>);
 });
 export declare function fromFieldArray<TableAliasT extends string, FieldsT extends sd.AnyField[]>(tableAlias: TableAliasT, fields: FieldsT): (FromFieldArray<TableAliasT, FieldsT>);
-//# sourceMappingURL=from-field-array.d.ts.map

@@ -26,4 +26,3 @@ export declare type RequireParentJoins<QueryT extends IQuery, NullableT extends 
 }>);
 export declare type AssertValidParentJoins<QueryT extends IQuery, ArrT extends NonEmptyTuple<IAliasedTable>> = (ArrT & AssertValidJoinTargetImpl<QueryT, ArrT[number]>);
 export declare function requireParentJoins<QueryT extends IQuery, NullableT extends boolean, ArrT extends NonEmptyTuple<IAliasedTable>>(query: QueryT, nullable: NullableT, ...arr: AssertValidParentJoins<QueryT, ArrT>): (RequireParentJoins<QueryT, NullableT, ArrT>);
-//# sourceMappingURL=require-parent-joins.d.ts.map

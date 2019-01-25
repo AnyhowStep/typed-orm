@@ -54,4 +54,3 @@ export declare type Concat<A extends any[], B extends any[]> = (({
     49: Concat<PushBack<A, B[0]>, PopFront<B>>;
 })[B["length"]]);
 export declare function concat<A extends any[], B extends any[]>(a: A, b: B): (Concat<A, B>);
-//# sourceMappingURL=concat.d.ts.map

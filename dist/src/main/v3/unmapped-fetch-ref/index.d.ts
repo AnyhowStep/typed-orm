@@ -18,4 +18,3 @@ export declare type UnmappedFetchRefImpl<RefT extends TypeRef, JoinsT extends IJ
     readonly [tableAlias in Exclude<keyof RefT, JoinUtil.Array.TableAliases<JoinsT>>]: (RefT[tableAlias]);
 });
 export declare type UnmappedFetchRef<SelectsT extends SelectItem[], JoinsT extends IJoin[]> = (UnmappedFetchRefImpl<TypeRefUtil.FromColumnRef<ColumnRefUtil.FromSelectItemArray<SelectsT>>, JoinsT>);
-//# sourceMappingURL=index.d.ts.map

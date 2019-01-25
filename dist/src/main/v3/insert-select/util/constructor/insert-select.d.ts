@@ -7,4 +7,3 @@ export declare function insertSelect<QueryT extends QueryUtil.AfterSelectClause,
     _row: InsertSelectRow<QueryT, TableT>;
     _modifier: ModifierT;
 }>);
-//# sourceMappingURL=insert-select.d.ts.map

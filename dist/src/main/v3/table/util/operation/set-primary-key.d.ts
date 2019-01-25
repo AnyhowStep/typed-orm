@@ -25,4 +25,3 @@ export declare type SetPrimaryKey<TableT extends ITable, DelegateT extends Prima
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function setPrimaryKey<TableT extends ITable, DelegateT extends PrimaryKeyDelegate<TableT>>(table: TableT, delegate: AssertValidCandidateKeyDelegate<TableT, DelegateT>): (AssertValidCandidateKeyDelegate_Hack<TableT, DelegateT, SetPrimaryKey<TableT, DelegateT>>);
-//# sourceMappingURL=set-primary-key.d.ts.map

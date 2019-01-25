@@ -8,4 +8,3 @@ export declare type ReplaceColumn<JoinT extends IJoin, ColumnT extends IColumn> 
     readonly nullable: JoinT["nullable"];
 }>) : JoinT) : JoinT) : never);
 export declare function replaceColumn<JoinT extends IJoin, ColumnT extends IColumn>(join: JoinT, column: ColumnT): ReplaceColumn<JoinT, ColumnT>;
-//# sourceMappingURL=replace-column.d.ts.map

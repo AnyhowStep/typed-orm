@@ -9,4 +9,3 @@ export declare namespace double {
         __canAccept: string | number | null;
     };
 }
-//# sourceMappingURL=double.d.ts.map

@@ -7,4 +7,3 @@ export declare function timestampAdd<IntervalT extends RawExpr<bigint>, DateTime
     usedRef: (RawExprUtil.UsedRef<IntervalT> & RawExprUtil.UsedRef<DateTimeT>);
     assertDelegate: sd.AssertDelegate<Date>;
 }>);
-//# sourceMappingURL=timestamp-add.d.ts.map

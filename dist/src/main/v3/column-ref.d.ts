@@ -108,4 +108,3 @@ export declare namespace ColumnRefUtil {
     type ColumnNames<RefT extends ColumnRef> = (RefT extends ColumnRef ? ColumnMapUtil.ColumnNames<RefT[Extract<keyof RefT, string>]> : never);
     function columnNames<RefT extends ColumnRef>(columnRef: RefT): ColumnNames<RefT>[];
 }
-//# sourceMappingURL=column-ref.d.ts.map

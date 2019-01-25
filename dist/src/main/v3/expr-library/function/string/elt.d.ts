@@ -7,4 +7,3 @@ export declare function elt<N extends RawExpr<number>, Arg0 extends RawExpr<stri
     usedRef: (RawExprUtil.UsedRef<N> & RawExprUtil.UsedRef<Arg0> & RawExprUtil.IntersectUsedRefTuple<Args>);
     assertDelegate: sd.AssertDelegate<string | null>;
 }>);
-//# sourceMappingURL=elt.d.ts.map

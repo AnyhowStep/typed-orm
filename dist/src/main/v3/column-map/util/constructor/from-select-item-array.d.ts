@@ -14,4 +14,3 @@ export declare type FromSelectItemArray<SelectsT extends SelectItem[], TableAlia
     }>>, TableAliasT> : columnName extends ColumnNames<Extract<SelectsT[number], ColumnMap>> ? ColumnUtil.WithTableAlias<FindWithColumnName<Extract<SelectsT[number], ColumnMap>, columnName>, TableAliasT> : columnName extends ColumnRefUtil.ColumnNames<Extract<SelectsT[number], ColumnRef>> ? ColumnUtil.WithTableAlias<ColumnRefUtil.FindWithColumnName<Extract<SelectsT[number], ColumnRef>, columnName>, TableAliasT> : never);
 });
 export declare function fromSelectItemArray<SelectsT extends SelectItem[], TableAliasT extends string>(selects: SelectsT, tableAlias: TableAliasT): FromSelectItemArray<SelectsT, TableAliasT>;
-//# sourceMappingURL=from-select-item-array.d.ts.map

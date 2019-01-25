@@ -4,4 +4,3 @@ export declare type FindWithTableAlias<JoinsT extends IJoin[], TableAliasT exten
         alias: TableAliasT;
     };
 }>);
-//# sourceMappingURL=find-with-table-alias.d.ts.map

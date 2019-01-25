@@ -6,4 +6,3 @@ export declare type Coalesce<QueryT extends RawExpr<PrimitiveExpr>, DefaultT ext
     assertDelegate: RawExprUtil.AssertDelegate<Exclude<RawExprUtil.TypeOf<QueryT>, null> | DefaultT>;
 }>);
 export declare function coalesce<QueryT extends RawExpr<PrimitiveExpr>, DefaultT extends RawExpr<RawExprUtil.TypeOf<QueryT>>>(query: QueryT, defaultExpr: DefaultT): Coalesce<QueryT, DefaultT>;
-//# sourceMappingURL=coalesce.d.ts.map

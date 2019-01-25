@@ -7,4 +7,3 @@ export declare function deleteIgnore<QueryT extends DeletableQuery>(query: Query
     })[];
     _modifier: DeleteModifier.IGNORE;
 }>);
-//# sourceMappingURL=delete-ignore.d.ts.map

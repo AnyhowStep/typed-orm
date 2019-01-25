@@ -6,4 +6,3 @@ export declare type FromJoinArray<ArrT extends IJoin[]> = (ArrT[number] extends 
 export declare function appendJoin(ref: Writable<ColumnIdentifierRef>, join: IJoin): Writable<ColumnIdentifierRef>;
 export declare function appendJoinArray(ref: Writable<ColumnIdentifierRef>, arr: IJoin[]): Writable<ColumnIdentifierRef>;
 export declare function fromJoinArray<ArrT extends IJoin[]>(arr: ArrT): FromJoinArray<ArrT>;
-//# sourceMappingURL=from-join-array.d.ts.map

@@ -24,4 +24,3 @@ export declare type RightJoin<QueryT extends AfterFromClause & CanWidenColumnTyp
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function rightJoin<QueryT extends AfterFromClause & CanWidenColumnTypes, AliasedTableT extends IAliasedTable, FromDelegateT extends JoinFromDelegate<QueryT["_joins"]>>(query: QueryT, aliasedTable: AssertValidJoinTarget<QueryT, AliasedTableT>, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>): (RightJoin<QueryT, AliasedTableT>);
-//# sourceMappingURL=right.d.ts.map

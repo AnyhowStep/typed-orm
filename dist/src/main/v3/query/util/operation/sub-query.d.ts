@@ -17,4 +17,3 @@ export declare type SubQueryResult<QueryT extends IQuery> = (Query<{
     readonly _mapDelegate: undefined;
 }>);
 export declare function subQuery<QueryT extends IQuery>(query: QueryT): SubQueryResult<QueryT>;
-//# sourceMappingURL=sub-query.d.ts.map

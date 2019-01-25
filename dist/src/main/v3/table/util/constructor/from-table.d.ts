@@ -16,4 +16,3 @@ export declare type FromTable<TableT extends ITable> = (Table<{
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function fromTable<TableT extends ITable>(table: TableT): (FromTable<TableT>);
-//# sourceMappingURL=from-table.d.ts.map

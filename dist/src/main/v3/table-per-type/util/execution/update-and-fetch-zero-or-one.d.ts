@@ -16,4 +16,3 @@ export declare type UpdateAndFetchZeroOrOneResult<TableT extends ITable, Delegat
     };
 }));
 export declare function updateAndFetchZeroOrOne<TableT extends ITable, DelegateT extends SetDelegate<TableT>>(connection: IConnection, table: TableT, where: IAnonymousTypedExpr<boolean>, delegate: DelegateT): (AssertValidSetDelegate_Hack<TableT, DelegateT, Promise<UpdateAndFetchZeroOrOneResult<TableT, DelegateT>>>);
-//# sourceMappingURL=update-and-fetch-zero-or-one.d.ts.map

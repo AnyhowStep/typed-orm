@@ -12,4 +12,3 @@ export declare function like<RawExprT extends RawExpr<string>, PatternT extends 
         assertDelegate: sd.AssertDelegate<boolean>;
     }>);
 });
-//# sourceMappingURL=like.d.ts.map

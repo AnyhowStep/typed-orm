@@ -14,4 +14,3 @@ export declare type ColumnType<TableT extends ITable, NameT extends string> = ({
         [otherTableAlias in TableAliasesExcept<TableT, tableAlias>]: (NameT extends keyof FindTable<TableT, otherTableAlias>["columns"] ? ((ReturnType<FindTable<TableT, tableAlias>["columns"][NameT]["assertDelegate"]>) extends (ReturnType<FindTable<TableT, otherTableAlias>["columns"][NameT]["assertDelegate"]>) ? true : false) : true);
     }[TableAliasesExcept<TableT, tableAlias>] extends true ? ReturnType<FindTable<TableT, tableAlias>["columns"][NameT]["assertDelegate"]> : never) : never);
 }[TableAliases<TableT>]);
-//# sourceMappingURL=column-type.d.ts.map

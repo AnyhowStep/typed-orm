@@ -14,4 +14,3 @@ export declare type PromiseResult<P extends Promise<any>> = (P extends Promise<i
 export declare function lazyInit<K extends string, T>(key: K, instantiate: () => T): {
     [k in K]: T;
 };
-//# sourceMappingURL=type.d.ts.map

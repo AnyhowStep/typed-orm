@@ -12,4 +12,3 @@ export declare type ReplaceInto<QueryT extends AfterSelectClause, TableT extends
 export declare function replaceInto<QueryT extends AfterSelectClause, TableT extends ITable & {
     insertAllowed: true;
 }>(query: QueryT, table: TableT, delegate: InsertSelectRowDelegate<QueryT, TableT>): (ReplaceInto<QueryT, TableT>);
-//# sourceMappingURL=replace-into.d.ts.map

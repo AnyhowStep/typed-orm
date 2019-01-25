@@ -8,4 +8,3 @@ export declare type InsertResult<TableT extends InsertableTable> = (Execute<IIns
     _modifier: undefined;
 }>>);
 export declare function insert<TableT extends InsertableTable>(connection: IConnection, table: TableT, insertRow: InsertRow<TableT>): (Promise<InsertResult<TableT>>);
-//# sourceMappingURL=insert.d.ts.map

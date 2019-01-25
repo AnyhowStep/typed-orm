@@ -46,4 +46,3 @@ export declare const longText: {
     (): sd.AssertDelegate<string>;
     nullable: StrDelegateNullable;
 };
-//# sourceMappingURL=char.d.ts.map

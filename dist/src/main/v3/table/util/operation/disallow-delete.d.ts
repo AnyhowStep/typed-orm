@@ -16,4 +16,3 @@ export declare type DisallowDelete<TableT extends ITable> = (Table<{
     readonly deleteAllowed: false;
 }>);
 export declare function disallowDelete<TableT extends ITable>(table: TableT): (DisallowDelete<TableT>);
-//# sourceMappingURL=disallow-delete.d.ts.map

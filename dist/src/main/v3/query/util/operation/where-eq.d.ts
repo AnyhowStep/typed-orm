@@ -29,4 +29,3 @@ export declare type WhereEq<QueryT extends AfterFromClause, DelegateT extends Wh
 }>);
 export declare type AssertValidEqTarget<QueryT extends AfterFromClause, DelegateT extends WhereEqDelegate<QueryT>, ValueT extends NonNullPrimitiveExpr> = (ValueT & (ValueT extends ReturnType<ReturnType<DelegateT>["assertDelegate"]> ? unknown : [ValueT, "does not extend", ReturnType<ReturnType<DelegateT>["assertDelegate"]>]));
 export declare function whereEq<QueryT extends AfterFromClause, DelegateT extends WhereEqDelegate<QueryT>, ValueT extends NonNullPrimitiveExpr>(query: QueryT, delegate: DelegateT, value: AssertValidEqTarget<QueryT, DelegateT, ValueT>): WhereEq<QueryT, DelegateT, ValueT>;
-//# sourceMappingURL=where-eq.d.ts.map

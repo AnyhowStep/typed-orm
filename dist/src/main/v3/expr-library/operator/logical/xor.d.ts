@@ -6,4 +6,3 @@ export declare function xor<LeftT extends RawExpr<boolean>, RightT extends RawEx
     usedRef: ColumnRefUtil.Intersect<RawExprUtil.UsedRef<LeftT>, RawExprUtil.UsedRef<RightT>>;
     assertDelegate: sd.AssertDelegate<boolean>;
 }>);
-//# sourceMappingURL=xor.d.ts.map

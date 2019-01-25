@@ -12,4 +12,3 @@ export declare type UpdateAndFetchOneResult<TableT extends ITable, DelegateT ext
     };
 });
 export declare function updateAndFetchOne<TableT extends ITable, DelegateT extends SetDelegate<TableT>>(connection: IConnection, table: TableT, where: IAnonymousTypedExpr<boolean>, delegate: DelegateT): (AssertValidSetDelegate_Hack<TableT, DelegateT, Promise<UpdateAndFetchOneResult<TableT, DelegateT>>>);
-//# sourceMappingURL=update-and-fetch-one.d.ts.map

@@ -4,4 +4,3 @@ export declare type AfterWhenCase = ICaseCondition<{
     usedRef: {};
     result: sd.AssertDelegate<any>;
 }>;
-//# sourceMappingURL=after-when-case.d.ts.map

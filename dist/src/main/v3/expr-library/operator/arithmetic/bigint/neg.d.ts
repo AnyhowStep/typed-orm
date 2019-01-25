@@ -5,4 +5,3 @@ export declare function bigIntNeg<RawExprT extends RawExpr<bigint>>(rawExpr: Raw
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=neg.d.ts.map

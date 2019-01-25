@@ -6,4 +6,3 @@ export declare namespace StringUtil {
     function zeroPad(num: number, length: number): string;
     function trailingZeroPad(num: number | string, length: number): string;
 }
-//# sourceMappingURL=string.d.ts.map

@@ -17,4 +17,3 @@ export declare type SqlCalcFoundRows<QueryT extends AfterSelectClause> = (Query<
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function sqlCalcFoundRows<QueryT extends AfterSelectClause>(query: QueryT): SqlCalcFoundRows<QueryT>;
-//# sourceMappingURL=sql-calc-found-rows.d.ts.map

@@ -12,4 +12,3 @@ export declare type FetchLatestOrDefaultResult<LogT extends CompletedLog> = ({
     default: PreviousRow<LogT>;
 });
 export declare function fetchLatestOrDefault<LogT extends CompletedLog>(log: LogT, connection: IConnection, entityIdentifier: EntityIdentifier<LogT>): Promise<FetchLatestOrDefaultResult<LogT>>;
-//# sourceMappingURL=fetch-latest-or-default.d.ts.map

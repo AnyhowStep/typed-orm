@@ -8,4 +8,3 @@ export declare type LatestValue<LogT extends CompletedLog, DelegateT extends Lat
     tableAlias: typeof ALIASED;
 }>, ReturnType<DelegateT>["name"]>);
 export declare function latestValue<LogT extends CompletedLog, DelegateT extends LatestValueDelegate<LogT>>(log: LogT, entityIdentifier: EntityIdentifier<LogT>, delegate: DelegateT): (LatestValue<LogT, DelegateT>);
-//# sourceMappingURL=latest-value.d.ts.map

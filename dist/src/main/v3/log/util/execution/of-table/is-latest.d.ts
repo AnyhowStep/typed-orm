@@ -10,4 +10,3 @@ export declare type IsLatest<LogT extends LogNoTrackedDefaults> = (ExprUtil.As<I
     tableAlias: typeof ALIASED;
 }>, "isLatest">);
 export declare function isLatest<LogT extends LogNoTrackedDefaults>(log: LogT): (IsLatest<LogT>);
-//# sourceMappingURL=is-latest.d.ts.map

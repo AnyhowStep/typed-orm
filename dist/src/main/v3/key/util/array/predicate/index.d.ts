@@ -3,4 +3,3 @@ export * from "./has-sub-key";
 export * from "./has-super-key";
 export * from "./is-key-array";
 export * from "./is-disjoint";
-//# sourceMappingURL=index.d.ts.map

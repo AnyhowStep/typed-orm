@@ -20,4 +20,3 @@ export declare type WhereEqCandidateKey<QueryT extends AfterFromClause> = (Query
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function whereEqCandidateKey<QueryT extends AfterFromClause, TableT extends ITable>(query: QueryT, table: TableT & QueryT["_joins"][number]["aliasedTable"], key: CandidateKey<TableT>): WhereEqCandidateKey<QueryT>;
-//# sourceMappingURL=where-eq-candidate-key.d.ts.map

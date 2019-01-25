@@ -9,4 +9,3 @@ export declare type Comparison = (<LeftT extends RawExpr<NonNullPrimitiveExpr>, 
     assertDelegate: sd.AssertDelegate<boolean>;
 }>));
 export declare function comparison(operator: string): Comparison;
-//# sourceMappingURL=comparison.d.ts.map

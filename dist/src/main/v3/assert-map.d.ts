@@ -12,4 +12,3 @@ export declare namespace AssertMapUtil {
         [columnName in ColumnT["name"]]: ReturnType<ColumnT["assertDelegate"]>;
     } : never);
 }
-//# sourceMappingURL=assert-map.d.ts.map

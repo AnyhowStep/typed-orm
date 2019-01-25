@@ -4,4 +4,3 @@ export declare type FromExprSelectItem<ExprSelectItemT extends IExprSelectItem> 
     readonly name: ExprSelectItemT["alias"];
 } : never);
 export declare function fromExprSelectItem<ExprSelectItemT extends IExprSelectItem>(exprSelectItem: ExprSelectItemT): FromExprSelectItem<ExprSelectItemT>;
-//# sourceMappingURL=from-expr-select-item.d.ts.map

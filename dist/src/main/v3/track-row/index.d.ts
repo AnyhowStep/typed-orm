@@ -14,4 +14,3 @@ export declare namespace TrackRowUtil {
         insertRow: InsertRowLiteral<LogT["table"]>;
     };
 }
-//# sourceMappingURL=index.d.ts.map

@@ -14,4 +14,3 @@ export declare function coalesce<Arg0 extends RawExpr<PrimitiveExpr>, Arg1 exten
     usedRef: RawExprUtil.IntersectUsedRefTuple<[Arg0, Arg1, Arg2, Arg3]>;
     assertDelegate: RawExprUtil.AssertDelegate<Exclude<RawExprUtil.TypeOf<Arg0>, null> | Exclude<RawExprUtil.TypeOf<Arg1>, null> | Exclude<RawExprUtil.TypeOf<Arg2>, null> | Arg3>;
 }>);
-//# sourceMappingURL=coalesce.d.ts.map

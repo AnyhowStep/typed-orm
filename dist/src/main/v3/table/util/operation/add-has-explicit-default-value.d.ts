@@ -21,4 +21,3 @@ export declare type AddHasExplicitDefaultValue<TableT extends ITable, DelegateT 
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function addHasExplicitDefaultValue<TableT extends ITable, DelegateT extends HasExplicitDefaultValueDelegate<TableT>>(table: TableT, delegate: DelegateT): (AddHasExplicitDefaultValue<TableT, DelegateT>);
-//# sourceMappingURL=add-has-explicit-default-value.d.ts.map

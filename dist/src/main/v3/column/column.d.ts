@@ -37,4 +37,3 @@ export declare function column<TableAliasT extends string, NameT extends string,
     readonly name: NameT;
     readonly assertDelegate: sd.AssertDelegate<sd.TypeOf<AssertFuncT>>;
 }>;
-//# sourceMappingURL=column.d.ts.map

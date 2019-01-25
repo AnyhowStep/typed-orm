@@ -22,4 +22,3 @@ export declare type SelectExpr<QueryT extends BeforeUnionClause & BeforeSelectCl
 }>);
 export declare type AssertValidSelectExprDelegate<QueryT extends BeforeUnionClause & BeforeSelectClause, SelectDelegateT extends SelectExprDelegate<QueryT>> = (SelectDelegateT & AssertValidSelectDelegateImpl<QueryT, (columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQueryJoins<QueryT>>) => [ExprUtil.As<ReturnType<SelectDelegateT>, "value">]>);
 export declare function selectExpr<QueryT extends BeforeUnionClause & BeforeSelectClause, SelectDelegateT extends SelectExprDelegate<QueryT>>(query: QueryT, delegate: AssertValidSelectExprDelegate<QueryT, SelectDelegateT>): SelectExpr<QueryT, SelectDelegateT>;
-//# sourceMappingURL=select-expr.d.ts.map

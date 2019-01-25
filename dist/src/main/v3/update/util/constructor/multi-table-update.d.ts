@@ -37,4 +37,3 @@ export declare function multiTableUpdate<QueryT extends UpdatableQuery, Modifier
     _assignments: Assignment[];
     _modifier: ModifierT;
 }>);
-//# sourceMappingURL=multi-table-update.d.ts.map

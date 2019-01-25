@@ -6,4 +6,3 @@ export declare function deleteOneByPk<TableT extends ITable & {
     deleteAllowed: true;
     primaryKey: Key;
 }>(connection: IConnection, table: TableT, pk: PrimaryKey<TableT>): (Promise<DeleteOneResult>);
-//# sourceMappingURL=delete-one-by-pk.d.ts.map

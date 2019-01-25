@@ -22,4 +22,3 @@ export declare function fetchTablesOfCurrentDatabase(connection: IConnection): P
     readonly CREATE_OPTIONS: string | null;
     readonly TABLE_COMMENT: string;
 }[]>;
-//# sourceMappingURL=fetch-tables-of-current-database.d.ts.map

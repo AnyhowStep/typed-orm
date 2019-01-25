@@ -7,4 +7,3 @@ export declare function exists<QueryT extends QueryUtil.AfterFromClause | QueryU
     usedRef: (QueryT["_parentJoins"] extends IJoin[] ? ColumnRefUtil.FromJoinArray<QueryT["_parentJoins"]> : {});
     assertDelegate: sd.AssertDelegate<boolean>;
 }>);
-//# sourceMappingURL=exists.d.ts.map

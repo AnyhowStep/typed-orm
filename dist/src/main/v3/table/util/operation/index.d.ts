@@ -21,4 +21,3 @@ export * from "./set-mutable";
 export * from "./set-primary-key";
 export * from "./to-interface";
 export * from "./validate";
-//# sourceMappingURL=index.d.ts.map

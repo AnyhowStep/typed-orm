@@ -11,4 +11,3 @@ export declare function format<X extends RawExpr<number>, DecimalPlacesT extends
     usedRef: (RawExprUtil.UsedRef<X> & RawExprUtil.UsedRef<DecimalPlacesT> & RawExprUtil.UsedRef<LocaleT>);
     assertDelegate: sd.AssertDelegate<string>;
 }>);
-//# sourceMappingURL=format.d.ts.map

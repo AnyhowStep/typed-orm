@@ -6,4 +6,3 @@ export declare type HasColumnIdentifier<ColumnIdentifierRefT extends ColumnIdent
 export declare function hasColumnIdentifier<ColumnIdentifierRefT extends ColumnIdentifierRef, ColumnIdentifierT extends ColumnIdentifier>(columnRef: ColumnIdentifierRefT, columnIdentifier: ColumnIdentifierT): (HasColumnIdentifier<ColumnIdentifierRefT, ColumnIdentifierT>);
 export declare function assertHasColumnIdentifier(columnRef: ColumnIdentifierRef, columnIdentifier: ColumnIdentifier): void;
 export declare function assertHasColumnIdentifiers(columnRef: ColumnIdentifierRef, columnIdentifiers: ColumnIdentifier[]): void;
-//# sourceMappingURL=has-column-identifier.d.ts.map

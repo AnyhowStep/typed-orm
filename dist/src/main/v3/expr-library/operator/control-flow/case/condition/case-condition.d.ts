@@ -24,4 +24,3 @@ export declare class CaseCondition<DataT extends CaseConditionData> implements I
     nullableElse<ElseT extends RawExpr<ReturnType<Extract<this, CaseConditionUtil.AfterWhenCase>["result"]> | null>>(this: Extract<this, CaseConditionUtil.AfterWhenCase>, elseExpr: ElseT): (CaseConditionUtil.NullableElse<Extract<this, CaseConditionUtil.AfterWhenCase>, ElseT>);
     end(this: Extract<this, CaseConditionUtil.AfterWhenCase>): (CaseConditionUtil.End<Extract<this, CaseConditionUtil.AfterWhenCase>>);
 }
-//# sourceMappingURL=case-condition.d.ts.map

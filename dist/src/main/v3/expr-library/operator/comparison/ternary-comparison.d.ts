@@ -8,4 +8,3 @@ export declare type TernaryComparison = (<LeftT extends RawExpr<NonNullPrimitive
     assertDelegate: sd.AssertDelegate<boolean>;
 }>));
 export declare function ternaryComparison(leftOperator: string, rightOperator: string): TernaryComparison;
-//# sourceMappingURL=ternary-comparison.d.ts.map

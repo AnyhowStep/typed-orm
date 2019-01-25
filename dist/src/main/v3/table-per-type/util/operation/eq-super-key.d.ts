@@ -8,4 +8,3 @@ export declare function eqSuperKey<TableT extends ITable>(table: TableT, sk: Sup
     usedRef: ColumnRefUtil.FromColumnArray<ColumnUtil.FromColumnMap<TableT["columns"] | TableT["parents"][number]["columns"]>[]>;
     assertDelegate: sd.AssertDelegate<boolean>;
 }>);
-//# sourceMappingURL=eq-super-key.d.ts.map

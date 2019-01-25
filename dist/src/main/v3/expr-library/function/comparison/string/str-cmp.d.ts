@@ -7,4 +7,3 @@ export declare function strCmp<LeftT extends RawExpr<string>, RightT extends Raw
     usedRef: ColumnRefUtil.Intersect<RawExprUtil.UsedRef<LeftT>, RawExprUtil.UsedRef<RightT>>;
     assertDelegate: sd.AssertDelegate<0 | 1 | -1>;
 }>);
-//# sourceMappingURL=str-cmp.d.ts.map

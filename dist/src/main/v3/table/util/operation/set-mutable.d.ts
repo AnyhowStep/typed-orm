@@ -21,4 +21,3 @@ export declare type SetMutable<TableT extends ITable, DelegateT extends MutableD
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function setMutable<TableT extends ITable, DelegateT extends MutableDelegate<TableT>>(table: TableT, delegate: DelegateT): (SetMutable<TableT, DelegateT>);
-//# sourceMappingURL=set-mutable.d.ts.map

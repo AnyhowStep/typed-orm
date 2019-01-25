@@ -15,4 +15,3 @@ export declare type InsertRowLiteral<TableT extends ITable> = ({
 export declare function insertAndFetch<TableT extends ITable & {
     insertAllowed: true;
 }>(connection: IConnection, table: TableT & TableUtil.AssertHasCandidateKey<TableT>, rawInsertRow: InsertRow<TableT>): Promise<TypeMap<TableT>>;
-//# sourceMappingURL=insert-and-fetch.d.ts.map

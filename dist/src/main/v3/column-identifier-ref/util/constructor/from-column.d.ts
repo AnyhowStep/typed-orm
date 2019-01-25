@@ -6,4 +6,3 @@ export declare type FromColumn<ColumnT extends IColumn> = (ColumnT extends IColu
     readonly [tableAlias in ColumnT["tableAlias"]]: (ColumnIdentifierMapUtil.FromColumn<ColumnT>);
 } : never);
 export declare function appendColumn(ref: Writable<ColumnIdentifierRef>, column: IColumn): Writable<ColumnIdentifierRef>;
-//# sourceMappingURL=from-column.d.ts.map

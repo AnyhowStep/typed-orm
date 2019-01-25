@@ -4,4 +4,3 @@ export declare function utcTimestamp(fractionalSecondsPrecision?: 0 | 1 | 2 | 3)
     usedRef: {};
     assertDelegate: sd.AssertDelegate<Date>;
 }>;
-//# sourceMappingURL=utc-timestamp.d.ts.map

@@ -20,4 +20,3 @@ export declare type As<QueryT extends {
 } : unknown));
 export declare type AssertAliasableQuery<QueryT extends AfterSelectClause> = (QueryT & (SelectItemArrayUtil.DuplicateColumnName<QueryT["_selects"]> extends never ? unknown : ["Duplicate column names not allowed in selects", SelectItemArrayUtil.DuplicateColumnName<QueryT["_selects"]>]));
 export declare function as<QueryT extends AfterSelectClause, AliasT extends string>(query: AssertAliasableQuery<QueryT>, alias: AliasT): As<QueryT, AliasT>;
-//# sourceMappingURL=as.d.ts.map

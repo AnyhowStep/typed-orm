@@ -5,4 +5,3 @@ export declare type FromColumnArray<ColumnsT extends IColumn[]> = ({
     }>);
 });
 export declare function fromColumnArray<ColumnsT extends IColumn[]>(columns: ColumnsT): FromColumnArray<ColumnsT>;
-//# sourceMappingURL=from-column-array.d.ts.map

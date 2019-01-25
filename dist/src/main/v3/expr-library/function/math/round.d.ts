@@ -6,4 +6,3 @@ export declare function round<RawExprT extends RawExpr<number>>(rawExpr: RawExpr
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=round.d.ts.map

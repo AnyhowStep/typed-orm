@@ -16,4 +16,3 @@ export declare type NewInstance = Query<{
     readonly _mapDelegate: undefined;
 }>;
 export declare function newInstance(): NewInstance;
-//# sourceMappingURL=constructor.d.ts.map

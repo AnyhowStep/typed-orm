@@ -24,4 +24,3 @@ export declare type AssertValidJoinDeclarationArray<QueryT extends AfterFromClau
     [index in Extract<keyof ArrT, string>]: (ArrT[index] extends IJoinDeclaration ? (ArrT[index]["fromTable"]["alias"] extends (QueryT["_joins"][number]["aliasedTable"]["alias"] | JoinDeclarationUtil.Array.ToTableAliasBeforeIndex<ArrT, index>) ? unknown : ["Invalid fromTable;", index, ArrT[index]["fromTable"]["alias"], "is not in joins"]) : never);
 }>));
 export declare function useJoins<QueryT extends AfterFromClause, ArrT extends NonEmptyTuple<IJoinDeclaration>>(query: QueryT, arr: AssertValidJoinDeclarationArray<QueryT, ArrT>): (UseJoins<QueryT, ArrT>);
-//# sourceMappingURL=use-joins.d.ts.map

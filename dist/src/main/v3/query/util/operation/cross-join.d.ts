@@ -23,4 +23,3 @@ export declare type CrossJoin<QueryT extends AfterFromClause, AliasedTableT exte
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function crossJoin<QueryT extends AfterFromClause, AliasedTableT extends IAliasedTable>(query: QueryT, aliasedTable: AssertValidJoinTarget<QueryT, AliasedTableT>): (CrossJoin<QueryT, AliasedTableT>);
-//# sourceMappingURL=cross-join.d.ts.map

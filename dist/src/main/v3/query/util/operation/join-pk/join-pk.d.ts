@@ -34,4 +34,3 @@ export declare type JoinPkDelegate<QueryT extends AfterFromClause> = ((tables: {
 export declare function joinPk<QueryT extends AfterFromClause, DelegateT extends JoinPkDelegate<QueryT>, ToTableT extends ITable & {
     primaryKey: string[];
 }, NullableT extends boolean>(query: QueryT, delegate: DelegateT, toTable: AssertValidJoinPk_FromDelegate<QueryT, DelegateT, ToTableT>, nullable: NullableT, joinType: JoinType): (JoinResult<QueryT, ToTableT, NullableT>);
-//# sourceMappingURL=join-pk.d.ts.map

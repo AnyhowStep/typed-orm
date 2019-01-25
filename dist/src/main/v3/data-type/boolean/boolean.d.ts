@@ -42,4 +42,3 @@ declare namespace getFalse {
     };
 }
 export { getTrue as true, getFalse as false, };
-//# sourceMappingURL=boolean.d.ts.map

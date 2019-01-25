@@ -36,4 +36,3 @@ export declare type SetLatestOrder<LogT extends LogMustSetLatestOrder, DelegateT
     readonly trackedDefaults: undefined;
 }>);
 export declare function setLatestOrder<LogT extends LogMustSetLatestOrder, DelegateT extends SetLatestOrderDelegate<LogT>>(log: LogT, delegate: DelegateT): (AssertValidSetLatestOrderDelegate_Hack<LogT, DelegateT, SetLatestOrder<LogT, DelegateT>>);
-//# sourceMappingURL=set-latest-order.d.ts.map

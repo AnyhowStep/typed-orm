@@ -3,4 +3,3 @@ export declare function fetchCandidateKeysOfTable(connection: IConnection, table
     name: string;
     columns: string[];
 }[]>;
-//# sourceMappingURL=fetch-candidate-keys-of-table.d.ts.map

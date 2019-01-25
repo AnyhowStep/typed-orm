@@ -38,4 +38,3 @@ export declare class Indentation {
      */
     decreaseBlockLevel(): void;
 }
-//# sourceMappingURL=Indentation.d.ts.map

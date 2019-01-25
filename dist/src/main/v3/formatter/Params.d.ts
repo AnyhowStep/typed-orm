@@ -20,4 +20,3 @@ export declare class Params {
      */
     get({ key, value }: Token): string;
 }
-//# sourceMappingURL=Params.d.ts.map

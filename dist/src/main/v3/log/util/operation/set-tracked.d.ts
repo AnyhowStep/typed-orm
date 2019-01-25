@@ -34,4 +34,3 @@ export declare type SetTracked<LogT extends LogMustSetTracked, DelegateT extends
     readonly trackedDefaults: undefined;
 }>);
 export declare function setTracked<LogT extends LogMustSetTracked, DelegateT extends SetTrackedDelegate<LogT>>(log: LogT, delegate: DelegateT): (SetTracked<LogT, DelegateT>);
-//# sourceMappingURL=set-tracked.d.ts.map

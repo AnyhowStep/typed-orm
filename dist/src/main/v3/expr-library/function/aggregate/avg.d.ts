@@ -6,4 +6,3 @@ export declare function avg<RawExprT extends RawExpr<number | bigint | null>>(ra
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<number | null>;
 }>);
-//# sourceMappingURL=avg.d.ts.map

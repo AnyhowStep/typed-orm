@@ -7,4 +7,3 @@ export declare namespace dateTime {
         __canAccept: Date | null;
     };
 }
-//# sourceMappingURL=date-time.d.ts.map

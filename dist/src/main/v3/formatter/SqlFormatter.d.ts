@@ -13,4 +13,3 @@ export declare class SqlFormatter {
      */
     format(query: string): string;
 }
-//# sourceMappingURL=SqlFormatter.d.ts.map

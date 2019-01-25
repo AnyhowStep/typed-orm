@@ -6,4 +6,3 @@ export declare type WithType<ColumnT extends IColumn, NewAssertFuncT extends sd.
     readonly assertDelegate: sd.AssertDelegate<sd.TypeOf<NewAssertFuncT>>;
 }> : never);
 export declare function withType<ColumnT extends IColumn, NewAssertFuncT extends sd.AnyAssertFunc>({ tableAlias, name, __isFromExprSelectItem, }: ColumnT, newAssertFunc: NewAssertFuncT): (WithType<ColumnT, NewAssertFuncT>);
-//# sourceMappingURL=with-type.d.ts.map

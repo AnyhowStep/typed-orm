@@ -8,4 +8,3 @@ export declare type UnaryComparison = (<RawExprT extends RawExpr<NonNullPrimitiv
     assertDelegate: sd.AssertDelegate<boolean>;
 }>));
 export declare function unaryComparison(postFixOperator: string): UnaryComparison;
-//# sourceMappingURL=unary-comparison.d.ts.map

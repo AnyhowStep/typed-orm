@@ -145,4 +145,3 @@ export declare class Table<DataT extends TableData> implements ITable<DataT> {
     deleteZeroOrOneByPk(this: Extract<this, DeletableTable & TableWithPk>, connection: IConnection, pk: PrimaryKey<Extract<this, DeletableTable & TableWithPk>>): (Promise<DeleteZeroOrOneResult>);
     deleteZeroOrOneBySk(this: Extract<this, DeletableTable> & TableUtil.AssertHasCandidateKey<this>, connection: IConnection, sk: SuperKey<Extract<this, DeletableTable>>): (Promise<DeleteZeroOrOneResult>);
 }
-//# sourceMappingURL=table.d.ts.map

@@ -79,4 +79,3 @@ declare const x: {
     }>;
 };
 export = x;
-//# sourceMappingURL=key-column-usage.d.ts.map

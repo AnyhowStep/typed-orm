@@ -6,4 +6,3 @@ export declare function integerDiv<LeftT extends RawExpr<bigint>, RightT extends
     usedRef: ColumnRefUtil.Intersect<RawExprUtil.UsedRef<LeftT>, RawExprUtil.UsedRef<RightT>>;
     assertDelegate: sd.AssertDelegate<bigint | null>;
 }>);
-//# sourceMappingURL=integer-div.d.ts.map

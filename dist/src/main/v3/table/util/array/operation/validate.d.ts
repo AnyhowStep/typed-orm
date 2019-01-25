@@ -5,4 +5,3 @@ export interface ValidateTableArrayResult {
     errors: string[];
 }
 export declare function validate(tables: ITable[], connection: IConnection, result: ValidateTableArrayResult): Promise<void>;
-//# sourceMappingURL=validate.d.ts.map

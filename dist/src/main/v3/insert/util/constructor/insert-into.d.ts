@@ -5,4 +5,3 @@ export declare function insertInto<TableT extends InsertableTable>(table: TableT
     _values: undefined;
     _modifier: undefined;
 }>);
-//# sourceMappingURL=insert-into.d.ts.map

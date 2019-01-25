@@ -5,4 +5,3 @@ export declare function neg<RawExprT extends RawExpr<number>>(rawExpr: RawExprT)
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<number>;
 }>);
-//# sourceMappingURL=neg.d.ts.map

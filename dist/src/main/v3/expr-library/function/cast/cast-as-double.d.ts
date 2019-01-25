@@ -6,4 +6,3 @@ export declare function castAsDouble<RawExprT extends RawExpr<bigint>>(rawExpr: 
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<number>;
 }>);
-//# sourceMappingURL=cast-as-double.d.ts.map

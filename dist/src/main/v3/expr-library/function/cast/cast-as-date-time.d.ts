@@ -6,4 +6,3 @@ export declare function castAsDateTime<RawExprT extends RawExpr<Date | string>>(
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=cast-as-date-time.d.ts.map

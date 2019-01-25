@@ -7,4 +7,3 @@ export declare function timestampDiff<FromT extends RawExpr<Date>, ToT extends R
     usedRef: (RawExprUtil.UsedRef<FromT> & RawExprUtil.UsedRef<ToT>);
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=timestamp-diff.d.ts.map

@@ -144,4 +144,3 @@ export interface ITransactionConnection extends IConnection {
     rollback(): Promise<void>;
     commit(): Promise<void>;
 }
-//# sourceMappingURL=connection.d.ts.map

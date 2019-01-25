@@ -32,4 +32,3 @@ export declare class Join<DataT extends JoinData> implements IJoin<DataT> {
     readonly to: IColumn[];
     constructor(data: DataT, joinType: JoinType, from: IColumn[], to: IColumn[]);
 }
-//# sourceMappingURL=join.d.ts.map

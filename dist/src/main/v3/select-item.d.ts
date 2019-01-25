@@ -12,4 +12,3 @@ export declare namespace SelectItemUtil {
     function isSelectItem(raw: any): raw is SelectItem;
     type TypeOf<ItemT extends SingleValueSelectItem> = (ItemT extends IExprSelectItem ? ReturnType<ItemT["assertDelegate"]> : ItemT extends IColumn ? ReturnType<ItemT["assertDelegate"]> : never);
 }
-//# sourceMappingURL=select-item.d.ts.map

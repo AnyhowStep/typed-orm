@@ -20,4 +20,3 @@ export declare type FromFieldTuple<NameT extends string, FieldsT extends Tuple<s
     readonly deleteAllowed: true;
 }>);
 export declare function fromFieldTuple<NameT extends string, FieldsT extends Tuple<sd.AnyField>>(name: NameT, fields: FieldsT): (FromFieldTuple<NameT, FieldsT>);
-//# sourceMappingURL=from-field-tuple.d.ts.map

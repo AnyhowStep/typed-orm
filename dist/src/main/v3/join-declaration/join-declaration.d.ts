@@ -26,4 +26,3 @@ export declare class JoinDeclaration<DataT extends JoinDeclarationData> implemen
     swap(): JoinDeclarationUtil.Swap<this>;
     eq(): JoinDeclarationUtil.Eq<this>;
 }
-//# sourceMappingURL=join-declaration.d.ts.map

@@ -9,4 +9,3 @@ export declare namespace float {
         __canAccept: string | number | null;
     };
 }
-//# sourceMappingURL=float.d.ts.map

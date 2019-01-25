@@ -6,4 +6,3 @@ export * from "./delete-zero-or-one-by-ck";
 export * from "./delete-zero-or-one-by-pk";
 export * from "./delete-zero-or-one-by-sk";
 export * from "./delete-zero-or-one";
-//# sourceMappingURL=index.d.ts.map

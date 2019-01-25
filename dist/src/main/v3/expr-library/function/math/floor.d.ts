@@ -6,4 +6,3 @@ export declare function floor<RawExprT extends RawExpr<number>>(rawExpr: RawExpr
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=floor.d.ts.map

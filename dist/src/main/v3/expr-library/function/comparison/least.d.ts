@@ -7,4 +7,3 @@ export declare function least<Arg0 extends RawExpr<NonNullPrimitiveExpr>, Arg1 e
     usedRef: (RawExprUtil.UsedRef<Arg0> & RawExprUtil.UsedRef<Arg1> & RawExprUtil.IntersectUsedRefTuple<Args>);
     assertDelegate: RawExprUtil.AssertDelegate<Arg0>;
 }>);
-//# sourceMappingURL=least.d.ts.map

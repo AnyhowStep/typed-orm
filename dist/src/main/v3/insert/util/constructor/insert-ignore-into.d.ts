@@ -5,4 +5,3 @@ export declare function insertIgnoreInto<TableT extends InsertableTable>(table: 
     _values: undefined;
     _modifier: InsertModifier.IGNORE;
 }>);
-//# sourceMappingURL=insert-ignore-into.d.ts.map

@@ -18,4 +18,3 @@ export declare type FromAssertMap<NameT extends string, AssertMapT extends Asser
     readonly deleteAllowed: true;
 }>);
 export declare function fromAssertMap<NameT extends string, AssertMapT extends AssertMap>(name: NameT, assertMap: AssertMapT): (FromAssertMap<NameT, AssertMapT>);
-//# sourceMappingURL=from-assert-map.d.ts.map

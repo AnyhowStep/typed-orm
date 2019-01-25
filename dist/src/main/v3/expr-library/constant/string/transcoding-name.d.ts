@@ -41,4 +41,3 @@ export declare enum TranscodingName {
     eucjpms = "eucjpms",
     gb18030 = "gb18030"
 }
-//# sourceMappingURL=transcoding-name.d.ts.map

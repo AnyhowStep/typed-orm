@@ -6,4 +6,3 @@ export declare type FromRawExpr<RawExprT extends RawExpr<PrimitiveExpr>> = (Expr
     assertDelegate: RawExprUtil.AssertDelegate<RawExprT>;
 }>);
 export declare function fromRawExpr<RawExprT extends RawExpr<PrimitiveExpr>>(rawExpr: RawExprT): FromRawExpr<RawExprT>;
-//# sourceMappingURL=from-raw-expr.d.ts.map

@@ -9,4 +9,3 @@ export declare enum TemporalUnit {
     QUARTER = "QUARTER",
     YEAR = "YEAR"
 }
-//# sourceMappingURL=temporal-unit.d.ts.map

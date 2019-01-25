@@ -111,4 +111,3 @@ export declare enum Locale {
     zh_HK = "zh_HK",
     zh_TW = "zh_TW"
 }
-//# sourceMappingURL=locale.d.ts.map

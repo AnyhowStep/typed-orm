@@ -8,4 +8,3 @@ export declare type LatestOrderOrNull<LogT extends LogNoTrackedDefaults> = (Expr
     tableAlias: typeof ALIASED;
 }>, LogT["latestOrder"][0]["name"]>);
 export declare function latestOrderOrNull<LogT extends LogNoTrackedDefaults>(log: LogT, entityIdentifier: EntityIdentifier<LogT>): (LatestOrderOrNull<LogT>);
-//# sourceMappingURL=latest-order-or-null.d.ts.map

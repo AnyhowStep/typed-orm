@@ -16,4 +16,3 @@ declare function del<QueryT extends DeletableQuery, ModifierT extends DeleteModi
     _modifier: ModifierT;
 }>);
 export { del as delete };
-//# sourceMappingURL=delete.d.ts.map

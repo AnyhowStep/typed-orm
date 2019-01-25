@@ -16,4 +16,3 @@ export declare type DisallowInsert<TableT extends ITable> = (Table<{
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function disallowInsert<TableT extends ITable>(table: TableT): (DisallowInsert<TableT>);
-//# sourceMappingURL=disallow-insert.d.ts.map

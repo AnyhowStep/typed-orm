@@ -21,4 +21,3 @@ export declare namespace QueryTreeUtil {
     function toSqlPretty(tree: QueryTree): string;
     function isQueryTree(raw: any): raw is QueryTree;
 }
-//# sourceMappingURL=query-tree.d.ts.map

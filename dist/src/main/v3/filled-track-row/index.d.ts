@@ -15,4 +15,3 @@ export declare namespace FilledTrackRowUtil {
     function assertFilledTrackRow<LogT extends LogNoTrackedDefaults>(log: LogT, newRow: TrackRow<LogT>): FilledTrackRow<LogT>;
     function toInsertLiteralRow<LogT extends LogNoTrackedDefaults>(log: LogT, entityIdentifier: EntityIdentifier<LogT>, newRow: FilledTrackRow<LogT>, connection: IConnection): Promise<InsertRowLiteral<LogT["table"]>>;
 }
-//# sourceMappingURL=index.d.ts.map

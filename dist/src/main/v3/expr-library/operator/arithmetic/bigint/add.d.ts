@@ -6,4 +6,3 @@ export declare function bigIntAdd<ArrT extends Tuple<RawExpr<bigint>>>(...arr: A
     usedRef: RawExprUtil.IntersectUsedRefTuple<ArrT>;
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=add.d.ts.map

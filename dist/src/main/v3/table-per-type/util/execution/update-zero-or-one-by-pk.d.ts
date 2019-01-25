@@ -6,4 +6,3 @@ import { PrimaryKey } from "../../../primary-key";
 export declare function updateZeroOrOneByPk<TableT extends ITable & {
     primaryKey: Key;
 }, DelegateT extends SetDelegate<TableT>>(connection: IConnection, table: TableT, pk: PrimaryKey<TableT>, delegate: DelegateT): (AssertValidSetDelegate_Hack<TableT, DelegateT, Promise<UpdateZeroOrOneResult>>);
-//# sourceMappingURL=update-zero-or-one-by-pk.d.ts.map

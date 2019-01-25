@@ -4,4 +4,3 @@ export * from "./join-ck-using";
 export * from "./join-from-pk";
 export * from "./join-pk";
 export * from "./join-using";
-//# sourceMappingURL=index.d.ts.map

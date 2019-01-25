@@ -8,4 +8,3 @@ export declare type As<ColumnT extends IColumn, AliasT extends string> = (IExprS
     readonly alias: AliasT;
 }>);
 export declare function as<ColumnT extends IColumn, AliasT extends string>(column: ColumnT, alias: AliasT): As<ColumnT, AliasT>;
-//# sourceMappingURL=as.d.ts.map

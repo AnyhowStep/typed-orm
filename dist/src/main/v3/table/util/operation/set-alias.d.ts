@@ -17,4 +17,3 @@ export declare type SetAlias<TableT extends ITable, NewAliasT extends string> = 
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function setAlias<TableT extends ITable, NewAliasT extends string>(table: TableT, newAlias: NewAliasT): (SetAlias<TableT, NewAliasT>);
-//# sourceMappingURL=set-alias.d.ts.map

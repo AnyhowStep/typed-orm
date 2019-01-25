@@ -29,4 +29,3 @@ export declare type AssertValidUnionOrderByDelegate<QueryT extends AfterSelectCl
     [index in Extract<keyof ReturnType<UnionOrderByDelegateT>, string>]: (ReturnType<UnionOrderByDelegateT>[index] extends RawOrder ? (OrderUtil.ExtractColumn<ReturnType<UnionOrderByDelegateT>[index]> extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuerySelects<QueryT>> ? never : ["Invalid IColumn", index, Exclude<OrderUtil.ExtractColumn<ReturnType<UnionOrderByDelegateT>[index]>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuerySelects<QueryT>>>]) : never);
 }>);
 export declare function unionOrderBy<QueryT extends AfterSelectClause & (AfterFromClause | AfterUnionClause), UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>>(query: QueryT, delegate: AssertValidUnionOrderByDelegate<QueryT, UnionOrderByDelegateT>): UnionOrderBy<QueryT>;
-//# sourceMappingURL=union-order-by.d.ts.map

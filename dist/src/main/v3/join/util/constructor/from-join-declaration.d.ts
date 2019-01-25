@@ -5,4 +5,3 @@ export declare type FromJoinDeclaration<JoinDeclT extends IJoinDeclaration> = (J
     columns: JoinDeclT["toTable"]["columns"];
     nullable: JoinDeclT["nullable"];
 }> : never);
-//# sourceMappingURL=from-join-declaration.d.ts.map

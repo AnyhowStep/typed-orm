@@ -11,4 +11,3 @@ export declare type LatestValueOfEntityOrNull<LogT extends LogNoTrackedDefaults,
     tableAlias: typeof ALIASED;
 }>, ReturnType<DelegateT>["name"]>);
 export declare function latestValueOfEntityOrNull<LogT extends LogNoTrackedDefaults, DelegateT extends LatestValueOrNullDelegate<LogT>>(log: LogT, delegate: DelegateT): (LatestValueOfEntityOrNull<LogT, DelegateT>);
-//# sourceMappingURL=latest-value-of-entity-or-null.d.ts.map

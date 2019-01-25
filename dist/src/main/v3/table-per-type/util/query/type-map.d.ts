@@ -6,4 +6,3 @@ export declare type TypeMap<TableT extends ITable> = ({
     [columnName in ColumnNames<TableT>]: (ColumnType<TableT, columnName>);
 });
 export declare function assertDelegate<TableT extends ITable>(table: TableT): sd.AssertDelegate<TypeMap<TableT>>;
-//# sourceMappingURL=type-map.d.ts.map

@@ -222,4 +222,3 @@ export declare enum Collation {
     utf8mb4_unicode_ci = "utf8mb4_unicode_ci",
     utf8mb4_vietnamese_ci = "utf8mb4_vietnamese_ci"
 }
-//# sourceMappingURL=collation.d.ts.map

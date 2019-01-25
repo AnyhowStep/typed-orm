@@ -8,4 +8,3 @@ export declare type InnerJoin<FromTableT extends IAliasedTable, ToTableT extends
     readonly nullable: false;
 }>);
 export declare function innerJoin<FromTableT extends IAliasedTable, ToTableT extends IAliasedTable, FromDelegateT extends JoinFromDelegate<FromTableT>>(fromTable: FromTableT, toTable: AssertValidJoinTarget<FromTableT, ToTableT>, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<FromTableT, ToTableT, FromDelegateT>): InnerJoin<FromTableT, ToTableT>;
-//# sourceMappingURL=inner.d.ts.map

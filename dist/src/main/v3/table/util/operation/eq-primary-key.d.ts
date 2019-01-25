@@ -11,4 +11,3 @@ export declare function eqPrimaryKey<TableT extends ITable & {
     usedRef: ColumnRefUtil.FromColumnArray<ColumnUtil.FromColumnMap<TableT["columns"]>[]>;
     assertDelegate: sd.AssertDelegate<boolean>;
 }>);
-//# sourceMappingURL=eq-primary-key.d.ts.map

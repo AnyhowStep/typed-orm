@@ -6,4 +6,3 @@ export declare type ToNullable<ColumnT extends IColumn> = (ColumnT extends IColu
     readonly assertDelegate: sd.AssertDelegate<null | ReturnType<ColumnT["assertDelegate"]>>;
 }> : never);
 export declare function toNullable<ColumnT extends IColumn>({ tableAlias, name, assertDelegate, __isFromExprSelectItem, }: ColumnT): (ToNullable<ColumnT>);
-//# sourceMappingURL=to-nullable.d.ts.map

@@ -23,4 +23,3 @@ export declare type Where<QueryT extends AfterFromClause> = (Query<{
 }>);
 export declare type AssertValidWhereDelegate<QueryT extends AfterFromClause, WhereDelegateT extends WhereDelegate<QueryT>> = (WhereDelegateT & (ColumnRefUtil.FromQueryJoins<QueryT> extends RawExprUtil.UsedRef<ReturnType<WhereDelegateT>> ? unknown : ["WHERE expression contains some invalid columns; the following are not allowed:", Exclude<ColumnUtil.FromColumnRef<RawExprUtil.UsedRef<ReturnType<WhereDelegateT>>>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>>>]));
 export declare function where<QueryT extends AfterFromClause, WhereDelegateT extends WhereDelegate<QueryT>>(query: QueryT, delegate: AssertValidWhereDelegate<QueryT, WhereDelegateT>): Where<QueryT>;
-//# sourceMappingURL=where.d.ts.map

@@ -22,4 +22,3 @@ export declare type GroupBy<QueryT extends AfterFromClause> = (Query<{
 }>);
 export declare type AssertValidGroupByDelegate<QueryT extends AfterFromClause, GroupByDelegateT extends GroupByDelegate<QueryT>> = (GroupByDelegateT & (ReturnType<GroupByDelegateT>[number] extends ColumnIdentifierUtil.FromQuery<QueryT> ? unknown : ["Invalid GROUP BY columns", ReturnType<GroupByDelegateT>, ColumnIdentifierUtil.FromQuery<QueryT>, Exclude<ReturnType<GroupByDelegateT>[number], ColumnIdentifierUtil.FromQuery<QueryT>>]));
 export declare function groupBy<QueryT extends AfterFromClause, GroupByDelegateT extends GroupByDelegate<QueryT>>(query: QueryT, delegate: AssertValidGroupByDelegate<QueryT, GroupByDelegateT>): GroupBy<QueryT>;
-//# sourceMappingURL=group-by.d.ts.map

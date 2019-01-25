@@ -148,4 +148,3 @@ export declare class Log<DataT extends LogData> implements ILog<DataT> {
     track(this: Extract<this, CompletedLog & InsertableLog>, connection: IConnection, entityIdentifier: EntityIdentifier<Extract<this, CompletedLog & InsertableLog>>, trackRow: TrackRow<Extract<this, CompletedLog & InsertableLog>>): (Promise<LogUtil.TrackResult<Extract<this, CompletedLog & InsertableLog>>>);
     latest(this: Extract<this, LogNoTrackedDefaults>, entityIdentifier: EntityIdentifier<Extract<this, LogNoTrackedDefaults>>): (LogUtil.Latest<Extract<this, LogNoTrackedDefaults>>);
 }
-//# sourceMappingURL=log.d.ts.map

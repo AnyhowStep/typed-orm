@@ -32,4 +32,3 @@ export declare class Pool implements IPool {
     acquireTransaction<ResultT>(callback: TransactionCallback<ResultT>): Promise<ResultT>;
     disconnect(): Promise<void>;
 }
-//# sourceMappingURL=pool.d.ts.map

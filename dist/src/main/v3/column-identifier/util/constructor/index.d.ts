@@ -8,4 +8,3 @@ export * from "./from-join";
 export * from "./from-query";
 export * from "./from-select-item-array";
 export * from "./from-select-item";
-//# sourceMappingURL=index.d.ts.map

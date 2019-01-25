@@ -41,4 +41,3 @@ export declare type SetTrackedDefaults<LogT extends LogMustSetTrackedDefaults, M
     };
 }>);
 export declare function setTrackedDefaults<LogT extends LogMustSetTrackedDefaults, MapT extends TrackedDefaultsMap<LogT>>(log: LogT, rawMap: MapT): (SetTrackedDefaults<LogT, MapT>);
-//# sourceMappingURL=set-tracked-defaults.d.ts.map

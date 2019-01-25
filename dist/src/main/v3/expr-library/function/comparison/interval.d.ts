@@ -7,4 +7,3 @@ export declare function interval<Arg0 extends RawExpr<number | bigint>, Arg1 ext
     usedRef: (RawExprUtil.UsedRef<Arg0> & RawExprUtil.UsedRef<Arg1> & RawExprUtil.IntersectUsedRefTuple<Args>);
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=interval.d.ts.map

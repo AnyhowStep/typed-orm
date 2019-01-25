@@ -5,4 +5,3 @@ import { QueryUtil } from "../../../../query";
 export declare function innerJoinPk<FromTableT extends IAliasedTable, ToTableT extends ITable & {
     primaryKey: string[];
 }>(fromTable: FromTableT, toTable: QueryUtil.AssertValidJoinPk<FromTableT, ToTableT>): InnerJoin<FromTableT, ToTableT>;
-//# sourceMappingURL=inner.d.ts.map

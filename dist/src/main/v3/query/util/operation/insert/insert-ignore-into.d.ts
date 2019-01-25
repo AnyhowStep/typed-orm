@@ -12,4 +12,3 @@ export declare type InsertIgnoreInto<QueryT extends AfterSelectClause, TableT ex
 export declare function insertIgnoreInto<QueryT extends AfterSelectClause, TableT extends ITable & {
     insertAllowed: true;
 }>(query: QueryT, table: TableT, delegate: InsertSelectRowDelegate<QueryT, TableT>): (InsertIgnoreInto<QueryT, TableT>);
-//# sourceMappingURL=insert-ignore-into.d.ts.map

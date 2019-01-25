@@ -11,4 +11,3 @@ export declare type As<ExprT extends IExpr, AliasT extends string> = (Expr<{
     readonly alias: AliasT;
 }>);
 export declare function as<ExprT extends IExpr, AliasT extends string>(expr: ExprT, alias: AliasT): As<ExprT, AliasT>;
-//# sourceMappingURL=as.d.ts.map

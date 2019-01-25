@@ -8,4 +8,3 @@ export declare type InsertIgnoreResult<TableT extends InsertableTable> = (Execut
     _modifier: InsertModifier.IGNORE;
 }>>);
 export declare function insertIgnore<TableT extends InsertableTable>(connection: IConnection, table: TableT, insertRow: InsertRow<TableT>): (Promise<InsertIgnoreResult<TableT>>);
-//# sourceMappingURL=insert-ignore.d.ts.map

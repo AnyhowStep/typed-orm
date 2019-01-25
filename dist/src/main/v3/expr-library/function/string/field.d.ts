@@ -7,4 +7,3 @@ export declare function field<NeedleT extends RawExpr<string>, Arg0 extends RawE
     usedRef: (RawExprUtil.UsedRef<NeedleT> & RawExprUtil.UsedRef<Arg0> & RawExprUtil.IntersectUsedRefTuple<Args>);
     assertDelegate: sd.AssertDelegate<number>;
 }>);
-//# sourceMappingURL=field.d.ts.map

@@ -10,4 +10,3 @@ export declare function table<NameT extends string, AssertMapT extends AssertMap
 export declare function table<NameT extends string, FieldsT extends Tuple<sd.AnyField>>(name: NameT, fields: FieldsT): (FromFieldTuple<NameT, FieldsT>);
 export declare function table<NameT extends string>(name: NameT): (FromName<NameT>);
 export declare function table<TableT extends ITable>(table: TableT): (FromTable<TableT>);
-//# sourceMappingURL=instantiate.d.ts.map

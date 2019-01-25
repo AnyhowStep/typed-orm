@@ -51,4 +51,3 @@ export declare class Formatter {
     hasPreviousToken(offset?: number): boolean;
     previousToken(offset?: number): Token;
 }
-//# sourceMappingURL=Formatter.d.ts.map

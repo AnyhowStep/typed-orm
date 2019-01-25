@@ -5,4 +5,3 @@ export declare type AfterWhenCase = ICaseValue<{
     value: any;
     result: sd.AssertDelegate<any>;
 }>;
-//# sourceMappingURL=after-when-case.d.ts.map

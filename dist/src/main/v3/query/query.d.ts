@@ -174,4 +174,3 @@ export declare function requireParentJoins<ArrT extends NonEmptyTuple<IAliasedTa
 export declare function requireNullableParentJoins<ArrT extends NonEmptyTuple<IAliasedTable>>(...arr: QueryUtil.AssertValidParentJoins<QueryUtil.NewInstance, ArrT>): (QueryUtil.RequireParentJoins<QueryUtil.NewInstance, true, ArrT>);
 export declare type UnmappedFetchRow<QueryT extends QueryUtil.AfterSelectClause> = (QueryUtil.UnmappedType<QueryT>);
 export declare type FetchRow<QueryT extends QueryUtil.AfterSelectClause> = (QueryUtil.MappedType<QueryT>);
-//# sourceMappingURL=query.d.ts.map

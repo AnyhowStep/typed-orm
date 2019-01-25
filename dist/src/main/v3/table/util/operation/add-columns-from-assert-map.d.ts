@@ -18,4 +18,3 @@ export declare type AddColumnsFromAssertMap<TableT extends ITable, AssertMapT ex
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function addColumnsFromAssertMap<TableT extends ITable, AssertMapT extends AssertMap>(table: TableT, assertMap: AssertMapT): (AddColumnsFromAssertMap<TableT, AssertMapT>);
-//# sourceMappingURL=add-columns-from-assert-map.d.ts.map

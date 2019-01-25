@@ -16,4 +16,3 @@ export declare class CursorImpl<QueryT extends AfterSelectClause & MainQuery> {
 }
 export declare type Cursor<QueryT extends AfterSelectClause & MainQuery> = (AsyncIterableIterator<MappedType<QueryT>>);
 export declare function cursor<QueryT extends AfterSelectClause & MainQuery>(query: QueryT, connection: IConnection): Cursor<QueryT>;
-//# sourceMappingURL=cursor.d.ts.map

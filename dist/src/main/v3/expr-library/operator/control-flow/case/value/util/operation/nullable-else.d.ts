@@ -9,4 +9,3 @@ export declare type NullableElse<BuilderT extends AfterWhenCase, ElseT extends R
 }>);
 declare function NullableElseFunction<BuilderT extends AfterWhenCase, ElseT extends RawExpr<ReturnType<BuilderT["result"]> | null>>(builder: BuilderT, elseExpr: ElseT): (NullableElse<BuilderT, ElseT>);
 export { NullableElseFunction as nullableElse };
-//# sourceMappingURL=nullable-else.d.ts.map

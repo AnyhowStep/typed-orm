@@ -96,4 +96,3 @@ export declare class Tokenizer {
         regex: RegExp | undefined;
     }): Token | undefined;
 }
-//# sourceMappingURL=Tokenizer.d.ts.map

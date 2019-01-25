@@ -22,4 +22,3 @@ export declare type UnionLimit<QueryT extends IQuery, MaxRowCountT extends numbe
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function unionLimit<QueryT extends IQuery, MaxRowCountT extends number>(query: QueryT, maxRowCount: MaxRowCountT): UnionLimit<QueryT, MaxRowCountT>;
-//# sourceMappingURL=union-limit.d.ts.map

@@ -6,4 +6,3 @@ export * from "./from-join";
 export * from "./from-select-item-array";
 export * from "./from-select-item";
 export * from "./from-single-value-select-item";
-//# sourceMappingURL=index.d.ts.map

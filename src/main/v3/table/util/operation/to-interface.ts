@@ -18,7 +18,10 @@ export type ToInterface<TableT extends ITable> = (
         readonly hasExplicitDefaultValue : TableT["hasExplicitDefaultValue"];
         readonly mutable : TableT["mutable"];
 
-        readonly parents : ToInterface<TableT["parents"][number]>[];
+        //TODO How should we handle this recursive type?
+        //This isn't used internally at the moment.
+        //readonly parents : ToInterface<TableT["parents"][number]>[];
+        readonly parents : TableT["parents"][number][];
         readonly insertAllowed : TableT["insertAllowed"];
         readonly deleteAllowed : TableT["deleteAllowed"];
     }>

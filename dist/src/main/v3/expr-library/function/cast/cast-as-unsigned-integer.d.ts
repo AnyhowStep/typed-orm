@@ -6,4 +6,3 @@ export declare function castAsUnsignedInteger<RawExprT extends RawExpr<number>>(
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=cast-as-unsigned-integer.d.ts.map

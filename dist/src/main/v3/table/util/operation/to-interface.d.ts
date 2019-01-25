@@ -13,8 +13,7 @@ export declare type ToInterface<TableT extends ITable> = (ITable<{
     readonly isNullable: TableT["isNullable"];
     readonly hasExplicitDefaultValue: TableT["hasExplicitDefaultValue"];
     readonly mutable: TableT["mutable"];
-    readonly parents: ToInterface<TableT["parents"][number]>[];
+    readonly parents: TableT["parents"][number][];
     readonly insertAllowed: TableT["insertAllowed"];
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
-//# sourceMappingURL=to-interface.d.ts.map

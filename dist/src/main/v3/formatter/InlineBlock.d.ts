@@ -29,4 +29,3 @@ export declare class InlineBlock {
     isInlineBlock(tokens: Token[], index: number): boolean;
     isForbiddenToken({ type, value }: Token): boolean;
 }
-//# sourceMappingURL=InlineBlock.d.ts.map

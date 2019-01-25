@@ -25,4 +25,3 @@ export declare class TableEvent<TableT extends ITable> extends EventImpl<{
     row: Row<TableT>;
 }> {
 }
-//# sourceMappingURL=index.d.ts.map

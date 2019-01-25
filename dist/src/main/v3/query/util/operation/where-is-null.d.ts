@@ -27,4 +27,3 @@ export declare type WhereIsNull<QueryT extends AfterFromClause, DelegateT extend
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function whereIsNull<QueryT extends AfterFromClause, DelegateT extends WhereIsNullDelegate<QueryT>>(query: QueryT, delegate: DelegateT): WhereIsNull<QueryT, DelegateT>;
-//# sourceMappingURL=where-is-null.d.ts.map

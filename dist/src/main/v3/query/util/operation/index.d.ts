@@ -36,4 +36,3 @@ export * from "./where-is-not-null";
 export * from "./where-is-null";
 export * from "./where-null-safe-eq";
 export * from "./where";
-//# sourceMappingURL=index.d.ts.map

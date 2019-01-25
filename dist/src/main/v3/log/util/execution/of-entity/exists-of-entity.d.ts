@@ -10,4 +10,3 @@ export declare type ExistsOfEntity<LogT extends LogNoTrackedDefaults> = (ExprUti
     tableAlias: typeof ALIASED;
 }>, "exists">);
 export declare function existsOfEntity<LogT extends LogNoTrackedDefaults>(log: LogT): (ExistsOfEntity<LogT>);
-//# sourceMappingURL=exists-of-entity.d.ts.map

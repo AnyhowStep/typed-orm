@@ -10,4 +10,3 @@ export declare function joinPk<FromTableT extends IAliasedTable, ToTableT extend
     readonly toTable: ToTableT;
     readonly nullable: NullableT;
 }>);
-//# sourceMappingURL=join-pk.d.ts.map

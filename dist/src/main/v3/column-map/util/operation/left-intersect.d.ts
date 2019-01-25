@@ -9,4 +9,3 @@ export declare type LeftIntersect<ColumnMapA extends ColumnMap, ColumnMapB exten
     }> : ColumnMapA[columnName]);
 });
 export declare function leftIntersect<ColumnMapA extends ColumnMap, ColumnMapB extends ColumnMap>(columnMapA: ColumnMapA, columnMapB: ColumnMapB): (LeftIntersect<ColumnMapA, ColumnMapB>);
-//# sourceMappingURL=left-intersect.d.ts.map

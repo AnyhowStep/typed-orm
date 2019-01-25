@@ -26,4 +26,3 @@ export declare type SetEntity<LogT extends LogMustSetEntity, EntityT extends ITa
 }>);
 export declare type AssertValidEntity<LogT extends LogMustSetEntity, EntityT extends ITable> = (EntityT & (EntityT["alias"] extends LogT["table"]["alias"] ? ["Cannot use alias", LogT["table"]["alias"], "for entity"] : unknown));
 export declare function setEntity<LogT extends LogMustSetEntity, EntityT extends ITable>(log: LogT, entity: AssertValidEntity<LogT, EntityT>): (SetEntity<LogT, EntityT>);
-//# sourceMappingURL=set-entity.d.ts.map

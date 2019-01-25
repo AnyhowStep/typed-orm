@@ -7,4 +7,3 @@ export declare function concat<Arg0 extends RawExpr<string>, Args extends Tuple<
     usedRef: (RawExprUtil.UsedRef<Arg0> & RawExprUtil.IntersectUsedRefTuple<Args>);
     assertDelegate: sd.AssertDelegate<string>;
 }>);
-//# sourceMappingURL=concat.d.ts.map

@@ -7,4 +7,3 @@ export declare type End<BuilderT extends AfterWhenCase> = (Expr<{
 }>);
 declare function EndFunction<BuilderT extends AfterWhenCase>(builder: BuilderT): (End<BuilderT>);
 export { EndFunction as end };
-//# sourceMappingURL=end.d.ts.map

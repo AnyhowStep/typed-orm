@@ -7,4 +7,3 @@ export declare type ExecutableUpdate = IUpdate<{
     readonly _modifier: UpdateModifier | undefined;
 }>;
 export declare function queryTree(update: ExecutableUpdate): QueryTreeArray;
-//# sourceMappingURL=query-tree.d.ts.map

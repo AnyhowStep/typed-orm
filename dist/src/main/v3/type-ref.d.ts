@@ -11,4 +11,3 @@ export declare namespace TypeRefUtil {
         };
     });
 }
-//# sourceMappingURL=type-ref.d.ts.map

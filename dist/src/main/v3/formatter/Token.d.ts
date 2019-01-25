@@ -4,4 +4,3 @@ export interface Token {
     value: string;
     key?: string;
 }
-//# sourceMappingURL=Token.d.ts.map

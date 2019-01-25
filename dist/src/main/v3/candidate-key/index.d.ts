@@ -9,4 +9,3 @@ export declare namespace CandidateKeyUtil {
     type AssertDelegate<TableT extends ITable> = (sd.AssertDelegate<CandidateKey<TableT>>);
     function assertDelegate<TableT extends ITable>(table: TableT): (AssertDelegate<TableT>);
 }
-//# sourceMappingURL=index.d.ts.map

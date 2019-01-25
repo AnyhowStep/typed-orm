@@ -6,4 +6,3 @@ export declare function or<ArrT extends Tuple<RawExpr<boolean>>>(...arr: ArrT): 
     usedRef: RawExprUtil.IntersectUsedRefTuple<ArrT>;
     assertDelegate: sd.AssertDelegate<boolean>;
 }>);
-//# sourceMappingURL=or.d.ts.map

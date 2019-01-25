@@ -8,4 +8,3 @@ export declare type LeftJoin<FromTableT extends IAliasedTable, ToTableT extends 
     readonly nullable: true;
 }>);
 export declare function leftJoin<FromTableT extends IAliasedTable, ToTableT extends IAliasedTable, FromDelegateT extends JoinFromDelegate<FromTableT>>(fromTable: FromTableT, toTable: AssertValidJoinTarget<FromTableT, ToTableT>, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<FromTableT, ToTableT, FromDelegateT>): LeftJoin<FromTableT, ToTableT>;
-//# sourceMappingURL=left.d.ts.map

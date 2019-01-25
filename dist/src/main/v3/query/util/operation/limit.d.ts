@@ -22,4 +22,3 @@ export declare type Limit<QueryT extends IQuery, MaxRowCountT extends number> = 
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function limit<QueryT extends IQuery, MaxRowCountT extends number>(query: QueryT, maxRowCount: MaxRowCountT): Limit<QueryT, MaxRowCountT>;
-//# sourceMappingURL=limit.d.ts.map

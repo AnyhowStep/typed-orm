@@ -51,4 +51,3 @@ export declare function buildDataType<TypeT>(assert: (name: string, raw: unknown
     readonly collationName: null | Collation;
     readonly columnType: string;
 }): (IDataType<TypeT>);
-//# sourceMappingURL=data-type.d.ts.map

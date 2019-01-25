@@ -5,4 +5,3 @@ export declare type Values<InsertT extends IInsert> = (Insert<{
     _modifier: InsertT["_modifier"];
 }>);
 export declare function values<InsertT extends IInsert>(insert: InsertT, ...values: InsertRow<InsertT["_table"]>[]): Values<InsertT>;
-//# sourceMappingURL=values.d.ts.map

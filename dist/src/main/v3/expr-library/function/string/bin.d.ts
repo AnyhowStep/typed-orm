@@ -6,4 +6,3 @@ export declare function bin<RawExprT extends RawExpr<bigint | number>>(rawExpr: 
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<string>;
 }>);
-//# sourceMappingURL=bin.d.ts.map

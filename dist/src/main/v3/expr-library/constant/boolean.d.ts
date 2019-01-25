@@ -9,4 +9,3 @@ declare function getFalse(): Expr<{
     assertDelegate: sd.AssertDelegate<false>;
 }>;
 export { trueLiteral as trueLiteral, getFalse as falseLiteral, };
-//# sourceMappingURL=boolean.d.ts.map

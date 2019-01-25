@@ -12,4 +12,3 @@ export declare function log<TableT extends ITable>(table: TableT): (Log<{
     readonly copyDefaultsDelegate: undefined;
     readonly trackedDefaults: undefined;
 }>);
-//# sourceMappingURL=log.d.ts.map

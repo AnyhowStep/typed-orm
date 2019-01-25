@@ -6,4 +6,3 @@ import { PrimaryKey } from "../../../primary-key";
 export declare function fetchZeroOrOneByPk<TableT extends ITable & {
     primaryKey: Key;
 }>(connection: IConnection, table: TableT, pk: PrimaryKey<TableT>): (Promise<FetchZeroOrOneResult<TableT>>);
-//# sourceMappingURL=fetch-zero-or-one-by-pk.d.ts.map

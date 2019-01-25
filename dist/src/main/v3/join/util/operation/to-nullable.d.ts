@@ -5,4 +5,3 @@ export declare type ToNullable<JoinT extends IJoin> = (JoinT extends IJoin ? Joi
     nullable: true;
 }> : never);
 export declare function toNullable<JoinT extends IJoin>(join: JoinT): ToNullable<JoinT>;
-//# sourceMappingURL=to-nullable.d.ts.map

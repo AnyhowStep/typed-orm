@@ -5,4 +5,3 @@ export declare type IsSubset<A extends ColumnIdentifierMap, B extends ColumnIden
 }[Extract<keyof A, string>]) : false);
 export declare function isSubset<A extends ColumnIdentifierMap, B extends ColumnIdentifierMap>(a: A, b: B): IsSubset<A, B>;
 export declare function assertIsSubset(a: ColumnIdentifierMap, b: ColumnIdentifierMap): void;
-//# sourceMappingURL=is-subset.d.ts.map

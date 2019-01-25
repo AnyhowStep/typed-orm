@@ -22,4 +22,3 @@ export * from "./null-safe-not-eq";
 export * from "./null-safe-unary-comparison";
 export * from "./ternary-comparison";
 export * from "./unary-comparison";
-//# sourceMappingURL=index.d.ts.map

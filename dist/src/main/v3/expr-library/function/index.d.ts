@@ -7,4 +7,3 @@ export * from "./information";
 export * from "./math";
 export * from "./string";
 export * from "./sub-query";
-//# sourceMappingURL=index.d.ts.map

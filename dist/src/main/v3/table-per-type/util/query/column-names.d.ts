@@ -20,4 +20,3 @@ export declare type MutableColumnNames<TableT extends ITable> = ({
     [columnName in ColumnNames<TableT>]: (IsMutable<TableT, columnName> extends true ? columnName : never);
 }[ColumnNames<TableT>]);
 export declare function uniqueMutableColumnNames<TableT extends ITable>(table: TableT): Set<MutableColumnNames<TableT>>;
-//# sourceMappingURL=column-names.d.ts.map

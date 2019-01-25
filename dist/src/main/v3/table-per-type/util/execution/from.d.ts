@@ -23,4 +23,3 @@ export declare type From<TableT extends ITable> = (Query<{
     readonly _mapDelegate: undefined;
 }>);
 export declare function from<TableT extends ITable>(table: TableT): (From<TableT>);
-//# sourceMappingURL=from.d.ts.map

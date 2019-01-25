@@ -29,4 +29,3 @@ export declare type WhereNullSafeEq<QueryT extends AfterFromClause, DelegateT ex
 }>);
 export declare type AssertValidNullSafeEqTarget<QueryT extends AfterFromClause, DelegateT extends WhereNullSafeEqDelegate<QueryT>, ValueT extends PrimitiveExpr> = (ValueT & (ValueT extends ReturnType<ReturnType<DelegateT>["assertDelegate"]> ? unknown : [ValueT, "does not extend", ReturnType<ReturnType<DelegateT>["assertDelegate"]>]));
 export declare function whereNullSafeEq<QueryT extends AfterFromClause, DelegateT extends WhereNullSafeEqDelegate<QueryT>, ValueT extends PrimitiveExpr>(query: QueryT, delegate: DelegateT, value: AssertValidNullSafeEqTarget<QueryT, DelegateT, ValueT>): WhereNullSafeEq<QueryT, DelegateT, ValueT>;
-//# sourceMappingURL=where-null-safe-eq.d.ts.map

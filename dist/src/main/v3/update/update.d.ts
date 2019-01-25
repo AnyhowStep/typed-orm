@@ -50,4 +50,3 @@ export declare class Update<DataT extends UpdateData> implements IUpdate<DataT> 
     executeUpdateOne(this: Extract<this, UpdateUtil.ExecutableUpdate>, connection: IConnection): (Promise<UpdateOneResult>);
     printSql(this: Extract<this, UpdateUtil.ExecutableUpdate>): this;
 }
-//# sourceMappingURL=update.d.ts.map

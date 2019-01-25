@@ -46,4 +46,3 @@ export declare type ExecutableDelete = IDelete<{
     readonly _tables: DeletableTable[];
     readonly _modifier: DeleteModifier | undefined;
 }>;
-//# sourceMappingURL=delete.d.ts.map

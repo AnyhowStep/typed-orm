@@ -24,4 +24,3 @@ export declare namespace ExprSelectItemUtil {
     function isExprSelectItem(raw: any): raw is IExprSelectItem;
     function queryTree(exprSelectItem: IExprSelectItem): QueryTreeArray;
 }
-//# sourceMappingURL=expr-select-item.d.ts.map

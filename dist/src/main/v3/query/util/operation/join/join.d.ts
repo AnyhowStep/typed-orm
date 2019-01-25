@@ -34,4 +34,3 @@ export declare type JoinResult<QueryT extends AfterFromClause, AliasedTableT ext
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function join<QueryT extends AfterFromClause, AliasedTableT extends IAliasedTable, FromDelegateT extends JoinFromDelegate<QueryT["_joins"]>, NullableT extends boolean>(query: QueryT, aliasedTable: AssertValidJoinTarget<QueryT, AliasedTableT>, fromDelegate: FromDelegateT, toDelegate: JoinToDelegate<QueryT, AliasedTableT, FromDelegateT>, nullable: NullableT, joinType: JoinType): (JoinResult<QueryT, AliasedTableT, NullableT>);
-//# sourceMappingURL=join.d.ts.map

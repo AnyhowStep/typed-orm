@@ -7,4 +7,3 @@ import { STATISTICS } from "./statistics";
 export { STATISTICS };
 import { TABLES } from "./tables";
 export { TABLES };
-//# sourceMappingURL=index.d.ts.map

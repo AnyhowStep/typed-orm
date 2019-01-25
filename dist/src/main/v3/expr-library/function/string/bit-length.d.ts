@@ -6,4 +6,3 @@ export declare function bitLength<RawExprT extends RawExpr<string>>(rawExpr: Raw
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=bit-length.d.ts.map

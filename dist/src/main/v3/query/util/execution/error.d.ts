@@ -13,4 +13,3 @@ export declare class TooManyColumnsSelectedError extends Error {
 export declare class TooManyRowsUpdatedError extends Error {
     constructor(message: string);
 }
-//# sourceMappingURL=error.d.ts.map

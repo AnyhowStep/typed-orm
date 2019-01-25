@@ -13,4 +13,3 @@ export declare type UpdateAndFetchZeroOrOneResult<TableT extends ITable, Delegat
         readonly [columnName in Extract<keyof TableT["columns"], string>]: (columnName extends keyof ReturnType<DelegateT> ? (ReturnType<DelegateT>[columnName] extends RawExpr<ReturnType<TableT["columns"][columnName]["assertDelegate"]>> ? RawExprUtil.TypeOf<ReturnType<DelegateT>[columnName]> : ReturnType<TableT["columns"][columnName]["assertDelegate"]>) : ReturnType<TableT["columns"][columnName]["assertDelegate"]>);
     };
 }));
-//# sourceMappingURL=update-and-fetch-zero-or-one.d.ts.map

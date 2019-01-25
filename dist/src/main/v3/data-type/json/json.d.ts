@@ -16,4 +16,3 @@ export declare const json: {
     (): sd.AssertDelegate<string>;
     nullable: JsonDelegateNullable;
 };
-//# sourceMappingURL=json.d.ts.map

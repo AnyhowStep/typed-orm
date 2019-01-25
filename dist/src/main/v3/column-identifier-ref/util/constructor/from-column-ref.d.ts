@@ -9,4 +9,3 @@ export declare type FromColumnRef<ColumnRefT extends ColumnRef> = (ColumnRefT ex
 } : never);
 export declare function appendColumnRef(ref: Writable<ColumnIdentifierRef>, columnRef: ColumnRef): Writable<ColumnIdentifierRef>;
 export declare function fromColumnRef<ColumnRefT extends ColumnRef>(columnRef: ColumnRefT): FromColumnRef<ColumnRefT>;
-//# sourceMappingURL=from-column-ref.d.ts.map

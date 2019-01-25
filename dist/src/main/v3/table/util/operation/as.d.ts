@@ -7,4 +7,3 @@ export declare type As<TableT extends ITable, NewAliasT extends string> = (Alias
     readonly columns: ColumnMapUtil.WithTableAlias<TableT["columns"], NewAliasT>;
 }>);
 export declare function as<TableT extends ITable, NewAliasT extends string>({ usedRef, columns, unaliasedQuery, }: TableT, newAlias: NewAliasT): (As<TableT, NewAliasT>);
-//# sourceMappingURL=as.d.ts.map

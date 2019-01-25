@@ -8,4 +8,3 @@ export declare type ReplaceResult<TableT extends InsertableTable> = (Execute<IIn
     _modifier: InsertModifier.REPLACE;
 }>>);
 export declare function replace<TableT extends InsertableTable>(connection: IConnection, table: TableT, insertRow: InsertRow<TableT>): (Promise<ReplaceResult<TableT>>);
-//# sourceMappingURL=replace.d.ts.map

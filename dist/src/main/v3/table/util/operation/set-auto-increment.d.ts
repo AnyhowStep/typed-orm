@@ -23,4 +23,3 @@ export declare type SetAutoIncrement<TableT extends ITable, DelegateT extends Au
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function setAutoIncrement<TableT extends ITable, DelegateT extends AutoIncrementDelegate<TableT>>(table: TableT, delegate: DelegateT): (SetAutoIncrement<TableT, DelegateT>);
-//# sourceMappingURL=set-auto-increment.d.ts.map

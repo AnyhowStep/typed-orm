@@ -10,4 +10,3 @@ export declare namespace decimal {
         __canAccept: string | number | null;
     };
 }
-//# sourceMappingURL=decimal.d.ts.map

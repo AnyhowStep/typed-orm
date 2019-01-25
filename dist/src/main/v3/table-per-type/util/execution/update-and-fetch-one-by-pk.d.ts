@@ -7,4 +7,3 @@ import { PrimaryKey } from "../../../primary-key";
 export declare function updateAndFetchOneByPk<TableT extends ITable & {
     primaryKey: Key;
 }, DelegateT extends SetDelegate<TableT>>(connection: IConnection, table: TableT, pk: PrimaryKey<TableT>, delegate: DelegateT): (AssertValidSetDelegate_Hack<TableT, DelegateT, Promise<UpdateAndFetchOneResult<TableT, DelegateT>>>);
-//# sourceMappingURL=update-and-fetch-one-by-pk.d.ts.map

@@ -12,4 +12,3 @@ export declare type InsertInto<QueryT extends AfterSelectClause, TableT extends 
 export declare function insertInto<QueryT extends AfterSelectClause, TableT extends ITable & {
     insertAllowed: true;
 }>(query: QueryT, table: TableT, delegate: InsertSelectRowDelegate<QueryT, TableT>): (InsertInto<QueryT, TableT>);
-//# sourceMappingURL=insert-into.d.ts.map

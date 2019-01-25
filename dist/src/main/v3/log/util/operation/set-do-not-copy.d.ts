@@ -37,4 +37,3 @@ export declare type SetDoNotCopy<LogT extends LogMustSetDoNotCopy, DelegateT ext
     readonly trackedDefaults: undefined;
 }>);
 export declare function setDoNotCopy<LogT extends LogMustSetDoNotCopy, DelegateT extends SetDoNotCopyDelegate<LogT>>(log: LogT, delegate: DelegateT): (SetDoNotCopy<LogT, DelegateT>);
-//# sourceMappingURL=set-do-not-copy.d.ts.map

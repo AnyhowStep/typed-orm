@@ -8,4 +8,3 @@ export declare function eqCandidateKey<TableT extends ITable>(table: TableT, ck:
     usedRef: ColumnRefUtil.FromColumnArray<ColumnUtil.FromColumnMap<TableT["columns"]>[]>;
     assertDelegate: sd.AssertDelegate<boolean>;
 }>);
-//# sourceMappingURL=eq-candidate-key.d.ts.map

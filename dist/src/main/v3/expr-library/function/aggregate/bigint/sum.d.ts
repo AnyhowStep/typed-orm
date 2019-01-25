@@ -6,4 +6,3 @@ export declare function bigIntSum<RawExprT extends RawExpr<bigint | null>>(rawEx
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<bigint | null>;
 }>);
-//# sourceMappingURL=sum.d.ts.map

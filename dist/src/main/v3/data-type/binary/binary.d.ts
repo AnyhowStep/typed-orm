@@ -47,4 +47,3 @@ export declare const longBlob: {
     (): sd.AssertDelegate<Buffer>;
     nullable: BufferDelegateNullable;
 };
-//# sourceMappingURL=binary.d.ts.map

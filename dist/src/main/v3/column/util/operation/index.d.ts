@@ -10,4 +10,3 @@ export * from "./to-nullable";
 export * from "./to-super-type";
 export * from "./with-table-alias";
 export * from "./with-type";
-//# sourceMappingURL=index.d.ts.map

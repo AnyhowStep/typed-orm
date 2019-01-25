@@ -11,4 +11,3 @@ export declare type FromAssertMap<TableAliasT extends string, AssertMapT extends
 export declare function fromAssertMap<TableAliasT extends string, AssertMapT extends {
     readonly [columnName: string]: sd.AnyAssertFunc;
 }>(tableAlias: TableAliasT, assertMap: AssertMapT): (FromAssertMap<TableAliasT, AssertMapT>);
-//# sourceMappingURL=from-assert-map.d.ts.map

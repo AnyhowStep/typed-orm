@@ -50,4 +50,3 @@ export declare type ExecutableInsertSelect = (IInsertSelect<{
     readonly _row: InsertSelectRow<QueryUtil.AfterSelectClause, ITable>;
     readonly _modifier: InsertSelectModifier | undefined;
 }>);
-//# sourceMappingURL=insert-select.d.ts.map

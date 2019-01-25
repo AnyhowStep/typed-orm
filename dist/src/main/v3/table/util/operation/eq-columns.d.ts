@@ -8,4 +8,3 @@ export declare function eqColumns<TableT extends ITable>(table: TableT, columns:
     usedRef: ColumnRefUtil.FromColumnArray<ColumnUtil.FromColumnMap<TableT["columns"]>[]>;
     assertDelegate: sd.AssertDelegate<boolean>;
 }>);
-//# sourceMappingURL=eq-columns.d.ts.map

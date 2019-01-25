@@ -6,4 +6,3 @@ export declare function ceil<RawExprT extends RawExpr<number>>(rawExpr: RawExprT
     usedRef: RawExprUtil.UsedRef<RawExprT>;
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);
-//# sourceMappingURL=ceil.d.ts.map

@@ -5,4 +5,3 @@ import { QueryUtil } from "../../../../query";
 export declare function leftJoinFromPk<FromTableT extends ITable & {
     primaryKey: string[];
 }, ToTableT extends IAliasedTable>(fromTable: QueryUtil.AssertValidJoinPk<ToTableT, FromTableT>, toTable: ToTableT): LeftJoin<FromTableT, ToTableT>;
-//# sourceMappingURL=left.d.ts.map

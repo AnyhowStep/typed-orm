@@ -5,4 +5,3 @@ export declare function replaceInto<TableT extends InsertableTable>(table: Table
     _values: undefined;
     _modifier: InsertModifier.REPLACE;
 }>);
-//# sourceMappingURL=replace-into.d.ts.map

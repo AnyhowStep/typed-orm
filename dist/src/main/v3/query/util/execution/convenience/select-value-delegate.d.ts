@@ -11,4 +11,3 @@ export declare type SelectValueDelegate<TableT extends ITable> = ((columns: Tabl
 export declare type AssertValidSelectValueDelegateImpl<TableT extends ITable, DelegateT extends SelectValueDelegate<TableT>> = (AssertValidSelectDelegateImpl<From<NewInstance, TableT>, () => [ExprUtil.As<ExprUtil.FromRawExpr<ReturnType<DelegateT>>, "value">]>);
 export declare type AssertValidSelectValueDelegate<TableT extends ITable, DelegateT extends SelectValueDelegate<TableT>> = (DelegateT & AssertValidSelectValueDelegateImpl<TableT, DelegateT>);
 export declare function executeSelectValueDelegate(columns: ColumnMap, query: IQuery, delegate: SelectValueDelegate<ITable>): [SingleValueSelectItem];
-//# sourceMappingURL=select-value-delegate.d.ts.map

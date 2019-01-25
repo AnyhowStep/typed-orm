@@ -4,4 +4,3 @@ export declare function database(): (Expr<{
     usedRef: {};
     assertDelegate: sd.AssertDelegate<string | null>;
 }>);
-//# sourceMappingURL=database.d.ts.map

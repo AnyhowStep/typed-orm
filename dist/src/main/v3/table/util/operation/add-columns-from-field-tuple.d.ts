@@ -18,4 +18,3 @@ export declare type AddColumnsFromFieldTuple<TableT extends ITable, FieldsT exte
     readonly deleteAllowed: TableT["deleteAllowed"];
 }>);
 export declare function addColumnsFromFieldTuple<TableT extends ITable, FieldsT extends sd.AnyField[]>(table: TableT, fields: FieldsT): (AddColumnsFromFieldTuple<TableT, FieldsT>);
-//# sourceMappingURL=add-columns-from-field-tuple.d.ts.map

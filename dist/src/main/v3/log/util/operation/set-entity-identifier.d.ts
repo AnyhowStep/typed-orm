@@ -35,4 +35,3 @@ export declare type SetEntityIdentifier<LogT extends LogMustSetEntityIdentifier,
 }>);
 export declare type AssertValidSetEntityIdentifierDelegate_Hack<LogT extends LogMustSetEntityIdentifier, DelegateT extends SetEntityIdentifierDelegate<LogT>, ResultT> = (KeyUtil.Array.HasKey<LogT["entity"]["candidateKeys"], (ReturnType<DelegateT>[number]["name"])[]> extends true ? ResultT : [(ReturnType<DelegateT>[number]["name"])[], "must be a candidate key of", LogT["entity"]["alias"]] | void);
 export declare function setEntityIdentifier<LogT extends LogMustSetEntityIdentifier, DelegateT extends SetEntityIdentifierDelegate<LogT>>(log: LogT, delegate: DelegateT): (AssertValidSetEntityIdentifierDelegate_Hack<LogT, DelegateT, SetEntityIdentifier<LogT, DelegateT>>);
-//# sourceMappingURL=set-entity-identifier.d.ts.map

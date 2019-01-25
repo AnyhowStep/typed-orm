@@ -41,4 +41,3 @@ export declare enum CharSet {
     utf8 = "utf8",
     utf8mb4 = "utf8mb4"
 }
-//# sourceMappingURL=char-set.d.ts.map

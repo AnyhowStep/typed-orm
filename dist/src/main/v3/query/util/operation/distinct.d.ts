@@ -17,4 +17,3 @@ export declare type Distinct<QueryT extends AfterSelectClause> = (Query<{
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare function distinct<QueryT extends AfterSelectClause>(query: QueryT): Distinct<QueryT>;
-//# sourceMappingURL=distinct.d.ts.map

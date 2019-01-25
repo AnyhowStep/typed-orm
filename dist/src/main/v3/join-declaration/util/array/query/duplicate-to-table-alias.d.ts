@@ -6,4 +6,3 @@ export declare type ToTableAliasIgnoreIndex<ArrT extends NonEmptyTuple<IJoinDecl
 export declare type DuplicateToTableAlias<ArrT extends NonEmptyTuple<IJoinDeclaration>> = ({
     [index in Extract<keyof ArrT, string>]: (ArrT[index] extends IJoinDeclaration ? Extract<ArrT[index]["toTable"]["alias"], ToTableAliasIgnoreIndex<ArrT, index>> : never);
 }[Extract<keyof ArrT, string>]);
-//# sourceMappingURL=duplicate-to-table-alias.d.ts.map

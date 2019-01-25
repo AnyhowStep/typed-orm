@@ -29,4 +29,3 @@ export declare type AssertValidOrderByDelegate<QueryT extends AfterFromClause, O
     [index in Extract<keyof ReturnType<OrderByDelegateT>, string>]: (ReturnType<OrderByDelegateT>[index] extends RawOrder ? (OrderUtil.ExtractColumn<ReturnType<OrderByDelegateT>[index]> extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>> ? never : ["Invalid IColumn", index, Exclude<OrderUtil.ExtractColumn<ReturnType<OrderByDelegateT>[index]>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>>]) : never);
 }>);
 export declare function orderBy<QueryT extends AfterFromClause, OrderByDelegateT extends OrderByDelegate<QueryT>>(query: QueryT, delegate: AssertValidOrderByDelegate<QueryT, OrderByDelegateT>): OrderBy<QueryT>;
-//# sourceMappingURL=order-by.d.ts.map

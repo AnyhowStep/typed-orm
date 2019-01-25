@@ -7,4 +7,3 @@ export interface ValidateTableResult {
 export declare function validateColumns(table: ITable, connection: IConnection, result: ValidateTableResult): Promise<void>;
 export declare function validateCandidateKeys(table: ITable, connection: IConnection, result: ValidateTableResult): Promise<void>;
 export declare function validate(table: ITable, connection: IConnection, result: ValidateTableResult): Promise<void>;
-//# sourceMappingURL=validate.d.ts.map

@@ -5,4 +5,3 @@ export declare type Swap<JoinDeclT extends IJoinDeclaration> = (JoinDeclaration<
     readonly nullable: JoinDeclT["nullable"];
 }>);
 export declare function swap<JoinDeclT extends IJoinDeclaration>(joinDecl: JoinDeclT): Swap<JoinDeclT>;
-//# sourceMappingURL=swap.d.ts.map

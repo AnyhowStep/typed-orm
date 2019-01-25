@@ -8,4 +8,3 @@ export declare type Eq<JoinDeclT extends IJoinDeclaration> = (Expr<{
     assertDelegate: sd.AssertDelegate<boolean>;
 }>);
 export declare function eq<JoinDeclT extends IJoinDeclaration>(joinDecl: JoinDeclT): Eq<JoinDeclT>;
-//# sourceMappingURL=eq.d.ts.map

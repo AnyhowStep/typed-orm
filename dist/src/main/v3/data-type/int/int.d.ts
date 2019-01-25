@@ -89,4 +89,3 @@ export declare namespace intUnsigned {
         __canAccept: string | number | null;
     };
 }
-//# sourceMappingURL=int.d.ts.map

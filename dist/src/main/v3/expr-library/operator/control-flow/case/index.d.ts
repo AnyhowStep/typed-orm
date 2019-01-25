@@ -15,4 +15,3 @@ export declare function CaseConstructor<ValueT extends RawExpr<NonNullPrimitiveE
     result: undefined;
 }>);
 export { CaseConstructor as case };
-//# sourceMappingURL=index.d.ts.map

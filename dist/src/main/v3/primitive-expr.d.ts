@@ -10,4 +10,3 @@ export declare namespace PrimitiveExprUtil {
     type ToNonNullableSuperType<T extends NonNullPrimitiveExpr> = (T extends bigint ? bigint : T extends number ? number : T extends string ? string : T extends boolean ? boolean : T);
     type ToSuperType<T extends PrimitiveExpr> = ((null extends T ? null : never) | ToNonNullableSuperType<Exclude<T, null>>);
 }
-//# sourceMappingURL=primitive-expr.d.ts.map

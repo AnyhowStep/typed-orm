@@ -27,4 +27,3 @@ export declare type Map<QueryT extends AfterSelectClause, DelegateT extends MapD
     readonly _mapDelegate: MapDelegate<UnmappedType<QueryT>, UnmappedType<QueryT>, ReturnType<DelegateT> extends Promise<any> ? ReturnType<DelegateT> : Promise<ReturnType<DelegateT>>>;
 }>);
 export declare function map<QueryT extends AfterSelectClause, DelegateT extends MapDelegate<MappedType<QueryT>, UnmappedType<QueryT>, any>>(query: QueryT, delegate: DelegateT): Map<QueryT, DelegateT>;
-//# sourceMappingURL=map.d.ts.map

@@ -17,4 +17,3 @@ export * from "./fetch-zero-or-one-by-ck";
 export * from "./fetch-zero-or-one-by-pk";
 export * from "./fetch-zero-or-one-by-sk";
 export * from "./select-value-delegate";
-//# sourceMappingURL=index.d.ts.map
