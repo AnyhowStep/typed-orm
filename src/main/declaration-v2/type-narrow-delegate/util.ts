@@ -1,26 +1,48 @@
-import {JoinCollection, JoinCollectionUtil} from "../join-collection";
+import {AnySelectBuilder} from "../select-builder";
+import {JoinCollectionUtil} from "../join-collection";
 import {ColumnReferencesUtil} from "../column-references";
-import {TypeNarrowDelegate} from "./type-narrow-delegate";
+import {TypeNarrowDelegateColumnReferences, TypeNarrowDelegate} from "./type-narrow-delegate";
 
 export namespace TypeNarrowDelegateUtil {
+    export function toColumnReferences<
+        SelectBuilderT extends AnySelectBuilder
+    > (
+        selectBuilder : SelectBuilderT
+    ) : (
+        TypeNarrowDelegateColumnReferences<SelectBuilderT>
+    ) {
+        const joinColumnReferences = selectBuilder.data.hasFrom ?
+            JoinCollectionUtil.toColumnReferences(selectBuilder.data.joins) :
+            {};
+        const parentJoinColumnReferences = selectBuilder.data.hasParentJoins ?
+            JoinCollectionUtil.toColumnReferences(selectBuilder.data.parentJoins) :
+            {};
+
+        return {
+            ...parentJoinColumnReferences,
+            ...joinColumnReferences,
+        } as any;
+    }
     export type GetColumn<
-        JoinsT extends JoinCollection,
-        TypeNarrowDelegateT extends TypeNarrowDelegate<JoinsT>
+        SelectBuilderT extends AnySelectBuilder,
+        TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT>
     > = (
         ReturnType<TypeNarrowDelegateT>
     );
     export function getColumn<
-        JoinsT extends JoinCollection,
-        TypeNarrowDelegateT extends TypeNarrowDelegate<JoinsT>
+        SelectBuilderT extends AnySelectBuilder,
+        TypeNarrowDelegateT extends TypeNarrowDelegate<SelectBuilderT>
     > (
-        joins : JoinsT,
+        selectBuilder : SelectBuilderT,
         typeNarrowDelegate : TypeNarrowDelegateT
     ) : (
-        GetColumn<JoinsT, TypeNarrowDelegateT>
+        GetColumn<SelectBuilderT, TypeNarrowDelegateT>
     ) {
-        const ref = JoinCollectionUtil.toColumnReferences(joins);
-        const column = typeNarrowDelegate(ColumnReferencesUtil.toConvenient(ref) as any);
-        ColumnReferencesUtil.assertHasColumn(ref, column as any);
+        const columnReferences = toColumnReferences(selectBuilder);
+        const column = typeNarrowDelegate(
+            ColumnReferencesUtil.toConvenient(columnReferences) as any
+        );
+        ColumnReferencesUtil.assertHasColumn(columnReferences, column as any);
         return column as any;
     }
 }

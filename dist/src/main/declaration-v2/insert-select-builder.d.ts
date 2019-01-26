@@ -1,4 +1,4 @@
-import { AnyTable, TableUtil } from "./table";
+import { AnyTable, AnyTableAllowInsert, TableUtil } from "./table";
 import { Querify } from "./querify";
 import * as mysql from "typed-mysql";
 import { Column, AnyColumn } from "./column";
@@ -16,7 +16,7 @@ export declare type RawInsertSelectAssignmentCollection<TableT extends AnyTable,
     [columnName in TableUtil.OptionalColumnNames<TableT>]?: (RawInsertSelectAssignment<TableT, SelectBuilderT, columnName>);
 });
 export declare type InsertAssignmentCollectionDelegate<TableT extends AnyTable, SelectBuilderT extends AnySelectBuilder> = ((s: ColumnReferencesUtil.ToConvenient<SelectCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["selects"]>>) => (RawInsertSelectAssignmentCollection<TableT, SelectBuilderT>));
-export declare class InsertSelectBuilder<TableT extends AnyTable, SelectBuilderT extends AnySelectBuilder, AssignmentsT extends undefined | (RawInsertSelectAssignmentCollection<TableT, SelectBuilderT>), InsertModeT extends "IGNORE" | "REPLACE" | "NORMAL"> implements Querify {
+export declare class InsertSelectBuilder<TableT extends AnyTableAllowInsert, SelectBuilderT extends AnySelectBuilder, AssignmentsT extends undefined | (RawInsertSelectAssignmentCollection<TableT, SelectBuilderT>), InsertModeT extends "IGNORE" | "REPLACE" | "NORMAL"> implements Querify {
     readonly table: TableT;
     readonly selectBuilder: SelectBuilderT;
     readonly assignments: AssignmentsT;
@@ -33,3 +33,6 @@ export declare class InsertSelectBuilder<TableT extends AnyTable, SelectBuilderT
     getQuery(): string;
     printQuery(): this;
 }
+export declare type InsertSelectBuilderConvenient<TableT extends AnyTable, SelectBuilderT extends AnySelectBuilder> = (InsertSelectBuilder<TableT, SelectBuilderT, RawInsertSelectAssignmentCollection<TableT, SelectBuilderT>, "NORMAL">);
+export declare type InsertSelectBuilderConvenientDelegate = (<TableT extends AnyTableAllowInsert, SelectBuilderT extends AnySelectBuilder>(table: TableT, selectBuilder: SelectBuilderT, delegate: InsertAssignmentCollectionDelegate<TableT, SelectBuilderT>) => (InsertSelectBuilderConvenient<TableT, SelectBuilderT>));
+//# sourceMappingURL=insert-select-builder.d.ts.map

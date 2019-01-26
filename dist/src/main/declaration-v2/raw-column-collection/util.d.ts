@@ -9,3 +9,4 @@ export declare namespace RawColumnCollectionUtil {
         [name in Extract<keyof RawColumnCollectionT, string>]: (null extends RawColumnUtil.TypeOf<RawColumnCollectionT[name]> ? name : never);
     }[Extract<keyof RawColumnCollectionT, string>]);
 }
+//# sourceMappingURL=util.d.ts.map

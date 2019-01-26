@@ -13,7 +13,15 @@ class AliasedTable {
             this.query = `${mysql.escapeId(name)} AS ${mysql.escapeId(alias)}`;
         }
     }
+    setHackedDatabaseName(__hackedDatabaseName) {
+        this.__hackedDatabaseName = __hackedDatabaseName;
+        return this;
+    }
     querify(sb) {
+        if (this.__hackedDatabaseName != undefined) {
+            sb.append(mysql.escapeId(this.__hackedDatabaseName));
+            sb.append(".");
+        }
         sb.append(this.query);
     }
 }

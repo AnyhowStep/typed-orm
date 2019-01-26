@@ -2,7 +2,8 @@ import { Add, Subtract, StringToNumber, NumberToString } from "./math";
 export declare type Tuple<T> = T[] & {
     "0": T;
 };
-export declare type TupleKeys<TupleT extends Tuple<any>> = Exclude<keyof TupleT, keyof any[]>;
+export declare type TupleKeys<TupleT extends Tuple<any>> = Extract<keyof TupleT, "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" | "30">;
+export declare type TupleKeysUpTo<index extends string> = (index extends "1" ? "0" : index extends "2" ? "0" | "1" : index extends "3" ? "0" | "1" | "2" : index extends "4" ? "0" | "1" | "2" | "3" : index extends "5" ? "0" | "1" | "2" | "3" | "4" : index extends "6" ? "0" | "1" | "2" | "3" | "4" | "5" : index extends "7" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" : index extends "8" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" : index extends "9" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" : index extends "10" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" : index extends "11" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" : index extends "12" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" : index extends "13" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" : index extends "14" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" : index extends "15" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" : index extends "16" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" : index extends "17" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" : index extends "18" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" : index extends "19" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" : index extends "20" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" : index extends "21" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" : index extends "22" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" : index extends "23" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" : index extends "24" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" : index extends "25" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" : index extends "26" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" : index extends "27" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" : index extends "28" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" : index extends "29" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" : index extends "30" ? "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20" | "21" | "22" | "23" | "24" | "25" | "26" | "27" | "28" | "29" : never);
 export declare type TupleLength<TupleT extends Tuple<any>> = (TupleT extends {
     "20": any;
 } ? 21 : TupleT extends {
@@ -45,14 +46,10 @@ export declare type TupleLength<TupleT extends Tuple<any>> = (TupleT extends {
     "1": any;
 } ? 2 : TupleT extends {
     "0": any;
-} ? 1 : never);
-export declare type TupleWiden<TupleT extends Tuple<any>, WidenT> = (TupleT extends Tuple<infer TypeT> ? (TypeT extends WidenT ? ({
-    [index in TupleKeys<TupleT>]: TupleT[index];
-} & {
-    "0": TupleT[0];
-} & {
-    length: TupleLength<TupleT>;
-} & WidenT[]) : never) : never);
+} ? (TupleT extends {
+    length: 1;
+} ? 1 : number) : never);
+export declare type TupleWiden<TupleT extends Tuple<any>, WidenT> = (TupleT & (WidenT[]));
 export declare type TupleNextKey<TupleT extends Tuple<any>> = (TupleT extends {
     "19": any;
 } ? "20" : TupleT extends {
@@ -146,7 +143,15 @@ export declare type TuplePush<TupleT extends Tuple<any>, NextT> = ({
 } & {
     length: TupleNextLength<TupleT>;
 } & (NextT extends TupleT[TupleKeys<TupleT>] ? (TupleT[TupleKeys<TupleT>])[] : (TupleT[TupleKeys<TupleT>] | NextT)[]));
-export declare type TupleWPush<WidenT, TupleT extends Tuple<WidenT>, NextT extends WidenT> = (TupleWiden<TuplePush<TupleT, NextT>, WidenT>);
+export declare type TupleWPush<WidenT, TupleT extends Tuple<WidenT>, NextT extends WidenT> = ({
+    [index in TupleKeys<TupleT>]: (Extract<TupleT[index], WidenT>);
+} & {
+    [index in TupleNextKey<TupleT>]: (Extract<NextT, WidenT>);
+} & {
+    "0": (Extract<TupleT[0], WidenT>);
+} & {
+    length: TupleNextLength<TupleT>;
+} & (WidenT[]));
 export declare function tuplePush<TupleT extends Tuple<any>, NextT>(tuple: TupleT, next: NextT): (TuplePush<TupleT, NextT>);
 export declare function tupleWPush<WidenT>(): (<TupleT extends Tuple<WidenT>, NextT extends WidenT>(tuple: TupleT, next: NextT) => (TupleWPush<WidenT, TupleT, NextT>));
 export declare type TupleConcat<T extends Tuple<any>, U extends Tuple<any>> = ({
@@ -157,6 +162,14 @@ export declare type TupleConcat<T extends Tuple<any>, U extends Tuple<any>> = ({
     "0": T[0];
     length: Add<T["length"], U["length"]>;
 } & (T[TupleKeys<T>] | U[TupleKeys<U>])[]);
-export declare type TupleWConcat<WidenT, T extends Tuple<WidenT>, U extends Tuple<WidenT>> = (TupleWiden<TupleConcat<T, U>, WidenT>);
+export declare type TupleWConcat<WidenT, T extends Tuple<WidenT>, U extends Tuple<WidenT>> = (U["length"] extends 0 ? T : {
+    [index in TupleKeys<T>]: (Extract<T[index], WidenT>);
+} & {
+    [newIndex in NumberToString<Add<StringToNumber<Extract<TupleKeys<U>, string>>, T["length"]>>]: (Extract<U[Subtract<StringToNumber<newIndex>, T["length"]>], WidenT>);
+} & {
+    "0": (Extract<T[0], WidenT>);
+    length: Add<T["length"], U["length"]>;
+} & (WidenT)[]);
 export declare function tupleConcat<T extends Tuple<any>, U extends Tuple<any>>(t: T, u: U): (TupleConcat<T, U>);
 export declare function tupleWConcat<WidenT>(): (<T extends Tuple<WidenT>, U extends Tuple<WidenT>>(t: T, u: U) => (TupleWConcat<WidenT, T, U>));
+//# sourceMappingURL=tuple.d.ts.map

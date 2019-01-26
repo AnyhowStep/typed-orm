@@ -19,10 +19,10 @@ export namespace OrderByDelegateUtil {
         TupleWiden<
             ReturnType<OrderByDelegateT>,
             AnyOrderBy
-        >
+        >|undefined
     ) {
         const joinColumnReferences = JoinCollectionUtil.toColumnReferences(selectBuilder.data.joins);
-        const selectColumnReferences = SelectCollectionUtil.toColumnReferences(selectBuilder.data.select);
+        const selectColumnReferences = SelectCollectionUtil.toColumnReferences(selectBuilder.data.selects);
         const columnReferences = ColumnReferencesUtil.merge(
             selectColumnReferences,
             joinColumnReferences
@@ -31,10 +31,14 @@ export namespace OrderByDelegateUtil {
         const result : TupleWiden<
             ReturnType<OrderByDelegateT>,
             AnyOrderBy
-        > = orderByDelegate(
+        >|undefined = orderByDelegate(
             ColumnReferencesUtil.toConvenient(columnReferences) as any,
             selectBuilder
         ) as any;
+        if (result == undefined) {
+            return undefined;
+        }
+
         for (let orderBy of result) {
             const first = (orderBy instanceof Array) ?
                 orderBy[0] :

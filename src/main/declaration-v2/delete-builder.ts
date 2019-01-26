@@ -7,6 +7,13 @@ import {PooledDatabase} from "./PooledDatabase";
 import {AnyJoin} from "./join";
 import {Tuple} from "./tuple";
 
+export type DeleteResult = (
+    mysql.MysqlDeleteResult &
+    {
+        deletedRowCount : number,
+    }
+)
+
 export type DeleteTables<SelectBuilderT extends AnySelectBuilder> = (
     Tuple<JoinCollectionUtil.Tables<SelectBuilderT["data"]["joins"]>>
 );
@@ -94,11 +101,16 @@ export class DeleteBuilder<
             SelectBuilderT,
             DeleteTables<SelectBuilderT>
         >
-    ) : Promise<mysql.MysqlDeleteResult> {
+    ) : Promise<DeleteResult> {
         return this.db.rawDelete(
             this.getQuery(),
             {}
-        );
+        ).then((result) => {
+            return {
+                ...result,
+                deletedRowCount : result.affectedRows,
+            };
+        });
     }
 
     private getTableAliases () : string[] {

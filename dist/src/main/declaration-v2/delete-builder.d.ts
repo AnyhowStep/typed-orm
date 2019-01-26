@@ -5,6 +5,9 @@ import { JoinCollectionUtil } from "./join-collection";
 import { StringBuilder } from "./StringBuilder";
 import { PooledDatabase } from "./PooledDatabase";
 import { Tuple } from "./tuple";
+export declare type DeleteResult = (mysql.MysqlDeleteResult & {
+    deletedRowCount: number;
+});
 export declare type DeleteTables<SelectBuilderT extends AnySelectBuilder> = (Tuple<JoinCollectionUtil.Tables<SelectBuilderT["data"]["joins"]>>);
 export declare type DeleteTablesDelegate<SelectBuilderT extends AnySelectBuilder> = ((tables: JoinCollectionUtil.ToTableCollection<SelectBuilderT["data"]["joins"]>) => (DeleteTables<SelectBuilderT>));
 export declare class DeleteBuilder<SelectBuilderT extends SelectBuilder<{
@@ -24,9 +27,10 @@ export declare class DeleteBuilder<SelectBuilderT extends SelectBuilder<{
     constructor(selectBuilder: SelectBuilderT, deleteTables: DeleteTablesT, willIgnoreErrors: boolean, db: PooledDatabase);
     ignoreErrors(ignoreErrors?: boolean): DeleteBuilder<SelectBuilderT, DeleteTablesT>;
     tables(delegate?: DeleteTablesDelegate<SelectBuilderT>): (DeleteBuilder<SelectBuilderT, DeleteTables<SelectBuilderT>>);
-    execute(this: DeleteBuilder<SelectBuilderT, DeleteTables<SelectBuilderT>>): Promise<mysql.MysqlDeleteResult>;
+    execute(this: DeleteBuilder<SelectBuilderT, DeleteTables<SelectBuilderT>>): Promise<DeleteResult>;
     private getTableAliases;
     querify(sb: StringBuilder): void;
     getQuery(): string;
     printQuery(): this;
 }
+//# sourceMappingURL=delete-builder.d.ts.map

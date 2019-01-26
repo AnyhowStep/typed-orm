@@ -9,3 +9,4 @@ export declare type PartialColumnReferences = {
         readonly [columnName in string]?: (AnyColumn | undefined);
     } | undefined;
 };
+//# sourceMappingURL=column-references.d.ts.map

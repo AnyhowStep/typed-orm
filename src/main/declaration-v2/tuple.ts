@@ -9,14 +9,78 @@ for (let i=0; i<=30; ++i) {
 str.join("|")
 */
 export type Tuple<T> = T[] & { "0" : T };
-/*export type TupleKeys<TupleT extends Tuple<any>> = Extract<
+export type TupleKeys<TupleT extends Tuple<any>> = Extract<
     keyof TupleT,
     "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21"|"22"|"23"|"24"|"25"|"26"|"27"|"28"|"29"|"30"
->;*/
+>;
+export type TupleKeysUpTo<index extends string> = (
+    index extends "1" ?
+    "0" :
+    index extends "2" ?
+    "0"|"1" :
+    index extends "3" ?
+    "0"|"1"|"2" :
+    index extends "4" ?
+    "0"|"1"|"2"|"3" :
+    index extends "5" ?
+    "0"|"1"|"2"|"3"|"4" :
+    index extends "6" ?
+    "0"|"1"|"2"|"3"|"4"|"5" :
+    index extends "7" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6" :
+    index extends "8" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7" :
+    index extends "9" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8" :
+    index extends "10" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9" :
+    index extends "11" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10" :
+    index extends "12" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11" :
+    index extends "13" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12" :
+    index extends "14" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13" :
+    index extends "15" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14" :
+    index extends "16" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15" :
+    index extends "17" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16" :
+    index extends "18" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17" :
+    index extends "19" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18" :
+    index extends "20" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19" :
+    index extends "21" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20" :
+    index extends "22" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21" :
+    index extends "23" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21"|"22" :
+    index extends "24" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21"|"22"|"23" :
+    index extends "25" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21"|"22"|"23"|"24" :
+    index extends "26" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21"|"22"|"23"|"24"|"25" :
+    index extends "27" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21"|"22"|"23"|"24"|"25"|"26" :
+    index extends "28" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21"|"22"|"23"|"24"|"25"|"26"|"27" :
+    index extends "29" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21"|"22"|"23"|"24"|"25"|"26"|"27"|"28" :
+    index extends "30" ?
+    "0"|"1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"10"|"11"|"12"|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21"|"22"|"23"|"24"|"25"|"26"|"27"|"28"|"29" :
+    never
+);
+/*
 export type TupleKeys<TupleT extends Tuple<any>> = Exclude<
     keyof TupleT,
     keyof any[]
->;
+>;*/
 /*export type TupleKeys<TupleT extends Tuple<any>> = Exclude<
     Extract<
         keyof TupleT,
@@ -88,12 +152,17 @@ export type TupleLength<TupleT extends Tuple<any>> = (
     TupleT extends {"3":any} ? 4 :
     TupleT extends {"2":any} ? 3 :
     TupleT extends {"1":any} ? 2 :
-    TupleT extends {"0":any} ? 1 :
+    TupleT extends {"0":any} ? (
+        TupleT extends { length : 1 } ?
+            1 :
+            number
+    ) :
     never
 );
 
 export type TupleWiden<TupleT extends Tuple<any>, WidenT> = (
-    TupleT extends Tuple<infer TypeT> ?
+    TupleT & (WidenT[])
+    /*TupleT extends Tuple<infer TypeT> ?
         (
             TypeT extends WidenT ?
                 (
@@ -110,7 +179,7 @@ export type TupleWiden<TupleT extends Tuple<any>, WidenT> = (
                 ) :
                 never
         ) :
-        never
+        never*/
 )
 
 
@@ -262,7 +331,27 @@ export type TuplePush<TupleT extends Tuple<any>, NextT> = (
     )
 );
 export type TupleWPush<WidenT, TupleT extends Tuple<WidenT>, NextT extends WidenT> = (
-    TupleWiden<TuplePush<TupleT, NextT>, WidenT>
+    {
+        [index in TupleKeys<TupleT>] : (
+            Extract<TupleT[index], WidenT>
+        )
+    } &
+    {
+        [index in TupleNextKey<TupleT>] : (
+            Extract<NextT, WidenT>
+        )
+    } &
+    {
+        "0" : (
+            Extract<TupleT[0], WidenT>
+        ),
+    } &
+    {
+        length : TupleNextLength<TupleT>
+    } &
+    (
+        WidenT[]
+    )
 );
 
 export function tuplePush<TupleT extends Tuple<any>, NextT> (
@@ -348,7 +437,28 @@ export type TupleWConcat<
     T extends Tuple<WidenT>,
     U extends Tuple<WidenT>
 > = (
-    TupleWiden<TupleConcat<T, U>, WidenT>
+    U["length"] extends 0 ?
+    T :
+    {
+        [index in TupleKeys<T>]: (
+            Extract<T[index], WidenT>
+        )
+    } &
+    {
+        [newIndex in NumberToString<Add<
+            StringToNumber<Extract<TupleKeys<U>, string>>,
+            T["length"]
+        >>]: (
+            Extract<U[Subtract<StringToNumber<newIndex>, T["length"]>], WidenT>
+        )
+    } &
+    {
+        "0" : (
+            Extract<T[0], WidenT>
+        ),
+        length: Add<T["length"], U["length"]>;
+    } &
+    (WidenT)[]
 );
 export function tupleConcat<T extends Tuple<any>, U extends Tuple<any>> (
     t : T,

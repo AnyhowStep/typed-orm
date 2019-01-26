@@ -76,4 +76,48 @@ export namespace JoinUtil {
             return join as any;
         }
     }
+
+    export type ReplaceNullable<
+        JoinT extends AnyJoin,
+        TableAliasT extends string,
+        NullableT extends boolean
+    > = (
+        JoinT["table"]["alias"] extends TableAliasT ?
+            (
+                Join<
+                    JoinT["table"],
+                    JoinT["columns"],
+                    NullableT
+                >
+            ) :
+            JoinT
+    );
+    export function replaceNullable<
+        JoinT extends AnyJoin,
+        TableAliasT extends string,
+        NullableT extends boolean
+    > (
+        join : JoinT,
+        tableAlias : TableAliasT,
+        nullable : NullableT
+    ) : (
+        ReplaceNullable<
+            JoinT,
+            TableAliasT,
+            NullableT
+        >
+    ) {
+        if (join.table.alias == tableAlias) {
+            return new Join(
+                join.joinType,
+                join.table,
+                join.columns,
+                nullable,
+                join.from,
+                join.to
+            ) as any;
+        } else {
+            return join as any;
+        }
+    }
 }

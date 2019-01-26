@@ -13,3 +13,4 @@ export declare class AliasedExpr<UsedReferencesT extends PartialColumnReferences
     querify(sb: StringBuilder): void;
 }
 export declare type AnyAliasedExpr = AliasedExpr<PartialColumnReferences, string, string, any>;
+//# sourceMappingURL=aliased-expr.d.ts.map

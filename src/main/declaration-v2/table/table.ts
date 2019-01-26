@@ -1,14 +1,21 @@
 import {AliasedTable} from "../aliased-table";
 import {ColumnCollection, ColumnCollectionUtil} from "../column-collection";
-import {RawColumnCollection, RawColumnCollectionUtil} from "../raw-column-collection";
+//import {RawColumnCollection, RawColumnCollectionUtil} from "../raw-column-collection";
 import {
     TableData,
-    AutoIncrementDelegate,
-    IsGeneratedDelegate,
-    HasDefaultValueDelegate,
-    IsMutableDelegate,
-    TableDataUtil
+    //AutoIncrementDelegate,
+    //IsGeneratedDelegate,
+    //HasDefaultValueDelegate,
+    //IsMutableDelegate,
+    TableDataUtil,
+    //AddUniqueKeyDelegate,
+    //IdDelegate,
 } from "../table-data";
+//import * as fieldUtil from "../field-util";
+//import {Column} from "../column";
+import * as sd from "schema-decorator";
+import {TableUtil} from "./util";
+import { UniqueKeyCollectionUtil, UniqueKeyCollection } from "../unique-key-collection";
 
 export class Table<
     AliasT extends string,
@@ -25,99 +32,6 @@ export class Table<
         super(alias, name, columns);
     }
 
-    setAutoIncrement<
-        AutoIncrementDelegateT extends AutoIncrementDelegate<ColumnCollectionT>
-    >(delegate : AutoIncrementDelegateT) : (
-        Table<
-            AliasT,
-            NameT,
-            ColumnCollectionT,
-            TableDataUtil.AutoIncrement<DataT, ColumnCollectionT, AutoIncrementDelegateT>
-        >
-    ) {
-        return new Table(
-            this.alias,
-            this.name,
-            this.columns,
-            TableDataUtil.autoIncrement(this.data, this.columns, delegate)
-        );
-    }
-    setIsGenerated<
-        IsGeneratedDelegateT extends IsGeneratedDelegate<
-            DataT,
-            ColumnCollectionT
-        >
-    >(delegate : IsGeneratedDelegateT) : (
-        Table<
-            AliasT,
-            NameT,
-            ColumnCollectionT,
-            TableDataUtil.IsGenerated<DataT, ColumnCollectionT, IsGeneratedDelegateT>
-        >
-    ) {
-        return new Table(
-            this.alias,
-            this.name,
-            this.columns,
-            TableDataUtil.isGenerated(this.data, this.columns, delegate)
-        );
-    }
-    setHasDefaultValue<
-        HasDefaultValueDelegateT extends HasDefaultValueDelegate<
-            DataT,
-            ColumnCollectionT
-        >
-    >(delegate : HasDefaultValueDelegateT) : (
-        Table<
-            AliasT,
-            NameT,
-            ColumnCollectionT,
-            TableDataUtil.HasDefaultValue<DataT, ColumnCollectionT, HasDefaultValueDelegateT>
-        >
-    ) {
-        return new Table(
-            this.alias,
-            this.name,
-            this.columns,
-            TableDataUtil.hasDefaultValue(this.data, this.columns, delegate)
-        );
-    }
-    setIsMutable<
-        IsMutableDelegateT extends IsMutableDelegate<
-            DataT,
-            ColumnCollectionT
-        >
-    >(delegate : IsMutableDelegateT) : (
-        Table<
-            AliasT,
-            NameT,
-            ColumnCollectionT,
-            TableDataUtil.IsMutable<DataT, ColumnCollectionT, IsMutableDelegateT>
-        >
-    ) {
-        return new Table(
-            this.alias,
-            this.name,
-            this.columns,
-            TableDataUtil.isMutable(this.data, this.columns, delegate)
-        );
-    }
-    setImmutable () : (
-        Table<
-            AliasT,
-            NameT,
-            ColumnCollectionT,
-            TableDataUtil.Immutable<DataT>
-        >
-    ) {
-        return new Table(
-            this.alias,
-            this.name,
-            this.columns,
-            TableDataUtil.immutable(this.data)
-        );
-    }
-
     as<NewAliasT extends string> (newAlias : NewAliasT) : (
         AliasedTable<
             NewAliasT,
@@ -132,101 +46,73 @@ export class Table<
             newAlias,
             this.name,
             ColumnCollectionUtil.withTableAlias(this.columns, newAlias),
-            this.data
+            TableDataUtil.withTableAlias(this.data, newAlias)
+            //this.data
         );
     }
 
-    withName<NewNameT extends string> (newName : NewNameT) : (
-        Table<
-            NewNameT,
-            NewNameT,
-            ColumnCollectionUtil.WithTableAlias<
-                ColumnCollectionT,
-                NewNameT
-            >,
-            DataT
-        >
-    ) {
-        return new Table(
-            newName,
-            newName,
-            ColumnCollectionUtil.withTableAlias(this.columns, newName),
-            this.data
-        );
+    private uniqueKeyAssertDelegate : sd.AssertDelegate<UniqueKeys<this>>|undefined;
+    getUniqueKeyAssertDelegate () : sd.AssertDelegate<UniqueKeys<this>> {
+        if (this.uniqueKeyAssertDelegate == undefined) {
+            this.uniqueKeyAssertDelegate = TableUtil.uniqueKeyAssertDelegate(this as any);
+        }
+        return this.uniqueKeyAssertDelegate;
     }
-    addColumns<RawColumnCollectionT extends RawColumnCollection> (
-        rawColumnCollection : RawColumnCollectionT
-    ) : (
-        Table<
-            AliasT,
-            NameT,
-            ColumnCollectionUtil.Merge<
-                ColumnCollectionT,
-                RawColumnCollectionUtil.ToColumnCollection<AliasT, RawColumnCollectionT>
-            >,
-            DataT
-        >
-    ) {
-        return new Table(
-            this.alias,
-            this.name,
-            ColumnCollectionUtil.merge(
-                this.columns,
-                RawColumnCollectionUtil.toColumnCollection(this.alias, rawColumnCollection)
-            ),
-            this.data
-        );
+    private minimalUniqueKeyAssertDelegate : sd.AssertDelegate<MinimalUniqueKeys<this>>|undefined;
+    getMinimalUniqueKeyAssertDelegate () : sd.AssertDelegate<MinimalUniqueKeys<this>> {
+        if (this.minimalUniqueKeyAssertDelegate == undefined) {
+            this.minimalUniqueKeyAssertDelegate = TableUtil.minimalUniqueKeyAssertDelegate(this as any);
+        }
+        return this.minimalUniqueKeyAssertDelegate;
+    }
+
+    public assertUniqueKey (name : string, mixed : any) : UniqueKeys<this> {
+        return this.getUniqueKeyAssertDelegate()(name, mixed);
+    }
+    public assertMinimalUniqueKey (name : string, mixed : any) : MinimalUniqueKeys<this> {
+        return this.getMinimalUniqueKeyAssertDelegate()(name, mixed);
     }
 }
 
-export type AnyTable = Table<string, string, ColumnCollection, TableData>;
+//TODO, make this <string, string, ColumnCollection, TableData>
+export type AnyTable = (
+    Table<string, string, ColumnCollection, any>
+);
+export type AnyTableAllowInsert = (
+    //TODO Find a way to make this work with noInsert without breaking everything
+    AnyTable
+    //Table<string, string, ColumnCollection, TableData & { noInsert : false }>
+);
 
-export function table<
-    NameT extends string,
-    RawColumnCollectionT extends RawColumnCollection
-> (
-    name : NameT,
-    rawColumnCollection : RawColumnCollectionT,
-) : (
-    Table<
-        NameT,
-        NameT,
-        RawColumnCollectionUtil.ToColumnCollection<NameT, RawColumnCollectionT>,
-        {
-            autoIncrement : undefined,
-            isGenerated : {},
-            hasDefaultValue : {
-                [name in RawColumnCollectionUtil.NullableColumnNames<
-                    RawColumnCollectionT
-                >] : true
-            },
-            isMutable : {
-                [name in Extract<keyof RawColumnCollectionT, string>] : true
-            }
-        }
+export type TableRow<TableT extends AnyTable> = (
+    ColumnCollectionUtil.Type<TableT["columns"]>
+);
+export type TableSubRow<TableT extends AnyTable, ExtractT extends Extract<keyof TableT["columns"], string>> = (
+    ColumnCollectionUtil.Type<
+        ColumnCollectionUtil.ExtractColumnNames<
+            TableT["columns"],
+            ExtractT
+        >
     >
-) {
-    const columns = RawColumnCollectionUtil.toColumnCollection(name, rawColumnCollection);
-    const hasDefaultValue = {} as any;
-    const isMutable = {} as any;
-
-    for (let columnName of ColumnCollectionUtil.nullableColumnNames(columns)) {
-        hasDefaultValue[columnName] = true;
-    }
-
-    for (let columnName in columns) {
-        isMutable[columnName] = true;
-    }
-
-    return new Table(
-        name,
-        name,
-        columns,
-        {
-            autoIncrement : undefined,
-            isGenerated : {},
-            hasDefaultValue : hasDefaultValue,
-            isMutable : isMutable,
-        }
-    );
-}
+);
+export type TableRowExclude<TableT extends AnyTable, ExcludeT extends Extract<keyof TableT["columns"], string>> = (
+    ColumnCollectionUtil.Type<
+        ColumnCollectionUtil.ExcludeColumnNames<
+            TableT["columns"],
+            ExcludeT
+        >
+    >
+);
+export type MinimalUniqueKeys<TableT extends AnyTable> = (
+    UniqueKeyCollectionUtil.MinimalWithType<
+        Extract<TableT["data"]["uniqueKeys"], UniqueKeyCollection>,
+        TableT["columns"]
+    >
+);
+export type UniqueKeys<TableT extends AnyTable> = (
+    MinimalUniqueKeys<TableT> |
+    UniqueKeyCollectionUtil.WithType<
+        Extract<TableT["data"]["uniqueKeys"], UniqueKeyCollection>,
+        TableT["columns"]
+    >
+);

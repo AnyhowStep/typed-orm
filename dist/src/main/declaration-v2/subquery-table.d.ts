@@ -16,3 +16,4 @@ export declare class SubqueryTable<AliasT extends string, DataT extends {
     constructor(alias: AliasT, selectBuilder: SelectBuilder<DataT>);
     querify(sb: StringBuilder): void;
 }
+//# sourceMappingURL=subquery-table.d.ts.map

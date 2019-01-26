@@ -7,6 +7,12 @@ import {SelectBuilder, AnySelectBuilder} from "../select-builder";
 import {AnySelectValue} from "../select-value";
 import {Tuple} from "../tuple";
 import * as sd from "schema-decorator";
+import {AnyAliasedTable} from "../aliased-table";
+import {ColumnCollectionUtil} from "../column-collection";
+import { ColumnReferencesUtil } from "../column-references";
+import * as e from "../expression";
+import {AnyTable, UniqueKeys, MinimalUniqueKeys} from "../table";
+import {JoinCollection, JoinCollectionUtil} from "../join-collection";
 
 export namespace RawExprUtil {
     export function isAllowedExprConstant (raw : AnyRawExpr) : raw is AllowedExprConstant {
@@ -14,6 +20,9 @@ export namespace RawExprUtil {
             return true;
         }
         if (raw instanceof Date) {
+            return true;
+        }
+        if (raw instanceof Buffer) {
             return true;
         }
         switch (typeof raw) {
@@ -33,6 +42,9 @@ export namespace RawExprUtil {
             if (raw instanceof Date) {
                 //TODO Make this toggleable
                 return mysql.escape(raw, true);
+            }
+            if (raw instanceof Buffer) {
+                return mysql.escape(raw);
             }
             switch (typeof raw) {
                 case "number": {
@@ -64,9 +76,22 @@ export namespace RawExprUtil {
         throw new Error(`Unknown raw expression (${typeof raw})${raw}`);
     }
 
+    //Hack to make emitted type not confuse `tsc`
+    export type WithParentJoins = {
+        data : {
+            hasParentJoins : boolean,
+            parentJoins : JoinCollection,
+        }
+    };
     export type UsedReferences<RawExprT extends AnyRawExpr> = (
-        RawExprT extends AnySelectBuilder ?
-        {} :
+        RawExprT extends WithParentJoins ?
+        (
+            true extends RawExprT["data"]["hasParentJoins"] ?
+                JoinCollectionUtil.ToColumnReferences<
+                    RawExprT["data"]["parentJoins"]
+                > :
+                {}
+        ) :
         RawExprT extends AllowedExprConstant ?
         {} :
         RawExprT extends AnyColumn ?
@@ -96,7 +121,13 @@ export namespace RawExprUtil {
             return raw.usedReferences as any;
         }
         if (raw instanceof SelectBuilder) {
-            return {} as any;
+            if (raw.data.hasParentJoins) {
+                return JoinCollectionUtil.toColumnReferences(
+                    raw.data.parentJoins
+                ) as any;
+            } else {
+                return {} as any;
+            }
         }
         throw new Error(`Unknown raw expression (${typeof raw})${raw}`);
     }
@@ -134,6 +165,9 @@ export namespace RawExprUtil {
             }
             if (raw instanceof Date) {
                 return sd.date() as any;
+            }
+            if (raw instanceof Buffer) {
+                return sd.buffer() as any;
             }
             switch (typeof raw) {
                 case "number": {
@@ -180,6 +214,17 @@ export namespace RawExprUtil {
         );
     }
 
+    export function isNullable (raw : AnyRawExpr) {
+        try {
+            assertDelegate(raw)("", null);
+        } catch (_err) {
+            //If we encounter an error, we know this raw expression
+            //is non-nullable
+            return false;
+        }
+
+        return true;
+    }
     export function assertNonNullable (raw : AnyRawExpr) {
         try {
             assertDelegate(raw)("", null);
@@ -191,4 +236,119 @@ export namespace RawExprUtil {
 
         throw new Error(`Expected expression to be non-nullable, but it is`);
     }
+
+    export function toEqualityCondition<
+        TableT extends AnyAliasedTable
+    > (
+        table : TableT,
+        //TODO Force proper typing?
+        //For now, ignores invalid columns
+        /*condition : {
+            [otherColumnName : string]  : any
+        }*/
+        //TODO Check this works
+        condition : {
+            [columnName in Extract<keyof TableT["columns"], string>]? : (
+                ReturnType<TableT["columns"][columnName]["assertDelegate"]>
+            )
+        }
+    ) : (
+        Expr<
+            ColumnReferencesUtil.Partial<
+                ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+            >,
+            boolean
+        >
+    ) {
+        const assertDelegate = ColumnCollectionUtil.partialAssertDelegate(table.columns);
+        condition = assertDelegate(`${table.alias} condition`, condition) as any;
+        const comparisonArr = Object.keys(condition)
+            .filter((columnName) => {
+                //Strict equality because we support checking against `null`
+                return (
+                    (condition as any)[columnName] !== undefined &&
+                    table.columns[columnName] !== undefined
+                );
+            })
+            .map((columnName) => {
+                const column = table.columns[columnName];
+                const value = (condition as any)[columnName];
+                if (value == null) {
+                    return e.isNull(column);
+                } else {
+                    if (RawExprUtil.isNullable(column)) {
+                        return e.isNotNullAndEq(column, value) as any;
+                    } else {
+                        return e.eq(column, value) as any;
+                    }
+                }
+            });
+        if (comparisonArr.length == 0) {
+            return e.TRUE;
+        } else {
+            return e.and(
+                comparisonArr[0],
+                ...comparisonArr.slice(1)
+            ) as any;
+        }
+    }
+    export function toUniqueKeyEqualityCondition<
+        TableT extends AnyTable,
+        ConditionT extends UniqueKeys<TableT>
+    > (
+        table : TableT,
+        rawCondition : ConditionT
+    ) : (
+        Expr<
+            //TODO This might need fixing
+            //It should only use columns
+            //that are present in ConditionT
+            ColumnReferencesUtil.Partial<
+                ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+            >,
+            boolean
+        >
+    ) {
+        const condition = table.getUniqueKeyAssertDelegate()(
+            `${table.alias} condition`,
+            rawCondition
+        );
+        return toEqualityCondition(
+            table,
+            //https://github.com/Microsoft/TypeScript/issues/27399
+            condition as any
+        ) as any;
+    }
+    export function toMinimalUniqueKeyEqualityCondition<
+        TableT extends AnyTable,
+        ConditionT extends MinimalUniqueKeys<TableT>
+    > (
+        table : TableT,
+        rawCondition : ConditionT
+    ) : (
+        Expr<
+            //TODO This might need fixing
+            //It should only use columns
+            //that are present in ConditionT
+            ColumnReferencesUtil.Partial<
+                ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+            >,
+            boolean
+        >
+    ) {
+        const condition = table.getMinimalUniqueKeyAssertDelegate()(
+            `${table.alias} condition`,
+            rawCondition
+        );
+        return toEqualityCondition(
+            table,
+            //https://github.com/Microsoft/TypeScript/issues/27399
+            condition as any
+        ) as any;
+    }
 }
+
+//Convenience exports
+export const toEqualityCondition = RawExprUtil.toEqualityCondition;
+export const toUniqueKeyEqualityCondition = RawExprUtil.toUniqueKeyEqualityCondition;
+export const toMinimalUniqueKeyEqualityCondition = RawExprUtil.toMinimalUniqueKeyEqualityCondition;

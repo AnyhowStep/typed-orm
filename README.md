@@ -1,10 +1,10 @@
 ### `typed-orm`
 
-An experiment in type-safe MySQL query building using TypeScript.
+An experiment in type-safe, and structurally-safe MySQL query building using TypeScript.
 
 ### Tables
 
-```
+```ts
 import * as o from "typed-orm";
 import * as sd from "schema-decorator";
 
@@ -15,7 +15,9 @@ const app = o.table(
         name : sd.string(),
         description : sd.nullable(sd.string())
     }
-).setAutoIncrement(c => c.appId);
+)
+    .setAutoIncrement(c => c.appId)
+    .build();
 
 const user = o.table(
     "user",
@@ -24,12 +26,46 @@ const user = o.table(
         firstName : sd.string(),
         lastName : sd.string(),
     }
-).setAutoIncrement(c => c.userId);
+)
+    .setAutoIncrement(c => c.userId)
+    .build();
+
+const baseTable = o.table(
+    "base",
+    {
+        baseId : sd.naturalNumber()
+    }
+)
+    .setAutoIncrement(c => c.baseId)
+    .build();
+
+//Table-per-concrete-class inheritance
+const derivedTable = o.table(baseTable)
+    .withName("derived")
+    .addColumns({
+        value0 : sd.boolean(),
+        value1 : sd.date(),
+    });
+    .build();
+
+//Table-per-type inheritance
+const derivedTable2 = o.table(
+    "derived2",
+    {
+        baseId : sd.naturalNumber(),
+        value0 : sd.boolean(),
+        value1 : sd.date(),
+    }
+)
+    .setId(c => c.baseId)
+    .addParent(baseTable)
+    .build();
+
 ```
 
 ### Database
 
-```
+```ts
 import * as o from "typed-orm";
 const db = new o.PooledDatabase({
     host     : "host",
@@ -42,7 +78,7 @@ await db.utcOnly();
 
 ### Select
 
-```
+```ts
 db.from(app)
     .selectAll()
     .fetchAll()
@@ -71,7 +107,7 @@ db.from(app)
 
 ### Insert
 
-```
+```ts
 await db.insertValue(app, {
     name : "new-app",
 })
@@ -81,7 +117,7 @@ await db.insertValue(app, {
 
 ### Update
 
-```
+```ts
 import * as o from "typed-orm";
 await db.update(
     app,
@@ -96,7 +132,7 @@ await db.update(
 
 ### Delete
 
-```
+```ts
 db.deleteFrom(app, c => o.eq(c.appId, 1))
     .execute()
     .then(console.log);
@@ -104,7 +140,7 @@ db.deleteFrom(app, c => o.eq(c.appId, 1))
 
 ### Sub-query Expression
 
-```
+```ts
 await db.select(() => {
     return [
         db.select(() => [
@@ -129,3 +165,41 @@ await db.from(app)
     .fetchOne()
     .then(console.log);
 ```
+
+### Example of a complicated query
+
+```ts
+/*snip*/
+    tryFetchOneAwaitingCreation () {
+        return this.dao.from(t.merchant)
+            .useJoins(
+                j.merchantBelongsToOneAppPlatform,
+                j.merchantBelongsToOneBusiness,
+                j.businessBelongsToOneUser
+            )
+            .where(() => this.canStartCreationAttemptExpression())
+            .selectAll()
+            .select(() => [
+                this.lastCreationAttemptAtExpression().as("lastCreationAttemptAt")
+            ])
+            .orderBy(c => [
+                //We prioritize those that have not been attempted
+                [o.isNull(c.__expr.lastCreationAttemptAt), o.DESCENDING],
+                //For those that have been attempted,
+                //we get the earliest attempted
+                [c.__expr.lastCreationAttemptAt, o.ASCENDING],
+                //For those that have not been attempted,
+                //we get the earliest created
+                [c.merchant.createdAt, o.ASCENDING]
+            ])
+            .limit(1)
+            .fetchZeroOrOne();
+    }
+/*snip*/
+```
+
+### TODO
+
++ Better documentation
++ Better examples
++ Better tests

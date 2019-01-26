@@ -5,10 +5,21 @@ import { AnySelectBuilder } from "../select-builder";
 import { AnySelectValue } from "../select-value";
 import { Tuple } from "../tuple";
 import * as sd from "schema-decorator";
+import { AnyAliasedTable } from "../aliased-table";
+import { ColumnCollectionUtil } from "../column-collection";
+import { ColumnReferencesUtil } from "../column-references";
+import { AnyTable, UniqueKeys, MinimalUniqueKeys } from "../table";
+import { JoinCollection, JoinCollectionUtil } from "../join-collection";
 export declare namespace RawExprUtil {
     function isAllowedExprConstant(raw: AnyRawExpr): raw is AllowedExprConstant;
     function querify(raw: RawExpr<any>): string;
-    type UsedReferences<RawExprT extends AnyRawExpr> = (RawExprT extends AnySelectBuilder ? {} : RawExprT extends AllowedExprConstant ? {} : RawExprT extends AnyColumn ? {
+    type WithParentJoins = {
+        data: {
+            hasParentJoins: boolean;
+            parentJoins: JoinCollection;
+        };
+    };
+    type UsedReferences<RawExprT extends AnyRawExpr> = (RawExprT extends WithParentJoins ? (true extends RawExprT["data"]["hasParentJoins"] ? JoinCollectionUtil.ToColumnReferences<RawExprT["data"]["parentJoins"]> : {}) : RawExprT extends AllowedExprConstant ? {} : RawExprT extends AnyColumn ? {
         readonly [tableAlias in RawExprT["tableAlias"]]: {
             readonly [name in RawExprT["name"]]: RawExprT;
         };
@@ -20,5 +31,15 @@ export declare namespace RawExprUtil {
     function assertDelegate<RawExprT extends AnyRawExpr>(raw: RawExprT): (sd.AssertDelegate<Type<RawExprT>>);
     type ToExpr<RawExprT extends AnyRawExpr> = (Expr<UsedReferences<RawExprT>, Type<RawExprT>>);
     function toExpr<RawExprT extends AnyRawExpr>(raw: RawExprT): (ToExpr<RawExprT>);
+    function isNullable(raw: AnyRawExpr): boolean;
     function assertNonNullable(raw: AnyRawExpr): void;
+    function toEqualityCondition<TableT extends AnyAliasedTable>(table: TableT, condition: {
+        [columnName in Extract<keyof TableT["columns"], string>]?: (ReturnType<TableT["columns"][columnName]["assertDelegate"]>);
+    }): (Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, boolean>);
+    function toUniqueKeyEqualityCondition<TableT extends AnyTable, ConditionT extends UniqueKeys<TableT>>(table: TableT, rawCondition: ConditionT): (Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, boolean>);
+    function toMinimalUniqueKeyEqualityCondition<TableT extends AnyTable, ConditionT extends MinimalUniqueKeys<TableT>>(table: TableT, rawCondition: ConditionT): (Expr<ColumnReferencesUtil.Partial<ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>>, boolean>);
 }
+export declare const toEqualityCondition: typeof RawExprUtil.toEqualityCondition;
+export declare const toUniqueKeyEqualityCondition: typeof RawExprUtil.toUniqueKeyEqualityCondition;
+export declare const toMinimalUniqueKeyEqualityCondition: typeof RawExprUtil.toMinimalUniqueKeyEqualityCondition;
+//# sourceMappingURL=util.d.ts.map

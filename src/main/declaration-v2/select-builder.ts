@@ -1,31 +1,38 @@
+/*
+Every time you see a return type of `this`, it is an ugly hack.
+It doesn't actually return `this`.
+
+It returns a new instance with the same `DataT` as `this`.
+Required because TypeScript gets confused with generics.
+*/
 import {
     JoinCollection,
     JoinCollectionUtil
 } from "./join-collection";
-import {JoinFromDelegate} from "./join-from-delegate";
+import {JoinFromDelegate, JoinFromDelegateUnsafe} from "./join-from-delegate";
 import {JoinToDelegate} from "./join-to-delegate";
 import {AliasedTable, AnyAliasedTable} from "./aliased-table";
-import {ReplaceValue, ReplaceValue2} from "./obj-util";
 import {spread} from "@anyhowstep/type-util";
 import {Join, JoinType} from "./join";
 import {SelectCollection, SelectCollectionUtil} from "./select-collection";
 import {SelectDelegate} from "./select-delegate";
 import {FetchRow, FetchRowUtil} from "./fetch-row";
-import {AggregateDelegate, AggregateDelegateUtil} from "./aggregate-delegate";
+import {AggregateDelegate, AggregateDelegatePeekOriginal, AggregateDelegateUtil} from "./aggregate-delegate";
 import {TypeNarrowDelegate, TypeNarrowDelegateUtil} from "./type-narrow-delegate";
 import {Column, AnyColumn} from "./column";
 import * as invalid from "./invalid";
-import {WhereDelegate, WhereDelegateUtil} from "./where-delegate";
+import {WhereDelegate, WhereDelegateUtil, WhereDelegateColumnReferences} from "./where-delegate";
 import {GroupByDelegate, GroupByDelegateUtil} from "./group-by-delegate";
 import {HavingDelegate, HavingDelegateUtil} from "./having-delegate";
 import {OrderByDelegate, OrderByDelegateUtil} from "./order-by-delegate";
 import {TypeWidenDelegate, TypeWidenDelegateUtil} from "./type-widen-delegate";
+import {UnionOrderByDelegate, UnionOrderByDelegateUtil} from "./union-order-by-delegate";
 import * as sd from "schema-decorator";
 import {FetchValueCheck, FetchValueType} from "./fetch-value";
-import {table, AnyTable} from "./table";
+import {table, AnyTableAllowInsert} from "./table";
 import {AnyGroupBy} from "./group-by";
 import {AnyOrderBy} from "./order-by";
-import {Expr} from "./expr";
+import {Expr, AnyExpr} from "./expr";
 import {PooledDatabase} from "./PooledDatabase";
 import {Querify} from "./querify";
 import {StringBuilder} from "./StringBuilder";
@@ -49,10 +56,14 @@ import {
     DeleteBuilder,
     DeleteTablesDelegate
 } from "./delete-builder";
-import {TupleWConcat} from "./tuple";
+import {TupleWConcat, Tuple, TupleKeys, TupleKeysUpTo, TupleLength} from "./tuple";
 import {AnyJoin} from "./join";
+import {SelectBuilderUtil} from "./select-builder-util";
+import {JoinDeclarationUtil, JoinDeclarationUsage} from "./join-declaration";
+import {ColumnReferences, ColumnReferencesUtil} from "./column-references";
+import {ColumnCollectionUtil} from "./column-collection";
+import {Table, AnyTable, UniqueKeys, MinimalUniqueKeys} from "./table";
 
-import {Table} from "./table";
 Table;
 
 //TODO Move elsewhere
@@ -79,6 +90,7 @@ export interface ExtraSelectBuilderData {
     readonly limit? : LimitData,
     readonly unionOrderBy? : AnyOrderBy[],
     readonly unionLimit? : LimitData,
+    readonly aggregateDelegates? : (AggregateDelegate<any>|AggregateDelegatePeekOriginal<any, any>)[],
 }
 
 //TODO Move elsewhere
@@ -105,7 +117,7 @@ export interface SelectBuilderData {
 
     readonly selects : undefined|SelectCollection,
 
-    readonly aggregateDelegate : undefined|AggregateDelegate<any>,
+    readonly aggregateDelegate : undefined|AggregateDelegate<any>|AggregateDelegatePeekOriginal<any, any>,
 
     readonly hasParentJoins : boolean,
     readonly parentJoins : JoinCollection,
@@ -114,7 +126,7 @@ export interface SelectBuilderData {
 export const __DUMMY_FROM_TABLE = table(
     "__DUMMY_FROM_TABLE",
     {}
-);
+).build();
 
 export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     readonly data : DataT;
@@ -161,56 +173,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         toTable : ToTableT
     ) : (
-        JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]> extends never ?
-            SelectBuilder<ReplaceValue2<
-                DataT,
-                "hasFrom",
-                true,
-                "joins",
-                [
-                    Join<
-                        ToTableT,
-                        ToTableT["columns"],
-                        false
-                    >
-                ]
-            >> :
-            invalid.E4<
-                "Alias",
-                ToTableT["alias"],
-                "was already used as join in parent scope",
-                JoinCollectionUtil.FindWithTableAlias<DataT["parentJoins"], ToTableT["alias"]>
-            >
+        SelectBuilderUtil.From<this, ToTableT>
     ) {
-        if (this.data.hasFrom) {
-            throw new Error(`FROM clause already exists`);
-        }
-        if (this.data.hasParentJoins) {
-            JoinCollectionUtil.assertNonDuplicateTableAlias(
-                this.data.parentJoins,
-                toTable.alias
-            );
-        }
-        return new SelectBuilder(spread(
-            this.data,
-            {
-                hasFrom : true,
-                joins : [
-                    new Join(
-                        JoinType.FROM,
-                        toTable,
-                        toTable.columns,
-                        false,
-                        [],
-                        []
-                    )
-                ]
-            }
-        ), this.extraData) as any;
+        return SelectBuilderUtil.from(this, toTable) as any;
     }
     join<
         ToTableT extends AnyAliasedTable,
-        FromDelegateT extends JoinFromDelegate<DataT["joins"]>
+        FromDelegateT extends JoinFromDelegate<this["data"]["joins"]>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -227,26 +196,39 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         fromDelegate : FromDelegateT,
         toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
     ) : (
-        Error extends JoinCollectionUtil.InnerJoin<SelectBuilder<DataT>, ToTableT> ?
-            JoinCollectionUtil.InnerJoin<SelectBuilder<DataT>, ToTableT> :
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT>
-            >>
+        SelectBuilderUtil.DoJoin<this, ToTableT>
     ) {
-        this.assertAfterFrom();
-        return new SelectBuilder(spread(
-            this.data,
-            {
-                joins : JoinCollectionUtil.innerJoin(
-                    this,
-                    toTable,
-                    fromDelegate as any,
-                    toDelegate
-                )
-            }
-        ), this.extraData) as any;
+        return SelectBuilderUtil.doJoin(this, toTable, fromDelegate as any, toDelegate) as any;
+    }
+    //Unsafe because it does not check for duplicates during compile-time
+    joinUnsafe<
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegateUnsafe<this["data"]["joins"]>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT,
+        fromDelegate : FromDelegateT,
+        toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.join(toTable, fromDelegate as any, toDelegate) as any;
     }
     joinUsing<
         ToTableT extends AnyAliasedTable,
@@ -268,11 +250,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         Error extends JoinCollectionUtil.InnerJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ?
             JoinCollectionUtil.InnerJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> :
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT>
-            >>
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT> :
+                    DataT[key]
+                )
+            }>
     ) {
         this.assertAfterFrom();
         return new SelectBuilder(spread(
@@ -285,6 +269,34 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 )
             }
         ), this.extraData) as any;
+    }
+    //Unsafe because it does not check for duplicates during compile-time
+    joinUsingUnsafe<
+        ToTableT extends AnyAliasedTable
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT,
+        fromDelegate : JoinFromDelegateUnsafe<DataT["joins"]>
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.InnerJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.joinUsing(toTable, fromDelegate as any) as any;
     }
     //We don't allow right joins after selecting
     //because it'll narrow the data type of selected columns
@@ -309,11 +321,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         Error extends JoinCollectionUtil.RightJoin<SelectBuilder<DataT>, ToTableT> ?
             JoinCollectionUtil.RightJoin<SelectBuilder<DataT>, ToTableT> :
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT>
-            >>
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT> :
+                    DataT[key]
+                )
+            }>
     ) {
         this.assertBeforeSelect();
         this.assertAfterFrom();
@@ -328,6 +342,36 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 )
             }
         ), this.extraData) as any;
+    }
+    //Unsafe because it does not check for duplicates during compile-time
+    rightJoinUnsafe<
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegateUnsafe<DataT["joins"]>
+    > (
+        this : SelectBuilder<{
+            hasSelect : false,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT,
+        fromDelegate : FromDelegateT,
+        toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.rightJoin(toTable, fromDelegate as any, toDelegate) as any;
     }
     //We don't allow right joins after selecting
     //because it'll narrow the data type of selected columns
@@ -351,11 +395,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         Error extends JoinCollectionUtil.RightJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ?
             JoinCollectionUtil.RightJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> :
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT>
-            >>
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT> :
+                    DataT[key]
+                )
+            }>
     ) {
         this.assertBeforeSelect();
         this.assertAfterFrom();
@@ -369,6 +415,34 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 )
             }
         ), this.extraData) as any;
+    }
+    //Unsafe because it does not check for duplicates during compile-time
+    rightJoinUsingUnsafe<
+        ToTableT extends AnyAliasedTable
+    > (
+        this : SelectBuilder<{
+            hasSelect : false,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT,
+        fromDelegate : JoinFromDelegateUnsafe<DataT["joins"]>
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.RightJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.rightJoinUsing(toTable, fromDelegate as any) as any;
     }
     leftJoin<
         ToTableT extends AnyAliasedTable,
@@ -391,11 +465,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         Error extends JoinCollectionUtil.LeftJoin<SelectBuilder<DataT>, ToTableT> ?
             JoinCollectionUtil.LeftJoin<SelectBuilder<DataT>, ToTableT> :
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT>
-            >>
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT> :
+                    DataT[key]
+                )
+            }>
     ) {
         this.assertAfterFrom();
         return new SelectBuilder(spread(
@@ -409,6 +485,36 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 )
             }
         ), this.extraData) as any;
+    }
+    //Unsafe because it does not check for duplicates during compile-time
+    leftJoinUnsafe<
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegateUnsafe<DataT["joins"]>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT,
+        fromDelegate : FromDelegateT,
+        toDelegate : JoinToDelegate<ToTableT, ReturnType<FromDelegateT>>
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.leftJoinUnsafe(toTable, fromDelegate as any, toDelegate) as any;
     }
     leftJoinUsing<
         ToTableT extends AnyAliasedTable,
@@ -430,11 +536,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         Error extends JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> ?
             JoinCollectionUtil.LeftJoinUsing<SelectBuilder<DataT>, ToTableT, FromDelegateT> :
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT>
-            >>
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT> :
+                    DataT[key]
+                )
+            }>
     ) {
         this.assertAfterFrom();
         return new SelectBuilder(spread(
@@ -448,11 +556,135 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             }
         ), this.extraData) as any;
     }
+    //Unsafe because it does not check for duplicates during compile-time
+    leftJoinUsingUnsafe<
+        ToTableT extends AnyAliasedTable
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT,
+        fromDelegate : JoinFromDelegateUnsafe<DataT["joins"]>
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.LeftJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.leftJoinUsing(toTable, fromDelegate as any) as any;
+    }
+    /*
+        Gives the Cartesian product.
+        Example:
+        |      Table A      |
+        | columnA | columnB |
+        | 1       | hello   |
+        | 2       | world   |
+
+        |      Table B      |
+        | columnC | columnD |
+        | qwerty  | 321     |
+        | stuff   | 654     |
+        | yellow  | 987     |
+
+        SELECT
+            *
+        FROM
+            `Table A`
+        CROSS JOIN
+            `Table B`
+
+        Will give you:
+        | columnA | columnB | columnC | columnD |
+        | 1       | hello   | qwerty  | 321     |
+        | 1       | hello   | stuff   | 654     |
+        | 1       | hello   | yellow  | 987     |
+        | 2       | world   | qwerty  | 321     |
+        | 2       | world   | stuff   | 654     |
+        | 2       | world   | yellow  | 987     |
+
+        { a, b } x { 1, 2, 3 } = { (a,1), (a,2), (a,3), (b,1), (b,2), (b,3) }
+    */
+    crossJoin<
+        ToTableT extends AnyAliasedTable
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT
+    ) : (
+        Error extends JoinCollectionUtil.CrossJoin<SelectBuilder<DataT>, ToTableT> ?
+            JoinCollectionUtil.CrossJoin<SelectBuilder<DataT>, ToTableT> :
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.CrossJoinUnsafe<DataT["joins"], ToTableT> :
+                    DataT[key]
+                )
+            }>
+    ) {
+        this.assertAfterFrom();
+        return new SelectBuilder(spread(
+            this.data,
+            {
+                joins : JoinCollectionUtil.crossJoin(
+                    this,
+                    toTable
+                )
+            }
+        ), this.extraData) as any;
+    }
+    //Unsafe because it does not check for duplicates during compile-time
+    crossJoinUnsafe<
+        ToTableT extends AnyAliasedTable
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        toTable : ToTableT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "joins" ?
+                JoinCollectionUtil.CrossJoinUnsafe<DataT["joins"], ToTableT> :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.crossJoin(toTable) as any;
+    }
 
     //Must be called before UNION because it will change the number of
     //columns expected.
     select<
-        SelectDelegateT extends SelectDelegate<SelectBuilder<DataT>>
+        SelectDelegateT extends SelectDelegate<this>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -467,29 +699,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         selectDelegate : SelectDelegateT
     ) : (
-        Error extends SelectCollectionUtil.AppendSelect<
-            DataT["selects"],
-            SelectBuilder<DataT>,
-            SelectDelegateT
-        > ?
-            SelectCollectionUtil.AppendSelect<
-                DataT["selects"],
-                SelectBuilder<DataT>,
-                SelectDelegateT
-            > :
-            (
-                SelectBuilder<ReplaceValue2<
-                    DataT,
-                    "selects",
-                    SelectCollectionUtil.AppendSelectUnsafe<
-                        DataT["selects"],
-                        SelectBuilder<DataT>,
-                        SelectDelegateT
-                    >,
-                    "hasSelect",
-                    true
-                >>
-            )
+        SelectBuilderUtil.Select<this, SelectDelegateT>
     ) {
         this.assertBeforeUnion();
         const selects = SelectCollectionUtil.appendSelect<
@@ -508,6 +718,38 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 selects : selects
             }
         ), this.extraData) as any;
+    }
+    selectUnsafe<
+        SelectDelegateT extends SelectDelegate<this>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : any,
+            hasUnion : false,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        selectDelegate : SelectDelegateT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "selects" ?
+                SelectCollectionUtil.AppendSelectUnsafe<
+                    this["data"]["selects"],
+                    this,
+                    SelectDelegateT
+                > :
+                key extends "hasSelect" ?
+                true :
+                DataT[key]
+            )
+        }>
+    ) {
+        return this.select(selectDelegate as any) as any;
     }
     //Must be called before any other `SELECT` methods
     //because it'll set the select clause to whatever is at the joins,
@@ -528,24 +770,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>
     ) : (
-        SelectBuilder<ReplaceValue2<
-            DataT,
-            "selects",
-            SelectCollectionUtil.FromJoinCollection<DataT["joins"]>,
-            "hasSelect",
-            true
-        >>
+        SelectBuilderUtil.SelectAll<this>
     ) {
-        this.assertBeforeSelect();
-        this.assertAfterFrom();
-        this.assertBeforeUnion();
-        return new SelectBuilder(spread(
-            this.data,
-            {
-                hasSelect : true,
-                selects : SelectCollectionUtil.fromJoinCollection(this.data.joins)
-            }
-        ), this.extraData) as any;
+        return SelectBuilderUtil.selectAll(this) as any;
     }
 
     //Must be called after `FROM`; makes no sense
@@ -570,18 +797,22 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         //TODO evaluate if this affects safety in any way
         TableB extends AliasedTable<any, any, TableA["columns"]> ?
-            SelectBuilder<ReplaceValue<
-                DataT,
-                "joins",
-                JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB>
-            >> :
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB> :
+                    DataT[key]
+                )
+            }> :
             Error extends JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> ?
-                JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> :   
-                SelectBuilder<ReplaceValue<
-                    DataT,
-                    "joins",
-                    JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB>
-                >>
+                JoinCollectionUtil.ReplaceTable<DataT["joins"], TableA, TableB> :
+                SelectBuilder<{
+                    readonly [key in keyof DataT] : (
+                        key extends "joins" ?
+                        JoinCollectionUtil.ReplaceTableUnsafe<DataT["joins"], TableA, TableB> :
+                        DataT[key]
+                    )
+                }>
     ) {
         this.assertAfterFrom();
         const replaced = JoinCollectionUtil.replaceTable(this.data.joins, tableA, tableB);
@@ -596,12 +827,15 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Must be called after `SELECT` or there will be
     //no columns to aggregate...
     aggregate<
-        AggregateDelegateT extends undefined|AggregateDelegate<
-            FetchRow<
-                DataT["joins"],
-                SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+        AggregateDelegateT extends (
+            AggregateDelegatePeekOriginal<
+                SelectBuilderUtil.AggregatedRow<this>,
+                FetchRow<
+                    DataT["joins"],
+                    SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+                >
             >
-        >
+        )
     > (
         this : SelectBuilder<{
             hasSelect : true,
@@ -618,19 +852,126 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         aggregateDelegate : AggregateDelegateT
     ) : (
-        SelectBuilder<ReplaceValue<
-            DataT,
-            "aggregateDelegate",
-            AggregateDelegateT
-        >>
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "aggregateDelegate" ?
+                AggregateDelegateT :
+                DataT[key]
+            )
+        }>
+    );
+    aggregate<
+        AggregateDelegateT extends (
+            AggregateDelegate<
+                SelectBuilderUtil.AggregatedRow<this>
+            >
+        )
+    > (
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasFrom : any,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            //Makes no sense to aggregate a subquery
+            //because you cannot fetch() it
+            hasParentJoins : false,
+            parentJoins : any,
+        }>,
+        aggregateDelegate : AggregateDelegateT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "aggregateDelegate" ?
+                AggregateDelegateT :
+                DataT[key]
+            )
+        }>
+    );
+    aggregate<
+        AggregateDelegateT extends (
+            AggregateDelegate<
+                SelectBuilderUtil.AggregatedRow<this>
+            >|
+            AggregateDelegatePeekOriginal<
+                SelectBuilderUtil.AggregatedRow<this>,
+                FetchRow<
+                    DataT["joins"],
+                    SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
+                >
+            >
+        )
+    > (
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasFrom : any,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            //Makes no sense to aggregate a subquery
+            //because you cannot fetch() it
+            hasParentJoins : false,
+            parentJoins : any,
+        }>,
+        aggregateDelegate : AggregateDelegateT
+    ) : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "aggregateDelegate" ?
+                AggregateDelegateT :
+                DataT[key]
+            )
+        }>
     ) {
         this.assertAfterSelect();
-        return new SelectBuilder(spread(
-            this.data,
-            {
-                aggregateDelegate : aggregateDelegate
-            }
-        ), this.extraData) as any;
+        return new SelectBuilder(
+            spread(
+                this.data,
+                {
+                    aggregateDelegate : aggregateDelegate
+                }
+            ),
+            spread(
+                this.extraData,
+                {
+                    aggregateDelegates : (
+                        (this.extraData.aggregateDelegates == undefined) ?
+                            [aggregateDelegate] :
+                            this.extraData.aggregateDelegates.concat(
+                                aggregateDelegate
+                            )
+                    )
+                }
+            )
+        ) as any;
+    }
+    unsetAggregate () : (
+        SelectBuilder<{
+            readonly [key in keyof DataT] : (
+                key extends "aggregateDelegate" ?
+                undefined :
+                DataT[key]
+            )
+        }>
+    ) {
+        return new SelectBuilder(
+            spread(
+                this.data,
+                {
+                    aggregateDelegate : undefined
+                }
+            ),
+            spread(
+                this.extraData,
+                {
+                    aggregateDelegates : undefined
+                }
+            )
+        ) as any;
     }
 
     private rowAssertDelegate : sd.AssertDelegate<any> | undefined = undefined;
@@ -642,6 +983,49 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             );
         }
         return this.rowAssertDelegate;
+    }
+    public static FindStringPaths (obj : any, path : string[] = [], result : string[][] = []) {
+        if (obj == undefined) {
+            return result;
+        }
+        if (obj instanceof Date) {
+            return result;
+        }
+        if (!(obj instanceof Object)) {
+            return result;
+        }
+        for (let key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                const value = obj[key];
+                if (typeof value == "string") {
+                    result.push(path.concat(key));
+                } else {
+                    SelectBuilder.FindStringPaths(
+                        value,
+                        path.concat(key),
+                        result
+                    );
+                }
+            }
+        }
+        return result;
+    }
+    public static TryGetDateAtPath (obj : any, path : string[]) : Date|undefined {
+        for (let key of path) {
+            if (obj == undefined || !(obj instanceof Object)) {
+                return undefined;
+            }
+            if (!obj.hasOwnProperty(key)) {
+                return undefined;
+            }
+            obj = obj[key];
+        }
+        //`obj` should be the value we are testing
+        if (obj instanceof Date) {
+            return obj;
+        } else {
+            return undefined;
+        }
     }
     readonly processRow = (rawRow : any) => {
         let result = {} as any;
@@ -658,15 +1042,41 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         if (tableAliases.length == 1) {
             result = result[tableAliases[0]];
         }
-        result = this.getRowAssertDelegate()("row", result);
+        if (this.extraData.db.isUtcOnly()) {
+            //We do this because, sometimes, we get dates in string format,
+            //without the timezone part.
+            //Then, when attempting to convert to `Date`, we lose the
+            //timezone information.
+            //This code block attempts to correct for Timezone differences
+            const stringPaths = SelectBuilder.FindStringPaths(
+                result
+            );
+            result = this.getRowAssertDelegate()("row", result);
+            for (let path of stringPaths) {
+                const date = SelectBuilder.TryGetDateAtPath(result, path);
+                if (date != undefined) {
+                    date.setUTCHours(date.getUTCHours()-date.getTimezoneOffset()/60);
+                }
+            }
+        } else {
+            result = this.getRowAssertDelegate()("row", result);
+        }
         return result;
     };
-    readonly aggregateRow = (rawRow : any) => {
+    readonly aggregateRow = async (rawRow : any) => {
         let result = this.processRow(rawRow);
-        if (this.data.aggregateDelegate == undefined) {
+        if (this.extraData.aggregateDelegates == undefined) {
             return result;
         } else {
-            return this.data.aggregateDelegate(result);
+            const originalRow = result;
+            for (let d of this.extraData.aggregateDelegates) {
+                if (AggregateDelegateUtil.isAggregateDelegate(d)) {
+                    result = await d(result);
+                } else {
+                    result = await d(result, originalRow);
+                }
+            }
+            return result;
         }
     }
     fetchAll(
@@ -685,16 +1095,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
     ) : (
-        Promise<AggregateDelegateUtil.AggregatedRow<
-            FetchRow<
-                DataT["joins"],
-                SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
-            >,
-            DataT["aggregateDelegate"]
-        >[]>
+        Promise<SelectBuilderUtil.AggregatedRow<this>[]>
     ) {
         this.assertAfterSelect();
-        
+
         return this.extraData.db.selectAllAny(this.getQuery())
             .then(({rows}) => {
                 return Promise.all(rows.map(this.aggregateRow));
@@ -716,16 +1120,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
     ) : (
-        Promise<AggregateDelegateUtil.AggregatedRow<
-            FetchRow<
-                DataT["joins"],
-                SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
-            >,
-            DataT["aggregateDelegate"]
-        >>
+        Promise<SelectBuilderUtil.AggregatedRow<this>>
     ) {
         this.assertAfterSelect();
-        
+
         return this.extraData.db.selectOneAny(this.getQuery())
             .then(({row}) => {
                 return this.aggregateRow(row);
@@ -749,17 +1147,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : (
         Promise<
             undefined|
-            AggregateDelegateUtil.AggregatedRow<
-                FetchRow<
-                    DataT["joins"],
-                    SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
-                >,
-                DataT["aggregateDelegate"]
-            >
+            SelectBuilderUtil.AggregatedRow<this>
         >
     ) {
         this.assertAfterSelect();
-        
+
         return this.extraData.db.selectZeroOrOneAny(this.getQuery())
             .then(({row}) => {
                 if (row == undefined) {
@@ -790,7 +1182,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>
     ) : Promise<number> {
         this.assertAfterFrom();
-        
+
         if (this.extraData.unionLimit != undefined) {
             return this.unsetUnionLimit()
                 .count();
@@ -820,6 +1212,15 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }
     }
 
+    /*
+        TODO Improve this, technically, `FROM` clause isn't even required,
+        even if that means the query isn't very useful.
+
+        The following are valid, even if nonsensical,
+
+        SELECT EXISTS (SELECT *)    //Returns TRUE
+        SELECT EXISTS (SELECT NULL) //Returns TRUE
+    */
     //Must be called after `FROM` or there will be no tables to check existence from
     exists (
         this : SelectBuilder<{
@@ -839,21 +1240,70 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     ) : Promise<boolean> {
         this.assertAfterFrom();
 
+        return this.extraData.db.selectBoolean(
+            this.getExistsQuery()
+        );
+    }
+
+    getExistsQuery (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>
+    ) {
+        this.assertAfterFrom();
+
         if (this.data.selects == undefined) {
-            return this.extraData.db.selectBoolean(`
+            return `
                 SELECT EXISTS (
                     SELECT
                         *
                     ${this.getQuery()}
                 )
-            `);
+            `;
         } else {
-            return this.extraData.db.selectBoolean(`
+            return `
                 SELECT EXISTS (
                     ${this.getQuery()}
                 )
-            `);
+            `;
         }
+    }
+
+    assertExists (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            //Makes no sense to fetch a subquery
+            //because it may require data from
+            //parent joins
+            hasParentJoins : false,
+            parentJoins : any,
+        }>
+    ) : Promise<void> {
+        this.assertAfterFrom();
+
+        return this.exists()
+            .then((exists) => {
+                if (!exists) {
+                    if (this.extraData.db.willPrintQueryOnRowCountError()) {
+                        console.error(this.getExistsQuery());
+                    }
+                    throw new mysql.RowNotFoundError(`${this.data.joins[0].table.alias} does not exist`);
+                }
+            });
     }
 
     //Uses count() internally
@@ -875,17 +1325,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         rawPaginationArgs : RawPaginationArgs = {}
     ) : (
         Promise<PaginateResult<
-            AggregateDelegateUtil.AggregatedRow<
-                FetchRow<
-                    DataT["joins"],
-                    SelectCollectionUtil.ToColumnReferences<DataT["selects"]>
-                >,
-                DataT["aggregateDelegate"]
-            >
+            SelectBuilderUtil.AggregatedRow<this>
         >>
     ) {
         this.assertAfterSelect();
-        
+
         const paginationArgs = mysql.toPaginationArgs(
             rawPaginationArgs,
             this.extraData.db.getPaginationConfiguration()
@@ -946,7 +1390,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>
     ) : (
-        FetchValueCheck<DataT, FetchValueType<DataT>>
+        FetchValueCheck<this["data"], FetchValueType<this["data"]>>
     ) {
         this.assertAfterSelect();
 
@@ -975,10 +1419,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>
     ) : (
-        FetchValueCheck<DataT, undefined|FetchValueType<DataT>>
+        FetchValueCheck<this["data"], undefined|FetchValueType<this["data"]>>
     ) {
         this.assertAfterSelect();
-        
+
         return this.extraData.db.selectZeroOrOneAny(this.getQuery())
             .then(({row, fields}) => {
                 if (fields.length != 1) {
@@ -1007,10 +1451,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>
     ) : (
-        FetchValueCheck<DataT, FetchValueType<DataT>[]>
+        FetchValueCheck<this["data"], FetchValueType<this["data"]>[]>
     ) {
         this.assertAfterSelect();
-        
+
         return this.extraData.db.selectAllAny(this.getQuery())
             .then(({rows, fields}) => {
                 if (fields.length != 1) {
@@ -1023,6 +1467,97 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                     .map((row) => row[columnName]);
             }) as any;
     }
+    cursor (
+        this : SelectBuilder<{
+            hasSelect : true,
+            hasFrom : any,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            //Makes no sense to fetch a subquery
+            //because it may require data from
+            //parent joins
+            hasParentJoins : false,
+            parentJoins : any,
+        }>
+    ) : AsyncIterableIterator<SelectBuilderUtil.AggregatedRow<this>> {
+        //In case Symbol.asyncIterator is not defined
+        (<any>Symbol).asyncIterator = (Symbol.asyncIterator == undefined) ?
+            Symbol.for("Symbol.asyncIterator") :
+            Symbol.asyncIterator;
+
+        let rowIndex = 0;
+        let paginateResultCache : (
+            PaginateResult<SelectBuilderUtil.AggregatedRow<this>>|
+            undefined
+        ) = undefined;
+
+        const getOrFetchPaginated = async () : Promise<PaginateResult<SelectBuilderUtil.AggregatedRow<this>>> => {
+            if (paginateResultCache == undefined) {
+                rowIndex = 0;
+                paginateResultCache = (await this.paginate({ page : 0 })) as PaginateResult<SelectBuilderUtil.AggregatedRow<this>>;
+            }
+            return paginateResultCache;
+        };
+        const tryFetchNextPage = async () : Promise<PaginateResult<SelectBuilderUtil.AggregatedRow<this>>|undefined> => {
+            const paginated = await getOrFetchPaginated();
+            const nextPage = paginated.info.page+1;
+            if (nextPage < paginated.info.pagesFound) {
+                rowIndex = 0;
+                paginateResultCache = (await this.paginate({ page : nextPage })) as PaginateResult<SelectBuilderUtil.AggregatedRow<this>>;
+                return paginateResultCache;
+            } else {
+                return undefined;
+            }
+        };
+        const tryGetNextItem = async () : Promise<SelectBuilderUtil.AggregatedRow<this>|undefined> => {
+            const paginated = await getOrFetchPaginated();
+            if (rowIndex < paginated.rows.length) {
+                const value = paginated.rows[rowIndex];
+                ++rowIndex;
+                return value;
+            } else {
+                return undefined;
+            }
+        };
+        return {
+            next : async () : Promise<IteratorResult<SelectBuilderUtil.AggregatedRow<this>>> => {
+                //Try and get the next item of the current page
+                const value = await tryGetNextItem();
+                if (value !== undefined) {
+                    return {
+                        done : false,
+                        value : value,
+                    };
+                }
+
+                //If we're here, we passed the end of the current page
+                {
+                    //Load the next page
+                    await tryFetchNextPage();
+                    //Try to get the next item
+                    const value = await tryGetNextItem();
+                    if (value !== undefined) {
+                        return {
+                            done : false,
+                            value : value,
+                        };
+                    } else {
+                        //We passed the end of the last page
+                        return {
+                            done : true,
+                            value : undefined as any,
+                        };
+                    }
+                }
+            },
+            [Symbol.asyncIterator]() {
+                return this
+            }
+        };
+    }
 
     private narrow (column : AnyColumn, condition : Expr<any, boolean>) {
         const joins = JoinCollectionUtil.replaceColumnType(
@@ -1033,6 +1568,12 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         );
         const selects = SelectCollectionUtil.replaceSelectType(
             this.data.selects,
+            column.tableAlias,
+            column.name,
+            column.assertDelegate
+        );
+        const parentJoins = JoinCollectionUtil.replaceColumnType(
+            this.data.parentJoins,
             column.tableAlias,
             column.name,
             column.assertDelegate
@@ -1050,13 +1591,14 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         } else {
             whereExpr = e.and(condition, whereExpr);
         }
-        
+
         return new SelectBuilder(
             spread(
                 this.data,
                 {
                     joins : joins,
                     selects : selects,
+                    parentJoins : parentJoins,
                 }
             ),
             {
@@ -1074,7 +1616,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Must be called after `FROM` or there will be no columns
     //to narrow.
     whereIsNotNull<
-        TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>
+        TypeNarrowDelegateT extends TypeNarrowDelegate<this>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -1089,38 +1631,17 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         typeNarrowDelegate : TypeNarrowDelegateT
     ) : (
-        ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
-            SelectBuilder<ReplaceValue2<
-                DataT,
-                "joins",
-                JoinCollectionUtil.ReplaceColumnType<
-                    DataT["joins"],
-                    TableAliasT,
-                    ColumnNameT,
-                    Exclude<
-                        TypeT,
-                        null|undefined
-                    >
-                >,
-                "selects",
-                SelectCollectionUtil.ReplaceSelectType<
-                    DataT["selects"],
-                    TableAliasT,
-                    ColumnNameT,
-                    Exclude<
-                        TypeT,
-                        null|undefined
-                    >
-                >
-            >> :
-            (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
+        SelectBuilderUtil.WhereIsNotNull<
+            this,
+            TypeNarrowDelegateT
+        >
     ) {
         this.assertAfterFrom();
         this.assertBeforeUnion();
 
-        const column = TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate as any);
+        const column = TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate as any);
 
-        return this.narrow(
+        const narrowed = this.narrow(
             new Column(
                 column.tableAlias,
                 column.name,
@@ -1130,9 +1651,28 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             ),
             e.isNotNull(column)
         ) as any;
+
+        const joins = JoinCollectionUtil.replaceNullable(
+            this.data.joins,
+            column.tableAlias,
+            false
+        );
+        const parentJoins = JoinCollectionUtil.replaceNullable(
+            this.data.parentJoins,
+            column.tableAlias,
+            false
+        );
+        return new SelectBuilder(
+            {
+                ...narrowed.data,
+                joins : joins,
+                parentJoins : parentJoins,
+            },
+            narrowed.extraData
+        ) as any;
     };
     whereIsNull<
-        TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>
+        TypeNarrowDelegateT extends TypeNarrowDelegate<this>
     > (
         this : SelectBuilder<{
             hasSelect : any,
@@ -1147,30 +1687,15 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         typeNarrowDelegate : TypeNarrowDelegateT
     ) : (
-        ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
-            SelectBuilder<ReplaceValue2<
-                DataT,
-                "joins",
-                JoinCollectionUtil.ReplaceColumnType<
-                    DataT["joins"],
-                    TableAliasT,
-                    ColumnNameT,
-                    null
-                >,
-                "selects",
-                SelectCollectionUtil.ReplaceSelectType<
-                    DataT["selects"],
-                    TableAliasT,
-                    ColumnNameT,
-                    null
-                >
-            >> :
-            (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
+        SelectBuilderUtil.WhereIsNull<
+            this,
+            TypeNarrowDelegateT
+        >
     ) {
         this.assertAfterFrom();
         this.assertBeforeUnion();
 
-        const column = TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate as any);
+        const column = TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate as any);
 
         return this.narrow(
             new Column(
@@ -1184,7 +1709,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         ) as any;
     };
     whereIsEqual<
-        TypeNarrowDelegateT extends TypeNarrowDelegate<DataT["joins"]>,
+        TypeNarrowDelegateT extends TypeNarrowDelegate<this>,
         ConstT extends boolean|number|string
     > (
         this : SelectBuilder<{
@@ -1201,25 +1726,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         typeNarrowDelegate : TypeNarrowDelegateT,
         value : ConstT
     ) : (
-        ReturnType<TypeNarrowDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
-            SelectBuilder<ReplaceValue2<
-                DataT,
-                "joins",
-                JoinCollectionUtil.ReplaceColumnType<
-                    DataT["joins"],
-                    TableAliasT,
-                    ColumnNameT,
-                    ConstT
-                >,
-                "selects",
-                SelectCollectionUtil.ReplaceSelectType<
-                    DataT["selects"],
-                    TableAliasT,
-                    ColumnNameT,
-                    ConstT
-                >
-            >> :
-            (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeNarrowDelegateT>>)
+        SelectBuilderUtil.WhereIsEqual<
+            this,
+            TypeNarrowDelegateT,
+            ConstT
+        >
     ) {
         this.assertAfterFrom();
         this.assertBeforeUnion();
@@ -1230,19 +1741,13 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             sd.string()
         )("value", value);
 
-        const column = TypeNarrowDelegateUtil.getColumn(this.data.joins, typeNarrowDelegate as any);
+        const column = TypeNarrowDelegateUtil.getColumn(this, typeNarrowDelegate as any);
 
-        let assertDelegate : sd.AssertDelegate<ConstT> = sd.oneOf(value);
+        let assertDelegate : sd.AssertDelegate<ConstT> = sd.literal(value);
         if (value === true) {
-            assertDelegate = ((name : string, mixed : any) : true => {
-                const b = sd.numberToBoolean()(name, mixed);
-                return sd.oneOf(true)(name, b);
-            }) as any;
+            assertDelegate = sd.numberToTrue() as any;
         } else if (value === false) {
-            assertDelegate = ((name : string, mixed : any) : false => {
-                const b = sd.numberToBoolean()(name, mixed);
-                return sd.oneOf(false)(name, b);
-            }) as any;
+            assertDelegate = sd.numberToFalse() as any;
         }
 
         return this.narrow(
@@ -1253,16 +1758,24 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 column.subTableName,
                 column.isSelectReference
             ),
-            e.and(
-                e.isNotNull(column),
-                e.eq(column, value) as any
-            )
+            e.isNotNullAndEq(column, value)
         ) as any;
     };
 
     //WHERE CLAUSE
-    //Replaces but ANDs with NARROW
+
+    //Unsets the `WHERE` clause but retains the `NARROW` part
+    unsetWhere () : this {
+        return new SelectBuilder(
+            this.data,
+            {
+                ...this.extraData,
+                whereExpr : this.extraData.narrowExpr,
+            }
+        ) as any;
+    }
     //Must be called after `FROM` as per MySQL
+    //where() and andWhere() are synonyms
     where<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>> (
         this : SelectBuilder<{
             hasSelect : any,
@@ -1276,23 +1789,39 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         whereDelegate : WhereDelegateT
-    ) : SelectBuilder<DataT> {
-        this.assertAfterFrom();
-
-        let whereExpr = WhereDelegateUtil.execute(this, whereDelegate as any);
-        if (this.extraData.narrowExpr != undefined) {
-            whereExpr = e.and(this.extraData.narrowExpr, whereExpr);
-        }
-
-        return new SelectBuilder(
-            this.data,
-            {
-                ...this.extraData,
-                whereExpr : whereExpr,
-            }
-        ) as any;
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        Extract<
+            ReturnType<WhereDelegateT>,
+            AnyExpr
+        >["usedReferences"] ?
+            this :
+            invalid.E2<
+                "WHERE expression contains some invalid columns; the following are not allowed:",
+                Exclude<
+                    ColumnReferencesUtil.Columns<
+                        Extract<
+                            Extract<
+                                ReturnType<WhereDelegateT>,
+                                AnyExpr
+                            >["usedReferences"],
+                            ColumnReferences
+                        >
+                    >,
+                    ColumnReferencesUtil.Columns<
+                        WhereDelegateColumnReferences<
+                            SelectBuilder<DataT>
+                        >
+                    >
+                >
+            >
+    ) {
+        return this.andWhere(whereDelegate as any) as any;
     }
-    //Appends
+    //Must be called after `FROM` as per MySQL
+    //where() and andWhere() are synonyms
     andWhere<WhereDelegateT extends WhereDelegate<SelectBuilder<DataT>>> (
         this : SelectBuilder<{
             hasSelect : any,
@@ -1306,11 +1835,42 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         whereDelegate : WhereDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        Extract<
+            ReturnType<WhereDelegateT>,
+            AnyExpr
+        >["usedReferences"] ?
+            this :
+            invalid.E4<
+                "WHERE expression",
+                Extract<
+                    ReturnType<WhereDelegateT>,
+                    AnyExpr
+                >["usedReferences"],
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
+    ) {
         this.assertAfterFrom();
-        
+
+        let whereExpr = WhereDelegateUtil.execute(this, whereDelegate as any);
+
         if (this.extraData.whereExpr == undefined) {
-            return this.where(whereDelegate as any) as any;
+            if (this.extraData.narrowExpr != undefined) {
+                whereExpr = e.and(this.extraData.narrowExpr, whereExpr);
+            }
+            return new SelectBuilder(
+                this.data,
+                {
+                    ...this.extraData,
+                    whereExpr : whereExpr,
+                }
+            ) as any;
         }
 
         return new SelectBuilder(
@@ -1319,14 +1879,315 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ...this.extraData,
                 whereExpr : e.and(
                     this.extraData.whereExpr,
-                    WhereDelegateUtil.execute(this, whereDelegate as any)
+                    whereExpr
                 ),
             }
         ) as any;
     }
 
+    /*
+        Convenience method for,
+
+        .whereIsEqual(c => c.table.id, id)
+    */
+    whereEqualsId<
+        TableT extends AnyTable & { data : { id : Column<any, any, number> } }
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        table : TableT,
+        id : ReturnType<TableT["data"]["id"]["assertDelegate"]>
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        {
+            [tableAlias in TableT["data"]["id"]["tableAlias"]] : {
+                [columnName in TableT["data"]["id"]["name"]] : (
+                    TableT["data"]["id"]
+                )
+            }
+        } ?
+            this :
+            invalid.E4<
+                "WHERE expression",
+                {
+                    [tableAlias in TableT["data"]["id"]["tableAlias"]] : {
+                        [columnName in TableT["data"]["id"]["name"]] : (
+                            TableT["data"]["id"]
+                        )
+                    }
+                },
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
+    ) {
+        return this.whereIsEqual(
+            (() => table.data.id) as any,
+            id
+        ) as any;
+    }
+
+    /*
+        Convenience method for,
+
+        .whereIsEqual(c => c.table.tableId, obj.tableId)
+
+        This is generally safer,
+        especially if you adopt the following convention,
+
+        Name of id column = <tableName> + "Id"
+
+        So,
+
+        + A "user" table will have an id column called "userId"
+        + A "book" table will have an id column called "bookId"
+        + A "notification" table will have an id column called "notificationId"
+    */
+    whereEqualsIdColumn<
+        TableT extends AnyTable & { data : { id : Column<any, any, number> } }
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        table : TableT,
+        id : {
+            [columnName in TableT["data"]["id"]["name"]] : (
+                ReturnType<TableT["data"]["id"]["assertDelegate"]>
+            )
+        }
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        {
+            [tableAlias in TableT["data"]["id"]["tableAlias"]] : {
+                [columnName in TableT["data"]["id"]["name"]] : (
+                    TableT["data"]["id"]
+                )
+            }
+        } ?
+            this :
+            invalid.E4<
+                "WHERE expression",
+                {
+                    [tableAlias in TableT["data"]["id"]["tableAlias"]] : {
+                        [columnName in TableT["data"]["id"]["name"]] : (
+                            TableT["data"]["id"]
+                        )
+                    }
+                },
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
+    ) {
+        return this.whereIsEqual(
+            (() => table.data.id) as any,
+            id[table.data.id.name]
+        ) as any;
+    }
+
+    /*
+        Convenience method for,
+        //TODO Maybe rename toEqualityCondition to toColumnEqualityCondition?
+        .where(() => toEqualityCondition(
+            table,
+            {
+                column0 : value0,
+                column1 : value1,
+                column2 : value2,
+                //etc.
+            }
+        ))
+    */
+    whereEqualsColumns<
+        TableT extends AnyTable
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        table : TableT,
+        rawCondition : {
+            [columnName in keyof TableT["columns"]]? : (
+                ReturnType<TableT["columns"][columnName]["assertDelegate"]>
+            )
+        }
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        ColumnReferencesUtil.Partial<
+            ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+        > ?
+            this :
+            invalid.E4<
+                "WHERE expression",
+                ColumnReferencesUtil.Partial<
+                    ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+                >,
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
+    ) {
+        return this.where(() => RawExprUtil.toEqualityCondition(
+            table,
+            rawCondition
+        )) as any;
+    }
+
+    /*
+        Convenience method for,
+        .where(() => toUniqueKeyEqualityCondition(
+            table,
+            {
+                column0 : value0,
+                column1 : value1,
+                column2 : value2,
+                //etc.
+            }
+        ))
+    */
+    whereEqualsUniqueKey<
+        TableT extends AnyTable,
+        ConditionT extends UniqueKeys<TableT>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        table : TableT,
+        rawCondition : ConditionT
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        //TODO This might need fixing
+        //It should only use columns
+        //that are present in ConditionT
+        ColumnReferencesUtil.Partial<
+            ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+        > ?
+            this :
+            invalid.E4<
+                "WHERE expression",
+                //TODO This might need fixing
+                //It should only use columns
+                //that are present in ConditionT
+                ColumnReferencesUtil.Partial<
+                    ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+                >,
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
+    ) {
+        return this.where(() => RawExprUtil.toUniqueKeyEqualityCondition(
+            table,
+            rawCondition
+        )) as any;
+    }
+
+    /*
+        Convenience method for,
+        .where(() => toMinimalUniqueKeyEqualityCondition(
+            table,
+            {
+                column0 : value0,
+                column1 : value1,
+                column2 : value2,
+                //etc.
+            }
+        ))
+    */
+    whereEqualsMinimalUniqueKey<
+        TableT extends AnyTable,
+        ConditionT extends MinimalUniqueKeys<TableT>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        table : TableT,
+        rawCondition : ConditionT
+    ) : (
+        WhereDelegateColumnReferences<
+            SelectBuilder<DataT>
+        > extends
+        //TODO This might need fixing
+        //It should only use columns
+        //that are present in ConditionT
+        ColumnReferencesUtil.Partial<
+            ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+        > ?
+            this :
+            invalid.E4<
+                "WHERE expression",
+                //TODO This might need fixing
+                //It should only use columns
+                //that are present in ConditionT
+                ColumnReferencesUtil.Partial<
+                    ColumnCollectionUtil.ToColumnReferences<TableT["columns"]>
+                >,
+                "contains some invalid columns; only the following are allowed:",
+                WhereDelegateColumnReferences<
+                    SelectBuilder<DataT>
+                >
+            >
+    ) {
+        return this.where(() => RawExprUtil.toMinimalUniqueKeyEqualityCondition(
+            table,
+            rawCondition
+        )) as any;
+    }
+
     //DISTINCT CLAUSE
-    distinct (distinct : boolean = true) : SelectBuilder<DataT> {
+    distinct (distinct : boolean = true) : this {
         return new SelectBuilder(
             this.data,
             {
@@ -1337,7 +2198,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
 
     //SQL_CALC_FOUND_ROWS CLAUSE
-    sqlCalcFoundRows (sqlCalcFoundRows : boolean = true) : SelectBuilder<DataT> {
+    sqlCalcFoundRows (sqlCalcFoundRows : boolean = true) : this {
         return new SelectBuilder(
             this.data,
             {
@@ -1363,7 +2224,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         groupByDelegate : GroupByDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         this.assertAfterFrom();
 
         const groupBy = GroupByDelegateUtil.execute(this, groupByDelegate as any);
@@ -1389,9 +2250,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         groupByDelegate : GroupByDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         this.assertAfterFrom();
-        
+
         if (this.extraData.groupBy == undefined) {
             return this.groupBy(groupByDelegate as any) as any;
         }
@@ -1407,7 +2268,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
 
     //REMOVES GROUP BY
-    unsetGroupBy () : SelectBuilder<DataT> {
+    unsetGroupBy () : this {
         return new SelectBuilder(
             this.data,
             {
@@ -1438,9 +2299,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         havingDelegate : HavingDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         this.assertAfterFrom();
-        
+
         return new SelectBuilder(
             this.data,
             {
@@ -1463,9 +2324,9 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             parentJoins : any,
         }>,
         havingDelegate : HavingDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         this.assertAfterFrom();
-        
+
         if (this.extraData.havingExpr == undefined) {
             return this.having(havingDelegate as any) as any;
         }
@@ -1486,35 +2347,37 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     //Replaces
     orderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
         orderByDelegate : OrderByDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
                 orderBy : OrderByDelegateUtil.execute(this, orderByDelegate as any),
             }
-        );
+        ) as any;
     }
     //Appends
     appendOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
         orderByDelegate : OrderByDelegateT
-    ) : SelectBuilder<DataT> {
+    ) : this {
         if (this.extraData.orderBy == undefined) {
             return this.orderBy(orderByDelegate);
+        }
+        const orderBy = OrderByDelegateUtil.execute(this, orderByDelegate as any);
+        if (orderBy == undefined) {
+            return this;
         }
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
-                orderBy : this.extraData.orderBy.concat(
-                    OrderByDelegateUtil.execute(this, orderByDelegate as any)
-                ),
+                orderBy : this.extraData.orderBy.concat(orderBy),
             }
-        );
+        ) as any;
     }
 
     //REMOVES ORDER BY
-    unsetOrderBy () : SelectBuilder<DataT> {
+    unsetOrderBy () : this {
         return new SelectBuilder(
             this.data,
             {
@@ -1525,7 +2388,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
 
     //LIMIT CLAUSE
-    limit (rowCount : number) : SelectBuilder<DataT> {
+    limit (rowCount : number) : this {
         let limit = this.extraData.limit;
         if (limit == undefined) {
             limit = {
@@ -1544,11 +2407,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ...this.extraData,
                 limit : limit,
             }
-        );
+        ) as any;
     }
 
     //OFFSET CLAUSE
-    offset (offset : number) : SelectBuilder<DataT> {
+    offset (offset : number) : this {
         let limit = this.extraData.limit;
         if (limit == undefined) {
             limit = {
@@ -1567,53 +2430,55 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ...this.extraData,
                 limit : limit,
             }
-        );
+        ) as any;
     }
 
     //REMOVES LIMIT
-    unsetLimit () : SelectBuilder<DataT> {
+    unsetLimit () : this {
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
                 limit : undefined,
             }
-        );
+        ) as any;
     }
 
     //UNION ORDER BY CLAUSE
     //Replaces
-    unionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
-        orderByDelegate : OrderByDelegateT
-    ) : SelectBuilder<DataT> {
+    unionOrderBy<UnionOrderByDelegateT extends UnionOrderByDelegate<SelectBuilder<DataT>>> (
+        unionOrderByDelegate : UnionOrderByDelegateT
+    ) : this {
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
-                unionOrderBy : OrderByDelegateUtil.execute(this, orderByDelegate as any),
+                unionOrderBy : UnionOrderByDelegateUtil.execute(this, unionOrderByDelegate as any),
             }
-        );
+        ) as any;
     }
     //Appends
-    appendUnionOrderBy<OrderByDelegateT extends OrderByDelegate<SelectBuilder<DataT>>> (
-        orderByDelegate : OrderByDelegateT
-    ) : SelectBuilder<DataT> {
+    appendUnionOrderBy<UnionOrderByDelegateT extends UnionOrderByDelegate<SelectBuilder<DataT>>> (
+        unionOrderByDelegate : UnionOrderByDelegateT
+    ) : this {
         if (this.extraData.unionOrderBy == undefined) {
-            return this.unionOrderBy(orderByDelegate);
+            return this.unionOrderBy(unionOrderByDelegate);
+        }
+        const orderBy = UnionOrderByDelegateUtil.execute(this, unionOrderByDelegate as any);
+        if (orderBy == undefined) {
+            return this;
         }
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
-                unionOrderBy : this.extraData.unionOrderBy.concat(
-                    OrderByDelegateUtil.execute(this, orderByDelegate as any)
-                ),
+                unionOrderBy : this.extraData.unionOrderBy.concat(orderBy),
             }
-        );
+        ) as any;
     }
 
     //UNION REMOVES ORDER BY
-    unsetUnionOrderBy () : SelectBuilder<DataT> {
+    unsetUnionOrderBy () : this {
         return new SelectBuilder(
             this.data,
             {
@@ -1624,7 +2489,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
     }
 
     //UNION LIMIT CLAUSE
-    unionLimit (rowCount : number) : SelectBuilder<DataT> {
+    unionLimit (rowCount : number) : this {
         let unionLimit = this.extraData.unionLimit;
         if (unionLimit == undefined) {
             unionLimit = {
@@ -1643,11 +2508,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ...this.extraData,
                 unionLimit : unionLimit,
             }
-        );
+        ) as any;
     }
 
     //UNION OFFSET CLAUSE
-    unionOffset (offset : number) : SelectBuilder<DataT> {
+    unionOffset (offset : number) : this {
         let unionLimit = this.extraData.unionLimit;
         if (unionLimit == undefined) {
             unionLimit = {
@@ -1666,18 +2531,18 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 ...this.extraData,
                 unionLimit : unionLimit,
             }
-        );
+        ) as any;
     }
 
     //UNION REMOVES LIMIT
-    unsetUnionLimit () : SelectBuilder<DataT> {
+    unsetUnionLimit () : this {
         return new SelectBuilder(
             this.data,
             {
                 ...this.extraData,
                 unionLimit : undefined,
             }
-        );
+        ) as any;
     }
 
     //Must be done after select or there will be no columns to widen.
@@ -1702,29 +2567,31 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         assertWidened : sd.AssertFunc<WidenT>
     ) : (
         ReturnType<TypeWidenDelegateT> extends Column<infer TableAliasT, infer ColumnNameT, infer TypeT> ?
-            SelectBuilder<ReplaceValue2<
-                DataT,
-                "joins",
-                JoinCollectionUtil.ReplaceColumnType<
-                    DataT["joins"],
-                    TableAliasT,
-                    ColumnNameT,
-                    WidenT|TypeT
-                >,
-                "selects",
-                SelectCollectionUtil.ReplaceSelectType<
-                    DataT["selects"],
-                    TableAliasT,
-                    ColumnNameT,
-                    WidenT|TypeT
-                >
-            >> :
+            SelectBuilder<{
+                readonly [key in keyof DataT] : (
+                    key extends "joins" ?
+                    JoinCollectionUtil.ReplaceColumnType<
+                        DataT["joins"],
+                        TableAliasT,
+                        ColumnNameT,
+                        WidenT|TypeT
+                    > :
+                    key extends "selects" ?
+                    SelectCollectionUtil.ReplaceSelectType<
+                        DataT["selects"],
+                        TableAliasT,
+                        ColumnNameT,
+                        WidenT|TypeT
+                    > :
+                    DataT[key]
+                )
+            }> :
             (invalid.E2<"Invalid column or could not infer some types", ReturnType<TypeWidenDelegateT>>)
     ) {
         this.assertAfterSelect();
         const widenedColumn = TypeWidenDelegateUtil.execute(
             this.data.selects,
-            typeWidenDelegate,
+            typeWidenDelegate as any,
             assertWidened
         );
         const joins = JoinCollectionUtil.replaceColumnType(
@@ -1865,6 +2732,10 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 sb.scope((sb) => {
                     join.table.querify(sb);
                 });
+                if (join.joinType == JoinType.CROSS) {
+                    return;
+                }
+
                 sb.appendLine("ON");
                 sb.scope((sb) => {
                     if (join.from == undefined || join.to == undefined || join.from.length != join.to.length) {
@@ -1967,7 +2838,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                                 ",\n"
                             );
                         }
-                        
+
                     },
                     ",\n"
                 );
@@ -2111,7 +2982,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             hasFrom : any,
             hasUnion : any,
             joins : any,
-            selects : DataT["selects"] & { length : 1 }//SelectCollection & { length : 1 },//any,
+            selects : any[] & { length : 1 } & { "0":any }
             aggregateDelegate : any,
 
             hasParentJoins : any,
@@ -2119,12 +2990,17 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
         }>,
         alias : AliasT
     ) : (
-        AliasedExpr<
-            {},
-            "__expr",
-            AliasT,
-            RawExprUtil.Type<SelectBuilder<DataT>>
-        >
+        this["data"] extends {
+            hasSelect: true;
+            selects: any[] & { "0": any; } & { length: 1; } & { "0": any; };
+        } ?
+            AliasedExpr<
+                {},
+                "__expr",
+                AliasT,
+                RawExprUtil.Type<SelectBuilder<this["data"]>>
+            > :
+            never
     ) {
         this.assertAfterSelect();
         if (this.data.selects == undefined || this.data.selects.length != 1) {
@@ -2198,7 +3074,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                     hasSelect : false,
                     hasFrom : false,
                     hasUnion : false,
-    
+
                     //This is just a dummy JOIN
                     //It will be replaced when the FROM clause is added
                     joins : [
@@ -2217,7 +3093,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                     ],
                     selects : undefined,
                     aggregateDelegate : undefined,
-    
+
                     //Give this builder access to our JOINs
                     hasParentJoins : true,
                     parentJoins : (
@@ -2241,7 +3117,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                     hasSelect : false,
                     hasFrom : false,
                     hasUnion : false,
-    
+
                     //This is just a dummy JOIN
                     //It will be replaced when the FROM clause is added
                     joins : [
@@ -2260,7 +3136,7 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                     ],
                     selects : undefined,
                     aggregateDelegate : undefined,
-    
+
                     //Give this builder access to our JOINs
                     hasParentJoins : this.data.hasFrom,
                     parentJoins : this.data.joins,
@@ -2274,9 +3150,208 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             return childBuilder as any;
         }
     }
+    setParentQuery<ParentT extends SelectBuilder<any>> (
+        parent : ParentT
+    ) : (
+        true extends (
+            (
+                DataT["hasFrom"] extends true ?
+                    (
+                        (
+                            ParentT["data"]["hasParentJoins"] extends true ?
+                                (
+                                    JoinCollectionUtil.Duplicates<
+                                        DataT["joins"],
+                                        ParentT["data"]["parentJoins"]
+                                    > extends never ?
+                                        false :
+                                        true
+                                ) :
+                                false
+                        ) |
+                        (
+                            ParentT["data"]["hasFrom"] extends true ?
+                                (
+                                    JoinCollectionUtil.Duplicates<
+                                        DataT["joins"],
+                                        ParentT["data"]["joins"]
+                                    > extends never ?
+                                        false :
+                                        true
+                                ) :
+                                false
+                        )
+                    ) :
+                    false
+            ) |
+            (
+                DataT["hasParentJoins"] extends true ?
+                    (
+                        (
+                            ParentT["data"]["hasParentJoins"] extends true ?
+                                (
+                                    JoinCollectionUtil.Duplicates<
+                                        DataT["parentJoins"],
+                                        ParentT["data"]["parentJoins"]
+                                    > extends never ?
+                                        false :
+                                        true
+                                ) :
+                                false
+                        ) |
+                        (
+                            ParentT["data"]["hasFrom"] extends true ?
+                                (
+                                    JoinCollectionUtil.Duplicates<
+                                        DataT["parentJoins"],
+                                        ParentT["data"]["joins"]
+                                    > extends never ?
+                                        false :
+                                        true
+                                ) :
+                                false
+                        )
+                    ) :
+                    false
+            )
+        ) ?
+            invalid.E9<
+                "The parent query has some JOINs, or parent scope that are duplicates of this query's JOINs.",
+                "Parent query's JOINs",
+                ParentT["data"]["hasFrom"] extends true ?
+                    JoinCollectionUtil.TableAliases<ParentT["data"]["joins"]> :
+                    never,
+                "Parent query's parent scope",
+                ParentT["data"]["hasParentJoins"] extends true ?
+                    JoinCollectionUtil.TableAliases<ParentT["data"]["parentJoins"]> :
+                    never,
+                "This query's JOINs",
+                DataT["hasFrom"] extends true ?
+                    JoinCollectionUtil.TableAliases<DataT["joins"]> :
+                    never,
+                "This query's parent scope",
+                DataT["hasParentJoins"] extends true ?
+                    JoinCollectionUtil.TableAliases<DataT["parentJoins"]> :
+                    never
+            > :
+            ParentT["data"]["hasParentJoins"] extends true ?
+                (
+                    ParentT["data"]["hasFrom"] extends true ?
+                        SelectBuilder<{
+                            [key in keyof DataT] : (
+                                key extends "hasParentJoins" ?
+                                true :
+                                key extends "parentJoins" ?
+                                (
+                                    TupleWConcat<
+                                        AnyJoin,
+                                        ParentT["data"]["parentJoins"],
+                                        ParentT["data"]["joins"]
+                                    >
+                                ) :
+                                DataT[key]
+                            )
+                        }> :
+                        SelectBuilder<{
+                            [key in keyof DataT] : (
+                                key extends "hasParentJoins" ?
+                                true :
+                                key extends "parentJoins" ?
+                                ParentT["data"]["parentJoins"] :
+                                DataT[key]
+                            )
+                        }>
+                ) :
+                (
+                    ParentT["data"]["hasFrom"] extends true ?
+                        SelectBuilder<{
+                            [key in keyof DataT] : (
+                                key extends "hasParentJoins" ?
+                                true :
+                                key extends "parentJoins" ?
+                                ParentT["data"]["joins"] :
+                                DataT[key]
+                            )
+                        }> :
+                        //Unchanged, the parent doesn't even have its own JOINS
+                        //or a parent scope
+                        this
+                )
+
+    ) {
+        if (this.data.hasParentJoins) {
+            throw new Error(`This query already has a parent query`);
+        }
+        if (this.data.hasFrom) {
+            if (parent.data.hasParentJoins) {
+                JoinCollectionUtil.assertNoDuplicates(
+                    this.data.joins,
+                    parent.data.parentJoins
+                );
+            }
+            if (parent.data.hasFrom) {
+                JoinCollectionUtil.assertNoDuplicates(
+                    this.data.joins,
+                    parent.data.joins
+                );
+            }
+        }
+        if (this.data.hasParentJoins) {
+            if (parent.data.hasParentJoins) {
+                JoinCollectionUtil.assertNoDuplicates(
+                    this.data.parentJoins,
+                    parent.data.parentJoins
+                );
+            }
+            if (parent.data.hasFrom) {
+                JoinCollectionUtil.assertNoDuplicates(
+                    this.data.parentJoins,
+                    parent.data.joins
+                );
+            }
+        }
+
+        if (parent.data.hasParentJoins) {
+            if (parent.data.hasFrom) {
+                return new SelectBuilder(
+                    {
+                        ...this.data as any,
+                        hasParentJoins : true,
+                        parentJoins : parent.data.parentJoins
+                            .concat(parent.data.joins) as any,
+                    },
+                    this.extraData
+                ) as any;
+            } else {
+                return new SelectBuilder(
+                    {
+                        ...this.data as any,
+                        hasParentJoins : true,
+                        parentJoins : parent.data.parentJoins,
+                    },
+                    this.extraData
+                ) as any;
+            }
+        } else {
+            if (parent.data.hasFrom) {
+                return new SelectBuilder(
+                    {
+                        ...this.data as any,
+                        hasParentJoins : true,
+                        parentJoins : parent.data.joins,
+                    },
+                    this.extraData
+                ) as any;
+            } else {
+                //Unchanged, the parent doesn't even have its own JOINS
+                //or a parent scope
+                return this as any;
+            }
+        }
+    }
 
     //Convenience
-    insertInto<TableT extends AnyTable> (
+    insertInto<TableT extends AnyTableAllowInsert> (
         this : SelectBuilder<{
             hasSelect : any,
             hasFrom : any,
@@ -2333,11 +3408,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 hasSelect : false,
                 hasFrom : true,
                 hasUnion : false,
-    
+
                 joins : DataT["joins"],
-    
+
                 selects : undefined,
-    
+
                 aggregateDelegate : any,
 
                 //It makes no sense to update a subquery
@@ -2377,11 +3452,11 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
                 hasSelect : false,
                 hasFrom : true,
                 hasUnion : false,
-    
+
                 joins : DataT["joins"],
-    
+
                 selects : undefined,
-    
+
                 aggregateDelegate : any,
 
                 //It makes no sense to delete a subquery
@@ -2397,6 +3472,213 @@ export class SelectBuilder<DataT extends SelectBuilderData> implements Querify {
             false,
             this.extraData.db
         ).tables(delegate as any) as any;
+    }
+
+    useJoins<
+        JoinDeclarationArr extends Tuple<JoinDeclarationUsage>
+    > (
+        this : SelectBuilder<{
+            hasSelect : any,
+            hasFrom : true,
+            hasUnion : any,
+            joins : any,
+            selects : any,
+            aggregateDelegate : any,
+
+            hasParentJoins : any,
+            parentJoins : any,
+        }>,
+        ...arr : JoinDeclarationArr
+    ) : (
+        //Prevent duplicate tableAlias in JoinDeclarationArr,
+        true extends JoinDeclarationUtil.HasDuplicateTableAlias<JoinDeclarationArr> ?
+        invalid.E2<
+            "Duplicate tableAlias found in given join declarations",
+            JoinDeclarationUtil.DuplicateTableAlias<JoinDeclarationArr>
+        > :
+        //Prevent duplicate tableAlias.
+        JoinCollectionUtil.Duplicates<
+            DataT["joins"],
+            {
+                [index in TupleKeys<JoinDeclarationArr>] : (
+                    Join<
+                        JoinDeclarationUtil.ToTableOf<Extract<
+                            JoinDeclarationArr[index],
+                            JoinDeclarationUsage
+                        >>,
+                        JoinDeclarationUtil.ToTableOf<Extract<
+                            JoinDeclarationArr[index],
+                            JoinDeclarationUsage
+                        >>["columns"],
+                        //Dummy value
+                        false
+                    >
+                )
+            } &
+            {
+                "0" : Join<
+                    JoinDeclarationUtil.ToTableOf<JoinDeclarationArr["0"]>,
+                    JoinDeclarationUtil.ToTableOf<JoinDeclarationArr["0"]>["columns"],
+                    //Dummy value
+                    false
+                >,
+                length : TupleLength<JoinDeclarationArr>
+            } &
+            AnyJoin[]
+        > extends never ?
+        (
+            //Ensure fromTable exists
+            {
+                [index in TupleKeys<JoinDeclarationArr>] : (
+                    JoinDeclarationUtil.FromColumnsOf<Extract<
+                        JoinDeclarationArr[index],
+                        JoinDeclarationUsage
+                    >>[number] extends
+                    (
+                        ColumnReferencesUtil.Columns<
+                            JoinCollectionUtil.ToColumnReferences<DataT["joins"]>
+                        >|
+                        {
+                            [innerIndex in Extract<TupleKeysUpTo<index>, keyof JoinDeclarationArr>] : (
+                                ColumnCollectionUtil.Columns<
+                                    JoinDeclarationUtil.ToTableOf<Extract<
+                                        JoinDeclarationArr[innerIndex],
+                                        JoinDeclarationUsage
+                                    >>["columns"]
+                                >
+                            )
+                        }[Extract<TupleKeysUpTo<index>, keyof JoinDeclarationArr>]
+                    ) ?
+                        true :
+                        //Using a fromColumn that does not exist
+                        false
+                )
+            }[TupleKeys<JoinDeclarationArr>] extends true ?
+                SelectBuilder<{
+                    readonly hasSelect : DataT["hasSelect"],
+                    readonly hasFrom : DataT["hasFrom"],
+                    readonly hasUnion : DataT["hasUnion"],
+
+                    readonly joins : TupleWConcat<
+                        AnyJoin,
+                        DataT["joins"],
+                        (
+                            {
+                                [index in TupleKeys<JoinDeclarationArr>] : (
+                                    Join<
+                                        JoinDeclarationUtil.ToTableOf<Extract<
+                                            JoinDeclarationArr[index],
+                                            JoinDeclarationUsage
+                                        >>,
+                                        JoinDeclarationUtil.ToTableOf<Extract<
+                                            JoinDeclarationArr[index],
+                                            JoinDeclarationUsage
+                                        >>["columns"],
+                                        JoinDeclarationUtil.JoinTypeOf<Extract<
+                                            JoinDeclarationArr[index],
+                                            JoinDeclarationUsage
+                                        >> extends JoinType.LEFT ?
+                                            true :
+                                            false
+                                    >
+                                )
+                            } &
+                            {
+                                "0" : Join<
+                                    JoinDeclarationUtil.ToTableOf<Extract<
+                                        JoinDeclarationArr[0],
+                                        JoinDeclarationUsage
+                                    >>,
+                                    JoinDeclarationUtil.ToTableOf<Extract<
+                                        JoinDeclarationArr[0],
+                                        JoinDeclarationUsage
+                                    >>["columns"],
+                                    JoinDeclarationUtil.JoinTypeOf<Extract<
+                                        JoinDeclarationArr[0],
+                                        JoinDeclarationUsage
+                                    >> extends JoinType.LEFT ?
+                                        true :
+                                        false
+                                >
+                            } &
+                            {
+                                length : JoinDeclarationArr["length"]
+                            } &
+                            AnyJoin[]
+                        )
+                    >,
+
+                    readonly selects : DataT["selects"],
+
+                    readonly aggregateDelegate : DataT["aggregateDelegate"],
+
+                    readonly hasParentJoins : DataT["hasParentJoins"],
+                    readonly parentJoins : DataT["parentJoins"],
+                }> :
+                invalid.E1<
+                    "Attempting to join from a table/column that does not exist"
+                >
+        ) :
+        invalid.E2<
+            "Duplicate tableAlias found in given join declarations",
+            JoinCollectionUtil.Duplicates<
+                DataT["joins"],
+                {
+                    [index in TupleKeys<JoinDeclarationArr>] : (
+                        Join<
+                            JoinDeclarationUtil.ToTableOf<Extract<
+                                JoinDeclarationArr[index],
+                                JoinDeclarationUsage
+                            >>,
+                            JoinDeclarationUtil.ToTableOf<Extract<
+                                JoinDeclarationArr[index],
+                                JoinDeclarationUsage
+                            >>["columns"],
+                            //Dummy value
+                            false
+                        >
+                    )
+                } &
+                {
+                    "0" : Join<
+                        JoinDeclarationUtil.ToTableOf<JoinDeclarationArr["0"]>,
+                        JoinDeclarationUtil.ToTableOf<JoinDeclarationArr["0"]>["columns"],
+                        //Dummy value
+                        false
+                    >,
+                    length : TupleLength<JoinDeclarationArr>
+                } &
+                AnyJoin[]
+            >
+        >
+    ) {
+        let result : any = this;
+        for (let i=0; i<arr.length; ++i) {
+            const toTable = JoinDeclarationUtil.toTableOf(arr[i]);
+            const fromD   = () => JoinDeclarationUtil.fromColumnsOf(arr[i]);
+            const toD     = () => JoinDeclarationUtil.toColumnsOf(arr[i]);
+            const type    = JoinDeclarationUtil.joinTypeOf(arr[i]);
+            if (type == JoinType.INNER) {
+                result = result.join(
+                    toTable,
+                    fromD,
+                    toD
+                );
+            } else if (type == JoinType.LEFT) {
+                result = result.leftJoin(
+                    toTable,
+                    fromD,
+                    toD
+                );
+            } else if (type == JoinType.CROSS) {
+                result = result.crossJoin(
+                    toTable
+                );
+            } else {
+                throw new Error(`Unknown JoinType ${type}`);
+            }
+        }
+        return result as any;
     }
 }
 

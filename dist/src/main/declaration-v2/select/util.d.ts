@@ -22,9 +22,7 @@ export declare namespace SelectUtil {
         readonly [tableAlias in SelectT["tableAlias"]]: {
             readonly [columnName in SelectT["name"]]: (Column<tableAlias, columnName, ReturnType<SelectT["assertDelegate"]>>);
         };
-    } : SelectT extends ColumnCollection ? {
-        readonly [tableAlias in SelectT[keyof SelectT]["tableAlias"]]: SelectT;
-    } : {});
+    } : SelectT extends ColumnCollection ? ColumnCollectionUtil.ToColumnReferences<SelectT> : {});
     function toColumnReferences<SelectT extends AnySelect>(select: SelectT): (ToColumnReferences<SelectT>);
     type ReplaceType<SelectT extends any, TableAliasT extends string, ColumnNameT extends string, NewTypeT> = (SelectT extends AliasedExpr<any, TableAliasT, ColumnNameT, any> ? AliasedExprUtil.WithType<SelectT, NewTypeT> : SelectT extends Column<TableAliasT, ColumnNameT, any> ? ColumnUtil.WithType<SelectT, NewTypeT> : SelectT extends ColumnCollection ? ColumnCollectionUtil.ReplaceColumnType<SelectT, TableAliasT, ColumnNameT, NewTypeT> : SelectT extends AnyAliasedExpr ? SelectT : SelectT extends AnyColumn ? SelectT : never);
     function replaceType<SelectT extends AnySelect, TableAliasT extends string, ColumnNameT extends string, NewTypeT>(select: SelectT, tableAlias: TableAliasT, columnName: ColumnNameT, newAssertDelegate: sd.AssertDelegate<NewTypeT>): (ReplaceType<SelectT, TableAliasT, ColumnNameT, NewTypeT>);
@@ -36,3 +34,4 @@ export declare namespace SelectUtil {
         readonly [columnName in SelectT["name"]]: (ColumnUtil.WithTableAlias<SelectT, TableAliasT>);
     } : never);
 }
+//# sourceMappingURL=util.d.ts.map

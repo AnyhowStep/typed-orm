@@ -10,3 +10,10 @@ export type JoinFromDelegate<JoinsT extends JoinCollection> = (
         TupleWiden<Tuple<JoinCollectionUtil.NullableColumns<JoinsT>>, AnyColumn>
     )
 );
+
+export type JoinFromDelegateUnsafe<JoinsT extends JoinCollection> = (
+    (columnReferences : JoinCollectionUtil.ToConvenientColumnReferences<JoinsT>) => (
+        //Yikes. But does make the checking go faster
+        any[]
+    )
+);

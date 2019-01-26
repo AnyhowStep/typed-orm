@@ -23,7 +23,7 @@ Better table inheritance support,
 
 -----
 
-Table-per-hierarchy support,
+Table-per-type support,
 
 + Discriminator column
 + Auto-increment of base type
@@ -36,3 +36,24 @@ Table-per-hierarchy support,
 + Better README?
 + More examples?
 + Documentation?
+
+-----
+
+Transformer support (or whatever it is to be called)
+
+function transformBuilder (s : SelectBuilder) {
+    return s
+        .joinUsing(table, /*columns*/)
+}
+query.transform(transformBuilder)
+    .orderBy(/*other stuff*/);
+
+-----
+
++ Proper Unique Key support, rather than just auto-increment keys
+
+  Enables convenient (if badly named) `fetchByUk()` method
+
+-----
+
++ Multi-database support?

@@ -1,4 +1,4 @@
-import {AnyTable, TableUtil} from "./table";
+import {AnyTable, AnyTableAllowInsert, TableUtil} from "./table";
 import {Querify} from "./querify";
 import * as mysql from "typed-mysql";
 import {Column, AnyColumn} from "./column";
@@ -59,7 +59,7 @@ export type InsertAssignmentCollectionDelegate<
 )
 
 export class InsertSelectBuilder<
-    TableT extends AnyTable,
+    TableT extends AnyTableAllowInsert,
     SelectBuilderT extends AnySelectBuilder,
     AssignmentsT extends undefined|(RawInsertSelectAssignmentCollection<TableT, SelectBuilderT>),
     InsertModeT extends "IGNORE"|"REPLACE"|"NORMAL"
@@ -71,7 +71,7 @@ export class InsertSelectBuilder<
         readonly insertMode : InsertModeT,
         readonly db : PooledDatabase
     ) {
-        
+
     }
 
     public ignore () : InsertSelectBuilder<
@@ -123,7 +123,7 @@ export class InsertSelectBuilder<
                 ColumnReferencesUtil.assertHasColumn(selectReferences, value);
             }
         }
-        
+
         return new InsertSelectBuilder(
             this.table,
             this.selectBuilder,
@@ -159,6 +159,9 @@ export class InsertSelectBuilder<
             )
         >
     ) {
+        if (this.table.data.noInsert) {
+            throw new Error(`INSERT not allowed on ${this.table.name}`);
+        }
         if (this.assignments == undefined) {
             throw new Error(`No VALUES to insert`);
         }
@@ -189,7 +192,8 @@ export class InsertSelectBuilder<
         const assignments = this.assignments;
         const columnNames = Object.keys(this.table.columns)
             .filter(name => this.table.columns.hasOwnProperty(name))
-            .filter(name => !this.table.data.isGenerated.hasOwnProperty(name));
+            .filter(name => !this.table.data.isGenerated.hasOwnProperty(name))
+            .filter(name => (assignments as any)[name] !== undefined);
 
         if (this.insertMode == "REPLACE") {
             sb.appendLine("REPLACE INTO");
@@ -219,7 +223,7 @@ export class InsertSelectBuilder<
                 } else {
                     sb.append(RawExprUtil.querify(raw));
                 }
-            }, ",\n")
+            }, ",\n");
         });
         sb.appendLine("FROM (");
         sb.scope((sb) => {
@@ -237,3 +241,30 @@ export class InsertSelectBuilder<
         return this;
     }
 }
+
+export type InsertSelectBuilderConvenient<
+    TableT extends AnyTable,
+    SelectBuilderT extends AnySelectBuilder
+> = (
+    InsertSelectBuilder<
+        TableT,
+        SelectBuilderT,
+        RawInsertSelectAssignmentCollection<TableT, SelectBuilderT>,
+        "NORMAL"
+    >
+);
+export type InsertSelectBuilderConvenientDelegate = (
+    <
+        TableT extends AnyTableAllowInsert,
+        SelectBuilderT extends AnySelectBuilder
+    > (
+        table : TableT,
+        selectBuilder : SelectBuilderT,
+        delegate : InsertAssignmentCollectionDelegate<TableT, SelectBuilderT>
+    ) => (
+        InsertSelectBuilderConvenient<
+            TableT,
+            SelectBuilderT
+        >
+    )
+);

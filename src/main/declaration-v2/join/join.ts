@@ -6,7 +6,8 @@ export enum JoinType {
     FROM  = "FROM",
     INNER = "INNER",
     LEFT  = "LEFT",
-    RIGHT = "RIGHT"
+    RIGHT = "RIGHT",
+    CROSS = "CROSS",
 };
 
 export class Join<

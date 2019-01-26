@@ -26,7 +26,7 @@ export namespace WhereDelegateUtil {
         const parentJoinColumnReferences = selectBuilder.data.hasParentJoins ?
             JoinCollectionUtil.toColumnReferences(selectBuilder.data.parentJoins) :
             {};
-        
+
         return {
             ...parentJoinColumnReferences,
             ...joinColumnReferences,
@@ -39,6 +39,13 @@ export namespace WhereDelegateUtil {
     > (
         selectBuilder : SelectBuilderT,
         delegate : WhereDelegateT
+    ) : (
+        Expr<
+            ColumnReferencesUtil.Partial<
+                WhereDelegateColumnReferences<SelectBuilderT>
+            >,
+            boolean
+        >
     ) {
         const columnReferences = toColumnReferences(selectBuilder);
         const where = delegate(

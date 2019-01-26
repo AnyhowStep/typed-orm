@@ -2,6 +2,9 @@
     "compilerOptions": {
         "outDir": "./dist/src/main",
         "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        "composite": true,
 
 
         "experimentalDecorators": true,
@@ -30,13 +33,7 @@
         "target": "ES6",
         "jsx": "react",
         "jsxFactory": "h",
-
-        "baseUrl": "./src",
-        "paths": {
-            "*": [
-                "./types/*"
-            ]
-        }
+        "rootDir":"./src/main"
     },
     "compileOnSave": false,
 

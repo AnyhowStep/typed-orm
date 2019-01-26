@@ -34,6 +34,9 @@ class InsertSelectBuilder {
         return new InsertSelectBuilder(this.table, this.selectBuilder, assignments, this.insertMode, this.db);
     }
     execute() {
+        if (this.table.data.noInsert) {
+            throw new Error(`INSERT not allowed on ${this.table.name}`);
+        }
         if (this.assignments == undefined) {
             throw new Error(`No VALUES to insert`);
         }
@@ -61,7 +64,8 @@ class InsertSelectBuilder {
         const assignments = this.assignments;
         const columnNames = Object.keys(this.table.columns)
             .filter(name => this.table.columns.hasOwnProperty(name))
-            .filter(name => !this.table.data.isGenerated.hasOwnProperty(name));
+            .filter(name => !this.table.data.isGenerated.hasOwnProperty(name))
+            .filter(name => assignments[name] !== undefined);
         if (this.insertMode == "REPLACE") {
             sb.appendLine("REPLACE INTO");
         }

@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const table_1 = require("./table");
 const mysql = require("typed-mysql");
@@ -23,14 +31,20 @@ class InsertValueBuilder {
             rows :
             this.values.concat(rows), this.insertMode, this.db);
     }
-    execute() {
+    execute(db) {
+        if (this.table.data.noInsert) {
+            throw new Error(`INSERT not allowed on ${this.table.name}`);
+        }
         if (this.values == undefined) {
             throw new Error(`No VALUES to insert`);
         }
-        return this.db.rawInsert(this.getQuery(), {})
+        if (db == undefined) {
+            db = this.db;
+        }
+        return db.rawInsert(this.getQuery(), {})
             .then((result) => {
             if (this.table.data.autoIncrement == undefined) {
-                return result;
+                return Object.assign({}, result, { insertedRowCount: result.affectedRows });
             }
             else {
                 if (result.insertId == 0) {
@@ -38,10 +52,41 @@ class InsertValueBuilder {
                         throw new Error(`Expected to INSERT a new row, received zero for insertId`);
                     }
                 }
-                return Object.assign({}, result, { [this.table.data.autoIncrement.name]: (result.insertId == 0) ?
+                return Object.assign({}, result, { insertedRowCount: result.affectedRows, [this.table.data.autoIncrement.name]: (result.insertId == 0) ?
                         undefined :
                         result.insertId });
             }
+        });
+    }
+    //Consider allowing just ["data"]["id"] for execute and fetch
+    executeAndFetch() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.table.data.noInsert) {
+                throw new Error(`INSERT not allowed on ${this.table.name}`);
+            }
+            return this.db.transactionIfNotInOne((db) => __awaiter(this, void 0, void 0, function* () {
+                const insertResult = yield this.execute(db);
+                if (insertResult.insertId > 0) {
+                    //Prefer auto-increment id, if possible
+                    return db.fetchOneById(this.table, insertResult.insertId);
+                }
+                else {
+                    //Get the last inserted row
+                    const lastRow = Object.assign({}, (this.values[this.values.length - 1]));
+                    for (let columnName in lastRow) {
+                        const value = lastRow[columnName];
+                        if (value === undefined ||
+                            ((value instanceof Object) &&
+                                !(value instanceof Date))) {
+                            delete lastRow[columnName];
+                        }
+                    }
+                    //This may not necessarily work...
+                    //It is possible the unique key were entirely Expr<> instances,
+                    //making fetching by unique key impossible (for now)
+                    return db.fetchOneByUniqueKey(this.table, lastRow);
+                }
+            }));
         });
     }
     querify(sb) {

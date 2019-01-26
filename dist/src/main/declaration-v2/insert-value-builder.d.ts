@@ -1,16 +1,35 @@
-import { AnyTable, TableUtil } from "./table";
+import { AnyTable, AnyTableAllowInsert, TableUtil } from "./table";
 import { Querify } from "./querify";
 import { RawExprNoUsedRef } from "./raw-expr";
 import * as mysql from "typed-mysql";
 import { AnyColumn } from "./column";
 import { StringBuilder } from "./StringBuilder";
 import { PooledDatabase } from "./PooledDatabase";
+import { FetchRow } from "./fetch-row";
+import { SelectBuilderUtil } from "./select-builder-util";
+import { SelectCollectionUtil } from "./select-collection";
+import { UniqueKeyCollection } from "./unique-key-collection";
 export declare type RawInsertValueRow<TableT extends AnyTable> = ({
     [name in TableUtil.RequiredColumnNames<TableT>]: (RawExprNoUsedRef<ReturnType<TableT["columns"][name]["assertDelegate"]>>);
 } & {
     [name in TableUtil.OptionalColumnNames<TableT>]?: (RawExprNoUsedRef<ReturnType<TableT["columns"][name]["assertDelegate"]>>);
 });
-export declare class InsertValueBuilder<TableT extends AnyTable, ValuesT extends undefined | (RawInsertValueRow<TableT>[]), InsertModeT extends "IGNORE" | "REPLACE" | "NORMAL"> implements Querify {
+export declare type InsertLiteralRow<TableT extends AnyTable> = ({
+    [name in TableUtil.RequiredColumnNames<TableT>]: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
+} & {
+    [name in TableUtil.OptionalColumnNames<TableT>]?: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
+});
+export declare type InsertLiteralSubRow<TableT extends AnyTable, ExtractT extends Extract<keyof TableT["columns"], string>> = ({
+    [name in Extract<TableUtil.RequiredColumnNames<TableT>, ExtractT>]: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
+} & {
+    [name in Extract<TableUtil.OptionalColumnNames<TableT>, ExtractT>]?: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
+});
+export declare type InsertLiteralRowExclude<TableT extends AnyTable, ExcludeT extends Extract<keyof TableT["columns"], string>> = ({
+    [name in Exclude<TableUtil.RequiredColumnNames<TableT>, ExcludeT>]: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
+} & {
+    [name in Exclude<TableUtil.OptionalColumnNames<TableT>, ExcludeT>]?: (ReturnType<TableT["columns"][name]["assertDelegate"]>);
+});
+export declare class InsertValueBuilder<TableT extends AnyTableAllowInsert, ValuesT extends undefined | (RawInsertValueRow<TableT>[]), InsertModeT extends "IGNORE" | "REPLACE" | "NORMAL"> implements Querify {
     readonly table: TableT;
     readonly values: ValuesT;
     readonly insertMode: InsertModeT;
@@ -19,10 +38,18 @@ export declare class InsertValueBuilder<TableT extends AnyTable, ValuesT extends
     ignore(): InsertValueBuilder<TableT, ValuesT, "IGNORE">;
     replace(): InsertValueBuilder<TableT, ValuesT, "REPLACE">;
     value(...rows: RawInsertValueRow<TableT>[]): InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], InsertModeT>;
-    execute(this: InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], InsertModeT>): (Promise<mysql.MysqlInsertResult & (TableT["data"]["autoIncrement"] extends AnyColumn ? {
+    execute(this: InsertValueBuilder<any, any[], any>, db?: PooledDatabase): (Promise<mysql.MysqlInsertResult & {
+        insertedRowCount: number;
+    } & (TableT["data"]["autoIncrement"] extends AnyColumn ? {
         [name in TableT["data"]["autoIncrement"]["name"]]: ("IGNORE" extends InsertModeT ? number | undefined : number);
     } : {})>);
+    executeAndFetch(this: InsertValueBuilder<TableT extends AnyTable & {
+        data: {
+            uniqueKeys: UniqueKeyCollection;
+        };
+    } ? any : never, any[], any>): (Promise<FetchRow<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"], SelectCollectionUtil.ToColumnReferences<SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]>>>);
     querify(sb: StringBuilder): void;
     getQuery(): string;
     printQuery(): this;
 }
+//# sourceMappingURL=insert-value-builder.d.ts.map

@@ -5,8 +5,23 @@ import {Expr} from "../expr";
 
 import {SelectBuilder} from "../select-builder";
 import {Column} from "../column";
+import {AliasedExpr} from "../aliased-expr";
+import {Join} from "../join";
+import {AliasedTable} from "../aliased-table";
 SelectBuilder;
 Column;
+AliasedExpr;
+Join;
+AliasedTable;
+
+import {JoinCollectionUtil} from "../join-collection";
+import {ColumnCollection} from "../column-collection";
+import {TupleKeys} from "../tuple";
+JoinCollectionUtil;
+((
+    _0? : ColumnCollection,
+    _1? : TupleKeys<any>
+) => 0)();
 
 function numberComparison (operator : string) {
     function result<
@@ -23,7 +38,7 @@ function numberComparison (operator : string) {
     ) {
         RawExprUtil.assertNonNullable(left);
         RawExprUtil.assertNonNullable(right);
-        
+
         return booleanExpr(
             ColumnReferencesUtil.merge(
                 RawExprUtil.usedReferences(left),

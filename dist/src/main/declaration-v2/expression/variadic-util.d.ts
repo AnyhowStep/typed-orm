@@ -10,3 +10,4 @@ export declare function querifyNonNullable<LeftT extends AnyRawExpr, RightT exte
     leftQuery: string;
     rightQueries: string[];
 });
+//# sourceMappingURL=variadic-util.d.ts.map

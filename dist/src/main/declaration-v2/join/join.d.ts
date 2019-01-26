@@ -5,7 +5,8 @@ export declare enum JoinType {
     FROM = "FROM",
     INNER = "INNER",
     LEFT = "LEFT",
-    RIGHT = "RIGHT"
+    RIGHT = "RIGHT",
+    CROSS = "CROSS"
 }
 export declare class Join<TableT extends AnyAliasedTable, ColumnCollectionT extends ColumnCollection, NullableT extends boolean> {
     readonly joinType: JoinType;
@@ -17,3 +18,4 @@ export declare class Join<TableT extends AnyAliasedTable, ColumnCollectionT exte
     constructor(joinType: JoinType, table: TableT, columns: ColumnCollectionT, nullable: NullableT, from: AnyColumn[], to: AnyColumn[]);
 }
 export declare type AnyJoin = Join<AnyAliasedTable, ColumnCollection, boolean>;
+//# sourceMappingURL=join.d.ts.map

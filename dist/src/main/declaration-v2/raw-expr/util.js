@@ -6,6 +6,9 @@ const StringBuilder_1 = require("../StringBuilder");
 const expr_1 = require("../expr");
 const select_builder_1 = require("../select-builder");
 const sd = require("schema-decorator");
+const column_collection_1 = require("../column-collection");
+const e = require("../expression");
+const join_collection_1 = require("../join-collection");
 var RawExprUtil;
 (function (RawExprUtil) {
     function isAllowedExprConstant(raw) {
@@ -13,6 +16,9 @@ var RawExprUtil;
             return true;
         }
         if (raw instanceof Date) {
+            return true;
+        }
+        if (raw instanceof Buffer) {
             return true;
         }
         switch (typeof raw) {
@@ -33,6 +39,9 @@ var RawExprUtil;
             if (raw instanceof Date) {
                 //TODO Make this toggleable
                 return mysql.escape(raw, true);
+            }
+            if (raw instanceof Buffer) {
+                return mysql.escape(raw);
             }
             switch (typeof raw) {
                 case "number": {
@@ -79,7 +88,12 @@ var RawExprUtil;
             return raw.usedReferences;
         }
         if (raw instanceof select_builder_1.SelectBuilder) {
-            return {};
+            if (raw.data.hasParentJoins) {
+                return join_collection_1.JoinCollectionUtil.toColumnReferences(raw.data.parentJoins);
+            }
+            else {
+                return {};
+            }
         }
         throw new Error(`Unknown raw expression (${typeof raw})${raw}`);
     }
@@ -91,6 +105,9 @@ var RawExprUtil;
             }
             if (raw instanceof Date) {
                 return sd.date();
+            }
+            if (raw instanceof Buffer) {
+                return sd.buffer();
             }
             switch (typeof raw) {
                 case "number": {
@@ -123,6 +140,18 @@ var RawExprUtil;
         return new expr_1.Expr(usedReferences(raw), assertDelegate(raw), querify(raw));
     }
     RawExprUtil.toExpr = toExpr;
+    function isNullable(raw) {
+        try {
+            assertDelegate(raw)("", null);
+        }
+        catch (_err) {
+            //If we encounter an error, we know this raw expression
+            //is non-nullable
+            return false;
+        }
+        return true;
+    }
+    RawExprUtil.isNullable = isNullable;
     function assertNonNullable(raw) {
         try {
             assertDelegate(raw)("", null);
@@ -135,5 +164,62 @@ var RawExprUtil;
         throw new Error(`Expected expression to be non-nullable, but it is`);
     }
     RawExprUtil.assertNonNullable = assertNonNullable;
+    function toEqualityCondition(table, 
+    //TODO Force proper typing?
+    //For now, ignores invalid columns
+    /*condition : {
+        [otherColumnName : string]  : any
+    }*/
+    //TODO Check this works
+    condition) {
+        const assertDelegate = column_collection_1.ColumnCollectionUtil.partialAssertDelegate(table.columns);
+        condition = assertDelegate(`${table.alias} condition`, condition);
+        const comparisonArr = Object.keys(condition)
+            .filter((columnName) => {
+            //Strict equality because we support checking against `null`
+            return (condition[columnName] !== undefined &&
+                table.columns[columnName] !== undefined);
+        })
+            .map((columnName) => {
+            const column = table.columns[columnName];
+            const value = condition[columnName];
+            if (value == null) {
+                return e.isNull(column);
+            }
+            else {
+                if (RawExprUtil.isNullable(column)) {
+                    return e.isNotNullAndEq(column, value);
+                }
+                else {
+                    return e.eq(column, value);
+                }
+            }
+        });
+        if (comparisonArr.length == 0) {
+            return e.TRUE;
+        }
+        else {
+            return e.and(comparisonArr[0], ...comparisonArr.slice(1));
+        }
+    }
+    RawExprUtil.toEqualityCondition = toEqualityCondition;
+    function toUniqueKeyEqualityCondition(table, rawCondition) {
+        const condition = table.getUniqueKeyAssertDelegate()(`${table.alias} condition`, rawCondition);
+        return toEqualityCondition(table, 
+        //https://github.com/Microsoft/TypeScript/issues/27399
+        condition);
+    }
+    RawExprUtil.toUniqueKeyEqualityCondition = toUniqueKeyEqualityCondition;
+    function toMinimalUniqueKeyEqualityCondition(table, rawCondition) {
+        const condition = table.getMinimalUniqueKeyAssertDelegate()(`${table.alias} condition`, rawCondition);
+        return toEqualityCondition(table, 
+        //https://github.com/Microsoft/TypeScript/issues/27399
+        condition);
+    }
+    RawExprUtil.toMinimalUniqueKeyEqualityCondition = toMinimalUniqueKeyEqualityCondition;
 })(RawExprUtil = exports.RawExprUtil || (exports.RawExprUtil = {}));
+//Convenience exports
+exports.toEqualityCondition = RawExprUtil.toEqualityCondition;
+exports.toUniqueKeyEqualityCondition = RawExprUtil.toUniqueKeyEqualityCondition;
+exports.toMinimalUniqueKeyEqualityCondition = RawExprUtil.toMinimalUniqueKeyEqualityCondition;
 //# sourceMappingURL=util.js.map

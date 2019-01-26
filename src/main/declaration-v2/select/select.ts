@@ -14,6 +14,13 @@ export type Select<
             any
         > :
         (
+            //For AliasedExpr,
+            //Just being assignable to Select<> is not enough.
+            //For example,
+            //{ userBanned : { logId : /*snip*/ } }
+            //is assignable to
+            //{ user? : { userId? : /*snip*/ } }
+            //We need a conditional type of sorts
             AliasedExpr<
                 ColumnReferencesUtil.Partial<ColumnReferencesT>,
                 "__expr",

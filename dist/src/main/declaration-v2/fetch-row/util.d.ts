@@ -5,3 +5,4 @@ import * as sd from "schema-decorator";
 export declare namespace FetchRowUtil {
     function assertDelegate<JoinsT extends JoinCollection, SelectReferencesT extends ColumnReferences>(joins: JoinsT, selectReferences: SelectReferencesT): (sd.AssertDelegate<FetchRow<JoinsT, SelectReferencesT>>);
 }
+//# sourceMappingURL=util.d.ts.map

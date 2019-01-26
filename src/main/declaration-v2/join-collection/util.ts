@@ -12,46 +12,55 @@ import {AnySelectBuilder} from "../select-builder";
 
 import {Column} from "../column";
 import {AliasedTable} from "../aliased-table";
+import {ColumnCollection} from "../column-collection";
 Column;
 AliasedTable;
+const _0 : ColumnCollection|undefined = undefined;
+_0;
 
 export namespace JoinCollectionUtil {
     //Types only
     export type FindWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string> = (
         {
             [index in TupleKeys<JoinsT>] : (
-                JoinsT[index] extends AnyJoin ?
-                    (
-                        JoinsT[index]["table"]["alias"] extends TableAliasT ?
-                            JoinsT[index] :
-                            never
-                    ) :
+                Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ?
+                    Extract<JoinsT[index], AnyJoin> :
                     never
             )
         }[TupleKeys<JoinsT>]
     );
+    export function findWithTableAlias<
+        JoinsT extends JoinCollection, TableAliasT extends string
+    > (
+        joins : JoinsT,
+        tableAlias : TableAliasT
+    ) : AnyJoin|undefined {
+        return joins.find(j => j.table.alias == tableAlias) as any;
+    }
     export type IndexWithTableAlias<JoinsT extends JoinCollection, TableAliasT extends string> = (
         {
             [index in TupleKeys<JoinsT>] : (
-                JoinsT[index] extends AnyJoin ?
-                    (
-                        JoinsT[index]["table"]["alias"] extends TableAliasT ?
-                            index :
-                            never
-                    ) :
+                Extract<JoinsT[index], AnyJoin>["table"]["alias"] extends TableAliasT ?
+                    index :
                     never
             )
         }[TupleKeys<JoinsT>]
     );
+    export type Joins<JoinsT extends JoinCollection> = (
+        Extract<
+            {
+                [index in TupleKeys<JoinsT>] : (
+                    JoinsT[index]
+                )
+            }[TupleKeys<JoinsT>],
+            AnyJoin
+        >
+    );
     export type TableAliases<JoinsT extends JoinCollection> = (
-        JoinsT[TupleKeys<JoinsT>] extends AnyJoin ?
-            JoinsT[TupleKeys<JoinsT>]["table"]["alias"] :
-            never
+        Joins<JoinsT>["table"]["alias"]
     );
     export type Tables<JoinsT extends JoinCollection> = (
-        JoinsT[TupleKeys<JoinsT>] extends AnyJoin ?
-            JoinsT[TupleKeys<JoinsT>]["table"] :
-            never
+        Joins<JoinsT>["table"]
     );
     export type ToTableCollectionImpl<JoinsT extends JoinCollection, K extends string> = (
         K extends Extract<keyof JoinsT, string> ?
@@ -142,22 +151,20 @@ export namespace JoinCollectionUtil {
     export type Columns<JoinsT extends JoinCollection> = (
         {
             [index in TupleKeys<JoinsT>] : (
-                JoinsT[index] extends AnyJoin ?
-                    (ColumnCollectionUtil.Columns<JoinsT[index]["columns"]>) :
-                    never
+                ColumnCollectionUtil.Columns<
+                    Extract<JoinsT[index], AnyJoin>["columns"]
+                >
             )
         }[TupleKeys<JoinsT>]
     );
     export type NullableColumns<JoinsT extends JoinCollection> = (
         {
             [index in TupleKeys<JoinsT>] : (
-                JoinsT[index] extends AnyJoin ?
-                    ColumnCollectionUtil.Columns<
-                        ColumnCollectionUtil.ToNullable<
-                            JoinsT[index]["columns"]
-                        >
-                    > :
-                    never
+                ColumnCollectionUtil.Columns<
+                    ColumnCollectionUtil.ToNullable<
+                        Extract<JoinsT[index], AnyJoin>["columns"]
+                    >
+                >
             )
         }[TupleKeys<JoinsT>]
     );
@@ -165,18 +172,13 @@ export namespace JoinCollectionUtil {
     //Types with implementation
     export const push = tupleWPush<AnyJoin>();
 
-    
     export type NullableTableAlias<
         JoinsT extends JoinCollection
     > = (
         {
             [index in TupleKeys<JoinsT>] : (
-                JoinsT[index] extends AnyJoin ?
-                    (
-                        true extends JoinsT[index]["nullable"] ?
-                            JoinsT[index]["table"]["alias"] :
-                            never
-                    ) :
+                true extends Extract<JoinsT[index], AnyJoin>["nullable"] ?
+                    Extract<JoinsT[index], AnyJoin>["table"]["alias"] :
                     never
             )
         }[TupleKeys<JoinsT>]
@@ -185,31 +187,22 @@ export namespace JoinCollectionUtil {
     export type ToColumnReferences<
         JoinsT extends JoinCollection
     > = (
-        /*JoinsT[TupleKeys<JoinsT>] extends AnyJoin ?
+        Joins<JoinsT> extends AnyJoin ?
             (
-                {
-                    [tableAlias in Extract<NullableTableAlias<JoinsT>, string>] : (
-                        ColumnCollectionUtil.ToNullable<FindWithTableAlias<JoinsT, tableAlias>["columns"]>
-                    )
-                } &
-                {
-                    [tableAlias in Exclude<
-                        JoinsT[TupleKeys<JoinsT>]["table"]["alias"],
-                        NullableTableAlias<JoinsT>
-                    >] : (
-                        FindWithTableAlias<JoinsT, tableAlias>["columns"]
-                    )
-                }
+                Joins<JoinsT>["table"] extends AnyAliasedTable ?
+                    {
+                        readonly [tableAlias in Joins<JoinsT>["table"]["alias"]] : (
+                            FindWithTableAlias<JoinsT, tableAlias> extends AnyJoin ?
+                            (
+                                true extends FindWithTableAlias<JoinsT, tableAlias>["nullable"] ?
+                                    ColumnCollectionUtil.ToNullable<FindWithTableAlias<JoinsT, tableAlias>["columns"]> :
+                                    FindWithTableAlias<JoinsT, tableAlias>["columns"]
+                            ) :
+                            never
+                        )
+                    } :
+                    {}
             ) :
-            never*/
-        JoinsT[TupleKeys<JoinsT>] extends AnyJoin ?
-            {
-                readonly [tableAlias in JoinsT[TupleKeys<JoinsT>]["table"]["alias"]] : (
-                    true extends FindWithTableAlias<JoinsT, tableAlias>["nullable"] ?
-                        ColumnCollectionUtil.ToNullable<FindWithTableAlias<JoinsT, tableAlias>["columns"]> :
-                        FindWithTableAlias<JoinsT, tableAlias>["columns"]
-                )
-            } :
             {}
     );
     export function toColumnReferences<JoinsT extends JoinCollection> (
@@ -258,7 +251,7 @@ export namespace JoinCollectionUtil {
     }
 
     export type ToNullable<JoinsT extends JoinCollection> = (
-        JoinsT[TupleKeys<JoinsT>] extends AnyJoin ?
+        Joins<JoinsT> extends AnyJoin ?
             (
                 {
                     [index in TupleKeys<JoinsT>] : (
@@ -285,11 +278,19 @@ export namespace JoinCollectionUtil {
         return joins.map(JoinUtil.toNullable) as any;
     }
 
+    export type Duplicates<A extends JoinCollection, B extends JoinCollection> = (
+        FindWithTableAlias<A, Extract<TableAliases<B>, string>>
+    );
     export function assertNonDuplicateTableAlias (joins : JoinCollection, tableAlias : string) {
         joins.forEach((join, index) => {
             if (join.table.alias == tableAlias) {
                 throw new Error(`Alias ${tableAlias} was already used as join ${index}`);
             }
+        });
+    }
+    export function assertNoDuplicates (a : JoinCollection, b : JoinCollection) {
+        b.forEach((join) => {
+            assertNonDuplicateTableAlias(a, join.table.alias);
         });
     }
     export function assertHasColumn (joins : JoinCollection, column : AnyColumn) {
@@ -317,7 +318,7 @@ export namespace JoinCollectionUtil {
             AnyJoin,
             JoinsT,
             Join<
-                ToTableT,
+                AliasedTableUtil.EraseSubType<ToTableT>,
                 ToTableT["columns"],
                 false
             >
@@ -331,7 +332,7 @@ export namespace JoinCollectionUtil {
             AnyJoin,
             JoinCollectionUtil.ToNullable<JoinsT>,
             Join<
-                ToTableT,
+                AliasedTableUtil.EraseSubType<ToTableT>,
                 ToTableT["columns"],
                 false
             >
@@ -345,9 +346,23 @@ export namespace JoinCollectionUtil {
             AnyJoin,
             JoinsT,
             Join<
-                ToTableT,
+                AliasedTableUtil.EraseSubType<ToTableT>,
                 ToTableT["columns"],
                 true
+            >
+        >
+    );
+    export type CrossJoinUnsafe<
+        JoinsT extends JoinCollection,
+        ToTableT extends AnyAliasedTable
+    > = (
+        TupleWPush<
+            AnyJoin,
+            JoinsT,
+            Join<
+                AliasedTableUtil.EraseSubType<ToTableT>,
+                ToTableT["columns"],
+                false
             >
         >
     );
@@ -439,44 +454,238 @@ export namespace JoinCollectionUtil {
         }) as any;
     }
 
-    export type InnerJoin<
+    /*export type InnerJoin<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
     > = (
         CheckedJoin<SelectBuilderT, ToTableT, InnerJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+    export type InnerJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+    > = (
+        FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    InnerJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
     );
-    export type InnerJoinUsing<
+    /*export type InnerJoinUsing<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > = (
         CheckedJoinUsing<SelectBuilderT, ToTableT, FromDelegateT, InnerJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+    export type InnerJoinUsing<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
+    > = (
+        JoinToDelegateUtil.CreateUsing<ToTableT, ReturnType<FromDelegateT>> extends never ?
+            invalid.E4<
+                "Table",
+                ToTableT["alias"],
+                "does not have some columns",
+                Exclude<
+                    ColumnTupleUtil.WithTableAlias<ReturnType<FromDelegateT>, ToTableT["alias"]>[TupleKeys<ReturnType<FromDelegateT>>],
+                    ColumnCollectionUtil.Columns<ToTableT["columns"]>
+                >
+            > :
+            FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    InnerJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
     );
-    export type RightJoin<
+    /*export type RightJoin<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
     > = (
         CheckedJoin<SelectBuilderT, ToTableT, RightJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+
+    export type RightJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+    > = (
+        FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    RightJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
     );
-    export type RightJoinUsing<
+    /*export type RightJoinUsing<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > = (
         CheckedJoinUsing<SelectBuilderT, ToTableT, FromDelegateT, RightJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+    export type RightJoinUsing<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
+    > = (
+        JoinToDelegateUtil.CreateUsing<ToTableT, ReturnType<FromDelegateT>> extends never ?
+            invalid.E4<
+                "Table",
+                ToTableT["alias"],
+                "does not have some columns",
+                Exclude<
+                    ColumnTupleUtil.WithTableAlias<ReturnType<FromDelegateT>, ToTableT["alias"]>[TupleKeys<ReturnType<FromDelegateT>>],
+                    ColumnCollectionUtil.Columns<ToTableT["columns"]>
+                >
+            > :
+            FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    RightJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
     );
-    export type LeftJoin<
+    /*export type LeftJoin<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
     > = (
         CheckedJoin<SelectBuilderT, ToTableT, LeftJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+    export type LeftJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+    > = (
+        FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    LeftJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
     );
-    export type LeftJoinUsing<
+    /*export type LeftJoinUsing<
         SelectBuilderT extends AnySelectBuilder,
         ToTableT extends AnyAliasedTable,
         FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
     > = (
         CheckedJoinUsing<SelectBuilderT, ToTableT, FromDelegateT, LeftJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+    export type LeftJoinUsing<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+        FromDelegateT extends JoinFromDelegate<SelectBuilderT["data"]["joins"]>
+    > = (
+        JoinToDelegateUtil.CreateUsing<ToTableT, ReturnType<FromDelegateT>> extends never ?
+            invalid.E4<
+                "Table",
+                ToTableT["alias"],
+                "does not have some columns",
+                Exclude<
+                    ColumnTupleUtil.WithTableAlias<ReturnType<FromDelegateT>, ToTableT["alias"]>[TupleKeys<ReturnType<FromDelegateT>>],
+                    ColumnCollectionUtil.Columns<ToTableT["columns"]>
+                >
+            > :
+            FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    LeftJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
+    );
+    /*export type CrossJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+    > = (
+        CheckedJoin<SelectBuilderT, ToTableT, CrossJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT>>
+    );*/
+    export type CrossJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable,
+    > = (
+        FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]> extends never ?
+            (
+                FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]> extends never ?
+                    CrossJoinUnsafe<SelectBuilderT["data"]["joins"], ToTableT> :
+                    invalid.E4<
+                        "Alias",
+                        ToTableT["alias"],
+                        "was already used as join",
+                        FindWithTableAlias<SelectBuilderT["data"]["joins"], ToTableT["alias"]>
+                    >
+            ) :
+            invalid.E4<
+                "Alias",
+                ToTableT["alias"],
+                "was already used as join in parent scope",
+                FindWithTableAlias<SelectBuilderT["data"]["parentJoins"], ToTableT["alias"]>
+            >
     );
     export function innerJoin<
         SelectBuilderT extends AnySelectBuilder,
@@ -640,6 +849,30 @@ export namespace JoinCollectionUtil {
         });
     }
 
+    export function crossJoin<
+        SelectBuilderT extends AnySelectBuilder,
+        ToTableT extends AnyAliasedTable
+    > (
+        selectBuilder : SelectBuilderT,
+        toTable : ToTableT
+    ) : (
+        CrossJoin<SelectBuilderT, ToTableT>
+    ) {
+        return checkedJoin(selectBuilder, toTable, () => {
+            return push(
+                selectBuilder.data.joins,
+                new Join(
+                    JoinType.CROSS,
+                    toTable,
+                    toTable.columns,
+                    false,
+                    [],
+                    []
+                )
+            ) as any;
+        });
+    }
+
     export type IsReplaceableBy<
         JoinsT extends JoinCollection,
         TableA extends AnyAliasedTable,
@@ -690,7 +923,7 @@ export namespace JoinCollectionUtil {
         TableA extends AnyAliasedTable,
         TableB extends AnyAliasedTable
     > = (
-        JoinT["table"] extends TableA ?
+        JoinT["table"] extends AliasedTableUtil.EraseSubType<TableA> ?
             Join<
                 AliasedTableUtil.As<TableB, JoinT["table"]["alias"]>,
                 ColumnCollectionUtil.AndType<
@@ -841,4 +1074,66 @@ export namespace JoinCollectionUtil {
             );
         }) as any;
     };
+
+    export type ReplaceNullable<
+        JoinsT extends JoinCollection,
+        TableAliasT extends string,
+        NullableT extends boolean
+    > = (
+        {
+            [index in TupleKeys<JoinsT>] : (
+                JoinUtil.ReplaceNullable<
+                    Extract<JoinsT[index], AnyJoin>,
+                    TableAliasT,
+                    NullableT
+                >
+            )
+        } &
+        {
+            "0" : (
+                JoinUtil.ReplaceNullable<
+                    JoinsT[0],
+                    TableAliasT,
+                    NullableT
+                >
+            ),
+            length : TupleLength<JoinsT>
+        } &
+        AnyJoin[]
+    );
+    export function replaceNullable<
+        JoinsT extends JoinCollection,
+        TableAliasT extends string,
+        NullableT extends boolean
+    > (
+        joins : JoinsT,
+        tableAlias : TableAliasT,
+        nullable : NullableT
+    ) : (
+        ReplaceNullable<
+            JoinsT,
+            TableAliasT,
+            NullableT
+        >
+    ) {
+        return joins.map((join) => {
+            return JoinUtil.replaceNullable(
+                join,
+                tableAlias,
+                nullable
+            );
+        }) as any;
+    };
+
+    //The very from Join is in the FROM clause
+    //It will never be nullable unless a RIGHT JOIN was used.
+    export type HasRightJoin<JoinsT extends JoinCollection> = (
+        JoinsT[0]["nullable"] extends true ?
+            true : false
+    );
+    export function hasRightJoin<JoinsT extends JoinCollection> (
+        joins : JoinsT
+    ) : HasRightJoin<JoinsT> {
+        return joins[0].nullable as any;
+    }
 }

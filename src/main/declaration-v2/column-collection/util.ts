@@ -39,11 +39,65 @@ export namespace ColumnCollectionUtil {
                 Extract<keyof ColumnCollectionT, string>,
                 ExcludeT
             >] : (
-                ColumnCollectionT[columnName]
+                Extract<
+                    ColumnCollectionT[columnName],
+                    AnyColumn
+                >
             )
         }
     );
-    
+    export function excludeColumnNames<
+        ColumnCollectionT extends ColumnCollection,
+        ExcludeT extends string
+    > (
+        columnCollection : ColumnCollectionT,
+        exclude : ExcludeT[]
+    ) : ExcludeColumnNames<ColumnCollectionT, ExcludeT> {
+        const result = {} as any;
+        for (let columnName in columnCollection) {
+            if (!columnCollection.hasOwnProperty(columnName)) {
+                continue;
+            }
+            if (exclude.indexOf(columnName as any) < 0) {
+                //We want to keep this column
+                result[columnName] = columnCollection[columnName];
+            }
+        }
+        return result;
+    }
+    export type ExtractColumnNames<ColumnCollectionT extends ColumnCollection, ExtractT extends string> = (
+        {
+            readonly [columnName in Extract<
+                keyof ColumnCollectionT,
+                ExtractT
+            >] : (
+                Extract<
+                    ColumnCollectionT[columnName],
+                    AnyColumn
+                >
+            )
+        }
+    );
+    export function extractColumnNames<
+        ColumnCollectionT extends ColumnCollection,
+        ExtractT extends string
+    > (
+        columnCollection : ColumnCollectionT,
+        extract : ExtractT[]
+    ) : ExtractColumnNames<ColumnCollectionT, ExtractT> {
+        const result = {} as any;
+        for (let columnName in columnCollection) {
+            if (!columnCollection.hasOwnProperty(columnName)) {
+                continue;
+            }
+            if (extract.indexOf(columnName as any) >= 0) {
+                //We want to keep this column
+                result[columnName] = columnCollection[columnName];
+            }
+        }
+        return result;
+    }
+
     //Types with implementation
     export type HasColumn<
         ColumnCollectionT extends ColumnCollection,
@@ -100,9 +154,7 @@ export namespace ColumnCollectionUtil {
     > = (
         {
             [index in TupleKeys<ColumnT>] : (
-                ColumnT[index] extends AnyColumn ?
-                    HasColumn<ColumnCollectionT, ColumnT[index]> :
-                    never
+                HasColumn<ColumnCollectionT, Extract<ColumnT[index], AnyColumn>>
             )
         }[TupleKeys<ColumnT>]
     );
@@ -140,7 +192,7 @@ export namespace ColumnCollectionUtil {
         ColumnCollectionA extends ColumnCollection,
         ColumnCollectionB extends ColumnCollection
     > = (
-        keyof ColumnCollectionA extends keyof ColumnCollectionB ? 
+        keyof ColumnCollectionA extends keyof ColumnCollectionB ?
             (
                 //Can't do run-time check for assert delegate assignability...
                 {
@@ -250,33 +302,37 @@ export namespace ColumnCollectionUtil {
         ) as any;
     }
 
-    
+
 
     export type AndType<
-        ColumnCollectionA extends ColumnCollection,
+        ColumnCollectionA extends ColumnCollection|{},
         ColumnCollectionB extends ColumnCollection
     > = (
         {
             readonly [columnName in Extract<keyof ColumnCollectionA, string>] : (
-                columnName extends keyof ColumnCollectionB ?
+                ColumnCollectionA[columnName] extends Column<infer TableAliasT, infer NameT, infer TypeT> ?
                     (
-                        Column<
-                            ColumnCollectionA[columnName]["tableAlias"],
-                            ColumnCollectionA[columnName]["name"],
+                        columnName extends keyof ColumnCollectionB ?
                             (
-                                ReturnType<ColumnCollectionA[columnName]["assertDelegate"]> &
-                                ReturnType<ColumnCollectionB[columnName]["assertDelegate"]>
+                                Column<
+                                    TableAliasT,
+                                    NameT,
+                                    (
+                                        TypeT &
+                                        ReturnType<ColumnCollectionB[columnName]["assertDelegate"]>
+                                    )
+                                >
+                            ) :
+                            (
+                                ColumnCollectionA[columnName]
                             )
-                        >
                     ) :
-                    (
-                        ColumnCollectionA[columnName]
-                    )
+                    never
             )
         }
     )
     export function andType<
-        ColumnCollectionA extends ColumnCollection,
+        ColumnCollectionA extends ColumnCollection|{},
         ColumnCollectionB extends ColumnCollection
     > (
         columnsA : ColumnCollectionA,
@@ -290,6 +346,9 @@ export namespace ColumnCollectionUtil {
         const result = {} as any;
         for (let columnName in columnsA) {
             const columnA = columnsA[columnName];
+            if (!(columnA instanceof Column)) {
+                throw new Error(`${columnName} is not a column`);
+            }
             const columnB = columnsB[columnName];
             if (columnB == undefined) {
                 result[columnName] = columnA;
@@ -310,7 +369,7 @@ export namespace ColumnCollectionUtil {
         return result;
     }
     export type Merge<
-        ColumnCollectionA extends ColumnCollection,
+        ColumnCollectionA extends ColumnCollection|{},
         ColumnCollectionB extends ColumnCollection
     > = (
         AndType<
@@ -320,7 +379,7 @@ export namespace ColumnCollectionUtil {
         ColumnCollectionB
     );
     export function merge<
-        ColumnCollectionA extends ColumnCollection,
+        ColumnCollectionA extends ColumnCollection|{},
         ColumnCollectionB extends ColumnCollection
     > (
         columnsA : ColumnCollectionA,
@@ -342,6 +401,9 @@ export namespace ColumnCollectionUtil {
                 );
         }[Extract<keyof ColumnCollectionT, string>]
     );
+    export type ColumnNames<ColumnCollectionT extends ColumnCollection> = (
+        Extract<keyof ColumnCollectionT, string>
+    );
     export function nullableColumnNames<ColumnCollectionT extends ColumnCollection> (
         columnCollection : ColumnCollectionT
     ) : NullableColumnNames<ColumnCollectionT>[] {
@@ -358,25 +420,71 @@ export namespace ColumnCollectionUtil {
         }
         return result as any;
     }
+    export function columnNames<ColumnCollectionT extends ColumnCollection> (
+        columnCollection : ColumnCollectionT
+    ) : ColumnNames<ColumnCollectionT>[] {
+        const result : string[] = [];
+        for (let name in columnCollection) {
+            if (columnCollection.hasOwnProperty(name)) {
+                result.push(name);
+            }
+        }
+        return result as any;
+    }
 
-    export function assertDelegate<ColumnCollectionT extends ColumnCollection> (
-        columnCollection : ColumnCollectionT,
-        useColumnNames : string[]
-    ) : (
-        sd.AssertDelegate<{
+    export type Type<ColumnCollectionT extends ColumnCollection> = (
+        /*{
             [columnName in Extract<keyof ColumnCollectionT, string>] : (
                 ReturnType<ColumnCollectionT[columnName]["assertDelegate"]>
             )
-        }>
+        }*/
+        {
+            [columnName in keyof ColumnCollectionT] : (
+                ColumnCollectionT[columnName] extends AnyColumn ?
+                    ReturnType<ColumnCollectionT[columnName]["assertDelegate"]> :
+                    never
+            )
+        }
+    );
+    export function assertDelegate<ColumnCollectionT extends ColumnCollection> (
+        columnCollection : ColumnCollectionT,
+        useColumnNames? : string[]
+    ) : (
+        sd.AssertDelegate<Type<ColumnCollectionT>>
     ) {
         return sd.schema(
             ...Object.keys(columnCollection)
                 .filter((columnName) => {
-                    return useColumnNames.indexOf(columnName) >= 0;
+                    return (useColumnNames == undefined) ?
+                        //Use all columns
+                        true :
+                        //Use only specified columns
+                        useColumnNames.indexOf(columnName) >= 0;
                 })
                 .map((columnName) => {
                     const column = columnCollection[columnName];
                     return sd.field(column.name, column.assertDelegate)
+                })
+        ) as any;
+    }
+    export function partialAssertDelegate<ColumnCollectionT extends ColumnCollection> (
+        columnCollection : ColumnCollectionT,
+        useColumnNames? : string[]
+    ) : (
+        sd.AssertDelegate<Partial<Type<ColumnCollectionT>>>
+    ) {
+        return sd.schema(
+            ...Object.keys(columnCollection)
+                .filter((columnName) => {
+                    return (useColumnNames == undefined) ?
+                        //Use all columns
+                        true :
+                        //Use only specified columns
+                        useColumnNames.indexOf(columnName) >= 0;
+                })
+                .map((columnName) => {
+                    const column = columnCollection[columnName];
+                    return sd.field(column.name, sd.optional(column.assertDelegate))
                 })
         ) as any;
     }
@@ -400,5 +508,33 @@ export namespace ColumnCollectionUtil {
                     return sd.field(column.name, sd.nil())
                 })
         ) as any;
+    }
+    export type ToColumnReferences<ColumnCollectionT extends ColumnCollection> = ({
+        readonly [tableAlias in ColumnCollectionT[
+            keyof ColumnCollectionT
+        ]["tableAlias"]] : ColumnCollectionT
+    });
+    export function toColumnReferences<ColumnCollectionT extends ColumnCollection> (
+        columnCollection : ColumnCollectionT
+    ) {
+        const keys = Object.keys(columnCollection);
+        if (keys.length == 0) {
+            //TODO add this check in appendSelect()
+            throw new Error(`Empty column collection found`);
+        }
+        const firstColumn = (columnCollection as any)[keys[0]];
+        return {
+            [firstColumn.tableAlias] : keys.reduce((memo, columnName) => {
+                const column = (columnCollection as any)[columnName];
+                memo[columnName] = new Column(
+                    column.tableAlias,
+                    column.name,
+                    column.assertDelegate,
+                    undefined,
+                    true
+                );
+                return memo;
+            }, {} as any)
+        } as any;
     }
 }

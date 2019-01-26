@@ -9,6 +9,34 @@ var ColumnCollectionUtil;
         return Object.keys(columnCollection).length == 1;
     }
     ColumnCollectionUtil.hasOneType = hasOneType;
+    function excludeColumnNames(columnCollection, exclude) {
+        const result = {};
+        for (let columnName in columnCollection) {
+            if (!columnCollection.hasOwnProperty(columnName)) {
+                continue;
+            }
+            if (exclude.indexOf(columnName) < 0) {
+                //We want to keep this column
+                result[columnName] = columnCollection[columnName];
+            }
+        }
+        return result;
+    }
+    ColumnCollectionUtil.excludeColumnNames = excludeColumnNames;
+    function extractColumnNames(columnCollection, extract) {
+        const result = {};
+        for (let columnName in columnCollection) {
+            if (!columnCollection.hasOwnProperty(columnName)) {
+                continue;
+            }
+            if (extract.indexOf(columnName) >= 0) {
+                //We want to keep this column
+                result[columnName] = columnCollection[columnName];
+            }
+        }
+        return result;
+    }
+    ColumnCollectionUtil.extractColumnNames = extractColumnNames;
     function hasColumn(columnCollection, other) {
         if (!columnCollection.hasOwnProperty(other.name)) {
             return false;
@@ -87,6 +115,9 @@ var ColumnCollectionUtil;
         const result = {};
         for (let columnName in columnsA) {
             const columnA = columnsA[columnName];
+            if (!(columnA instanceof column_1.Column)) {
+                throw new Error(`${columnName} is not a column`);
+            }
             const columnB = columnsB[columnName];
             if (columnB == undefined) {
                 result[columnName] = columnA;
@@ -120,10 +151,24 @@ var ColumnCollectionUtil;
         return result;
     }
     ColumnCollectionUtil.nullableColumnNames = nullableColumnNames;
+    function columnNames(columnCollection) {
+        const result = [];
+        for (let name in columnCollection) {
+            if (columnCollection.hasOwnProperty(name)) {
+                result.push(name);
+            }
+        }
+        return result;
+    }
+    ColumnCollectionUtil.columnNames = columnNames;
     function assertDelegate(columnCollection, useColumnNames) {
         return sd.schema(...Object.keys(columnCollection)
             .filter((columnName) => {
-            return useColumnNames.indexOf(columnName) >= 0;
+            return (useColumnNames == undefined) ?
+                //Use all columns
+                true :
+                //Use only specified columns
+                useColumnNames.indexOf(columnName) >= 0;
         })
             .map((columnName) => {
             const column = columnCollection[columnName];
@@ -131,6 +176,21 @@ var ColumnCollectionUtil;
         }));
     }
     ColumnCollectionUtil.assertDelegate = assertDelegate;
+    function partialAssertDelegate(columnCollection, useColumnNames) {
+        return sd.schema(...Object.keys(columnCollection)
+            .filter((columnName) => {
+            return (useColumnNames == undefined) ?
+                //Use all columns
+                true :
+                //Use only specified columns
+                useColumnNames.indexOf(columnName) >= 0;
+        })
+            .map((columnName) => {
+            const column = columnCollection[columnName];
+            return sd.field(column.name, sd.optional(column.assertDelegate));
+        }));
+    }
+    ColumnCollectionUtil.partialAssertDelegate = partialAssertDelegate;
     function allNullAssertDelegate(columnCollection, useColumnNames) {
         return sd.schema(...Object.keys(columnCollection)
             .filter((columnName) => {
@@ -142,5 +202,21 @@ var ColumnCollectionUtil;
         }));
     }
     ColumnCollectionUtil.allNullAssertDelegate = allNullAssertDelegate;
+    function toColumnReferences(columnCollection) {
+        const keys = Object.keys(columnCollection);
+        if (keys.length == 0) {
+            //TODO add this check in appendSelect()
+            throw new Error(`Empty column collection found`);
+        }
+        const firstColumn = columnCollection[keys[0]];
+        return {
+            [firstColumn.tableAlias]: keys.reduce((memo, columnName) => {
+                const column = columnCollection[columnName];
+                memo[columnName] = new column_1.Column(column.tableAlias, column.name, column.assertDelegate, undefined, true);
+                return memo;
+            }, {})
+        };
+    }
+    ColumnCollectionUtil.toColumnReferences = toColumnReferences;
 })(ColumnCollectionUtil = exports.ColumnCollectionUtil || (exports.ColumnCollectionUtil = {}));
 //# sourceMappingURL=util.js.map

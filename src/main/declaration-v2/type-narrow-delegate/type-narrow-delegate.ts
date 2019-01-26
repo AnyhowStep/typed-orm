@@ -1,9 +1,39 @@
-import {JoinCollection, JoinCollectionUtil} from "../join-collection";
+import {AnySelectBuilder} from "../select-builder";
+import {JoinCollectionUtil} from "../join-collection";
+import {ColumnReferencesUtil} from "../column-references";
+
+export type TypeNarrowDelegateColumnReferences<
+    SelectBuilderT extends AnySelectBuilder
+> = (
+    (
+        SelectBuilderT["data"]["hasFrom"] extends true ?
+            JoinCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["joins"]> :
+            {}
+    ) &
+    (
+        SelectBuilderT["data"]["hasParentJoins"] extends true ?
+            JoinCollectionUtil.ToColumnReferences<SelectBuilderT["data"]["parentJoins"]> :
+            {}
+    )
+);
 
 export type TypeNarrowDelegate<
-    JoinsT extends JoinCollection
+    SelectBuilderT extends AnySelectBuilder
 > = (
-    (columnReferences : JoinCollectionUtil.ToConvenientColumnReferences<JoinsT>) => (
-        JoinCollectionUtil.Columns<JoinsT>
+    (
+        columnReferences : ColumnReferencesUtil.ToConvenient<
+            TypeNarrowDelegateColumnReferences<SelectBuilderT>
+        >
+    ) => (
+        (
+            SelectBuilderT["data"]["hasFrom"] extends true ?
+                JoinCollectionUtil.NullableColumns<SelectBuilderT["data"]["joins"]> :
+                never
+        ) |
+        (
+            SelectBuilderT["data"]["hasParentJoins"] extends true ?
+                JoinCollectionUtil.NullableColumns<SelectBuilderT["data"]["parentJoins"]> :
+                never
+        )
     )
 );

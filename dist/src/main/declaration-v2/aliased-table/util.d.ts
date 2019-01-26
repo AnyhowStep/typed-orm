@@ -12,4 +12,6 @@ export declare namespace AliasedTableUtil {
     type ToGeneric<TableT extends AnyAliasedTable> = (AliasedTable<any, any, {
         [columnName in Extract<keyof TableT["columns"], string>]: (Column<any, columnName, ReturnType<TableT["columns"][columnName]["assertDelegate"]>>);
     }>);
+    type EraseSubType<TableT extends AnyAliasedTable> = (TableT extends AliasedTable<infer AliasT, infer NameT, infer ColumnCollectionT> ? AliasedTable<AliasT, NameT, ColumnCollectionT> : never);
 }
+//# sourceMappingURL=util.d.ts.map

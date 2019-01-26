@@ -9,6 +9,17 @@ import {Column} from "./column";
 import {JoinCollectionUtil} from "./join-collection";
 import {StringBuilder} from "./StringBuilder";
 import {PooledDatabase} from "./PooledDatabase";
+import {AnyJoin} from "./join";
+import {Table} from "./table";
+
+export type UpdateResult = (
+    mysql.MysqlUpdateResult &
+    {
+        //-1 if we don't know how many found
+        foundRowCount : number,
+        updatedRowCount : number,
+    }
+);
 
 export type RawUpdateAssignmentType<
     TableT extends AnyTable,
@@ -183,7 +194,7 @@ export class UpdateBuilder<
             SelectBuilderT,
             RawUpdateAssignmentReferences<SelectBuilderT>
         >
-    ) : Promise<mysql.MysqlUpdateResult> {
+    ) : Promise<UpdateResult> {
         if (this.getAssignmentArr().length == 0) {
             return Promise.resolve({
                 fieldCount   : 0,
@@ -194,13 +205,22 @@ export class UpdateBuilder<
                 message      : "SET clause is empty; no updates occurred",
                 protocol41   : false,
                 changedRows  : 0,
+
+                foundRowCount : -1, //-1 because we don't know
+                updatedRowCount : 0,
             });
         }
 
         return this.db.rawUpdate(
             this.getQuery(),
             {}
-        );
+        ).then((result) => {
+            return {
+                ...result,
+                foundRowCount : result.affectedRows,
+                updatedRowCount : result.changedRows,
+            };
+        });
     }
 
     private assignmentArr : {
@@ -221,22 +241,39 @@ export class UpdateBuilder<
             rawValue : RawUpdateAssignment<any, any, any>,
         }[] = [];
         for (let tableAlias in assignmentReferences) {
-            if (
-                !assignmentReferences.hasOwnProperty(tableAlias) ||
-                assignmentReferences[tableAlias] == undefined
-            ) {
+            const assignmentCollection = assignmentReferences[tableAlias];
+            if (assignmentCollection == undefined) {
                 continue;
             }
+            const join : AnyJoin = this.selectBuilder.data.joins
+                .find((join : AnyJoin) => join.table.alias == tableAlias)
+            if (join == undefined) {
+                //Silently ignore table aliases that don't exist
+                continue;
+            }
+            const table = join.table;
+            if (!(table instanceof Table)) {
+                throw new Error(`Cannot update ${table.alias}, it must be a Table instance`);
+            }
+
             for (let columnName in assignmentReferences[tableAlias]) {
-                if (
-                    !assignmentReferences[tableAlias].hasOwnProperty(columnName) ||
-                    assignmentReferences[tableAlias][columnName] == undefined
-                ) {
+                const assignmentValue = assignmentCollection[columnName];
+                if (!(table.columns[columnName] instanceof Column)) {
+                    //Silently ignore extra columns
                     continue;
                 }
+                if (!table.data.isMutable.hasOwnProperty(columnName)) {
+                    //Silently ignore extra columns
+                    continue;
+                }
+                if (assignmentValue === undefined) {
+                    //Ignore `undefined` columns, it just means don't update the column
+                    continue;
+                }
+
                 result.push({
                     column : mysql.escapeId(tableAlias) + "." + mysql.escapeId(columnName),
-                    rawValue : assignmentReferences[tableAlias][columnName],
+                    rawValue : assignmentValue,
                 });
             }
         }

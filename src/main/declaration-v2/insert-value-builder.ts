@@ -1,4 +1,4 @@
-import {AnyTable, TableUtil} from "./table";
+import {AnyTable, AnyTableAllowInsert, TableUtil} from "./table";
 import {Querify} from "./querify";
 import {RawExprNoUsedRef} from "./raw-expr";
 import * as mysql from "typed-mysql";
@@ -6,6 +6,10 @@ import {AnyColumn} from "./column";
 import {StringBuilder} from "./StringBuilder";
 import {RawExprUtil} from "./raw-expr";
 import {PooledDatabase} from "./PooledDatabase";
+import {FetchRow} from "./fetch-row";
+import {SelectBuilderUtil} from "./select-builder-util";
+import {SelectCollectionUtil} from "./select-collection";
+import { UniqueKeyCollection } from "./unique-key-collection";
 
 export type RawInsertValueRow<TableT extends AnyTable> = (
     {
@@ -19,9 +23,45 @@ export type RawInsertValueRow<TableT extends AnyTable> = (
         )
     }
 );
+export type InsertLiteralRow<TableT extends AnyTable> = (
+    {
+        [name in TableUtil.RequiredColumnNames<TableT>] : (
+            ReturnType<TableT["columns"][name]["assertDelegate"]>
+        )
+    } &
+    {
+        [name in TableUtil.OptionalColumnNames<TableT>]? : (
+            ReturnType<TableT["columns"][name]["assertDelegate"]>
+        )
+    }
+);
+export type InsertLiteralSubRow<TableT extends AnyTable, ExtractT extends Extract<keyof TableT["columns"], string>> = (
+    {
+        [name in Extract<TableUtil.RequiredColumnNames<TableT>, ExtractT>] : (
+            ReturnType<TableT["columns"][name]["assertDelegate"]>
+        )
+    } &
+    {
+        [name in Extract<TableUtil.OptionalColumnNames<TableT>, ExtractT>]? : (
+            ReturnType<TableT["columns"][name]["assertDelegate"]>
+        )
+    }
+);
+export type InsertLiteralRowExclude<TableT extends AnyTable, ExcludeT extends Extract<keyof TableT["columns"], string>> = (
+    {
+        [name in Exclude<TableUtil.RequiredColumnNames<TableT>, ExcludeT>] : (
+            ReturnType<TableT["columns"][name]["assertDelegate"]>
+        )
+    } &
+    {
+        [name in Exclude<TableUtil.OptionalColumnNames<TableT>, ExcludeT>]? : (
+            ReturnType<TableT["columns"][name]["assertDelegate"]>
+        )
+    }
+);
 
 export class InsertValueBuilder<
-    TableT extends AnyTable,
+    TableT extends AnyTableAllowInsert,
     ValuesT extends undefined|(RawInsertValueRow<TableT>[]),
     InsertModeT extends "IGNORE"|"REPLACE"|"NORMAL"
 > implements Querify {
@@ -31,7 +71,7 @@ export class InsertValueBuilder<
         readonly insertMode : InsertModeT,
         readonly db : PooledDatabase
     ) {
-        
+
     }
 
     public ignore () : InsertValueBuilder<
@@ -76,10 +116,14 @@ export class InsertValueBuilder<
     }
 
     public execute (
-        this : InsertValueBuilder<TableT, RawInsertValueRow<TableT>[], InsertModeT>
+        this : InsertValueBuilder<any, any[], any>,
+        db? : PooledDatabase
     ) : (
         Promise<
             mysql.MysqlInsertResult &
+            {
+                insertedRowCount : number,
+            } &
             (
                 TableT["data"]["autoIncrement"] extends AnyColumn ?
                     //The auto-incremented id
@@ -96,13 +140,22 @@ export class InsertValueBuilder<
             )
         >
     ) {
+        if (this.table.data.noInsert) {
+            throw new Error(`INSERT not allowed on ${this.table.name}`);
+        }
         if (this.values == undefined) {
             throw new Error(`No VALUES to insert`);
         }
-        return this.db.rawInsert(this.getQuery(), {})
+        if (db == undefined) {
+            db = this.db;
+        }
+        return db.rawInsert(this.getQuery(), {})
             .then((result) => {
                 if (this.table.data.autoIncrement == undefined) {
-                    return result;
+                    return {
+                        ...result,
+                        insertedRowCount : result.affectedRows,
+                    };
                 } else {
                     if (result.insertId == 0) {
                         if (this.insertMode != "IGNORE") {
@@ -111,12 +164,62 @@ export class InsertValueBuilder<
                     }
                     return {
                         ...result,
+                        insertedRowCount : result.affectedRows,
                         [this.table.data.autoIncrement.name] : (result.insertId == 0) ?
                             undefined :
                             result.insertId,
                     };
                 }
             }) as any;
+    }
+
+    //Consider allowing just ["data"]["id"] for execute and fetch
+    public async executeAndFetch (
+        this : InsertValueBuilder<
+            TableT extends AnyTable & { data : { uniqueKeys : UniqueKeyCollection } } ?
+                any : never,
+            any[],
+            any
+        >
+    ) : (
+        Promise<FetchRow<
+            SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["joins"],
+            SelectCollectionUtil.ToColumnReferences<
+                SelectBuilderUtil.CleanToSelectAll<TableT>["data"]["selects"]
+            >
+        >>
+    ) {
+        if (this.table.data.noInsert) {
+            throw new Error(`INSERT not allowed on ${this.table.name}`);
+        }
+        return this.db.transactionIfNotInOne(async (db) => {
+            const insertResult = await this.execute(db);
+            if (insertResult.insertId > 0) {
+                //Prefer auto-increment id, if possible
+                return db.fetchOneById(this.table, insertResult.insertId);
+            } else {
+                //Get the last inserted row
+                const lastRow = {
+                    ...(this.values[this.values.length-1])
+                };
+                for (let columnName in lastRow) {
+                    const value = lastRow[columnName];
+                    if (
+                        value === undefined ||
+                        (
+                            (value instanceof Object) &&
+                            !(value instanceof Date)
+                        )
+                    ) {
+                        delete lastRow[columnName];
+                    }
+                }
+                //This may not necessarily work...
+                //It is possible the unique key were entirely Expr<> instances,
+                //making fetching by unique key impossible (for now)
+                return db.fetchOneByUniqueKey(this.table, lastRow);
+            }
+        }) as any;
     }
 
     querify (sb : StringBuilder) {

@@ -8,3 +8,4 @@ export declare namespace RawColumnUtil {
     function isAssertFunc(rawColumn: AnyRawColumn): rawColumn is sd.AssertFunc<any>;
     function toColumn<TableAliasT extends string, NameT extends string, RawColumnT extends AnyRawColumn>(tableAlias: TableAliasT, name: NameT, rawColumn: RawColumnT): (ToColumn<TableAliasT, NameT, RawColumnT>);
 }
+//# sourceMappingURL=util.d.ts.map

@@ -20,7 +20,7 @@ export namespace GroupByDelegateUtil {
         >
     ) {
         const joinColumnReferences = JoinCollectionUtil.toColumnReferences(selectBuilder.data.joins);
-        const selectColumnReferences = SelectCollectionUtil.toColumnReferences(selectBuilder.data.select);
+        const selectColumnReferences = SelectCollectionUtil.toColumnReferences(selectBuilder.data.selects);
         const columnReferences = ColumnReferencesUtil.merge(
             selectColumnReferences,
             joinColumnReferences

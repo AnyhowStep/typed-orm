@@ -4,11 +4,17 @@ import {Expr} from "../expr";
 import * as invalid from "../invalid";
 import {ColumnReferencesUtil} from "../column-references";
 import * as variadicUtil from "./variadic-util";
+import {and} from "./logical-connective";
+import {FALSE} from "./logical-connective";
 
 import {SelectBuilder} from "../select-builder";
 import {Column} from "../column";
+import {Join} from "../join";
+import {AliasedTable} from "../aliased-table";
 SelectBuilder;
 Column;
+Join;
+AliasedTable;
 
 export function isNull<
     RawT extends AnyRawExpr
@@ -28,7 +34,7 @@ export function isNotNull<
     );
 }
 
-export function typeCheckBinaryOp (operator : string) {
+function typeCheckBinaryOp (operator : string) {
     function result<
         LeftT extends AnyRawExpr,
         RightT extends AnyRawExpr
@@ -73,6 +79,41 @@ export function typeCheckBinaryOp (operator : string) {
 export const eq = typeCheckBinaryOp("=");
 export const notEq = typeCheckBinaryOp("!=");
 
+export function isNotNullAndEq<
+    LeftT extends AnyRawExpr,
+    RightT extends AnyRawExpr
+> (left : LeftT, right : RightT) : (
+    Expr<
+        ColumnReferencesUtil.Merge<
+            RawExprUtil.UsedReferences<LeftT>,
+            RawExprUtil.UsedReferences<RightT>
+        >,
+        boolean
+    >
+) {
+    let result : Expr<any, boolean> = booleanExpr(
+        ColumnReferencesUtil.merge(
+            RawExprUtil.usedReferences(left),
+            RawExprUtil.usedReferences(right)
+        ),
+        `${RawExprUtil.querify(left)} = ${RawExprUtil.querify(right)}`
+    );
+    if (RawExprUtil.isNullable(left)) {
+        result = and(
+            isNotNull(left),
+            result
+        );
+    }
+    if (RawExprUtil.isNullable(right)) {
+        result = and(
+            isNotNull(right),
+            result
+        );
+    }
+
+    return result;
+}
+
 //`in` is a reserved keyword
 export function isIn<
     LeftT extends AnyRawExpr,
@@ -98,6 +139,9 @@ export function isIn<
                 boolean
             >
 ) {
+    if (rightArr.length == 0) {
+        return FALSE as any;
+    }
     const q = variadicUtil.querifyNonNullable(left, ...rightArr);
 
     return booleanExpr(

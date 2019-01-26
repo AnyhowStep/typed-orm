@@ -6,3 +6,4 @@ export declare namespace AliasedExprUtil {
     type WithType<AliasedExprT extends AnyAliasedExpr, NewTypeT> = (AliasedExpr<AliasedExprT["usedReferences"], AliasedExprT["tableAlias"], AliasedExprT["alias"], NewTypeT>);
     function withType<AliasedExprT extends AnyAliasedExpr, NewTypeT>(aliasedExpr: AliasedExprT, newAssertDelegate: sd.AssertDelegate<NewTypeT>): (WithType<AliasedExprT, NewTypeT>);
 }
+//# sourceMappingURL=util.d.ts.map
