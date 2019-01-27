@@ -1,0 +1,18 @@
+
+> typed-orm@1.13.1 build /home/anyhowstep/node-projects/typed-orm
+> tsc -d --diagnostics
+
+Files:           914
+Lines:        100760
+Nodes:        469838
+Identifiers:  170036
+Symbols:      354901
+Types:        229769
+Memory used: 497187K
+I/O read:      0.17s
+I/O write:     0.87s
+Parse time:    4.24s
+Bind time:     1.66s
+Check time:   28.31s
+Emit time:     6.77s
+Total time:   40.98s

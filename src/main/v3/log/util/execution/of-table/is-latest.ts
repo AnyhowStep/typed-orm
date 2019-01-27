@@ -31,9 +31,9 @@ export function isLatest<
     const latestOrderSubQuery = QueryUtil.newInstance()
         .requireParentJoins(...([log.table] as any))
         .from(latest as any)
-        .select(() => [
+        .select((() => [
             latest.columns[log.latestOrder[0].name]
-        ])
+        ]) as any)
         .__unsafeWhere(() => {
             return JoinDeclarationUtil.innerJoinUsing(
                 latest,

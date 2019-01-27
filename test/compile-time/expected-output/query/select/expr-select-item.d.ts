@@ -5,7 +5,7 @@ export declare const query: o.Query<{
     readonly _sqlCalcFoundRows: false;
     readonly _joins: o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "table";
             readonly columns: {
                 readonly x: o.Column<{
@@ -57,41 +57,29 @@ export declare const query: o.Query<{
     }>[];
     readonly _parentJoins: undefined;
     readonly _selects: [o.IExprSelectItem<{
-        readonly usedRef: {
-            readonly table: {
-                readonly x: o.Column<{
-                    tableAlias: "table";
-                    name: "x";
-                    assertDelegate: sd.AssertDelegate<number>;
-                }>;
-            };
-        };
+        readonly usedColumns: o.Column<{
+            tableAlias: "table";
+            name: "x";
+            assertDelegate: sd.AssertDelegate<number>;
+        }>[];
         readonly assertDelegate: sd.AssertDelegate<number>;
         readonly tableAlias: "table";
         readonly alias: "a";
     }>, o.IExprSelectItem<{
-        readonly usedRef: {
-            readonly table: {
-                readonly y: o.Column<{
-                    tableAlias: "table";
-                    name: "y";
-                    assertDelegate: sd.AssertDelegate<string>;
-                }>;
-            };
-        };
+        readonly usedColumns: o.Column<{
+            tableAlias: "table";
+            name: "y";
+            assertDelegate: sd.AssertDelegate<string>;
+        }>[];
         readonly assertDelegate: sd.AssertDelegate<string>;
         readonly tableAlias: "table";
         readonly alias: "b";
     }>, o.IExprSelectItem<{
-        readonly usedRef: {
-            readonly table: {
-                readonly z: o.Column<{
-                    tableAlias: "table";
-                    name: "z";
-                    assertDelegate: sd.AssertDelegate<boolean>;
-                }>;
-            };
-        };
+        readonly usedColumns: o.Column<{
+            tableAlias: "table";
+            name: "z";
+            assertDelegate: sd.AssertDelegate<boolean>;
+        }>[];
         readonly assertDelegate: sd.AssertDelegate<boolean>;
         readonly tableAlias: "table";
         readonly alias: "c";

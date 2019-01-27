@@ -9,9 +9,9 @@ function isLatest(log) {
     const latestOrderSubQuery = query_1.QueryUtil.newInstance()
         .requireParentJoins(...[log.table])
         .from(latest)
-        .select(() => [
+        .select((() => [
         latest.columns[log.latestOrder[0].name]
-    ])
+    ]))
         .__unsafeWhere(() => {
         return join_declaration_1.JoinDeclarationUtil.innerJoinUsing(latest, log.table, c => {
             return log.entityIdentifier.map(columnName => c[columnName]);

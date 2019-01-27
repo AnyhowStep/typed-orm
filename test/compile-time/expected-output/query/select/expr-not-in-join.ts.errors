@@ -5,7 +5,7 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is missing the following properties from type '[\"Invalid IExprSelectItem\", Column<{ tableAlias: \"otherTable\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>]': 0, 1, pop, push, and 29 more.",
+        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is missing the following properties from type '[\"Invalid IExprSelectItem\", [{ readonly tableAlias: \"otherTable\"; readonly name: \"x\"; }, \"not allowed\"]]': 0, 1, pop, push, and 29 more.",
         "category": 1,
         "code": 2740
       }

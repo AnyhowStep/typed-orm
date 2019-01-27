@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../../../../dist/src/main";
 export declare const selectItem: o.IAliasedTable<{
-    usedRef: {};
+    usedColumns: never[];
     alias: "test";
     columns: {
         readonly x: o.Column<{
@@ -20,7 +20,7 @@ export declare const query: o.Query<{
     readonly _joins: undefined;
     readonly _parentJoins: undefined;
     readonly _selects: [o.IAliasedTable<{
-        usedRef: {};
+        usedColumns: never[];
         alias: "test";
         columns: {
             readonly x: o.Column<{

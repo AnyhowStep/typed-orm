@@ -1791,7 +1791,7 @@ export function select<
     >
 ) {
     return QueryUtil.newInstance()
-        .select(delegate);
+        .select(delegate as any);
 }
 export function selectExpr<
     SelectDelegateT extends QueryUtil.SelectExprDelegate<

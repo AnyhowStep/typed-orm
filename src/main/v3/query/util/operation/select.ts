@@ -89,11 +89,23 @@ export type AssertValidSelectDelegateImpl<
         [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
             ReturnType<SelectDelegateT>[index] extends IColumn ?
             (
-                ReturnType<SelectDelegateT>[index] extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>> ?
+                ColumnUtil.AssertValidUsed<
+                    ReturnType<SelectDelegateT>[index],
+                    Extract<
+                        ColumnUtil.FromQueryJoins<QueryT>,
+                        IColumn
+                    >
+                > extends never ?
                 never :
                 [
                     "Invalid IColumn",
-                    ReturnType<SelectDelegateT>[index]
+                    ColumnUtil.AssertValidUsed<
+                        ReturnType<SelectDelegateT>[index],
+                        Extract<
+                            ColumnUtil.FromQueryJoins<QueryT>,
+                            IColumn
+                        >
+                    >
                 ]
             ) :
             never
