@@ -4,7 +4,7 @@ const query_tree_1 = require("../query-tree");
 const ExprUtil = require("./util");
 class Expr {
     constructor(data, queryTree) {
-        this.usedRef = data.usedRef;
+        this.usedColumns = data.usedColumns;
         this.assertDelegate = data.assertDelegate;
         //Gotta' play it safe.
         //We want to preserve the order of operations.

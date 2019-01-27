@@ -36,7 +36,7 @@ function tryGetOrQueryTree(rawExpr) {
     return undefined;
 }
 function or(...arr) {
-    const usedRef = raw_expr_1.RawExprUtil.intersectUsedRefTuple(...arr);
+    const usedColumns = raw_expr_1.RawExprUtil.Array.usedColumns(arr);
     const queryTree = [];
     for (let rawExpr of arr) {
         const orQueryTree = tryGetOrQueryTree(rawExpr);
@@ -64,13 +64,13 @@ function or(...arr) {
     }
     if (queryTree.length == 0) {
         return new expr_1.Expr({
-            usedRef: usedRef,
+            usedColumns,
             assertDelegate: dataType.boolean(),
         }, raw_expr_1.RawExprUtil.queryTree(false));
     }
     else {
         return new expr_1.Expr({
-            usedRef: usedRef,
+            usedColumns,
             assertDelegate: dataType.boolean(),
         }, queryTree);
     }

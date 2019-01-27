@@ -38,7 +38,7 @@ export type SetPrimaryKey<
     DelegateT extends PrimaryKeyDelegate<TableT>
 > = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : TableT["columns"];
 
@@ -96,7 +96,7 @@ export function setPrimaryKey<
     ) as AddCandidateKey<TableT, DelegateT>;
 
     const {
-        usedRef,
+        usedColumns,
         alias,
 
         autoIncrement,
@@ -117,7 +117,7 @@ export function setPrimaryKey<
 
     const result : SetPrimaryKey<TableT, DelegateT> = new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

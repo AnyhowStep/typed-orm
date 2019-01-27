@@ -20,7 +20,7 @@ export function fetchValueByCk<
 ) {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqCandidateKey(table, ck) as any)
+        .__unsafeWhere(() => TableUtil.eqCandidateKey(table, ck) as any)
         .select((columns, query) => {
             return executeSelectValueDelegate(
                 columns,

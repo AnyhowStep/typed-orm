@@ -5,7 +5,7 @@ const __1 = require("../../..");
 function assertExistsByCk(connection, table, ck) {
     return __1.QueryUtil.newInstance()
         .from(table)
-        .where(() => table_1.TableUtil.eqCandidateKey(table, ck))
+        .__unsafeWhere(() => table_1.TableUtil.eqCandidateKey(table, ck))
         .assertExists(connection);
 }
 exports.assertExistsByCk = assertExistsByCk;

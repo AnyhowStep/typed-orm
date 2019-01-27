@@ -23,7 +23,7 @@ function update(table, where, delegate) {
     if (table.parents.length == 0) {
         const result = query_1.QueryUtil.newInstance()
             .from(table)
-            .where(() => where)
+            .__unsafeWhere(() => where)
             .set(delegate);
         return result;
     }

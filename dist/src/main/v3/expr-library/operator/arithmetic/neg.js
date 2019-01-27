@@ -6,7 +6,7 @@ const dataType = require("../../../data-type");
 //https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_unary-minus
 function neg(rawExpr) {
     return new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+        usedColumns: raw_expr_1.RawExprUtil.usedColumns(rawExpr),
         assertDelegate: dataType.double(),
     }, [
         "-",

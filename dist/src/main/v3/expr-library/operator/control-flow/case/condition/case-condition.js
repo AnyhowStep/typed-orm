@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const CaseConditionUtil = require("./util");
 class CaseCondition {
     constructor(data, queryTree) {
-        this.usedRef = data.usedRef;
+        this.usedColumns = data.usedColumns;
         this.result = data.result;
         this.queryTree = queryTree;
     }

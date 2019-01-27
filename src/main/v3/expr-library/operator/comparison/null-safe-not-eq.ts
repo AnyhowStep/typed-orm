@@ -3,7 +3,6 @@ import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {PrimitiveExpr} from "../../../primitive-expr";
 import {RawExprUtil} from "../../../raw-expr";
-import {ColumnRefUtil} from "../../../column-ref";
 import {not} from "../logical";
 import {nullSafeEq} from "./null-safe-eq";
 
@@ -21,13 +20,12 @@ export function nullSafeNotEq<
     right : RightT
 ) : (
     Expr<{
-        usedRef : ColumnRefUtil.Intersect<
-            RawExprUtil.UsedRef<LeftT>,
-            RawExprUtil.UsedRef<RightT>
-        >,
+        usedColumns : (
+            RawExprUtil.UsedColumns<LeftT>[number] |
+            RawExprUtil.UsedColumns<RightT>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
 ) {
-    //Strange that I cannot compose them in a generic context
-    return not(nullSafeEq(left, right)) as any;
+    return not(nullSafeEq(left, right));
 }

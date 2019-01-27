@@ -6,7 +6,7 @@ export type End<
     BuilderT extends AfterWhenCase
 > = (
     Expr<{
-        usedRef : BuilderT["usedRef"],
+        usedColumns : BuilderT["usedColumns"],
         assertDelegate : sd.AssertDelegate<
             ReturnType<BuilderT["result"]>|
             null
@@ -22,7 +22,7 @@ function EndFunction<
 ) {
     return new Expr(
         {
-            usedRef : builder.usedRef,
+            usedColumns : builder.usedColumns,
             assertDelegate : sd.nullable(builder.result),
         },
         [

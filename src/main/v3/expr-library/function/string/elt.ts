@@ -16,22 +16,22 @@ export function elt<
     ...args : Args
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<N> &
-            RawExprUtil.UsedRef<Arg0> &
-            RawExprUtil.IntersectUsedRefTuple<Args>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<N>[number] |
+            RawExprUtil.UsedColumns<Arg0>[number] |
+            RawExprUtil.Array.UsedColumns<Args>[number]
+        )[],
         //Returns NULL if N is less than 1 or greater than the number of arguments.
         assertDelegate : sd.AssertDelegate<string|null>,
     }>
 ) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(
+            usedColumns : RawExprUtil.Array.usedColumns([
                 n,
                 arg0,
-                ...(args as any)
-            ),
+                ...args,
+            ]),
             assertDelegate : sd.nullable(sd.string()),
         },
         new FunctionCall(

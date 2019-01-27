@@ -9,7 +9,7 @@ export function not<RawExprT extends RawExpr<boolean>> (
     rawExpr : RawExprT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<RawExprT>,
+        usedColumns : RawExprUtil.UsedColumns<RawExprT>,
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
 ) {
@@ -30,7 +30,7 @@ export function not<RawExprT extends RawExpr<boolean>> (
                     //NOT (NOT (expr)) === expr
                     return new Expr(
                         {
-                            usedRef : RawExprUtil.usedRef(rawExpr),
+                            usedColumns : RawExprUtil.usedColumns(rawExpr),
                             assertDelegate : dataType.boolean(),
                         },
                         tree[1]
@@ -48,7 +48,7 @@ export function not<RawExprT extends RawExpr<boolean>> (
     }
     return new Expr(
         {
-            usedRef : RawExprUtil.usedRef(rawExpr),
+            usedColumns : RawExprUtil.usedColumns(rawExpr),
             assertDelegate : dataType.boolean(),
         },
         [

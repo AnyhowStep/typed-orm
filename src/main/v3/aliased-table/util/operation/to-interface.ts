@@ -1,10 +1,10 @@
 import {IAliasedTable} from "../../aliased-table";
-import {ColumnRefUtil} from "../../../column-ref";
+import {ColumnUtil} from "../../../column";
 import {ColumnMapUtil} from "../../../column-map";
 
 export type ToInterface<AliasedTableT extends IAliasedTable> = (
     IAliasedTable<{
-        readonly usedRef : ColumnRefUtil.ToInterface<AliasedTableT["usedRef"]>;
+        readonly usedColumns : ColumnUtil.Array.ToInterface<AliasedTableT["usedColumns"]>;
         readonly alias : AliasedTableT["alias"];
         readonly columns : ColumnMapUtil.ToInterface<AliasedTableT["columns"]>;
     }>

@@ -23,9 +23,9 @@ function setId(table, delegate) {
     const candidateKeys = table.candidateKeys.concat([
         [id.name]
     ]);
-    const { usedRef, alias, autoIncrement, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+    const { usedColumns, alias, autoIncrement, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
     const result = new table_1.Table({
-        usedRef,
+        usedColumns,
         alias,
         columns,
         autoIncrement,

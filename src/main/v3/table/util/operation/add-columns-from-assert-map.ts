@@ -7,7 +7,7 @@ export type AddColumnsFromAssertMap<
     AssertMapT extends AssertMap
 > = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : ColumnMapUtil.Intersect<
             TableT["columns"],
@@ -58,7 +58,7 @@ export function addColumnsFromAssertMap<
     const isNullable = ColumnMapUtil.nullableColumnNames(columns);
 
     const {
-        usedRef,
+        usedColumns,
         alias,
 
         autoIncrement,
@@ -79,7 +79,7 @@ export function addColumnsFromAssertMap<
 
     const result : AddColumnsFromAssertMap<TableT, AssertMapT> = new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

@@ -2,7 +2,7 @@ import {ITable, Table} from "../../table";
 
 export type FromTable<TableT extends ITable> = (
     Table<{
-        readonly usedRef : {};
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : TableT["columns"];
 
@@ -27,7 +27,7 @@ export function fromTable<TableT extends ITable> (
     FromTable<TableT>
 ) {
     const {
-        usedRef,
+        usedColumns,
         alias,
         columns,
 
@@ -49,7 +49,7 @@ export function fromTable<TableT extends ITable> (
     } = table;
     return new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

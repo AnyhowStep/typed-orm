@@ -6,7 +6,7 @@ const dataType = require("../../../data-type");
 //https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows
 function foundRows() {
     return new expr_1.Expr({
-        usedRef: {},
+        usedColumns: [],
         assertDelegate: dataType.bigint(),
     }, new query_tree_1.FunctionCall("FOUND_ROWS", []));
 }

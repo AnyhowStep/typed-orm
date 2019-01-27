@@ -20,7 +20,7 @@ export function fetchValueByPk<
 ) {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqPrimaryKey(table, pk) as any)
+        .__unsafeWhere(() => TableUtil.eqPrimaryKey(table, pk) as any)
         .select((columns, query) => {
             return executeSelectValueDelegate(
                 columns,

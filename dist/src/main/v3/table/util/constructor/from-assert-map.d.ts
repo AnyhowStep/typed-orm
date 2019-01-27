@@ -2,7 +2,7 @@ import { Table } from "../../table";
 import { ColumnMapUtil } from "../../../column-map";
 import { AssertMap, AssertMapUtil } from "../../../assert-map";
 export declare type FromAssertMap<NameT extends string, AssertMapT extends AssertMap> = (Table<{
-    readonly usedRef: {};
+    readonly usedColumns: never[];
     readonly alias: NameT;
     readonly columns: ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
     readonly autoIncrement: undefined;

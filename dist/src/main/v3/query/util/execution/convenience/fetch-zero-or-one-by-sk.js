@@ -5,14 +5,14 @@ const __1 = require("../../..");
 function fetchZeroOrOneBySk_EntireRow(connection, table, sk) {
     return __1.QueryUtil.newInstance()
         .from(table)
-        .where(() => table_1.TableUtil.eqSuperKey(table, sk))
+        .__unsafeWhere(() => table_1.TableUtil.eqSuperKey(table, sk))
         .select(c => [c])
         .fetchZeroOrOne(connection);
 }
 function fetchZeroOrOneBySk_Select(connection, table, sk, delegate) {
     return __1.QueryUtil.newInstance()
         .from(table)
-        .where(() => table_1.TableUtil.eqSuperKey(table, sk))
+        .__unsafeWhere(() => table_1.TableUtil.eqSuperKey(table, sk))
         .select(delegate)
         .fetchZeroOrOne(connection);
 }

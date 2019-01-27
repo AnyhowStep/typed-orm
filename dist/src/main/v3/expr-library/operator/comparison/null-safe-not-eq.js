@@ -8,7 +8,6 @@ const null_safe_eq_1 = require("./null-safe-eq");
     NOT (a <=> b)
 */
 function nullSafeNotEq(left, right) {
-    //Strange that I cannot compose them in a generic context
     return logical_1.not(null_safe_eq_1.nullSafeEq(left, right));
 }
 exports.nullSafeNotEq = nullSafeNotEq;

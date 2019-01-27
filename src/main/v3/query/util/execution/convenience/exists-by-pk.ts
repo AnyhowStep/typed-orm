@@ -14,6 +14,6 @@ export function existsByPk<
 ) {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqPrimaryKey(table, pk) as any)
+        .__unsafeWhere(() => TableUtil.eqPrimaryKey(table, pk) as any)
         .exists(connection) as any;
 }

@@ -19,21 +19,21 @@ export function concatWs<
     ...args : Args
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<SeparatorT> &
-            RawExprUtil.UsedRef<Arg0> &
-            RawExprUtil.IntersectUsedRefTuple<Args>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<SeparatorT>[number] |
+            RawExprUtil.UsedColumns<Arg0>[number] |
+            RawExprUtil.Array.UsedColumns<Args>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<string>,
     }>
 ) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(
+            usedColumns : RawExprUtil.Array.usedColumns([
                 separator,
                 arg0,
-                ...(args as any)
-            ),
+                ...args,
+            ]),
             assertDelegate : sd.string(),
         },
         new FunctionCall(

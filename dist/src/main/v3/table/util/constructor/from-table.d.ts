@@ -1,6 +1,6 @@
 import { ITable, Table } from "../../table";
 export declare type FromTable<TableT extends ITable> = (Table<{
-    readonly usedRef: {};
+    readonly usedColumns: TableT["usedColumns"];
     readonly alias: TableT["alias"];
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];

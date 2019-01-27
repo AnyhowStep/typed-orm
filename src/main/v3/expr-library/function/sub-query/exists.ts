@@ -3,7 +3,7 @@ import {Expr} from "../../../expr";
 import {FunctionCall, QueryTree} from "../../../query-tree";
 import {IQuery, QueryUtil} from "../../../query";
 import {IJoin} from "../../../join";
-import {ColumnRefUtil} from "../../../column-ref";
+import {ColumnUtil} from "../../../column";
 import * as dataType from "../../../data-type";
 
 //https://dev.mysql.com/doc/refman/8.0/en/exists-and-not-exists-subqueries.html
@@ -11,22 +11,22 @@ export function exists<QueryT extends QueryUtil.AfterFromClause|QueryUtil.AfterS
     query : IQuery
 ) : (
     Expr<{
-        usedRef : (
+        usedColumns : (
             QueryT["_parentJoins"] extends IJoin[] ?
-            ColumnRefUtil.FromJoinArray<QueryT["_parentJoins"]> :
-            {}
+            ColumnUtil.FromJoinArray<QueryT["_parentJoins"]>[] :
+            never[]
         ),
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
 ) {
-    const usedRef = (
+    const usedColumns = (
         query._parentJoins == undefined ?
-        {} :
-        ColumnRefUtil.fromJoinArray(query._parentJoins)
+        [] :
+        ColumnUtil.Array.fromJoinArray(query._parentJoins)
     ) as (
         QueryT["_parentJoins"] extends IJoin[] ?
-        ColumnRefUtil.FromJoinArray<QueryT["_parentJoins"]> :
-        {}
+        ColumnUtil.FromJoinArray<QueryT["_parentJoins"]>[] :
+        never[]
     );
     const assertDelegate = dataType.boolean();
     let queryTree : QueryTree|undefined = undefined;
@@ -54,9 +54,9 @@ export function exists<QueryT extends QueryUtil.AfterFromClause|QueryUtil.AfterS
         }
     }
 
-    return new Expr(
+    const result = new Expr(
         {
-            usedRef,
+            usedColumns,
             assertDelegate,
         },
         new FunctionCall(
@@ -66,4 +66,5 @@ export function exists<QueryT extends QueryUtil.AfterFromClause|QueryUtil.AfterS
             ]
         )
     );
+    return result as any;
 }

@@ -21,7 +21,7 @@ export function updateOneBySk<
 ) {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqSuperKey(table, sk) as any)
+        .__unsafeWhere(() => TableUtil.eqSuperKey(table, sk) as any)
         .set(delegate as any)
         .executeUpdateOne(connection) as any;
 }

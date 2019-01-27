@@ -18,17 +18,21 @@ export function least<
 ) : (
     //Not an exact typing but, in general, should work
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<Arg0> &
-            RawExprUtil.UsedRef<Arg1> &
-            RawExprUtil.IntersectUsedRefTuple<Args>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<Arg0>[number] |
+            RawExprUtil.UsedColumns<Arg1>[number] |
+            RawExprUtil.Array.UsedColumns<Args>[number]
+        )[],
         assertDelegate : RawExprUtil.AssertDelegate<Arg0>,
     }>
 ) {
     return new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(arg0, arg1, ...(args as any)),
+            usedColumns : RawExprUtil.Array.usedColumns([
+                arg0,
+                arg1,
+                ...args,
+            ]),
             assertDelegate : sd.or(
                 RawExprUtil.assertDelegate(arg0),
                 RawExprUtil.assertDelegate(arg1) as sd.AssertDelegate<any>,

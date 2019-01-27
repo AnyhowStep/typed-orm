@@ -19,7 +19,7 @@ tape(__filename, (t) => {
 
     t.true(o.AliasedTableUtil.isAliasedTable(aliased));
 
-    t.deepEqual(aliased.usedRef, {});
+    t.deepEqual(aliased.usedColumns, []);
     t.deepEqual(aliased.alias, "aliased");
     t.true(o.ColumnMapUtil.isColumnMap(aliased.columns));
     t.deepEqual(Object.keys(aliased.columns).length, 3);

@@ -7,13 +7,13 @@ const dataType = require("../../../data-type");
 function rand(seed) {
     if (seed === undefined) {
         return new expr_1.Expr({
-            usedRef: {},
+            usedColumns: [],
             assertDelegate: dataType.double(),
         }, new query_tree_1.FunctionCall("RAND", []));
     }
     else {
         return new expr_1.Expr({
-            usedRef: raw_expr_1.RawExprUtil.usedRef(seed),
+            usedColumns: raw_expr_1.RawExprUtil.usedColumns(seed),
             assertDelegate: dataType.double(),
         }, new query_tree_1.FunctionCall("RAND", [
             raw_expr_1.RawExprUtil.queryTree(seed)

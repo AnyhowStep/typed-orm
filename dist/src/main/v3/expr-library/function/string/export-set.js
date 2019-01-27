@@ -6,7 +6,7 @@ const raw_expr_1 = require("../../../raw-expr");
 const query_tree_1 = require("../../../query-tree");
 function exportSet(...args) {
     const result = new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple(...args),
+        usedColumns: raw_expr_1.RawExprUtil.Array.usedColumns(args),
         assertDelegate: sd.string(),
     }, new query_tree_1.FunctionCall("EXPORT_SET", [
         ...args.map(raw_expr_1.RawExprUtil.queryTree)

@@ -6,7 +6,7 @@ function latestOfEntity(log) {
     return query_1.QueryUtil.newInstance()
         .requireParentJoins(...[log.entity])
         .from(log.table)
-        .where(() => join_declaration_1.JoinDeclarationUtil.eq(log.joinDeclaration))
+        .__unsafeWhere(() => join_declaration_1.JoinDeclarationUtil.eq(log.joinDeclaration))
         .orderBy(() => [log.latestOrder])
         .limit(1);
 }

@@ -14,19 +14,19 @@ export function findInSet<
     set : SetT
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<NeedleT> &
-            RawExprUtil.UsedRef<SetT>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<NeedleT>[number] |
+            RawExprUtil.UsedColumns<SetT>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<number>,
     }>
 ) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(
+            usedColumns : RawExprUtil.Array.usedColumns([
                 needle,
-                set
-            ),
+                set,
+            ]),
             assertDelegate : dataType.bigint(),
         },
         new FunctionCall(

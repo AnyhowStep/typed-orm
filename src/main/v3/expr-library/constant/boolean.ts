@@ -2,11 +2,11 @@ import * as sd from "schema-decorator";
 import {Expr, ExprUtil} from "../../expr";
 
 let trueCache : Expr<{
-    usedRef: {};
+    usedColumns: [];
     assertDelegate: sd.AssertDelegate<true>;
 }>|undefined = undefined;
 let falseCache : Expr<{
-    usedRef: {};
+    usedColumns: [];
     assertDelegate: sd.AssertDelegate<false>;
 }>|undefined = undefined;
 

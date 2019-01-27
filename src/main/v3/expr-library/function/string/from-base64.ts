@@ -9,13 +9,13 @@ export function fromBase64<StrExprT extends RawExpr<string>>(
     strExpr : StrExprT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<StrExprT>,
+        usedColumns : RawExprUtil.UsedColumns<StrExprT>,
         assertDelegate : sd.AssertDelegate<string>,
     }>
 ) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.usedRef(strExpr),
+            usedColumns : RawExprUtil.usedColumns(strExpr),
             assertDelegate : sd.string(),
         },
         new FunctionCall(

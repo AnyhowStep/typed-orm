@@ -2,7 +2,6 @@ import * as sd from "schema-decorator";
 import {RawExpr} from "../../../../../../../raw-expr";
 import {NonNullPrimitiveExpr, PrimitiveExprUtil} from "../../../../../../../primitive-expr";
 import {RawExprUtil} from "../../../../../../../raw-expr";
-import {ColumnRefUtil} from "../../../../../../../column-ref";
 import {ICaseCondition, CaseCondition} from "../../case-condition";
 
 export type When<
@@ -15,11 +14,11 @@ export type When<
     >
 > = (
     CaseCondition<{
-        usedRef : (
-            BuilderT["usedRef"] &
-            RawExprUtil.UsedRef<WhenT> &
-            RawExprUtil.UsedRef<ThenT>
-        ),
+        usedColumns : (
+            BuilderT["usedColumns"][number] |
+            RawExprUtil.UsedColumns<WhenT>[number] |
+            RawExprUtil.UsedColumns<ThenT>[number]
+        )[],
         result : (
             BuilderT["result"] extends sd.AssertDelegate<any> ?
             BuilderT["result"] :
@@ -62,13 +61,11 @@ export function when<
     }
     return new CaseCondition(
         {
-            usedRef : ColumnRefUtil.intersect(
-                builder.usedRef,
-                ColumnRefUtil.intersect(
-                    RawExprUtil.usedRef(whenExpr),
-                    RawExprUtil.usedRef(thenExpr)
-                )
-            ),
+            usedColumns : RawExprUtil.Array.usedColumns([
+                ...builder.usedColumns,
+                whenExpr,
+                thenExpr,
+            ]),
             result : (
                 builder.result == undefined ?
                     thenAssertDelegate :

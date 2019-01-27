@@ -41,7 +41,7 @@ tape(__filename, (t) => {
     t.deepEqual(query._selects[1].alias, "aliased");
     t.deepEqual(query._selects[1].assertDelegate, table.columns.x.assertDelegate);
     t.deepEqual(query._selects[1].unaliasedQuery, table.columns.x.queryTree());
-    t.deepEqual(query._selects[1].usedRef, o.ColumnRefUtil.fromColumn(table.columns.x));
+    t.deepEqual(query._selects[1].usedColumns, [table.columns.x]);
 
     t.deepEqual(query._selects[2].tableAlias, o.ALIASED);
     t.deepEqual(query._selects[2].alias, "equal?");
@@ -54,7 +54,7 @@ tape(__filename, (t) => {
         "=",
         table.columns.y.queryTree(),
     ]));
-    //t.deepEqual(query._selects[2].usedRef, o.ColumnRefUtil.fromColumn(table.columns.y));
+    //t.deepEqual(query._selects[2].usedColumns, [table.columns.y]);
 
     t.deepEqual(query._selects[3], table.columns.x);
     t.deepEqual(query._selects[4], table.columns.y);
@@ -72,10 +72,10 @@ tape(__filename, (t) => {
         "=",
         table.columns.x.queryTree(),
     ]));
-    t.deepEqual(query._selects[6].usedRef, o.ColumnRefUtil.fromColumnArray([
+    t.deepEqual(query._selects[6].usedColumns, [
         joined1.columns.a,
         table.columns.x
-    ]));
+    ]);
 
     t.end();
 });

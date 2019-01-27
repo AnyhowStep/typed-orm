@@ -10,7 +10,10 @@ const query_tree_1 = require("../../../query-tree");
 //If the arguments include any binary strings, the result is a binary string.
 function concat(arg0, ...args) {
     const result = new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple(arg0, ...args),
+        usedColumns: raw_expr_1.RawExprUtil.Array.usedColumns([
+            arg0,
+            ...args,
+        ]),
         assertDelegate: sd.string(),
     }, new query_tree_1.FunctionCall("CONCAT", [
         raw_expr_1.RawExprUtil.queryTree(arg0),

@@ -3,7 +3,6 @@ import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {NonNullPrimitiveExpr} from "../../../primitive-expr";
 import {RawExprUtil} from "../../../raw-expr";
-import {ColumnRefUtil} from "../../../column-ref";
 import * as dataType from "../../../data-type";
 
 export type Comparison = (
@@ -15,10 +14,10 @@ export type Comparison = (
         right : RightT
     ) => (
         Expr<{
-            usedRef : ColumnRefUtil.Intersect<
-                RawExprUtil.UsedRef<LeftT>,
-                RawExprUtil.UsedRef<RightT>
-            >,
+            usedColumns : (
+                RawExprUtil.UsedColumns<LeftT>[number] |
+                RawExprUtil.UsedColumns<RightT>[number]
+            )[],
             assertDelegate : sd.AssertDelegate<boolean>,
         }>
     )
@@ -30,10 +29,10 @@ export function comparison (operator : string) : Comparison {
     const result : Comparison = (left, right) => {
         return new Expr(
             {
-                usedRef : ColumnRefUtil.intersect(
-                    RawExprUtil.usedRef(left),
-                    RawExprUtil.usedRef(right)
-                ),
+                usedColumns : RawExprUtil.Array.usedColumns([
+                    left,
+                    right
+                ]),
                 assertDelegate : dataType.boolean(),
             },
             [

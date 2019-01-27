@@ -27,7 +27,7 @@ export function latestOfEntity<LogT extends LogNoTrackedDefaults> (
     return QueryUtil.newInstance()
         .requireParentJoins(...([log.entity] as any))
         .from(log.table as any)
-        .where(() => JoinDeclarationUtil.eq(log.joinDeclaration))
+        .__unsafeWhere(() => JoinDeclarationUtil.eq(log.joinDeclaration))
         .orderBy(() => [log.latestOrder])
         .limit(1) as unknown as LatestOfEntity<LogT>;
 }

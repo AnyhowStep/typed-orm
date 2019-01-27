@@ -21,7 +21,7 @@ export function updateZeroOrOneByPk<
 ) {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqPrimaryKey(table, pk) as any)
+        .__unsafeWhere(() => TableUtil.eqPrimaryKey(table, pk) as any)
         .set(delegate as any)
         .executeUpdateZeroOrOne(connection) as any;
 }

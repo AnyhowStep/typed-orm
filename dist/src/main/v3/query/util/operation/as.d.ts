@@ -1,7 +1,7 @@
 import { AfterSelectClause, OneSelectItemQuery, ZeroOrOneRowQuery } from "../predicate";
 import { IAliasedTable } from "../../../aliased-table";
 import { IJoin } from "../../../join";
-import { ColumnRefUtil } from "../../../column-ref";
+import { ColumnUtil } from "../../../column";
 import { ColumnMapUtil } from "../../../column-map";
 import { SelectItemArrayUtil } from "../../../select-item-array";
 import { AssertDelegate } from "../query";
@@ -11,7 +11,7 @@ export declare type As<QueryT extends {
     _parentJoins: IJoin[] | undefined;
     _selects: SelectItem[];
 }, AliasT extends string> = (IAliasedTable<{
-    usedRef: (QueryT["_parentJoins"] extends IJoin[] ? ColumnRefUtil.FromJoinArray<QueryT["_parentJoins"]> : {});
+    usedColumns: (QueryT["_parentJoins"] extends IJoin[] ? ColumnUtil.FromJoinArray<QueryT["_parentJoins"]>[] : never[]);
     alias: AliasT;
     columns: ColumnMapUtil.FromSelectItemArray<QueryT["_selects"], AliasT>;
 }> & (QueryT extends (OneSelectItemQuery<any> & ZeroOrOneRowQuery) ? {

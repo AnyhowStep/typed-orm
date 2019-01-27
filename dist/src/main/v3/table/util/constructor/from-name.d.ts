@@ -1,6 +1,6 @@
 import { Table } from "../../table";
 export declare type FromName<NameT extends string> = (Table<{
-    readonly usedRef: {};
+    readonly usedColumns: never[];
     readonly alias: NameT;
     readonly columns: {};
     readonly autoIncrement: undefined;

@@ -60,7 +60,7 @@ export type AddParent<
     ParentT extends ITable
 > = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : TableT["columns"];
 
@@ -135,7 +135,7 @@ export function addParent<
     ];
 
     const {
-        usedRef,
+        usedColumns,
         alias,
         columns,
 
@@ -157,7 +157,7 @@ export function addParent<
 
     return new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

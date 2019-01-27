@@ -27,7 +27,7 @@ export interface TableData extends AliasedTableData {
     readonly deleteAllowed: boolean;
 }
 export interface ITable<DataT extends TableData = TableData> extends IAliasedTable<DataT> {
-    readonly usedRef: DataT["usedRef"];
+    readonly usedColumns: DataT["usedColumns"];
     readonly alias: DataT["alias"];
     readonly columns: DataT["columns"];
     readonly unaliasedQuery: QueryTree;
@@ -53,7 +53,7 @@ export declare type TableWithPk = (ITable & {
     primaryKey: Key;
 });
 export declare class Table<DataT extends TableData> implements ITable<DataT> {
-    readonly usedRef: DataT["usedRef"];
+    readonly usedColumns: DataT["usedColumns"];
     readonly alias: DataT["alias"];
     readonly columns: DataT["columns"];
     readonly unaliasedQuery: QueryTree;

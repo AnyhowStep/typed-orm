@@ -26,7 +26,7 @@ export declare type Select<QueryT extends BeforeUnionClause, SelectDelegateT ext
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
 export declare type AssertValidSelectDelegateImpl<QueryT extends BeforeUnionClause, SelectDelegateT extends SelectDelegate<QueryT>> = (ToUnknownIfAllFieldsNever<{
-    [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends IExprSelectItem ? (ColumnRefUtil.FromQueryJoins<QueryT> extends ReturnType<SelectDelegateT>[index]["usedRef"] ? never : ["Invalid IExprSelectItem", Exclude<ColumnUtil.FromColumnRef<ReturnType<SelectDelegateT>[index]["usedRef"]>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>>>]) : never);
+    [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends IExprSelectItem ? (ColumnUtil.AssertValidUsed<ReturnType<SelectDelegateT>[index]["usedColumns"][number], Extract<ColumnUtil.FromQueryJoins<QueryT>, IColumn>> extends never ? never : ["Invalid IExprSelectItem", ColumnUtil.AssertValidUsed<ReturnType<SelectDelegateT>[index]["usedColumns"][number], Extract<ColumnUtil.FromQueryJoins<QueryT>, IColumn>>]) : never);
 }> & ToUnknownIfAllFieldsNever<{
     [index in Extract<keyof ReturnType<SelectDelegateT>, string>]: (ReturnType<SelectDelegateT>[index] extends IColumn ? (ReturnType<SelectDelegateT>[index] extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>> ? never : ["Invalid IColumn", ReturnType<SelectDelegateT>[index]]) : never);
 }> & ToUnknownIfAllFieldsNever<{

@@ -26,7 +26,7 @@ function tryGetAddQueryTree(rawExpr) {
     return undefined;
 }
 function add(...arr) {
-    const usedRef = raw_expr_1.RawExprUtil.intersectUsedRefTuple(...arr);
+    const usedColumns = raw_expr_1.RawExprUtil.Array.usedColumns(arr);
     const queryTree = [];
     for (let rawExpr of arr) {
         const addQueryTree = tryGetAddQueryTree(rawExpr);
@@ -51,13 +51,13 @@ function add(...arr) {
     if (queryTree.length == 0) {
         //By convention, adding zero numbers is zero.
         return new expr_1.Expr({
-            usedRef: usedRef,
+            usedColumns,
             assertDelegate: dataType.double(),
         }, raw_expr_1.RawExprUtil.queryTree(0));
     }
     else {
         return new expr_1.Expr({
-            usedRef: usedRef,
+            usedColumns,
             assertDelegate: dataType.double(),
         }, queryTree);
     }

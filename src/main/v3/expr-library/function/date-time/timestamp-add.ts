@@ -16,10 +16,10 @@ export function timestampAdd<
     dateTime : DateTimeT
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<IntervalT> &
-            RawExprUtil.UsedRef<DateTimeT>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<IntervalT>[number] |
+            RawExprUtil.UsedColumns<DateTimeT>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<Date>,
     }>
 ) {
@@ -27,10 +27,10 @@ export function timestampAdd<
     sd.enumeration(TemporalUnit)("temporalUnit", temporalUnit);
     const result = new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(
+            usedColumns : RawExprUtil.Array.usedColumns([
                 interval,
-                dateTime
-            ),
+                dateTime,
+            ]),
             assertDelegate : dataType.dateTime(3),
         },
         new FunctionCall(

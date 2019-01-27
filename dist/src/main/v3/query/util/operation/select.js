@@ -17,8 +17,8 @@ function select(query, delegate) {
     for (let selectItem of selects) {
         if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(selectItem)) {
             //+ If SelectItem is IExprSelectItem,
-            //  the usedRef must be a subset of the queryRef
-            column_ref_1.ColumnRefUtil.assertIsSubset(selectItem.usedRef, queryRef);
+            //  the usedColumns must be a subset of the queryRef
+            column_ref_1.ColumnRefUtil.assertHasColumnIdentifiers(queryRef, selectItem.usedColumns);
             //ExprSelectItem *must not* shadow columns in FROM/JOIN clause
             if (column_identifier_ref_1.ColumnIdentifierRefUtil.hasColumnIdentifier(queryRef, column_identifier_1.ColumnIdentifierUtil.fromExprSelectItem(selectItem))) {
                 throw new Error(`IExprSelectItem ${selectItem.tableAlias}.${selectItem.alias} cannot hide columns in FROM/JOIN clause`);
@@ -98,4 +98,65 @@ function select(query, delegate) {
     });
 }
 exports.select = select;
+/*
+import * as o from "../../../index";
+const table = o.table("test", {
+    x : o.bigint(),
+    y : o.varChar.nullable(),
+    z : o.boolean(),
+});
+const nse = o.nullSafeEq(table.columns.x, table.columns.x);
+const rnse = () => nse;
+o.from(table)
+    .select(c => [
+        nse.as("nse")
+    ])
+    .having(rnse);
+o.from(table)
+    .select(() => [nse.as("nse")])
+    .having(rnse);
+o.from(table)
+    .select((_c) => [nse.as("nse")])
+    .having(rnse);
+
+const table2 = o.table("test2", {
+    x : o.bigint(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse2 = o.nullSafeEq(table.columns.x, table2.columns.x);
+o.from(table)
+    .select((_c) => [nse2.as("nse2")])
+    .having(rnse);
+
+const table3 = o.table("test", {
+    x : o.bigint.nullable(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse3 = o.nullSafeEq(table.columns.x, table3.columns.x);
+o.from(table)
+    .select((_c) => [nse3.as("nse3")])
+    .having(rnse);
+
+const table4 = o.table("test", {
+    x : o.bigint.nullable(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse4 = o.nullSafeEq(table.columns.y, table4.columns.y);
+o.from(table)
+    .select((_c) => [nse4.as("nse4")])
+    .having(rnse);
+
+const table5 = o.table("test", {
+    x : o.bigint.nullable(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse5 = o.eq(table5.columns.y, "test");
+o.from(table)
+    .select((_c) => [nse5.as("nse5")])
+    .having(rnse);
+*/ 
 //# sourceMappingURL=select.js.map

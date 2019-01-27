@@ -2,7 +2,7 @@ import {Table, ITable} from "../../table";
 
 export type DisallowInsert<TableT extends ITable> = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : TableT["columns"];
 
@@ -25,7 +25,7 @@ export function disallowInsert<TableT extends ITable> (table : TableT) : (
     DisallowInsert<TableT>
 ) {
     const {
-        usedRef,
+        usedColumns,
         alias,
         columns,
 
@@ -47,7 +47,7 @@ export function disallowInsert<TableT extends ITable> (table : TableT) : (
 
     return new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

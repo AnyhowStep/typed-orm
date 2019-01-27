@@ -9,7 +9,7 @@ const dataType = require("../../../data-type");
 function nullSafeUnaryComparison(postFixOperator) {
     const result = (rawExpr) => {
         return new expr_1.Expr({
-            usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+            usedColumns: raw_expr_1.RawExprUtil.usedColumns(rawExpr),
             assertDelegate: dataType.boolean(),
         }, [
             raw_expr_1.RawExprUtil.queryTree(rawExpr),

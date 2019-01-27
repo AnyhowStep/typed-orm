@@ -5,7 +5,7 @@ export declare type Parent<TableT extends ITable, ParentT extends ITable> = (Par
     [columnName in Extract<keyof TableT["columns"], keyof ParentT["columns"]>]: (ReturnType<TableT["columns"][columnName]["assertDelegate"]> extends ReturnType<ParentT["columns"][columnName]["assertDelegate"]> ? never : ["Column", columnName, "has incompatible types", ReturnType<TableT["columns"][columnName]["assertDelegate"]>, ReturnType<ParentT["columns"][columnName]["assertDelegate"]>] | void);
 }>) & (ParentT["alias"] extends TableT["alias"] ? "Parent cannot have same alias as table" | void : unknown) & (ParentT["alias"] extends TableT["parents"][number]["alias"] ? "Parent already added to table" | void : unknown));
 export declare type AddParent<TableT extends ITable, ParentT extends ITable> = (Table<{
-    readonly usedRef: TableT["usedRef"];
+    readonly usedColumns: TableT["usedColumns"];
     readonly alias: TableT["alias"];
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];

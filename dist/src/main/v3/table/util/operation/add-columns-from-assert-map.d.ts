@@ -2,7 +2,7 @@ import { Table, ITable } from "../../table";
 import { AssertMap } from "../../../assert-map";
 import { ColumnMapUtil } from "../../../column-map";
 export declare type AddColumnsFromAssertMap<TableT extends ITable, AssertMapT extends AssertMap> = (Table<{
-    readonly usedRef: TableT["usedRef"];
+    readonly usedColumns: TableT["usedColumns"];
     readonly alias: TableT["alias"];
     readonly columns: ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromAssertMap<TableT["alias"], AssertMapT>>;
     readonly autoIncrement: TableT["autoIncrement"];

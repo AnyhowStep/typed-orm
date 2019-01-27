@@ -19,17 +19,21 @@ function In<
 ) : (
     //Not an exact typing but, in general, should work
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<LeftT> &
-            RawExprUtil.UsedRef<Arg0> &
-            RawExprUtil.IntersectUsedRefTuple<Args>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<LeftT>[number] |
+            RawExprUtil.UsedColumns<Arg0>[number] |
+            RawExprUtil.Array.UsedColumns<Args>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
 ) {
     return new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(left, arg0, ...(args as any)),
+            usedColumns : RawExprUtil.Array.usedColumns([
+                left,
+                arg0,
+                ...args,
+            ]),
             assertDelegate : dataType.boolean(),
         },
         [

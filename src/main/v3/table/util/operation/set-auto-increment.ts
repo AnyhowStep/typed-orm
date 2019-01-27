@@ -37,7 +37,7 @@ export type SetAutoIncrement<
     DelegateT extends AutoIncrementDelegate<TableT>
 > = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : TableT["columns"];
 
@@ -141,7 +141,7 @@ export function setAutoIncrement<
         }
     );
     const {
-        usedRef,
+        usedColumns,
         alias,
         isNullable,
         parents,
@@ -153,7 +153,7 @@ export function setAutoIncrement<
 
     const result : SetAutoIncrement<TableT, DelegateT> = new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

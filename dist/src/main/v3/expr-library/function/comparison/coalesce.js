@@ -6,7 +6,7 @@ const raw_expr_1 = require("../../../raw-expr");
 const query_tree_1 = require("../../../query-tree");
 function coalesce(...args) {
     return new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple(...args),
+        usedColumns: raw_expr_1.RawExprUtil.Array.usedColumns(args),
         assertDelegate: sd.or(...args.map((arg, index) => {
             if (index == args.length - 1) {
                 return raw_expr_1.RawExprUtil.assertDelegate(arg);

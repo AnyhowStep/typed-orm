@@ -19,10 +19,8 @@ export function deleteZeroOrOne<
     return connection.transactionIfNotInOne(async (connection) : Promise<DeleteZeroOrOneResult> => {
         const resultRef : any = await QueryUtil.fetchZeroOrOne(
             QueryUtil.select(
-                QueryUtil.where(
-                    from(table),
-                    (() => where) as any
-                ),
+                from(table)
+                    .__unsafeWhere((() => where) as any),
                 ((c : any) => [c]) as any
             ),
             connection

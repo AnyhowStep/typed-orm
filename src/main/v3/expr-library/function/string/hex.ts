@@ -14,13 +14,13 @@ export function hex<RawExprT extends RawExpr<bigint|number|string>>(
     rawExpr : RawExprT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<RawExprT>,
+        usedColumns : RawExprUtil.UsedColumns<RawExprT>,
         assertDelegate : sd.AssertDelegate<string>,
     }>
 ) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.usedRef(rawExpr),
+            usedColumns : RawExprUtil.usedColumns(rawExpr),
             assertDelegate : sd.match(/^[0-9A-F]*$/, name => `${name} must be a hexadecimal string, with uppercase A-F`),
         },
         new FunctionCall(

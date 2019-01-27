@@ -3,9 +3,10 @@ import {AfterFromClause} from "../predicate";
 import {ColumnRefUtil} from "../../../column-ref";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {ExprUtil} from "../../../expr";
-import {ColumnUtil} from "../../../column";
+import {ColumnUtil, IColumn} from "../../../column";
 import {IAnonymousTypedExpr} from "../../../expr";
 import {and} from "../../../expr-library";
+import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
 
 export type HavingDelegate<
     QueryT extends AfterFromClause
@@ -43,28 +44,34 @@ export type Having<
     }>
 );
 
-export type AssertValidHavingDelegate<
+//https://github.com/Microsoft/TypeScript/issues/29133
+export type AssertValidHavingDelegate_Hack<
+    QueryT extends AfterFromClause,
+    HavingDelegateT extends HavingDelegate<QueryT>,
+    ResultT
+> = (
+    ColumnUtil.AssertValidUsed<
+        RawExprUtil.UsedColumns<ReturnType<HavingDelegateT>>[number],
+        //Weird that this needs to be wrapped in Extract<>
+        Extract<ColumnUtil.FromQuery<QueryT>, IColumn>
+    > extends never ?
+    ResultT :
+    ColumnUtil.AssertValidUsed<
+        RawExprUtil.UsedColumns<ReturnType<HavingDelegateT>>[number],
+        //Weird that this needs to be wrapped in Extract<>
+        Extract<ColumnUtil.FromQuery<QueryT>, IColumn>
+    >|void
+);
+
+export type HavingResult<
     QueryT extends AfterFromClause,
     HavingDelegateT extends HavingDelegate<QueryT>
 > = (
-    HavingDelegateT &
-    (
-        //TODO-DEBATE Safer to convert both to union of columns and check if used columns extends query columns
-        //I think
-        ColumnRefUtil.FromQuery<QueryT> extends RawExprUtil.UsedRef<ReturnType<HavingDelegateT>> ?
-        unknown :
-        [
-            "HAVING expression contains some invalid columns; the following are not allowed:",
-            Exclude<
-                ColumnUtil.FromColumnRef<
-                    RawExprUtil.UsedRef<ReturnType<HavingDelegateT>>
-                >,
-                ColumnUtil.FromColumnRef<
-                    ColumnRefUtil.FromQuery<QueryT>
-                >
-            >
-        ]
-    )
+    AssertValidHavingDelegate_Hack<
+        QueryT,
+        HavingDelegateT,
+        Having<QueryT>
+    >
 );
 
 //Must be called after `FROM` as per MySQL
@@ -73,8 +80,13 @@ export function having<
     HavingDelegateT extends HavingDelegate<QueryT>
 > (
     query : QueryT,
-    delegate : AssertValidHavingDelegate<QueryT, HavingDelegateT>
-) : Having<QueryT> {
+    delegate : HavingDelegateT
+) : (
+    HavingResult<
+        QueryT,
+        HavingDelegateT
+    >
+) {
     if (query._joins == undefined) {
         throw new Error(`Cannot use HAVING before FROM clause`);
     }
@@ -85,7 +97,10 @@ export function having<
     ) as ReturnType<HavingDelegateT>;
     const expr = ExprUtil.fromRawExpr(rawExpr);
 
-    ColumnRefUtil.assertIsSubset(expr.usedRef, queryRef);
+    ColumnIdentifierRefUtil.assertHasColumnIdentifiers(
+        queryRef,
+        expr.usedColumns
+    );
 
     const {
         _distinct,
@@ -108,7 +123,9 @@ export function having<
         _mapDelegate,
     } = query;
 
-    return new Query(
+    //TODO Investigate why removing `as any` causes lag
+    //and failure
+    const result : Having<QueryT> = new Query(
         {
             _distinct,
             _sqlCalcFoundRows,
@@ -123,7 +140,7 @@ export function having<
                 query._having == undefined ?
                 expr :
                 and(query._having, expr)
-            ) as IAnonymousTypedExpr<boolean>,
+            ),
 
             _orders,
             _limit,
@@ -134,5 +151,59 @@ export function having<
 
             _mapDelegate,
         }
-    ) as Having<QueryT>;
+    ) as any;
+    return result as any;
 }
+/*
+import * as o from "../../../index";
+const table = o.table("test", {
+    x : o.bigint(),
+    y : o.varChar.nullable(),
+    z : o.boolean(),
+});
+const nse = o.nullSafeEq(table.columns.x, table.columns.x);
+const rnse = () => nse
+o.from(table)
+    .having((_c) => nse)
+    .having(rnse);
+
+const table2 = o.table("test2", {
+    x : o.bigint(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse2 = o.nullSafeEq(table.columns.x, table2.columns.x);
+o.from(table)
+    .having((_c) => nse2)
+    .having(rnse);
+
+const table3 = o.table("test", {
+    x : o.bigint.nullable(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse3 = o.nullSafeEq(table.columns.x, table3.columns.x);
+o.from(table)
+    .having((_c) => nse3)
+    .having(rnse);
+
+const table4 = o.table("test", {
+    x : o.bigint.nullable(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse4 = o.nullSafeEq(table.columns.y, table4.columns.y);
+o.from(table)
+    .having((_c) => nse4)
+    .having(rnse);
+
+const table5 = o.table("test", {
+    x : o.bigint.nullable(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse5 = o.eq(table5.columns.y, "test");
+o.from(table)
+    .having((_c) => nse5)
+    .having(rnse);
+*/

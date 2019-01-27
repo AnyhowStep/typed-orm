@@ -103,7 +103,7 @@ export type AddCandidateKey<
     DelegateT extends CandidateKeyDelegate<TableT>
 > = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : TableT["columns"];
 
@@ -175,7 +175,7 @@ export function addCandidateKey<
     )[] = table.candidateKeys.concat([key]);
 
     const {
-        usedRef,
+        usedColumns,
         alias,
 
         autoIncrement,
@@ -196,7 +196,7 @@ export function addCandidateKey<
 
     const result : AddCandidateKey<TableT, DelegateT> = new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

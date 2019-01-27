@@ -3,6 +3,6 @@ import { Expr } from "../../../expr";
 import { RawExpr } from "../../../raw-expr";
 import { RawExprUtil } from "../../../raw-expr";
 export declare function floor<RawExprT extends RawExpr<number>>(rawExpr: RawExprT): (Expr<{
-    usedRef: RawExprUtil.UsedRef<RawExprT>;
+    usedColumns: RawExprUtil.UsedColumns<RawExprT>;
     assertDelegate: sd.AssertDelegate<bigint>;
 }>);

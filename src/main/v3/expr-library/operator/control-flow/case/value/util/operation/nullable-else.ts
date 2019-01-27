@@ -1,7 +1,6 @@
 import * as sd from "schema-decorator";
 import {RawExpr} from "../../../../../../../raw-expr";
 import {RawExprUtil} from "../../../../../../../raw-expr";
-import {ColumnRefUtil} from "../../../../../../../column-ref";
 import {Expr} from "../../../../../../../expr";
 import {AfterWhenCase} from "./after-when-case";
 
@@ -12,10 +11,10 @@ export type NullableElse<
     >
 > = (
     Expr<{
-        usedRef : (
-            BuilderT["usedRef"] &
-            RawExprUtil.UsedRef<ElseT>
-        ),
+        usedColumns : (
+            BuilderT["usedColumns"][number] |
+            RawExprUtil.UsedColumns<ElseT>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<
             ReturnType<BuilderT["result"]> |
             RawExprUtil.TypeOf<ElseT>
@@ -35,10 +34,10 @@ function NullableElseFunction<
 ) {
     return new Expr(
         {
-            usedRef : ColumnRefUtil.intersect(
-                builder.usedRef,
-                RawExprUtil.usedRef(elseExpr),
-            ),
+            usedColumns : RawExprUtil.Array.usedColumns([
+                ...builder.usedColumns,
+                elseExpr,
+            ]),
             assertDelegate : sd.or(
                 builder.result,
                 RawExprUtil.assertDelegate(elseExpr)

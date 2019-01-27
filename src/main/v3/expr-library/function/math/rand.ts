@@ -9,7 +9,7 @@ import * as dataType from "../../../data-type";
 //0 <= v < 1.0
 export function rand () : (
     Expr<{
-        usedRef : {},
+        usedColumns : never[],
         assertDelegate : sd.AssertDelegate<number>,
     }>
 );
@@ -17,15 +17,15 @@ export function rand<RawExprT extends RawExpr<bigint>>(
     seed : RawExprT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<RawExprT>,
+        usedColumns : RawExprUtil.UsedColumns<RawExprT>,
         assertDelegate : sd.AssertDelegate<number>,
     }>
 );
-export function rand (seed? : RawExpr<bigint>) {
+export function rand (seed? : RawExpr<bigint>) : any {
     if (seed === undefined) {
         return new Expr(
             {
-                usedRef : {},
+                usedColumns : [],
                 assertDelegate : dataType.double(),
             },
             new FunctionCall(
@@ -36,7 +36,7 @@ export function rand (seed? : RawExpr<bigint>) {
     } else {
         return new Expr(
             {
-                usedRef : RawExprUtil.usedRef(seed),
+                usedColumns : RawExprUtil.usedColumns(seed),
                 assertDelegate : dataType.double(),
             },
             new FunctionCall(

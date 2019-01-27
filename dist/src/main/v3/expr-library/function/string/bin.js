@@ -12,7 +12,7 @@ const query_tree_1 = require("../../../query-tree");
 //Returns NULL if N is NULL.
 function bin(rawExpr) {
     const result = new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+        usedColumns: raw_expr_1.RawExprUtil.usedColumns(rawExpr),
         assertDelegate: sd.match(/^(1|0)+$/, name => `${name} must be a non-empty binary string`),
     }, new query_tree_1.FunctionCall("BIN", [
         raw_expr_1.RawExprUtil.queryTree(rawExpr)

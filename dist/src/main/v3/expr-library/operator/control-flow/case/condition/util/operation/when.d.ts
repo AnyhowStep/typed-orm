@@ -4,7 +4,7 @@ import { NonNullPrimitiveExpr, PrimitiveExprUtil } from "../../../../../../../pr
 import { RawExprUtil } from "../../../../../../../raw-expr";
 import { ICaseCondition, CaseCondition } from "../../case-condition";
 export declare type When<BuilderT extends ICaseCondition, WhenT extends RawExpr<boolean>, ThenT extends RawExpr<BuilderT["result"] extends sd.AssertDelegate<any> ? ReturnType<BuilderT["result"]> : NonNullPrimitiveExpr>> = (CaseCondition<{
-    usedRef: (BuilderT["usedRef"] & RawExprUtil.UsedRef<WhenT> & RawExprUtil.UsedRef<ThenT>);
+    usedColumns: (BuilderT["usedColumns"][number] | RawExprUtil.UsedColumns<WhenT>[number] | RawExprUtil.UsedColumns<ThenT>[number])[];
     result: (BuilderT["result"] extends sd.AssertDelegate<any> ? BuilderT["result"] : sd.AssertDelegate<PrimitiveExprUtil.ToSuperType<RawExprUtil.TypeOf<ThenT>>>);
 }>);
 export declare function when<BuilderT extends ICaseCondition, WhenT extends RawExpr<boolean>, ThenT extends RawExpr<BuilderT["result"] extends sd.AssertDelegate<any> ? ReturnType<BuilderT["result"]> : NonNullPrimitiveExpr>>(builder: BuilderT, whenExpr: WhenT, thenExpr: ThenT): (When<BuilderT, WhenT, ThenT>);

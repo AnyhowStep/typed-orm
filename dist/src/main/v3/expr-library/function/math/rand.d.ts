@@ -3,10 +3,10 @@ import { Expr } from "../../../expr";
 import { RawExpr } from "../../../raw-expr";
 import { RawExprUtil } from "../../../raw-expr";
 export declare function rand(): (Expr<{
-    usedRef: {};
+    usedColumns: never[];
     assertDelegate: sd.AssertDelegate<number>;
 }>);
 export declare function rand<RawExprT extends RawExpr<bigint>>(seed: RawExprT): (Expr<{
-    usedRef: RawExprUtil.UsedRef<RawExprT>;
+    usedColumns: RawExprUtil.UsedColumns<RawExprT>;
     assertDelegate: sd.AssertDelegate<number>;
 }>);

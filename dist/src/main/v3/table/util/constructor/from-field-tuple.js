@@ -9,7 +9,7 @@ function fromFieldTuple(name, fields) {
     const isNullable = field_array_1.FieldArrayUtil.nullableNames(fields);
     const mutable = fields.map(field => field.name);
     return new table_1.Table({
-        usedRef: {},
+        usedColumns: [],
         alias: name,
         columns,
         autoIncrement: undefined,

@@ -4,6 +4,6 @@ import { RawExpr } from "../../../raw-expr";
 import { RawExprUtil } from "../../../raw-expr";
 import { PrimitiveExpr } from "../../../primitive-expr";
 export declare function max<RawExprT extends RawExpr<PrimitiveExpr>>(rawExpr: RawExprT): (Expr<{
-    usedRef: RawExprUtil.UsedRef<RawExprT>;
+    usedColumns: RawExprUtil.UsedColumns<RawExprT>;
     assertDelegate: sd.AssertDelegate<RawExprUtil.TypeOf<RawExprT> | null>;
 }>);

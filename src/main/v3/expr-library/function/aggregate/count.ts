@@ -6,13 +6,13 @@ import * as dataType from "../../../data-type";
 //https://dev.mysql.com/doc/refman/8.0/en/group-by-functions.html#function_count
 export function count () : (
     Expr<{
-        usedRef : {},
+        usedColumns : never[],
         assertDelegate : sd.AssertDelegate<bigint>,
     }>
 ) {
     const result = new Expr(
         {
-            usedRef : {},
+            usedColumns : [],
             assertDelegate : dataType.bigint(),
         },
         new FunctionCall(

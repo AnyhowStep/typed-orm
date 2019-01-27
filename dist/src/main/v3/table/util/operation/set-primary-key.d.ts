@@ -9,7 +9,7 @@ export declare type PrimaryKeyColumnMap<TableT extends ITable> = ({
 });
 export declare type PrimaryKeyDelegate<TableT extends ITable> = ((columnMap: PrimaryKeyColumnMap<TableT>) => (TableT["columns"][string][]));
 export declare type SetPrimaryKey<TableT extends ITable, DelegateT extends PrimaryKeyDelegate<TableT>> = (Table<{
-    readonly usedRef: TableT["usedRef"];
+    readonly usedColumns: TableT["usedColumns"];
     readonly alias: TableT["alias"];
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];

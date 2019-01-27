@@ -26,7 +26,7 @@ export type AddHasExplicitDefaultValue<
     DelegateT extends HasExplicitDefaultValueDelegate<TableT>
 > = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : TableT["columns"];
 
@@ -79,7 +79,7 @@ export function addHasExplicitDefaultValue<
     );
 
     const {
-        usedRef,
+        usedColumns,
         alias,
 
         autoIncrement,
@@ -100,7 +100,7 @@ export function addHasExplicitDefaultValue<
 
     const result : AddHasExplicitDefaultValue<TableT, DelegateT> = new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

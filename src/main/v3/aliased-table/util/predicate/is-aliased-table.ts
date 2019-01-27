@@ -1,18 +1,18 @@
 import {IAliasedTable} from "../../aliased-table";
 import {ColumnMapUtil} from "../../../column-map";
-import {ColumnRefUtil} from "../../../column-ref";
+import {ColumnUtil} from "../../../column";
 import {QueryTreeUtil} from "../../../query-tree";
 
 export function isAliasedTable (raw : any) : raw is IAliasedTable {
     return (
         raw != undefined &&
         (raw instanceof Object) &&
-        ("usedRef" in raw) &&
+        ("usedColumns" in raw) &&
         ("alias" in raw) &&
         ("columns" in raw) &&
         ("unaliasedQuery" in raw) &&
 
-        ColumnRefUtil.isColumnRef(raw.usedRef) &&
+        ColumnUtil.Array.isColumnArray(raw.usedColumns) &&
         (typeof raw.alias == "string") &&
         ColumnMapUtil.isColumnMap(raw.columns) &&
         QueryTreeUtil.isQueryTree(raw.unaliasedQuery)

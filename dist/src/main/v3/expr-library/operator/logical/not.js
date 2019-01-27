@@ -21,7 +21,7 @@ function not(rawExpr) {
                 if (tree[0] === "NOT") {
                     //NOT (NOT (expr)) === expr
                     return new expr_1.Expr({
-                        usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+                        usedColumns: raw_expr_1.RawExprUtil.usedColumns(rawExpr),
                         assertDelegate: dataType.boolean(),
                     }, tree[1]);
                 }
@@ -37,7 +37,7 @@ function not(rawExpr) {
         }
     }
     return new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+        usedColumns: raw_expr_1.RawExprUtil.usedColumns(rawExpr),
         assertDelegate: dataType.boolean(),
     }, [
         "NOT",

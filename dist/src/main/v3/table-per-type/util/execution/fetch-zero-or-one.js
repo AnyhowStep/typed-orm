@@ -6,10 +6,11 @@ async function fetchZeroOrOne(connection, table, where) {
     if (table.parents.length == 0) {
         return query_1.QueryUtil.fetchZeroOrOne(query_1.QueryUtil.newInstance()
             .from(table)
-            .where(() => where)
+            .__unsafeWhere(() => where)
             .select(c => [c]), connection);
     }
-    const rawResult = await query_1.QueryUtil.fetchZeroOrOne(query_1.QueryUtil.select(query_1.QueryUtil.where(from_1.from(table), (() => where)), ((c) => [c])), connection);
+    const rawResult = await query_1.QueryUtil.fetchZeroOrOne(query_1.QueryUtil.select(from_1.from(table)
+        .__unsafeWhere((() => where)), ((c) => [c])), connection);
     if (rawResult == undefined) {
         return undefined;
     }

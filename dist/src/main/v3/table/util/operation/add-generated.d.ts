@@ -5,7 +5,7 @@ export declare type GeneratedColumnMap<ColumnMapT extends ColumnMap, GeneratedT 
 });
 export declare type GeneratedDelegate<TableT extends ITable> = ((columnMap: GeneratedColumnMap<TableT["columns"], TableT["generated"]>) => (GeneratedColumnMap<TableT["columns"], TableT["generated"]>[keyof GeneratedColumnMap<TableT["columns"], TableT["generated"]>][]));
 export declare type AddGenerated<TableT extends ITable, DelegateT extends GeneratedDelegate<TableT>> = (Table<{
-    readonly usedRef: TableT["usedRef"];
+    readonly usedColumns: TableT["usedColumns"];
     readonly alias: TableT["alias"];
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];

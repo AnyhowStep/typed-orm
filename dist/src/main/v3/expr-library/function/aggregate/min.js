@@ -7,7 +7,7 @@ const query_tree_1 = require("../../../query-tree");
 //https://dev.mysql.com/doc/refman/8.0/en/group-by-functions.html#function_min
 function min(rawExpr) {
     const result = new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+        usedColumns: raw_expr_1.RawExprUtil.usedColumns(rawExpr),
         assertDelegate: sd.nullable(raw_expr_1.RawExprUtil.assertDelegate(rawExpr)),
     }, new query_tree_1.FunctionCall("MIN", [
         raw_expr_1.RawExprUtil.queryTree(rawExpr)

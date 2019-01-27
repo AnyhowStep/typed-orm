@@ -15,6 +15,12 @@ export type ToUnknownIfAllFieldsNever<T> = (
     unknown :
     T[keyof T]
 );
+//TODO-DEBATE Better name or sth
+export type ToNeverIfAllFieldsNever<T> = (
+    T[keyof T] extends never ?
+    never :
+    T[keyof T]
+);
 export type Writable<T> = {
     -readonly [k in keyof T] : Writable<T[k]>
 };

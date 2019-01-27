@@ -39,9 +39,9 @@ function setAutoIncrement(table, delegate) {
     const mutable = table.mutable.filter((columnName) => {
         return (columnName != autoIncrement.name);
     });
-    const { usedRef, alias, isNullable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+    const { usedColumns, alias, isNullable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
     const result = new table_1.Table({
-        usedRef,
+        usedColumns,
         alias,
         columns,
         autoIncrement: autoIncrement.name,

@@ -1,7 +1,7 @@
 import { Table, ITable } from "../../table";
 import { ColumnMapUtil } from "../../../column-map";
 export declare type SetAlias<TableT extends ITable, NewAliasT extends string> = (Table<{
-    readonly usedRef: TableT["usedRef"];
+    readonly usedColumns: TableT["usedColumns"];
     readonly alias: NewAliasT;
     readonly columns: ColumnMapUtil.WithTableAlias<TableT["columns"], NewAliasT>;
     readonly autoIncrement: TableT["autoIncrement"];

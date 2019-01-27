@@ -5,7 +5,7 @@ export declare type HasExplicitDefaultValueColumnMap<ColumnMapT extends ColumnMa
 });
 export declare type HasExplicitDefaultValueDelegate<TableT extends ITable> = ((columnMap: HasExplicitDefaultValueColumnMap<TableT["columns"], TableT["hasExplicitDefaultValue"]>) => (HasExplicitDefaultValueColumnMap<TableT["columns"], TableT["hasExplicitDefaultValue"]>[keyof HasExplicitDefaultValueColumnMap<TableT["columns"], TableT["hasExplicitDefaultValue"]>][]));
 export declare type AddHasExplicitDefaultValue<TableT extends ITable, DelegateT extends HasExplicitDefaultValueDelegate<TableT>> = (Table<{
-    readonly usedRef: TableT["usedRef"];
+    readonly usedColumns: TableT["usedColumns"];
     readonly alias: TableT["alias"];
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];

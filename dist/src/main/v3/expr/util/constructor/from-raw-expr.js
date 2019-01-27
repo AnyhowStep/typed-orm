@@ -6,11 +6,11 @@ function fromRawExpr(rawExpr) {
     if (rawExpr instanceof expr_1.Expr) {
         return rawExpr;
     }
-    const usedRef = raw_expr_1.RawExprUtil.usedRef(rawExpr);
+    const usedColumns = raw_expr_1.RawExprUtil.usedColumns(rawExpr);
     const assertDelegate = raw_expr_1.RawExprUtil.assertDelegate(rawExpr);
     const queryTree = raw_expr_1.RawExprUtil.queryTree(rawExpr);
     return new expr_1.Expr({
-        usedRef,
+        usedColumns,
         assertDelegate,
     }, queryTree);
 }

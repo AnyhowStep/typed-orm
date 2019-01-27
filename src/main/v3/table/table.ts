@@ -122,7 +122,7 @@ export interface TableData extends AliasedTableData {
 }
 
 export interface ITable<DataT extends TableData=TableData> extends IAliasedTable<DataT> {
-    readonly usedRef : DataT["usedRef"];
+    readonly usedColumns : DataT["usedColumns"];
     readonly alias : DataT["alias"];
     readonly columns : DataT["columns"];
 
@@ -157,7 +157,7 @@ export type TableWithPk = (
 );
 
 export class Table<DataT extends TableData> implements ITable<DataT> {
-    readonly usedRef : DataT["usedRef"];
+    readonly usedColumns : DataT["usedColumns"];
     readonly alias : DataT["alias"];
     readonly columns : DataT["columns"];
 
@@ -186,7 +186,7 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
             unaliasedQuery : QueryTree,
         }
     ) {
-        this.usedRef = data.usedRef;
+        this.usedColumns = data.usedColumns;
         this.alias = data.alias;
         this.columns = data.columns;
 

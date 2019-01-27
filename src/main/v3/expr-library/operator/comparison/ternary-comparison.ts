@@ -16,10 +16,11 @@ export type TernaryComparison = (
         right : RightT
     ) => (
         Expr<{
-            //TODO-DEBATE Investigate efficiency?
-            usedRef : RawExprUtil.IntersectUsedRefTuple<
-                [LeftT, MidT, RightT]
-            >,
+            usedColumns : (
+                RawExprUtil.UsedColumns<LeftT>[number] |
+                RawExprUtil.UsedColumns<MidT>[number] |
+                RawExprUtil.UsedColumns<RightT>[number]
+            )[],
             assertDelegate : sd.AssertDelegate<boolean>,
         }>
     )
@@ -31,9 +32,9 @@ export function ternaryComparison (leftOperator : string, rightOperator : string
     const result : TernaryComparison = (left, mid, right) => {
         return new Expr(
             {
-                usedRef : RawExprUtil.intersectUsedRefTuple(
+                usedColumns : RawExprUtil.Array.usedColumns([
                     left, mid, right
-                ),
+                ]),
                 assertDelegate : dataType.boolean(),
             },
             [

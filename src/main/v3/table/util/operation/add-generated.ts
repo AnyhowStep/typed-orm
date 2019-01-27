@@ -26,7 +26,7 @@ export type AddGenerated<
     DelegateT extends GeneratedDelegate<TableT>
 > = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : TableT["columns"];
 
@@ -110,7 +110,7 @@ export function addGenerated<
     );
 
     const {
-        usedRef,
+        usedColumns,
         alias,
 
         autoIncrement,
@@ -129,7 +129,7 @@ export function addGenerated<
 
     const result : AddGenerated<TableT, DelegateT> = new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

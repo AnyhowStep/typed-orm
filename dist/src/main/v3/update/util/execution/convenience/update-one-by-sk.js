@@ -5,7 +5,7 @@ const query_1 = require("../../../../query");
 function updateOneBySk(connection, table, sk, delegate) {
     return query_1.QueryUtil.newInstance()
         .from(table)
-        .where(() => table_1.TableUtil.eqSuperKey(table, sk))
+        .__unsafeWhere(() => table_1.TableUtil.eqSuperKey(table, sk))
         .set(delegate)
         .executeUpdateOne(connection);
 }

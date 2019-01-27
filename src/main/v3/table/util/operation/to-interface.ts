@@ -1,10 +1,10 @@
 import {ITable} from "../../table";
-import {ColumnRefUtil} from "../../../column-ref";
+import {ColumnUtil} from "../../../column";
 import {ColumnMapUtil} from "../../../column-map";
 
 export type ToInterface<TableT extends ITable> = (
     ITable<{
-        readonly usedRef : ColumnRefUtil.ToInterface<TableT["usedRef"]>;
+        readonly usedColumns : ColumnUtil.Array.ToInterface<TableT["usedColumns"]>;
         readonly alias : TableT["alias"];
         readonly columns : ColumnMapUtil.ToInterface<TableT["columns"]>;
 

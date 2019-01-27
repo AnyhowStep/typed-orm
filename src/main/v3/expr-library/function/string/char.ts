@@ -3,31 +3,30 @@ import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
 import {FunctionCall} from "../../../query-tree";
-import {Tuple} from "../../../tuple";
 import {TranscodingName} from "../../constant";
 
 //https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_char
 export function toChar<
     Arg0 extends RawExpr<number>,
-    Args extends Tuple<RawExpr<number>>,
+    Args extends RawExpr<number>[],
 >(
     arg0 : Arg0,
     ...args : Args
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<Arg0> &
-            RawExprUtil.IntersectUsedRefTuple<Args>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<Arg0>[number] |
+            RawExprUtil.Array.UsedColumns<Args>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<Buffer>,
     }> &
     {
         using : (transcodingName : TranscodingName) => (
             Expr<{
-                usedRef : (
-                    RawExprUtil.UsedRef<Arg0> &
-                    RawExprUtil.IntersectUsedRefTuple<Args>
-                ),
+                usedColumns : (
+                    RawExprUtil.UsedColumns<Arg0>[number] |
+                    RawExprUtil.Array.UsedColumns<Args>[number]
+                )[],
                 assertDelegate : sd.AssertDelegate<string>,
             }>
         )
@@ -35,10 +34,10 @@ export function toChar<
 ) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(
+            usedColumns : RawExprUtil.Array.usedColumns([
                 arg0,
-                ...(args as any)
-            ),
+                ...args,
+            ]),
             assertDelegate : sd.buffer(),
         },
         new FunctionCall(
@@ -55,7 +54,7 @@ export function toChar<
         const arr = [arg0, ...args];
         return new Expr(
             {
-                usedRef : result.usedRef,
+                usedColumns : result.usedColumns,
                 assertDelegate : sd.string(),
             },
             new FunctionCall(

@@ -5,7 +5,7 @@ const query_1 = require("../../../../query");
 function updateZeroOrOneByPk(connection, table, pk, delegate) {
     return query_1.QueryUtil.newInstance()
         .from(table)
-        .where(() => table_1.TableUtil.eqPrimaryKey(table, pk))
+        .__unsafeWhere(() => table_1.TableUtil.eqPrimaryKey(table, pk))
         .set(delegate)
         .executeUpdateZeroOrOne(connection);
 }

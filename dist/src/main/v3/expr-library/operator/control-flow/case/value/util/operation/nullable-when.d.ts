@@ -4,7 +4,7 @@ import { PrimitiveExpr, PrimitiveExprUtil } from "../../../../../../../primitive
 import { RawExprUtil } from "../../../../../../../raw-expr";
 import { ICaseValue, CaseValue } from "../../case-value";
 export declare type NullableWhen<BuilderT extends ICaseValue, WhenT extends RawExpr<ReturnType<BuilderT["value"]>>, ThenT extends RawExpr<BuilderT["result"] extends sd.AssertDelegate<any> ? ReturnType<BuilderT["result"]> | null : PrimitiveExpr>> = (CaseValue<{
-    usedRef: (BuilderT["usedRef"] & RawExprUtil.UsedRef<WhenT> & RawExprUtil.UsedRef<ThenT>);
+    usedColumns: (BuilderT["usedColumns"][number] | RawExprUtil.UsedColumns<WhenT>[number] | RawExprUtil.UsedColumns<ThenT>[number])[];
     value: BuilderT["value"];
     result: (BuilderT["result"] extends sd.AssertDelegate<any> ? sd.AssertDelegate<ReturnType<BuilderT["result"]> | RawExprUtil.TypeOf<ThenT>> : sd.AssertDelegate<PrimitiveExprUtil.ToSuperType<RawExprUtil.TypeOf<ThenT>>>);
 }>);

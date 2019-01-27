@@ -4,33 +4,25 @@ import * as o from "../../../../dist/src/main";
 
 tape(__filename, (t) => {
     const item : o.IExprSelectItem<{
-        readonly usedRef : {
-            someTable : {
-                someColumn : o.IColumn<{
-                    tableAlias : "someTable",
-                    name : "someColumn",
-                    assertDelegate : sd.AssertDelegate<boolean>,
-                }>
-            }
-        };
+        readonly usedColumns : o.IColumn<{
+            tableAlias : "someTable",
+            name : "someColumn",
+            assertDelegate : sd.AssertDelegate<boolean>,
+        }>[];
         readonly assertDelegate : sd.AssertDelegate<Date>;
 
         readonly tableAlias : "someTableAlias";
         readonly alias : "someAlias";
     }> = {
-        usedRef : {
-            someTable : {
-                someColumn : new o.Column<{
-                    tableAlias : "someTable",
-                    name : "someColumn",
-                    assertDelegate : sd.AssertDelegate<boolean>,
-                }>({
-                    tableAlias : "someTable",
-                    name : "someColumn",
-                    assertDelegate : sd.boolean(),
-                }),
-            },
-        },
+        usedColumns : [new o.Column<{
+            tableAlias : "someTable",
+            name : "someColumn",
+            assertDelegate : sd.AssertDelegate<boolean>,
+        }>({
+            tableAlias : "someTable",
+            name : "someColumn",
+            assertDelegate : sd.boolean(),
+        })],
         assertDelegate : sd.date(),
 
         tableAlias : "someTableAlias",

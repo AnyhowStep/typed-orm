@@ -7,7 +7,6 @@ const select_item_1 = require("../../select-item");
 const type_1 = require("../../type");
 const column_identifier_1 = require("../../column-identifier");
 const order_1 = require("../../order");
-const column_identifier_ref_1 = require("../../column-identifier-ref");
 function isUnionQuery(raw) {
     return (raw != undefined &&
         (raw instanceof Object) &&
@@ -196,11 +195,8 @@ function isOneSelectItemQuery(query) {
 }
 exports.isOneSelectItemQuery = isOneSelectItemQuery;
 function assertValidJoinTarget(query, aliasedTable) {
-    if (query._parentJoins == undefined) {
-        column_identifier_ref_1.ColumnIdentifierRefUtil.assertHasColumnIdentifiers({}, column_identifier_1.ColumnIdentifierUtil.Array.fromColumnRef(aliasedTable.usedRef));
-    }
-    else {
-        column_identifier_ref_1.ColumnIdentifierRefUtil.assertHasColumnIdentifiers(column_identifier_ref_1.ColumnIdentifierRefUtil.fromJoinArray(query._parentJoins), column_identifier_1.ColumnIdentifierUtil.Array.fromColumnRef(aliasedTable.usedRef));
+    if (aliasedTable.usedColumns.length > 0) {
+        throw new Error(`Derived table ${aliasedTable.alias} cannot reference outer query columns`);
     }
     if (query._joins != undefined) {
         if (query._joins.some(j => j.aliasedTable.alias == aliasedTable.alias)) {

@@ -24,7 +24,7 @@ function multiTableUpdate(query, modifier, delegate) {
     const assignmentRef = delegate(column_ref_1.ColumnRefUtil.toConvenient(ref));
     const mutableIdentifiers = mutableColumnIdentifiers(query);
     const assignments = [];
-    //usedRefs must be valid,
+    //usedColumns must be valid,
     //columns in assignment must be mutable
     for (let tableAlias in assignmentRef) {
         const assignmentMap = assignmentRef[tableAlias];
@@ -44,8 +44,8 @@ function multiTableUpdate(query, modifier, delegate) {
             if (rawExpr === undefined) {
                 continue;
             }
-            const usedRef = raw_expr_1.RawExprUtil.usedRef(rawExpr);
-            column_ref_1.ColumnRefUtil.assertIsSubset(usedRef, ref);
+            const usedColumns = raw_expr_1.RawExprUtil.usedColumns(rawExpr);
+            column_ref_1.ColumnRefUtil.assertHasColumnIdentifiers(ref, usedColumns);
             assignments.push({
                 tableAlias,
                 columnName,

@@ -10,14 +10,14 @@ export function bigIntSum<RawExprT extends RawExpr<bigint|null>>(
     rawExpr : RawExprT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<RawExprT>,
+        usedColumns : RawExprUtil.UsedColumns<RawExprT>,
         //If there are no matching rows, SUM() returns NULL.
         assertDelegate : sd.AssertDelegate<bigint|null>,
     }>
 ) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.usedRef(rawExpr),
+            usedColumns : RawExprUtil.usedColumns(rawExpr),
             assertDelegate : sd.nullable(dataType.bigint()),
         },
         new FunctionCall(

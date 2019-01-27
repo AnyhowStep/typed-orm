@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const CaseValueUtil = require("./util");
 class CaseValue {
     constructor(data, queryTree) {
-        this.usedRef = data.usedRef;
+        this.usedColumns = data.usedColumns;
         this.value = data.value;
         this.result = data.result;
         this.queryTree = queryTree;

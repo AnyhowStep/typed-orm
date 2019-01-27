@@ -19,17 +19,15 @@ export async function fetchZeroOrOne<
         return QueryUtil.fetchZeroOrOne(
             QueryUtil.newInstance()
                 .from(table as any)
-                .where(() => where)
+                .__unsafeWhere(() => where)
                 .select(c => [c]),
             connection
         ) as any;
     }
     const rawResult : any = await QueryUtil.fetchZeroOrOne(
         QueryUtil.select(
-            QueryUtil.where(
-                from(table),
-                (() => where) as any
-            ),
+            from(table)
+                .__unsafeWhere((() => where) as any),
             ((c : any) => [c]) as any
         ),
         connection

@@ -3,7 +3,6 @@ import {ITable} from "../../../table";
 import * as exprLib from "../../../expr-library";
 import {superKeyAssertDelegate} from "./super-key-assert-delegate";
 import {SuperKey} from "./super-key-assert-delegate";
-import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil} from "../../../column";
 import {Expr} from "../../../expr";
 
@@ -14,9 +13,7 @@ export function eqSuperKey<
     sk : SuperKey<TableT>
 ) : (
     Expr<{
-        usedRef : ColumnRefUtil.FromColumnArray<
-            ColumnUtil.FromColumnMap<TableT["columns"]|TableT["parents"][number]["columns"]>[]
-        >,
+        usedColumns : ColumnUtil.FromColumnMap<TableT["columns"]|TableT["parents"][number]["columns"]>[],
         assertDelegate : sd.AssertDelegate<boolean>
     }>
 ) {

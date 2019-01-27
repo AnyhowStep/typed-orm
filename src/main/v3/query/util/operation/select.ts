@@ -63,22 +63,21 @@ export type AssertValidSelectDelegateImpl<
     SelectDelegateT extends SelectDelegate<QueryT>
 > = (
     //If SelectItem is IExprSelectItem,
-    //the usedRef must be a subset of the queryRef
+    //the usedColumns must be a subset of the queryRef
     ToUnknownIfAllFieldsNever<{
         [index in Extract<keyof ReturnType<SelectDelegateT>, string>] : (
             ReturnType<SelectDelegateT>[index] extends IExprSelectItem ?
             (
-                ColumnRefUtil.FromQueryJoins<QueryT> extends ReturnType<SelectDelegateT>[index]["usedRef"] ?
+                ColumnUtil.AssertValidUsed<
+                    ReturnType<SelectDelegateT>[index]["usedColumns"][number],
+                    Extract<ColumnUtil.FromQueryJoins<QueryT>, IColumn>
+                > extends never ?
                 never :
                 [
                     "Invalid IExprSelectItem",
-                    Exclude<
-                        ColumnUtil.FromColumnRef<
-                            ReturnType<SelectDelegateT>[index]["usedRef"]
-                        >,
-                        ColumnUtil.FromColumnRef<
-                            ColumnRefUtil.FromQueryJoins<QueryT>
-                        >
+                    ColumnUtil.AssertValidUsed<
+                        ReturnType<SelectDelegateT>[index]["usedColumns"][number],
+                        Extract<ColumnUtil.FromQueryJoins<QueryT>, IColumn>
                     >
                 ]
             ) :
@@ -247,8 +246,8 @@ export function select<
     for (let selectItem of selects) {
         if (ExprSelectItemUtil.isExprSelectItem(selectItem)) {
             //+ If SelectItem is IExprSelectItem,
-            //  the usedRef must be a subset of the queryRef
-            ColumnRefUtil.assertIsSubset(selectItem.usedRef, queryRef);
+            //  the usedColumns must be a subset of the queryRef
+            ColumnRefUtil.assertHasColumnIdentifiers(queryRef, selectItem.usedColumns);
             //ExprSelectItem *must not* shadow columns in FROM/JOIN clause
             if (ColumnIdentifierRefUtil.hasColumnIdentifier(
                 queryRef,
@@ -368,3 +367,64 @@ export function select<
         _mapDelegate,
     });
 }
+/*
+import * as o from "../../../index";
+const table = o.table("test", {
+    x : o.bigint(),
+    y : o.varChar.nullable(),
+    z : o.boolean(),
+});
+const nse = o.nullSafeEq(table.columns.x, table.columns.x);
+const rnse = () => nse;
+o.from(table)
+    .select(c => [
+        nse.as("nse")
+    ])
+    .having(rnse);
+o.from(table)
+    .select(() => [nse.as("nse")])
+    .having(rnse);
+o.from(table)
+    .select((_c) => [nse.as("nse")])
+    .having(rnse);
+
+const table2 = o.table("test2", {
+    x : o.bigint(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse2 = o.nullSafeEq(table.columns.x, table2.columns.x);
+o.from(table)
+    .select((_c) => [nse2.as("nse2")])
+    .having(rnse);
+
+const table3 = o.table("test", {
+    x : o.bigint.nullable(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse3 = o.nullSafeEq(table.columns.x, table3.columns.x);
+o.from(table)
+    .select((_c) => [nse3.as("nse3")])
+    .having(rnse);
+
+const table4 = o.table("test", {
+    x : o.bigint.nullable(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse4 = o.nullSafeEq(table.columns.y, table4.columns.y);
+o.from(table)
+    .select((_c) => [nse4.as("nse4")])
+    .having(rnse);
+
+const table5 = o.table("test", {
+    x : o.bigint.nullable(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse5 = o.eq(table5.columns.y, "test");
+o.from(table)
+    .select((_c) => [nse5.as("nse5")])
+    .having(rnse);
+*/

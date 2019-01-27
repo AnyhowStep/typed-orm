@@ -13,7 +13,7 @@ function fetchZeroOrOneByPk_EntireRow<
 ) : Promise<Row<TableT>|undefined> {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqPrimaryKey(table, pk) as any)
+        .__unsafeWhere(() => TableUtil.eqPrimaryKey(table, pk) as any)
         .select(c => [c])
         .fetchZeroOrOne(connection) as any;
 }
@@ -33,7 +33,7 @@ function fetchZeroOrOneByPk_Select<
 ) : Promise<QueryUtil.UnmappedTypeNoJoins<ReturnType<DelegateT>>|undefined> {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqPrimaryKey(table, pk) as any)
+        .__unsafeWhere(() => TableUtil.eqPrimaryKey(table, pk) as any)
         .select(delegate as any)
         .fetchZeroOrOne(connection) as any;
 }

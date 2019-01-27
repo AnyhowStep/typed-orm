@@ -20,19 +20,19 @@ tape(__filename, (t) => {
     t.deepEqual(query._selects[0].alias, "a");
     t.deepEqual(query._selects[0].assertDelegate, table.columns.x.assertDelegate);
     t.deepEqual(query._selects[0].unaliasedQuery, o.ColumnUtil.queryTree(table.columns.x));
-    t.deepEqual(query._selects[0].usedRef, o.ColumnRefUtil.fromColumn(table.columns.x));
+    t.deepEqual(query._selects[0].usedColumns, [table.columns.x]);
 
     t.deepEqual(query._selects[1].tableAlias, "table");
     t.deepEqual(query._selects[1].alias, "b");
     t.deepEqual(query._selects[1].assertDelegate, table.columns.y.assertDelegate);
     t.deepEqual(query._selects[1].unaliasedQuery, o.ColumnUtil.queryTree(table.columns.y));
-    t.deepEqual(query._selects[1].usedRef, o.ColumnRefUtil.fromColumn(table.columns.y));
+    t.deepEqual(query._selects[1].usedColumns, [table.columns.y]);
 
     t.deepEqual(query._selects[2].tableAlias, "table");
     t.deepEqual(query._selects[2].alias, "c");
     t.deepEqual(query._selects[2].assertDelegate, table.columns.z.assertDelegate);
     t.deepEqual(query._selects[2].unaliasedQuery, o.ColumnUtil.queryTree(table.columns.z));
-    t.deepEqual(query._selects[2].usedRef, o.ColumnRefUtil.fromColumn(table.columns.z));
+    t.deepEqual(query._selects[2].usedColumns, [table.columns.z]);
 
     t.end();
 });

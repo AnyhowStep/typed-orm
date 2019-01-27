@@ -7,7 +7,7 @@ function deleteZeroOrOne(connection, table, where) {
     return connection.transactionIfNotInOne(async (connection) => {
         const result = await query_1.QueryUtil.newInstance()
             .from(table)
-            .where(() => where)
+            .__unsafeWhere(() => where)
             .delete(() => [table])
             .execute(connection);
         if (result.rawDeletedRowCount == 0) {

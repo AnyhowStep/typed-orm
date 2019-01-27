@@ -7,7 +7,7 @@ export declare type AutoIncrementColumnMap<TableT extends ITable> = ({
 });
 export declare type AutoIncrementDelegate<TableT extends ITable> = ((columnMap: AutoIncrementColumnMap<TableT>) => (AutoIncrementColumnMap<TableT>[keyof AutoIncrementColumnMap<TableT>]));
 export declare type SetAutoIncrement<TableT extends ITable, DelegateT extends AutoIncrementDelegate<TableT>> = (Table<{
-    readonly usedRef: TableT["usedRef"];
+    readonly usedColumns: TableT["usedColumns"];
     readonly alias: TableT["alias"];
     readonly columns: TableT["columns"];
     readonly autoIncrement: ReturnType<DelegateT>["name"];

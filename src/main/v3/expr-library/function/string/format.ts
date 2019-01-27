@@ -15,10 +15,10 @@ export function format<
     decimalPlaces : DecimalPlacesT
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<X> &
-            RawExprUtil.UsedRef<DecimalPlacesT>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<X>[number] |
+            RawExprUtil.UsedColumns<DecimalPlacesT>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<string>,
     }>
 );
@@ -32,19 +32,19 @@ export function format<
     locale : LocaleT
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<X> &
-            RawExprUtil.UsedRef<DecimalPlacesT> &
-            RawExprUtil.UsedRef<LocaleT>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<X>[number] |
+            RawExprUtil.UsedColumns<DecimalPlacesT>[number] |
+            RawExprUtil.UsedColumns<LocaleT>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<string>,
     }>
 );
 export function format (...args : RawExpr<any>[]) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(
-                ...(args as any)
+            usedColumns : RawExprUtil.Array.usedColumns(
+                args
             ),
             assertDelegate : sd.string(),
         },

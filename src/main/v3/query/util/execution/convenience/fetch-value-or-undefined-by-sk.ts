@@ -20,7 +20,7 @@ export function fetchValueOrUndefinedBySk<
 ) {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqSuperKey(table, sk) as any)
+        .__unsafeWhere(() => TableUtil.eqSuperKey(table, sk) as any)
         .select((columns, query) => {
             return executeSelectValueDelegate(
                 columns,

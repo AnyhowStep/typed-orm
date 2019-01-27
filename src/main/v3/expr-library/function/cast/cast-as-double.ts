@@ -13,13 +13,13 @@ export function castAsDouble<
     rawExpr : RawExprT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<RawExprT>,
+        usedColumns : RawExprUtil.UsedColumns<RawExprT>,
         assertDelegate : sd.AssertDelegate<number>,
     }>
 ) {
     return new Expr(
         {
-            usedRef : RawExprUtil.usedRef(rawExpr),
+            usedColumns : RawExprUtil.usedColumns(rawExpr),
             assertDelegate : dataType.double(),
         },
         Parentheses.Create([

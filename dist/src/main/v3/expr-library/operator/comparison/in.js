@@ -7,7 +7,11 @@ const dataType = require("../../../data-type");
 //https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_in
 function In(left, arg0, ...args) {
     return new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple(left, arg0, ...args),
+        usedColumns: raw_expr_1.RawExprUtil.Array.usedColumns([
+            left,
+            arg0,
+            ...args,
+        ]),
         assertDelegate: dataType.boolean(),
     }, [
         raw_expr_1.RawExprUtil.queryTree(left),

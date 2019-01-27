@@ -17,7 +17,7 @@ export function deleteOne<
     return connection.transactionIfNotInOne(async (connection) : Promise<DeleteOneResult> => {
         const result = await QueryUtil.newInstance()
             .from(table as any)
-            .where(() => where)
+            .__unsafeWhere(() => where)
             .delete(() => [table])
             .execute(connection);
         if (result.rawDeletedRowCount == 0) {

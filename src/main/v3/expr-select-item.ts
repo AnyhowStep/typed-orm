@@ -1,11 +1,11 @@
 import * as sd from "schema-decorator";
-import {ColumnRef, ColumnRefUtil} from "./column-ref";
+import {IColumn, ColumnUtil} from "./column";
 import {QueryTreeArray, Parentheses, QueryTree, QueryTreeUtil} from "./query-tree";
 import {escapeId} from "sqlstring";
 import {SEPARATOR} from "./constants";
 
 export interface ExprSelectItemData {
-    readonly usedRef : ColumnRef;
+    readonly usedColumns : IColumn[];
     readonly assertDelegate : sd.AssertDelegate<any>;
 
     readonly tableAlias : string;
@@ -14,7 +14,7 @@ export interface ExprSelectItemData {
 
 //There doesn't seem to be a point in making a class for this...
 export interface IExprSelectItem<DataT extends ExprSelectItemData=ExprSelectItemData> {
-    readonly usedRef : DataT["usedRef"];
+    readonly usedColumns : DataT["usedColumns"];
     readonly assertDelegate : DataT["assertDelegate"];
 
     readonly tableAlias : DataT["tableAlias"];
@@ -26,7 +26,7 @@ export interface IExprSelectItem<DataT extends ExprSelectItemData=ExprSelectItem
 
 export type IAnonymousTypedExprSelectItem<TypeT> = (
     IExprSelectItem<{
-        usedRef : ColumnRef,
+        usedColumns : IColumn[],
         assertDelegate : sd.AssertDelegate<TypeT>,
 
         tableAlias : string,
@@ -39,12 +39,12 @@ export namespace ExprSelectItemUtil {
         return (
             raw != undefined &&
             (raw instanceof Object) &&
-            ("usedRef" in raw) &&
+            ("usedColumns" in raw) &&
             ("assertDelegate" in raw) &&
             ("tableAlias" in raw) &&
             ("alias" in raw) &&
             ("unaliasedQuery" in raw) &&
-            (ColumnRefUtil.isColumnRef(raw.usedRef)) &&
+            (ColumnUtil.Array.isColumnArray(raw.usedColumns)) &&
             (typeof raw.assertDelegate == "function") &&
             (typeof raw.tableAlias == "string") &&
             (typeof raw.alias == "string") &&

@@ -30,7 +30,7 @@ export type SetMutable<
     DelegateT extends MutableDelegate<TableT>
 > = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : TableT["columns"];
 
@@ -79,7 +79,7 @@ export function setMutable<
     );
 
     const {
-        usedRef,
+        usedColumns,
         alias,
 
         autoIncrement,
@@ -100,7 +100,7 @@ export function setMutable<
 
     const result : SetMutable<TableT, DelegateT> = new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

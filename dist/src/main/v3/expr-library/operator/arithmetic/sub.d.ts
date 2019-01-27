@@ -1,8 +1,7 @@
 import * as sd from "schema-decorator";
 import { RawExpr, RawExprUtil } from "../../../raw-expr";
 import { Expr } from "../../../expr";
-import { Tuple } from "../../../tuple";
-export declare function sub<ArrT extends Tuple<RawExpr<number>>>(...arr: ArrT): (Expr<{
-    usedRef: RawExprUtil.IntersectUsedRefTuple<ArrT>;
+export declare function sub<ArrT extends RawExpr<number>[]>(...arr: ArrT): (Expr<{
+    usedColumns: RawExprUtil.Array.UsedColumns<ArrT>;
     assertDelegate: sd.AssertDelegate<number>;
 }>);

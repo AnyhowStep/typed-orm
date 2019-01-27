@@ -13,7 +13,7 @@ function fetchOneBySk_EntireRow<
 ) : Promise<Row<TableT>> {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqSuperKey(table, sk) as any)
+        .__unsafeWhere(() => TableUtil.eqSuperKey(table, sk) as any)
         .select(c => [c])
         .fetchOne(connection) as any;
 }
@@ -33,7 +33,7 @@ function fetchOneBySk_Select<
 ) : Promise<QueryUtil.UnmappedTypeNoJoins<ReturnType<DelegateT>>> {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqSuperKey(table, sk) as any)
+        .__unsafeWhere(() => TableUtil.eqSuperKey(table, sk) as any)
         .select(delegate as any)
         .fetchOne(connection) as any;
 }

@@ -9,7 +9,7 @@ const dataType = require("../../../data-type");
 function castAsDateTime(rawExpr, fractionalSecondPrecision = 0) {
     fractionalSecondPrecision = sd.literal(0, 1, 2, 3)("fractionalSecondPrecision", fractionalSecondPrecision);
     return new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+        usedColumns: raw_expr_1.RawExprUtil.usedColumns(rawExpr),
         assertDelegate: dataType.bigint(),
     }, new query_tree_1.FunctionCall("CAST", [
         [

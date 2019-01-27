@@ -14,6 +14,6 @@ export function assertExistsByCk<
 ) {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqCandidateKey(table, ck) as any)
+        .__unsafeWhere(() => TableUtil.eqCandidateKey(table, ck) as any)
         .assertExists(connection) as any;
 }

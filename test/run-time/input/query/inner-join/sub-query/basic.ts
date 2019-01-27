@@ -40,7 +40,7 @@ tape(__filename, (t) => {
     t.deepEqual(query._joins[0].from.length, 0);
     t.deepEqual(query._joins[0].to.length, 0);
 
-    t.deepEqual(query._joins[1].aliasedTable.usedRef, {});
+    t.deepEqual(query._joins[1].aliasedTable.usedColumns, []);
     t.deepEqual(query._joins[1].aliasedTable.alias, "subQuery");
     t.deepEqual(query._joins[1].aliasedTable.columns, {
         c : joined1.columns.c.withTableAlias("subQuery")

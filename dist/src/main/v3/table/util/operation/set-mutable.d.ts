@@ -5,7 +5,7 @@ export declare type MutableColumnMap<ColumnMapT extends ColumnMap, GeneratedT ex
 });
 export declare type MutableDelegate<TableT extends ITable> = ((columnMap: MutableColumnMap<TableT["columns"], TableT["generated"]>) => (MutableColumnMap<TableT["columns"], TableT["generated"]>[keyof MutableColumnMap<TableT["columns"], TableT["generated"]>][]));
 export declare type SetMutable<TableT extends ITable, DelegateT extends MutableDelegate<TableT>> = (Table<{
-    readonly usedRef: TableT["usedRef"];
+    readonly usedColumns: TableT["usedColumns"];
     readonly alias: TableT["alias"];
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];

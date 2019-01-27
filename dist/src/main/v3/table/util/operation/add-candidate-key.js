@@ -20,9 +20,9 @@ function addCandidateKey(table, delegate) {
         throw new Error(`Cannot add ${key.join("|")} as candidate key of ${table.alias}; it is a sub key of some candidate key`);
     }
     const candidateKeys = table.candidateKeys.concat([key]);
-    const { usedRef, alias, autoIncrement, id, primaryKey, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+    const { usedColumns, alias, autoIncrement, id, primaryKey, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
     const result = new table_1.Table({
-        usedRef,
+        usedColumns,
         alias,
         columns,
         autoIncrement,

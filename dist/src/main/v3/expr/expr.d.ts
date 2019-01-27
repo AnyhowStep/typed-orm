@@ -1,19 +1,19 @@
 import * as sd from "schema-decorator";
-import { ColumnRef } from "../column-ref";
+import { IColumn } from "../column";
 import { QueryTree } from "../query-tree";
 import { SortDirection } from "../order";
 import * as ExprUtil from "./util";
 export interface ExprData {
-    readonly usedRef: ColumnRef;
+    readonly usedColumns: IColumn[];
     readonly assertDelegate: sd.AssertDelegate<any>;
 }
 export interface IExpr<DataT extends ExprData = ExprData> {
-    readonly usedRef: DataT["usedRef"];
+    readonly usedColumns: DataT["usedColumns"];
     readonly assertDelegate: DataT["assertDelegate"];
     readonly queryTree: QueryTree;
 }
 export declare class Expr<DataT extends ExprData> implements IExpr<DataT> {
-    readonly usedRef: DataT["usedRef"];
+    readonly usedColumns: DataT["usedColumns"];
     readonly assertDelegate: DataT["assertDelegate"];
     readonly queryTree: QueryTree;
     constructor(data: DataT, queryTree: QueryTree);
@@ -23,6 +23,6 @@ export declare class Expr<DataT extends ExprData> implements IExpr<DataT> {
     sort(sortDirection: SortDirection): ExprUtil.Sort<this>;
 }
 export declare type IAnonymousTypedExpr<TypeT> = (IExpr<{
-    usedRef: ColumnRef;
+    usedColumns: IColumn[];
     assertDelegate: sd.AssertDelegate<TypeT>;
 }>);

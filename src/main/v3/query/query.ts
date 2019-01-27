@@ -1040,15 +1040,33 @@ export class Query<DataT extends QueryData> {
         >
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        delegate : QueryUtil.AssertValidWhereDelegate<
+        delegate : WhereDelegateT
+    ) : (
+        QueryUtil.WhereResult<
             Extract<this, QueryUtil.AfterFromClause>,
             WhereDelegateT
         >
-    ) : QueryUtil.Where<Extract<this, QueryUtil.AfterFromClause>> {
+    ) {
         return QueryUtil.where<
             Extract<this, QueryUtil.AfterFromClause>,
             WhereDelegateT
         >(this, delegate);
+    }
+
+    __unsafeWhere<
+        WhereDelegateT extends QueryUtil.WhereDelegate<
+            Extract<this, QueryUtil.AfterFromClause>
+        >
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        delegate : WhereDelegateT
+    ) : (
+        QueryUtil.Where<Extract<this, QueryUtil.AfterFromClause>>
+    ) {
+        return QueryUtil.where<
+            Extract<this, QueryUtil.AfterFromClause>,
+            WhereDelegateT
+        >(this, delegate) as any;
     }
 
     groupBy<
@@ -1074,11 +1092,13 @@ export class Query<DataT extends QueryData> {
         >
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        delegate : QueryUtil.AssertValidHavingDelegate<
+        delegate : HavingDelegateT
+    ) : (
+        QueryUtil.HavingResult<
             Extract<this, QueryUtil.AfterFromClause>,
             HavingDelegateT
         >
-    ) : QueryUtil.Having<Extract<this, QueryUtil.AfterFromClause>> {
+    ) {
         return QueryUtil.having<
             Extract<this, QueryUtil.AfterFromClause>,
             HavingDelegateT
@@ -1091,11 +1111,13 @@ export class Query<DataT extends QueryData> {
         >
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
-        delegate : QueryUtil.AssertValidOrderByDelegate<
+        delegate : OrderByDelegateT
+    ) : (
+        QueryUtil.OrderByResult<
             Extract<this, QueryUtil.AfterFromClause>,
             OrderByDelegateT
         >
-    ) : QueryUtil.OrderBy<Extract<this, QueryUtil.AfterFromClause>> {
+    ) {
         return QueryUtil.orderBy<
             Extract<this, QueryUtil.AfterFromClause>,
             OrderByDelegateT
@@ -1174,13 +1196,13 @@ export class Query<DataT extends QueryData> {
         >
     > (
         this : Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause)>,
-        delegate : QueryUtil.AssertValidUnionOrderByDelegate<
+        delegate : UnionOrderByDelegateT
+    ) : (
+        QueryUtil.UnionOrderByResult<
             Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause)>,
             UnionOrderByDelegateT
         >
-    ) : QueryUtil.UnionOrderBy<
-    Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause)>
-    > {
+    ) {
         return QueryUtil.unionOrderBy<
             Extract<this, QueryUtil.AfterSelectClause & (QueryUtil.AfterFromClause|QueryUtil.AfterUnionClause)>,
             UnionOrderByDelegateT

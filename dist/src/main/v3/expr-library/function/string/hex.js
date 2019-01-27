@@ -12,7 +12,7 @@ const query_tree_1 = require("../../../query-tree");
 //NOTE: HEX('') gives you an empty string!
 function hex(rawExpr) {
     const result = new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+        usedColumns: raw_expr_1.RawExprUtil.usedColumns(rawExpr),
         assertDelegate: sd.match(/^[0-9A-F]*$/, name => `${name} must be a hexadecimal string, with uppercase A-F`),
     }, new query_tree_1.FunctionCall("HEX", [
         raw_expr_1.RawExprUtil.queryTree(rawExpr)

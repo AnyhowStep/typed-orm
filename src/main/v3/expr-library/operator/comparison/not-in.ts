@@ -3,7 +3,6 @@ import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
 import {NonNullPrimitiveExpr, PrimitiveExprUtil} from "../../../primitive-expr";
-import {Tuple} from "../../../tuple";
 import {FunctionCall} from "../../../query-tree";
 import * as dataType from "../../../data-type";
 
@@ -17,14 +16,14 @@ function notInPrimitiveList<
     ...args : RawExprUtil.TypeOf<LeftT>[]
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<LeftT>,
+        usedColumns : RawExprUtil.UsedColumns<LeftT>,
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
 ) {
     if (args.length == 0) {
         return new Expr(
             {
-                usedRef : RawExprUtil.usedRef(left),
+                usedColumns : RawExprUtil.usedColumns(left),
                 assertDelegate : dataType.boolean(),
             },
             RawExprUtil.queryTree(true)
@@ -32,7 +31,7 @@ function notInPrimitiveList<
     } else {
         return new Expr(
             {
-                usedRef : RawExprUtil.usedRef(left),
+                usedColumns : RawExprUtil.usedColumns(left),
                 assertDelegate : dataType.boolean(),
             },
             [
@@ -52,7 +51,7 @@ function notInPrimitiveList<
 function notInExprList<
     LeftT extends RawExpr<NonNullPrimitiveExpr>,
     Arg0 extends RawExpr<RawExprUtil.TypeOf<LeftT>>,
-    Args extends Tuple<RawExpr<RawExprUtil.TypeOf<LeftT>>>
+    Args extends RawExpr<RawExprUtil.TypeOf<LeftT>>[]
 >(
     left : LeftT,
     arg0 : Arg0,
@@ -60,17 +59,21 @@ function notInExprList<
 ) : (
     //Not an exact typing but, in general, should work
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<LeftT> &
-            RawExprUtil.UsedRef<Arg0> &
-            RawExprUtil.IntersectUsedRefTuple<Args>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<LeftT>[number] |
+            RawExprUtil.UsedColumns<Arg0>[number] |
+            RawExprUtil.Array.UsedColumns<Args>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
 ) {
     return new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(left, arg0, ...(args as any)),
+            usedColumns : RawExprUtil.Array.usedColumns([
+                left,
+                arg0,
+                ...args,
+            ]),
             assertDelegate : dataType.boolean(),
         },
         [
@@ -93,14 +96,14 @@ export function notIn<
     ...args : RawExprUtil.TypeOf<LeftT>[]
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<LeftT>,
+        usedColumns : RawExprUtil.UsedColumns<LeftT>,
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
 );
 export function notIn<
     LeftT extends RawExpr<NonNullPrimitiveExpr>,
     Arg0 extends RawExpr<RawExprUtil.TypeOf<LeftT>>,
-    Args extends Tuple<RawExpr<RawExprUtil.TypeOf<LeftT>>>
+    Args extends RawExpr<RawExprUtil.TypeOf<LeftT>>[]
 >(
     left : LeftT,
     arg0 : Arg0,
@@ -108,11 +111,11 @@ export function notIn<
 ) : (
     //Not an exact typing but, in general, should work
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<LeftT> &
-            RawExprUtil.UsedRef<Arg0> &
-            RawExprUtil.IntersectUsedRefTuple<Args>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<LeftT>[number] |
+            RawExprUtil.UsedColumns<Arg0>[number] |
+            RawExprUtil.Array.UsedColumns<Args>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
 );

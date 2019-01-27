@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 declare const x: {
     COLUMNS: import("../table").Table<{
-        readonly usedRef: {};
+        readonly usedColumns: never[];
         readonly alias: "COLUMNS";
         readonly columns: {
             readonly PRIVILEGES: import("..").Column<{

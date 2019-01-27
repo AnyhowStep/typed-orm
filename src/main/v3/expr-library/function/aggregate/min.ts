@@ -10,14 +10,14 @@ export function min<RawExprT extends RawExpr<PrimitiveExpr>>(
     rawExpr : RawExprT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<RawExprT>,
+        usedColumns : RawExprUtil.UsedColumns<RawExprT>,
         //If there are no matching rows, MIN() returns NULL.
         assertDelegate : sd.AssertDelegate<RawExprUtil.TypeOf<RawExprT>|null>,
     }>
 ) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.usedRef(rawExpr),
+            usedColumns : RawExprUtil.usedColumns(rawExpr),
             assertDelegate : sd.nullable(RawExprUtil.assertDelegate(rawExpr)),
         },
         new FunctionCall(

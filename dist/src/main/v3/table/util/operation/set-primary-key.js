@@ -15,9 +15,9 @@ function setPrimaryKey(table, delegate) {
         }
     }
     const withCandidateKey = add_candidate_key_1.addCandidateKey(table, (() => primaryKeyColumns));
-    const { usedRef, alias, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = withCandidateKey;
+    const { usedColumns, alias, autoIncrement, id, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = withCandidateKey;
     const result = new table_1.Table({
-        usedRef,
+        usedColumns,
         alias,
         columns,
         autoIncrement,

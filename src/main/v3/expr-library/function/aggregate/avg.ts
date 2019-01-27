@@ -10,14 +10,14 @@ export function avg<RawExprT extends RawExpr<number|bigint|null>>(
     rawExpr : RawExprT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<RawExprT>,
+        usedColumns : RawExprUtil.UsedColumns<RawExprT>,
         //If there are no matching rows, AVG() returns NULL.
         assertDelegate : sd.AssertDelegate<number|null>,
     }>
 ) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.usedRef(rawExpr),
+            usedColumns : RawExprUtil.usedColumns(rawExpr),
             assertDelegate : sd.nullable(dataType.double()),
         },
         new FunctionCall(

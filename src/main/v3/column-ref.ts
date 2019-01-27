@@ -217,6 +217,8 @@ export namespace ColumnRefUtil {
         }
     );
     export type FromSelectItemArray_ColumnMapElement<ColumnMapT extends ColumnMap> = (
+        //Unfortunately, {} & ColumnRef extends ColumnMap
+        ColumnMapT[keyof ColumnMapT] extends IColumn ?
         {
             readonly [tableAlias in ColumnMapUtil.TableAlias<ColumnMapT>] : {
                 readonly [columnName in ColumnMapUtil.FindWithTableAlias<
@@ -237,7 +239,8 @@ export namespace ColumnRefUtil {
                     >[columnName]
                 )
             }
-        }
+        } :
+        {}
     );
     export type FromSelectItemArray_ColumnRefElement<ColumnRefT extends ColumnRef> = (
         //Unfortunately, {} & ColumnMap extends ColumnRef

@@ -5,6 +5,7 @@ import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {ITable, TableUtil} from "../../../table";
 import {Update, UpdateModifier, Assignment, UpdatableQuery} from "../../update";
 import {ColumnIdentifier, ColumnIdentifierUtil} from "../../../column-identifier";
+import {IColumn} from "../../../column";
 
 export type AssignmentRefFromJoinArray<JoinArrT extends IJoin[]> = (
     {
@@ -112,14 +113,26 @@ export type AssertValidSetDelegate_Hack<
 > = (
     (
         Exclude<
-            ColumnIdentifierUtil.FromColumnRef<RawExprUtil.UsedRef<ExtractRawExpr<ReturnType<DelegateT>>>>,
+            ColumnIdentifierUtil.FromColumn<
+                //Weird that this needs to be wrapped in Extract<>
+                Extract<
+                    RawExprUtil.UsedColumns<ExtractRawExpr<ReturnType<DelegateT>>>,
+                    IColumn
+                >
+            >,
             ColumnIdentifierUtil.FromJoin<QueryT["_joins"][number]>
         > extends never ?
         unknown :
         [
             "The following referenced columns are not allowed",
             Exclude<
-                ColumnIdentifierUtil.FromColumnRef<RawExprUtil.UsedRef<ExtractRawExpr<ReturnType<DelegateT>>>>,
+                ColumnIdentifierUtil.FromColumn<
+                    //Weird that this needs to be wrapped in Extract<>
+                    Extract<
+                        RawExprUtil.UsedColumns<ExtractRawExpr<ReturnType<DelegateT>>>,
+                        IColumn
+                    >
+                >,
                 ColumnIdentifierUtil.FromJoin<QueryT["_joins"][number]>
             >
         ]
@@ -161,7 +174,7 @@ export function multiTableUpdate<
     const mutableIdentifiers = mutableColumnIdentifiers(query);
 
     const assignments : Assignment[] = [];
-    //usedRefs must be valid,
+    //usedColumns must be valid,
     //columns in assignment must be mutable
     for (let tableAlias in assignmentRef) {
         const assignmentMap = (assignmentRef as AssignmentRef<UpdatableQuery>)[tableAlias];
@@ -185,10 +198,10 @@ export function multiTableUpdate<
             if (rawExpr === undefined) {
                 continue;
             }
-            const usedRef = RawExprUtil.usedRef(rawExpr);
-            ColumnRefUtil.assertIsSubset(
-                usedRef,
-                ref
+            const usedColumns = RawExprUtil.usedColumns(rawExpr);
+            ColumnRefUtil.assertHasColumnIdentifiers(
+                ref,
+                usedColumns
             );
             assignments.push({
                 tableAlias,

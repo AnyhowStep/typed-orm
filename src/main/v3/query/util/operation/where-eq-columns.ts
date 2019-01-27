@@ -4,7 +4,6 @@ import {IAnonymousTypedExpr} from "../../../expr";
 import {and} from "../../../expr-library";
 import {ITable, TableUtil} from "../../../table";
 import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
-import {ColumnRefUtil} from "../../../column-ref";
 import {Row} from "../../../row";
 
 export type WhereEqColumns<
@@ -52,7 +51,7 @@ export function whereEqColumns<
         query._joins
     );
     const condition = TableUtil.eqColumns(table, columns);
-    ColumnRefUtil.assertIsSubset(condition.usedRef, ref);
+    ColumnIdentifierRefUtil.assertHasColumnIdentifiers(ref, condition.usedColumns);
 
     const {
         _distinct,

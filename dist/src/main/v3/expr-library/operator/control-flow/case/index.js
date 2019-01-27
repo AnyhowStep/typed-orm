@@ -11,7 +11,7 @@ __export(require("./value"));
 //https://dev.mysql.com/doc/refman/8.0/en/control-flow-functions.html#operator_case
 function CaseConditionConstructor() {
     return new condition_1.CaseCondition({
-        usedRef: {},
+        usedColumns: [],
         result: undefined,
     }, [
         "CASE",
@@ -20,7 +20,7 @@ function CaseConditionConstructor() {
 //https://dev.mysql.com/doc/refman/8.0/en/control-flow-functions.html#operator_case
 function CaseValueConstructor(valueExpr) {
     return new value_1.CaseValue({
-        usedRef: raw_expr_1.RawExprUtil.usedRef(valueExpr),
+        usedColumns: raw_expr_1.RawExprUtil.usedColumns(valueExpr),
         value: raw_expr_1.RawExprUtil.assertDelegate(valueExpr),
         result: undefined,
     }, [

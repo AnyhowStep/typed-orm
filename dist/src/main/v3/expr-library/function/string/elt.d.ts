@@ -4,6 +4,6 @@ import { RawExpr } from "../../../raw-expr";
 import { RawExprUtil } from "../../../raw-expr";
 import { Tuple } from "../../../tuple";
 export declare function elt<N extends RawExpr<number>, Arg0 extends RawExpr<string>, Args extends Tuple<RawExpr<string>>>(n: N, arg0: Arg0, ...args: Args): (Expr<{
-    usedRef: (RawExprUtil.UsedRef<N> & RawExprUtil.UsedRef<Arg0> & RawExprUtil.IntersectUsedRefTuple<Args>);
+    usedColumns: (RawExprUtil.UsedColumns<N>[number] | RawExprUtil.UsedColumns<Arg0>[number] | RawExprUtil.Array.UsedColumns<Args>[number])[];
     assertDelegate: sd.AssertDelegate<string | null>;
 }>);

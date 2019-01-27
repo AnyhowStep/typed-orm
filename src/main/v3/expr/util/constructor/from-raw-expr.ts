@@ -4,7 +4,7 @@ import {PrimitiveExpr} from "../../../primitive-expr";
 
 export type FromRawExpr<RawExprT extends RawExpr<PrimitiveExpr>> = (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<RawExprT>,
+        usedColumns : RawExprUtil.UsedColumns<RawExprT>,
         assertDelegate : RawExprUtil.AssertDelegate<RawExprT>
     }>
 );
@@ -16,12 +16,12 @@ export function fromRawExpr<
     if (rawExpr instanceof Expr) {
         return rawExpr;
     }
-    const usedRef = RawExprUtil.usedRef(rawExpr);
+    const usedColumns = RawExprUtil.usedColumns(rawExpr);
     const assertDelegate = RawExprUtil.assertDelegate(rawExpr);
     const queryTree = RawExprUtil.queryTree(rawExpr);
     return new Expr(
         {
-            usedRef,
+            usedColumns,
             assertDelegate,
         },
         queryTree

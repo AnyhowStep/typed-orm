@@ -11,7 +11,10 @@ function timestampAdd(temporalUnit, interval, dateTime) {
     //Defend ourself from invalid values during run-time
     sd.enumeration(constant_1.TemporalUnit)("temporalUnit", temporalUnit);
     const result = new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple(interval, dateTime),
+        usedColumns: raw_expr_1.RawExprUtil.Array.usedColumns([
+            interval,
+            dateTime,
+        ]),
         assertDelegate: dataType.dateTime(3),
     }, new query_tree_1.FunctionCall("TIMESTAMPADD", [
         temporalUnit,

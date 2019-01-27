@@ -37,7 +37,7 @@ export type SetId<
     DelegateT extends IdDelegate<TableT>
 > = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : TableT["columns"];
 
@@ -100,7 +100,7 @@ export function setId<
     ]);
 
     const {
-        usedRef,
+        usedColumns,
         alias,
         autoIncrement,
         generated,
@@ -116,7 +116,7 @@ export function setId<
 
     const result : SetId<TableT, DelegateT> = new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

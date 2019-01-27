@@ -7,7 +7,7 @@ const dataType = require("../../../data-type");
 //https://dev.mysql.com/doc/refman/8.0/en/cast-functions.html#function_cast
 function castAsSignedInteger(rawExpr) {
     return new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+        usedColumns: raw_expr_1.RawExprUtil.usedColumns(rawExpr),
         assertDelegate: dataType.bigint(),
     }, new query_tree_1.FunctionCall("CAST", [
         [

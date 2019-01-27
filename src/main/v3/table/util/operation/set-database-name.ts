@@ -3,7 +3,7 @@ import {Table, ITable} from "../../table";
 
 export type SetDatabaseName<TableT extends ITable> = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : TableT["columns"];
 
@@ -29,7 +29,7 @@ export function setDatabaseName<TableT extends ITable> (
     SetDatabaseName<TableT>
 ) {
     const {
-        usedRef,
+        usedColumns,
         alias,
         columns,
         autoIncrement,
@@ -49,7 +49,7 @@ export function setDatabaseName<TableT extends ITable> (
 
     return new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

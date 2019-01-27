@@ -1,7 +1,6 @@
 import * as sd from "schema-decorator";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr, ExprUtil} from "../../../expr";
-import {Tuple} from "../../../tuple";
 import {Parentheses, QueryTreeArray} from "../../../query-tree";
 import * as dataType from "../../../data-type";
 
@@ -26,15 +25,15 @@ function tryGetSubQueryTree (rawExpr : RawExpr<number>) : QueryTreeArray|undefin
     }
     return undefined;
 }
-export function sub<ArrT extends Tuple<RawExpr<number>>> (
+export function sub<ArrT extends RawExpr<number>[]> (
     ...arr : ArrT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.IntersectUsedRefTuple<ArrT>,
+        usedColumns : RawExprUtil.Array.UsedColumns<ArrT>,
         assertDelegate : sd.AssertDelegate<number>,
     }>
 ) {
-    const usedRef = RawExprUtil.intersectUsedRefTuple(...arr);
+    const usedColumns = RawExprUtil.Array.usedColumns(arr);
     const queryTree : QueryTreeArray = [];
 
     for (let rawExpr of arr) {
@@ -59,7 +58,7 @@ export function sub<ArrT extends Tuple<RawExpr<number>>> (
         //By convention, the subtraction of zero numbers is zero
         return new Expr(
             {
-                usedRef : usedRef,
+                usedColumns,
                 assertDelegate : dataType.double(),
             },
             RawExprUtil.queryTree(0)
@@ -67,7 +66,7 @@ export function sub<ArrT extends Tuple<RawExpr<number>>> (
     } else {
         return new Expr(
             {
-                usedRef : usedRef,
+                usedColumns,
                 assertDelegate : dataType.double(),
             },
             queryTree

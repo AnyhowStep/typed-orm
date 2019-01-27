@@ -12,13 +12,13 @@ export function castAsSignedInteger<
     rawExpr : RawExprT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<RawExprT>,
+        usedColumns : RawExprUtil.UsedColumns<RawExprT>,
         assertDelegate : sd.AssertDelegate<bigint>,
     }>
 ) {
     return new Expr(
         {
-            usedRef : RawExprUtil.usedRef(rawExpr),
+            usedColumns : RawExprUtil.usedColumns(rawExpr),
             assertDelegate : dataType.bigint(),
         },
         new FunctionCall("CAST", [

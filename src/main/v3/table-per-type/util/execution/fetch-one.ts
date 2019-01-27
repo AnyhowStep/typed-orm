@@ -19,17 +19,15 @@ export async function fetchOne<
         return QueryUtil.fetchOne(
             QueryUtil.newInstance()
                 .from(table as any)
-                .where(() => where)
+                .__unsafeWhere(() => where)
                 .select(c => [c]),
             connection
         ) as any;
     }
     const rawResult : any = await QueryUtil.fetchOne(
         QueryUtil.select(
-            QueryUtil.where(
-                from(table),
-                (() => where) as any
-            ),
+            from(table)
+                .__unsafeWhere((() => where) as any),
             ((c : any) => [c]) as any
         ),
         connection

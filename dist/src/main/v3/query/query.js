@@ -85,6 +85,9 @@ class Query {
     where(delegate) {
         return QueryUtil.where(this, delegate);
     }
+    __unsafeWhere(delegate) {
+        return QueryUtil.where(this, delegate);
+    }
     groupBy(delegate) {
         return QueryUtil.groupBy(this, delegate);
     }

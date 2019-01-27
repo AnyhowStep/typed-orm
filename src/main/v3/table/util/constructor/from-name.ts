@@ -5,7 +5,7 @@ export type FromName<
     NameT extends string
 > = (
     Table<{
-        readonly usedRef : {};
+        readonly usedColumns : never[];
         readonly alias : NameT;
         readonly columns : {};
 
@@ -33,7 +33,7 @@ export function fromName<
 ) {
     return new Table(
         {
-            usedRef : {},
+            usedColumns : [],
             alias : name,
             columns : {},
 

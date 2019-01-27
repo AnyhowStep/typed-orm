@@ -17,7 +17,7 @@ function utcTimestamp(fractionalSecondsPrecision = 0) {
     let cached = cache[fractionalSecondsPrecision];
     if (cached == undefined) {
         cached = new expr_1.Expr({
-            usedRef: {},
+            usedColumns: [],
             assertDelegate: data_type_1.dateTime(fractionalSecondsPrecision),
         }, `UTC_TIMESTAMP(${fractionalSecondsPrecision == 0 ? '' : fractionalSecondsPrecision})`);
         cache[fractionalSecondsPrecision] = cached;

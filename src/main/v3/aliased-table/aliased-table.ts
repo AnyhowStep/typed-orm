@@ -1,16 +1,16 @@
+import {IColumn} from "../column";
 import {ColumnMap} from "../column-map";
-import {ColumnRef} from "../column-ref";
 import {QueryTree} from "../query-tree";
 import * as AliasedTableUtil from "./util";
 
 export interface AliasedTableData {
-    readonly usedRef : ColumnRef;
+    readonly usedColumns : IColumn[];
     readonly alias : string;
     readonly columns : ColumnMap;
 }
 
 export interface IAliasedTable<DataT extends AliasedTableData=AliasedTableData> {
-    readonly usedRef : DataT["usedRef"];
+    readonly usedColumns : DataT["usedColumns"];
     readonly alias : DataT["alias"];
     readonly columns : DataT["columns"];
 
@@ -20,7 +20,7 @@ export interface IAliasedTable<DataT extends AliasedTableData=AliasedTableData> 
 }
 
 export class AliasedTable<DataT extends AliasedTableData> implements IAliasedTable<DataT> {
-    readonly usedRef : DataT["usedRef"];
+    readonly usedColumns : DataT["usedColumns"];
     readonly alias : DataT["alias"];
     readonly columns : DataT["columns"];
 
@@ -35,7 +35,7 @@ export class AliasedTable<DataT extends AliasedTableData> implements IAliasedTab
             unaliasedQuery : QueryTree,
         }
     ) {
-        this.usedRef = data.usedRef;
+        this.usedColumns = data.usedColumns;
         this.alias = data.alias;
         this.columns = data.columns;
 

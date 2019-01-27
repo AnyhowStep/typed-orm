@@ -26,7 +26,7 @@ function tryGetMulQueryTree(rawExpr) {
     return undefined;
 }
 function bigIntMul(...arr) {
-    const usedRef = raw_expr_1.RawExprUtil.intersectUsedRefTuple(...arr);
+    const usedColumns = raw_expr_1.RawExprUtil.Array.usedColumns(arr);
     const queryTree = [];
     for (let rawExpr of arr) {
         const mulQueryTree = tryGetMulQueryTree(rawExpr);
@@ -51,13 +51,13 @@ function bigIntMul(...arr) {
     if (queryTree.length == 0) {
         //By convention, multiplying zero numbers is one.
         return new expr_1.Expr({
-            usedRef: usedRef,
+            usedColumns,
             assertDelegate: dataType.bigint(),
         }, raw_expr_1.RawExprUtil.queryTree(1));
     }
     else {
         return new expr_1.Expr({
-            usedRef: usedRef,
+            usedColumns,
             assertDelegate: dataType.bigint(),
         }, queryTree);
     }

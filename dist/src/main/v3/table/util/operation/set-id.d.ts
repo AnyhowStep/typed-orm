@@ -8,7 +8,7 @@ export declare type IdColumnMap<TableT extends ITable> = ({
 });
 export declare type IdDelegate<TableT extends ITable> = ((columnMap: IdColumnMap<TableT>) => (IdColumnMap<TableT>[keyof IdColumnMap<TableT>]));
 export declare type SetId<TableT extends ITable, DelegateT extends IdDelegate<TableT>> = (Table<{
-    readonly usedRef: TableT["usedRef"];
+    readonly usedColumns: TableT["usedColumns"];
     readonly alias: TableT["alias"];
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];

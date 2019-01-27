@@ -8,9 +8,10 @@ export type Coalesce<
     DefaultT extends RawExpr<RawExprUtil.TypeOf<QueryT>>
 > = (
     Expr<{
-        usedRef : RawExprUtil.IntersectUsedRefTuple<
-            [QueryT, DefaultT]
-        >,
+        usedColumns : (
+            RawExprUtil.UsedColumns<QueryT>[number] |
+            RawExprUtil.UsedColumns<DefaultT>[number]
+        )[],
         assertDelegate : RawExprUtil.AssertDelegate<
             Exclude<RawExprUtil.TypeOf<QueryT>, null>|
             DefaultT

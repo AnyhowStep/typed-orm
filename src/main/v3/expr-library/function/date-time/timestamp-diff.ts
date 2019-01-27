@@ -16,10 +16,10 @@ export function timestampDiff<
     to : ToT
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<FromT> &
-            RawExprUtil.UsedRef<ToT>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<FromT>[number] |
+            RawExprUtil.UsedColumns<ToT>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<bigint>,
     }>
 ) {
@@ -27,10 +27,10 @@ export function timestampDiff<
     sd.enumeration(TemporalUnit)("temporalUnit", temporalUnit);
     const result = new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(
+            usedColumns : RawExprUtil.Array.usedColumns([
                 from,
-                to
-            ),
+                to,
+            ]),
             assertDelegate : dataType.bigint(),
         },
         new FunctionCall(

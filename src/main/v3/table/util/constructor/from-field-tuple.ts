@@ -10,7 +10,7 @@ export type FromFieldTuple<
     FieldsT extends Tuple<sd.AnyField>
 > = (
     Table<{
-        readonly usedRef : {};
+        readonly usedColumns : never[];
         readonly alias : NameT;
         readonly columns : ColumnMapUtil.FromFieldArray<NameT, FieldsT>;
 
@@ -46,7 +46,7 @@ export function fromFieldTuple<
 
     return new Table(
         {
-            usedRef : {},
+            usedColumns : [],
             alias : name,
             columns,
 

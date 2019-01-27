@@ -7,7 +7,7 @@ export type AddColumnsFromFieldTuple<
     FieldsT extends sd.AnyField[]
 > = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : TableT["alias"];
         readonly columns : ColumnMapUtil.Intersect<
             TableT["columns"],
@@ -62,7 +62,7 @@ export function addColumnsFromFieldTuple<
     const isNullable = ColumnMapUtil.nullableColumnNames(columns);
 
     const {
-        usedRef,
+        usedColumns,
         alias,
 
         autoIncrement,
@@ -83,7 +83,7 @@ export function addColumnsFromFieldTuple<
 
     const result : AddColumnsFromFieldTuple<TableT, FieldsT> = new Table(
         {
-            usedRef,
+            usedColumns,
             alias,
             columns,
 

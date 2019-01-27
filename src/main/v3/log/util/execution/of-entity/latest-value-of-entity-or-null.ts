@@ -5,7 +5,6 @@ import {latestOfEntity} from "./latest-of-entity";
 import {ColumnMapUtil} from "../../../../column-map";
 import {ColumnIdentifierMapUtil} from "../../../../column-identifier-map";
 import {ExprUtil, IExpr} from "../../../../expr";
-import {ColumnRefUtil} from "../../../../column-ref";
 import {ColumnUtil} from "../../../../column";
 import {ALIASED} from "../../../../constants";
 import {LatestValueOrNullDelegate} from "../latest-value-or-null-delegate";
@@ -16,9 +15,7 @@ export type LatestValueOfEntityOrNull<
 > = (
     ExprUtil.As<
         IExpr<{
-            usedRef : ColumnRefUtil.FromColumnArray<
-                ColumnUtil.FromColumnMap<LogT["entity"]["columns"]>[]
-            >,
+            usedColumns : ColumnUtil.FromColumnMap<LogT["entity"]["columns"]>[],
             assertDelegate : sd.AssertDelegate<
                 ReturnType<
                     LogT["table"]["columns"][

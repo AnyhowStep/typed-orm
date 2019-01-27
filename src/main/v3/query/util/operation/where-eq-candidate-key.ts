@@ -4,7 +4,6 @@ import {IAnonymousTypedExpr} from "../../../expr";
 import {and} from "../../../expr-library";
 import {ITable, Table, TableUtil} from "../../../table";
 import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
-import {ColumnRefUtil} from "../../../column-ref";
 import {CandidateKey, CandidateKeyUtil} from "../../../candidate-key";
 
 export type WhereEqCandidateKey<
@@ -60,7 +59,7 @@ export function whereEqCandidateKey<
         query._joins
     );
     const condition = TableUtil.eqCandidateKey(table, key);
-    ColumnRefUtil.assertIsSubset(condition.usedRef, ref);
+    ColumnIdentifierRefUtil.assertHasColumnIdentifiers(ref, condition.usedColumns);
 
     const {
         _distinct,

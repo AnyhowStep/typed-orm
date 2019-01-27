@@ -17,19 +17,19 @@ export function concat<
     ...args : Args
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<Arg0> &
-            RawExprUtil.IntersectUsedRefTuple<Args>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<Arg0>[number] |
+            RawExprUtil.Array.UsedColumns<Args>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<string>,
     }>
 ) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(
+            usedColumns : RawExprUtil.Array.usedColumns([
                 arg0,
-                ...(args as any)
-            ),
+                ...args,
+            ]),
             assertDelegate : sd.string(),
         },
         new FunctionCall(

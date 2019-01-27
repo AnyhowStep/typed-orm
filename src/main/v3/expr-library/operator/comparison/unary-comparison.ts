@@ -12,7 +12,7 @@ export type UnaryComparison = (
         rawExpr : RawExprT
     ) => (
         Expr<{
-            usedRef : RawExprUtil.UsedRef<RawExprT>,
+            usedColumns : RawExprUtil.UsedColumns<RawExprT>,
             assertDelegate : sd.AssertDelegate<boolean>,
         }>
     )
@@ -24,7 +24,7 @@ export function unaryComparison (postFixOperator : string) : UnaryComparison {
     const result : UnaryComparison = (rawExpr) => {
         return new Expr(
             {
-                usedRef : RawExprUtil.usedRef(rawExpr),
+                usedColumns : RawExprUtil.usedColumns(rawExpr),
                 assertDelegate : dataType.boolean(),
             },
             [

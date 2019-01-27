@@ -1,14 +1,15 @@
 import {IExpr} from "../../expr";
+import {ColumnUtil} from "../../../column";
 import {QueryTreeUtil} from "../../../query-tree";
 
 export function isExpr (raw : any) : raw is IExpr {
     return (
         (raw != undefined) &&
         (raw instanceof Object) &&
-        ("usedRef" in raw) &&
+        ("usedColumns" in raw) &&
         ("assertDelegate" in raw) &&
         ("queryTree" in raw) &&
-        (raw.usedRef instanceof Object) &&
+        (ColumnUtil.Array.isColumnArray(raw.usedColumns)) &&
         (typeof raw.assertDelegate == "function") &&
         (QueryTreeUtil.isQueryTree(raw.queryTree))
     );

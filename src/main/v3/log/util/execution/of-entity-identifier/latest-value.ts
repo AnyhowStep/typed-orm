@@ -11,7 +11,7 @@ export type LatestValue<
 > = (
     ExprUtil.As<
         IExpr<{
-            usedRef : {},
+            usedColumns : never[],
             assertDelegate : (
                 LogT["table"]["columns"][
                     ReturnType<DelegateT>["name"]
@@ -34,8 +34,9 @@ export function latestValue<
 ) {
     const expr = latestValueOrNull(log, entityIdentifier, delegate);
 
-    return QueryUtil.coalesce(
+    const result = QueryUtil.coalesce(
         expr,
         log.trackedDefaults[expr.alias]
     ).as(expr.alias);
+    return result as any;
 }

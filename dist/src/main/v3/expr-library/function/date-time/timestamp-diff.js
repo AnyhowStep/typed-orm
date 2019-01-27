@@ -11,7 +11,10 @@ function timestampDiff(temporalUnit, from, to) {
     //Defend ourself from invalid values during run-time
     sd.enumeration(constant_1.TemporalUnit)("temporalUnit", temporalUnit);
     const result = new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple(from, to),
+        usedColumns: raw_expr_1.RawExprUtil.Array.usedColumns([
+            from,
+            to,
+        ]),
         assertDelegate: dataType.bigint(),
     }, new query_tree_1.FunctionCall("TIMESTAMPDIFF", [
         temporalUnit,

@@ -8,7 +8,7 @@ export type FromAssertMap<
     AssertMapT extends AssertMap
 > = (
     Table<{
-        readonly usedRef : {};
+        readonly usedColumns : never[];
         readonly alias : NameT;
         readonly columns : ColumnMapUtil.FromAssertMap<NameT, AssertMapT>;
 
@@ -48,7 +48,7 @@ export function fromAssertMap<
 
     return new Table(
         {
-            usedRef : {},
+            usedColumns : [],
             alias : name,
             columns,
 

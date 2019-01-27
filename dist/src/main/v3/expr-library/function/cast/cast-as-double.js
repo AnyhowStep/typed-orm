@@ -8,7 +8,7 @@ const query_tree_1 = require("../../../query-tree");
 //(x + 0e0) will give us a DOUBLE
 function castAsDouble(rawExpr) {
     return new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+        usedColumns: raw_expr_1.RawExprUtil.usedColumns(rawExpr),
         assertDelegate: dataType.double(),
     }, query_tree_1.Parentheses.Create([
         raw_expr_1.RawExprUtil.queryTree(rawExpr),

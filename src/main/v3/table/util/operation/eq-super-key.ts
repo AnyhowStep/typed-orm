@@ -1,7 +1,6 @@
 import * as sd from "schema-decorator";
 import {Table, ITable} from "../../table";
 import * as exprLib from "../../../expr-library";
-import {ColumnRefUtil} from "../../../column-ref";
 import {ColumnUtil} from "../../../column";
 import {Expr} from "../../../expr";
 import {SuperKey, SuperKeyUtil} from "../../../super-key";
@@ -13,9 +12,7 @@ export function eqSuperKey<
     sk : SuperKey<TableT>
 ) : (
     Expr<{
-        usedRef : ColumnRefUtil.FromColumnArray<
-            ColumnUtil.FromColumnMap<TableT["columns"]>[]
-        >,
+        usedColumns : ColumnUtil.FromColumnMap<TableT["columns"]>[],
         assertDelegate : sd.AssertDelegate<boolean>
     }>
 ) {

@@ -15,11 +15,11 @@ export function exportSet<
     off : OffT
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<BitsT> &
-            RawExprUtil.UsedRef<OnT> &
-            RawExprUtil.UsedRef<OffT>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<BitsT>[number] |
+            RawExprUtil.UsedColumns<OnT>[number] |
+            RawExprUtil.UsedColumns<OffT>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<string>,
     }>
 );
@@ -35,12 +35,12 @@ export function exportSet<
     separator : SeparatorT,
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<BitsT> &
-            RawExprUtil.UsedRef<OnT> &
-            RawExprUtil.UsedRef<OffT> &
-            RawExprUtil.UsedRef<SeparatorT>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<BitsT>[number] |
+            RawExprUtil.UsedColumns<OnT>[number] |
+            RawExprUtil.UsedColumns<OffT>[number] |
+            RawExprUtil.UsedColumns<SeparatorT>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<string>,
     }>
 );
@@ -58,21 +58,21 @@ export function exportSet<
     numberOfBits : NumberOfBitsT
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<BitsT> &
-            RawExprUtil.UsedRef<OnT> &
-            RawExprUtil.UsedRef<OffT> &
-            RawExprUtil.UsedRef<SeparatorT> &
-            RawExprUtil.UsedRef<NumberOfBitsT>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<BitsT>[number] |
+            RawExprUtil.UsedColumns<OnT>[number] |
+            RawExprUtil.UsedColumns<OffT>[number] |
+            RawExprUtil.UsedColumns<SeparatorT>[number] |
+            RawExprUtil.UsedColumns<NumberOfBitsT>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<string>,
     }>
 );
 export function exportSet (...args : RawExpr<any>[]) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(
-                ...(args as any)
+            usedColumns : RawExprUtil.Array.usedColumns(
+                args
             ),
             assertDelegate : sd.string(),
         },

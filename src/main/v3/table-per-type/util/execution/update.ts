@@ -2,7 +2,7 @@ import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {ITable} from "../../../table";
 import {ColumnType, MutableColumnNames} from "../query";
 import {ColumnRefUtil} from "../../../column-ref";
-import {ColumnUtil,} from "../../../column";
+import {ColumnUtil, IColumn} from "../../../column";
 import {QueryUtil} from "../../../query";
 import {UpdatableQuery} from "../../../update";
 import {AssignmentRef, ExecutableUpdate} from "../../../update/util";
@@ -69,12 +69,16 @@ export type AssertValidSetDelegate_Hack<
 > = (
     (
         Exclude<
-            ColumnIdentifierUtil.FromColumnRef<
-                RawExprUtil.UsedRef<
-                    SetDelegateExtractRawExpr<
-                        TableT,
-                        DelegateT
-                    >
+            ColumnIdentifierUtil.FromColumn<
+                //Weird that this needs to be wrapped in Extract<>
+                Extract<
+                    RawExprUtil.UsedColumns<
+                        SetDelegateExtractRawExpr<
+                            TableT,
+                            DelegateT
+                        >
+                    >,
+                    IColumn
                 >
             >,
             ColumnIdentifierUtil.FromColumnMap<
@@ -99,12 +103,16 @@ export type AssertValidSetDelegate_Hack<
         [
             "The following referenced columns are not allowed",
             Exclude<
-                ColumnIdentifierUtil.FromColumnRef<
-                    RawExprUtil.UsedRef<
-                        SetDelegateExtractRawExpr<
-                            TableT,
-                            DelegateT
-                        >
+                ColumnIdentifierUtil.FromColumn<
+                    //Weird that this needs to be wrapped in Extract<>
+                    Extract<
+                        RawExprUtil.UsedColumns<
+                            SetDelegateExtractRawExpr<
+                                TableT,
+                                DelegateT
+                            >
+                        >,
+                        IColumn
                     >
                 >,
                 ColumnIdentifierUtil.FromColumnMap<
@@ -134,7 +142,7 @@ export function update<
     if (table.parents.length == 0) {
         const result : ExecutableUpdate = QueryUtil.newInstance()
             .from(table as any)
-            .where(() => where)
+            .__unsafeWhere(() => where)
             .set(delegate as any);
         return result as any;
     }

@@ -4,7 +4,7 @@ import {ColumnMapUtil} from "../../../column-map";
 
 export type SetAlias<TableT extends ITable, NewAliasT extends string> = (
     Table<{
-        readonly usedRef : TableT["usedRef"];
+        readonly usedColumns : TableT["usedColumns"];
         readonly alias : NewAliasT;
         readonly columns : ColumnMapUtil.WithTableAlias<
             TableT["columns"],
@@ -36,7 +36,7 @@ export function setAlias<TableT extends ITable, NewAliasT extends string> (
     const columns : TableT["columns"] = table.columns;
 
     const {
-        usedRef,
+        usedColumns,
         autoIncrement,
         id,
         primaryKey,
@@ -54,7 +54,7 @@ export function setAlias<TableT extends ITable, NewAliasT extends string> (
 
     return new Table(
         {
-            usedRef,
+            usedColumns,
             alias : newAlias,
             columns : ColumnMapUtil.withTableAlias(
                 columns,

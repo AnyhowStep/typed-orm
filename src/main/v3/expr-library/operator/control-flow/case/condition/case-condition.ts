@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import {RawExpr} from "../../../../../raw-expr";
 import {PrimitiveExpr, NonNullPrimitiveExpr} from "../../../../../primitive-expr";
-import {ColumnRef} from "../../../../../column-ref";
+import {IColumn} from "../../../../../column";
 import {QueryTreeArray} from "../../../../../query-tree";
 import * as CaseConditionUtil from "./util";
 
@@ -17,17 +17,17 @@ import * as CaseConditionUtil from "./util";
         .end()
 */
 export interface CaseConditionData {
-    readonly usedRef : ColumnRef,
+    readonly usedColumns : IColumn[],
     readonly result : sd.AssertDelegate<any>|undefined,
 }
 export interface ICaseCondition<DataT extends CaseConditionData=CaseConditionData> {
-    readonly usedRef : DataT["usedRef"];
+    readonly usedColumns : DataT["usedColumns"];
     readonly result : DataT["result"];
     readonly queryTree : QueryTreeArray;
 }
 
 export class CaseCondition<DataT extends CaseConditionData> implements ICaseCondition<DataT> {
-    readonly usedRef : DataT["usedRef"];
+    readonly usedColumns : DataT["usedColumns"];
     readonly result : DataT["result"];
     readonly queryTree : QueryTreeArray;
 
@@ -35,7 +35,7 @@ export class CaseCondition<DataT extends CaseConditionData> implements ICaseCond
         data : DataT,
         queryTree : QueryTreeArray
     ) {
-        this.usedRef = data.usedRef;
+        this.usedColumns = data.usedColumns;
         this.result = data.result;
         this.queryTree = queryTree;
     }

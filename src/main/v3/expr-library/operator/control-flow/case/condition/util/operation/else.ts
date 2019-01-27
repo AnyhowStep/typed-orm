@@ -1,7 +1,6 @@
 import * as sd from "schema-decorator";
 import {RawExpr} from "../../../../../../../raw-expr";
 import {RawExprUtil} from "../../../../../../../raw-expr";
-import {ColumnRefUtil} from "../../../../../../../column-ref";
 import {Expr} from "../../../../../../../expr";
 import {AfterWhenCase} from "./after-when-case";
 
@@ -12,10 +11,10 @@ export type Else<
     >
 > = (
     Expr<{
-        usedRef : (
-            BuilderT["usedRef"] &
-            RawExprUtil.UsedRef<ElseT>
-        ),
+        usedColumns : (
+            BuilderT["usedColumns"][number] |
+            RawExprUtil.UsedColumns<ElseT>[number]
+        )[],
         assertDelegate : BuilderT["result"],
     }>
 );
@@ -34,13 +33,12 @@ function ElseFunction<
     if (sd.isNullable(elseAssertDelegate)) {
         throw new Error(`Nullable expression not allowed, try calling .nullableElse()`);
     }
-
     return new Expr(
         {
-            usedRef : ColumnRefUtil.intersect(
-                builder.usedRef,
-                RawExprUtil.usedRef(elseExpr),
-            ),
+            usedColumns : RawExprUtil.Array.usedColumns([
+                ...builder.usedColumns,
+                elseExpr,
+            ]),
             assertDelegate : sd.or(
                 builder.result,
                 elseAssertDelegate

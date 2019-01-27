@@ -1,7 +1,6 @@
 import * as sd from "schema-decorator";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr} from "../../../expr";
-import {ColumnRefUtil} from "../../../column-ref";
 import * as dataType from "../../../data-type";
 
 export function xor<
@@ -12,19 +11,19 @@ export function xor<
     right : RightT
 ) : (
     Expr<{
-        usedRef : ColumnRefUtil.Intersect<
-            RawExprUtil.UsedRef<LeftT>,
-            RawExprUtil.UsedRef<RightT>
-        >,
+        usedColumns : (
+            RawExprUtil.UsedColumns<LeftT>[number] |
+            RawExprUtil.UsedColumns<RightT>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
 ) {
     return new Expr(
         {
-            usedRef : ColumnRefUtil.intersect(
-                RawExprUtil.usedRef(left),
-                RawExprUtil.usedRef(right)
-            ),
+            usedColumns : RawExprUtil.Array.usedColumns([
+                left,
+                right,
+            ]),
             assertDelegate : dataType.boolean(),
         },
         [

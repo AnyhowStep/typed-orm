@@ -10,13 +10,13 @@ export * from "./value";
 //https://dev.mysql.com/doc/refman/8.0/en/control-flow-functions.html#operator_case
 function CaseConditionConstructor () : (
     CaseCondition<{
-        usedRef : {},
+        usedColumns : never[],
         result : undefined,
     }>
 ) {
     return new CaseCondition(
         {
-            usedRef : {},
+            usedColumns : [],
             result : undefined,
         },
         [
@@ -31,14 +31,14 @@ function CaseValueConstructor<
     valueExpr : ValueT
 ) : (
     CaseValue<{
-        usedRef : RawExprUtil.UsedRef<ValueT>,
+        usedColumns : RawExprUtil.UsedColumns<ValueT>,
         value : RawExprUtil.AssertDelegate<ValueT>,
         result : undefined,
     }>
 ) {
     return new CaseValue(
         {
-            usedRef : RawExprUtil.usedRef(valueExpr),
+            usedColumns : RawExprUtil.usedColumns(valueExpr),
             value : RawExprUtil.assertDelegate(valueExpr),
             result : undefined,
         },
@@ -50,7 +50,7 @@ function CaseValueConstructor<
 }
 export function CaseConstructor () : (
     CaseCondition<{
-        usedRef : {},
+        usedColumns : never[],
         result : undefined,
     }>
 );
@@ -60,7 +60,7 @@ export function CaseConstructor<
     valueExpr : ValueT
 ) : (
     CaseValue<{
-        usedRef : RawExprUtil.UsedRef<ValueT>,
+        usedColumns : RawExprUtil.UsedColumns<ValueT>,
         value : RawExprUtil.AssertDelegate<ValueT>,
         result : undefined,
     }>

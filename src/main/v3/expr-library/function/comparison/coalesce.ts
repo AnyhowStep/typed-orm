@@ -4,7 +4,6 @@ import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
 import {FunctionCall} from "../../../query-tree";
 import {PrimitiveExpr} from "../../../primitive-expr";
-import {Tuple} from "../../../tuple";
 
 /*
     https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_coalesce
@@ -33,9 +32,10 @@ export function coalesce<
     arg1 : Arg1
 ) : (
     Expr<{
-        usedRef : RawExprUtil.IntersectUsedRefTuple<
-            [Arg0, Arg1]
-        >,
+        usedColumns : (
+            RawExprUtil.UsedColumns<Arg0>[number] |
+            RawExprUtil.UsedColumns<Arg1>[number]
+        )[],
         assertDelegate : RawExprUtil.AssertDelegate<
             Exclude<RawExprUtil.TypeOf<Arg0>, null>|
             Arg1
@@ -52,9 +52,11 @@ export function coalesce<
     arg2 : Arg2
 ) : (
     Expr<{
-        usedRef : RawExprUtil.IntersectUsedRefTuple<
-            [Arg0, Arg1, Arg2]
-        >,
+        usedColumns : (
+            RawExprUtil.UsedColumns<Arg0>[number] |
+            RawExprUtil.UsedColumns<Arg1>[number] |
+            RawExprUtil.UsedColumns<Arg2>[number]
+        )[],
         assertDelegate : RawExprUtil.AssertDelegate<
             Exclude<RawExprUtil.TypeOf<Arg0>, null>|
             Exclude<RawExprUtil.TypeOf<Arg1>, null>|
@@ -74,9 +76,12 @@ export function coalesce<
     arg3 : Arg3
 ) : (
     Expr<{
-        usedRef : RawExprUtil.IntersectUsedRefTuple<
-            [Arg0, Arg1, Arg2, Arg3]
-        >,
+        usedColumns : (
+            RawExprUtil.UsedColumns<Arg0>[number] |
+            RawExprUtil.UsedColumns<Arg1>[number] |
+            RawExprUtil.UsedColumns<Arg2>[number] |
+            RawExprUtil.UsedColumns<Arg3>[number]
+        )[],
         assertDelegate : RawExprUtil.AssertDelegate<
             Exclude<RawExprUtil.TypeOf<Arg0>, null>|
             Exclude<RawExprUtil.TypeOf<Arg1>, null>|
@@ -86,13 +91,13 @@ export function coalesce<
     }>
 );
 export function coalesce(
-    ...args : Tuple<RawExpr<PrimitiveExpr>>
+    ...args : RawExpr<PrimitiveExpr>[]
 ) : (
     Expr<ExprData>
 ) {
     return new Expr(
         {
-            usedRef : RawExprUtil.intersectUsedRefTuple(...(args as any)),
+            usedColumns : RawExprUtil.Array.usedColumns(args),
             assertDelegate : sd.or(...args.map((arg, index) => {
                 if (index == args.length-1) {
                     return RawExprUtil.assertDelegate(arg);

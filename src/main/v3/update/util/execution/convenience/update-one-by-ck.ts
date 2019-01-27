@@ -21,7 +21,7 @@ export function updateOneByCk<
 ) {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqCandidateKey(table, ck) as any)
+        .__unsafeWhere(() => TableUtil.eqCandidateKey(table, ck) as any)
         .set(delegate as any)
         .executeUpdateOne(connection) as any;
 }

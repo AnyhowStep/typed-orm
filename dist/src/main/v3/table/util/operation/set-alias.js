@@ -6,9 +6,9 @@ const column_map_1 = require("../../../column-map");
 function setAlias(table, newAlias) {
     //https://github.com/Microsoft/TypeScript/issues/28592
     const columns = table.columns;
-    const { usedRef, autoIncrement, id, primaryKey, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
+    const { usedColumns, autoIncrement, id, primaryKey, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, insertAllowed, deleteAllowed, } = table;
     return new table_1.Table({
-        usedRef,
+        usedColumns,
         alias: newAlias,
         columns: column_map_1.ColumnMapUtil.withTableAlias(columns, newAlias),
         autoIncrement,

@@ -1,6 +1,6 @@
 import { Table, ITable } from "../../table";
 export declare type DisallowDelete<TableT extends ITable> = (Table<{
-    readonly usedRef: TableT["usedRef"];
+    readonly usedColumns: TableT["usedColumns"];
     readonly alias: TableT["alias"];
     readonly columns: TableT["columns"];
     readonly autoIncrement: TableT["autoIncrement"];

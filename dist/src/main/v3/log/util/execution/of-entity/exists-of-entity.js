@@ -7,7 +7,7 @@ function existsOfEntity(log) {
     const result = exprLib.exists(query_1.QueryUtil.newInstance()
         .requireParentJoins(...[log.entity])
         .from(log.table)
-        .where(() => join_declaration_1.JoinDeclarationUtil.eq(log.joinDeclaration))).as("exists");
+        .__unsafeWhere(() => join_declaration_1.JoinDeclarationUtil.eq(log.joinDeclaration))).as("exists");
     return result;
 }
 exports.existsOfEntity = existsOfEntity;

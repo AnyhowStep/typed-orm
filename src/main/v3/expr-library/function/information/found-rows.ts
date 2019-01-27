@@ -6,13 +6,13 @@ import * as dataType from "../../../data-type";
 //https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows
 export function foundRows() : (
     Expr<{
-        usedRef : {},
+        usedColumns : never[],
         assertDelegate : sd.AssertDelegate<bigint>,
     }>
 ) {
     return new Expr(
         {
-            usedRef : {},
+            usedColumns : [],
             assertDelegate : dataType.bigint(),
         },
         new FunctionCall("FOUND_ROWS", [])

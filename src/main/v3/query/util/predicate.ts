@@ -12,8 +12,6 @@ import {IAliasedTable} from "../../aliased-table";
 import {isObjectWithKeys} from "../../type";
 import {ColumnIdentifierUtil} from "../../column-identifier";
 import {OrderUtil, Order} from "../../order";
-import {ColumnUtil} from "../../column";
-import {ColumnIdentifierRefUtil} from "../../column-identifier-ref";
 
 export function isUnionQuery (raw : any) : raw is UnionQuery {
     return (
@@ -292,7 +290,6 @@ export type AssertValidJoinTargetImpl<
                 JoinUtil.Array.TableAliases<QueryT["_joins"]>
             > extends never ?
             unknown :
-            //TODO-DEBATE remove the |void?
             [
                 "Alias",
                 Extract<
@@ -301,7 +298,7 @@ export type AssertValidJoinTargetImpl<
                 >,
                 "already used in previous JOINs",
                 JoinUtil.Array.TableAliases<QueryT["_joins"]>
-            ]|void
+            ]
         ) :
         unknown
     ) &
@@ -313,7 +310,6 @@ export type AssertValidJoinTargetImpl<
                 JoinUtil.Array.TableAliases<QueryT["_parentJoins"]>
             > extends never ?
             unknown :
-            //TODO-DEBATE remove the |void?
             [
                 "Alias",
                 Extract<
@@ -322,39 +318,18 @@ export type AssertValidJoinTargetImpl<
                 >,
                 "already used in parent JOINs",
                 JoinUtil.Array.TableAliases<QueryT["_parentJoins"]>
-            ]|void
+            ]
         ) :
         unknown
     ) &
-    //AliasedTableT["usedRef"] must be compatible with QueryT["_parentJoins"]
     (
-        Extract<keyof AliasedTableT["usedRef"], string> extends never ?
-        //The easy case, AliasedTableT has no usedRef
+        AliasedTableT["usedColumns"][number] extends never ?
         unknown :
-        (
-            QueryT["_parentJoins"] extends IJoin[] ?
-            (
-                Exclude<
-                    ColumnUtil.FromColumnRef<AliasedTableT["usedRef"]>,
-                    ColumnUtil.FromJoinArray<QueryT["_parentJoins"]>
-                > extends never ?
-                //All of usedRef exist in parentJoins
-                unknown :
-                [
-                    "Incompatible usedRef",
-                    Exclude<
-                        ColumnUtil.FromColumnRef<AliasedTableT["usedRef"]>,
-                        ColumnUtil.FromJoinArray<QueryT["_parentJoins"]>
-                    >
-                ]
-            ) :
-            //You can't have any usedRef if there are no parentJoins
-            [
-                "Incompatible usedRef",
-                //All columns in the usedRef are incompatible
-                ColumnIdentifierUtil.FromColumnRef<AliasedTableT["usedRef"]>
-            ]
-        )
+        [
+            "Derived table",
+            AliasedTableT["alias"],
+            "cannot reference outer query columns"
+        ]
     )
 );
 //AliasedTableT["alias"] must not already be in
@@ -371,16 +346,8 @@ export function assertValidJoinTarget (
     query : IQuery,
     aliasedTable : IAliasedTable
 ) {
-    if (query._parentJoins == undefined) {
-        ColumnIdentifierRefUtil.assertHasColumnIdentifiers(
-            {},
-            ColumnIdentifierUtil.Array.fromColumnRef(aliasedTable.usedRef)
-        );
-    } else {
-        ColumnIdentifierRefUtil.assertHasColumnIdentifiers(
-            ColumnIdentifierRefUtil.fromJoinArray(query._parentJoins),
-            ColumnIdentifierUtil.Array.fromColumnRef(aliasedTable.usedRef)
-        );
+    if (aliasedTable.usedColumns.length > 0) {
+        throw new Error(`Derived table ${aliasedTable.alias} cannot reference outer query columns`);
     }
 
     if (query._joins != undefined) {

@@ -1,7 +1,6 @@
 import * as sd from "schema-decorator";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr, ExprUtil} from "../../../expr";
-import {Tuple} from "../../../tuple";
 import {Parentheses, QueryTreeArray} from "../../../query-tree";
 import * as dataType from "../../../data-type";
 
@@ -37,15 +36,15 @@ function tryGetAndQueryTree (rawExpr : RawExpr<boolean>) : QueryTreeArray|undefi
     }
     return undefined;
 }
-export function and<ArrT extends Tuple<RawExpr<boolean>>> (
+export function and<ArrT extends RawExpr<boolean>[]> (
     ...arr : ArrT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.IntersectUsedRefTuple<ArrT>,
+        usedColumns : RawExprUtil.Array.UsedColumns<ArrT>,
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
 ) {
-    const usedRef = RawExprUtil.intersectUsedRefTuple(...arr);
+    const usedColumns = RawExprUtil.Array.usedColumns(arr);
     const queryTree : QueryTreeArray = [];
 
     for (let rawExpr of arr) {
@@ -73,7 +72,7 @@ export function and<ArrT extends Tuple<RawExpr<boolean>>> (
     if (queryTree.length == 0) {
         return new Expr(
             {
-                usedRef,
+                usedColumns,
                 assertDelegate : dataType.boolean(),
             },
             RawExprUtil.queryTree(true)
@@ -81,7 +80,7 @@ export function and<ArrT extends Tuple<RawExpr<boolean>>> (
     } else {
         return new Expr(
             {
-                usedRef,
+                usedColumns,
                 assertDelegate : dataType.boolean(),
             },
             queryTree

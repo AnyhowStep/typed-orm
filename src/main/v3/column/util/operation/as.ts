@@ -1,11 +1,10 @@
 import {IColumn} from "../../column";
 import {IExprSelectItem} from "../../../expr-select-item";
-import {ColumnRefUtil} from "../../../column-ref";
 import {queryTree} from "../query";
 
 export type As<ColumnT extends IColumn, AliasT extends string> = (
     IExprSelectItem<{
-        readonly usedRef : ColumnRefUtil.FromColumn<ColumnT>;
+        readonly usedColumns : ColumnT[];
         readonly assertDelegate : ColumnT["assertDelegate"];
 
         /*
@@ -40,7 +39,7 @@ export function as<ColumnT extends IColumn, AliasT extends string> (
     alias : AliasT
 ) : As<ColumnT, AliasT> {
     return {
-        usedRef : ColumnRefUtil.fromColumn(column),
+        usedColumns : [column],
         assertDelegate : column.assertDelegate,
         tableAlias : column.tableAlias,
         alias : alias,

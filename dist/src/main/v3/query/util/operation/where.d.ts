@@ -2,7 +2,7 @@ import { Query } from "../../query";
 import { AfterFromClause } from "../predicate";
 import { ColumnRefUtil } from "../../../column-ref";
 import { RawExpr, RawExprUtil } from "../../../raw-expr";
-import { ColumnUtil } from "../../../column";
+import { ColumnUtil, IColumn } from "../../../column";
 import { IAnonymousTypedExpr } from "../../../expr";
 export declare type WhereDelegate<QueryT extends AfterFromClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQueryJoins<QueryT>>, query: QueryT) => RawExpr<boolean>);
 export declare type Where<QueryT extends AfterFromClause> = (Query<{
@@ -21,5 +21,6 @@ export declare type Where<QueryT extends AfterFromClause> = (Query<{
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare type AssertValidWhereDelegate<QueryT extends AfterFromClause, WhereDelegateT extends WhereDelegate<QueryT>> = (WhereDelegateT & (ColumnRefUtil.FromQueryJoins<QueryT> extends RawExprUtil.UsedRef<ReturnType<WhereDelegateT>> ? unknown : ["WHERE expression contains some invalid columns; the following are not allowed:", Exclude<ColumnUtil.FromColumnRef<RawExprUtil.UsedRef<ReturnType<WhereDelegateT>>>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQueryJoins<QueryT>>>]));
-export declare function where<QueryT extends AfterFromClause, WhereDelegateT extends WhereDelegate<QueryT>>(query: QueryT, delegate: AssertValidWhereDelegate<QueryT, WhereDelegateT>): Where<QueryT>;
+export declare type AssertValidWhereDelegate_Hack<QueryT extends AfterFromClause, WhereDelegateT extends WhereDelegate<QueryT>, ResultT> = (ColumnUtil.AssertValidUsed<RawExprUtil.UsedColumns<ReturnType<WhereDelegateT>>[number], Extract<ColumnUtil.FromQueryJoins<QueryT>, IColumn>> extends never ? ResultT : ColumnUtil.AssertValidUsed<RawExprUtil.UsedColumns<ReturnType<WhereDelegateT>>[number], Extract<ColumnUtil.FromQueryJoins<QueryT>, IColumn>> | void);
+export declare type WhereResult<QueryT extends AfterFromClause, WhereDelegateT extends WhereDelegate<QueryT>> = (AssertValidWhereDelegate_Hack<QueryT, WhereDelegateT, Where<QueryT>>);
+export declare function where<QueryT extends AfterFromClause, WhereDelegateT extends WhereDelegate<QueryT>>(query: QueryT, delegate: WhereDelegateT): WhereResult<QueryT, WhereDelegateT>;

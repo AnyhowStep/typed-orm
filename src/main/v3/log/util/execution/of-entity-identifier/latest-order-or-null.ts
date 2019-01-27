@@ -9,7 +9,7 @@ export type LatestOrderOrNull<
 > = (
     ExprUtil.As<
         IExpr<{
-            usedRef : {},
+            usedColumns : never[],
             assertDelegate : sd.AssertDelegate<
                 ReturnType<
                     LogT["latestOrder"][0]["assertDelegate"]

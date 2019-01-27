@@ -4,7 +4,7 @@ import { Tuple } from "../../../tuple";
 import { ColumnMapUtil } from "../../../column-map";
 import { FieldArrayUtil } from "../../../field-array";
 export declare type FromFieldTuple<NameT extends string, FieldsT extends Tuple<sd.AnyField>> = (Table<{
-    readonly usedRef: {};
+    readonly usedColumns: never[];
     readonly alias: NameT;
     readonly columns: ColumnMapUtil.FromFieldArray<NameT, FieldsT>;
     readonly autoIncrement: undefined;

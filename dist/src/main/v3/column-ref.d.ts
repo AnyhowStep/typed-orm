@@ -43,7 +43,7 @@ export declare namespace ColumnRefUtil {
             }>>);
         };
     });
-    type FromSelectItemArray_ColumnMapElement<ColumnMapT extends ColumnMap> = ({
+    type FromSelectItemArray_ColumnMapElement<ColumnMapT extends ColumnMap> = (ColumnMapT[keyof ColumnMapT] extends IColumn ? {
         readonly [tableAlias in ColumnMapUtil.TableAlias<ColumnMapT>]: {
             readonly [columnName in ColumnMapUtil.FindWithTableAlias<ColumnMapT, tableAlias>["name"]]: (Extract<ColumnMapT, {
                 [k in columnName]: (IColumn & {
@@ -52,7 +52,7 @@ export declare namespace ColumnRefUtil {
                 });
             }>[columnName]);
         };
-    });
+    } : {});
     type FromSelectItemArray_ColumnRefElement<ColumnRefT extends ColumnRef> = (ColumnRefT[keyof ColumnRefT] extends ColumnMap ? {
         readonly [tableAlias in ColumnRefUtil.TableAlias<ColumnRefT>]: {
             readonly [columnName in ColumnRefUtil.FindWithTableAlias<ColumnRefT, tableAlias>["name"]]: (Extract<ColumnRefT, {

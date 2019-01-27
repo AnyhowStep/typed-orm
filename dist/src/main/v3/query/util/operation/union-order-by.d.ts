@@ -5,7 +5,7 @@ import { IExpr } from "../../../expr";
 import { ColumnUtil } from "../../../column";
 import { NonEmptyTuple } from "../../../tuple";
 import { RawOrder, Order, OrderUtil, SortDirection } from "../../../order";
-import { ToUnknownIfAllFieldsNever } from "../../../type";
+import { ToNeverIfAllFieldsNever } from "../../../type";
 export declare type UnionOrderByDelegate<QueryT extends AfterSelectClause & (AfterFromClause | AfterUnionClause)> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuerySelects<QueryT>>, query: QueryT) => NonEmptyTuple<ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuerySelects<QueryT>> | [ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuerySelects<QueryT>>, SortDirection] | IExpr | [IExpr, SortDirection]>);
 export declare type UnionOrderBy<QueryT extends AfterSelectClause & (AfterFromClause | AfterUnionClause)> = (Query<{
     readonly _distinct: QueryT["_distinct"];
@@ -23,9 +23,11 @@ export declare type UnionOrderBy<QueryT extends AfterSelectClause & (AfterFromCl
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare type AssertValidUnionOrderByDelegate<QueryT extends AfterSelectClause & (AfterFromClause | AfterUnionClause), UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>> = (UnionOrderByDelegateT & ToUnknownIfAllFieldsNever<{
-    [index in Extract<keyof ReturnType<UnionOrderByDelegateT>, string>]: (ReturnType<UnionOrderByDelegateT>[index] extends RawOrder ? (OrderUtil.ExtractExpr<ReturnType<UnionOrderByDelegateT>[index]> extends never ? never : (ColumnRefUtil.FromQuerySelects<QueryT> extends OrderUtil.ExtractExpr<ReturnType<UnionOrderByDelegateT>[index]>["usedRef"] ? never : ["Invalid IExpr", index, Exclude<ColumnUtil.FromColumnRef<OrderUtil.ExtractExpr<ReturnType<UnionOrderByDelegateT>[index]>["usedRef"]>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuerySelects<QueryT>>>])) : never);
-}> & ToUnknownIfAllFieldsNever<{
+export declare type AssertValidUnionOrderByDelegate_HackImpl<QueryT extends AfterSelectClause & (AfterFromClause | AfterUnionClause), UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>> = (ToNeverIfAllFieldsNever<{
+    [index in Extract<keyof ReturnType<UnionOrderByDelegateT>, string>]: (ReturnType<UnionOrderByDelegateT>[index] extends RawOrder ? (OrderUtil.ExtractExpr<ReturnType<UnionOrderByDelegateT>[index]> extends never ? never : (ColumnUtil.AssertValidUsed<OrderUtil.ExtractExpr<ReturnType<UnionOrderByDelegateT>[index]>["usedColumns"][number], ColumnUtil.FromQuerySelects<QueryT>> extends never ? never : ["Invalid IExpr", index, ColumnUtil.AssertValidUsed<OrderUtil.ExtractExpr<ReturnType<UnionOrderByDelegateT>[index]>["usedColumns"][number], ColumnUtil.FromQuerySelects<QueryT>>])) : never);
+}> | ToNeverIfAllFieldsNever<{
     [index in Extract<keyof ReturnType<UnionOrderByDelegateT>, string>]: (ReturnType<UnionOrderByDelegateT>[index] extends RawOrder ? (OrderUtil.ExtractColumn<ReturnType<UnionOrderByDelegateT>[index]> extends ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuerySelects<QueryT>> ? never : ["Invalid IColumn", index, Exclude<OrderUtil.ExtractColumn<ReturnType<UnionOrderByDelegateT>[index]>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuerySelects<QueryT>>>]) : never);
 }>);
-export declare function unionOrderBy<QueryT extends AfterSelectClause & (AfterFromClause | AfterUnionClause), UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>>(query: QueryT, delegate: AssertValidUnionOrderByDelegate<QueryT, UnionOrderByDelegateT>): UnionOrderBy<QueryT>;
+export declare type AssertValidUnionOrderByDelegate_Hack<QueryT extends AfterSelectClause & (AfterFromClause | AfterUnionClause), UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>, ResultT> = (UnionOrderByDelegateT & AssertValidUnionOrderByDelegate_HackImpl<QueryT, UnionOrderByDelegateT> extends never ? ResultT : AssertValidUnionOrderByDelegate_HackImpl<QueryT, UnionOrderByDelegateT> | void);
+export declare type UnionOrderByResult<QueryT extends AfterSelectClause & (AfterFromClause | AfterUnionClause), UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>> = (AssertValidUnionOrderByDelegate_Hack<QueryT, UnionOrderByDelegateT, UnionOrderBy<QueryT>>);
+export declare function unionOrderBy<QueryT extends AfterSelectClause & (AfterFromClause | AfterUnionClause), UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>>(query: QueryT, delegate: UnionOrderByDelegateT): (UnionOrderByResult<QueryT, UnionOrderByDelegateT>);

@@ -17,9 +17,9 @@ function setMutable(table, delegate) {
     //TODO-FEATURE Make other arrays of strings always
     //have unique elements?
     const mutable = (string_array_1.StringArrayUtil.uniqueString(mutableColumns.map(column => column.name)));
-    const { usedRef, alias, autoIncrement, id, primaryKey, candidateKeys, generated, isNullable, hasExplicitDefaultValue, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+    const { usedColumns, alias, autoIncrement, id, primaryKey, candidateKeys, generated, isNullable, hasExplicitDefaultValue, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
     const result = new table_1.Table({
-        usedRef,
+        usedColumns,
         alias,
         columns,
         autoIncrement,

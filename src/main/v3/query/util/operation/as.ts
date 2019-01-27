@@ -1,7 +1,7 @@
 import {AfterSelectClause, OneSelectItemQuery, isOneSelectItemQuery, ZeroOrOneRowQuery, isZeroOrOneRowQuery} from "../predicate";
 import {IAliasedTable, AliasedTable} from "../../../aliased-table";
 import {IJoin} from "../../../join";
-import {ColumnRefUtil} from "../../../column-ref";
+import {ColumnUtil} from "../../../column";
 import {ColumnMapUtil} from "../../../column-map";
 import {SelectItemArrayUtil} from "../../../select-item-array";
 import {queryTree_As, AssertDelegate, assertDelegate} from "../query";
@@ -16,10 +16,10 @@ export type As<
     AliasT extends string
 > = (
     IAliasedTable<{
-        usedRef : (
+        usedColumns : (
             QueryT["_parentJoins"] extends IJoin[] ?
-            ColumnRefUtil.FromJoinArray<QueryT["_parentJoins"]> :
-            {}
+            ColumnUtil.FromJoinArray<QueryT["_parentJoins"]>[] :
+            never[]
         ),
         alias : AliasT,
         columns : ColumnMapUtil.FromSelectItemArray<
@@ -63,10 +63,10 @@ export function as<
     SelectItemArrayUtil.assertNoDuplicateColumnName(query._selects);
     const aliasedTable = new AliasedTable(
         {
-            usedRef : (
+            usedColumns : (
                 query._parentJoins == undefined ?
-                {} :
-                ColumnRefUtil.fromJoinArray(query._parentJoins)
+                [] :
+                ColumnUtil.Array.fromJoinArray(query._parentJoins)
             ),
             alias,
             columns : ColumnMapUtil.fromSelectItemArray(query._selects, alias),

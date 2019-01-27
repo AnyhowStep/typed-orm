@@ -4,7 +4,7 @@ import {dateTime} from "../../../data-type";
 
 const cache : {
     [index in 0|1|2|3]? : Expr<{
-        usedRef : {},
+        usedColumns : never[],
         assertDelegate : sd.AssertDelegate<Date>
     }>
 } = [undefined, undefined, undefined, undefined];
@@ -22,7 +22,7 @@ export function utcTimestamp (fractionalSecondsPrecision : 0|1|2|3/*|4|5|6*/ = 0
     if (cached == undefined) {
         cached = new Expr(
             {
-                usedRef : {},
+                usedColumns : [],
                 assertDelegate : dateTime(fractionalSecondsPrecision),
             },
             `UTC_TIMESTAMP(${fractionalSecondsPrecision == 0 ? '' : fractionalSecondsPrecision})`

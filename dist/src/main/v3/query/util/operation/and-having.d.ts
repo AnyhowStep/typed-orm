@@ -2,7 +2,7 @@ import { Query } from "../../query";
 import { AfterFromClause } from "../predicate";
 import { ColumnRefUtil } from "../../../column-ref";
 import { RawExpr, RawExprUtil } from "../../../raw-expr";
-import { ColumnUtil } from "../../../column";
+import { ColumnUtil, IColumn } from "../../../column";
 import { IAnonymousTypedExpr } from "../../../expr";
 export declare type HavingDelegate<QueryT extends AfterFromClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQuery<QueryT>>, query: QueryT) => RawExpr<boolean>);
 export declare type Having<QueryT extends AfterFromClause> = (Query<{
@@ -21,5 +21,6 @@ export declare type Having<QueryT extends AfterFromClause> = (Query<{
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare type AssertValidHavingDelegate<QueryT extends AfterFromClause, HavingDelegateT extends HavingDelegate<QueryT>> = (HavingDelegateT & (ColumnRefUtil.FromQuery<QueryT> extends RawExprUtil.UsedRef<ReturnType<HavingDelegateT>> ? unknown : ["HAVING expression contains some invalid columns; the following are not allowed:", Exclude<ColumnUtil.FromColumnRef<RawExprUtil.UsedRef<ReturnType<HavingDelegateT>>>, ColumnUtil.FromColumnRef<ColumnRefUtil.FromQuery<QueryT>>>]));
-export declare function having<QueryT extends AfterFromClause, HavingDelegateT extends HavingDelegate<QueryT>>(query: QueryT, delegate: AssertValidHavingDelegate<QueryT, HavingDelegateT>): Having<QueryT>;
+export declare type AssertValidHavingDelegate_Hack<QueryT extends AfterFromClause, HavingDelegateT extends HavingDelegate<QueryT>, ResultT> = (ColumnUtil.AssertValidUsed<RawExprUtil.UsedColumns<ReturnType<HavingDelegateT>>[number], Extract<ColumnUtil.FromQuery<QueryT>, IColumn>> extends never ? ResultT : ColumnUtil.AssertValidUsed<RawExprUtil.UsedColumns<ReturnType<HavingDelegateT>>[number], Extract<ColumnUtil.FromQuery<QueryT>, IColumn>> | void);
+export declare type HavingResult<QueryT extends AfterFromClause, HavingDelegateT extends HavingDelegate<QueryT>> = (AssertValidHavingDelegate_Hack<QueryT, HavingDelegateT, Having<QueryT>>);
+export declare function having<QueryT extends AfterFromClause, HavingDelegateT extends HavingDelegate<QueryT>>(query: QueryT, delegate: HavingDelegateT): (HavingResult<QueryT, HavingDelegateT>);

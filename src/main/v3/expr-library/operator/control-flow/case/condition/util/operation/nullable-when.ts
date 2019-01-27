@@ -2,7 +2,6 @@ import * as sd from "schema-decorator";
 import {RawExpr} from "../../../../../../../raw-expr";
 import {PrimitiveExpr, PrimitiveExprUtil} from "../../../../../../../primitive-expr";
 import {RawExprUtil} from "../../../../../../../raw-expr";
-import {ColumnRefUtil} from "../../../../../../../column-ref";
 import {ICaseCondition, CaseCondition} from "../../case-condition";
 
 export type NullableWhen<
@@ -15,11 +14,11 @@ export type NullableWhen<
     >
 > = (
     CaseCondition<{
-        usedRef : (
-            BuilderT["usedRef"] &
-            RawExprUtil.UsedRef<WhenT> &
-            RawExprUtil.UsedRef<ThenT>
-        ),
+        usedColumns : (
+            BuilderT["usedColumns"][number] |
+            RawExprUtil.UsedColumns<WhenT>[number] |
+            RawExprUtil.UsedColumns<ThenT>[number]
+        )[],
         result : (
             BuilderT["result"] extends sd.AssertDelegate<any> ?
             sd.AssertDelegate<
@@ -61,13 +60,11 @@ export function nullableWhen<
 ) {
     return new CaseCondition(
         {
-            usedRef : ColumnRefUtil.intersect(
-                builder.usedRef,
-                ColumnRefUtil.intersect(
-                    RawExprUtil.usedRef(whenExpr),
-                    RawExprUtil.usedRef(thenExpr)
-                )
-            ),
+            usedColumns : RawExprUtil.Array.usedColumns([
+                ...builder.usedColumns,
+                whenExpr,
+                thenExpr,
+            ]),
             result : (
                 builder.result == undefined ?
                     RawExprUtil.assertDelegate(thenExpr) :

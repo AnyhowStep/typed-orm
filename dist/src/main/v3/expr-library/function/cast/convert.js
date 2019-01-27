@@ -9,7 +9,7 @@ function convert(rawExpr, transcodingName) {
     //Defend ourself against invalid values during run-time.
     sd.enumeration(constant_1.TranscodingName)("transcodingName", transcodingName);
     return new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
+        usedColumns: raw_expr_1.RawExprUtil.usedColumns(rawExpr),
         assertDelegate: sd.string(),
     }, new query_tree_1.FunctionCall("CONVERT", [
         [

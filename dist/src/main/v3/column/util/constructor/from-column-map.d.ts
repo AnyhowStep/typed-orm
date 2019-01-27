@@ -1,2 +1,3 @@
 import { ColumnMap } from "../../../column-map";
-export declare type FromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? ColumnMapT[Extract<keyof ColumnMapT, string>] : never);
+import { IColumn } from "../../column";
+export declare type FromColumnMap<ColumnMapT extends ColumnMap> = (ColumnMapT extends ColumnMap ? (ColumnMapT[keyof ColumnMapT] extends IColumn ? ColumnMapT[Extract<keyof ColumnMapT, string>] : never) : never);

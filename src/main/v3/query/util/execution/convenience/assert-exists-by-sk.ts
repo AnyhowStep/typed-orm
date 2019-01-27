@@ -14,6 +14,6 @@ export function assertExistsBySk<
 ) {
     return QueryUtil.newInstance()
         .from(table as any)
-        .where(() => TableUtil.eqSuperKey(table, sk) as any)
+        .__unsafeWhere(() => TableUtil.eqSuperKey(table, sk) as any)
         .assertExists(connection) as any;
 }

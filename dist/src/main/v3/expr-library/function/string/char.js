@@ -8,7 +8,10 @@ const constant_1 = require("../../constant");
 //https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_char
 function toChar(arg0, ...args) {
     const result = new expr_1.Expr({
-        usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple(arg0, ...args),
+        usedColumns: raw_expr_1.RawExprUtil.Array.usedColumns([
+            arg0,
+            ...args,
+        ]),
         assertDelegate: sd.buffer(),
     }, new query_tree_1.FunctionCall("CHAR", [
         raw_expr_1.RawExprUtil.queryTree(arg0),
@@ -19,7 +22,7 @@ function toChar(arg0, ...args) {
         sd.enumeration(constant_1.TranscodingName)("transcodingName", transcodingName);
         const arr = [arg0, ...args];
         return new expr_1.Expr({
-            usedRef: result.usedRef,
+            usedColumns: result.usedColumns,
             assertDelegate: sd.string(),
         }, new query_tree_1.FunctionCall("CHAR", [
             ...arr.map((arg, index) => {

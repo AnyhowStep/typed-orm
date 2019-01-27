@@ -4,7 +4,7 @@ const sqlstring_1 = require("sqlstring");
 const table_1 = require("../../table");
 function fromName(name) {
     return new table_1.Table({
-        usedRef: {},
+        usedColumns: [],
         alias: name,
         columns: {},
         autoIncrement: undefined,

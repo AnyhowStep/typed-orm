@@ -1,23 +1,23 @@
 import * as sd from "schema-decorator";
-import {ColumnRef} from "../column-ref";
+import {IColumn} from "../column";
 import {QueryTree, Parentheses} from "../query-tree";
 import {SortDirection} from "../order";
 import * as ExprUtil from "./util";
 
 export interface ExprData {
-    readonly usedRef : ColumnRef;
+    readonly usedColumns : IColumn[];
     readonly assertDelegate : sd.AssertDelegate<any>;
 }
 
 export interface IExpr<DataT extends ExprData=ExprData> {
-    readonly usedRef : DataT["usedRef"];
+    readonly usedColumns : DataT["usedColumns"];
     readonly assertDelegate : DataT["assertDelegate"];
 
     readonly queryTree : QueryTree;
 }
 
 export class Expr<DataT extends ExprData> implements IExpr<DataT> {
-    readonly usedRef : DataT["usedRef"];
+    readonly usedColumns : DataT["usedColumns"];
     readonly assertDelegate : DataT["assertDelegate"];
 
     readonly queryTree : QueryTree;
@@ -26,7 +26,7 @@ export class Expr<DataT extends ExprData> implements IExpr<DataT> {
         data : DataT,
         queryTree : QueryTree
     ) {
-        this.usedRef = data.usedRef;
+        this.usedColumns = data.usedColumns;
         this.assertDelegate = data.assertDelegate;
 
         //Gotta' play it safe.
@@ -53,7 +53,7 @@ export class Expr<DataT extends ExprData> implements IExpr<DataT> {
 
 export type IAnonymousTypedExpr<TypeT> = (
     IExpr<{
-        usedRef : ColumnRef,
+        usedColumns : IColumn[],
         assertDelegate : sd.AssertDelegate<TypeT>
     }>
 );

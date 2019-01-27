@@ -5,7 +5,7 @@ const __1 = require("../../..");
 function existsByPk(connection, table, pk) {
     return __1.QueryUtil.newInstance()
         .from(table)
-        .where(() => table_1.TableUtil.eqPrimaryKey(table, pk))
+        .__unsafeWhere(() => table_1.TableUtil.eqPrimaryKey(table, pk))
         .exists(connection);
 }
 exports.existsByPk = existsByPk;

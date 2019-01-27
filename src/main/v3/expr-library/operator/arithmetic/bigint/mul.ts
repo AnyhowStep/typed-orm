@@ -1,7 +1,6 @@
 import * as sd from "schema-decorator";
 import {RawExpr, RawExprUtil} from "../../../../raw-expr";
 import {Expr, ExprUtil} from "../../../../expr";
-import {Tuple} from "../../../../tuple";
 import {Parentheses, QueryTreeArray} from "../../../../query-tree";
 import * as dataType from "../../../../data-type";
 
@@ -26,15 +25,15 @@ function tryGetMulQueryTree (rawExpr : RawExpr<bigint>) : QueryTreeArray|undefin
     }
     return undefined;
 }
-export function bigIntMul<ArrT extends Tuple<RawExpr<bigint>>> (
+export function bigIntMul<ArrT extends RawExpr<bigint>[]> (
     ...arr : ArrT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.IntersectUsedRefTuple<ArrT>,
+        usedColumns : RawExprUtil.Array.UsedColumns<ArrT>,
         assertDelegate : sd.AssertDelegate<bigint>,
     }>
 ) {
-    const usedRef = RawExprUtil.intersectUsedRefTuple(...arr);
+    const usedColumns = RawExprUtil.Array.usedColumns(arr);
     const queryTree : QueryTreeArray = [];
 
     for (let rawExpr of arr) {
@@ -59,7 +58,7 @@ export function bigIntMul<ArrT extends Tuple<RawExpr<bigint>>> (
         //By convention, multiplying zero numbers is one.
         return new Expr(
             {
-                usedRef : usedRef,
+                usedColumns,
                 assertDelegate : dataType.bigint(),
             },
             RawExprUtil.queryTree(1)
@@ -67,7 +66,7 @@ export function bigIntMul<ArrT extends Tuple<RawExpr<bigint>>> (
     } else {
         return new Expr(
             {
-                usedRef : usedRef,
+                usedColumns,
                 assertDelegate : dataType.bigint(),
             },
             queryTree

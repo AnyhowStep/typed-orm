@@ -12,7 +12,7 @@ export type NullSafeUnaryComparison = (
         rawExpr : RawExprT
     ) => (
         Expr<{
-            usedRef : RawExprUtil.UsedRef<RawExprT>,
+            usedColumns : RawExprUtil.UsedColumns<RawExprT>,
             assertDelegate : sd.AssertDelegate<boolean>,
         }>
     )
@@ -24,7 +24,7 @@ export function nullSafeUnaryComparison (postFixOperator : string) : NullSafeUna
     const result : NullSafeUnaryComparison = (rawExpr) => {
         return new Expr(
             {
-                usedRef : RawExprUtil.usedRef(rawExpr),
+                usedColumns : RawExprUtil.usedColumns(rawExpr),
                 assertDelegate : dataType.boolean(),
             },
             [

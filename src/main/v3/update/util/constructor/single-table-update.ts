@@ -6,6 +6,7 @@ import {Update, UpdateModifier, Assignment, UpdatableQuery} from "../../update";
 import {ColumnIdentifierUtil} from "../../../column-identifier";
 import {multiTableUpdate, SetDelegate, AssertValidSetDelegate_Hack} from "./multi-table-update";
 import {StringUtil} from "../../../string";
+import {IColumn} from "../../../column";
 
 export type SingleTableAssignmentMap<TableT extends ITable> = (
     {
@@ -52,7 +53,13 @@ export type AssertValidSingleTableSetDelegateFromTable_Hack<
 > = (
     (
         Exclude<
-            ColumnIdentifierUtil.FromColumnRef<RawExprUtil.UsedRef<SingleTableExtractRawExpr<ReturnType<DelegateT>>>>,
+            ColumnIdentifierUtil.FromColumn<
+                //Weird that this needs to be wrapped in Extract<>
+                Extract<
+                    RawExprUtil.UsedColumns<SingleTableExtractRawExpr<ReturnType<DelegateT>>>,
+                    IColumn
+                >
+            >,
             ColumnIdentifierUtil.FromColumnMap<TableT["columns"]>
         > extends never ?
         (
@@ -75,7 +82,13 @@ export type AssertValidSingleTableSetDelegateFromTable_Hack<
         [
             "The following referenced columns are not allowed",
             Exclude<
-                ColumnIdentifierUtil.FromColumnRef<RawExprUtil.UsedRef<SingleTableExtractRawExpr<ReturnType<DelegateT>>>>,
+                ColumnIdentifierUtil.FromColumn<
+                    //Weird that this needs to be wrapped in Extract<>
+                    Extract<
+                        RawExprUtil.UsedColumns<SingleTableExtractRawExpr<ReturnType<DelegateT>>>,
+                        IColumn
+                    >
+                >,
                 ColumnIdentifierUtil.FromColumnMap<TableT["columns"]>
             >
         ]
@@ -89,14 +102,26 @@ export type AssertValidSingleTableSetDelegate_Hack<
 > = (
     (
         Exclude<
-            ColumnIdentifierUtil.FromColumnRef<RawExprUtil.UsedRef<SingleTableExtractRawExpr<ReturnType<DelegateT>>>>,
+            ColumnIdentifierUtil.FromColumn<
+                //Weird that this needs to be wrapped in Extract<>
+                Extract<
+                    RawExprUtil.UsedColumns<SingleTableExtractRawExpr<ReturnType<DelegateT>>>,
+                    IColumn
+                >
+            >,
             ColumnIdentifierUtil.FromJoin<QueryT["_joins"][number]>
         > extends never ?
         unknown :
         [
             "The following referenced columns are not allowed",
             Exclude<
-                ColumnIdentifierUtil.FromColumnRef<RawExprUtil.UsedRef<SingleTableExtractRawExpr<ReturnType<DelegateT>>>>,
+                ColumnIdentifierUtil.FromColumn<
+                    //Weird that this needs to be wrapped in Extract<>
+                    Extract<
+                        RawExprUtil.UsedColumns<SingleTableExtractRawExpr<ReturnType<DelegateT>>>,
+                        IColumn
+                    >
+                >,
                 ColumnIdentifierUtil.FromJoin<QueryT["_joins"][number]>
             >
         ]

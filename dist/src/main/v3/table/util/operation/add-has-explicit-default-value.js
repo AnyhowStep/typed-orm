@@ -18,9 +18,9 @@ function addHasExplicitDefaultValue(table, delegate) {
         ...table.hasExplicitDefaultValue,
         ...hasExplicitDefaultValueColumns.map(column => column.name),
     ]);
-    const { usedRef, alias, autoIncrement, id, primaryKey, candidateKeys, generated, isNullable, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
+    const { usedColumns, alias, autoIncrement, id, primaryKey, candidateKeys, generated, isNullable, mutable, parents, insertAllowed, deleteAllowed, unaliasedQuery, } = table;
     const result = new table_1.Table({
-        usedRef,
+        usedColumns,
         alias,
         columns,
         autoIncrement,

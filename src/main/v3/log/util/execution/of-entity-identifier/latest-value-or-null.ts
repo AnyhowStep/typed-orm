@@ -11,7 +11,7 @@ export type LatestValueOrNull<
 > = (
     ExprUtil.As<
         IExpr<{
-            usedRef : {},
+            usedColumns : never[],
             assertDelegate : sd.AssertDelegate<
                 ReturnType<
                     LogT["table"]["columns"][

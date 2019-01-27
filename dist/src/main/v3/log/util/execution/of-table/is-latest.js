@@ -12,7 +12,7 @@ function isLatest(log) {
         .select(() => [
         latest.columns[log.latestOrder[0].name]
     ])
-        .where(() => {
+        .__unsafeWhere(() => {
         return join_declaration_1.JoinDeclarationUtil.innerJoinUsing(latest, log.table, c => {
             return log.entityIdentifier.map(columnName => c[columnName]);
         }).eq();

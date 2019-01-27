@@ -5,7 +5,7 @@ import {IExpr, ExprUtil} from "../../../expr";
 import {ColumnUtil} from "../../../column";
 import {NonEmptyTuple} from "../../../tuple";
 import {RawOrder, Order, OrderUtil, SortDirection} from "../../../order";
-import {ToUnknownIfAllFieldsNever} from "../../../type";
+import {ToNeverIfAllFieldsNever} from "../../../type";
 
 export type UnionOrderByDelegate<
     QueryT extends AfterSelectClause & (AfterFromClause|AfterUnionClause)
@@ -57,13 +57,12 @@ export type UnionOrderBy<
     }>
 );
 
-export type AssertValidUnionOrderByDelegate<
+export type AssertValidUnionOrderByDelegate_HackImpl<
     QueryT extends AfterSelectClause & (AfterFromClause|AfterUnionClause),
     UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>
 > = (
-    UnionOrderByDelegateT &
-    //Exprs must have usedRef be subset of queryRef
-    ToUnknownIfAllFieldsNever<{
+    //Exprs must have usedColumns be subset of queryRef
+    ToNeverIfAllFieldsNever<{
         [index in Extract<keyof ReturnType<UnionOrderByDelegateT>, string>] : (
             ReturnType<UnionOrderByDelegateT>[index] extends RawOrder ?
             (
@@ -72,29 +71,30 @@ export type AssertValidUnionOrderByDelegate<
                 > extends never ?
                 never :
                 (
-                    ColumnRefUtil.FromQuerySelects<QueryT> extends OrderUtil.ExtractExpr<
-                        ReturnType<UnionOrderByDelegateT>[index]
-                    >["usedRef"] ?
+                    ColumnUtil.AssertValidUsed<
+                        OrderUtil.ExtractExpr<
+                            ReturnType<UnionOrderByDelegateT>[index]
+                        >["usedColumns"][number],
+                        ColumnUtil.FromQuerySelects<QueryT>
+                    > extends never ?
                     never :
                     [
                         "Invalid IExpr",
                         index,
-                        Exclude<
-                            ColumnUtil.FromColumnRef<
-                                OrderUtil.ExtractExpr<ReturnType<UnionOrderByDelegateT>[index]>["usedRef"]
-                            >,
-                            ColumnUtil.FromColumnRef<
-                                ColumnRefUtil.FromQuerySelects<QueryT>
-                            >
+                        ColumnUtil.AssertValidUsed<
+                            OrderUtil.ExtractExpr<
+                                ReturnType<UnionOrderByDelegateT>[index]
+                            >["usedColumns"][number],
+                            ColumnUtil.FromQuerySelects<QueryT>
                         >
                     ]
                 )
             ) :
             never
         )
-    }> &
+    }> |
     //Columns used must exist in queryRef
-    ToUnknownIfAllFieldsNever<{
+    ToNeverIfAllFieldsNever<{
         [index in Extract<keyof ReturnType<UnionOrderByDelegateT>, string>] : (
             ReturnType<UnionOrderByDelegateT>[index] extends RawOrder ?
             (
@@ -121,6 +121,34 @@ export type AssertValidUnionOrderByDelegate<
         )
     }>
 );
+//https://github.com/Microsoft/TypeScript/issues/29133
+export type AssertValidUnionOrderByDelegate_Hack<
+    QueryT extends AfterSelectClause & (AfterFromClause|AfterUnionClause),
+    UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>,
+    ResultT
+> = (
+    UnionOrderByDelegateT &
+    AssertValidUnionOrderByDelegate_HackImpl<
+        QueryT,
+        UnionOrderByDelegateT
+    > extends never ?
+    ResultT :
+    AssertValidUnionOrderByDelegate_HackImpl<
+        QueryT,
+        UnionOrderByDelegateT
+    >|void
+);
+
+export type UnionOrderByResult<
+    QueryT extends AfterSelectClause & (AfterFromClause|AfterUnionClause),
+    UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>
+> = (
+    AssertValidUnionOrderByDelegate_Hack<
+        QueryT,
+        UnionOrderByDelegateT,
+        UnionOrderBy<QueryT>
+    >
+);
 
 //Must be called after `FROM` or `UNION`, because there's little point
 //in ordering one row
@@ -132,8 +160,10 @@ export function unionOrderBy<
     UnionOrderByDelegateT extends UnionOrderByDelegate<QueryT>
 > (
     query : QueryT,
-    delegate : AssertValidUnionOrderByDelegate<QueryT, UnionOrderByDelegateT>
-) : UnionOrderBy<QueryT> {
+    delegate : UnionOrderByDelegateT
+) : (
+    UnionOrderByResult<QueryT, UnionOrderByDelegateT>
+) {
     if (query._selects == undefined) {
         throw new Error(`Can only use UNION ORDER BY after SELECT clause`);
     }
@@ -153,7 +183,7 @@ export function unionOrderBy<
         if (ColumnUtil.isColumn(orderExpr)) {
             ColumnRefUtil.assertHasColumnIdentifier(queryRef, orderExpr);
         } else if (ExprUtil.isExpr(orderExpr)) {
-            ColumnRefUtil.assertIsSubset(orderExpr.usedRef, queryRef);
+            ColumnRefUtil.assertHasColumnIdentifiers(queryRef, orderExpr.usedColumns);
         }
     }
 
@@ -177,7 +207,7 @@ export function unionOrderBy<
 
         _mapDelegate,
     } = query;
-    return new Query(
+    const result : UnionOrderBy<QueryT> = new Query(
         {
             _distinct,
             _sqlCalcFoundRows,
@@ -204,4 +234,74 @@ export function unionOrderBy<
             _mapDelegate,
         }
     ) as UnionOrderBy<QueryT>;
+    return result as any;
 }
+/*
+import * as o from "../../../index";
+const table = o.table("test", {
+    x : o.bigint(),
+    y : o.varChar.nullable(),
+    z : o.boolean(),
+});
+const nse = o.nullSafeEq(table.columns.x, table.columns.x);
+const rnse = () => nse;
+const xDesc = table.columns.x.desc();
+o.from(table)
+    .select(c => [c])
+    .unionOrderBy(c => [
+        c.z.desc()
+    ])
+    .having(rnse);
+o.from(table)
+    .select(c => [c])
+    .unionOrderBy(() => [xDesc, nse.desc()])
+    .having(rnse);
+o.from(table)
+    .select(c => [c])
+    .unionOrderBy((_c) => [xDesc, nse.desc()])
+    .having(rnse);
+
+const table2 = o.table("test2", {
+    x : o.bigint(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse2 = o.nullSafeEq(table.columns.x, table2.columns.x);
+o.from(table)
+    .select(c => [c])
+    .unionOrderBy((_c) => [xDesc, nse2.desc()])
+    .having(rnse);
+
+const table3 = o.table("test", {
+    x : o.bigint.nullable(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse3 = o.nullSafeEq(table.columns.x, table3.columns.x);
+o.from(table)
+    .select(c => [c])
+    .unionOrderBy((_c) => [xDesc, nse3.desc()])
+    .having(rnse);
+
+const table4 = o.table("test", {
+    x : o.bigint.nullable(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse4 = o.nullSafeEq(table.columns.y, table4.columns.y);
+o.from(table)
+    .select(c => [c])
+    .unionOrderBy((_c) => [xDesc, nse4.desc()])
+    .having(rnse);
+
+const table5 = o.table("test", {
+    x : o.bigint.nullable(),
+    y : o.varChar(),
+    z : o.boolean(),
+});
+const nse5 = o.eq(table5.columns.y, "test");
+o.from(table)
+    .select(c => [c])
+    .unionOrderBy((_c) => [xDesc, nse5.desc()])
+    .having(rnse);
+*/

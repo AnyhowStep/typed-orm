@@ -4,11 +4,11 @@ import {ALIASED} from "../../../constants";
 
 export type As<ExprT extends IExpr, AliasT extends string> = (
     Expr<{
-        readonly usedRef : ExprT["usedRef"];
+        readonly usedColumns : ExprT["usedColumns"];
         readonly assertDelegate : ExprT["assertDelegate"];
     }> &
     IExprSelectItem<{
-        readonly usedRef : ExprT["usedRef"];
+        readonly usedColumns : ExprT["usedColumns"];
         readonly assertDelegate : ExprT["assertDelegate"];
 
         //TODO-DEBATE Consider allowing tableAlias to change?

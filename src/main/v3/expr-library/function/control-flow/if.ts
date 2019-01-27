@@ -2,7 +2,6 @@ import * as sd from "schema-decorator";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
-import {ColumnRefUtil} from "../../../column-ref";
 import {FunctionCall} from "../../../query-tree";
 import {PrimitiveExpr} from "../../../primitive-expr";
 
@@ -17,11 +16,11 @@ function If<
     elseExpr : ElseT
 ) : (
     Expr<{
-        usedRef : (
-            RawExprUtil.UsedRef<ConditionT> &
-            RawExprUtil.UsedRef<ThenT> &
-            RawExprUtil.UsedRef<ElseT>
-        ),
+        usedColumns : (
+            RawExprUtil.UsedColumns<ConditionT>[number] |
+            RawExprUtil.UsedColumns<ThenT>[number] |
+            RawExprUtil.UsedColumns<ElseT>[number]
+        )[],
         assertDelegate : sd.AssertDelegate<
             RawExprUtil.TypeOf<ThenT> |
             RawExprUtil.TypeOf<ElseT>
@@ -30,13 +29,11 @@ function If<
 ) {
     const result = new Expr(
         {
-            usedRef : ColumnRefUtil.intersect(
-                RawExprUtil.usedRef(condition),
-                ColumnRefUtil.intersect(
-                    RawExprUtil.usedRef(thenExpr),
-                    RawExprUtil.usedRef(elseExpr)
-                )
-            ),
+            usedColumns : RawExprUtil.Array.usedColumns([
+                condition,
+                thenExpr,
+                elseExpr,
+            ]),
             assertDelegate : sd.or(
                 RawExprUtil.assertDelegate(thenExpr),
                 RawExprUtil.assertDelegate(elseExpr)

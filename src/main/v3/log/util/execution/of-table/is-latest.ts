@@ -2,7 +2,6 @@ import * as sd from "schema-decorator";
 import {LogNoTrackedDefaults} from "../../../log";
 import {ALIASED} from "../../../../constants";
 import {ExprUtil, IExpr} from "../../../../expr";
-import {ColumnRefUtil} from "../../../../column-ref";
 import {ColumnUtil} from "../../../../column";
 import * as exprLib from "../../../../expr-library";
 import {TableUtil} from "../../../../table";
@@ -14,9 +13,7 @@ export type IsLatest<
 > = (
     ExprUtil.As<
         IExpr<{
-            usedRef : ColumnRefUtil.FromColumnArray<
-                ColumnUtil.FromColumnMap<LogT["table"]["columns"]>[]
-            >,
+            usedColumns : ColumnUtil.FromColumnMap<LogT["table"]["columns"]>[],
             assertDelegate : sd.AssertDelegate<boolean>,
             tableAlias : typeof ALIASED,
         }>,
@@ -37,7 +34,7 @@ export function isLatest<
         .select(() => [
             latest.columns[log.latestOrder[0].name]
         ])
-        .where(() => {
+        .__unsafeWhere(() => {
             return JoinDeclarationUtil.innerJoinUsing(
                 latest,
                 log.table as any,

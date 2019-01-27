@@ -6,7 +6,7 @@ tape(__filename + "-name", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "name",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name", {
@@ -23,7 +23,7 @@ tape(__filename + "-name", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "name`",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name`", {
@@ -40,7 +40,7 @@ tape(__filename + "-name", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "name`'",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name`'", {
@@ -57,7 +57,7 @@ tape(__filename + "-name", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "name`'\"",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name`'\"", {
@@ -77,7 +77,7 @@ tape(__filename + "-name-with-database", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "name",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name", {
@@ -98,7 +98,7 @@ tape(__filename + "-name-with-database", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "name`",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name`", {
@@ -119,7 +119,7 @@ tape(__filename + "-name-with-database", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "name`'",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name`'", {
@@ -140,7 +140,7 @@ tape(__filename + "-name-with-database", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "name`'\"",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name`'\"", {
@@ -164,7 +164,7 @@ tape(__filename + "-with-alias", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "alias",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias", {
@@ -185,7 +185,7 @@ tape(__filename + "-with-alias", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "alias`",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias", {
@@ -206,7 +206,7 @@ tape(__filename + "-with-alias", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "alias`'",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias", {
@@ -227,7 +227,7 @@ tape(__filename + "-with-alias", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "alias`'\"",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias", {
@@ -251,7 +251,7 @@ tape(__filename + "-with-alias-with-database", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "alias",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias", {
@@ -272,7 +272,7 @@ tape(__filename + "-with-alias-with-database", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "alias`",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias`", {
@@ -293,7 +293,7 @@ tape(__filename + "-with-alias-with-database", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "alias`'",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias`'", {
@@ -314,7 +314,7 @@ tape(__filename + "-with-alias-with-database", (t) => {
     t.deepEqual(
         new o.AliasedTable(
             {
-                usedRef : {},
+                usedColumns : [],
                 alias : "alias`'\"",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias`'\"", {

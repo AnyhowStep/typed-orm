@@ -2,7 +2,7 @@ import * as sd from "schema-decorator";
 import { Table, ITable } from "../../table";
 import { ColumnMapUtil } from "../../../column-map";
 export declare type AddColumnsFromFieldTuple<TableT extends ITable, FieldsT extends sd.AnyField[]> = (Table<{
-    readonly usedRef: TableT["usedRef"];
+    readonly usedColumns: TableT["usedColumns"];
     readonly alias: TableT["alias"];
     readonly columns: ColumnMapUtil.Intersect<TableT["columns"], ColumnMapUtil.FromFieldArray<TableT["alias"], FieldsT>>;
     readonly autoIncrement: TableT["autoIncrement"];

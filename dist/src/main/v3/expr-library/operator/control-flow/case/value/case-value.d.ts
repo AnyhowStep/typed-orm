@@ -1,22 +1,22 @@
 import * as sd from "schema-decorator";
 import { RawExpr } from "../../../../../raw-expr";
 import { PrimitiveExpr, NonNullPrimitiveExpr } from "../../../../../primitive-expr";
-import { ColumnRef } from "../../../../../column-ref";
+import { IColumn } from "../../../../../column";
 import { QueryTreeArray } from "../../../../../query-tree";
 import * as CaseValueUtil from "./util";
 export interface CaseValueData {
-    readonly usedRef: ColumnRef;
+    readonly usedColumns: IColumn[];
     readonly value: sd.AssertDelegate<any>;
     readonly result: sd.AssertDelegate<any> | undefined;
 }
 export interface ICaseValue<DataT extends CaseValueData = CaseValueData> {
-    readonly usedRef: DataT["usedRef"];
+    readonly usedColumns: DataT["usedColumns"];
     readonly value: DataT["value"];
     readonly result: DataT["result"];
     readonly queryTree: QueryTreeArray;
 }
 export declare class CaseValue<DataT extends CaseValueData> implements ICaseValue<DataT> {
-    readonly usedRef: DataT["usedRef"];
+    readonly usedColumns: DataT["usedColumns"];
     readonly value: DataT["value"];
     readonly result: DataT["result"];
     readonly queryTree: QueryTreeArray;

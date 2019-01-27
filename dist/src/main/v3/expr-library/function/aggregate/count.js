@@ -6,7 +6,7 @@ const dataType = require("../../../data-type");
 //https://dev.mysql.com/doc/refman/8.0/en/group-by-functions.html#function_count
 function count() {
     const result = new expr_1.Expr({
-        usedRef: {},
+        usedColumns: [],
         assertDelegate: dataType.bigint(),
     }, new query_tree_1.FunctionCall("COUNT", [
         "*"

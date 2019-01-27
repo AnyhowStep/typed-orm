@@ -4,7 +4,6 @@ const query_1 = require("../../query");
 const expr_library_1 = require("../../../expr-library");
 const table_1 = require("../../../table");
 const column_identifier_ref_1 = require("../../../column-identifier-ref");
-const column_ref_1 = require("../../../column-ref");
 /*
     Will ignore extra fields that are not columns of the table
 */
@@ -14,7 +13,7 @@ function whereEqColumns(query, table, columns) {
     }
     const ref = column_identifier_ref_1.ColumnIdentifierRefUtil.fromJoinArray(query._joins);
     const condition = table_1.TableUtil.eqColumns(table, columns);
-    column_ref_1.ColumnRefUtil.assertIsSubset(condition.usedRef, ref);
+    column_identifier_ref_1.ColumnIdentifierRefUtil.assertHasColumnIdentifiers(ref, condition.usedColumns);
     const { _distinct, _sqlCalcFoundRows, _joins, _parentJoins, _selects, _grouped, _having, _orders, _limit, _unions, _unionOrders, _unionLimit, _mapDelegate, } = query;
     return new query_1.Query({
         _distinct,

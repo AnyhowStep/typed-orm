@@ -1,8 +1,7 @@
 import * as sd from "schema-decorator";
 import { RawExpr, RawExprUtil } from "../../../raw-expr";
 import { Expr } from "../../../expr";
-import { Tuple } from "../../../tuple";
-export declare function or<ArrT extends Tuple<RawExpr<boolean>>>(...arr: ArrT): (Expr<{
-    usedRef: RawExprUtil.IntersectUsedRefTuple<ArrT>;
+export declare function or<ArrT extends RawExpr<boolean>[]>(...arr: ArrT): (Expr<{
+    usedColumns: RawExprUtil.Array.UsedColumns<ArrT>;
     assertDelegate: sd.AssertDelegate<boolean>;
 }>);

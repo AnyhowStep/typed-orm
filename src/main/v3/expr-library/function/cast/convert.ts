@@ -12,7 +12,7 @@ export function convert<
     transcodingName : TranscodingName
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<RawExprT>,
+        usedColumns : RawExprUtil.UsedColumns<RawExprT>,
         assertDelegate : sd.AssertDelegate<string>,
     }>
 ) {
@@ -20,7 +20,7 @@ export function convert<
     sd.enumeration(TranscodingName)("transcodingName", transcodingName);
     return new Expr(
         {
-            usedRef : RawExprUtil.usedRef(rawExpr),
+            usedColumns : RawExprUtil.usedColumns(rawExpr),
             assertDelegate : sd.string(),
         },
         new FunctionCall("CONVERT", [

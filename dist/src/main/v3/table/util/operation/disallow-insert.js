@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const table_1 = require("../../table");
 function disallowInsert(table) {
-    const { usedRef, alias, columns, autoIncrement, id, primaryKey, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, deleteAllowed, unaliasedQuery, } = table;
+    const { usedColumns, alias, columns, autoIncrement, id, primaryKey, candidateKeys, generated, isNullable, hasExplicitDefaultValue, mutable, parents, deleteAllowed, unaliasedQuery, } = table;
     return new table_1.Table({
-        usedRef,
+        usedColumns,
         alias,
         columns,
         autoIncrement,

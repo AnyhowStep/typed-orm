@@ -9,7 +9,9 @@ const dataType = require("../../../data-type");
 function ternaryComparison(leftOperator, rightOperator) {
     const result = (left, mid, right) => {
         return new expr_1.Expr({
-            usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple(left, mid, right),
+            usedColumns: raw_expr_1.RawExprUtil.Array.usedColumns([
+                left, mid, right
+            ]),
             assertDelegate: dataType.boolean(),
         }, [
             raw_expr_1.RawExprUtil.queryTree(left),

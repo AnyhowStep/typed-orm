@@ -14,13 +14,13 @@ export function bin<RawExprT extends RawExpr<bigint|number>>(
     rawExpr : RawExprT
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<RawExprT>,
+        usedColumns : RawExprUtil.UsedColumns<RawExprT>,
         assertDelegate : sd.AssertDelegate<string>,
     }>
 ) {
     const result = new Expr(
         {
-            usedRef : RawExprUtil.usedRef(rawExpr),
+            usedColumns : RawExprUtil.usedColumns(rawExpr),
             assertDelegate : sd.match(/^(1|0)+$/, name => `${name} must be a non-empty binary string`),
         },
         new FunctionCall(

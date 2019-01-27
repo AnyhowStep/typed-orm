@@ -6,11 +6,11 @@ import { CaseValue } from "./value";
 export * from "./condition";
 export * from "./value";
 export declare function CaseConstructor(): (CaseCondition<{
-    usedRef: {};
+    usedColumns: never[];
     result: undefined;
 }>);
 export declare function CaseConstructor<ValueT extends RawExpr<NonNullPrimitiveExpr>>(valueExpr: ValueT): (CaseValue<{
-    usedRef: RawExprUtil.UsedRef<ValueT>;
+    usedColumns: RawExprUtil.UsedColumns<ValueT>;
     value: RawExprUtil.AssertDelegate<ValueT>;
     result: undefined;
 }>);

@@ -13,7 +13,7 @@ export function castAsDateTime<
     fractionalSecondPrecision : 0|1|2|3 = 0
 ) : (
     Expr<{
-        usedRef : RawExprUtil.UsedRef<RawExprT>,
+        usedColumns : RawExprUtil.UsedColumns<RawExprT>,
         assertDelegate : sd.AssertDelegate<bigint>,
     }>
 ) {
@@ -23,7 +23,7 @@ export function castAsDateTime<
     );
     return new Expr(
         {
-            usedRef : RawExprUtil.usedRef(rawExpr),
+            usedColumns : RawExprUtil.usedColumns(rawExpr),
             assertDelegate : dataType.bigint(),
         },
         new FunctionCall("CAST", [
