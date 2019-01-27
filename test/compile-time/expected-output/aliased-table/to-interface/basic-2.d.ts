@@ -1,25 +1,19 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 export declare const table2: o.IAliasedTable<{
-    usedRef: {
-        readonly table: {
-            readonly x: o.Column<{
-                tableAlias: "table";
-                name: "x";
-                assertDelegate: sd.AssertDelegate<number>;
-            }>;
-            readonly y: o.Column<{
-                tableAlias: "table";
-                name: "y";
-                assertDelegate: sd.AssertDelegate<string>;
-            }>;
-            readonly z: o.Column<{
-                tableAlias: "table";
-                name: "z";
-                assertDelegate: sd.AssertDelegate<boolean>;
-            }>;
-        };
-    };
+    usedColumns: (o.Column<{
+        tableAlias: "table";
+        name: "x";
+        assertDelegate: sd.AssertDelegate<number>;
+    }> | o.Column<{
+        tableAlias: "table";
+        name: "y";
+        assertDelegate: sd.AssertDelegate<string>;
+    }> | o.Column<{
+        tableAlias: "table";
+        name: "z";
+        assertDelegate: sd.AssertDelegate<boolean>;
+    }>)[];
     alias: "aliasedTable";
     columns: {
         readonly a: o.Column<{
@@ -40,25 +34,19 @@ export declare const table2: o.IAliasedTable<{
     };
 }>;
 export declare const a: o.IAliasedTable<{
-    readonly usedRef: {
-        readonly table: {
-            readonly x: o.IColumn<{
-                readonly tableAlias: "table";
-                readonly name: "x";
-                readonly assertDelegate: sd.AssertDelegate<number>;
-            }>;
-            readonly y: o.IColumn<{
-                readonly tableAlias: "table";
-                readonly name: "y";
-                readonly assertDelegate: sd.AssertDelegate<string>;
-            }>;
-            readonly z: o.IColumn<{
-                readonly tableAlias: "table";
-                readonly name: "z";
-                readonly assertDelegate: sd.AssertDelegate<boolean>;
-            }>;
-        };
-    };
+    readonly usedColumns: (o.IColumn<{
+        readonly tableAlias: "table";
+        readonly name: "x";
+        readonly assertDelegate: sd.AssertDelegate<number>;
+    }> | o.IColumn<{
+        readonly tableAlias: "table";
+        readonly name: "y";
+        readonly assertDelegate: sd.AssertDelegate<string>;
+    }> | o.IColumn<{
+        readonly tableAlias: "table";
+        readonly name: "z";
+        readonly assertDelegate: sd.AssertDelegate<boolean>;
+    }>)[];
     readonly alias: "aliasedTable";
     readonly columns: {
         readonly a: o.IColumn<{

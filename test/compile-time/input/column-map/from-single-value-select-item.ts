@@ -8,15 +8,11 @@ export declare const untypedColumn : o.IColumn;
 export const untypedColumnMap = o.ColumnMapUtil.fromSingleValueSelectItem(untypedColumn);
 
 export declare const item : o.IExprSelectItem<{
-    readonly usedRef : {
-        someTable : {
-            someColumn : o.IColumn<{
-                tableAlias : "someTable",
-                name : "someColumn",
-                assertDelegate : sd.AssertDelegate<boolean>,
-            }>
-        }
-    };
+    readonly usedColumns : o.IColumn<{
+        tableAlias : "someTable",
+        name : "someColumn",
+        assertDelegate : sd.AssertDelegate<boolean>,
+    }>[];
     readonly assertDelegate : sd.AssertDelegate<Date>;
 
     readonly tableAlias : "someTableAlias";

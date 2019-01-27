@@ -20,7 +20,7 @@ export const query = o.select(() => [
 ]);
 declare const isExprSelectItem : (
     typeof selectItem extends o.IExprSelectItem<{
-        usedRef : {},
+        usedColumns : never[],
         assertDelegate : sd.AssertDelegate<number|null>,
         tableAlias : "__aliased",
         alias : "test",

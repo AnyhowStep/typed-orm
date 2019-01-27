@@ -22,7 +22,7 @@ const sameName = o.table(
             ColumnRef to having() but to pass a Ref-type that
             would have IExprSelectItem as well.
 
-            And also having the usedRef use this new Ref-type.
+            And also having the usedColumns use this new Ref-type.
 
             That way, we'll have this error saying that we expected
             an IExprSelectItem for `table.test` but received
