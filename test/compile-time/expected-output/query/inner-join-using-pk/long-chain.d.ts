@@ -5,7 +5,7 @@ export declare const query: o.Query<{
     readonly _sqlCalcFoundRows: false;
     readonly _joins: (o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "table";
             readonly columns: {
                 readonly x: o.Column<{
@@ -36,7 +36,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined1";
             readonly columns: {
                 readonly x: o.Column<{
@@ -67,7 +67,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined2";
             readonly columns: {
                 readonly x: o.Column<{
@@ -98,7 +98,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined3";
             readonly columns: {
                 readonly x: o.Column<{
@@ -129,7 +129,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined4";
             readonly columns: {
                 readonly x: o.Column<{
@@ -160,7 +160,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined5";
             readonly columns: {
                 readonly x: o.Column<{
@@ -191,7 +191,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined6";
             readonly columns: {
                 readonly x: o.Column<{
@@ -222,7 +222,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined7";
             readonly columns: {
                 readonly x: o.Column<{
@@ -253,7 +253,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined8";
             readonly columns: {
                 readonly x: o.Column<{
@@ -284,7 +284,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined9";
             readonly columns: {
                 readonly x: o.Column<{
@@ -315,7 +315,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined10";
             readonly columns: {
                 readonly x: o.Column<{
@@ -346,7 +346,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined11";
             readonly columns: {
                 readonly x: o.Column<{
@@ -377,7 +377,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined12";
             readonly columns: {
                 readonly x: o.Column<{
@@ -408,7 +408,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined13";
             readonly columns: {
                 readonly x: o.Column<{
@@ -439,7 +439,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined14";
             readonly columns: {
                 readonly x: o.Column<{
@@ -470,7 +470,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined15";
             readonly columns: {
                 readonly x: o.Column<{
@@ -501,7 +501,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined16";
             readonly columns: {
                 readonly x: o.Column<{
@@ -532,7 +532,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined17";
             readonly columns: {
                 readonly x: o.Column<{
@@ -563,7 +563,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined18";
             readonly columns: {
                 readonly x: o.Column<{
@@ -594,7 +594,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined19";
             readonly columns: {
                 readonly x: o.Column<{
@@ -625,7 +625,7 @@ export declare const query: o.Query<{
         nullable: false;
     }> | o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "joined20";
             readonly columns: {
                 readonly x: o.Column<{

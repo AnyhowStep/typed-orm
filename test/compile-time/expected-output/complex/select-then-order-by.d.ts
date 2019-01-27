@@ -1,6 +1,6 @@
 import * as o from "../../../../dist/src/main";
 export declare const appPlatform: o.Table<{
-    readonly usedRef: {};
+    readonly usedColumns: never[];
     readonly alias: "appPlatform";
     readonly columns: {} & {
         readonly appId: o.Column<{
@@ -36,7 +36,7 @@ export declare const q: o.Query<{
     readonly _sqlCalcFoundRows: false;
     readonly _joins: o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "appPlatform";
             readonly columns: {} & {
                 readonly appId: o.Column<{

@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column/column\").Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: import(...' is not assignable to parameter of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column/column\").Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: import(...'.",
+      "messageText": "Argument of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedColumns: never[]; readonly alias: \"joined1\"; readonly columns: { readonly a: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column/column\").Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate...' is not assignable to parameter of type 'import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedColumns: never[]; readonly alias: \"joined1\"; readonly columns: { readonly a: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column/column\").Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate...'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly c: Column<...>; }; ... 10 more ...; re...' is missing the following properties from type '[\"table\", \"is missing columns\", \"b\"]': 0, 1, 2, length, and 31 more.",
+        "messageText": "Type 'Table<{ readonly usedColumns: never[]; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly c: Column<...>; }; ... 10 mor...' is missing the following properties from type '[\"table\", \"is missing columns\", \"b\"]': 0, 1, 2, length, and 31 more.",
         "category": 1,
         "code": 2740
       }

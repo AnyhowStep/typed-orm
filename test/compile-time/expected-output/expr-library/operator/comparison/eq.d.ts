@@ -1,107 +1,75 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../../../dist/src/main";
 export declare const eq1: o.Expr<{
-    usedRef: {
-        readonly table: {
-            readonly x: o.Column<{
-                tableAlias: "table";
-                name: "x";
-                assertDelegate: sd.AssertDelegate<number>;
-            }>;
-        } & {
-            readonly y: o.Column<{
-                tableAlias: "table";
-                name: "y";
-                assertDelegate: sd.AssertDelegate<number>;
-            }>;
-        };
-    } & {};
+    usedColumns: (o.Column<{
+        tableAlias: "table";
+        name: "x";
+        assertDelegate: sd.AssertDelegate<number>;
+    }> | o.Column<{
+        tableAlias: "table";
+        name: "y";
+        assertDelegate: sd.AssertDelegate<number>;
+    }>)[];
     assertDelegate: sd.AssertDelegate<boolean>;
 }>;
 export declare const eq2: o.Expr<{
-    usedRef: {
-        readonly table: {
-            readonly x: o.Column<{
-                tableAlias: "table";
-                name: "x";
-                assertDelegate: sd.AssertDelegate<number>;
-            }>;
-        };
-    } & {};
+    usedColumns: o.Column<{
+        tableAlias: "table";
+        name: "x";
+        assertDelegate: sd.AssertDelegate<number>;
+    }>[];
     assertDelegate: sd.AssertDelegate<boolean>;
 }>;
 export declare const eq3: o.Expr<{
-    usedRef: {
-        readonly table: {
-            readonly x: o.Column<{
-                tableAlias: "table";
-                name: "x";
-                assertDelegate: sd.AssertDelegate<number>;
-            }>;
-            readonly y: o.Column<{
-                tableAlias: "table";
-                name: "y";
-                assertDelegate: sd.AssertDelegate<number>;
-            }>;
-        } & {
-            readonly a: o.Column<{
-                tableAlias: "table";
-                name: "a";
-                assertDelegate: sd.AssertDelegate<boolean>;
-            }>;
-        };
-    } & {};
+    usedColumns: (o.Column<{
+        tableAlias: "table";
+        name: "a";
+        assertDelegate: sd.AssertDelegate<boolean>;
+    }> | o.Column<{
+        tableAlias: "table";
+        name: "x";
+        assertDelegate: sd.AssertDelegate<number>;
+    }> | o.Column<{
+        tableAlias: "table";
+        name: "y";
+        assertDelegate: sd.AssertDelegate<number>;
+    }>)[];
     assertDelegate: sd.AssertDelegate<boolean>;
 }>;
 export declare const eq4: o.Expr<{
-    usedRef: {
-        readonly table: {
-            readonly a: o.Column<{
-                tableAlias: "table";
-                name: "a";
-                assertDelegate: sd.AssertDelegate<boolean>;
-            }>;
-            readonly x: o.Column<{
-                tableAlias: "table";
-                name: "x";
-                assertDelegate: sd.AssertDelegate<number>;
-            }>;
-            readonly y: o.Column<{
-                tableAlias: "table";
-                name: "y";
-                assertDelegate: sd.AssertDelegate<number>;
-            }>;
-        } & {
-            readonly b: o.Column<{
-                tableAlias: "table";
-                name: "b";
-                assertDelegate: sd.AssertDelegate<boolean>;
-            }>;
-        };
-    } & {};
+    usedColumns: (o.Column<{
+        tableAlias: "table";
+        name: "a";
+        assertDelegate: sd.AssertDelegate<boolean>;
+    }> | o.Column<{
+        tableAlias: "table";
+        name: "b";
+        assertDelegate: sd.AssertDelegate<boolean>;
+    }> | o.Column<{
+        tableAlias: "table";
+        name: "x";
+        assertDelegate: sd.AssertDelegate<number>;
+    }> | o.Column<{
+        tableAlias: "table";
+        name: "y";
+        assertDelegate: sd.AssertDelegate<number>;
+    }>)[];
     assertDelegate: sd.AssertDelegate<boolean>;
 }>;
 export declare const eq5: o.Expr<{
-    usedRef: {
-        readonly table: {
-            readonly x: o.Column<{
-                tableAlias: "table";
-                name: "x";
-                assertDelegate: sd.AssertDelegate<number>;
-            }>;
-            readonly y: o.Column<{
-                tableAlias: "table";
-                name: "y";
-                assertDelegate: sd.AssertDelegate<number>;
-            }>;
-        } & {
-            readonly c: o.Column<{
-                tableAlias: "table";
-                name: "c";
-                assertDelegate: sd.AssertDelegate<boolean>;
-            }>;
-        };
-    } & {};
+    usedColumns: (o.Column<{
+        tableAlias: "table";
+        name: "x";
+        assertDelegate: sd.AssertDelegate<number>;
+    }> | o.Column<{
+        tableAlias: "table";
+        name: "y";
+        assertDelegate: sd.AssertDelegate<number>;
+    }> | o.Column<{
+        tableAlias: "table";
+        name: "c";
+        assertDelegate: sd.AssertDelegate<boolean>;
+    }>)[];
     assertDelegate: sd.AssertDelegate<boolean>;
 }>;
 export declare const eq6: any;

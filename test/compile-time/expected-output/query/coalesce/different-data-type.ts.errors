@@ -1,6 +1,6 @@
 [
   {
-    "messageText": "Argument of type '32' is not assignable to parameter of type 'string | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<string | null>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<string | null>; }> | ... 5 more ... | null'.",
+    "messageText": "Argument of type '32' is not assignable to parameter of type 'string | IExpr<{ usedColumns: IColumn<ColumnData>[]; assertDelegate: AssertDelegate<string | null>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<...>; }> | ... 5 more ... | null'.",
     "code": 2345,
     "category": 1,
     "length": 2,

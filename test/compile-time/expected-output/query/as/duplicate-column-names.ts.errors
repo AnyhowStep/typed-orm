@@ -5,7 +5,7 @@
       "category": 1,
       "code": 2684,
       "next": {
-        "messageText": "Type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<...>; }>; readonly y: Column<...>; readonly z: Col...' is missing the following properties from type '[\"Duplicate column names not allowed in selects\", \"x\"]': 0, 1, length, pop, and 29 more.",
+        "messageText": "Type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly usedColumns: never[]; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<...>; }>; readonly y: Column<...>; readon...' is missing the following properties from type '[\"Duplicate column names not allowed in selects\", \"x\"]': 0, 1, length, pop, and 29 more.",
         "category": 1,
         "code": 2740
       }

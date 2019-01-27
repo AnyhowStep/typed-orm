@@ -2,7 +2,7 @@ import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 export declare const j1: o.JoinDeclaration<{
     readonly fromTable: o.Table<{
-        readonly usedRef: {};
+        readonly usedColumns: never[];
         readonly alias: "table";
         readonly columns: {
             readonly b: o.Column<{
@@ -34,7 +34,7 @@ export declare const j1: o.JoinDeclaration<{
         readonly deleteAllowed: true;
     }>;
     readonly toTable: o.Table<{
-        readonly usedRef: {};
+        readonly usedColumns: never[];
         readonly alias: "joined1";
         readonly columns: {
             readonly a: o.Column<{

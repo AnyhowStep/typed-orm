@@ -1,1 +1,4 @@
-export declare const query: any;
+export declare const query: void | [{
+    readonly tableAlias: "joined1";
+    readonly name: "c";
+}, "not allowed"];

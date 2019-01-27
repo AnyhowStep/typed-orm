@@ -21,15 +21,11 @@ export declare const untypedColumnMap: {
     }>;
 };
 export declare const item: o.IExprSelectItem<{
-    readonly usedRef: {
-        someTable: {
-            someColumn: o.IColumn<{
-                tableAlias: "someTable";
-                name: "someColumn";
-                assertDelegate: sd.AssertDelegate<boolean>;
-            }>;
-        };
-    };
+    readonly usedColumns: o.IColumn<{
+        tableAlias: "someTable";
+        name: "someColumn";
+        assertDelegate: sd.AssertDelegate<boolean>;
+    }>[];
     readonly assertDelegate: sd.AssertDelegate<Date>;
     readonly tableAlias: "someTableAlias";
     readonly alias: "someAlias";

@@ -1,18 +1,13 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '[Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly c: Column<...>; }; ... 10 more ...; r...' is not assignable to parameter of type '([Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly c: Column<...>; }; ... 10 more ...; ...'.",
+      "messageText": "Argument of type '[import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedColumns: never[]; readonly alias: \"joined1\"; readonly columns: { readonly a: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column/column\").Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegat...' is not assignable to parameter of type '[import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedColumns: never[]; readonly alias: \"joined1\"; readonly columns: { readonly a: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column/column\").Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegat...'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '[import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column/column\").Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: import...' is not assignable to type '[import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/table/table\").Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: import(\"/home/anyhowstep/node-projects/typed-orm/dist/src/main/v3/column/column\").Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: import...'. Two different types with this name exist, but they are unrelated.",
+        "messageText": "Type '[Table<{ readonly usedColumns: never[]; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly c: Column<...>; }; ... 10 mo...' is missing the following properties from type '[\"Alias\", \"table\", \"already used in previous JOINs\", \"table\"]': 2, 3",
         "category": 1,
-        "code": 2719,
-        "next": {
-          "messageText": "Type '[Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly c: Column<...>; }; ... 10 more ...; r...' is missing the following properties from type '[\"Alias\", \"table\", \"already used in previous JOINs\", \"table\"]': 2, 3",
-          "category": 1,
-          "code": 2739
-        }
+        "code": 2739
       }
     },
     "code": 2345,

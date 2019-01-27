@@ -1,6 +1,6 @@
 import * as o from "../../../../../../dist/src/main";
 export declare const parent: o.Table<{
-    readonly usedRef: {};
+    readonly usedColumns: never[];
     readonly alias: "parent";
     readonly columns: {
         readonly x: o.Column<{
@@ -28,7 +28,7 @@ export declare const parent: o.Table<{
     readonly hasExplicitDefaultValue: [];
     readonly mutable: ("x" | "y" | "z")[];
     readonly parents: o.Table<{
-        readonly usedRef: {};
+        readonly usedColumns: never[];
         readonly alias: "parent2";
         readonly columns: {
             readonly x: o.Column<{
@@ -63,7 +63,7 @@ export declare const parent: o.Table<{
     readonly deleteAllowed: true;
 }>;
 export declare const t2: o.Table<{
-    readonly usedRef: {};
+    readonly usedColumns: never[];
     readonly alias: "table";
     readonly columns: {
         readonly x: o.Column<{
@@ -96,7 +96,7 @@ export declare const t2: o.Table<{
     readonly hasExplicitDefaultValue: [];
     readonly mutable: ("x" | "y" | "z" | "w")[];
     readonly parents: (o.Table<{
-        readonly usedRef: {};
+        readonly usedColumns: never[];
         readonly alias: "parent2";
         readonly columns: {
             readonly x: o.Column<{
@@ -127,7 +127,7 @@ export declare const t2: o.Table<{
         readonly insertAllowed: true;
         readonly deleteAllowed: true;
     }> | o.Table<{
-        readonly usedRef: {};
+        readonly usedColumns: never[];
         readonly alias: "parent";
         readonly columns: {
             readonly x: o.Column<{
@@ -155,7 +155,7 @@ export declare const t2: o.Table<{
         readonly hasExplicitDefaultValue: [];
         readonly mutable: ("x" | "y" | "z")[];
         readonly parents: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "parent2";
             readonly columns: {
                 readonly x: o.Column<{

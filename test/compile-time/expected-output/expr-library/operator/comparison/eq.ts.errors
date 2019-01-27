@@ -51,7 +51,7 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null>; }>' is not assignable to parameter of type 'string | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<string>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<string>; }> | (QueryData & ... 2 more ... & IQuery<...>) | IExprSelectItem<...>'.",
+      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"h\"; assertDelegate: AssertDelegate<string | null>; }>' is not assignable to parameter of type 'string | IExpr<{ usedColumns: IColumn<ColumnData>[]; assertDelegate: AssertDelegate<string>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<string>; }> | (QueryData & ... 2 more ... & IQuery<...>) | IExprSelectItem<...>'.",
       "category": 1,
       "code": 2345,
       "next": {
@@ -87,7 +87,7 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<boolean>; }>' is not assignable to parameter of type 'number | IExpr<{ usedRef: ColumnRef; assertDelegate: AssertDelegate<number>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<number>; }> | (QueryData & ... 2 more ... & IQuery<...>) | IExprSelectItem<...>'.",
+      "messageText": "Argument of type 'Column<{ tableAlias: \"table\"; name: \"a\"; assertDelegate: AssertDelegate<boolean>; }>' is not assignable to parameter of type 'number | IExpr<{ usedColumns: IColumn<ColumnData>[]; assertDelegate: AssertDelegate<number>; }> | IColumn<{ readonly tableAlias: string; readonly name: string; readonly assertDelegate: AssertDelegate<number>; }> | (QueryData & ... 2 more ... & IQuery<...>) | IExprSelectItem<...>'.",
       "category": 1,
       "code": 2345,
       "next": {

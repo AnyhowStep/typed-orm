@@ -5,7 +5,7 @@ export declare const query: o.Query<{
     readonly _sqlCalcFoundRows: false;
     readonly _joins: o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "table";
             readonly columns: {
                 readonly x: o.Column<{
@@ -57,39 +57,27 @@ export declare const query: o.Query<{
     }>[];
     readonly _parentJoins: undefined;
     readonly _selects: [o.Expr<{
-        readonly usedRef: {
-            readonly table: {
-                readonly x: o.IColumn<{
-                    readonly tableAlias: "table";
-                    readonly name: "x";
-                    readonly assertDelegate: sd.AssertDelegate<number>;
-                }>;
-            } & {};
-        } & {};
+        readonly usedColumns: o.Column<{
+            tableAlias: "table";
+            name: "x";
+            assertDelegate: sd.AssertDelegate<number>;
+        }>[];
         readonly assertDelegate: sd.AssertDelegate<boolean>;
     }> & o.IExprSelectItem<{
-        readonly usedRef: {
-            readonly table: {
-                readonly x: o.IColumn<{
-                    readonly tableAlias: "table";
-                    readonly name: "x";
-                    readonly assertDelegate: sd.AssertDelegate<number>;
-                }>;
-            } & {};
-        } & {};
+        readonly usedColumns: o.Column<{
+            tableAlias: "table";
+            name: "x";
+            assertDelegate: sd.AssertDelegate<number>;
+        }>[];
         readonly assertDelegate: sd.AssertDelegate<boolean>;
         readonly tableAlias: "__aliased";
         readonly alias: "eq";
     }>, o.IExprSelectItem<{
-        readonly usedRef: {
-            readonly table: {
-                readonly z: o.Column<{
-                    tableAlias: "table";
-                    name: "z";
-                    assertDelegate: sd.AssertDelegate<boolean>;
-                }>;
-            };
-        };
+        readonly usedColumns: o.Column<{
+            tableAlias: "table";
+            name: "z";
+            assertDelegate: sd.AssertDelegate<boolean>;
+        }>[];
         readonly assertDelegate: sd.AssertDelegate<boolean>;
         readonly tableAlias: "table";
         readonly alias: "test";
@@ -97,7 +85,7 @@ export declare const query: o.Query<{
     readonly _where: undefined;
     readonly _grouped: undefined;
     readonly _having: o.IExpr<{
-        usedRef: o.ColumnRef;
+        usedColumns: o.IColumn<o.ColumnData>[];
         assertDelegate: sd.AssertDelegate<boolean>;
     }>;
     readonly _orders: undefined;

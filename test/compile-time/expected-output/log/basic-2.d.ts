@@ -1,7 +1,7 @@
 import * as o from "../../../../dist/src/main";
 export declare const entityBannedLog: o.Log<{
     readonly table: o.Table<{
-        readonly usedRef: {};
+        readonly usedColumns: never[];
         readonly alias: "entityBanned";
         readonly columns: {
             readonly entityId: o.Column<{
@@ -33,7 +33,7 @@ export declare const entityBannedLog: o.Log<{
         readonly deleteAllowed: true;
     }>;
     readonly entity: o.Table<{
-        readonly usedRef: {};
+        readonly usedColumns: never[];
         readonly alias: "entity";
         readonly columns: {
             readonly entityId: o.Column<{
@@ -57,7 +57,7 @@ export declare const entityBannedLog: o.Log<{
     readonly entityIdentifier: "entityId"[];
     readonly joinDeclaration: o.JoinDeclaration<{
         fromTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "entityBanned";
             readonly columns: {
                 readonly entityId: o.Column<{
@@ -89,7 +89,7 @@ export declare const entityBannedLog: o.Log<{
             readonly deleteAllowed: true;
         }>;
         toTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "entity";
             readonly columns: {
                 readonly entityId: o.Column<{
@@ -135,7 +135,7 @@ export declare const latestQuery: o.Query<{
     readonly _sqlCalcFoundRows: false;
     readonly _joins: o.Join<{
         aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "entityBanned";
             readonly columns: {
                 readonly entityId: o.Column<{
@@ -188,7 +188,7 @@ export declare const latestQuery: o.Query<{
     readonly _parentJoins: undefined;
     readonly _selects: undefined;
     readonly _where: o.IExpr<{
-        usedRef: o.ColumnRef;
+        usedColumns: o.IColumn<o.ColumnData>[];
         assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
     }>;
     readonly _grouped: undefined;

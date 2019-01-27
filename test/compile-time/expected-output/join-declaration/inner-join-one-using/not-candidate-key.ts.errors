@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type 'void | [\"x\"[], \"is not a candidate key of\", \"joined1\"]' is not assignable to parameter of type 'IJoinDeclaration<JoinDeclarationData> & [\"Incompatible usedRef\", { readonly tableAlias: string; readonly name: string; }] & [\"Invalid fromTable;\", string, \"is not in joins\"]'.",
+      "messageText": "Argument of type 'void | [\"x\"[], \"is not a candidate key of\", \"joined1\"]' is not assignable to parameter of type 'IJoinDeclaration<JoinDeclarationData> & [\"Derived table\", string, \"cannot reference outer query columns\"] & [\"Invalid fromTable;\", string, \"is not in joins\"]'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'void' is not assignable to type 'IJoinDeclaration<JoinDeclarationData> & [\"Incompatible usedRef\", { readonly tableAlias: string; readonly name: string; }] & [\"Invalid fromTable;\", string, \"is not in joins\"]'.",
+        "messageText": "Type 'void' is not assignable to type 'IJoinDeclaration<JoinDeclarationData> & [\"Derived table\", string, \"cannot reference outer query columns\"] & [\"Invalid fromTable;\", string, \"is not in joins\"]'.",
         "category": 1,
         "code": 2322,
         "next": {

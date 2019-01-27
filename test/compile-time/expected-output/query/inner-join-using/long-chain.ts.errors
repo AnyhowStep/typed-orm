@@ -1,18 +1,13 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type 'Table<{ readonly usedRef: {}; readonly alias: \"joined22\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined22\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }>' is not assignable to parameter of type '(Table<{ readonly usedRef: {}; readonly alias: \"joined22\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined22\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }> & void) | (Table<...> & [...])'.",
+      "messageText": "Argument of type 'Table<{ readonly usedColumns: never[]; readonly alias: \"joined22\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined22\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; ... 10 more ...; readonly deleteAllowed: true; }>' is not assignable to parameter of type 'Table<{ readonly usedColumns: never[]; readonly alias: \"joined22\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined22\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; ... 10 more ...; readonly deleteAllowed: true; }> & [...]'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined22\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined22\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }>' is not assignable to type 'Table<{ readonly usedRef: {}; readonly alias: \"joined22\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined22\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }> & [...]'.",
+        "messageText": "Type 'Table<{ readonly usedColumns: never[]; readonly alias: \"joined22\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined22\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; ... 10 more ...; readonly deleteAllowed: true; }>' is missing the following properties from type '[\"Alias\", \"joined22\", \"already used in previous JOINs\", any]': 0, 1, 2, 3, and 32 more.",
         "category": 1,
-        "code": 2322,
-        "next": {
-          "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined22\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined22\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }>' is missing the following properties from type '[\"Alias\", \"joined22\", \"already used in previous JOINs\", any]': 0, 1, 2, 3, and 32 more.",
-          "category": 1,
-          "code": 2740
-        }
+        "code": 2740
       }
     },
     "code": 2345,
