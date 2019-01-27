@@ -5,7 +5,7 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly usedRef: {}; readonly alias: \"other\"; readonly columns: { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: AssertDelegate<...>; }>; ... 4 more ...; readonly c: Column<...>;...' is missing the following properties from type '[\"Invalid SELECT item column-map\", \"0\", { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: AssertDelegate<number>; }>; readonly b: Column<{ tableAlias: \"other\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly x: Column<...>; readonly y: Column<...>; readonly z: Column<...>; readonly ...': 0, 1, 2, 3, and 32 more.",
+        "messageText": "Type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly usedColumns: never[]; readonly alias: \"other\"; readonly columns: { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: AssertDelegate<...>; }>; ... 4 more ...; readonly c: Col...' is missing the following properties from type '[\"Invalid SELECT item column-map\", \"0\", { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: AssertDelegate<number>; }>; readonly b: Column<{ tableAlias: \"other\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly x: Column<...>; readonly y: Column<...>; readonly z: Column<...>; readonly ...': 0, 1, 2, 3, and 32 more.",
         "category": 1,
         "code": 2740
       }

@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../dist/src/main";
 export declare const aliased: o.AliasedTable<{
-    readonly usedRef: {};
+    readonly usedColumns: never[];
     readonly alias: "aliasedTable";
     readonly columns: {
         readonly x: o.Column<{
@@ -22,7 +22,7 @@ export declare const aliased: o.AliasedTable<{
     };
 }>;
 export declare const emptyAliased: o.AliasedTable<{
-    readonly usedRef: {};
+    readonly usedColumns: never[];
     readonly alias: "emptyAliasedTable";
     readonly columns: {};
 }>;

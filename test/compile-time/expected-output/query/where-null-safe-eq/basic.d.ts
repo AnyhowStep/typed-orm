@@ -5,7 +5,7 @@ export declare const query: o.Query<{
     readonly _sqlCalcFoundRows: false;
     readonly _joins: o.IJoin<{
         readonly aliasedTable: o.Table<{
-            readonly usedRef: {};
+            readonly usedColumns: never[];
             readonly alias: "table";
             readonly columns: {
                 readonly x: o.Column<{
@@ -58,7 +58,7 @@ export declare const query: o.Query<{
     readonly _parentJoins: undefined;
     readonly _selects: undefined;
     readonly _where: o.IExpr<{
-        usedRef: o.ColumnRef;
+        usedColumns: o.IColumn<o.ColumnData>[];
         assertDelegate: sd.AssertDelegate<boolean>;
     }>;
     readonly _grouped: undefined;

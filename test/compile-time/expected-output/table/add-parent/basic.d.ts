@@ -1,7 +1,7 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 export declare const parent: o.Table<{
-    readonly usedRef: {};
+    readonly usedColumns: never[];
     readonly alias: "parent";
     readonly columns: {
         readonly x: o.Column<{
@@ -28,7 +28,7 @@ export declare const parent: o.Table<{
     readonly deleteAllowed: true;
 }>;
 export declare const table: o.Table<{
-    readonly usedRef: {};
+    readonly usedColumns: never[];
     readonly alias: "table";
     readonly columns: {
         readonly x: o.Column<{
@@ -56,7 +56,7 @@ export declare const table: o.Table<{
     readonly hasExplicitDefaultValue: [];
     readonly mutable: ("x" | "y" | "z")[];
     readonly parents: o.Table<{
-        readonly usedRef: {};
+        readonly usedColumns: never[];
         readonly alias: "parent";
         readonly columns: {
             readonly x: o.Column<{

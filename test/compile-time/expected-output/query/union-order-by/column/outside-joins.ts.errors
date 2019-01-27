@@ -9,13 +9,18 @@
         "category": 1,
         "code": 2322,
         "next": {
-          "messageText": "Types of property 'tableAlias' are incompatible.",
+          "messageText": "Type '{ tableAlias: \"table2\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }' is not assignable to type '{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }'.",
           "category": 1,
-          "code": 2326,
+          "code": 2322,
           "next": {
-            "messageText": "Type '\"table2\"' is not assignable to type '\"table\"'.",
+            "messageText": "Types of property 'tableAlias' are incompatible.",
             "category": 1,
-            "code": 2322
+            "code": 2326,
+            "next": {
+              "messageText": "Type '\"table2\"' is not assignable to type '\"table\"'.",
+              "category": 1,
+              "code": 2322
+            }
           }
         }
       }

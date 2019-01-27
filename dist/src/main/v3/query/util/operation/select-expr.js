@@ -10,4 +10,16 @@ function selectExpr(query, delegate) {
     return select_1.select(query, wrappedDelegate); //TODO-UNHACK Not use `as any` hacks?
 }
 exports.selectExpr = selectExpr;
+/*
+import * as o from "../../../index";
+
+const table = o.table(
+    "table",
+    {
+        x : o.bigint(),
+    }
+);
+export const query = o.from(table)
+    .selectExpr(c => o.eq(c.x, c.x));
+*/ 
 //# sourceMappingURL=select-expr.js.map

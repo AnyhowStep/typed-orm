@@ -5,13 +5,18 @@
       "category": 1,
       "code": 2322,
       "next": {
-        "messageText": "Types of property 'name' are incompatible.",
+        "messageText": "Type '{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string | null>; }' is not assignable to type '{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }'.",
         "category": 1,
-        "code": 2326,
+        "code": 2322,
         "next": {
-          "messageText": "Type '\"y\"' is not assignable to type '\"x\"'.",
+          "messageText": "Types of property 'name' are incompatible.",
           "category": 1,
-          "code": 2322
+          "code": 2326,
+          "next": {
+            "messageText": "Type '\"y\"' is not assignable to type '\"x\"'.",
+            "category": 1,
+            "code": 2322
+          }
         }
       }
     },

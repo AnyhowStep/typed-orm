@@ -1015,12 +1015,9 @@ export class Query<DataT extends QueryData> {
         >
     > (
         this : Extract<this, QueryUtil.BeforeUnionClause & QueryUtil.BeforeSelectClause>,
-        delegate : QueryUtil.AssertValidSelectExprDelegate<
-            Extract<this, QueryUtil.BeforeUnionClause & QueryUtil.BeforeSelectClause>,
-            SelectDelegateT
-        >
+        delegate : SelectDelegateT
     ) : (
-        QueryUtil.SelectExpr<
+        QueryUtil.SelectExprResult<
             Extract<this, QueryUtil.BeforeUnionClause & QueryUtil.BeforeSelectClause>,
             SelectDelegateT
         >
@@ -1798,12 +1795,9 @@ export function selectExpr<
         QueryUtil.NewInstance
     >
 > (
-    delegate : QueryUtil.AssertValidSelectExprDelegate<
-        QueryUtil.NewInstance,
-        SelectDelegateT
-    >
+    delegate : SelectDelegateT
 ) : (
-    QueryUtil.SelectExpr<
+    QueryUtil.SelectExprResult<
         QueryUtil.NewInstance,
         SelectDelegateT
     >

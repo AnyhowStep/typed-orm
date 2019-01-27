@@ -2,7 +2,7 @@ import { Query } from "../../query";
 import { BeforeUnionClause, BeforeSelectClause } from "../predicate";
 import { ColumnRefUtil } from "../../../column-ref";
 import { IExpr, ExprUtil } from "../../../expr";
-import { AssertValidSelectDelegateImpl } from "./select";
+import { ColumnUtil, IColumn } from "../../../column";
 export declare type SelectExprDelegate<QueryT extends BeforeUnionClause & BeforeSelectClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQueryJoins<QueryT>>) => IExpr);
 export declare type SelectExpr<QueryT extends BeforeUnionClause & BeforeSelectClause, SelectDelegateT extends SelectExprDelegate<QueryT>> = (Query<{
     readonly _distinct: QueryT["_distinct"];
@@ -20,5 +20,6 @@ export declare type SelectExpr<QueryT extends BeforeUnionClause & BeforeSelectCl
     readonly _unionLimit: QueryT["_unionLimit"];
     readonly _mapDelegate: QueryT["_mapDelegate"];
 }>);
-export declare type AssertValidSelectExprDelegate<QueryT extends BeforeUnionClause & BeforeSelectClause, SelectDelegateT extends SelectExprDelegate<QueryT>> = (SelectDelegateT & AssertValidSelectDelegateImpl<QueryT, (columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQueryJoins<QueryT>>) => [ExprUtil.As<ReturnType<SelectDelegateT>, "value">]>);
-export declare function selectExpr<QueryT extends BeforeUnionClause & BeforeSelectClause, SelectDelegateT extends SelectExprDelegate<QueryT>>(query: QueryT, delegate: AssertValidSelectExprDelegate<QueryT, SelectDelegateT>): SelectExpr<QueryT, SelectDelegateT>;
+export declare type AssertValidSelectExprDelegate_Hack<QueryT extends BeforeUnionClause & BeforeSelectClause, SelectDelegateT extends SelectExprDelegate<QueryT>, ResultT> = (ColumnUtil.AssertValidUsed<ReturnType<SelectDelegateT>["usedColumns"][number], Extract<ColumnUtil.FromQueryJoins<QueryT>, IColumn>> extends never ? ResultT : ColumnUtil.AssertValidUsed<ReturnType<SelectDelegateT>["usedColumns"][number], Extract<ColumnUtil.FromQueryJoins<QueryT>, IColumn>> | void);
+export declare type SelectExprResult<QueryT extends BeforeUnionClause & BeforeSelectClause, SelectDelegateT extends SelectExprDelegate<QueryT>> = (AssertValidSelectExprDelegate_Hack<QueryT, SelectDelegateT, SelectExpr<QueryT, SelectDelegateT>>);
+export declare function selectExpr<QueryT extends BeforeUnionClause & BeforeSelectClause, SelectDelegateT extends SelectExprDelegate<QueryT>>(query: QueryT, delegate: SelectDelegateT): SelectExprResult<QueryT, SelectDelegateT>;

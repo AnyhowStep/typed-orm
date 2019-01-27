@@ -2,7 +2,7 @@
 import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 export declare const i: o.Table<{
-    readonly usedRef: {};
+    readonly usedColumns: never[];
     readonly alias: "joined1";
     readonly columns: {
         readonly a: o.Column<{

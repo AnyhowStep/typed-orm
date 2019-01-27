@@ -2,7 +2,8 @@ import {Query} from "../../query";
 import {BeforeUnionClause, BeforeSelectClause} from "../predicate";
 import {ColumnRefUtil} from "../../../column-ref";
 import {IExpr, ExprUtil} from "../../../expr";
-import {AssertValidSelectDelegateImpl, select} from "./select";
+import {select} from "./select";
+import {ColumnUtil, IColumn} from "../../../column";
 
 /*
     For the *VERY FIRST* item selected,
@@ -63,32 +64,41 @@ export type SelectExpr<
         readonly _mapDelegate : QueryT["_mapDelegate"],
     }>
 );
-export type AssertValidSelectExprDelegate<
+
+export type AssertValidSelectExprDelegate_Hack<
+    QueryT extends BeforeUnionClause & BeforeSelectClause,
+    SelectDelegateT extends SelectExprDelegate<QueryT>,
+    ResultT
+> = (
+    ColumnUtil.AssertValidUsed<
+        ReturnType<SelectDelegateT>["usedColumns"][number],
+        Extract<ColumnUtil.FromQueryJoins<QueryT>, IColumn>
+    > extends never ?
+    ResultT :
+    ColumnUtil.AssertValidUsed<
+        ReturnType<SelectDelegateT>["usedColumns"][number],
+        Extract<ColumnUtil.FromQueryJoins<QueryT>, IColumn>
+    >|void
+);
+
+export type SelectExprResult<
     QueryT extends BeforeUnionClause & BeforeSelectClause,
     SelectDelegateT extends SelectExprDelegate<QueryT>
 > = (
-    SelectDelegateT &
-    AssertValidSelectDelegateImpl<
+    AssertValidSelectExprDelegate_Hack<
         QueryT,
-        (
-            columns : ColumnRefUtil.ToConvenient<
-                ColumnRefUtil.FromQueryJoins<QueryT>
-            >
-        ) => [
-            ExprUtil.As<
-                ReturnType<SelectDelegateT>,
-                "value"
-            >
-        ]
+        SelectDelegateT,
+        SelectExpr<QueryT, SelectDelegateT>
     >
 );
+
 export function selectExpr<
     QueryT extends BeforeUnionClause & BeforeSelectClause,
     SelectDelegateT extends SelectExprDelegate<QueryT>
 > (
     query : QueryT,
-    delegate : AssertValidSelectExprDelegate<QueryT, SelectDelegateT>
-) : SelectExpr<QueryT, SelectDelegateT> {
+    delegate : SelectDelegateT
+) : SelectExprResult<QueryT, SelectDelegateT> {
     if (query._selects != undefined) {
         throw new Error(`Cannot select unaliased expression after SELECT clause`);
     }
@@ -108,3 +118,16 @@ export function selectExpr<
         wrappedDelegate as any
     ) as any; //TODO-UNHACK Not use `as any` hacks?
 }
+
+/*
+import * as o from "../../../index";
+
+const table = o.table(
+    "table",
+    {
+        x : o.bigint(),
+    }
+);
+export const query = o.from(table)
+    .selectExpr(c => o.eq(c.x, c.x));
+*/
