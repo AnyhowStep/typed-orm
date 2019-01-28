@@ -24,5 +24,20 @@ export declare class JoinDeclaration<DataT extends JoinDeclarationData> implemen
     readonly to: IColumn[];
     constructor(data: DataT, joinType: JoinType.INNER | JoinType.LEFT, from: IColumn[], to: IColumn[]);
     swap(): JoinDeclarationUtil.Swap<this>;
-    eq(): JoinDeclarationUtil.Eq<this>;
+    readonly eq: () => import("..").Expr<{
+        usedRef: { readonly [tableAlias in ((DataT["fromTable"]["columns"] extends import("..").ColumnMap ? DataT["fromTable"]["columns"][Extract<keyof DataT["fromTable"]["columns"], string>] : never) | (DataT["toTable"]["columns"] extends import("..").ColumnMap ? DataT["toTable"]["columns"][Extract<keyof DataT["toTable"]["columns"], string>] : never))["tableAlias"]]: { readonly [columnName in (Extract<DataT["fromTable"]["columns"] extends import("..").ColumnMap ? DataT["fromTable"]["columns"][Extract<keyof DataT["fromTable"]["columns"], string>] : never, {
+            tableAlias: tableAlias;
+        }> | Extract<DataT["toTable"]["columns"] extends import("..").ColumnMap ? DataT["toTable"]["columns"][Extract<keyof DataT["toTable"]["columns"], string>] : never, {
+            tableAlias: tableAlias;
+        }>)["name"]]: Extract<Extract<DataT["fromTable"]["columns"] extends import("..").ColumnMap ? DataT["fromTable"]["columns"][Extract<keyof DataT["fromTable"]["columns"], string>] : never, {
+            tableAlias: tableAlias;
+        }>, {
+            name: columnName;
+        }> | Extract<Extract<DataT["toTable"]["columns"] extends import("..").ColumnMap ? DataT["toTable"]["columns"][Extract<keyof DataT["toTable"]["columns"], string>] : never, {
+            tableAlias: tableAlias;
+        }>, {
+            name: columnName;
+        }>; }; };
+        assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
+    }>;
 }

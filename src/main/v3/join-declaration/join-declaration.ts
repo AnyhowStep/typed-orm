@@ -46,7 +46,26 @@ export class JoinDeclaration<DataT extends JoinDeclarationData> implements IJoin
     swap () : JoinDeclarationUtil.Swap<this> {
         return JoinDeclarationUtil.swap(this);
     }
-    eq () : JoinDeclarationUtil.Eq<this> {
+    /*
+        So you may write queries like this,
+        o.requireParentJoins(outer)
+            .from(inner)
+            .where(
+                o.innerJoinPk(
+                    inner,
+                    outer
+                ).eq
+            )
+
+        Equivalent to,
+        o.requireParentJoins(outer)
+            .from(inner)
+            .where(c => o.eq(
+                c.outer.outerId,
+                c.inner.outerId
+            ))
+    */
+    readonly eq = () : JoinDeclarationUtil.Eq<IJoinDeclaration<DataT>> => {
         return JoinDeclarationUtil.eq(this);
     }
 }
