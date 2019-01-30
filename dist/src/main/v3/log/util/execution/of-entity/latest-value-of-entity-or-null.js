@@ -7,6 +7,7 @@ const column_identifier_map_1 = require("../../../../column-identifier-map");
 const expr_1 = require("../../../../expr");
 function latestValueOfEntityOrNull(log, delegate) {
     const columns = column_map_1.ColumnMapUtil.pick(log.table.columns, [
+        ...log.table.generated,
         ...log.tracked,
         ...log.doNotCopy,
     ]);

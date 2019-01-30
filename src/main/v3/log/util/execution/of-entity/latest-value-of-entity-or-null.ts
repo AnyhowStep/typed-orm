@@ -44,6 +44,7 @@ export function latestValueOfEntityOrNull<
     const columns = ColumnMapUtil.pick(
         log.table.columns,
         [
+            ...log.table.generated,
             ...log.tracked,
             ...log.doNotCopy,
         ]
