@@ -27,15 +27,15 @@ export interface PaginateResult<T> {
 }
 
 export function toPaginateArgs (rawArgs : RawPaginateArgs) : PaginateArgs {
-    const page = sd.finiteNumber()("page", rawArgs.page);
-    const rowsPerPage = sd.finiteNumber()("rowsPerPage", rawArgs.rowsPerPage);
+    const page = sd.optional(sd.finiteNumber())("page", rawArgs.page);
+    const rowsPerPage = sd.optional(sd.finiteNumber())("rowsPerPage", rawArgs.rowsPerPage);
 
     return {
         page : (page == undefined || page < 0) ?
             //Default
             0 :
             Math.floor(page),
-        rowsPerPage : (rowsPerPage == undefined || rowsPerPage <= 0) ?
+        rowsPerPage : (rowsPerPage == undefined || rowsPerPage < 1) ?
             //Default
             20 :
             Math.floor(rowsPerPage),
