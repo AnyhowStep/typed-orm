@@ -7,7 +7,7 @@ const select_item_array_1 = require("../../../select-item-array");
 const column_ref_1 = require("../../../column-ref");
 const data_type_1 = require("../../../data-type");
 async function fetchAllUnmapped(query, connection) {
-    const sql = query_tree_1.QueryTreeUtil.toSqlPretty(query_1.queryTree(query));
+    const sql = query_tree_1.QueryTreeUtil.toSql(query_1.queryTree(query));
     const rawResult = await connection.select(sql);
     const hasDuplicateColumnName = select_item_array_1.SelectItemArrayUtil
         .hasDuplicateColumnName(query._selects);

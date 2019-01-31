@@ -22,7 +22,7 @@ async function execute(update, connection) {
             foundRowCount: -1,
         };
     }
-    const sql = query_tree_1.QueryTreeUtil.toSqlPretty(query_1.queryTree(update));
+    const sql = query_tree_1.QueryTreeUtil.toSql(query_1.queryTree(update));
     const result = await connection.update(sql);
     const tableAliases = new Set();
     for (let assignment of update._assignments) {

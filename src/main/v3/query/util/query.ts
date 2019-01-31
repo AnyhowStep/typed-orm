@@ -494,6 +494,12 @@ export function assertDelegate<
 export function printSql (
     query : AfterSelectClause
 ) {
+    const sql = QueryTreeUtil.toSql(queryTree(query));
+    console.log(sql);
+}
+export function printSqlPretty (
+    query : AfterSelectClause
+) {
     const sql = QueryTreeUtil.toSqlPretty(queryTree(query));
     console.log(sql);
 }

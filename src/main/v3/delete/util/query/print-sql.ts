@@ -5,6 +5,6 @@ import {QueryTreeUtil} from "../../../query-tree";
 export function printSql (
     del : ExecutableDelete
 ) {
-    const sql = QueryTreeUtil.toSqlPretty(queryTree(del));
+    const sql = QueryTreeUtil.toSql(queryTree(del));
     console.log(sql);
 }

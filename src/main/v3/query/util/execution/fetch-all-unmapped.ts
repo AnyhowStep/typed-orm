@@ -19,7 +19,7 @@ export async function fetchAllUnmapped<
     query : QueryT,
     connection : IConnection
 ) : Promise<FetchAllUnmapped<QueryT>> {
-    const sql = QueryTreeUtil.toSqlPretty(queryTree(query));
+    const sql = QueryTreeUtil.toSql(queryTree(query));
     const rawResult = await connection.select(sql);
 
     const hasDuplicateColumnName = SelectItemArrayUtil

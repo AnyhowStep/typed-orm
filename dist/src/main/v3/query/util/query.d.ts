@@ -26,5 +26,6 @@ export declare type TypeOf<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRow
 export declare type AssertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> = (sd.AssertDelegate<TypeOf<QueryT>>);
 export declare function assertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery>(rawExpr: QueryT): AssertDelegate<QueryT>;
 export declare function printSql(query: AfterSelectClause): void;
+export declare function printSqlPretty(query: AfterSelectClause): void;
 export declare type DeletableTables<QueryT extends DeletableQuery> = (Extract<QueryT["_joins"][number]["aliasedTable"], DeletableTable>);
 export declare function deletableTableArray<QueryT extends DeletableQuery>(query: QueryT): DeletableTables<QueryT>[];

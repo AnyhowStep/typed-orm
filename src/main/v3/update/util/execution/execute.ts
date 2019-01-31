@@ -29,7 +29,7 @@ export async function execute (
             foundRowCount : -1,
         };
     }
-    const sql = QueryTreeUtil.toSqlPretty(queryTree(update));
+    const sql = QueryTreeUtil.toSql(queryTree(update));
     const result = await connection.update(sql);
 
     const tableAliases = new Set<string>();

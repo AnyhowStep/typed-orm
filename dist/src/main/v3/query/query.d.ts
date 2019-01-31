@@ -140,6 +140,7 @@ export declare class Query<DataT extends QueryData> {
     fetchZeroOrOne(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection): (Promise<QueryUtil.FetchZeroOrOne<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>>);
     paginate(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection, rawArgs: QueryUtil.RawPaginateArgs): (Promise<QueryUtil.Paginate<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>>);
     printSql(this: Extract<this, QueryUtil.AfterSelectClause>): this;
+    printSqlPretty(this: Extract<this, QueryUtil.AfterSelectClause>): this;
     insertIgnoreInto<TableT extends ITable & {
         insertAllowed: true;
     }>(this: Extract<this, QueryUtil.AfterSelectClause>, table: TableT, delegate: InsertSelectRowDelegate<Extract<this, QueryUtil.AfterSelectClause>, TableT>): (QueryUtil.InsertIgnoreInto<Extract<this, QueryUtil.AfterSelectClause>, TableT>);

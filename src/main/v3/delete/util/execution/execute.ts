@@ -9,7 +9,7 @@ export async function execute (
 ) : (
     Promise<DeleteResult>
 ) {
-    const sql = QueryTreeUtil.toSqlPretty(queryTree(del));
+    const sql = QueryTreeUtil.toSql(queryTree(del));
     const result = await connection.delete(sql);
 
     return {

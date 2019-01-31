@@ -5,6 +5,6 @@ import {QueryTreeUtil} from "../../../query-tree";
 export function printSql (
     update : ExecutableUpdate
 ) {
-    const sql = QueryTreeUtil.toSqlPretty(queryTree(update));
+    const sql = QueryTreeUtil.toSql(queryTree(update));
     console.log(sql);
 }

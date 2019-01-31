@@ -233,6 +233,10 @@ class Query {
         QueryUtil.printSql(this);
         return this;
     }
+    printSqlPretty() {
+        QueryUtil.printSqlPretty(this);
+        return this;
+    }
     insertIgnoreInto(table, delegate) {
         return QueryUtil.insertIgnoreInto(this, table, delegate);
     }

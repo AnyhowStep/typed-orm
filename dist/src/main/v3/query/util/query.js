@@ -498,10 +498,15 @@ function assertDelegate(rawExpr) {
 }
 exports.assertDelegate = assertDelegate;
 function printSql(query) {
-    const sql = query_tree_1.QueryTreeUtil.toSqlPretty(queryTree(query));
+    const sql = query_tree_1.QueryTreeUtil.toSql(queryTree(query));
     console.log(sql);
 }
 exports.printSql = printSql;
+function printSqlPretty(query) {
+    const sql = query_tree_1.QueryTreeUtil.toSqlPretty(queryTree(query));
+    console.log(sql);
+}
+exports.printSqlPretty = printSqlPretty;
 function deletableTableArray(query) {
     const result = [];
     for (let join of query._joins) {

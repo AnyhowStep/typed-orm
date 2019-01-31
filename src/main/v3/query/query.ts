@@ -1610,6 +1610,12 @@ export class Query<DataT extends QueryData> {
         QueryUtil.printSql(this);
         return this;
     }
+    printSqlPretty (
+        this : Extract<this, QueryUtil.AfterSelectClause>
+    ) : this {
+        QueryUtil.printSqlPretty(this);
+        return this;
+    }
     insertIgnoreInto<
         TableT extends ITable & { insertAllowed : true }
     > (
