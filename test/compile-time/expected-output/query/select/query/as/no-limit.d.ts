@@ -15,10 +15,12 @@ export declare const selectItem: o.IAliasedTable<{
     asc: () => [{
         usedRef: {};
         assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+        queryTree: o.QueryTree;
     }, "ASC"];
     desc: () => [{
         usedRef: {};
         assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+        queryTree: o.QueryTree;
     }, "DESC"];
 };
 export declare const query: o.Query<{
@@ -42,10 +44,12 @@ export declare const query: o.Query<{
         asc: () => [{
             usedRef: {};
             assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+            queryTree: o.QueryTree;
         }, "ASC"];
         desc: () => [{
             usedRef: {};
             assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+            queryTree: o.QueryTree;
         }, "DESC"];
     }];
     readonly _where: undefined;

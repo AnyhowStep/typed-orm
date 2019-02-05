@@ -8,6 +8,7 @@ import {queryTree_As, AssertDelegate, assertDelegate} from "../query";
 import {SelectItem} from "../../../select-item";
 import {ALIASED} from "../../../constants";
 import {ASC, DESC} from "../../../order";
+import {QueryTree} from "../../../query-tree";
 
 export type As<
     QueryT extends {
@@ -45,6 +46,7 @@ export type As<
                         {}
                     ),
                     assertDelegate : AssertDelegate<QueryT>,
+                    queryTree : QueryTree,
                 },
                 typeof ASC
             ],
@@ -59,6 +61,7 @@ export type As<
                         {}
                     ),
                     assertDelegate : AssertDelegate<QueryT>,
+                    queryTree : QueryTree,
                 },
                 typeof DESC
             ],
