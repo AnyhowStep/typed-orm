@@ -13,6 +13,14 @@ export declare const selectItem: o.IAliasedTable<{
 }> & {
     assertDelegate: sd.AssertDelegate<number | null>;
     tableAlias: "__aliased";
+    asc: () => [{
+        usedRef: {};
+        assertDelegate: sd.AssertDelegate<number | null>;
+    }, "ASC"];
+    desc: () => [{
+        usedRef: {};
+        assertDelegate: sd.AssertDelegate<number | null>;
+    }, "DESC"];
 };
 export declare const query: o.Query<{
     readonly _distinct: false;
@@ -32,6 +40,14 @@ export declare const query: o.Query<{
     }> & {
         assertDelegate: sd.AssertDelegate<number | null>;
         tableAlias: "__aliased";
+        asc: () => [{
+            usedRef: {};
+            assertDelegate: sd.AssertDelegate<number | null>;
+        }, "ASC"];
+        desc: () => [{
+            usedRef: {};
+            assertDelegate: sd.AssertDelegate<number | null>;
+        }, "DESC"];
     }];
     readonly _where: undefined;
     readonly _grouped: undefined;

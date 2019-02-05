@@ -7,6 +7,7 @@ import {SelectItemArrayUtil} from "../../../select-item-array";
 import {queryTree_As, AssertDelegate, assertDelegate} from "../query";
 import {SelectItem} from "../../../select-item";
 import {ALIASED} from "../../../constants";
+import {ASC, DESC} from "../../../order";
 
 export type As<
     QueryT extends {
@@ -33,6 +34,34 @@ export type As<
         {
             assertDelegate : AssertDelegate<QueryT>,
             tableAlias : typeof ALIASED,
+            asc : () => [
+                //Should satisfy IExpr
+                {
+                    usedRef : (
+                        QueryT["_parentJoins"] extends IJoin[] ?
+                        ColumnRefUtil.FromJoinArray<
+                            Extract<QueryT["_parentJoins"], IJoin[]>
+                        > :
+                        {}
+                    ),
+                    assertDelegate : AssertDelegate<QueryT>,
+                },
+                typeof ASC
+            ],
+            desc : () => [
+                //Should satisfy IExpr
+                {
+                    usedRef : (
+                        QueryT["_parentJoins"] extends IJoin[] ?
+                        ColumnRefUtil.FromJoinArray<
+                            Extract<QueryT["_parentJoins"], IJoin[]>
+                        > :
+                        {}
+                    ),
+                    assertDelegate : AssertDelegate<QueryT>,
+                },
+                typeof DESC
+            ],
         } :
         unknown
     )
@@ -78,8 +107,29 @@ export function as<
 
     if (isOneSelectItemQuery(query) && isZeroOrOneRowQuery(query)) {
         //Should satisfy IAliasedTable and IExprSelectItem after this
-        (aliasedTable as any).assertDelegate = assertDelegate(query);
+        const d = assertDelegate(query);
+        (aliasedTable as any).assertDelegate = d;
         (aliasedTable as any).tableAlias = ALIASED;
+        (aliasedTable as any).asc = () => {
+            return [
+                {
+                    usedRef : aliasedTable.usedRef,
+                    assertDelegate : d,
+                    queryTree : aliasedTable.unaliasedQuery,
+                },
+                ASC
+            ];
+        };
+        (aliasedTable as any).desc = () => {
+            return [
+                {
+                    usedRef : aliasedTable.usedRef,
+                    assertDelegate : d,
+                    queryTree : aliasedTable.unaliasedQuery,
+                },
+                DESC
+            ];
+        };
         return aliasedTable as any;
     } else {
         return aliasedTable as any;

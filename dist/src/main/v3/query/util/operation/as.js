@@ -7,6 +7,7 @@ const column_map_1 = require("../../../column-map");
 const select_item_array_1 = require("../../../select-item-array");
 const query_1 = require("../query");
 const constants_1 = require("../../../constants");
+const order_1 = require("../../../order");
 function as(query, alias) {
     select_item_array_1.SelectItemArrayUtil.assertNoDuplicateColumnName(query._selects);
     const aliasedTable = new aliased_table_1.AliasedTable({
@@ -20,8 +21,29 @@ function as(query, alias) {
     });
     if (predicate_1.isOneSelectItemQuery(query) && predicate_1.isZeroOrOneRowQuery(query)) {
         //Should satisfy IAliasedTable and IExprSelectItem after this
-        aliasedTable.assertDelegate = query_1.assertDelegate(query);
+        const d = query_1.assertDelegate(query);
+        aliasedTable.assertDelegate = d;
         aliasedTable.tableAlias = constants_1.ALIASED;
+        aliasedTable.asc = () => {
+            return [
+                {
+                    usedRef: aliasedTable.usedRef,
+                    assertDelegate: d,
+                    queryTree: aliasedTable.unaliasedQuery,
+                },
+                order_1.ASC
+            ];
+        };
+        aliasedTable.desc = () => {
+            return [
+                {
+                    usedRef: aliasedTable.usedRef,
+                    assertDelegate: d,
+                    queryTree: aliasedTable.unaliasedQuery,
+                },
+                order_1.DESC
+            ];
+        };
         return aliasedTable;
     }
     else {

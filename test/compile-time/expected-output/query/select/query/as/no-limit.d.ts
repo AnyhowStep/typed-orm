@@ -12,6 +12,14 @@ export declare const selectItem: o.IAliasedTable<{
 }> & {
     assertDelegate: import("schema-decorator").AssertDelegate<Date>;
     tableAlias: "__aliased";
+    asc: () => [{
+        usedRef: {};
+        assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+    }, "ASC"];
+    desc: () => [{
+        usedRef: {};
+        assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+    }, "DESC"];
 };
 export declare const query: o.Query<{
     readonly _distinct: false;
@@ -31,6 +39,14 @@ export declare const query: o.Query<{
     }> & {
         assertDelegate: import("schema-decorator").AssertDelegate<Date>;
         tableAlias: "__aliased";
+        asc: () => [{
+            usedRef: {};
+            assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+        }, "ASC"];
+        desc: () => [{
+            usedRef: {};
+            assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+        }, "DESC"];
     }];
     readonly _where: undefined;
     readonly _grouped: undefined;
