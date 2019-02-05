@@ -23,7 +23,12 @@ export class Parentheses {
 
     public static Create (tree : QueryTree, canUnwrap : boolean = true) : QueryTree {
         if (tree instanceof Parentheses) {
-            //No need to wrap parentheses in parentheses
+            //No need to wrap parentheses in parentheses...
+            //Unless...
+            if (!canUnwrap && tree.canUnwrap) {
+                //We don't want this unwrappable paren to be unwrapped...
+                return new Parentheses(tree.getTree(), canUnwrap);
+            }
             return tree;
         } else if (tree instanceof FunctionCall) {
             //We don't need to have parentheses around function calls

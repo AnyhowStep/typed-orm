@@ -19,7 +19,12 @@ class Parentheses {
     }
     static Create(tree, canUnwrap = true) {
         if (tree instanceof Parentheses) {
-            //No need to wrap parentheses in parentheses
+            //No need to wrap parentheses in parentheses...
+            //Unles...
+            if (!canUnwrap && tree.canUnwrap) {
+                //We don't want this unwrappable paren to be unwrapped...
+                return new Parentheses(tree.getTree(), canUnwrap);
+            }
             return tree;
         }
         else if (tree instanceof FunctionCall) {
