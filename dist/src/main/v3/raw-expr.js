@@ -133,7 +133,7 @@ var RawExprUtil;
             return query_1.QueryUtil.queryTree_RawExpr(rawExpr);
         }
         if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(rawExpr)) {
-            return query_tree_1.Parentheses.Create(rawExpr.unaliasedQuery);
+            return query_tree_1.Parentheses.Create(rawExpr.unaliasedQuery, false /*canUnwrap*/);
         }
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }

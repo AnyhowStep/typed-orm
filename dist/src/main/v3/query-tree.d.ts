@@ -1,10 +1,11 @@
 export declare class Parentheses {
     private readonly tree;
+    readonly canUnwrap: boolean;
     private constructor();
     getTree(): QueryTree;
     private cachedSql;
     toSql(): string;
-    static Create(tree: QueryTree): QueryTree;
+    static Create(tree: QueryTree, canUnwrap?: boolean): QueryTree;
 }
 export declare class FunctionCall {
     private readonly functionName;

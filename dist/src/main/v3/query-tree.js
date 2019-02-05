@@ -2,9 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const formatter_1 = require("./formatter");
 class Parentheses {
-    constructor(tree) {
+    constructor(tree, canUnwrap) {
         this.cachedSql = undefined;
         this.tree = tree;
+        this.canUnwrap = canUnwrap;
     }
     getTree() {
         return this.tree;
@@ -16,7 +17,7 @@ class Parentheses {
         }
         return this.cachedSql;
     }
-    static Create(tree) {
+    static Create(tree, canUnwrap = true) {
         if (tree instanceof Parentheses) {
             //No need to wrap parentheses in parentheses
             return tree;
@@ -34,7 +35,7 @@ class Parentheses {
                 return tree;
             }
             else {
-                return new Parentheses(tree);
+                return new Parentheses(tree, canUnwrap);
             }
         }
         else if (typeof tree == "string") {
@@ -42,7 +43,7 @@ class Parentheses {
             return tree;
         }
         else {
-            return new Parentheses(tree);
+            return new Parentheses(tree, canUnwrap);
         }
     }
 }
@@ -52,8 +53,9 @@ class FunctionCall {
         this.cachedSql = undefined;
         this.functionName = functionName;
         this.args = args.map((arg) => {
-            if (arg instanceof Parentheses) {
-                //No need to wrap arguments in parentheses
+            if (arg instanceof Parentheses && arg.canUnwrap) {
+                //No need to wrap arguments in parentheses...
+                //Unless the argument is a sub-query...
                 return arg.getTree();
             }
             else {

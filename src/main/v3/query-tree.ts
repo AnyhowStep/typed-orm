@@ -2,8 +2,11 @@ import {SqlFormatter} from "./formatter";
 
 export class Parentheses {
     private readonly tree : QueryTree;
-    private constructor (tree : QueryTree) {
+    //Cannot unwrap sub queries...
+    public readonly canUnwrap : boolean;
+    private constructor (tree : QueryTree, canUnwrap : boolean) {
         this.tree = tree;
+        this.canUnwrap = canUnwrap;
     }
     public getTree () {
         return this.tree;
@@ -18,7 +21,7 @@ export class Parentheses {
         return this.cachedSql;
     }
 
-    public static Create (tree : QueryTree) : QueryTree {
+    public static Create (tree : QueryTree, canUnwrap : boolean = true) : QueryTree {
         if (tree instanceof Parentheses) {
             //No need to wrap parentheses in parentheses
             return tree;
@@ -32,13 +35,13 @@ export class Parentheses {
                 //No need to wrap parentheses against unit expressions
                 return tree;
             } else {
-                return new Parentheses(tree);
+                return new Parentheses(tree, canUnwrap);
             }
         } else if (typeof tree == "string") {
             //No need to wrap parentheses against unit expressions
             return tree;
         } else {
-            return new Parentheses(tree);
+            return new Parentheses(tree, canUnwrap);
         }
     }
 }
@@ -49,8 +52,9 @@ export class FunctionCall {
     constructor (functionName : string, args : QueryTree[]) {
         this.functionName = functionName;
         this.args = args.map((arg) => {
-            if (arg instanceof Parentheses) {
-                //No need to wrap arguments in parentheses
+            if (arg instanceof Parentheses && arg.canUnwrap) {
+                //No need to wrap arguments in parentheses...
+                //Unless the argument is a sub-query...
                 return arg.getTree();
             } else {
                 return arg;

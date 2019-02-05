@@ -231,7 +231,7 @@ export namespace RawExprUtil {
         }
 
         if (ExprSelectItemUtil.isExprSelectItem(rawExpr)) {
-            return Parentheses.Create(rawExpr.unaliasedQuery);
+            return Parentheses.Create(rawExpr.unaliasedQuery, false/*canUnwrap*/);
         }
 
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
