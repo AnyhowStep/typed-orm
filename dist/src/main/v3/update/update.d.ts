@@ -6,6 +6,9 @@ import { IQuery } from "../query";
 import { IJoin } from "../join";
 import { IAnonymousTypedExpr } from "../expr";
 import { MapDelegate } from "../map-delegate";
+import { ITable } from "../table";
+import { TypeMapUtil } from "../type-map";
+export declare type UpdateRowLiteral<TableT extends ITable> = (Partial<TypeMapUtil.FromColumnMap<Pick<TableT["columns"], TableT["mutable"][number]>>>);
 export declare type UpdatableQuery = IQuery<{
     readonly _distinct: false;
     readonly _sqlCalcFoundRows: false;

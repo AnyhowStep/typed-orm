@@ -6,6 +6,16 @@ import {IQuery} from "../query";
 import {IJoin} from "../join";
 import {IAnonymousTypedExpr} from "../expr";
 import {MapDelegate} from "../map-delegate";
+import {ITable} from "../table"
+import {TypeMapUtil} from "../type-map";
+
+export type UpdateRowLiteral<TableT extends ITable> = (
+    Partial<
+        TypeMapUtil.FromColumnMap<
+            Pick<TableT["columns"], TableT["mutable"][number]>
+        >
+    >
+);
 
 //`Updatable` is used because it's used by MySQL docs.
 //`Updateable` doesn't see as much use.
