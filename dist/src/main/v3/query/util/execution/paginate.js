@@ -56,7 +56,7 @@ async function paginate(query, connection, rawArgs) {
     if (query._mapDelegate == undefined || unmappedRows.length == 0) {
         return {
             info,
-            rows: [],
+            rows: unmappedRows,
         };
     }
     else {

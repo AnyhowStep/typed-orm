@@ -117,7 +117,7 @@ export async function paginate<
     if (query._mapDelegate == undefined || unmappedRows.length == 0) {
         return {
             info,
-            rows : [],
+            rows : unmappedRows as any,
         };
     } else {
         const rows : any[] = [];
