@@ -2,7 +2,7 @@ import * as sd from "schema-decorator";
 import {AfterSelectClause, MainQuery} from "../predicate";
 import {IConnection} from "../../../execution";
 import {MappedType, limit, offset, sqlCalcFoundRows, selectExpr, unionOffset, unionLimit} from "../operation";
-import {fetchAll} from "./fetch-all";
+import {fetchAllUnmapped} from "./fetch-all-unmapped";
 import {fetchValue} from "./fetch-value";
 import {newInstance} from "../constructor";
 import * as exprLib from "../../../expr-library";
@@ -76,8 +76,11 @@ export async function paginate<
 ) : Promise<Paginate<QueryT>> {
     const args = toPaginateArgs(rawArgs);
 
-    const rows = (query._unions == undefined) ?
-        await fetchAll(
+    //We do not call fetchAll() because we do not want to run map() functions
+    //automatically. They mess with SQL_CALC_FOUND_ROWS if the mapping
+    //function runs its own queries.
+    const unmappedRows = (query._unions == undefined) ?
+        await fetchAllUnmapped(
             sqlCalcFoundRows(
                 offset(
                     limit(query, args.rowsPerPage),
@@ -86,7 +89,7 @@ export async function paginate<
             ),
             connection
         ) :
-        await fetchAll(
+        await fetchAllUnmapped(
             sqlCalcFoundRows(
                 unionOffset(
                     unionLimit(query, args.rowsPerPage),
@@ -105,13 +108,27 @@ export async function paginate<
         (result) => Number(result)
     );
     const pagesFound = calculatePagesFound(args, rowsFound);
-    return {
-        info : {
-            rowsFound,
-            pagesFound,
-            page : args.page,
-            rowsPerPage : args.rowsPerPage,
-        },
-        rows,
+    const info = {
+        rowsFound,
+        pagesFound,
+        page : args.page,
+        rowsPerPage : args.rowsPerPage,
+    };
+    if (query._mapDelegate == undefined || unmappedRows.length == 0) {
+        return {
+            info,
+            rows : [],
+        };
+    } else {
+        const rows : any[] = [];
+        for (let unmapped of unmappedRows) {
+            rows.push(
+                await query._mapDelegate(unmapped, connection, unmapped)
+            );
+        }
+        return {
+            info,
+            rows,
+        };
     }
 }
