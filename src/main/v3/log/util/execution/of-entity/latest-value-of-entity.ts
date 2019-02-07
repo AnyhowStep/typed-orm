@@ -42,5 +42,5 @@ export function latestValueOfEntity<
     return QueryUtil.coalesce(
         expr,
         log.trackedDefaults[expr.alias]
-    ).as(expr.alias);
+    ).as(expr.alias) as any;
 }

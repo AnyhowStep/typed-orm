@@ -14,6 +14,7 @@ import {DateTimeUtil} from "./data-type";
 import * as dataType from "./data-type";
 import {IAnonymousTypedExprSelectItem, IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
 import {Parentheses} from "./query-tree";
+import {UnionToIntersection} from "./type";
 
 export type RawExpr<TypeT> = (
     (
@@ -237,7 +238,16 @@ export namespace RawExprUtil {
         throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
     }
 
-    export type IntersectUsedRefTuple<ArrT extends Tuple<RawExpr<any>>> = (
+    export type IntersectUsedRefTuple<ArrT extends RawExpr<any>[]> = (
+        ArrT[number] extends never ?
+        {} :
+        Extract<
+            UnionToIntersection<
+                RawExprUtil.UsedRef<ArrT[number]>
+            >,
+            ColumnRef
+        >
+        /*
         ArrT["length"] extends 0 ?
         {} :
         ArrT["length"] extends 1 ?
@@ -283,6 +293,7 @@ export namespace RawExprUtil {
         //Add more lengths
         //Too many to handle...
         ColumnRef
+        */
     );
 
     export function intersectUsedRefTuple<ArrT extends Tuple<RawExpr<any>>> (

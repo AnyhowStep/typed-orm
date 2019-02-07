@@ -115,6 +115,14 @@ export declare const and4: o.Expr<{
 export declare const and5: o.Expr<{
     usedRef: {
         readonly table: {
+            readonly z: o.Column<{
+                tableAlias: "table";
+                name: "z";
+                assertDelegate: sd.AssertDelegate<boolean>;
+            }>;
+        };
+    } & {
+        readonly table: {
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
@@ -127,15 +135,7 @@ export declare const and5: o.Expr<{
                 assertDelegate: sd.AssertDelegate<boolean>;
             }>;
         };
-    } & {} & {
-        readonly table: {
-            readonly z: o.Column<{
-                tableAlias: "table";
-                name: "z";
-                assertDelegate: sd.AssertDelegate<boolean>;
-            }>;
-        };
-    };
+    } & {};
     assertDelegate: sd.AssertDelegate<boolean>;
 }>;
 export declare const and6: o.Expr<{

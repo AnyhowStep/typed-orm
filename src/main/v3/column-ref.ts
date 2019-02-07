@@ -9,6 +9,7 @@ import {Tuple} from "./tuple";
 import {ColumnIdentifierRefUtil, ColumnIdentifierRef} from "./column-identifier-ref";
 import {SelectItem} from "./select-item";
 import {IExprSelectItem, ExprSelectItemUtil} from "./expr-select-item";
+import {UnionToIntersection} from "./type";
 
 export type ColumnRef = {
     readonly [tableAlias : string] : ColumnMap
@@ -484,7 +485,16 @@ export namespace ColumnRefUtil {
         }
         arr2.join("\n        ")
     */
-    export type IntersectTuple<ArrT extends Tuple<ColumnRef>> = (
+    export type IntersectTuple<ArrT extends ColumnRef[]> = (
+        ArrT[number] extends never ?
+        {} :
+        Extract<
+            UnionToIntersection<
+                ArrT[number]
+            >,
+            ColumnRef
+        >
+        /*
         ArrT["length"] extends 0 ?
         {} :
         ArrT["length"] extends 1 ?
@@ -530,6 +540,7 @@ export namespace ColumnRefUtil {
         //add more lengths
         //Too many to handle...
         ColumnRef
+        */
     );
     export function intersectTuple<ArrT extends Tuple<ColumnRef>> (
         ...arr : ArrT

@@ -14,3 +14,4 @@ export declare type PromiseResult<P extends Promise<any>> = (P extends Promise<i
 export declare function lazyInit<K extends string, T>(key: K, instantiate: () => T): {
     [k in K]: T;
 };
+export declare type UnionToIntersection<U> = ((U extends any ? (k: U) => void : never) extends ((k: infer I) => void) ? I : never);
