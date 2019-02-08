@@ -25,7 +25,11 @@ export async function fetchValueOrUndefined<
             But I don't want to fetch 1 million rows if we mess up.
             This limits our failure.
         */
-        limit(query, 2),
+        (query._limit == undefined) ?
+            limit(query, 2) :
+            //The user already specified a custom limit.
+            //We don't want to mess with it.
+            query,
         connection
     );
     if (result.length == 0) {

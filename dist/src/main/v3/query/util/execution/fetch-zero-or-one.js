@@ -13,7 +13,11 @@ async function fetchZeroOrOne(query, connection) {
         But I don't want to fetch 1 million rows if we mess up.
         This limits our failure.
     */
-    operation_1.limit(query, 2), connection);
+    (query._limit == undefined) ?
+        operation_1.limit(query, 2) :
+        //The user already specified a custom limit.
+        //We don't want to mess with it.
+        query, connection);
     if (result.length == 0) {
         return undefined;
     }
