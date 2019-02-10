@@ -1,6 +1,6 @@
 import {AfterSelectClause, MainQuery} from "../predicate";
 import {IConnection} from "../../../execution";
-import {MappedType} from "../operation";
+import {MappedType, unionLimit} from "../operation";
 import {fetchAll} from "./fetch-all";
 import {limit} from "../operation";
 import {TooManyRowsFoundError} from "./error";
@@ -25,11 +25,21 @@ export async function fetchZeroOrOne<
             But I don't want to fetch 1 million rows if we mess up.
             This limits our failure.
         */
-        (query._limit == undefined) ?
-            limit(query, 2) :
-            //The user already specified a custom limit.
-            //We don't want to mess with it.
-            query,
+        (query._unions == undefined) ?
+            (
+                (query._limit == undefined) ?
+                    limit(query, 2) :
+                    //The user already specified a custom limit.
+                    //We don't want to mess with it.
+                    query
+            ) :
+            (
+                (query._unionLimit == undefined) ?
+                    unionLimit(query, 2) :
+                    //The user already specified a custom limit.
+                    //We don't want to mess with it.
+                    query
+            ),
         connection
     );
     if (result.length == 0) {

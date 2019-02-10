@@ -115,6 +115,27 @@ function queryTreeSelects_RawExpr(query) {
     ];
 }
 exports.queryTreeSelects_RawExpr = queryTreeSelects_RawExpr;
+function queryTreeSelects_RawExprNoUnalias(query) {
+    let result = undefined;
+    const item = query._selects[0];
+    if (column_1.ColumnUtil.isColumn(item)) {
+        //We can unalias columns because they're in the JOIN/FROM clause
+        result = column_1.ColumnUtil.queryTree(item);
+    }
+    else if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(item)) {
+        result = expr_select_item_1.ExprSelectItemUtil.queryTree(item);
+    }
+    else {
+        throw new Error(`Unknown select item`);
+    }
+    return [
+        "SELECT",
+        (query._distinct ? "DISTINCT" : ""),
+        (query._sqlCalcFoundRows ? "SQL_CALC_FOUND_ROWS" : ""),
+        result
+    ];
+}
+exports.queryTreeSelects_RawExprNoUnalias = queryTreeSelects_RawExprNoUnalias;
 function queryTreeSelects_As(query) {
     const selects = query._selects;
     const result = [];
@@ -285,13 +306,31 @@ function queryTreeLimit(query) {
 }
 exports.queryTreeLimit = queryTreeLimit;
 function queryTree_RawExpr(query) {
+    /*
+        We cannot un-alias the selects if
+        the following clauses exist,
+
+        + GROUP BY
+        + HAVING
+        + ORDER BY
+        + UNION ORDER BY
+
+        Because these clauses may use the select items
+        and will expect a certain alias.
+    */
+    const canUnalias = (query._grouped == undefined &&
+        query._having == undefined &&
+        query._orders == undefined &&
+        query._unionOrders == undefined);
     if (query._unions != undefined ||
         query._unionOrders != undefined ||
         query._unionLimit != undefined) {
         return [
             "(",
             "(",
-            queryTreeSelects_RawExpr(query),
+            (canUnalias ?
+                queryTreeSelects_RawExpr(query) :
+                queryTreeSelects_RawExprNoUnalias(query)),
             queryTreeFrom(query),
             queryTreeWhere(query),
             queryTreeGroupBy(query),
@@ -309,7 +348,9 @@ function queryTree_RawExpr(query) {
         //No UNION-related clauses
         return [
             "(",
-            queryTreeSelects_RawExpr(query),
+            (canUnalias ?
+                queryTreeSelects_RawExpr(query) :
+                queryTreeSelects_RawExprNoUnalias(query)),
             queryTreeFrom(query),
             queryTreeWhere(query),
             queryTreeGroupBy(query),

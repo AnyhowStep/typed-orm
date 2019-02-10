@@ -112,6 +112,24 @@ export function queryTreeSelects_RawExpr (query : OneSelectItemQuery<any>) : Que
         result
     ];
 }
+export function queryTreeSelects_RawExprNoUnalias (query : OneSelectItemQuery<any>) : QueryTreeArray {
+    let result : QueryTree|undefined = undefined;
+    const item = query._selects[0];
+    if (ColumnUtil.isColumn(item)) {
+        //We can unalias columns because they're in the JOIN/FROM clause
+        result = ColumnUtil.queryTree(item);
+    } else if (ExprSelectItemUtil.isExprSelectItem(item)) {
+        result = ExprSelectItemUtil.queryTree(item);
+    } else {
+        throw new Error(`Unknown select item`);
+    }
+    return [
+        "SELECT",
+        (query._distinct ? "DISTINCT" : ""),
+        (query._sqlCalcFoundRows ? "SQL_CALC_FOUND_ROWS" : ""),
+        result
+    ];
+}
 export function queryTreeSelects_As (query : AfterSelectClause) : QueryTreeArray {
     const selects = query._selects;
     const result : QueryTreeArray = [];
@@ -270,6 +288,24 @@ export function queryTreeLimit (query : IQuery) : QueryTreeArray {
 }
 
 export function queryTree_RawExpr (query : OneSelectItemQuery<any>) : QueryTreeArray {
+    /*
+        We cannot un-alias the selects if
+        the following clauses exist,
+
+        + GROUP BY
+        + HAVING
+        + ORDER BY
+        + UNION ORDER BY
+
+        Because these clauses may use the select items
+        and will expect a certain alias.
+    */
+    const canUnalias = (
+        query._grouped == undefined &&
+        query._having == undefined &&
+        query._orders == undefined &&
+        query._unionOrders == undefined
+    );
     if (
         query._unions != undefined ||
         query._unionOrders != undefined ||
@@ -278,7 +314,11 @@ export function queryTree_RawExpr (query : OneSelectItemQuery<any>) : QueryTreeA
         return [
             "(",
             "(",
-            queryTreeSelects_RawExpr(query),
+            (
+                canUnalias ?
+                    queryTreeSelects_RawExpr(query) :
+                    queryTreeSelects_RawExprNoUnalias(query)
+            ),
             queryTreeFrom(query),
             queryTreeWhere(query),
             queryTreeGroupBy(query),
@@ -295,7 +335,11 @@ export function queryTree_RawExpr (query : OneSelectItemQuery<any>) : QueryTreeA
         //No UNION-related clauses
         return [
             "(",
-            queryTreeSelects_RawExpr(query),
+            (
+                canUnalias ?
+                    queryTreeSelects_RawExpr(query) :
+                    queryTreeSelects_RawExprNoUnalias(query)
+            ),
             queryTreeFrom(query),
             queryTreeWhere(query),
             queryTreeGroupBy(query),

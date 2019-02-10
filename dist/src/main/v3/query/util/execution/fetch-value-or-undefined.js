@@ -13,11 +13,17 @@ async function fetchValueOrUndefined(query, connection) {
         But I don't want to fetch 1 million rows if we mess up.
         This limits our failure.
     */
-    (query._limit == undefined) ?
-        operation_1.limit(query, 2) :
-        //The user already specified a custom limit.
-        //We don't want to mess with it.
-        query, connection);
+    (query._unions == undefined) ?
+        ((query._limit == undefined) ?
+            operation_1.limit(query, 2) :
+            //The user already specified a custom limit.
+            //We don't want to mess with it.
+            query) :
+        ((query._unionLimit == undefined) ?
+            operation_1.unionLimit(query, 2) :
+            //The user already specified a custom limit.
+            //We don't want to mess with it.
+            query), connection);
     if (result.length == 0) {
         return undefined;
     }

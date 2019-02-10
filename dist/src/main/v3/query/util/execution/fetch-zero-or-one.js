@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const fetch_all_1 = require("./fetch-all");
 const operation_1 = require("../operation");
+const fetch_all_1 = require("./fetch-all");
+const operation_2 = require("../operation");
 const error_1 = require("./error");
 async function fetchZeroOrOne(query, connection) {
     const result = await fetch_all_1.fetchAll(
@@ -13,11 +14,17 @@ async function fetchZeroOrOne(query, connection) {
         But I don't want to fetch 1 million rows if we mess up.
         This limits our failure.
     */
-    (query._limit == undefined) ?
-        operation_1.limit(query, 2) :
-        //The user already specified a custom limit.
-        //We don't want to mess with it.
-        query, connection);
+    (query._unions == undefined) ?
+        ((query._limit == undefined) ?
+            operation_2.limit(query, 2) :
+            //The user already specified a custom limit.
+            //We don't want to mess with it.
+            query) :
+        ((query._unionLimit == undefined) ?
+            operation_1.unionLimit(query, 2) :
+            //The user already specified a custom limit.
+            //We don't want to mess with it.
+            query), connection);
     if (result.length == 0) {
         return undefined;
     }

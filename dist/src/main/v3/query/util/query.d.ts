@@ -7,6 +7,7 @@ import { DeletableQuery } from "../../delete";
 import { DeletableTable } from "../../table";
 export declare function queryTreeSelects(query: AfterSelectClause): QueryTreeArray;
 export declare function queryTreeSelects_RawExpr(query: OneSelectItemQuery<any>): QueryTreeArray;
+export declare function queryTreeSelects_RawExprNoUnalias(query: OneSelectItemQuery<any>): QueryTreeArray;
 export declare function queryTreeSelects_As(query: AfterSelectClause): QueryTreeArray;
 export declare function queryTreeJoins(query: IQuery): QueryTreeArray;
 export declare function queryTreeFrom(query: IQuery): QueryTreeArray;
