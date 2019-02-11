@@ -1517,7 +1517,7 @@ export class Query<DataT extends QueryData> {
     }
     //Added to speed up compile-times.
     //Some complicated queries take 700+ seconds to compile!
-    useJoinUnsafe<
+    useJoinsUnsafe<
         ArrT extends NonEmptyTuple<IJoinDeclaration>
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,

@@ -128,7 +128,7 @@ export declare class Query<DataT extends QueryData> {
     whereEqColumns<TableT extends ITable>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], columns: Partial<Row<TableT>>): QueryUtil.WhereEqColumns<Extract<this, QueryUtil.AfterFromClause>>;
     useJoin<JoinDeclT extends IJoinDeclaration>(this: Extract<this, QueryUtil.AfterFromClause>, joinDecl: QueryUtil.AssertValidJoinDeclaration<Extract<this, QueryUtil.AfterFromClause>, JoinDeclT>): (QueryUtil.UseJoin<Extract<this, QueryUtil.AfterFromClause>, JoinDeclT>);
     useJoins<ArrT extends NonEmptyTuple<IJoinDeclaration>>(this: Extract<this, QueryUtil.AfterFromClause>, ...arr: QueryUtil.AssertValidJoinDeclarationArray<Extract<this, QueryUtil.AfterFromClause>, ArrT>): (QueryUtil.UseJoins<Extract<this, QueryUtil.AfterFromClause>, ArrT>);
-    useJoinUnsafe<ArrT extends NonEmptyTuple<IJoinDeclaration>>(this: Extract<this, QueryUtil.AfterFromClause>, ...arr: ArrT): (QueryUtil.UseJoins<Extract<this, QueryUtil.AfterFromClause>, ArrT>);
+    useJoinsUnsafe<ArrT extends NonEmptyTuple<IJoinDeclaration>>(this: Extract<this, QueryUtil.AfterFromClause>, ...arr: ArrT): (QueryUtil.UseJoins<Extract<this, QueryUtil.AfterFromClause>, ArrT>);
     assertExists(this: Extract<this, QueryUtil.MainQuery>, connection: IConnection): Promise<void>;
     count(this: Extract<this, QueryUtil.MainQuery>, connection: IConnection): Promise<bigint>;
     cursor(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection): (QueryUtil.Cursor<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>);

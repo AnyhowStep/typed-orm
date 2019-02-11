@@ -200,7 +200,7 @@ class Query {
     }
     //Added to speed up compile-times.
     //Some complicated queries take 700+ seconds to compile!
-    useJoinUnsafe(...arr) {
+    useJoinsUnsafe(...arr) {
         return QueryUtil.useJoins(this, arr);
     }
     assertExists(connection) {
