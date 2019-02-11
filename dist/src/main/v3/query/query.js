@@ -79,6 +79,11 @@ class Query {
     select(delegate) {
         return QueryUtil.select(this, delegate);
     }
+    //Added to speed up compile-times.
+    //Some complicated queries take 700+ seconds to compile!
+    selectUnsafe(delegate) {
+        return QueryUtil.select(this, delegate);
+    }
     selectExpr(delegate) {
         return QueryUtil.selectExpr(this, delegate);
     }
@@ -191,6 +196,11 @@ class Query {
         return QueryUtil.useJoin(this, joinDecl);
     }
     useJoins(...arr) {
+        return QueryUtil.useJoins(this, arr);
+    }
+    //Added to speed up compile-times.
+    //Some complicated queries take 700+ seconds to compile!
+    useJoinUnsafe(...arr) {
         return QueryUtil.useJoins(this, arr);
     }
     assertExists(connection) {

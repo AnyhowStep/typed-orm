@@ -1008,6 +1008,29 @@ export class Query<DataT extends QueryData> {
             delegate
         );
     }
+    //Added to speed up compile-times.
+    //Some complicated queries take 700+ seconds to compile!
+    selectUnsafe<
+        SelectDelegateT extends QueryUtil.SelectDelegate<
+            Extract<this, QueryUtil.BeforeUnionClause>
+        >
+    > (
+        this : Extract<this, QueryUtil.BeforeUnionClause>,
+        delegate : SelectDelegateT
+    ) : (
+        QueryUtil.Select<
+            Extract<this, QueryUtil.BeforeUnionClause>,
+            SelectDelegateT
+        >
+    ) {
+        return QueryUtil.select<
+            Extract<this, QueryUtil.BeforeUnionClause>,
+            SelectDelegateT
+        >(
+            this,
+            delegate as any
+        );
+    }
 
     selectExpr<
         SelectDelegateT extends QueryUtil.SelectExprDelegate<
@@ -1491,6 +1514,24 @@ export class Query<DataT extends QueryData> {
             Extract<this, QueryUtil.AfterFromClause>,
             ArrT
         >(this, arr);
+    }
+    //Added to speed up compile-times.
+    //Some complicated queries take 700+ seconds to compile!
+    useJoinUnsafe<
+        ArrT extends NonEmptyTuple<IJoinDeclaration>
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        ...arr : ArrT
+    ) : (
+        QueryUtil.UseJoins<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ArrT
+        >
+    ) {
+        return QueryUtil.useJoins<
+            Extract<this, QueryUtil.AfterFromClause>,
+            ArrT
+        >(this, arr as any);
     }
 
     assertExists (

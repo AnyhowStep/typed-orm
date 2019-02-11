@@ -51,3 +51,4 @@ export * from "./string";
 export * from "./type-map";
 export * from "./type-ref";
 export * from "./type";
+export * from "./unsafe";
