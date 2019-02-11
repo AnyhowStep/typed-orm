@@ -2,10 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var UnsafeUtil;
 (function (UnsafeUtil) {
+    //Used to make compile-times faster but removes compile-time type safety!
     function eraseUsedRef(t) {
-        const result = { ...t };
-        result.usedRef = {};
-        return result;
+        return t;
     }
     UnsafeUtil.eraseUsedRef = eraseUsedRef;
 })(UnsafeUtil = exports.UnsafeUtil || (exports.UnsafeUtil = {}));
