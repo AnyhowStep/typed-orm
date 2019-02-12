@@ -138,8 +138,10 @@ export declare class Query<DataT extends QueryData> {
     fetchOne(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection): (Promise<QueryUtil.FetchOne<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>>);
     fetchValueArray(this: Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>, connection: IConnection): (Promise<QueryUtil.FetchValueArray<Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>>>);
     fetchValueOrUndefined(this: Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>, connection: IConnection): (Promise<QueryUtil.FetchValueOrUndefined<Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>>>);
+    fetchValueOrNull(this: Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>, connection: IConnection): (Promise<null | QueryUtil.FetchValue<Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>>>);
     fetchValue(this: Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>, connection: IConnection): (Promise<QueryUtil.FetchValue<Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>>>);
     fetchZeroOrOne(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection): (Promise<QueryUtil.FetchZeroOrOne<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>>);
+    fetchOneOrNull(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection): (Promise<null | QueryUtil.FetchOne<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>>);
     paginate(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection, rawArgs: QueryUtil.RawPaginateArgs): (Promise<QueryUtil.Paginate<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>>);
     printSql(this: Extract<this, QueryUtil.AfterSelectClause>): this;
     printSqlPretty(this: Extract<this, QueryUtil.AfterSelectClause>): this;

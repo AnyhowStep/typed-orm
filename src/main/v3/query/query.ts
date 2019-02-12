@@ -1614,6 +1614,17 @@ export class Query<DataT extends QueryData> {
     ) {
         return QueryUtil.fetchValueOrUndefined(this, connection);
     }
+    fetchValueOrNull (
+        this : Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>,
+        connection : IConnection
+    ) : (
+        Promise<null|QueryUtil.FetchValue<
+            Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>
+        >>
+    ) {
+        return QueryUtil.fetchValueOrUndefined(this, connection)
+            .then(r => (r == undefined) ? null : r);
+    }
     fetchValue (
         this : Extract<this, QueryUtil.MainQuery & QueryUtil.OneSelectItemQuery<any>>,
         connection : IConnection
@@ -1633,6 +1644,17 @@ export class Query<DataT extends QueryData> {
         >>
     ) {
         return QueryUtil.fetchZeroOrOne(this, connection);
+    }
+    fetchOneOrNull (
+        this : Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>,
+        connection : IConnection
+    ) : (
+        Promise<null|QueryUtil.FetchOne<
+            Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>
+        >>
+    ) {
+        return QueryUtil.fetchZeroOrOne(this, connection)
+            .then(r => (r == undefined) ? null : r);
     }
     paginate (
         this : Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>,

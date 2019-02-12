@@ -230,11 +230,19 @@ class Query {
     fetchValueOrUndefined(connection) {
         return QueryUtil.fetchValueOrUndefined(this, connection);
     }
+    fetchValueOrNull(connection) {
+        return QueryUtil.fetchValueOrUndefined(this, connection)
+            .then(r => (r == undefined) ? null : r);
+    }
     fetchValue(connection) {
         return QueryUtil.fetchValue(this, connection);
     }
     fetchZeroOrOne(connection) {
         return QueryUtil.fetchZeroOrOne(this, connection);
+    }
+    fetchOneOrNull(connection) {
+        return QueryUtil.fetchZeroOrOne(this, connection)
+            .then(r => (r == undefined) ? null : r);
     }
     paginate(connection, rawArgs) {
         return QueryUtil.paginate(this, connection, rawArgs);
