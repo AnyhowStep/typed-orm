@@ -1,8 +1,7 @@
-import { Omit } from "./type";
 export declare namespace UnsafeUtil {
-    function eraseUsedRef<T extends {
+    function unsafeSelectItem<T extends {
         usedRef: {};
-    }>(t: T): (Omit<T, "usedRef"> & {
-        usedRef: {};
+    }>(t: T): ({
+        [k in Exclude<keyof T, "sort" | "asc" | "desc" | "as">]: (k extends "usedRef" ? {} : T[k]);
     });
 }
