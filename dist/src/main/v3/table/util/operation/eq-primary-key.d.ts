@@ -7,7 +7,7 @@ import { Key } from "../../../key";
 import { PrimaryKey } from "../../../primary-key";
 export declare function eqPrimaryKey<TableT extends ITable & {
     primaryKey: Key;
-}>(table: TableT, ck: PrimaryKey<TableT>): (Expr<{
+}>(table: TableT, pk: PrimaryKey<TableT>): (Expr<{
     usedRef: ColumnRefUtil.FromColumnArray<ColumnUtil.FromColumnMap<TableT["columns"]>[]>;
     assertDelegate: sd.AssertDelegate<boolean>;
 }>);

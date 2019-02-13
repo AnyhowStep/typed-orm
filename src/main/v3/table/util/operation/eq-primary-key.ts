@@ -11,7 +11,7 @@ export function eqPrimaryKey<
     TableT extends ITable & { primaryKey : Key }
 > (
     table : TableT,
-    ck : PrimaryKey<TableT>
+    pk : PrimaryKey<TableT>
 ) : (
     Expr<{
         usedRef : ColumnRefUtil.FromColumnArray<
@@ -24,15 +24,15 @@ export function eqPrimaryKey<
         (table as any).primaryKeyAssertDelegate() :
         PrimaryKeyUtil.assertDelegate(table);
 
-    ck = assertDelegate(
-        `${table.alias}.ck`,
-        ck
+    pk = assertDelegate(
+        `${table.alias}.pk`,
+        pk
     );
 
-    const arr = Object.keys(ck).sort().map(
+    const arr = Object.keys(pk).sort().map(
         columnName => exprLib.nullSafeEq(
             table.columns[columnName],
-            (ck as any)[columnName]
+            (pk as any)[columnName]
         )
     );
     const condition = exprLib.and(...(arr as any));
