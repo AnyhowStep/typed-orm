@@ -1,14 +1,14 @@
 import * as sd from "schema-decorator";
 import {Expr} from "../../../expr";
 import {FunctionCall, QueryTree} from "../../../query-tree";
-import {IQuery, QueryUtil} from "../../../query";
+import {QueryUtil} from "../../../query";
 import {IJoin} from "../../../join";
 import {ColumnRefUtil} from "../../../column-ref";
 import * as dataType from "../../../data-type";
 
 //https://dev.mysql.com/doc/refman/8.0/en/exists-and-not-exists-subqueries.html
 export function exists<QueryT extends QueryUtil.AfterFromClause|QueryUtil.AfterSelectClause> (
-    query : IQuery
+    query : QueryT
 ) : (
     Expr<{
         usedRef : (

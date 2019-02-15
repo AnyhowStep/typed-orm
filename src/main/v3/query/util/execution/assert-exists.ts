@@ -1,10 +1,10 @@
-import {MainQuery} from "../predicate";
+import {MainQuery, AfterFromClause, AfterSelectClause} from "../predicate";
 import {IConnection} from "../../../execution";
 import {exists} from "./exists";
 import {RowNotFoundError} from "./error";
 
 export async function assertExists(
-    query : MainQuery,
+    query : MainQuery & (AfterFromClause|AfterSelectClause),
     connection : IConnection
 ) : Promise<void> {
     const found = await exists(query, connection);

@@ -129,10 +129,10 @@ export declare class Query<DataT extends QueryData> {
     useJoin<JoinDeclT extends IJoinDeclaration>(this: Extract<this, QueryUtil.AfterFromClause>, joinDecl: QueryUtil.AssertValidJoinDeclaration<Extract<this, QueryUtil.AfterFromClause>, JoinDeclT>): (QueryUtil.UseJoin<Extract<this, QueryUtil.AfterFromClause>, JoinDeclT>);
     useJoins<ArrT extends NonEmptyTuple<IJoinDeclaration>>(this: Extract<this, QueryUtil.AfterFromClause>, ...arr: QueryUtil.AssertValidJoinDeclarationArray<Extract<this, QueryUtil.AfterFromClause>, ArrT>): (QueryUtil.UseJoins<Extract<this, QueryUtil.AfterFromClause>, ArrT>);
     useJoinsUnsafe<ArrT extends NonEmptyTuple<IJoinDeclaration>>(this: Extract<this, QueryUtil.AfterFromClause>, ...arr: ArrT): (QueryUtil.UseJoins<Extract<this, QueryUtil.AfterFromClause>, ArrT>);
-    assertExists(this: Extract<this, QueryUtil.MainQuery>, connection: IConnection): Promise<void>;
+    assertExists(this: Extract<this, QueryUtil.MainQuery & (QueryUtil.AfterFromClause | QueryUtil.AfterSelectClause)>, connection: IConnection): Promise<void>;
     count(this: Extract<this, QueryUtil.MainQuery>, connection: IConnection): Promise<bigint>;
     cursor(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection): (QueryUtil.Cursor<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>);
-    exists(this: Extract<this, QueryUtil.MainQuery>, connection: IConnection): Promise<boolean>;
+    exists(this: Extract<this, QueryUtil.MainQuery & (QueryUtil.AfterFromClause | QueryUtil.AfterSelectClause)>, connection: IConnection): Promise<boolean>;
     fetchAllUnmapped(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection): (Promise<QueryUtil.FetchAllUnmapped<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>>);
     fetchAll(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection): (Promise<QueryUtil.FetchAll<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>>);
     fetchOne(this: Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>, connection: IConnection): (Promise<QueryUtil.FetchOne<Extract<this, QueryUtil.AfterSelectClause & QueryUtil.MainQuery>>>);

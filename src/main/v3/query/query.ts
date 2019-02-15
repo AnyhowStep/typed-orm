@@ -1535,7 +1535,7 @@ export class Query<DataT extends QueryData> {
     }
 
     assertExists (
-        this : Extract<this, QueryUtil.MainQuery>,
+        this : Extract<this, QueryUtil.MainQuery & (QueryUtil.AfterFromClause|QueryUtil.AfterSelectClause)>,
         connection : IConnection
     ) : Promise<void> {
         return QueryUtil.assertExists(this, connection);
@@ -1557,7 +1557,7 @@ export class Query<DataT extends QueryData> {
         return QueryUtil.cursor(this, connection);
     }
     exists(
-        this : Extract<this, QueryUtil.MainQuery>,
+        this : Extract<this, QueryUtil.MainQuery & (QueryUtil.AfterFromClause|QueryUtil.AfterSelectClause)>,
         connection : IConnection
     ) : Promise<boolean> {
         return QueryUtil.exists(this, connection);

@@ -1,3 +1,3 @@
-import { MainQuery } from "../predicate";
+import { MainQuery, AfterFromClause, AfterSelectClause } from "../predicate";
 import { IConnection } from "../../../execution";
-export declare function exists(query: MainQuery, connection: IConnection): Promise<boolean>;
+export declare function exists(query: MainQuery & (AfterFromClause | AfterSelectClause), connection: IConnection): Promise<boolean>;
