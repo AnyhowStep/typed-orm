@@ -6,6 +6,7 @@ import { NonNullPrimitiveExpr, PrimitiveExprUtil } from "../../../primitive-expr
 import { Tuple } from "../../../tuple";
 import { OneSelectItemQuery } from "../../../query/util";
 import { ColumnRefUtil } from "../../../column-ref";
+import { IJoin } from "../../../join";
 declare function In<LeftT extends RawExpr<NonNullPrimitiveExpr>>(left: LeftT, ...args: PrimitiveExprUtil.ToSuperType<RawExprUtil.TypeOf<LeftT>>[]): (Expr<{
     usedRef: RawExprUtil.UsedRef<LeftT>;
     assertDelegate: sd.AssertDelegate<boolean>;
@@ -15,7 +16,7 @@ declare function In<LeftT extends RawExpr<NonNullPrimitiveExpr>, Arg0 extends Ra
     assertDelegate: sd.AssertDelegate<boolean>;
 }>);
 declare function In<LeftT extends RawExpr<NonNullPrimitiveExpr>, RightT extends OneSelectItemQuery<PrimitiveExprUtil.ToSuperType<RawExprUtil.TypeOf<LeftT>>>>(left: LeftT, right: RightT): (Expr<{
-    usedRef: (RawExprUtil.UsedRef<LeftT> & ColumnRefUtil.FromQueryJoins<RightT>);
+    usedRef: (RawExprUtil.UsedRef<LeftT> & (RightT["_parentJoins"] extends IJoin[] ? ColumnRefUtil.FromJoinArray<RightT["_parentJoins"]> : {}));
     assertDelegate: sd.AssertDelegate<boolean>;
 }>);
 export { In as in };

@@ -1,6 +1,6 @@
 {
   "name": "typed-orm",
-  "version": "1.24.3",
+  "version": "1.24.4",
   "description": "A structurally-typed MySQL query-builder/ORM",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",

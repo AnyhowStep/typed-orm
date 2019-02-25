@@ -9,6 +9,7 @@ import {OneSelectItemQuery}  from "../../../query/util";
 import * as dataType from "../../../data-type";
 import { QueryUtil } from "../../../query";
 import { ColumnRefUtil } from "../../../column-ref";
+import {IJoin} from "../../../join";
 
 //https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_in
 function inSubQuery<
@@ -24,14 +25,26 @@ function inSubQuery<
 ) : (
     Expr<{
         usedRef : (
-            RawExprUtil.UsedRef<LeftT>
+            RawExprUtil.UsedRef<LeftT> &
+            (
+                RightT["_parentJoins"] extends IJoin[] ?
+                ColumnRefUtil.FromJoinArray<RightT["_parentJoins"]> :
+                {}
+            )
         ),
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
 ) {
     return new Expr(
         {
-            usedRef : RawExprUtil.usedRef(left),
+            usedRef : ColumnRefUtil.intersectTuple(
+                RawExprUtil.usedRef(left),
+                (
+                    right._parentJoins == undefined ?
+                    {} :
+                    ColumnRefUtil.fromJoinArray(right._parentJoins)
+                )
+            ),
             assertDelegate : dataType.boolean(),
         },
         [
@@ -161,7 +174,11 @@ function In<
     Expr<{
         usedRef : (
             RawExprUtil.UsedRef<LeftT> &
-            ColumnRefUtil.FromQueryJoins<RightT>
+            (
+                RightT["_parentJoins"] extends IJoin[] ?
+                ColumnRefUtil.FromJoinArray<RightT["_parentJoins"]> :
+                {}
+            )
         ),
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
