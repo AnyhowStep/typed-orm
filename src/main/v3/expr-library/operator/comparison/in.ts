@@ -24,18 +24,14 @@ function inSubQuery<
 ) : (
     Expr<{
         usedRef : (
-            RawExprUtil.UsedRef<LeftT> &
-            ColumnRefUtil.FromQueryJoins<RightT>
+            RawExprUtil.UsedRef<LeftT>
         ),
         assertDelegate : sd.AssertDelegate<boolean>,
     }>
 ) {
     return new Expr(
         {
-            usedRef : ColumnRefUtil.intersectTuple(
-                RawExprUtil.usedRef(left),
-                ColumnRefUtil.fromQueryJoins(right)
-            ),
+            usedRef : RawExprUtil.usedRef(left),
             assertDelegate : dataType.boolean(),
         },
         [

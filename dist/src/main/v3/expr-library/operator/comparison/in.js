@@ -6,11 +6,10 @@ const primitive_expr_1 = require("../../../primitive-expr");
 const query_tree_1 = require("../../../query-tree");
 const dataType = require("../../../data-type");
 const query_1 = require("../../../query");
-const column_ref_1 = require("../../../column-ref");
 //https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_in
 function inSubQuery(left, right) {
     return new expr_1.Expr({
-        usedRef: column_ref_1.ColumnRefUtil.intersectTuple(raw_expr_1.RawExprUtil.usedRef(left), column_ref_1.ColumnRefUtil.fromQueryJoins(right)),
+        usedRef: raw_expr_1.RawExprUtil.usedRef(left),
         assertDelegate: dataType.boolean(),
     }, [
         raw_expr_1.RawExprUtil.queryTree(left),
