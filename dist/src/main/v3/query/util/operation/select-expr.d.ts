@@ -3,7 +3,7 @@ import { BeforeUnionClause, BeforeSelectClause } from "../predicate";
 import { ColumnRefUtil } from "../../../column-ref";
 import { IExpr, ExprUtil } from "../../../expr";
 import { AssertValidSelectDelegateImpl } from "./select";
-export declare type SelectExprDelegate<QueryT extends BeforeUnionClause & BeforeSelectClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQueryJoins<QueryT>>) => IExpr);
+export declare type SelectExprDelegate<QueryT extends BeforeUnionClause & BeforeSelectClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQueryJoins<QueryT>>, query: QueryT) => IExpr);
 export declare type SelectExpr<QueryT extends BeforeUnionClause & BeforeSelectClause, SelectDelegateT extends SelectExprDelegate<QueryT>> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];

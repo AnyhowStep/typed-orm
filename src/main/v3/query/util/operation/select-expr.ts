@@ -28,7 +28,8 @@ export type SelectExprDelegate<
     (
         columns : ColumnRefUtil.ToConvenient<
             ColumnRefUtil.FromQueryJoins<QueryT>
-        >
+        >,
+        query : QueryT
     ) => IExpr
 );
 
@@ -101,7 +102,7 @@ export function selectExpr<
             ReturnType<SelectDelegateT>,
             "value"
         >
-    ] = c => [ExprUtil.as(delegate(c), "value")];
+    ] = c => [ExprUtil.as(delegate(c, query), "value")];
 
     return select(
         query,

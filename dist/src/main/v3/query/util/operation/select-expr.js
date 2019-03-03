@@ -6,7 +6,7 @@ function selectExpr(query, delegate) {
     if (query._selects != undefined) {
         throw new Error(`Cannot select unaliased expression after SELECT clause`);
     }
-    const wrappedDelegate = c => [expr_1.ExprUtil.as(delegate(c), "value")];
+    const wrappedDelegate = c => [expr_1.ExprUtil.as(delegate(c, query), "value")];
     return select_1.select(query, wrappedDelegate); //TODO-UNHACK Not use `as any` hacks?
 }
 exports.selectExpr = selectExpr;
