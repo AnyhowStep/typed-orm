@@ -5,7 +5,6 @@ import {IAnonymousTypedColumn, IColumn, ColumnUtil} from "./column";
 import {ColumnRefUtil} from "./column-ref";
 import {escape} from "sqlstring";
 import {QueryTree} from "./query-tree";
-import {Tuple} from "./tuple";
 import {ColumnRef} from "./column-ref";
 import {OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery, MainQuery} from "./query/util";
 import {IQuery, QueryUtil} from "./query";
@@ -296,7 +295,7 @@ export namespace RawExprUtil {
         */
     );
 
-    export function intersectUsedRefTuple<ArrT extends Tuple<RawExpr<any>>> (
+    export function intersectUsedRefTuple<ArrT extends RawExpr<any>[]> (
         ...arr : ArrT
     ) : IntersectUsedRefTuple<ArrT> {
         return ColumnRefUtil.intersectTuple(...(arr.map(usedRef) as any));

@@ -4,7 +4,6 @@ import { IAnonymousTypedExpr, IExpr } from "./expr";
 import { IAnonymousTypedColumn, IColumn } from "./column";
 import { ColumnRefUtil } from "./column-ref";
 import { QueryTree } from "./query-tree";
-import { Tuple } from "./tuple";
 import { ColumnRef } from "./column-ref";
 import { OneSelectItemQuery, ZeroOrOneRowQuery, OneRowQuery, MainQuery } from "./query/util";
 import { IQuery, QueryUtil } from "./query";
@@ -29,5 +28,5 @@ export declare namespace RawExprUtil {
     function assertDelegate<RawExprT extends RawExpr<any>>(rawExpr: RawExprT): AssertDelegate<RawExprT>;
     function queryTree(rawExpr: RawExpr<any>): QueryTree;
     type IntersectUsedRefTuple<ArrT extends RawExpr<any>[]> = (ArrT[number] extends never ? {} : Extract<UnionToIntersection<RawExprUtil.UsedRef<ArrT[number]>>, ColumnRef>);
-    function intersectUsedRefTuple<ArrT extends Tuple<RawExpr<any>>>(...arr: ArrT): IntersectUsedRefTuple<ArrT>;
+    function intersectUsedRefTuple<ArrT extends RawExpr<any>[]>(...arr: ArrT): IntersectUsedRefTuple<ArrT>;
 }

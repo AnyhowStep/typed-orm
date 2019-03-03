@@ -1,7 +1,6 @@
 import * as sd from "schema-decorator";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr, ExprUtil} from "../../../expr";
-import {Tuple} from "../../../tuple";
 import {Parentheses, QueryTreeArray} from "../../../query-tree";
 import * as dataType from "../../../data-type";
 
@@ -37,7 +36,7 @@ function tryGetOrQueryTree (rawExpr : RawExpr<boolean>) : QueryTreeArray|undefin
     }
     return undefined;
 }
-export function or<ArrT extends Tuple<RawExpr<boolean>>> (
+export function or<ArrT extends RawExpr<boolean>[]> (
     ...arr : ArrT
 ) : (
     Expr<{
