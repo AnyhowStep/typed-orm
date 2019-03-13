@@ -30,7 +30,9 @@ export declare namespace ColumnRefUtil {
     function fromQueryJoins<QueryT extends IQuery>(query: QueryT): FromQueryJoins<QueryT>;
     type FromSelectItemArray_ColumnElement<ColumnT extends IColumn> = ({
         readonly [tableAlias in ColumnT["tableAlias"]]: {
-            readonly [columnName in ColumnT["name"]]: (Extract<ColumnT, {
+            readonly [columnName in Extract<ColumnT, {
+                tableAlias: tableAlias;
+            }>["name"]]: (Extract<ColumnT, {
                 tableAlias: tableAlias;
                 name: columnName;
             }>);

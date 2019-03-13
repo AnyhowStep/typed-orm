@@ -193,7 +193,8 @@ export namespace ColumnRefUtil {
     export type FromSelectItemArray_ColumnElement<ColumnT extends IColumn> = (
         {
             readonly [tableAlias in ColumnT["tableAlias"]] : {
-                readonly [columnName in ColumnT["name"]] : (
+                //TODO Add test case for this
+                readonly [columnName in Extract<ColumnT, { tableAlias : tableAlias }>["name"]] : (
                     Extract<ColumnT, {
                         tableAlias : tableAlias,
                         name : columnName,
