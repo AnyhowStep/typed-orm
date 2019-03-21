@@ -12,13 +12,13 @@ export function fetchGenerationExpression (connection : IConnection, column : IC
             c.TABLE_SCHEMA,
             exprLib.database()
         ))
-        .whereEq(
-            c => c.TABLE_NAME,
+        .where(c => exprLib.eq(
+            c.TABLE_NAME,
             column.tableAlias
-        )
-        .whereEq(
-            c => c.COLUMN_NAME,
+        ))
+        .where(c => exprLib.eq(
+            c.COLUMN_NAME,
             column.name
-        )
+        ))
         .fetchValue(connection);
 }

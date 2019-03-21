@@ -7,7 +7,7 @@ function fetchColumnsOfTable(connection, tableName) {
     return query_1.QueryUtil.newInstance()
         .from(columns_1.COLUMNS)
         .where(c => exprLib.nullSafeEq(c.TABLE_SCHEMA, exprLib.database()))
-        .whereEq(c => c.TABLE_NAME, tableName)
+        .where(c => exprLib.eq(c.TABLE_NAME, tableName))
         .orderBy(c => [
         c.ORDINAL_POSITION.asc()
     ])

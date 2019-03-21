@@ -10,10 +10,10 @@ export function fetchAutoIncrementOfTable (connection : IConnection, tableName :
             c.TABLE_SCHEMA,
             exprLib.database()
         ))
-        .whereEq(
-            c => c.TABLE_NAME,
+        .where(c => exprLib.eq(
+            c.TABLE_NAME,
             tableName
-        )
+        ))
         .select(c => [
             c.AUTO_INCREMENT
         ])

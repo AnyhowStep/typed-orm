@@ -10,9 +10,9 @@ export function tableExists (connection : IConnection, tableName : string) {
             c.TABLE_SCHEMA,
             exprLib.database()
         ))
-        .whereEq(
-            c => c.TABLE_NAME,
+        .where(c => exprLib.eq(
+            c.TABLE_NAME,
             tableName
-        )
+        ))
         .exists(connection);
 }

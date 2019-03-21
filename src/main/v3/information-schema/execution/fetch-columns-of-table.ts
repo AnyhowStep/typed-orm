@@ -10,10 +10,10 @@ export function fetchColumnsOfTable (connection : IConnection, tableName : strin
             c.TABLE_SCHEMA,
             exprLib.database()
         ))
-        .whereEq(
-            c => c.TABLE_NAME,
+        .where(c => exprLib.eq(
+            c.TABLE_NAME,
             tableName
-        )
+        ))
         .orderBy(c => [
             c.ORDINAL_POSITION.asc()
         ])

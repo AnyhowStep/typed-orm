@@ -7,10 +7,9 @@ function fetchCandidateKeysOfTable(connection, tableName) {
     return query_1.QueryUtil.newInstance()
         .from(statistics_1.STATISTICS)
         .where(c => exprLib.nullSafeEq(c.TABLE_SCHEMA, exprLib.database()))
-        .whereEq(c => c.TABLE_NAME, tableName)
-        .whereEq(
-    //We want unique keys
-    c => c.NON_UNIQUE, false)
+        .where(c => exprLib.eq(c.TABLE_NAME, tableName))
+        //We want unique keys
+        .where(c => exprLib.not(c.NON_UNIQUE))
         .select(c => [
         c.INDEX_NAME,
         c.COLUMN_NAME,

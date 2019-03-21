@@ -207,3 +207,7 @@ o.from(app)
     }
 /*snip*/
 ```
+
+### Gotcha's
+
++ Using `.whereEq("test")` may return a row with `"TEST"` if the collation is case-insensitive.
