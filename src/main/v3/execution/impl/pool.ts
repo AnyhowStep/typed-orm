@@ -10,6 +10,7 @@ import {
     RawUpdateResult,
     RawDeleteResult
 } from "../connection";
+import {Omit} from "../../type";
 
 export class Connection implements IConnection, ITransactionConnection {
     private readonly connection : mysql.PoolConnection;
@@ -250,7 +251,7 @@ export class Connection implements IConnection, ITransactionConnection {
     }
 }
 
-export interface PoolArgs {
+export interface PoolArgs extends Omit<mysql.PoolConfig, "supportBigNumbers"|"bigNumberStrings"|"dateStrings"> {
     host      : string;
     port?     : number;
     database  : string;

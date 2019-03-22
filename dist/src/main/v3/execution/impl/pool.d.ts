@@ -2,6 +2,7 @@ import * as mysql from "mysql";
 import { IPool, ConnectionCallback, TransactionCallback } from "../pool";
 import { CharSet } from "../../data-type";
 import { IConnection, ITransactionConnection, RawQueryResult, SelectResult, InsertResult, RawUpdateResult, RawDeleteResult } from "../connection";
+import { Omit } from "../../type";
 export declare class Connection implements IConnection, ITransactionConnection {
     private readonly connection;
     constructor(connection: mysql.PoolConnection);
@@ -17,7 +18,7 @@ export declare class Connection implements IConnection, ITransactionConnection {
     update(sql: string): Promise<RawUpdateResult>;
     delete(sql: string): Promise<RawDeleteResult>;
 }
-export interface PoolArgs {
+export interface PoolArgs extends Omit<mysql.PoolConfig, "supportBigNumbers" | "bigNumberStrings" | "dateStrings"> {
     host: string;
     port?: number;
     database: string;
