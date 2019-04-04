@@ -8,7 +8,7 @@ import {Order} from "../order";
 import {MapDelegate} from "../map-delegate";
 import {DISTINCT} from "../constants";
 import {NonEmptyTuple} from "../tuple";
-import {ITable} from "../table";
+import {ITable, TableWithPk} from "../table";
 import {RawExpr, RawExprUtil} from "../raw-expr";
 import {PrimitiveExpr, NonNullPrimitiveExpr} from "../primitive-expr";
 import {IJoinDeclaration} from "../join-declaration";
@@ -18,6 +18,7 @@ import {UpdateUtil, UpdatableQuery} from "../update";
 import {DeletableQuery, DeleteUtil, Delete, DeleteModifier} from "../delete";
 import {Row} from "../row";
 import {CandidateKey} from "../candidate-key";
+import { PrimaryKey } from "../primary-key";
 
 export interface UnionQuery {
     //Defaults to true
@@ -1449,7 +1450,22 @@ export class Query<DataT extends QueryData> {
         >(this, delegate, value);
     }
 
+    //TODO Phase this out, prefer whereEqCk() instead
     whereEqCandidateKey<
+        TableT extends ITable,
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        table : TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
+        key : CandidateKey<TableT>
+    ) : QueryUtil.WhereEqCandidateKey<Extract<this, QueryUtil.AfterFromClause>> {
+        return QueryUtil.whereEqCandidateKey(
+            this,
+            table,
+            key
+        );
+    }
+    //Synonym for whereEqCandidateKey(), use whereEqCk() instead
+    whereEqCk<
         TableT extends ITable,
     > (
         this : Extract<this, QueryUtil.AfterFromClause>,
@@ -1474,6 +1490,20 @@ export class Query<DataT extends QueryData> {
             Extract<this, QueryUtil.AfterFromClause>,
             TableT
         >(this, table, columns);
+    }
+
+    whereEqPk<
+        TableT extends TableWithPk,
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        table : TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
+        key : PrimaryKey<TableT>
+    ) : QueryUtil.WhereEqPk<Extract<this, QueryUtil.AfterFromClause>> {
+        return QueryUtil.whereEqPk(
+            this,
+            table,
+            key
+        );
     }
 
     useJoin<

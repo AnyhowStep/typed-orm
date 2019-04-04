@@ -186,11 +186,19 @@ class Query {
     whereNullSafeEq(delegate, value) {
         return QueryUtil.whereNullSafeEq(this, delegate, value);
     }
+    //TODO Phase this out, prefer whereEqCk() instead
     whereEqCandidateKey(table, key) {
+        return QueryUtil.whereEqCandidateKey(this, table, key);
+    }
+    //Synonym for whereEqCandidateKey(), use whereEqCk() instead
+    whereEqCk(table, key) {
         return QueryUtil.whereEqCandidateKey(this, table, key);
     }
     whereEqColumns(table, columns) {
         return QueryUtil.whereEqColumns(this, table, columns);
+    }
+    whereEqPk(table, key) {
+        return QueryUtil.whereEqPk(this, table, key);
     }
     useJoin(joinDecl) {
         return QueryUtil.useJoin(this, joinDecl);
