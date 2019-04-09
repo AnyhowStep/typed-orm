@@ -77,6 +77,42 @@ tape(__filename, async (t) => {
                 },
             ]
         );
+
+        {
+            const result = await o.from(tableA)
+                .leftJoinUsing(tableB, c => [c.value])
+                .select(c => [c, o.ExprUtil.fromRawExpr(null).as("someNullColumn")])
+                .orderBy(c => [c.tableA.value.asc()])
+                .fetchAll(connection);
+            t.deepEqual(
+                result,
+                [
+                    {
+                        tableA : {
+                            value : 1n,
+                            other : "hello",
+                        },
+                        tableB : {
+                            value : 1n,
+                            other : "world",
+                        },
+                        __aliased : {
+                            someNullColumn : null,
+                        },
+                    },
+                    {
+                        tableA : {
+                            value : 2n,
+                            other : "goodbye",
+                        },
+                        tableB : undefined,
+                        __aliased : {
+                            someNullColumn : null,
+                        },
+                    },
+                ]
+            );
+        }
     });
 
     t.end();

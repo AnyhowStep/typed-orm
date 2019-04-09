@@ -89,6 +89,15 @@ export async function fetchAllUnmapped<
         }
         if (hasNullableJoins) {
             for (let tableAlias in row) {
+                if (
+                    query._joins != undefined &&
+                    query._joins.findIndex(
+                        j => j.aliasedTable.alias == tableAlias
+                    ) < 0
+                ) {
+                    //Probably `__aliased`
+                    continue;
+                }
                 const map = row[tableAlias];
                 const allNull = Object.keys(map)
                     .every(columnName => map[columnName] === null);
