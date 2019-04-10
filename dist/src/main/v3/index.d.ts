@@ -1,5 +1,6 @@
 export * from "./aliased-table";
 export * from "./candidate-key";
+export * from "./client-util";
 export * from "./column";
 export * from "./column-identifier";
 export * from "./column-identifier-map";
