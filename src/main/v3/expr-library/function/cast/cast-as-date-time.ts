@@ -14,7 +14,7 @@ export function castAsDateTime<
 ) : (
     Expr<{
         usedRef : RawExprUtil.UsedRef<RawExprT>,
-        assertDelegate : sd.AssertDelegate<bigint>,
+        assertDelegate : sd.AssertDelegate<Date>,
     }>
 ) {
     fractionalSecondPrecision = sd.literal(0,1,2,3)(
@@ -24,7 +24,7 @@ export function castAsDateTime<
     return new Expr(
         {
             usedRef : RawExprUtil.usedRef(rawExpr),
-            assertDelegate : dataType.bigint(),
+            assertDelegate : dataType.dateTime(fractionalSecondPrecision),
         },
         new FunctionCall("CAST", [
             [
