@@ -22,15 +22,15 @@
   },
   {
     "messageText": {
-      "messageText": "Argument of type 'Table<{ readonly usedRef: {}; readonly alias: \"joined21\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined21\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }>' is not assignable to parameter of type '(Table<{ readonly usedRef: {}; readonly alias: \"joined21\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined21\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }> & void) | (Table<...> & [...])'.",
+      "messageText": "Argument of type 'Table<{ readonly usedRef: {}; readonly alias: \"joined21\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined21\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }>' is not assignable to parameter of type '(Table<{ readonly usedRef: {}; readonly alias: \"joined21\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined21\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }> & void) | (Table<...> & [...])'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined21\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined21\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }>' is not assignable to type 'Table<{ readonly usedRef: {}; readonly alias: \"joined21\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined21\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }> & [...]'.",
+        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined21\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined21\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }>' is not assignable to type 'Table<{ readonly usedRef: {}; readonly alias: \"joined21\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined21\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }> & [...]'.",
         "category": 1,
         "code": 2322,
         "next": {
-          "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined21\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined21\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }>' is not assignable to type '[\"Alias\", \"joined21\", \"already used in previous JOINs\", any]'.",
+          "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined21\"; readonly columns: { readonly x: Column<{ tableAlias: \"joined21\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; }; readonly autoIncrement: undefined; ... 9 more ...; readonly deleteAllowed: true; }>' is not assignable to type '[\"Alias\", \"joined21\", \"already used in previous JOINs\", any]'.",
           "category": 1,
           "code": 2322
         }

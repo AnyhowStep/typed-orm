@@ -1,5 +1,3 @@
-/// <reference types="node" />
-import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 export declare const aliased: o.IAliasedTable<{
     usedRef: {
@@ -7,17 +5,17 @@ export declare const aliased: o.IAliasedTable<{
             readonly a: o.Column<{
                 tableAlias: "parent";
                 name: "a";
-                assertDelegate: sd.AssertDelegate<Buffer>;
+                assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
             }>;
             readonly b: o.Column<{
                 tableAlias: "parent";
                 name: "b";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: import("type-mapping").Mapper<unknown, string>;
             }>;
             readonly c: o.Column<{
                 tableAlias: "parent";
                 name: "c";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     };
@@ -26,22 +24,22 @@ export declare const aliased: o.IAliasedTable<{
         readonly a: o.Column<{
             readonly tableAlias: "aliased";
             readonly name: "a";
-            readonly assertDelegate: sd.AssertDelegate<Buffer>;
+            readonly assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
         }>;
         readonly x: o.Column<{
             readonly tableAlias: "aliased";
             readonly name: "x";
-            readonly assertDelegate: sd.AssertDelegate<number>;
+            readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
         }>;
         readonly y: o.Column<{
             readonly tableAlias: "aliased";
             readonly name: "y";
-            readonly assertDelegate: sd.AssertDelegate<string>;
+            readonly assertDelegate: import("type-mapping").Mapper<unknown, string>;
         }>;
         readonly z: o.Column<{
             readonly tableAlias: "aliased";
             readonly name: "z";
-            readonly assertDelegate: sd.AssertDelegate<boolean>;
+            readonly assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
         }>;
     };
 }>;

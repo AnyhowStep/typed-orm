@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '() => Expr<{ usedRef: { readonly table: { readonly x: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number>; }>; } & {}; } & {}; assertDelegate: AssertDelegate<...>; }>' is not assignable to parameter of type '(() => Expr<{ usedRef: { readonly table: { readonly x: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number>; }>; } & {}; } & {}; assertDelegate: AssertDelegate<...>; }>) & [...]'.",
+      "messageText": "Argument of type '() => Expr<{ usedRef: { readonly table: { readonly x: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: Mapper<unknown, number>; }>; } & {}; } & {}; assertDelegate: Mapper<...>; }>' is not assignable to parameter of type '(() => Expr<{ usedRef: { readonly table: { readonly x: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: Mapper<unknown, number>; }>; } & {}; } & {}; assertDelegate: Mapper<...>; }>) & [...]'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '() => Expr<{ usedRef: { readonly table: { readonly x: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number>; }>; } & {}; } & {}; assertDelegate: AssertDelegate<...>; }>' is not assignable to type '[\"Invalid IExprSelectItem\", IColumn<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number>; }>]'.",
+        "messageText": "Type '() => Expr<{ usedRef: { readonly table: { readonly x: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: Mapper<unknown, number>; }>; } & {}; } & {}; assertDelegate: Mapper<...>; }>' is not assignable to type '[\"Invalid IExprSelectItem\", IColumn<{ readonly tableAlias: \"table\"; readonly name: \"x\"; readonly assertDelegate: Mapper<unknown, number>; }>]'.",
         "category": 1,
         "code": 2322
       }

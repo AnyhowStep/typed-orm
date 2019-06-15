@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => Expr<...>' is not assignable to parameter of type '((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => Expr<...>) & [...]'.",
+      "messageText": "Argument of type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: Mapper<unknown, string>; }>; readonly z: Column<...>; }) => Expr<...>' is not assignable to parameter of type '((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: Mapper<unknown, string>; }>; readonly z: Column<...>; }) => Expr<...>) & [...]'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => Expr<...>' is not assignable to type '[\"WHERE expression contains some invalid columns; the following are not allowed:\", Column<{ tableAlias: \"joined1\"; name: \"c\"; assertDelegate: AssertDelegate<string>; }>]'.",
+        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: Mapper<unknown, string>; }>; readonly z: Column<...>; }) => Expr<...>' is not assignable to type '[\"WHERE expression contains some invalid columns; the following are not allowed:\", Column<{ tableAlias: \"joined1\"; name: \"c\"; assertDelegate: Mapper<unknown, string>; }>]'.",
         "category": 1,
         "code": 2322
       }

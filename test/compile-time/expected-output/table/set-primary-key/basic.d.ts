@@ -1,4 +1,3 @@
-import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 export declare const table: o.Table<{
     readonly usedRef: {};
@@ -7,22 +6,22 @@ export declare const table: o.Table<{
         readonly x: o.Column<{
             tableAlias: "table";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number>;
+            assertDelegate: import("type-mapping").Mapper<unknown, number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "table";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string>;
+            assertDelegate: import("type-mapping").Mapper<unknown, string>;
         }>;
         readonly z: o.Column<{
             tableAlias: "table";
             name: "z";
-            assertDelegate: sd.AssertDelegate<boolean>;
+            assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
         }>;
         readonly w: o.Column<{
             tableAlias: "table";
             name: "w";
-            assertDelegate: sd.AssertDelegate<Date>;
+            assertDelegate: import("type-mapping").Mapper<unknown, Date>;
         }>;
     };
     readonly autoIncrement: undefined;
@@ -38,7 +37,7 @@ export declare const table: o.Table<{
     readonly deleteAllowed: true;
 }>;
 export declare const ck: o.CandidateKey<typeof table>;
-export declare const ckad: sd.AssertDelegate<{
+export declare const ckad: import("type-mapping").Mapper<unknown, {
     readonly x: number;
     readonly y: string;
 } | {
@@ -46,7 +45,7 @@ export declare const ckad: sd.AssertDelegate<{
     readonly z: boolean;
 }>;
 export declare const sk: o.SuperKey<typeof table>;
-export declare const skad: sd.AssertDelegate<({
+export declare const skad: import("type-mapping").Mapper<unknown, ({
     readonly x: number;
     readonly y: string;
 } & Partial<{
@@ -66,22 +65,22 @@ export declare const table2: o.Table<{
         readonly x: o.Column<{
             tableAlias: "table";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number>;
+            assertDelegate: import("type-mapping").Mapper<unknown, number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "table";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string>;
+            assertDelegate: import("type-mapping").Mapper<unknown, string>;
         }>;
         readonly z: o.Column<{
             tableAlias: "table";
             name: "z";
-            assertDelegate: sd.AssertDelegate<boolean>;
+            assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
         }>;
         readonly w: o.Column<{
             tableAlias: "table";
             name: "w";
-            assertDelegate: sd.AssertDelegate<Date>;
+            assertDelegate: import("type-mapping").Mapper<unknown, Date>;
         }>;
     };
     readonly autoIncrement: undefined;

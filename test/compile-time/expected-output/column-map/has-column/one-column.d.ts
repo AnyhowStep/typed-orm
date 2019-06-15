@@ -4,7 +4,7 @@ export declare const columnMap: {
     readonly x: o.Column<{
         tableAlias: "someTable";
         name: "x";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
 };
 declare type HasColumn<DataT extends o.ColumnData> = o.ColumnMapUtil.HasColumn<typeof columnMap, o.IColumn<DataT>>;

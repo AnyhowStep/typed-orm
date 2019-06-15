@@ -1,4 +1,3 @@
-import * as sd from "schema-decorator";
 import * as o from "../../../../../../../dist/src/main";
 export declare const selectItem: o.IAliasedTable<{
     usedRef: {};
@@ -7,20 +6,20 @@ export declare const selectItem: o.IAliasedTable<{
         readonly x: o.Column<{
             readonly tableAlias: "test";
             readonly name: "x";
-            readonly assertDelegate: sd.AssertDelegate<number>;
+            readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
         }>;
     };
 }> & {
-    assertDelegate: sd.AssertDelegate<number | null>;
+    assertDelegate: import("type-mapping").Mapper<unknown, number | null>;
     tableAlias: "__aliased";
     asc: () => [{
         usedRef: {};
-        assertDelegate: sd.AssertDelegate<number | null>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number | null>;
         queryTree: o.QueryTree;
     }, "ASC"];
     desc: () => [{
         usedRef: {};
-        assertDelegate: sd.AssertDelegate<number | null>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number | null>;
         queryTree: o.QueryTree;
     }, "DESC"];
 };
@@ -36,20 +35,20 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 readonly tableAlias: "test";
                 readonly name: "x";
-                readonly assertDelegate: sd.AssertDelegate<number>;
+                readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
             }>;
         };
     }> & {
-        assertDelegate: sd.AssertDelegate<number | null>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number | null>;
         tableAlias: "__aliased";
         asc: () => [{
             usedRef: {};
-            assertDelegate: sd.AssertDelegate<number | null>;
+            assertDelegate: import("type-mapping").Mapper<unknown, number | null>;
             queryTree: o.QueryTree;
         }, "ASC"];
         desc: () => [{
             usedRef: {};
-            assertDelegate: sd.AssertDelegate<number | null>;
+            assertDelegate: import("type-mapping").Mapper<unknown, number | null>;
             queryTree: o.QueryTree;
         }, "DESC"];
     }];

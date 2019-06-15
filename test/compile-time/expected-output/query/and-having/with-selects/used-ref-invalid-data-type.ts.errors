@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '() => Expr<{ usedRef: { readonly table: { readonly test: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"test\"; readonly assertDelegate: AssertDelegate<Date>; }>; } & {}; } & {}; assertDelegate: AssertDelegate<...>; }>' is not assignable to parameter of type '(() => Expr<{ usedRef: { readonly table: { readonly test: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"test\"; readonly assertDelegate: AssertDelegate<Date>; }>; } & {}; } & {}; assertDelegate: AssertDelegate<...>; }>) & [...]'.",
+      "messageText": "Argument of type '() => Expr<{ usedRef: { readonly table: { readonly test: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"test\"; readonly assertDelegate: Mapper<unknown, Date>; }>; } & {}; } & {}; assertDelegate: Mapper<...>; }>' is not assignable to parameter of type '(() => Expr<{ usedRef: { readonly table: { readonly test: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"test\"; readonly assertDelegate: Mapper<unknown, Date>; }>; } & {}; } & {}; assertDelegate: Mapper<...>; }>) & [...]'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '() => Expr<{ usedRef: { readonly table: { readonly test: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"test\"; readonly assertDelegate: AssertDelegate<Date>; }>; } & {}; } & {}; assertDelegate: AssertDelegate<...>; }>' is not assignable to type '[\"HAVING expression contains some invalid columns; the following are not allowed:\", IColumn<{ readonly tableAlias: \"table\"; readonly name: \"test\"; readonly assertDelegate: AssertDelegate<Date>; }>]'.",
+        "messageText": "Type '() => Expr<{ usedRef: { readonly table: { readonly test: IColumn<{ readonly tableAlias: \"table\"; readonly name: \"test\"; readonly assertDelegate: Mapper<unknown, Date>; }>; } & {}; } & {}; assertDelegate: Mapper<...>; }>' is not assignable to type '[\"HAVING expression contains some invalid columns; the following are not allowed:\", IColumn<{ readonly tableAlias: \"table\"; readonly name: \"test\"; readonly assertDelegate: Mapper<unknown, Date>; }>]'.",
         "category": 1,
         "code": 2322
       }

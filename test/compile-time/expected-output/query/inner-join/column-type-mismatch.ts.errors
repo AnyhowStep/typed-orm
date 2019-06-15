@@ -1,7 +1,7 @@
 [
   {
     "messageText": {
-      "messageText": "Type 'Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<Buffer>; }>' is not assignable to type 'IColumn<{ tableAlias: \"joined1\"; name: \"a\" | \"b\" | \"c\"; assertDelegate: AssertDelegate<string | null>; }>'.",
+      "messageText": "Type 'Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: Mapper<unknown, Buffer>; }>' is not assignable to type 'IColumn<{ tableAlias: \"joined1\"; name: \"a\" | \"b\" | \"c\"; assertDelegate: Mapper<unknown, string | null>; }>'.",
       "category": 1,
       "code": 2322,
       "next": {
@@ -9,7 +9,7 @@
         "category": 1,
         "code": 2326,
         "next": {
-          "messageText": "Type 'AssertDelegate<Buffer>' is not assignable to type 'AssertDelegate<string | null>'.",
+          "messageText": "Type 'Mapper<unknown, Buffer>' is not assignable to type 'Mapper<unknown, string | null>'.",
           "category": 1,
           "code": 2322,
           "next": {

@@ -1,26 +1,25 @@
-import * as sd from "schema-decorator";
 import * as o from "../../../../../src/main";
 export declare const columnMapA: {};
 export declare const columnMapB: {
     readonly commonA: o.Column<{
         tableAlias: "someTableB";
         name: "commonA";
-        assertDelegate: sd.AssertDelegate<string>;
+        assertDelegate: import("type-mapping").Mapper<unknown, string>;
     }>;
     readonly commonB: o.Column<{
         tableAlias: "someTableB";
         name: "commonB";
-        assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     }>;
     readonly commonC: o.Column<{
         tableAlias: "someTableB";
         name: "commonC";
-        assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     }>;
     readonly differentB: o.Column<{
         tableAlias: "someTableB";
         name: "differentB";
-        assertDelegate: sd.AssertDelegate<null>;
+        assertDelegate: import("type-mapping").Mapper<unknown, null>;
     }>;
 };
 export declare const leftIntersect: {};

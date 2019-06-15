@@ -1,15 +1,15 @@
 [
   {
     "messageText": {
-      "messageText": "Type 'IAliasedTable<{ usedRef: {}; alias: \"test\"; columns: { readonly x: Column<{ readonly tableAlias: \"test\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number>; }>; }; }>' is not assignable to type 'ColumnMap | IColumn<ColumnData> | ColumnRef | IExprSelectItem<ExprSelectItemData>'.",
+      "messageText": "Type 'IAliasedTable<{ usedRef: {}; alias: \"test\"; columns: { readonly x: Column<{ readonly tableAlias: \"test\"; readonly name: \"x\"; readonly assertDelegate: Mapper<unknown, number>; }>; }; }>' is not assignable to type 'ColumnMap | IColumn<ColumnData> | ColumnRef | IExprSelectItem<ExprSelectItemData>'.",
       "category": 1,
       "code": 2322,
       "next": {
-        "messageText": "Type 'IAliasedTable<{ usedRef: {}; alias: \"test\"; columns: { readonly x: Column<{ readonly tableAlias: \"test\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number>; }>; }; }>' is not assignable to type 'ColumnRef'.",
+        "messageText": "Type 'IAliasedTable<{ usedRef: {}; alias: \"test\"; columns: { readonly x: Column<{ readonly tableAlias: \"test\"; readonly name: \"x\"; readonly assertDelegate: Mapper<unknown, number>; }>; }; }>' is not assignable to type 'ColumnRef'.",
         "category": 1,
         "code": 2322,
         "next": {
-          "messageText": "Index signature is missing in type 'IAliasedTable<{ usedRef: {}; alias: \"test\"; columns: { readonly x: Column<{ readonly tableAlias: \"test\"; readonly name: \"x\"; readonly assertDelegate: AssertDelegate<number>; }>; }; }>'.",
+          "messageText": "Index signature is missing in type 'IAliasedTable<{ usedRef: {}; alias: \"test\"; columns: { readonly x: Column<{ readonly tableAlias: \"test\"; readonly name: \"x\"; readonly assertDelegate: Mapper<unknown, number>; }>; }; }>'.",
           "category": 1,
           "code": 2329
         }

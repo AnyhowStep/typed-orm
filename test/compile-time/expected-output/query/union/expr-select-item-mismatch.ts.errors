@@ -5,7 +5,7 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly usedRef: {}; readonly alias: \"other\"; readonly columns: { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: AssertDelegate<...>; }>; ... 4 more ...; readonly c: Column<...>;...' is not assignable to type '[\"Invalid SELECT item\", \"0\", { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: AssertDelegate<number>; }>; readonly b: Column<{ tableAlias: \"other\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly x: Column<...>; readonly y: Column<...>; readonly z: Column<...>; readonly c: Column<....'.",
+        "messageText": "Type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly usedRef: {}; readonly alias: \"other\"; readonly columns: { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: Mapper<...>; }>; ... 4 more ...; readonly c: Column<...>; }; ... ...' is not assignable to type '[\"Invalid SELECT item\", \"0\", { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: Mapper<unknown, number>; }>; readonly b: Column<{ tableAlias: \"other\"; name: \"b\"; assertDelegate: Mapper<unknown, string>; }>; readonly x: Column<...>; readonly y: Column<...>; readonly z: Column<...>; readonly c: Col...'.",
         "category": 1,
         "code": 2322
       }

@@ -1,6 +1,6 @@
 [
   {
-    "messageText": "Property '1' is missing in type '[Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<number>; }>]' but required in type '[IColumn<{ tableAlias: \"joined1\"; name: \"a\" | \"b\" | \"y\"; assertDelegate: AssertDelegate<number | null>; }>, IColumn<{ tableAlias: \"joined1\"; name: \"a\" | \"b\" | \"y\"; assertDelegate: AssertDelegate<boolean | null>; }>]'.",
+    "messageText": "Property '1' is missing in type '[Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: Mapper<unknown, number>; }>]' but required in type '[IColumn<{ tableAlias: \"joined1\"; name: \"a\" | \"b\" | \"y\"; assertDelegate: Mapper<unknown, number | null>; }>, IColumn<{ tableAlias: \"joined1\"; name: \"a\" | \"b\" | \"y\"; assertDelegate: Mapper<unknown, boolean | null>; }>]'.",
     "code": 2741,
     "category": 1,
     "length": 5,

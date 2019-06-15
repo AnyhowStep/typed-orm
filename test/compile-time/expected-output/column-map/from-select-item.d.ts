@@ -1,10 +1,9 @@
-/// <reference types="node" />
 import * as sd from "schema-decorator";
 import * as o from "../../../../dist/src/main";
 export declare const column: o.Column<{
     readonly tableAlias: "tableAlias";
     readonly name: "name";
-    readonly assertDelegate: sd.AssertDelegate<number>;
+    readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
 }>;
 export declare const item: o.IExprSelectItem<{
     readonly usedRef: {
@@ -24,17 +23,17 @@ export declare const columnMap: {
     readonly x: o.Column<{
         tableAlias: "someTable";
         name: "x";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
     readonly y: o.Column<{
         tableAlias: "someTable";
         name: "y";
-        assertDelegate: sd.AssertDelegate<Date>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Date>;
     }>;
     readonly z: o.Column<{
         tableAlias: "someTable";
         name: "z";
-        assertDelegate: sd.AssertDelegate<Buffer>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
     }>;
 };
 export declare const emptyColumnMap: {};
@@ -42,30 +41,30 @@ export declare const mixedColumnMap: {
     readonly ax: o.Column<{
         tableAlias: "tableA";
         name: "ax";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
     readonly ay: o.Column<{
         tableAlias: "tableA";
         name: "ay";
-        assertDelegate: sd.AssertDelegate<string>;
+        assertDelegate: import("type-mapping").Mapper<unknown, string>;
     }>;
 } & {
     readonly bx: o.Column<{
         tableAlias: "tableB";
         name: "bx";
-        assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     }>;
     readonly by: o.Column<{
         tableAlias: "tableB";
         name: "by";
-        assertDelegate: sd.AssertDelegate<Buffer>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
     }>;
 };
 export declare const fromColumn: {
     readonly name: o.Column<{
         readonly tableAlias: "tableAlias";
         readonly name: "name";
-        readonly assertDelegate: sd.AssertDelegate<number>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
 };
 export declare const fromItem: {
@@ -79,17 +78,17 @@ export declare const fromColumnMap: {
     readonly x: o.Column<{
         tableAlias: "someTable";
         name: "x";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
     readonly y: o.Column<{
         tableAlias: "someTable";
         name: "y";
-        assertDelegate: sd.AssertDelegate<Date>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Date>;
     }>;
     readonly z: o.Column<{
         tableAlias: "someTable";
         name: "z";
-        assertDelegate: sd.AssertDelegate<Buffer>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
     }>;
 };
 export declare const fromEmptyColumnMap: {};
@@ -97,22 +96,22 @@ export declare const fromMixedColumnMap: {
     readonly ax: o.Column<{
         tableAlias: "tableA";
         name: "ax";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
     readonly ay: o.Column<{
         tableAlias: "tableA";
         name: "ay";
-        assertDelegate: sd.AssertDelegate<string>;
+        assertDelegate: import("type-mapping").Mapper<unknown, string>;
     }>;
 } & {
     readonly bx: o.Column<{
         tableAlias: "tableB";
         name: "bx";
-        assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     }>;
     readonly by: o.Column<{
         tableAlias: "tableB";
         name: "by";
-        assertDelegate: sd.AssertDelegate<Buffer>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
     }>;
 };

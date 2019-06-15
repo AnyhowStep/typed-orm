@@ -1,11 +1,11 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '() => [IExprSelectItem<{ readonly usedRef: { readonly otherTable: { readonly z: Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>; }; }; readonly assertDelegate: AssertDelegate<boolean>; readonly tableAlias: \"otherTable\"; readonly alias: \"y\"; }>]' is not assignable to parameter of type '(() => [IExprSelectItem<{ readonly usedRef: { readonly otherTable: { readonly z: Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>; }; }; readonly assertDelegate: AssertDelegate<boolean>; readonly tableAlias: \"otherTable\"; readonly alias: \"y\"; }>]) & [...]'.",
+      "messageText": "Argument of type '() => [IExprSelectItem<{ readonly usedRef: { readonly otherTable: { readonly z: Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: Mapper<unknown, boolean>; }>; }; }; readonly assertDelegate: Mapper<unknown, boolean>; readonly tableAlias: \"otherTable\"; readonly alias: \"y\"; }>]' is not assignable to parameter of type '(() => [IExprSelectItem<{ readonly usedRef: { readonly otherTable: { readonly z: Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: Mapper<unknown, boolean>; }>; }; }; readonly assertDelegate: Mapper<unknown, boolean>; readonly tableAlias: \"otherTable\"; readonly alias: \"y\"; }>]) & [...]'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '() => [IExprSelectItem<{ readonly usedRef: { readonly otherTable: { readonly z: Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>; }; }; readonly assertDelegate: AssertDelegate<boolean>; readonly tableAlias: \"otherTable\"; readonly alias: \"y\"; }>]' is not assignable to type '[\"Invalid IExprSelectItem\", Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>]'.",
+        "messageText": "Type '() => [IExprSelectItem<{ readonly usedRef: { readonly otherTable: { readonly z: Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: Mapper<unknown, boolean>; }>; }; }; readonly assertDelegate: Mapper<unknown, boolean>; readonly tableAlias: \"otherTable\"; readonly alias: \"y\"; }>]' is not assignable to type '[\"Invalid IExprSelectItem\", Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: Mapper<unknown, boolean>; }>]'.",
         "category": 1,
         "code": 2322
       }

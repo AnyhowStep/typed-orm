@@ -1,29 +1,27 @@
-/// <reference types="node" />
-import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 export declare const fromJoin: (o.Column<{
     tableAlias: "someTable";
     name: "x";
-    assertDelegate: sd.AssertDelegate<number>;
+    assertDelegate: import("type-mapping").Mapper<unknown, number>;
 }> | o.Column<{
     tableAlias: "someTable";
     name: "y";
-    assertDelegate: sd.AssertDelegate<Date>;
+    assertDelegate: import("type-mapping").Mapper<unknown, Date>;
 }> | o.Column<{
     tableAlias: "someTable";
     name: "z";
-    assertDelegate: sd.AssertDelegate<Buffer>;
+    assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
 }>)[];
 export declare const fromNullableJoin: (o.Column<{
     readonly tableAlias: "someTable";
     readonly name: "x";
-    readonly assertDelegate: sd.AssertDelegate<number | null>;
+    readonly assertDelegate: import("type-mapping").Mapper<unknown, number | null>;
 }> | o.Column<{
     readonly tableAlias: "someTable";
     readonly name: "y";
-    readonly assertDelegate: sd.AssertDelegate<Date | null>;
+    readonly assertDelegate: import("type-mapping").Mapper<unknown, Date | null>;
 }> | o.Column<{
     readonly tableAlias: "someTable";
     readonly name: "z";
-    readonly assertDelegate: sd.AssertDelegate<Buffer | null>;
+    readonly assertDelegate: import("type-mapping").Mapper<unknown, Buffer | null>;
 }>)[];

@@ -1,7 +1,7 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '[Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly c: Column<...>; }; ... 10 more ...; r...' is not assignable to parameter of type '([Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly c: Column<...>; }; ... 10 more ...; ...'.",
+      "messageText": "Argument of type '[Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: Mapper<unknown, Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: Mapper<...>; }>; readonly c: Column<...>; }; ... 10 more ...; readonly...' is not assignable to parameter of type '([Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: Mapper<unknown, Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: Mapper<...>; }>; readonly c: Column<...>; }; ... 10 more ...; readonl...'.",
       "category": 1,
       "code": 2345,
       "next": {
@@ -9,7 +9,7 @@
         "category": 1,
         "code": 2719,
         "next": {
-          "messageText": "Type '[Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly c: Column<...>; }; ... 10 more ...; r...' is missing the following properties from type '[\"Alias\", \"table\", \"already used in previous JOINs\", \"table\"]': 2, 3",
+          "messageText": "Type '[Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: Mapper<unknown, Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: Mapper<...>; }>; readonly c: Column<...>; }; ... 10 more ...; readonly...' is missing the following properties from type '[\"Alias\", \"table\", \"already used in previous JOINs\", \"table\"]': 2, 3",
           "category": 1,
           "code": 2739
         }

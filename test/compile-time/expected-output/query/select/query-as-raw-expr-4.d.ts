@@ -6,12 +6,12 @@ export declare const query: o.Query<{
     readonly _parentJoins: undefined;
     readonly _selects: [o.ExprUtil.ExprLite<{
         usedRef: {} & {};
-        assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     } & {
         queryTree: o.QueryTree;
     }> & o.IExprSelectItem<{
         readonly usedRef: {} & {};
-        readonly assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
         readonly tableAlias: "__aliased";
         readonly alias: "value";
     }>];

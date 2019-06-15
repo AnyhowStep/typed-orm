@@ -1,26 +1,24 @@
-/// <reference types="node" />
-import * as sd from "schema-decorator";
 import * as o from "../../../../../src/main";
 export declare const columnMapA: {
     readonly commonA: o.Column<{
         tableAlias: "someTableA";
         name: "commonA";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
     readonly commonB: o.Column<{
         tableAlias: "someTableA";
         name: "commonB";
-        assertDelegate: sd.AssertDelegate<Date>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Date>;
     }>;
     readonly commonC: o.Column<{
         tableAlias: "someTableA";
         name: "commonC";
-        assertDelegate: sd.AssertDelegate<boolean | null>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean | null>;
     }>;
     readonly differentA: o.Column<{
         tableAlias: "someTableA";
         name: "differentA";
-        assertDelegate: sd.AssertDelegate<Buffer>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
     }>;
 };
 export declare const columnMapB: {};
@@ -28,21 +26,21 @@ export declare const leftIntersect: {
     readonly commonA: o.Column<{
         tableAlias: "someTableA";
         name: "commonA";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
     readonly commonB: o.Column<{
         tableAlias: "someTableA";
         name: "commonB";
-        assertDelegate: sd.AssertDelegate<Date>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Date>;
     }>;
     readonly commonC: o.Column<{
         tableAlias: "someTableA";
         name: "commonC";
-        assertDelegate: sd.AssertDelegate<boolean | null>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean | null>;
     }>;
     readonly differentA: o.Column<{
         tableAlias: "someTableA";
         name: "differentA";
-        assertDelegate: sd.AssertDelegate<Buffer>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
     }>;
 };

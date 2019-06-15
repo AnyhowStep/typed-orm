@@ -6,20 +6,20 @@ export declare const selectItem: o.IAliasedTable<{
         readonly now: o.Column<{
             readonly tableAlias: "test";
             readonly name: "now";
-            readonly assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+            readonly assertDelegate: import("type-mapping").Mapper<unknown, Date>;
         }>;
     };
 }> & {
-    assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+    assertDelegate: import("type-mapping").Mapper<unknown, Date>;
     tableAlias: "__aliased";
     asc: () => [{
         usedRef: {};
-        assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Date>;
         queryTree: o.QueryTree;
     }, "ASC"];
     desc: () => [{
         usedRef: {};
-        assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Date>;
         queryTree: o.QueryTree;
     }, "DESC"];
 };
@@ -35,20 +35,20 @@ export declare const query: o.Query<{
             readonly now: o.Column<{
                 readonly tableAlias: "test";
                 readonly name: "now";
-                readonly assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+                readonly assertDelegate: import("type-mapping").Mapper<unknown, Date>;
             }>;
         };
     }> & {
-        assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Date>;
         tableAlias: "__aliased";
         asc: () => [{
             usedRef: {};
-            assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+            assertDelegate: import("type-mapping").Mapper<unknown, Date>;
             queryTree: o.QueryTree;
         }, "ASC"];
         desc: () => [{
             usedRef: {};
-            assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+            assertDelegate: import("type-mapping").Mapper<unknown, Date>;
             queryTree: o.QueryTree;
         }, "DESC"];
     }];

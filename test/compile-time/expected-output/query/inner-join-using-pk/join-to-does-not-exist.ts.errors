@@ -5,7 +5,7 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly c: Column<...>; }; ... 10 more ...; re...' is not assignable to type '[\"table\", \"is missing columns\", \"b\"]'.",
+        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: Mapper<unknown, Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: Mapper<...>; }>; readonly c: Column<...>; }; ... 10 more ...; readonly ...' is not assignable to type '[\"table\", \"is missing columns\", \"b\"]'.",
         "category": 1,
         "code": 2322
       }

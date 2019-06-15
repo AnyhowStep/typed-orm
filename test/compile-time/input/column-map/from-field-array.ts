@@ -1,12 +1,12 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as o from "../../../../dist/src/main";
 
 export const columnMap = o.ColumnMapUtil.fromFieldArray(
     "someTable",
     [
-        sd.field("x", sd.naturalNumber()),
-        sd.field("y", sd.date()),
-        sd.field("z", sd.buffer()),
+        sd.withName(sd.unsignedInteger(), "x"),
+        sd.withName(sd.mysql.dateTime(3), "y"),
+        sd.withName(sd.mysql.blob(), "z"),
     ]
 );
 export const emptyColumnMap = o.ColumnMapUtil.fromFieldArray(

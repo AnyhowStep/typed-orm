@@ -1,75 +1,73 @@
-/// <reference types="node" />
-import * as sd from "schema-decorator";
 import * as o from "../../../../../src/main";
 export declare const columnMapA: {
     readonly commonA: o.Column<{
         tableAlias: "someTableA";
         name: "commonA";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
     readonly commonB: o.Column<{
         tableAlias: "someTableA";
         name: "commonB";
-        assertDelegate: sd.AssertDelegate<Date>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Date>;
     }>;
     readonly commonC: o.Column<{
         tableAlias: "someTableA";
         name: "commonC";
-        assertDelegate: sd.AssertDelegate<boolean | null>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean | null>;
     }>;
     readonly differentA: o.Column<{
         tableAlias: "someTableA";
         name: "differentA";
-        assertDelegate: sd.AssertDelegate<Buffer>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
     }>;
 };
 export declare const columnMapB: {
     readonly commonA: o.Column<{
         tableAlias: "someTableB";
         name: "commonA";
-        assertDelegate: sd.AssertDelegate<string>;
+        assertDelegate: import("type-mapping").Mapper<unknown, string>;
     }>;
     readonly commonB: o.Column<{
         tableAlias: "someTableB";
         name: "commonB";
-        assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     }>;
     readonly commonC: o.Column<{
         tableAlias: "someTableB";
         name: "commonC";
-        assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     }>;
     readonly differentB: o.Column<{
         tableAlias: "someTableB";
         name: "differentB";
-        assertDelegate: sd.AssertDelegate<null>;
+        assertDelegate: import("type-mapping").Mapper<unknown, null>;
     }>;
 };
 export declare const intersect: {
     readonly commonA: o.IColumn<{
         readonly tableAlias: "someTableA";
         readonly name: "commonA";
-        readonly assertDelegate: sd.AssertDelegate<number & string>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, number & string>;
     }>;
     readonly commonB: o.IColumn<{
         readonly tableAlias: "someTableA";
         readonly name: "commonB";
-        readonly assertDelegate: sd.AssertDelegate<(Date & false) | (Date & true)>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, (Date & false) | (Date & true)>;
     }>;
     readonly commonC: o.IColumn<{
         readonly tableAlias: "someTableA";
         readonly name: "commonC";
-        readonly assertDelegate: sd.AssertDelegate<boolean>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     }>;
     readonly differentA: o.Column<{
         tableAlias: "someTableA";
         name: "differentA";
-        assertDelegate: sd.AssertDelegate<Buffer>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
     }>;
 } & {
     readonly differentB: o.Column<{
         tableAlias: "someTableB";
         name: "differentB";
-        assertDelegate: sd.AssertDelegate<null>;
+        assertDelegate: import("type-mapping").Mapper<unknown, null>;
     }>;
 };

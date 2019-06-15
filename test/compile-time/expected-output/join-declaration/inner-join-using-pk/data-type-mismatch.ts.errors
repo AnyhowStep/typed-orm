@@ -5,7 +5,7 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly y: Column<...>; }; ... 10 more ...; re...' is not assignable to type '[\"table\", \"has incompatible columns; expecting\", IColumn<{ readonly tableAlias: string; readonly name: \"b\"; readonly assertDelegate: AssertDelegate<number | null>; }>]'.",
+        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: Mapper<unknown, Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: Mapper<...>; }>; readonly y: Column<...>; }; ... 10 more ...; readonly ...' is not assignable to type '[\"table\", \"has incompatible columns; expecting\", IColumn<{ readonly tableAlias: string; readonly name: \"b\"; readonly assertDelegate: Mapper<unknown, number | null>; }>]'.",
         "category": 1,
         "code": 2322
       }

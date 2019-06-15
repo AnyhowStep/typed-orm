@@ -15,7 +15,7 @@ export declare const c2: {
 export declare const c3: o.Column<{
     readonly tableAlias: "tableAlias";
     readonly name: "columnName";
-    readonly assertDelegate: sd.AssertDelegate<string>;
+    readonly assertDelegate: import("type-mapping").Mapper<unknown, string>;
 }>;
 export declare const c4: {
     readonly tableAlias: "tableAlias";

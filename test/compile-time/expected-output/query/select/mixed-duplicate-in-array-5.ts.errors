@@ -1,15 +1,15 @@
 [
   {
     "messageText": {
-      "messageText": "Argument of type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is not assignable to parameter of type '(((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]) & [...] & [...]) | (((c: { ...; }) => [...]) & ... 1 more ... & [...]) | (((c...'.",
+      "messageText": "Argument of type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: Mapper<unknown, string>; }>; readonly z: Column<...>; }) => [...]' is not assignable to parameter of type '(((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: Mapper<unknown, string>; }>; readonly z: Column<...>; }) => [...]) & [...] & [...]) | (((c: { ...; }) => [...]) & ... 1 more ... & [...]) | ((...'.",
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is not assignable to type '((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]) & [...] & [...]'.",
+        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: Mapper<unknown, string>; }>; readonly z: Column<...>; }) => [...]' is not assignable to type '((c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: Mapper<unknown, string>; }>; readonly z: Column<...>; }) => [...]) & [...] & [...]'.",
         "category": 1,
         "code": 2322,
         "next": {
-          "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is not assignable to type '[\"Duplicate columns in SELECT clause\", { readonly tableAlias: \"table\"; readonly name: \"x\"; }]'.",
+          "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: Mapper<unknown, string>; }>; readonly z: Column<...>; }) => [...]' is not assignable to type '[\"Duplicate columns in SELECT clause\", { readonly tableAlias: \"table\"; readonly name: \"x\"; }]'.",
           "category": 1,
           "code": 2322
         }

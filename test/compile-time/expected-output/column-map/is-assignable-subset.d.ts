@@ -1,21 +1,19 @@
-/// <reference types="node" />
-import * as sd from "schema-decorator";
 import * as o from "../../../../dist/src/main";
 export declare const columnMap: {
     readonly x: o.Column<{
         tableAlias: "someTable";
         name: "x";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
     readonly y: o.Column<{
         tableAlias: "someTable";
         name: "y";
-        assertDelegate: sd.AssertDelegate<Date>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Date>;
     }>;
     readonly z: o.Column<{
         tableAlias: "someTable";
         name: "z";
-        assertDelegate: sd.AssertDelegate<Buffer>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
     }>;
 };
 export declare const emptyColumnMap: {};
@@ -23,21 +21,21 @@ export declare const unitColumnMap: {
     readonly x: o.Column<{
         tableAlias: "someTable";
         name: "x";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
 };
 export declare const unrelatedColumnMap: {
     readonly a: o.Column<{
         tableAlias: "someTable";
         name: "a";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
 };
 export declare const unrelatedColumnMap2: {
     readonly x: o.Column<{
         tableAlias: "someOtherTable";
         name: "x";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
 };
 export declare const untypedColumnMap: o.ColumnMap;

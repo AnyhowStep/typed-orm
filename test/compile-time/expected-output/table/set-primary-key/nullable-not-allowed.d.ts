@@ -1,4 +1,3 @@
-import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 export declare const joined2: void | o.Table<{
     readonly usedRef: {};
@@ -7,17 +6,17 @@ export declare const joined2: void | o.Table<{
         readonly a: o.Column<{
             tableAlias: "joined2";
             name: "a";
-            assertDelegate: sd.AssertDelegate<Date>;
+            assertDelegate: import("type-mapping").Mapper<unknown, Date>;
         }>;
         readonly b: o.Column<{
             tableAlias: "joined2";
             name: "b";
-            assertDelegate: sd.AssertDelegate<number | null>;
+            assertDelegate: import("type-mapping").Mapper<unknown, number | null>;
         }>;
         readonly y: o.Column<{
             tableAlias: "joined2";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string>;
+            assertDelegate: import("type-mapping").Mapper<unknown, string>;
         }>;
     };
     readonly autoIncrement: undefined;

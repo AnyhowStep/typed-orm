@@ -1,4 +1,3 @@
-import * as sd from "schema-decorator";
 import * as o from "../../../../dist/src/main";
 export declare const table: o.Table<{
     readonly usedRef: {};
@@ -7,12 +6,12 @@ export declare const table: o.Table<{
         readonly x: o.Column<{
             tableAlias: "t";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number>;
+            assertDelegate: import("type-mapping").Mapper<unknown, number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "t";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string>;
+            assertDelegate: import("type-mapping").Mapper<unknown, string>;
         }>;
     };
     readonly autoIncrement: undefined;
@@ -35,12 +34,12 @@ export declare const join: o.Join<{
             readonly x: o.Column<{
                 tableAlias: "t";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number>;
+                assertDelegate: import("type-mapping").Mapper<unknown, number>;
             }>;
             readonly y: o.Column<{
                 tableAlias: "t";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: import("type-mapping").Mapper<unknown, string>;
             }>;
         };
         readonly autoIncrement: undefined;
@@ -59,12 +58,12 @@ export declare const join: o.Join<{
         readonly x: o.Column<{
             tableAlias: "t";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number>;
+            assertDelegate: import("type-mapping").Mapper<unknown, number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "t";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string>;
+            assertDelegate: import("type-mapping").Mapper<unknown, string>;
         }>;
     };
     nullable: false;
@@ -73,12 +72,12 @@ export declare const columnMap: {
     readonly x: o.Column<{
         tableAlias: "t";
         name: "x";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
     readonly y: o.Column<{
         tableAlias: "t";
         name: "y";
-        assertDelegate: sd.AssertDelegate<string>;
+        assertDelegate: import("type-mapping").Mapper<unknown, string>;
     }>;
 };
 export declare const nullableJoin: o.Join<{
@@ -89,12 +88,12 @@ export declare const nullableJoin: o.Join<{
             readonly x: o.Column<{
                 tableAlias: "t";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number>;
+                assertDelegate: import("type-mapping").Mapper<unknown, number>;
             }>;
             readonly y: o.Column<{
                 tableAlias: "t";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: import("type-mapping").Mapper<unknown, string>;
             }>;
         };
         readonly autoIncrement: undefined;
@@ -113,12 +112,12 @@ export declare const nullableJoin: o.Join<{
         readonly x: o.Column<{
             tableAlias: "t";
             name: "x";
-            assertDelegate: sd.AssertDelegate<number>;
+            assertDelegate: import("type-mapping").Mapper<unknown, number>;
         }>;
         readonly y: o.Column<{
             tableAlias: "t";
             name: "y";
-            assertDelegate: sd.AssertDelegate<string>;
+            assertDelegate: import("type-mapping").Mapper<unknown, string>;
         }>;
     };
     nullable: true;
@@ -127,12 +126,12 @@ export declare const nullableColumnMap: {
     readonly x: o.Column<{
         readonly tableAlias: "t";
         readonly name: "x";
-        readonly assertDelegate: sd.AssertDelegate<number | null>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, number | null>;
     }>;
     readonly y: o.Column<{
         readonly tableAlias: "t";
         readonly name: "y";
-        readonly assertDelegate: sd.AssertDelegate<string | null>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, string | null>;
     }>;
 };
 export declare const untypedJoin: o.IJoin;
@@ -140,6 +139,6 @@ export declare const untypedColumnMap: {
     readonly [x: string]: o.Column<{
         readonly tableAlias: string;
         readonly name: string;
-        readonly assertDelegate: sd.AssertDelegate<any>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, any>;
     }>;
 };

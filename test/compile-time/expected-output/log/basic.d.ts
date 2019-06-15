@@ -7,22 +7,22 @@ export declare const entityBannedLog: o.Log<{
             readonly entityId: o.Column<{
                 tableAlias: "entityBanned";
                 name: "entityId";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
+                assertDelegate: import("type-mapping").Mapper<unknown, bigint>;
             }>;
             readonly updatedAt: o.Column<{
                 tableAlias: "entityBanned";
                 name: "updatedAt";
-                assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+                assertDelegate: import("type-mapping").Mapper<unknown, Date>;
             }>;
             readonly banned: o.Column<{
                 tableAlias: "entityBanned";
                 name: "banned";
-                assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
             readonly updatedBy: o.Column<{
                 tableAlias: "entityBanned";
                 name: "updatedBy";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
+                assertDelegate: import("type-mapping").Mapper<unknown, bigint>;
             }>;
         };
         readonly autoIncrement: undefined;
@@ -44,7 +44,7 @@ export declare const entityBannedLog: o.Log<{
             readonly entityId: o.Column<{
                 tableAlias: "entity";
                 name: "entityId";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
+                assertDelegate: import("type-mapping").Mapper<unknown, bigint>;
             }>;
         };
         readonly autoIncrement: undefined;
@@ -68,22 +68,22 @@ export declare const entityBannedLog: o.Log<{
                 readonly entityId: o.Column<{
                     tableAlias: "entityBanned";
                     name: "entityId";
-                    assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, bigint>;
                 }>;
                 readonly updatedAt: o.Column<{
                     tableAlias: "entityBanned";
                     name: "updatedAt";
-                    assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, Date>;
                 }>;
                 readonly banned: o.Column<{
                     tableAlias: "entityBanned";
                     name: "banned";
-                    assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
                 }>;
                 readonly updatedBy: o.Column<{
                     tableAlias: "entityBanned";
                     name: "updatedBy";
-                    assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, bigint>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -105,7 +105,7 @@ export declare const entityBannedLog: o.Log<{
                 readonly entityId: o.Column<{
                     tableAlias: "entity";
                     name: "entityId";
-                    assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, bigint>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -125,7 +125,7 @@ export declare const entityBannedLog: o.Log<{
     readonly latestOrder: [o.Column<{
         tableAlias: "entityBanned";
         name: "updatedAt";
-        assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Date>;
     }>, "DESC"];
     readonly tracked: "banned"[];
     readonly doNotCopy: "updatedBy"[];
@@ -151,22 +151,22 @@ export declare const latestQuery: o.Query<{
                 readonly entityId: o.Column<{
                     tableAlias: "entityBanned";
                     name: "entityId";
-                    assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, bigint>;
                 }>;
                 readonly updatedAt: o.Column<{
                     tableAlias: "entityBanned";
                     name: "updatedAt";
-                    assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, Date>;
                 }>;
                 readonly banned: o.Column<{
                     tableAlias: "entityBanned";
                     name: "banned";
-                    assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
                 }>;
                 readonly updatedBy: o.Column<{
                     tableAlias: "entityBanned";
                     name: "updatedBy";
-                    assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, bigint>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -185,22 +185,22 @@ export declare const latestQuery: o.Query<{
             readonly entityId: o.Column<{
                 tableAlias: "entityBanned";
                 name: "entityId";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
+                assertDelegate: import("type-mapping").Mapper<unknown, bigint>;
             }>;
             readonly updatedAt: o.Column<{
                 tableAlias: "entityBanned";
                 name: "updatedAt";
-                assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+                assertDelegate: import("type-mapping").Mapper<unknown, Date>;
             }>;
             readonly banned: o.Column<{
                 tableAlias: "entityBanned";
                 name: "banned";
-                assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
             readonly updatedBy: o.Column<{
                 tableAlias: "entityBanned";
                 name: "updatedBy";
-                assertDelegate: import("schema-decorator").AssertDelegate<bigint>;
+                assertDelegate: import("type-mapping").Mapper<unknown, bigint>;
             }>;
         };
         nullable: false;
@@ -209,7 +209,7 @@ export declare const latestQuery: o.Query<{
     readonly _selects: undefined;
     readonly _where: o.IExpr<{
         usedRef: o.ColumnRef;
-        assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     }>;
     readonly _grouped: undefined;
     readonly _having: undefined;

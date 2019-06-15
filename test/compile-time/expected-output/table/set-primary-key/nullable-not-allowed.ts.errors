@@ -1,6 +1,6 @@
 [
   {
-    "messageText": "Property 'b' does not exist on type '{ a: Column<{ tableAlias: \"joined2\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; y: Column<{ tableAlias: \"joined2\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; }'.",
+    "messageText": "Property 'b' does not exist on type '{ a: Column<{ tableAlias: \"joined2\"; name: \"a\"; assertDelegate: Mapper<unknown, Date>; }>; y: Column<{ tableAlias: \"joined2\"; name: \"y\"; assertDelegate: Mapper<unknown, string>; }>; }'.",
     "code": 2339,
     "category": 1,
     "length": 1,

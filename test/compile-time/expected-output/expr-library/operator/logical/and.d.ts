@@ -1,4 +1,3 @@
-import * as sd from "schema-decorator";
 import * as o from "../../../../../../dist/src/main";
 export declare const and1: o.Expr<{
     usedRef: {
@@ -6,7 +5,7 @@ export declare const and1: o.Expr<{
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     } & {
@@ -14,11 +13,11 @@ export declare const and1: o.Expr<{
             readonly y: o.Column<{
                 tableAlias: "table";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     };
-    assertDelegate: sd.AssertDelegate<boolean>;
+    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
 }>;
 export declare const and2: o.Expr<{
     usedRef: {
@@ -26,7 +25,7 @@ export declare const and2: o.Expr<{
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     } & {
@@ -34,7 +33,7 @@ export declare const and2: o.Expr<{
             readonly y: o.Column<{
                 tableAlias: "table";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     } & {
@@ -42,11 +41,11 @@ export declare const and2: o.Expr<{
             readonly z: o.Column<{
                 tableAlias: "table";
                 name: "z";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     };
-    assertDelegate: sd.AssertDelegate<boolean>;
+    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
 }>;
 export declare const and3: o.Expr<{
     usedRef: {
@@ -54,7 +53,7 @@ export declare const and3: o.Expr<{
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     } & {
@@ -62,7 +61,7 @@ export declare const and3: o.Expr<{
             readonly y: o.Column<{
                 tableAlias: "table";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     } & {
@@ -70,11 +69,11 @@ export declare const and3: o.Expr<{
             readonly a: o.Column<{
                 tableAlias: "table";
                 name: "a";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     };
-    assertDelegate: sd.AssertDelegate<boolean>;
+    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
 }>;
 export declare const and4: o.Expr<{
     usedRef: {
@@ -82,7 +81,7 @@ export declare const and4: o.Expr<{
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     } & {
@@ -90,7 +89,7 @@ export declare const and4: o.Expr<{
             readonly y: o.Column<{
                 tableAlias: "table";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     } & {
@@ -98,7 +97,7 @@ export declare const and4: o.Expr<{
             readonly a: o.Column<{
                 tableAlias: "table";
                 name: "a";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     } & {
@@ -106,11 +105,11 @@ export declare const and4: o.Expr<{
             readonly b: o.Column<{
                 tableAlias: "table";
                 name: "b";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     };
-    assertDelegate: sd.AssertDelegate<boolean>;
+    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
 }>;
 export declare const and5: o.Expr<{
     usedRef: {
@@ -118,7 +117,7 @@ export declare const and5: o.Expr<{
             readonly z: o.Column<{
                 tableAlias: "table";
                 name: "z";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     } & {
@@ -126,17 +125,17 @@ export declare const and5: o.Expr<{
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         } & {
             readonly y: o.Column<{
                 tableAlias: "table";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     } & {};
-    assertDelegate: sd.AssertDelegate<boolean>;
+    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
 }>;
 export declare const and6: o.Expr<{
     usedRef: {
@@ -144,13 +143,13 @@ export declare const and6: o.Expr<{
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
     };
-    assertDelegate: sd.AssertDelegate<boolean>;
+    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
 }>;
 export declare const and7: o.Expr<{
     usedRef: {};
-    assertDelegate: sd.AssertDelegate<boolean>;
+    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
 }>;

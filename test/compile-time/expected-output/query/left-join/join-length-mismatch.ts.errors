@@ -1,7 +1,7 @@
 [
   {
     "messageText": {
-      "messageText": "Type '[Column<{ tableAlias: \"joined1\"; name: \"c\"; assertDelegate: AssertDelegate<string>; }>, Column<{ tableAlias: \"joined1\"; name: \"c\"; assertDelegate: AssertDelegate<string>; }>]' is not assignable to type '[IColumn<{ tableAlias: \"joined1\"; name: \"a\" | \"b\" | \"c\"; assertDelegate: AssertDelegate<string | null>; }>]'.",
+      "messageText": "Type '[Column<{ tableAlias: \"joined1\"; name: \"c\"; assertDelegate: Mapper<unknown, string>; }>, Column<{ tableAlias: \"joined1\"; name: \"c\"; assertDelegate: Mapper<unknown, string>; }>]' is not assignable to type '[IColumn<{ tableAlias: \"joined1\"; name: \"a\" | \"b\" | \"c\"; assertDelegate: Mapper<unknown, string | null>; }>]'.",
       "category": 1,
       "code": 2322,
       "next": {

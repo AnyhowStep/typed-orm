@@ -1,21 +1,20 @@
-/// <reference types="node" />
 import * as sd from "schema-decorator";
 import * as o from "../../../../../src/main";
 export declare const columnMap: {
     readonly x: o.Column<{
         tableAlias: "someTable";
         name: "x";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
     readonly y: o.Column<{
         tableAlias: "someTable";
         name: "y";
-        assertDelegate: sd.AssertDelegate<Date>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Date>;
     }>;
     readonly z: o.Column<{
         tableAlias: "someTable";
         name: "z";
-        assertDelegate: sd.AssertDelegate<Buffer>;
+        assertDelegate: import("type-mapping").Mapper<unknown, Buffer>;
     }>;
 };
 declare type HasColumn<DataT extends o.ColumnData> = o.ColumnMapUtil.HasColumn<typeof columnMap, o.IColumn<DataT>>;

@@ -1,4 +1,3 @@
-import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 export declare const query: o.Query<{
     readonly _distinct: false;
@@ -11,17 +10,17 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "table";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, number>;
                 }>;
                 readonly y: o.Column<{
                     tableAlias: "table";
                     name: "y";
-                    assertDelegate: sd.AssertDelegate<string>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, string>;
                 }>;
                 readonly z: o.Column<{
                     tableAlias: "table";
                     name: "z";
-                    assertDelegate: sd.AssertDelegate<boolean>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -40,17 +39,17 @@ export declare const query: o.Query<{
             readonly x: o.Column<{
                 tableAlias: "table";
                 name: "x";
-                assertDelegate: sd.AssertDelegate<number>;
+                assertDelegate: import("type-mapping").Mapper<unknown, number>;
             }>;
             readonly y: o.Column<{
                 tableAlias: "table";
                 name: "y";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: import("type-mapping").Mapper<unknown, string>;
             }>;
             readonly z: o.Column<{
                 tableAlias: "table";
                 name: "z";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
         nullable: false;
@@ -62,17 +61,17 @@ export declare const query: o.Query<{
                 readonly a: o.Column<{
                     tableAlias: "joined1";
                     name: "a";
-                    assertDelegate: sd.AssertDelegate<number>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, number>;
                 }>;
                 readonly b: o.Column<{
                     tableAlias: "joined1";
                     name: "b";
-                    assertDelegate: sd.AssertDelegate<string>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, string>;
                 }>;
                 readonly c: o.Column<{
                     tableAlias: "joined1";
                     name: "c";
-                    assertDelegate: sd.AssertDelegate<boolean>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
                 }>;
             };
             readonly autoIncrement: undefined;
@@ -91,17 +90,17 @@ export declare const query: o.Query<{
             readonly a: o.Column<{
                 tableAlias: "joined1";
                 name: "a";
-                assertDelegate: sd.AssertDelegate<number>;
+                assertDelegate: import("type-mapping").Mapper<unknown, number>;
             }>;
             readonly b: o.Column<{
                 tableAlias: "joined1";
                 name: "b";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: import("type-mapping").Mapper<unknown, string>;
             }>;
             readonly c: o.Column<{
                 tableAlias: "joined1";
                 name: "c";
-                assertDelegate: sd.AssertDelegate<boolean>;
+                assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
             }>;
         };
         nullable: false;
@@ -110,18 +109,18 @@ export declare const query: o.Query<{
     readonly _selects: [o.Column<{
         tableAlias: "table";
         name: "z";
-        assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     }>, o.IExprSelectItem<{
         readonly usedRef: {
             readonly table: {
                 readonly x: o.Column<{
                     tableAlias: "table";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, number>;
                 }>;
             };
         };
-        readonly assertDelegate: sd.AssertDelegate<number>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
         readonly tableAlias: "table";
         readonly alias: "aliased";
     }>, o.ExprUtil.ExprLite<{
@@ -130,11 +129,11 @@ export declare const query: o.Query<{
                 readonly y: o.IColumn<{
                     readonly tableAlias: "table";
                     readonly name: "y";
-                    readonly assertDelegate: sd.AssertDelegate<string>;
+                    readonly assertDelegate: import("type-mapping").Mapper<unknown, string>;
                 }>;
             } & {};
         } & {};
-        assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     } & {
         queryTree: o.QueryTree;
     }> & o.IExprSelectItem<{
@@ -143,36 +142,36 @@ export declare const query: o.Query<{
                 readonly y: o.IColumn<{
                     readonly tableAlias: "table";
                     readonly name: "y";
-                    readonly assertDelegate: sd.AssertDelegate<string>;
+                    readonly assertDelegate: import("type-mapping").Mapper<unknown, string>;
                 }>;
             } & {};
         } & {};
-        readonly assertDelegate: sd.AssertDelegate<boolean>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
         readonly tableAlias: "__aliased";
         readonly alias: "equal?";
     }>, o.Column<{
         tableAlias: "table";
         name: "x";
-        assertDelegate: sd.AssertDelegate<number>;
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>, o.Column<{
         tableAlias: "table";
         name: "y";
-        assertDelegate: sd.AssertDelegate<string>;
+        assertDelegate: import("type-mapping").Mapper<unknown, string>;
     }>, {
         readonly a: o.Column<{
             tableAlias: "joined1";
             name: "a";
-            assertDelegate: sd.AssertDelegate<number>;
+            assertDelegate: import("type-mapping").Mapper<unknown, number>;
         }>;
         readonly b: o.Column<{
             tableAlias: "joined1";
             name: "b";
-            assertDelegate: sd.AssertDelegate<string>;
+            assertDelegate: import("type-mapping").Mapper<unknown, string>;
         }>;
         readonly c: o.Column<{
             tableAlias: "joined1";
             name: "c";
-            assertDelegate: sd.AssertDelegate<boolean>;
+            assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
         }>;
     }, o.ExprUtil.ExprLite<{
         usedRef: {
@@ -180,7 +179,7 @@ export declare const query: o.Query<{
                 readonly a: o.Column<{
                     tableAlias: "joined1";
                     name: "a";
-                    assertDelegate: sd.AssertDelegate<number>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, number>;
                 }>;
             };
         } & {
@@ -188,11 +187,11 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "table";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, number>;
                 }>;
             };
         };
-        assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     } & {
         queryTree: o.QueryTree;
     }> & o.IExprSelectItem<{
@@ -201,7 +200,7 @@ export declare const query: o.Query<{
                 readonly a: o.Column<{
                     tableAlias: "joined1";
                     name: "a";
-                    assertDelegate: sd.AssertDelegate<number>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, number>;
                 }>;
             };
         } & {
@@ -209,11 +208,11 @@ export declare const query: o.Query<{
                 readonly x: o.Column<{
                     tableAlias: "table";
                     name: "x";
-                    assertDelegate: sd.AssertDelegate<number>;
+                    assertDelegate: import("type-mapping").Mapper<unknown, number>;
                 }>;
             };
         };
-        readonly assertDelegate: sd.AssertDelegate<boolean>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
         readonly tableAlias: "__aliased";
         readonly alias: "thisEqual?";
     }>];

@@ -3,13 +3,13 @@ import * as o from "../../../../dist/src/main";
 export declare const column: o.Column<{
     readonly tableAlias: "tableAlias";
     readonly name: "name";
-    readonly assertDelegate: sd.AssertDelegate<number>;
+    readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
 }>;
 export declare const columnMap: {
     readonly name: o.Column<{
         readonly tableAlias: "tableAlias";
         readonly name: "name";
-        readonly assertDelegate: sd.AssertDelegate<number>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
     }>;
 };
 export declare const untypedColumn: o.IColumn;
@@ -17,7 +17,7 @@ export declare const untypedColumnMap: {
     readonly [x: string]: o.Column<{
         readonly tableAlias: string;
         readonly name: string;
-        readonly assertDelegate: sd.AssertDelegate<any>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, any>;
     }>;
 };
 export declare const item: o.IExprSelectItem<{
@@ -46,6 +46,6 @@ export declare const untypedItemColumnMap: {
     readonly [x: string]: o.Column<{
         readonly tableAlias: string;
         readonly name: string;
-        readonly assertDelegate: sd.AssertDelegate<any>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, any>;
     }>;
 };

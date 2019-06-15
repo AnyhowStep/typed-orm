@@ -1,4 +1,3 @@
-import * as sd from "schema-decorator";
 import * as o from "../../../../../dist/src/main";
 export declare const query: o.Query<{
     readonly _distinct: false;
@@ -7,12 +6,12 @@ export declare const query: o.Query<{
     readonly _parentJoins: undefined;
     readonly _selects: [o.ExprUtil.ExprLite<{
         usedRef: {} & {};
-        assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     } & {
         queryTree: o.QueryTree;
     }> & o.IExprSelectItem<{
         readonly usedRef: {} & {};
-        readonly assertDelegate: sd.AssertDelegate<boolean>;
+        readonly assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
         readonly tableAlias: "__aliased";
         readonly alias: "value";
     }>];

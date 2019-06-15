@@ -1,7 +1,7 @@
 [
   {
     "messageText": {
-      "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string | null>; }>' is not assignable to type 'Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>'.",
+      "messageText": "Type 'Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: Mapper<unknown, string | null>; }>' is not assignable to type 'Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: Mapper<unknown, number>; }>'.",
       "category": 1,
       "code": 2322,
       "next": {

@@ -1,4 +1,3 @@
-import * as sd from "schema-decorator";
 import * as o from "../../../../../../../dist/src/main";
 export declare const selectItem: o.IAliasedTable<{
     usedRef: {};
@@ -7,7 +6,7 @@ export declare const selectItem: o.IAliasedTable<{
         readonly x: o.Column<{
             readonly tableAlias: "test";
             readonly name: "x";
-            readonly assertDelegate: sd.AssertDelegate<number>;
+            readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
         }>;
     };
 }>;
