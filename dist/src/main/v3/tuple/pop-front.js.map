@@ -1,1 +1,1 @@
-{"version":3,"file":"pop-front.js","sourceRoot":"","sources":["../../../../../src/main/v3/tuple/pop-front.ts"],"names":[],"mappings":";;AAiIA,SAAgB,QAAQ,CACpB,KAAc;IAId,OAAO;QACH,KAAK,CAAC,CAAC,CAAC;QACR,KAAK,CAAC,KAAK,CAAC,CAAC,CAAQ;KACxB,CAAC;AACN,CAAC;AATD,4BASC"}
+{"version":3,"file":"pop-front.js","sourceRoot":"","sources":["../../../../../src/main/v3/tuple/pop-front.ts"],"names":[],"mappings":";;AA+BA,SAAgB,QAAQ,CACpB,KAAc;IAId,OAAO;QACH,KAAK,CAAC,CAAC,CAAC;QACR,KAAK,CAAC,KAAK,CAAC,CAAC,CAAQ;KACxB,CAAC;AACN,CAAC;AATD,4BASC"}

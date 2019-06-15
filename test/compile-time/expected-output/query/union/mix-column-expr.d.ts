@@ -98,8 +98,8 @@ export declare const query: o.Query<{
         tableAlias: "table";
         name: "y";
         assertDelegate: sd.AssertDelegate<string>;
-    }>, o.Expr<{
-        readonly usedRef: {
+    }>, o.ExprUtil.ExprLite<{
+        usedRef: {
             readonly table: {
                 readonly x: o.Column<{
                     tableAlias: "table";
@@ -114,7 +114,9 @@ export declare const query: o.Query<{
                 }>;
             };
         } & {};
-        readonly assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: sd.AssertDelegate<boolean>;
+    } & {
+        queryTree: o.QueryTree;
     }> & o.IExprSelectItem<{
         readonly usedRef: {
             readonly table: {

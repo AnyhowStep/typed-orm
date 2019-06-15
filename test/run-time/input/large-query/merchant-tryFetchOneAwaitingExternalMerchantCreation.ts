@@ -212,11 +212,7 @@ function isEnabled () {
             .coalesce(true),
         //payOutMethodIsEnabledExpression(),
         //appPlatformIsEnabledExpression()
-    ).as("testChanging")
-    .as("alias")
-    .as("multiple")
-    .as("times")
-    .as("isEnabled");
+    ).as("isEnabled");
 }
 
 function userHasPersonalInformation () {

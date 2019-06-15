@@ -5,9 +5,9 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '() => [IExprSelectItem<{ readonly usedRef: { readonly otherTable: { readonly z: Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>; }; }; readonly assertDelegate: AssertDelegate<boolean>; readonly tableAlias: \"otherTable\"; readonly alias: \"y\"; }>]' is missing the following properties from type '[\"Invalid IExprSelectItem\", Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>]': 0, 1, pop, push, and 29 more.",
+        "messageText": "Type '() => [IExprSelectItem<{ readonly usedRef: { readonly otherTable: { readonly z: Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>; }; }; readonly assertDelegate: AssertDelegate<boolean>; readonly tableAlias: \"otherTable\"; readonly alias: \"y\"; }>]' is not assignable to type '[\"Invalid IExprSelectItem\", Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>]'.",
         "category": 1,
-        "code": 2740
+        "code": 2322
       }
     },
     "code": 2345,

@@ -1,12 +1,35 @@
 import {Expr, IExpr} from "../../expr";
 import {IExprSelectItem} from "../../../expr-select-item";
 import {ALIASED} from "../../../constants";
+import { QueryTree } from "../../../query-tree";
+import { SortDirection } from "../../../order";
+import { Asc, Desc, Sort } from "./sort";
 
+//Used as a hack, attempting to not hit the max instantiation depth problem
+export interface ExprLite<ExprT extends IExpr> {
+    readonly queryTree : QueryTree;
+
+    asc () : Asc<ExprT>;
+    desc () : Desc<ExprT>;
+    sort (sortDirection : SortDirection) : Sort<ExprT>;
+}
 export type As<ExprT extends IExpr, AliasT extends string> = (
-    Expr<{
+    //This particular method has always given me problems
+    //Always reaching the max instantiation depth.
+    //https://github.com/microsoft/TypeScript/issues/29511
+    //It seems like using `DataT & {queryTree : QueryTree}`
+    //is better than using `this`.
+    //I don't understand typescript
+    //However, with enough calls to `as`, you still run into the max instantiation depth.
+    //Better to just keep using `ExprUtil.as()` for now
+
+    //Commenting this part of the type out because it seems to cause the max instantiation depth problem
+    //however, in a perfect world, I would get to keep this
+    /*Expr<{
         readonly usedRef : ExprT["usedRef"];
         readonly assertDelegate : ExprT["assertDelegate"];
-    }> &
+    }> &*/
+    ExprLite<ExprT> &
     IExprSelectItem<{
         readonly usedRef : ExprT["usedRef"];
         readonly assertDelegate : ExprT["assertDelegate"];

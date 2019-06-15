@@ -46,7 +46,7 @@ export function rightJoinCkUsing<
     const result : RightJoin<QueryT, TableT> = rightJoin<
         QueryT,
         TableT,
-        () => ReturnType<UsingDelegateT>
+        () => ReturnType<any>
     >(
         query,
         table,

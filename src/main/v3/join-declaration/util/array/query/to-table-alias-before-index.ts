@@ -6,7 +6,8 @@ export type ToTableAliasBeforeIndex<
     IndexT extends string
 > = (
     Extract<
-        ArrT[Extract<TupleUtil.IndicesBefore<IndexT>, keyof ArrT>],
+        //TODO Investigate
+        ArrT[Extract<keyof ArrT, TupleUtil.IndicesBefore<IndexT>>],
         IJoinDeclaration
     >["toTable"]["alias"]
 );

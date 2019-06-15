@@ -1,4 +1,4 @@
-import {ColumnMap} from "../../column-map";
+import {ColumnMap, WritableColumnMap} from "../../column-map";
 import {LeftIntersect, leftIntersect} from "./left-intersect";
 
 export type Intersect<
@@ -28,7 +28,7 @@ export function intersect<
         ColumnMapA, ColumnMapB
     > = leftIntersect(columnMapA, columnMapB);
 
-    const right : ColumnMap = {};
+    const right : WritableColumnMap = {};
     for (let columnName in columnMapB) {
         if (columnMapA.hasOwnProperty(columnName)) {
             continue;

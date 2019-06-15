@@ -51,7 +51,7 @@ export const assertFalse = sd.or(
     )
 );
 
-export function boolean () {
+function boolean () {
     return assertBoolean;
 }
 boolean.nullable = () => sd.nullable(boolean());
@@ -65,6 +65,7 @@ function getFalse () {
 }
 getFalse.nullable = () => sd.nullable(getFalse());
 export {
+    boolean,
     getTrue as true,
     getFalse as false,
 }

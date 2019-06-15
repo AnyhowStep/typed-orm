@@ -14,7 +14,7 @@ const unsafeIntDelegate = sd.or(
         throw new Error(`Expected ${name} to be of type bigint, received ${sd.toTypeStr(raw)}`);
     },
 );
-export function unsafeInt () {
+function unsafeInt () {
     return unsafeIntDelegate;
 }
 unsafeInt.nullable = () => sd.nullable(unsafeInt());
@@ -25,35 +25,48 @@ function intDelegate (min : number, max : number) {
         sd.ltEq(max)
     );
 }
-export function tinyIntSigned () {
+function tinyIntSigned () {
     return intDelegate(-128, 127);
 }
 tinyIntSigned.nullable = () => sd.nullable(tinyIntSigned());
-export function smallIntSigned () {
+function smallIntSigned () {
     return intDelegate(-32768, 32767);
 }
 smallIntSigned.nullable = () => sd.nullable(smallIntSigned());
-export function mediumIntSigned () {
+function mediumIntSigned () {
     return intDelegate(-8388608, 8388607);
 }
 mediumIntSigned.nullable = () => sd.nullable(mediumIntSigned());
-export function intSigned () {
+function intSigned () {
     return intDelegate(-2147483648, 2147483647);
 }
 intSigned.nullable = () => sd.nullable(intSigned());
-export function tinyIntUnsigned () {
+function tinyIntUnsigned () {
     return intDelegate(0, 255);
 }
 tinyIntUnsigned.nullable = () => sd.nullable(tinyIntUnsigned());
-export function smallIntUnsigned () {
+function smallIntUnsigned () {
     return intDelegate(0, 65535);
 }
 smallIntUnsigned.nullable = () => sd.nullable(smallIntUnsigned());
-export function mediumIntUnsigned () {
+function mediumIntUnsigned () {
     return intDelegate(0, 16777215);
 }
 mediumIntUnsigned.nullable = () => sd.nullable(mediumIntUnsigned());
-export function intUnsigned () {
+function intUnsigned () {
     return intDelegate(0, 4294967295);
 }
 intUnsigned.nullable = () => sd.nullable(intUnsigned());
+export {
+    unsafeInt,
+
+    tinyIntSigned,
+    smallIntSigned,
+    mediumIntSigned,
+    intSigned,
+
+    tinyIntUnsigned,
+    smallIntUnsigned,
+    mediumIntUnsigned,
+    intUnsigned,
+}

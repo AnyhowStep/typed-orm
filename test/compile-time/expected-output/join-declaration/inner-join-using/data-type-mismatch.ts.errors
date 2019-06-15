@@ -1,19 +1,10 @@
 [
   {
-    "messageText": {
-      "messageText": "Type '[any]' is not assignable to type 'never[] & { \"0\": never; }'.",
-      "category": 1,
-      "code": 2322,
-      "next": {
-        "messageText": "Type '[any]' is not assignable to type 'never[]'.",
-        "category": 1,
-        "code": 2322
-      }
-    },
+    "messageText": "Type 'any' is not assignable to type 'never'.",
     "code": 2322,
     "category": 1,
-    "length": 5,
-    "start": 422
+    "length": 3,
+    "start": 423
   },
   {
     "messageText": "Property 'x' does not exist on type '{}'.",

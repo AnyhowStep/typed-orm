@@ -35,7 +35,7 @@ export function latestValueOfEntity<
 ) : (
     LatestValueOfEntity<LogT, DelegateT>
 ) {
-    const expr = latestValueOfEntityOrNull(log, delegate)
+    const expr = latestValueOfEntityOrNull(log, delegate as any)
     if (log.tracked.indexOf(expr.alias) < 0) {
         throw new Error(`${log.table.alias}.${expr.alias} is not a tracked column`);
     }

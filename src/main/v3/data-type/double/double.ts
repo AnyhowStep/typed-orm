@@ -4,7 +4,8 @@ const assertDouble = sd.or(
     sd.finiteNumber(),
     sd.stringToNumber()
 );
-export function double () {
+function double () {
     return assertDouble;
 }
 double.nullable = () => sd.nullable(double());
+export {double}

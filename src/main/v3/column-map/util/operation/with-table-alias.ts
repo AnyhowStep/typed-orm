@@ -1,4 +1,4 @@
-import {ColumnMap} from "../../column-map";
+import {ColumnMap, WritableColumnMap} from "../../column-map";
 import {ColumnUtil} from "../../../column";
 
 export type WithTableAlias<
@@ -23,7 +23,7 @@ export function withTableAlias<
 ) : (
     WithTableAlias<ColumnMapT, NewTableAliasT>
 ) {
-    const result : ColumnMap = {};
+    const result : WritableColumnMap = {};
     for (let columnName in columnMap) {
         result[columnName] = ColumnUtil.withTableAlias(
             columnMap[columnName],

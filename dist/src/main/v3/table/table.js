@@ -45,6 +45,7 @@ class Table {
         if (this.cachedPrimaryKeyAssertDelegate == undefined) {
             this.cachedPrimaryKeyAssertDelegate = (primary_key_1.PrimaryKeyUtil.assertDelegate(this));
         }
+        //TODO Figure out why it isn't working
         return this.cachedPrimaryKeyAssertDelegate;
     }
     setAlias(newAlias) {

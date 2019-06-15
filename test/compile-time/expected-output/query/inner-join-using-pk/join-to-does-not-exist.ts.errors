@@ -5,9 +5,9 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly c: Column<...>; }; ... 10 more ...; re...' is missing the following properties from type '[\"table\", \"is missing columns\", \"b\"]': 0, 1, 2, length, and 31 more.",
+        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly c: Column<...>; }; ... 10 more ...; re...' is not assignable to type '[\"table\", \"is missing columns\", \"b\"]'.",
         "category": 1,
-        "code": 2740
+        "code": 2322
       }
     },
     "code": 2345,

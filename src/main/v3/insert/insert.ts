@@ -79,7 +79,7 @@ export class Insert<DataT extends InsertData> implements IInsert<DataT> {
             Extract<this, IInsert & { _values : InsertRow<ITable>[] }>
         >>
     ) {
-        return InsertUtil.execute(this, connection);
+        return InsertUtil.execute(this, connection) as any;
     }
     executeAndFetch (
         this : Extract<this, IInsert & { _values : InsertRow<ITable>[] }>,
@@ -90,7 +90,7 @@ export class Insert<DataT extends InsertData> implements IInsert<DataT> {
     ) : (
         Promise<Row<this["_table"]>>
     ) {
-        return InsertUtil.executeAndFetch(this, connection);
+        return InsertUtil.executeAndFetch(this, connection) as any;
     }
     printSql (
         this : Extract<this, IInsert & { _values : InsertRow<ITable>[] }>

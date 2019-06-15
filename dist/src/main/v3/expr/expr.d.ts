@@ -17,7 +17,9 @@ export declare class Expr<DataT extends ExprData> implements IExpr<DataT> {
     readonly assertDelegate: DataT["assertDelegate"];
     readonly queryTree: QueryTree;
     constructor(data: DataT, queryTree: QueryTree);
-    as<AliasT extends string>(alias: AliasT): ExprUtil.As<this, AliasT>;
+    as<AliasT extends string>(alias: AliasT): ExprUtil.As<DataT & {
+        queryTree: QueryTree;
+    }, AliasT>;
     asc(): ExprUtil.Asc<this>;
     desc(): ExprUtil.Desc<this>;
     sort(sortDirection: SortDirection): ExprUtil.Sort<this>;

@@ -54,7 +54,7 @@ export function joinUsing<
     return join(
         fromTable,
         toTable as any,
-        () => usingColumns,
+        () => usingColumns as any,
         () => (
             usingColumns.map(c => toTable.columns[c.name])
         ) as any,

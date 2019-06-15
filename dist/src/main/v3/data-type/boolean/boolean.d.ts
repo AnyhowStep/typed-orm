@@ -11,11 +11,11 @@ export declare const assertFalse: sd.AssertDelegate<boolean> & {
     __accepts: false | 0 | "0";
     __canAccept: false | 0 | "0";
 };
-export declare function boolean(): sd.AssertDelegate<boolean> & {
+declare function boolean(): sd.AssertDelegate<boolean> & {
     __accepts: boolean | 0 | 1 | "0" | "1";
     __canAccept: boolean | 0 | 1 | "0" | "1";
 };
-export declare namespace boolean {
+declare namespace boolean {
     var nullable: () => sd.AssertDelegate<boolean | null> & {
         __accepts: boolean | 0 | 1 | "0" | "1" | null;
         __canAccept: boolean | 0 | 1 | "0" | "1" | null;
@@ -41,4 +41,4 @@ declare namespace getFalse {
         __canAccept: false | 0 | "0" | null;
     };
 }
-export { getTrue as true, getFalse as false, };
+export { boolean, getTrue as true, getFalse as false, };

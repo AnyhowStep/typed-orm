@@ -5,9 +5,9 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is missing the following properties from type '[\"Duplicate columns in SELECT clause\", { readonly tableAlias: \"table\"; readonly name: \"x\"; } | { readonly tableAlias: \"table\"; readonly name: \"y\"; } | { readonly tableAlias: \"table\"; readonly name: \"z\"; }]': 0, 1, pop, push, and 29 more.",
+        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => [...]' is not assignable to type '[\"Duplicate columns in SELECT clause\", { readonly tableAlias: \"table\"; readonly name: \"x\"; } | { readonly tableAlias: \"table\"; readonly name: \"y\"; } | { readonly tableAlias: \"table\"; readonly name: \"z\"; }]'.",
         "category": 1,
-        "code": 2740
+        "code": 2322
       }
     },
     "code": 2345,

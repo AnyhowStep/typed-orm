@@ -4,9 +4,11 @@ export declare const query: o.Query<{
     readonly _sqlCalcFoundRows: false;
     readonly _joins: undefined;
     readonly _parentJoins: undefined;
-    readonly _selects: [o.Expr<{
-        readonly usedRef: {};
-        readonly assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+    readonly _selects: [o.ExprUtil.ExprLite<{
+        usedRef: {};
+        assertDelegate: import("schema-decorator").AssertDelegate<Date>;
+    } & {
+        queryTree: o.QueryTree;
     }> & o.IExprSelectItem<{
         readonly usedRef: {};
         readonly assertDelegate: import("schema-decorator").AssertDelegate<Date>;

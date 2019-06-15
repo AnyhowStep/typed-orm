@@ -28,7 +28,7 @@ export function trackOrError<LogT extends LogNoTrackedDefaults & InsertableLog> 
                     connection,
                     log.table,
                     insertRow
-                ),
+                ) as any,
             };
         }
 
@@ -44,7 +44,7 @@ export function trackOrError<LogT extends LogNoTrackedDefaults & InsertableLog> 
                     connection,
                     log.table,
                     insertRow
-                ),
+                ) as any,
             };
         } else {
             return {

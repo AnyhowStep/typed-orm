@@ -35,7 +35,7 @@ export function track<LogT extends CompletedLog & InsertableLog> (
                     connection,
                     log.table,
                     insertRow
-                ),
+                ) as any,
             };
         } else {
             return {

@@ -58,5 +58,5 @@ export function isLatest<
     return exprLib.nullSafeEq(
         log.table.columns[log.latestOrder[0].name],
         latestOrderSubQuery
-    ).as("isLatest");
+    ).as("isLatest") as any;
 }

@@ -9,9 +9,9 @@
         "category": 1,
         "code": 2719,
         "next": {
-          "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"parent\"; readonly columns: { readonly x: Column<{ tableAlias: \"parent\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"parent\"; name: \"y\"; assertDelegate: AssertDelegate<...>; }>; readonly z: Column<...>; }; ... 10 more ...; rea...' is missing the following properties from type '[\"Column\", \"x\", \"has incompatible types\", number | null, number]': 0, 1, 2, 3, and 33 more.",
+          "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"parent\"; readonly columns: { readonly x: Column<{ tableAlias: \"parent\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"parent\"; name: \"y\"; assertDelegate: AssertDelegate<...>; }>; readonly z: Column<...>; }; ... 10 more ...; rea...' is not assignable to type '[\"Column\", \"x\", \"has incompatible types\", number | null, number]'.",
           "category": 1,
-          "code": 2740
+          "code": 2322
         }
       }
     },

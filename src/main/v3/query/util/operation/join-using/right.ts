@@ -40,7 +40,7 @@ export function rightJoinUsing<
     return rightJoin<
         QueryT,
         AliasedTableT,
-        () => ReturnType<UsingDelegateT>
+        () => ReturnType<any>
     >(
         query,
         aliasedTable,

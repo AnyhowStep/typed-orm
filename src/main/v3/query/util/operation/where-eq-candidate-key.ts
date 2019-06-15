@@ -54,7 +54,7 @@ export function whereEqCandidateKey<
         table.candidateKeyAssertDelegate() :
         CandidateKeyUtil.assertDelegate(table);
 
-    key = candidateKeyAssertDelegate(`${table.alias} CK`, key);
+    key = candidateKeyAssertDelegate(`${table.alias} CK`, key) as CandidateKey<TableT>;
 
     const ref = ColumnIdentifierRefUtil.fromJoinArray(
         query._joins

@@ -5,9 +5,9 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'IAliasedTable<{ usedRef: { readonly joined1: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<Buffer>; }>; readonly c: Column<...>; }; }; alias: \"subQuery\"; columns: { ...; }; }> & ...' is missing the following properties from type '[\"Incompatible usedRef\", { readonly tableAlias: \"joined1\"; readonly name: \"c\"; } | { readonly tableAlias: \"joined1\"; readonly name: \"a\"; } | { readonly tableAlias: \"joined1\"; readonly name: \"b\"; }]': 0, 1, length, pop, and 30 more.",
+        "messageText": "Type 'IAliasedTable<{ usedRef: { readonly joined1: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<Buffer>; }>; readonly c: Column<...>; }; }; alias: \"subQuery\"; columns: { ...; }; }> & ...' is not assignable to type '[\"Incompatible usedRef\", { readonly tableAlias: \"joined1\"; readonly name: \"a\"; } | { readonly tableAlias: \"joined1\"; readonly name: \"b\"; } | { readonly tableAlias: \"joined1\"; readonly name: \"c\"; }]'.",
         "category": 1,
-        "code": 2740
+        "code": 2322
       }
     },
     "code": 2345,

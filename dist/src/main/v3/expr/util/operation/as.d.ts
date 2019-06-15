@@ -1,10 +1,16 @@
-import { Expr, IExpr } from "../../expr";
+import { IExpr } from "../../expr";
 import { IExprSelectItem } from "../../../expr-select-item";
 import { ALIASED } from "../../../constants";
-export declare type As<ExprT extends IExpr, AliasT extends string> = (Expr<{
-    readonly usedRef: ExprT["usedRef"];
-    readonly assertDelegate: ExprT["assertDelegate"];
-}> & IExprSelectItem<{
+import { QueryTree } from "../../../query-tree";
+import { SortDirection } from "../../../order";
+import { Asc, Desc, Sort } from "./sort";
+export interface ExprLite<ExprT extends IExpr> {
+    readonly queryTree: QueryTree;
+    asc(): Asc<ExprT>;
+    desc(): Desc<ExprT>;
+    sort(sortDirection: SortDirection): Sort<ExprT>;
+}
+export declare type As<ExprT extends IExpr, AliasT extends string> = (ExprLite<ExprT> & IExprSelectItem<{
     readonly usedRef: ExprT["usedRef"];
     readonly assertDelegate: ExprT["assertDelegate"];
     readonly tableAlias: typeof ALIASED;

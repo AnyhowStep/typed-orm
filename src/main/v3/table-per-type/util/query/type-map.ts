@@ -24,5 +24,5 @@ export function assertDelegate<TableT extends ITable> (
             ...columns.map(c => c.assertDelegate)
         );
     }
-    return sd.toSchema(assertMap);
+    return sd.toSchema(assertMap) as any;
 }

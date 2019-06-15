@@ -26,7 +26,7 @@ export function eqCandidateKey<
     ck = assertDelegate(
         `${table.alias}.ck`,
         ck
-    );
+    ) as CandidateKey<TableT>;
 
     const arr = Object.keys(ck).sort().map(
         columnName => exprLib.nullSafeEq(

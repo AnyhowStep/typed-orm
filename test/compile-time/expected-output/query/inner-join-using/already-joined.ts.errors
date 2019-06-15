@@ -9,9 +9,9 @@
         "category": 1,
         "code": 2719,
         "next": {
-          "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly y: Column<...>; }; ... 10 more ...; re...' is missing the following properties from type '[\"Alias\", \"joined1\", \"already used in previous JOINs\", \"table\" | \"joined1\"]': 0, 1, 2, 3, and 32 more.",
+          "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"joined1\"; readonly columns: { readonly a: Column<{ tableAlias: \"joined1\"; name: \"a\"; assertDelegate: AssertDelegate<Date>; }>; readonly b: Column<{ tableAlias: \"joined1\"; name: \"b\"; assertDelegate: AssertDelegate<...>; }>; readonly y: Column<...>; }; ... 10 more ...; re...' is not assignable to type '[\"Alias\", \"joined1\", \"already used in previous JOINs\", \"table\" | \"joined1\"]'.",
           "category": 1,
-          "code": 2740
+          "code": 2322
         }
       }
     },

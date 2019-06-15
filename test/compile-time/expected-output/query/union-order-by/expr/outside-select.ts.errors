@@ -5,9 +5,9 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly z: Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<string>; }>; }) => [Expr<{ usedRef: { readonly table: { readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; } & { ...; }; } & {}; assertDelegate: AssertDelegate<...>; }>]' is missing the following properties from type '[\"Invalid IExpr\", \"0\", Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>]': 0, 1, 2, pop, and 30 more.",
+        "messageText": "Type '(c: { readonly z: Column<{ tableAlias: \"table\"; name: \"z\"; assertDelegate: AssertDelegate<string>; }>; }) => [Expr<{ usedRef: { readonly table: { readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; } & { ...; }; } & {}; assertDelegate: AssertDelegate<...>; }>]' is not assignable to type '[\"Invalid IExpr\", \"0\", Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>]'.",
         "category": 1,
-        "code": 2740
+        "code": 2322
       }
     },
     "code": 2345,

@@ -45,7 +45,7 @@ export async function fetchZeroOrOne<
     if (result.length == 0) {
         return undefined;
     } else if (result.length == 1) {
-        return result[0];
+        return result[0] as any;
     } else {
         if (query._joins == undefined || query._joins.length == 0) {
             throw new TooManyRowsFoundError(`Expected zero or one row, fetched more than that`);

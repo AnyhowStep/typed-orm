@@ -27,7 +27,7 @@ const dateTimeDelegateArr = [
     buildDateTimeDelegate(2),
     buildDateTimeDelegate(3),
 ];
-export function dateTime (
+function dateTime (
     fractionalSecondPrecision : 0|1|2|3/*|4|5|6*/ = 0
 ) : sd.AssertDelegate<DateTime> /*IDataType<DateTime>*/ {
     return dateTimeDelegateArr[fractionalSecondPrecision];
@@ -63,3 +63,4 @@ export function dateTime (
 dateTime.nullable = (
     fractionalSecondPrecision : 0|1|2|3/*|4|5|6*/ = 0
 ) => sd.nullable(dateTime(fractionalSecondPrecision));
+export {dateTime}

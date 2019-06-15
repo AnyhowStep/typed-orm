@@ -6,7 +6,7 @@ export type Decimal = string;
     For now, returns a string.
     Converting to a number risks losing precision.
 */
-export function decimal () {
+function decimal () {
     return sd.or(
         sd.numberToString(),
         sd.match(
@@ -16,3 +16,4 @@ export function decimal () {
     );
 }
 decimal.nullable = () => sd.nullable(decimal());
+export {decimal}

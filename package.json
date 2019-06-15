@@ -1,6 +1,6 @@
 {
   "name": "typed-orm",
-  "version": "1.29.0",
+  "version": "1.30.0",
   "description": "A structurally-typed MySQL query-builder/ORM",
   "main": "dist/src/main/index.js",
   "types": "dist/src/main/index.d.ts",
@@ -40,7 +40,7 @@
     "enum-util": "^1.5.1",
     "lodash": "^4.17.11",
     "mysql": "^2.16.0",
-    "schema-decorator": "^2.61.0",
+    "schema-decorator": "^2.61.2",
     "sqlstring": "^2.3.1",
     "typed-mysql": "^3.2.0"
   },
@@ -54,6 +54,6 @@
     "tape": "^4.9.0",
     "ts-node": "^6.0.3",
     "tslint": "^5.11.0",
-    "typescript": "^3.3.0-dev.20190119"
+    "typescript": "^3.5.1"
   }
 }

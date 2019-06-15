@@ -1,6 +1,6 @@
 import {AfterFromClause, AssertValidJoinTargetImpl} from "../../predicate";
 import {IAliasedTable} from "../../../../aliased-table";
-import {ITable} from "../../../../table";
+import {ITable, TableWithPk} from "../../../../table";
 import {AssertValidJoinPkImpl} from "../join-pk";
 import {JoinType} from "../../../../join";
 import {JoinResult, join} from "../join";
@@ -44,7 +44,7 @@ export type AssertValidJoinFromPk_FromDelegateImpl<
         ToTableT,
         Extract<
             QueryT["_joins"][number]["aliasedTable"],
-            ReturnType<DelegateT>
+            ReturnType<DelegateT> & TableWithPk
         >
     >
 );

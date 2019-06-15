@@ -56,8 +56,8 @@ export declare const query: o.Query<{
         nullable: false;
     }>[];
     readonly _parentJoins: undefined;
-    readonly _selects: [o.Expr<{
-        readonly usedRef: {
+    readonly _selects: [o.ExprUtil.ExprLite<o.Expr<{
+        usedRef: {
             readonly table: {
                 readonly x: o.IColumn<{
                     readonly tableAlias: "table";
@@ -66,8 +66,8 @@ export declare const query: o.Query<{
                 }>;
             } & {};
         } & {};
-        readonly assertDelegate: sd.AssertDelegate<boolean>;
-    }> & o.IExprSelectItem<{
+        assertDelegate: sd.AssertDelegate<boolean>;
+    }>> & o.IExprSelectItem<{
         readonly usedRef: {
             readonly table: {
                 readonly x: o.IColumn<{

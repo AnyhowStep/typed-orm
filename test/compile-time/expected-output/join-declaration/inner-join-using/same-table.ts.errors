@@ -5,9 +5,9 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...>; }>; readonly z: Column<...>; }; ... 10 more ...; readon...' is missing the following properties from type '[\"Cannot join two tables with the same name\", \"table\"]': 0, 1, length, pop, and 30 more.",
+        "messageText": "Type 'Table<{ readonly usedRef: {}; readonly alias: \"table\"; readonly columns: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<...>; }>; readonly z: Column<...>; }; ... 10 more ...; readon...' is not assignable to type '[\"Cannot join two tables with the same name\", \"table\"]'.",
         "category": 1,
-        "code": 2740
+        "code": 2322
       }
     },
     "code": 2345,

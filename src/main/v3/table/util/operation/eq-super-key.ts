@@ -26,7 +26,7 @@ export function eqSuperKey<
     sk = assertDelegate(
         `${table.alias}.sk`,
         sk
-    );
+    ) as SuperKey<TableT>;
 
     const arr = Object.keys(sk)
         .sort()

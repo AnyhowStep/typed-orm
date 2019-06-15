@@ -5,9 +5,9 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => Expr<...>' is missing the following properties from type '[\"HAVING expression contains some invalid columns; the following are not allowed:\", Column<{ readonly tableAlias: \"table\"; readonly name: \"test\"; readonly assertDelegate: AssertDelegate<string>; }>]': 0, 1, pop, push, and 29 more.",
+        "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"table\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; }) => Expr<...>' is not assignable to type '[\"HAVING expression contains some invalid columns; the following are not allowed:\", Column<{ readonly tableAlias: \"table\"; readonly name: \"test\"; readonly assertDelegate: AssertDelegate<string>; }>]'.",
         "category": 1,
-        "code": 2740
+        "code": 2322
       }
     },
     "code": 2345,

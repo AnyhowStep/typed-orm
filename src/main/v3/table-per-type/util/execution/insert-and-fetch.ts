@@ -103,5 +103,5 @@ export async function insertAndFetch<
             `${table.alias}`,
             result
         );
-    });
+    }) as any;
 }

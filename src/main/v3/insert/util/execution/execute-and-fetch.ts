@@ -37,5 +37,5 @@ export async function executeAndFetch<
                 lastRow
             );
         }
-    });
+    }) as any;
 }

@@ -34,7 +34,7 @@ export function not<RawExprT extends RawExpr<boolean>> (
                             assertDelegate : dataType.boolean(),
                         },
                         tree[1]
-                    );
+                    ) as any;
                 }
 
             }

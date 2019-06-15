@@ -1,5 +1,5 @@
 import * as sd from "schema-decorator";
-import {ColumnMap} from "../../column-map";
+import {ColumnMap, WritableColumnMap} from "../../column-map";
 import {IColumn, Column, ColumnUtil} from "../../../column";
 
 //Take the intersection and the "left" columnMap
@@ -31,7 +31,7 @@ export function leftIntersect<
 ) : (
     LeftIntersect<ColumnMapA, ColumnMapB>
 ) {
-    const result : ColumnMap = {};
+    const result : WritableColumnMap = {};
     for (let columnName in columnMapA) {
         const columnA = columnMapA[columnName];
         const columnB = columnMapB[columnName];

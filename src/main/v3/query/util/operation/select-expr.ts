@@ -102,7 +102,7 @@ export function selectExpr<
             ReturnType<SelectDelegateT>,
             "value"
         >
-    ] = c => [ExprUtil.as(delegate(c, query), "value")];
+    ] = c => [ExprUtil.as(delegate(c, query), "value") as any];
 
     return select(
         query,

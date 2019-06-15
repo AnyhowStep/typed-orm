@@ -116,7 +116,7 @@ export function joinUsing<
     return join<
         QueryT,
         AliasedTableT,
-        () => ReturnType<UsingDelegateT>,
+        () => ReturnType<any>,
         NullableT
     >(
         query,

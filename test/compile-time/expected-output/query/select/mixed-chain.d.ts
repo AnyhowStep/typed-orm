@@ -124,8 +124,8 @@ export declare const query: o.Query<{
         readonly assertDelegate: sd.AssertDelegate<number>;
         readonly tableAlias: "table";
         readonly alias: "aliased";
-    }>, o.Expr<{
-        readonly usedRef: {
+    }>, o.ExprUtil.ExprLite<{
+        usedRef: {
             readonly table: {
                 readonly y: o.IColumn<{
                     readonly tableAlias: "table";
@@ -134,7 +134,9 @@ export declare const query: o.Query<{
                 }>;
             } & {};
         } & {};
-        readonly assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: sd.AssertDelegate<boolean>;
+    } & {
+        queryTree: o.QueryTree;
     }> & o.IExprSelectItem<{
         readonly usedRef: {
             readonly table: {
@@ -172,8 +174,8 @@ export declare const query: o.Query<{
             name: "c";
             assertDelegate: sd.AssertDelegate<boolean>;
         }>;
-    }, o.Expr<{
-        readonly usedRef: {
+    }, o.ExprUtil.ExprLite<{
+        usedRef: {
             readonly joined1: {
                 readonly a: o.Column<{
                     tableAlias: "joined1";
@@ -190,7 +192,9 @@ export declare const query: o.Query<{
                 }>;
             };
         };
-        readonly assertDelegate: sd.AssertDelegate<boolean>;
+        assertDelegate: sd.AssertDelegate<boolean>;
+    } & {
+        queryTree: o.QueryTree;
     }> & o.IExprSelectItem<{
         readonly usedRef: {
             readonly joined1: {

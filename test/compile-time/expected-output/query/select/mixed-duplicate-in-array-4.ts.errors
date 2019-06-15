@@ -9,9 +9,9 @@
         "category": 1,
         "code": 2322,
         "next": {
-          "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"__aliased\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"__aliased\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; readonly w: Column<...>; }) => [...]' is missing the following properties from type '[\"Duplicate columns in SELECT clause\", { readonly tableAlias: \"__aliased\"; readonly name: \"x\"; }]': 0, 1, pop, push, and 29 more.",
+          "messageText": "Type '(c: { readonly x: Column<{ tableAlias: \"__aliased\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>; readonly y: Column<{ tableAlias: \"__aliased\"; name: \"y\"; assertDelegate: AssertDelegate<string>; }>; readonly z: Column<...>; readonly w: Column<...>; }) => [...]' is not assignable to type '[\"Duplicate columns in SELECT clause\", { readonly tableAlias: \"__aliased\"; readonly name: \"x\"; }]'.",
           "category": 1,
-          "code": 2740
+          "code": 2322
         }
       }
     },

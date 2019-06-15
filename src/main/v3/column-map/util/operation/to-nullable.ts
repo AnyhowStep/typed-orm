@@ -1,4 +1,4 @@
-import {ColumnMap} from "../../column-map";
+import {ColumnMap, WritableColumnMap} from "../../column-map";
 import {ColumnUtil} from "../../../column";
 
 export type ToNullable<ColumnMapT extends ColumnMap> = (
@@ -11,7 +11,7 @@ export type ToNullable<ColumnMapT extends ColumnMap> = (
 export function toNullable<ColumnMapT extends ColumnMap> (
     columnMap : ColumnMapT
 ) : ToNullable<ColumnMapT> {
-    const result : ColumnMap = {};
+    const result : WritableColumnMap = {};
     for (let columnName in columnMap) {
         result[columnName] = ColumnUtil.toNullable(columnMap[columnName]);
     }

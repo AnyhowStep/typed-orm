@@ -1,6 +1,6 @@
 import * as sd from "schema-decorator";
 
-export function set<ElementArr extends string[]> (
+function set<ElementArr extends string[]> (
     ...elements : ElementArr
 ) : sd.AssertDelegate<string>{
     if (elements.length > 64) {
@@ -28,3 +28,4 @@ set.nullable = <ElementArr extends string[]> (
 ) : sd.AssertDelegate<string|null> => (
     sd.nullable(set(...elements))
 );
+export {set}

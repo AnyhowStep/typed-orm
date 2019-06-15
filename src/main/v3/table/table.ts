@@ -241,22 +241,23 @@ export class Table<DataT extends TableData> implements ITable<DataT> {
     private cachedPrimaryKeyAssertDelegate : (
         undefined |
         PrimaryKeyUtil.AssertDelegate<
-            Extract<this, ITable & { primaryKey : Key }>
+            Extract<this, TableWithPk>
         >
     );
     primaryKeyAssertDelegate (
-        this : Extract<this, ITable & { primaryKey : Key }>
+        this : Extract<this, TableWithPk>
     ) : (
         PrimaryKeyUtil.AssertDelegate<
-            Extract<this, ITable & { primaryKey : Key }>
+            Extract<this, TableWithPk>
         >
     ) {
         if (this.cachedPrimaryKeyAssertDelegate == undefined) {
             this.cachedPrimaryKeyAssertDelegate = (
                 PrimaryKeyUtil.assertDelegate(this)
-            );
+            ) as any;
         }
-        return this.cachedPrimaryKeyAssertDelegate;
+        //TODO Figure out why it isn't working
+        return this.cachedPrimaryKeyAssertDelegate as any;
     }
 
     setAlias<NewAliasT extends string>(

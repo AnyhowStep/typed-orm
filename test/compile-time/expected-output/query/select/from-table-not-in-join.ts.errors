@@ -5,9 +5,9 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type '() => [Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>, Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>, Column<...>]' is missing the following properties from type '[\"Invalid IColumn\", Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>]': 0, 1, pop, push, and 29 more.",
+        "messageText": "Type '() => [Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>, Column<{ tableAlias: \"table\"; name: \"x\"; assertDelegate: AssertDelegate<number>; }>, Column<...>]' is not assignable to type '[\"Invalid IColumn\", Column<{ tableAlias: \"otherTable\"; name: \"z\"; assertDelegate: AssertDelegate<boolean>; }>]'.",
         "category": 1,
-        "code": 2740
+        "code": 2322
       }
     },
     "code": 2345,
