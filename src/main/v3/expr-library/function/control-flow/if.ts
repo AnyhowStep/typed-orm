@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -22,7 +22,7 @@ function If<
             RawExprUtil.UsedRef<ThenT> &
             RawExprUtil.UsedRef<ElseT>
         ),
-        assertDelegate : sd.AssertDelegate<
+        assertDelegate : sd.SafeMapper<
             RawExprUtil.TypeOf<ThenT> |
             RawExprUtil.TypeOf<ElseT>
         >,

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const query_1 = require("../../query");
 const column_ref_1 = require("../../../column-ref");
 const column_1 = require("../../../column");
@@ -15,14 +15,14 @@ function whereIsNull(query, delegate) {
     const queryRef = column_ref_1.ColumnRefUtil.fromJoinArray(query._joins);
     const rawColumn = delegate(column_ref_1.ColumnRefUtil.toConvenient(queryRef));
     column_identifier_ref_1.ColumnIdentifierRefUtil.assertHasColumnIdentifier(queryRef, rawColumn);
-    if (!sd.isNullable(rawColumn.assertDelegate)) {
+    if (!sd.canOutputNull(rawColumn.assertDelegate)) {
         throw new Error(`${rawColumn.tableAlias}.${rawColumn.name} is not nullable`);
     }
     const expr = expr_library_2.isNull(rawColumn);
     const newJoins = join_1.JoinUtil.Array.replaceColumn(query._joins, new column_1.Column({
         tableAlias: rawColumn.tableAlias,
         name: rawColumn.name,
-        assertDelegate: sd.nil(),
+        assertDelegate: sd.null(),
     }, rawColumn.__isFromExprSelectItem));
     const { _distinct, _sqlCalcFoundRows, _parentJoins, _selects, _grouped, _having, _orders, _limit, _unions, _unionOrders, _unionLimit, _mapDelegate, } = query;
     return new query_1.Query({

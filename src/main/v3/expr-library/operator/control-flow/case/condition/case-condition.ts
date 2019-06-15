@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr} from "../../../../../raw-expr";
 import {PrimitiveExpr, NonNullPrimitiveExpr} from "../../../../../primitive-expr";
 import {ColumnRef} from "../../../../../column-ref";
@@ -18,7 +18,7 @@ import * as CaseConditionUtil from "./util";
 */
 export interface CaseConditionData {
     readonly usedRef : ColumnRef,
-    readonly result : sd.AssertDelegate<any>|undefined,
+    readonly result : sd.SafeMapper<any>|undefined,
 }
 export interface ICaseCondition<DataT extends CaseConditionData=CaseConditionData> {
     readonly usedRef : DataT["usedRef"];
@@ -43,7 +43,7 @@ export class CaseCondition<DataT extends CaseConditionData> implements ICaseCond
     when<
         WhenT extends RawExpr<boolean>,
         ThenT extends RawExpr<
-            this["result"] extends sd.AssertDelegate<any> ?
+            this["result"] extends sd.SafeMapper<any> ?
             ReturnType<this["result"]> :
             NonNullPrimitiveExpr
         >
@@ -55,7 +55,7 @@ export class CaseCondition<DataT extends CaseConditionData> implements ICaseCond
     nullableWhen<
         WhenT extends RawExpr<boolean>,
         ThenT extends RawExpr<
-            this["result"] extends sd.AssertDelegate<any> ?
+            this["result"] extends sd.SafeMapper<any> ?
             ReturnType<this["result"]>|null :
             PrimitiveExpr
         >

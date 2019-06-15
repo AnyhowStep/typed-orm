@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 import {pool} from "../../pool";
@@ -15,7 +15,7 @@ tape(__filename, async (t) => {
             "bigintTable",
             {
                 value : sd.or(
-                    sd.numberToString(),
+                    sd.finiteNumberToFiniteNumberString(),
                     sd.string()
                 ),
             }

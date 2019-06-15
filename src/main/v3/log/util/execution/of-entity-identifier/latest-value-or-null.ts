@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {EntityIdentifier, LogNoTrackedDefaults} from "../../../log";
 import {ExprUtil, IExpr} from "../../../../expr";
 import {ALIASED} from "../../../../constants";
@@ -12,7 +12,7 @@ export type LatestValueOrNull<
     ExprUtil.As<
         IExpr<{
             usedRef : {},
-            assertDelegate : sd.AssertDelegate<
+            assertDelegate : sd.SafeMapper<
                 ReturnType<
                     LogT["table"]["columns"][
                         ReturnType<DelegateT>["name"]

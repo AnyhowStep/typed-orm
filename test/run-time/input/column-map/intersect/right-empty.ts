@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../../src/main";
 
@@ -6,10 +6,10 @@ tape(__filename, (t) => {
     const columnMapA = o.ColumnMapUtil.fromAssertMap(
         "someTableA",
         {
-            commonA : sd.naturalNumber(),
-            commonB : sd.date(),
-            commonC : sd.nullable(sd.boolean()),
-            differentA : sd.buffer(),
+            commonA : sd.unsignedInteger(),
+            commonB : sd.mysql.dateTime(3),
+            commonC : sd.orNull(sd.boolean()),
+            differentA : sd.instanceOfBuffer(),
         }
     );
 

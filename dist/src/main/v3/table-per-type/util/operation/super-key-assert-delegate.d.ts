@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { ITable } from "../../../table";
 import { Key } from "../../../key";
 import { ColumnNames, ColumnType } from "../query";
@@ -8,5 +8,5 @@ export declare type SuperKeyUnionFromCandidateKey<CandidateKeyT extends Key, Tab
 }) : never);
 export declare type SuperKeyUnionFromCandidateKeyArray<CandidateKeyArrayT extends Key[], TableT extends ITable> = (SuperKeyUnionFromCandidateKey<CandidateKeyArrayT[number], TableT>);
 export declare type SuperKey<TableT extends ITable> = (SuperKeyUnionFromCandidateKeyArray<TableT["candidateKeys"], TableT>);
-export declare type SuperKeyAssertDelegate<TableT extends ITable> = (sd.AssertDelegate<SuperKey<TableT>>);
+export declare type SuperKeyAssertDelegate<TableT extends ITable> = (sd.SafeMapper<SuperKey<TableT>>);
 export declare function superKeyAssertDelegate<TableT extends ITable>(table: TableT): (SuperKeyAssertDelegate<TableT>);

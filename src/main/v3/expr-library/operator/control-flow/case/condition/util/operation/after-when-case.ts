@@ -1,7 +1,7 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {ICaseCondition} from "../../case-condition";
 
 export type AfterWhenCase = ICaseCondition<{
     usedRef : {},
-    result : sd.AssertDelegate<any>,
+    result : sd.SafeMapper<any>,
 }>;

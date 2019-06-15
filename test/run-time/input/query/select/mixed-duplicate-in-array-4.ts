@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../../dist/src/main";
 
@@ -7,7 +7,7 @@ tape(__filename, (t) => {
         //Name is __aliased
         o.ALIASED,
         {
-            x : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
             y : sd.string(),
             z : sd.boolean(),
             w : sd.string(),

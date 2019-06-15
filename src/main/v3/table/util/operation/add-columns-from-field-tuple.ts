@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Table, ITable} from "../../table";
 import {ColumnMapUtil} from "../../../column-map";
 

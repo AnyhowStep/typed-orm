@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {ToUnknownIfAllFieldsNever} from "../../../type";
 import {Query} from "../../query";
 import {BeforeUnionClause} from "../predicate";
@@ -266,7 +266,7 @@ export function select<
             if (!ColumnUtil.isColumn(column)) {
                 throw new Error(`Invalid column in SELECT clause; cannot select ${selectItem.tableAlias}.${selectItem.name}`);
             }
-            if (sd.isNullable(column.assertDelegate) != sd.isNullable(selectItem.assertDelegate)) {
+            if (sd.canOutputNull(column.assertDelegate) != sd.canOutputNull(selectItem.assertDelegate)) {
                 throw new Error(`Invalid column in SELECT clause; cannot select ${selectItem.tableAlias}.${selectItem.name}; the column identifier exists but the data types are different. One is nullable, the other is not.`);
             }
         } else if (ColumnMapUtil.isColumnMap(selectItem)) {

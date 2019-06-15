@@ -1,9 +1,9 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../../dist/src/main";
 
 tape(__filename, (t) => {
-    const column = o.column("tableAlias", "name", sd.naturalNumber());
+    const column = o.column("tableAlias", "name", sd.unsignedInteger());
 
     const fromSelectItem = o.ColumnMapUtil.fromSelectItem(column);
 
@@ -24,11 +24,11 @@ tape(__filename, (t) => {
                 someColumn : o.IColumn<{
                     tableAlias : "someTable",
                     name : "someColumn",
-                    assertDelegate : sd.AssertDelegate<boolean>,
+                    assertDelegate : sd.SafeMapper<boolean>,
                 }>
             }
         };
-        readonly assertDelegate : sd.AssertDelegate<Date>;
+        readonly assertDelegate : sd.SafeMapper<Date>;
 
         readonly tableAlias : "someTableAlias";
         readonly alias : "someAlias";
@@ -38,7 +38,7 @@ tape(__filename, (t) => {
                 someColumn : new o.Column<{
                     tableAlias : "someTable",
                     name : "someColumn",
-                    assertDelegate : sd.AssertDelegate<boolean>,
+                    assertDelegate : sd.SafeMapper<boolean>,
                 }>({
                     tableAlias : "someTable",
                     name : "someColumn",
@@ -46,7 +46,7 @@ tape(__filename, (t) => {
                 }),
             },
         },
-        assertDelegate : sd.date(),
+        assertDelegate : sd.mysql.dateTime(3),
 
         tableAlias : "someTableAlias",
         alias : "someAlias",
@@ -69,9 +69,9 @@ tape(__filename, (t) => {
     const columnMap = o.ColumnMapUtil.fromAssertMap(
         "someTable",
         {
-            x : sd.naturalNumber(),
-            y : sd.date(),
-            z : sd.buffer(),
+            x : sd.unsignedInteger(),
+            y : sd.mysql.dateTime(3),
+            z : sd.instanceOfBuffer(),
         }
     );
 
@@ -114,7 +114,7 @@ tape(__filename, (t) => {
         o.ColumnMapUtil.fromAssertMap(
             "tableA",
             {
-                ax : sd.naturalNumber(),
+                ax : sd.unsignedInteger(),
                 ay : sd.string(),
             }
         ),
@@ -122,7 +122,7 @@ tape(__filename, (t) => {
             "tableB",
             {
                 bx : sd.boolean(),
-                by : sd.buffer(),
+                by : sd.instanceOfBuffer(),
             }
         )
     );

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {ColumnMap, WritableColumnMap} from "../../column-map";
 import {IColumn, Column, ColumnUtil} from "../../../column";
 
@@ -13,7 +13,7 @@ export type LeftIntersect<
             IColumn<{
                 readonly tableAlias : ColumnMapA[columnName]["tableAlias"],
                 readonly name : ColumnMapA[columnName]["name"],
-                readonly assertDelegate : sd.AssertDelegate<
+                readonly assertDelegate : sd.SafeMapper<
                     ReturnType<ColumnMapA[columnName]["assertDelegate"]> &
                     ReturnType<ColumnMapB[columnName]["assertDelegate"]>
                 >
@@ -40,7 +40,7 @@ export function leftIntersect<
                 {
                     tableAlias : columnA.tableAlias,
                     name : columnA.name,
-                    assertDelegate : sd.and(
+                    assertDelegate : sd.deepMerge(
                         columnA.assertDelegate,
                         columnMapB[columnName].assertDelegate
                     ),

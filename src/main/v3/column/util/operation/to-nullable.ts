@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {IColumn, Column} from "../../column";
 
 /*
@@ -13,7 +13,7 @@ export type ToNullable<ColumnT extends IColumn> = (
     Column<{
         readonly tableAlias : ColumnT["tableAlias"],
         readonly name : ColumnT["name"],
-        readonly assertDelegate : sd.AssertDelegate<
+        readonly assertDelegate : sd.SafeMapper<
             null|
             ReturnType<ColumnT["assertDelegate"]>
         >,
@@ -34,7 +34,7 @@ export function toNullable<ColumnT extends IColumn> (
         {
             tableAlias,
             name,
-            assertDelegate : sd.nullable(assertDelegate),
+            assertDelegate : sd.orNull(assertDelegate),
         },
         __isFromExprSelectItem
     ) as IColumn as ToNullable<ColumnT>;

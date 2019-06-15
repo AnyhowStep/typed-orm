@@ -38,6 +38,6 @@ export declare class JoinDeclaration<DataT extends JoinDeclarationData> implemen
         }>, {
             name: columnName;
         }>; }; };
-        assertDelegate: import("schema-decorator").AssertDelegate<boolean>;
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
     }>;
 }

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr, ExprUtil} from "../../../expr";
 import {Tuple} from "../../../tuple";
@@ -31,7 +31,7 @@ export function add<ArrT extends Tuple<RawExpr<number>>> (
 ) : (
     Expr<{
         usedRef : RawExprUtil.IntersectUsedRefTuple<ArrT>,
-        assertDelegate : sd.AssertDelegate<number>,
+        assertDelegate : sd.SafeMapper<number>,
     }>
 ) {
     const usedRef = RawExprUtil.intersectUsedRefTuple(...arr);

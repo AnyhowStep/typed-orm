@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr, ExprUtil} from "../../../expr";
 import {Parentheses, QueryTreeArray} from "../../../query-tree";
@@ -41,7 +41,7 @@ export function and<ArrT extends RawExpr<boolean>[]> (
 ) : (
     Expr<{
         usedRef : RawExprUtil.IntersectUsedRefTuple<ArrT>,
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 ) {
     const usedRef = RawExprUtil.intersectUsedRefTuple(...arr);

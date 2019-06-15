@@ -1,6 +1,6 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { Expr } from "../../../expr";
 export declare function count(): (Expr<{
     usedRef: {};
-    assertDelegate: sd.AssertDelegate<bigint>;
+    assertDelegate: sd.SafeMapper<bigint>;
 }>);

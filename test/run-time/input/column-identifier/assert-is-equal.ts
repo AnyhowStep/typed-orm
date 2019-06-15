@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 
@@ -7,7 +7,7 @@ tape(__filename, (t) => {
         {
             tableAlias : "tableAlias",
             name : "name",
-            assertDelegate : sd.naturalNumber()
+            assertDelegate : sd.unsignedInteger()
         },
         undefined
     );
@@ -15,7 +15,7 @@ tape(__filename, (t) => {
         {
             tableAlias : "tableAliasDifferent",
             name : "name",
-            assertDelegate : sd.naturalNumber()
+            assertDelegate : sd.unsignedInteger()
         },
         undefined
     );
@@ -23,7 +23,7 @@ tape(__filename, (t) => {
         {
             tableAlias : "tableAlias",
             name : "nameDifferent",
-            assertDelegate : sd.naturalNumber()
+            assertDelegate : sd.unsignedInteger()
         },
         undefined
     );
@@ -31,7 +31,7 @@ tape(__filename, (t) => {
         {
             tableAlias : "tableAliasDifferent",
             name : "nameDifferent",
-            assertDelegate : sd.naturalNumber()
+            assertDelegate : sd.unsignedInteger()
         },
         undefined
     );

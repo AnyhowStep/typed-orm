@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {ITable} from "../../table";
 import * as exprLib from "../../../expr-library";
 import {ColumnRefUtil} from "../../../column-ref";
@@ -16,7 +16,7 @@ export function eqColumns<
         usedRef : ColumnRefUtil.FromColumnArray<
             ColumnUtil.FromColumnMap<TableT["columns"]>[]
         >,
-        assertDelegate : sd.AssertDelegate<boolean>
+        assertDelegate : sd.SafeMapper<boolean>
     }>
 ) {
     const arr = Object.keys(columns)

@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const raw_expr_1 = require("../../../../../../../raw-expr");
 const column_ref_1 = require("../../../../../../../column-ref");
 const case_condition_1 = require("../../case-condition");
 function when(builder, whenExpr, thenExpr) {
     const thenAssertDelegate = raw_expr_1.RawExprUtil.assertDelegate(thenExpr);
-    if (sd.isNullable(thenAssertDelegate)) {
+    if (sd.canOutputNull(thenAssertDelegate)) {
         throw new Error(`Nullable expression not allowed, try calling .nullableWhen()`);
     }
     return new case_condition_1.CaseCondition({

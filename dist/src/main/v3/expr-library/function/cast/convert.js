@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const expr_1 = require("../../../expr");
 const raw_expr_1 = require("../../../raw-expr");
 const constant_1 = require("../../constant");
 const query_tree_1 = require("../../../query-tree");
 function convert(rawExpr, transcodingName) {
     //Defend ourself against invalid values during run-time.
-    sd.enumeration(constant_1.TranscodingName)("transcodingName", transcodingName);
+    sd.enumValue(constant_1.TranscodingName)("transcodingName", transcodingName);
     return new expr_1.Expr({
         usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
         assertDelegate: sd.string(),

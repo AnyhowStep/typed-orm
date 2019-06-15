@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { FieldUtil } from "./field";
 export declare namespace FieldArrayUtil {
     type NullableNameUnion<FieldsT extends sd.AnyField[]> = (FieldUtil.NullableNameUnion<FieldsT[number]>);

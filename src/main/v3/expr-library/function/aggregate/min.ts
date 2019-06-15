@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -12,13 +12,13 @@ export function min<RawExprT extends RawExpr<PrimitiveExpr>>(
     Expr<{
         usedRef : RawExprUtil.UsedRef<RawExprT>,
         //If there are no matching rows, MIN() returns NULL.
-        assertDelegate : sd.AssertDelegate<RawExprUtil.TypeOf<RawExprT>|null>,
+        assertDelegate : sd.SafeMapper<RawExprUtil.TypeOf<RawExprT>|null>,
     }>
 ) {
     const result = new Expr(
         {
             usedRef : RawExprUtil.usedRef(rawExpr),
-            assertDelegate : sd.nullable(RawExprUtil.assertDelegate(rawExpr)),
+            assertDelegate : sd.orNull(RawExprUtil.assertDelegate(rawExpr)),
         },
         new FunctionCall(
             "MIN",

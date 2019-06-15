@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 import {pool} from "../../pool";
@@ -15,7 +15,7 @@ tape(__filename + "-bigint-always-received-as-number-or-bigint", async (t) => {
         const bigintTable = o.table(
             "bigintTable",
             {
-                value : sd.any(),
+                value : sd.unknown(),
             }
         );
         return o.from(bigintTable)
@@ -39,7 +39,7 @@ tape(__filename + "-bigint-always-received-as-number-or-bigint", async (t) => {
         const bigintTable = o.table(
             "bigintTable",
             {
-                value : sd.any(),
+                value : sd.unknown(),
             }
         );
         return o.from(bigintTable)
@@ -90,7 +90,7 @@ tape(__filename + "-int-and-smaller-always-received-as-number", async (t) => {
         const unsignedIntTable = o.table(
             "unsignedIntTable",
             {
-                value : sd.number(),
+                value : sd.finiteNumber(),
             }
         );
         return o.from(unsignedIntTable)

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 
 //Alias for now
 export type Decimal = string;
@@ -7,13 +7,7 @@ export type Decimal = string;
     Converting to a number risks losing precision.
 */
 function decimal () {
-    return sd.or(
-        sd.numberToString(),
-        sd.match(
-            /^(\+|\-)?\d+(\.\d+)?$/,
-            name => `Expected ${name} to be a DECIMAL string`
-        )
-    );
+    return sd.mysql.decimal();
 }
-decimal.nullable = () => sd.nullable(decimal());
+decimal.nullable = () => sd.orNull(decimal());
 export {decimal}

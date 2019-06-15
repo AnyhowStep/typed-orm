@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Query} from "../../query";
 import {AfterFromClause} from "../predicate";
 import {ColumnRefUtil} from "../../../column-ref";
@@ -37,7 +37,7 @@ export type WhereNullSafeEq<
             JoinUtil.Array.ReplaceColumn<QueryT["_joins"], Column<{
                 tableAlias : ReturnType<DelegateT>["tableAlias"],
                 name : ReturnType<DelegateT>["name"],
-                assertDelegate : sd.AssertDelegate<ValueT>,
+                assertDelegate : sd.SafeMapper<ValueT>,
             }>>
         ),
         readonly _parentJoins : QueryT["_parentJoins"],
@@ -106,7 +106,7 @@ export function whereNullSafeEq<
             {
                 tableAlias : rawColumn.tableAlias,
                 name : rawColumn.name,
-                assertDelegate : sd.chain(
+                assertDelegate : sd.pipe(
                     rawColumn.assertDelegate,
                     RawExprUtil.assertDelegate(value as any)
                 ),

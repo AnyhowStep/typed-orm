@@ -1,11 +1,7 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 
-const assertDouble = sd.or(
-    sd.finiteNumber(),
-    sd.stringToNumber()
-);
 function double () {
-    return assertDouble;
+    return sd.mysql.double();
 }
-double.nullable = () => sd.nullable(double());
+double.nullable = () => sd.orNull(double());
 export {double}

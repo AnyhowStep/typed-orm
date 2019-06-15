@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {PrimitiveExpr} from "../../../primitive-expr";
@@ -13,7 +13,7 @@ export type NullSafeUnaryComparison = (
     ) => (
         Expr<{
             usedRef : RawExprUtil.UsedRef<RawExprT>,
-            assertDelegate : sd.AssertDelegate<boolean>,
+            assertDelegate : sd.SafeMapper<boolean>,
         }>
     )
 );

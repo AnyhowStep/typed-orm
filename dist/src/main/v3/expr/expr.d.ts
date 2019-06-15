@@ -1,11 +1,11 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { ColumnRef } from "../column-ref";
 import { QueryTree } from "../query-tree";
 import { SortDirection } from "../order";
 import * as ExprUtil from "./util";
 export interface ExprData {
     readonly usedRef: ColumnRef;
-    readonly assertDelegate: sd.AssertDelegate<any>;
+    readonly assertDelegate: sd.SafeMapper<any>;
 }
 export interface IExpr<DataT extends ExprData = ExprData> {
     readonly usedRef: DataT["usedRef"];
@@ -26,5 +26,5 @@ export declare class Expr<DataT extends ExprData> implements IExpr<DataT> {
 }
 export declare type IAnonymousTypedExpr<TypeT> = (IExpr<{
     usedRef: ColumnRef;
-    assertDelegate: sd.AssertDelegate<TypeT>;
+    assertDelegate: sd.SafeMapper<TypeT>;
 }>);

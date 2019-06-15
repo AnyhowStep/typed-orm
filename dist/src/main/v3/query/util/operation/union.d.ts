@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { Query, UnionQuery } from "../../query";
 import { AfterSelectClause } from "../predicate";
 import { DISTINCT, ALL } from "../../../constants";
@@ -28,16 +28,16 @@ export declare type AssertUnionCompatibleSelectArray<A extends SelectItem[], B e
     [index in {
         [k in Extract<keyof (A | B), string>]: ((A | B)[k] extends SelectItem ? k : never);
     }[Extract<keyof (A | B), string>]]: (A[index] extends IColumn ? (B[index] extends {
-        assertDelegate: sd.AssertDelegate<ReturnType<A[index]["assertDelegate"]>>;
+        assertDelegate: sd.SafeMapper<ReturnType<A[index]["assertDelegate"]>>;
     } ? never : B[index] extends {
         assertDelegate: any;
-    } ? ["Invalid SELECT item data-type", index, B[index]["assertDelegate"], "not assignable to", sd.AssertDelegate<ReturnType<A[index]["assertDelegate"]>>] : ["Invalid SELECT item", index, B[index], "does not have an assertDelegate"]) : A[index] extends IExprSelectItem ? (B[index] extends {
-        assertDelegate: sd.AssertDelegate<ReturnType<A[index]["assertDelegate"]>>;
+    } ? ["Invalid SELECT item data-type", index, B[index]["assertDelegate"], "not assignable to", sd.SafeMapper<ReturnType<A[index]["assertDelegate"]>>] : ["Invalid SELECT item", index, B[index], "does not have an assertDelegate"]) : A[index] extends IExprSelectItem ? (B[index] extends {
+        assertDelegate: sd.SafeMapper<ReturnType<A[index]["assertDelegate"]>>;
     } ? never : B[index] extends {
         assertDelegate: any;
-    } ? ["Invalid SELECT item data-type", index, B[index]["assertDelegate"], "not assignable to", sd.AssertDelegate<ReturnType<A[index]["assertDelegate"]>>] : ["Invalid SELECT item", index, B[index], "does not have an assertDelegate"]) : A[index] extends ColumnMap ? (string extends Extract<keyof A[index], string> ? ["Invalid SELECT item columnMap", index, Extract<keyof A[index], string>] : string extends Extract<keyof B[index], string> ? ["Invalid SELECT item columnMap", index, Extract<keyof B[index], string>] : Extract<keyof A[index], string> extends Extract<keyof B[index], string> ? (Extract<keyof B[index], string> extends Extract<keyof A[index], string> ? (B[index] extends {
+    } ? ["Invalid SELECT item data-type", index, B[index]["assertDelegate"], "not assignable to", sd.SafeMapper<ReturnType<A[index]["assertDelegate"]>>] : ["Invalid SELECT item", index, B[index], "does not have an assertDelegate"]) : A[index] extends ColumnMap ? (string extends Extract<keyof A[index], string> ? ["Invalid SELECT item columnMap", index, Extract<keyof A[index], string>] : string extends Extract<keyof B[index], string> ? ["Invalid SELECT item columnMap", index, Extract<keyof B[index], string>] : Extract<keyof A[index], string> extends Extract<keyof B[index], string> ? (Extract<keyof B[index], string> extends Extract<keyof A[index], string> ? (B[index] extends {
         [columnName in Extract<keyof A[index], string>]: ({
-            assertDelegate: sd.AssertDelegate<ReturnType<A[index][columnName]["assertDelegate"]>>;
+            assertDelegate: sd.SafeMapper<ReturnType<A[index][columnName]["assertDelegate"]>>;
         });
     } ? never : ["Invalid SELECT item column-map", index, B[index], "not assignable to", A[index]]) : ["Invalid SELECT item columnMap", index, Extract<keyof B[index], string>, "not assignable to", Extract<keyof A[index], string>]) : ["Invalid SELECT item columnMap", index, Extract<keyof A[index], string>, "not assignable to", Extract<keyof B[index], string>]) : ["Unknown SELECT item", index, B[index], A[index]]);
 }> : ["SELECT clause length mismatch", A["length"], "!=", B["length"]]) : ["SELECT clause length mismatch", A["length"], "!=", B["length"]]);

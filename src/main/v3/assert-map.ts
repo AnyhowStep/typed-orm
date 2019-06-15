@@ -1,8 +1,8 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {IColumn} from "./column";
 
 export type AssertMap = {
-    readonly [columnName : string] : sd.AnyAssertFunc
+    readonly [columnName : string] : sd.AnySafeMapper
 };
 
 export namespace AssertMapUtil {
@@ -11,7 +11,7 @@ export namespace AssertMapUtil {
     > = (
         {
             [columnName in Extract<keyof AssertMapT, string>] : (
-                null extends sd.TypeOf<AssertMapT[columnName]> ?
+                null extends sd.OutputOf<AssertMapT[columnName]> ?
                 columnName :
                 never
             )
@@ -24,7 +24,7 @@ export namespace AssertMapUtil {
     ) {
         const columnNames = Object.keys(assertMap) as Extract<keyof AssertMapT, string>[];
         return columnNames.filter(
-            columnName => sd.isNullable(assertMap[columnName])
+            columnName => sd.canOutputNull(assertMap[columnName])
         ) as any;
     }
     export type FromColumn<ColumnT extends IColumn> = (

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../../../../dist/src/main";
 import * as fs from "fs";
@@ -7,10 +7,10 @@ tape(__filename, (t) => {
     const table = o.table(
         "table",
         {
-            x : sd.naturalNumber(),
-            y : sd.naturalNumber(),
-            z : sd.naturalNumber(),
-            a : sd.numberToBoolean(),
+            x : sd.unsignedInteger(),
+            y : sd.unsignedInteger(),
+            z : sd.unsignedInteger(),
+            a : sd.finiteNumberToBoolean(),
         }
     );
     const query = o.from(table)

@@ -1,10 +1,10 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {ColumnMap} from "../../column-map";
 import {TypeMapUtil} from "../../../type-map";
 
 export type PartialAssertDelegate<MapT extends ColumnMap> = (
     MapT extends ColumnMap ?
-    sd.AssertDelegate<Partial<TypeMapUtil.FromColumnMap<MapT>>> :
+    sd.SafeMapper<Partial<TypeMapUtil.FromColumnMap<MapT>>> :
     never
 );
 export function partialAssertDelegate<MapT extends ColumnMap> (
@@ -18,10 +18,10 @@ export function partialAssertDelegate<MapT extends ColumnMap> (
             without any outside hack-ery, this should be correct.
         */
         const column = map[columnName];
-        fields.push(sd.field(
-            column.name,
-            sd.optional(column.assertDelegate)
-        ));
+        fields.push(sd.withName(
+            sd.optional(column.assertDelegate),
+            column.name
+        ) as any);
     }
-    return sd.schema(...fields) as any;
+    return sd.objectFromArray(...fields) as any;
 }

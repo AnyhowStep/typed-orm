@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -20,11 +20,11 @@ export function timestampAdd<
             RawExprUtil.UsedRef<IntervalT> &
             RawExprUtil.UsedRef<DateTimeT>
         ),
-        assertDelegate : sd.AssertDelegate<Date>,
+        assertDelegate : sd.SafeMapper<Date>,
     }>
 ) {
     //Defend ourself from invalid values during run-time
-    sd.enumeration(TemporalUnit)("temporalUnit", temporalUnit);
+    sd.enumValue(TemporalUnit)("temporalUnit", temporalUnit);
     const result = new Expr(
         {
             usedRef : RawExprUtil.intersectUsedRefTuple(

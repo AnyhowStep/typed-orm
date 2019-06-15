@@ -7,7 +7,7 @@ const field_array_1 = require("../../../field-array");
 function fromFieldTuple(name, fields) {
     const columns = column_map_1.ColumnMapUtil.fromFieldArray(name, fields);
     const isNullable = field_array_1.FieldArrayUtil.nullableNames(fields);
-    const mutable = fields.map(field => field.name);
+    const mutable = fields.map(field => field.__name);
     return new table_1.Table({
         usedRef: {},
         alias: name,

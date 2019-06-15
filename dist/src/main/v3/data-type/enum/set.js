@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 function set(...elements) {
     if (elements.length > 64) {
         throw new Error(`SET type can only have up to 64 elements`);
     }
-    sd.array(sd.nonMatch(/\,/, name => `${name} must not have commas`))("elements", elements);
-    return sd.chain(sd.string(), (name, raw) => {
+    sd.array(sd.notMatch(/\,/, name => `${name} must not have commas`))("elements", elements);
+    return sd.pipe(sd.string(), (name, raw) => {
         const arr = raw.split(",");
         for (let e of arr) {
             if (elements.indexOf(e) < 0) {
@@ -17,5 +17,5 @@ function set(...elements) {
     });
 }
 exports.set = set;
-set.nullable = (...elements) => (sd.nullable(set(...elements)));
+set.nullable = (...elements) => (sd.orNull(set(...elements)));
 //# sourceMappingURL=set.js.map

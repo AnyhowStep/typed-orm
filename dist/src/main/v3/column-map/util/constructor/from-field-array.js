@@ -4,10 +4,10 @@ const column_1 = require("../../../column");
 function fromFieldArray(tableAlias, fields) {
     const result = {};
     for (let field of fields) {
-        result[field.name] = new column_1.Column({
+        result[field.__name] = new column_1.Column({
             tableAlias: tableAlias,
-            name: field.name,
-            assertDelegate: field.assertDelegate,
+            name: field.__name,
+            assertDelegate: field,
         });
     }
     return result;

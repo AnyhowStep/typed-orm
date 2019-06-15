@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const query_tree_1 = require("../../query-tree");
 const aliased_table_1 = require("../../aliased-table");
 const column_1 = require("../../column");
@@ -534,7 +534,7 @@ function assertDelegate(rawExpr) {
         return rawExpr._selects[0].assertDelegate;
     }
     else {
-        return sd.nullable(rawExpr._selects[0].assertDelegate);
+        return sd.orNull(rawExpr._selects[0].assertDelegate);
     }
 }
 exports.assertDelegate = assertDelegate;

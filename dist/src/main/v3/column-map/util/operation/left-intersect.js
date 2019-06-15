@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const column_1 = require("../../../column");
 function leftIntersect(columnMapA, columnMapB) {
     const result = {};
@@ -11,7 +11,7 @@ function leftIntersect(columnMapA, columnMapB) {
             result[columnName] = new column_1.Column({
                 tableAlias: columnA.tableAlias,
                 name: columnA.name,
-                assertDelegate: sd.and(columnA.assertDelegate, columnMapB[columnName].assertDelegate),
+                assertDelegate: sd.deepMerge(columnA.assertDelegate, columnMapB[columnName].assertDelegate),
             }, columnA.__isFromExprSelectItem);
         }
         else {

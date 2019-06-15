@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const expr_1 = require("../../../expr");
 const raw_expr_1 = require("../../../raw-expr");
 const column_ref_1 = require("../../../column-ref");

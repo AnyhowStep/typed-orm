@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const expr_1 = require("../../../expr");
 const raw_expr_1 = require("../../../raw-expr");
 const query_tree_1 = require("../../../query-tree");
@@ -9,7 +9,7 @@ const dataType = require("../../../data-type");
 function sum(rawExpr) {
     const result = new expr_1.Expr({
         usedRef: raw_expr_1.RawExprUtil.usedRef(rawExpr),
-        assertDelegate: sd.nullable(dataType.double()),
+        assertDelegate: sd.orNull(dataType.double()),
     }, new query_tree_1.FunctionCall("SUM", [
         raw_expr_1.RawExprUtil.queryTree(rawExpr)
     ]));

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {IColumn, Column} from "../../column";
 
 /*
@@ -13,19 +13,19 @@ import {IColumn, Column} from "../../column";
 */
 export type WithType<
     ColumnT extends IColumn,
-    NewAssertFuncT extends sd.AnyAssertFunc
+    NewAssertFuncT extends sd.AnySafeMapper
 > = (
     ColumnT extends IColumn ?
     Column<{
         readonly tableAlias : ColumnT["tableAlias"],
         readonly name : ColumnT["name"],
-        readonly assertDelegate : sd.AssertDelegate<sd.TypeOf<NewAssertFuncT>>,
+        readonly assertDelegate : sd.SafeMapper<sd.OutputOf<NewAssertFuncT>>,
     }> :
     never
 );
 export function withType<
     ColumnT extends IColumn,
-    NewAssertFuncT extends sd.AnyAssertFunc
+    NewAssertFuncT extends sd.AnySafeMapper
 > (
     {
         tableAlias,
@@ -40,7 +40,7 @@ export function withType<
         {
             tableAlias,
             name,
-            assertDelegate : sd.toAssertDelegate(newAssertFunc) as sd.AssertDelegate<sd.TypeOf<NewAssertFuncT>>,
+            assertDelegate : newAssertFunc as sd.SafeMapper<sd.OutputOf<NewAssertFuncT>>,
         },
         __isFromExprSelectItem
     ) as WithType<ColumnT, NewAssertFuncT>;

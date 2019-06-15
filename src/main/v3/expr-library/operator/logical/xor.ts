@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr} from "../../../expr";
 import {ColumnRefUtil} from "../../../column-ref";
@@ -16,7 +16,7 @@ export function xor<
             RawExprUtil.UsedRef<LeftT>,
             RawExprUtil.UsedRef<RightT>
         >,
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 ) {
     return new Expr(

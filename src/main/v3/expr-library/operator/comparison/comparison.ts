@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {NonNullPrimitiveExpr} from "../../../primitive-expr";
@@ -19,7 +19,7 @@ export type Comparison = (
                 RawExprUtil.UsedRef<LeftT>,
                 RawExprUtil.UsedRef<RightT>
             >,
-            assertDelegate : sd.AssertDelegate<boolean>,
+            assertDelegate : sd.SafeMapper<boolean>,
         }>
     )
 );

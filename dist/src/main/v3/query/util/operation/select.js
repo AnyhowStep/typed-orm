@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const query_1 = require("../../query");
 const column_ref_1 = require("../../../column-ref");
 const column_map_1 = require("../../../column-map");
@@ -34,7 +34,7 @@ function select(query, delegate) {
             if (!column_1.ColumnUtil.isColumn(column)) {
                 throw new Error(`Invalid column in SELECT clause; cannot select ${selectItem.tableAlias}.${selectItem.name}`);
             }
-            if (sd.isNullable(column.assertDelegate) != sd.isNullable(selectItem.assertDelegate)) {
+            if (sd.canOutputNull(column.assertDelegate) != sd.canOutputNull(selectItem.assertDelegate)) {
                 throw new Error(`Invalid column in SELECT clause; cannot select ${selectItem.tableAlias}.${selectItem.name}; the column identifier exists but the data types are different. One is nullable, the other is not.`);
             }
         }

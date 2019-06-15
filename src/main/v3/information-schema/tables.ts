@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {table} from "../table";
 import {lazyInit} from "../type";
 import * as dataType from "../data-type";
@@ -8,27 +8,27 @@ const x = lazyInit(
     () => table(
         "TABLES",
         {
-            TABLE_CATALOG : sd.varChar(512),
-            TABLE_SCHEMA : sd.varChar(64),
-            TABLE_NAME : sd.varChar(64),
-            TABLE_TYPE : sd.varChar(64),
-            ENGINE : sd.nullable(sd.varChar(64)),
-            VERSION : sd.nullable(dataType.bigint()),
-            ROW_FORMAT : sd.nullable(sd.varChar(10)),
-            TABLE_ROWS : sd.nullable(dataType.bigint()),
-            AVG_ROW_LENGTH : sd.nullable(dataType.bigint()),
-            DATA_LENGTH : sd.nullable(dataType.bigint()),
-            MAX_DATA_LENGTH : sd.nullable(dataType.bigint()),
-            INDEX_LENGTH : sd.nullable(dataType.bigint()),
-            DATA_FREE : sd.nullable(dataType.bigint()),
-            AUTO_INCREMENT : sd.nullable(dataType.bigint()),
-            CREATE_TIME : sd.nullable(sd.dateTime()),
-            UPDATE_TIME : sd.nullable(sd.dateTime()),
-            CHECK_TIME : sd.nullable(sd.dateTime()),
-            TABLE_COLLATION : sd.nullable(sd.varChar(32)),
-            CHECKSUM : sd.nullable(dataType.bigint()),
-            CREATE_OPTIONS : sd.nullable(sd.varChar(255)),
-            TABLE_COMMENT : sd.varChar(2048),
+            TABLE_CATALOG : sd.mysql.varChar(512),
+            TABLE_SCHEMA : sd.mysql.varChar(64),
+            TABLE_NAME : sd.mysql.varChar(64),
+            TABLE_TYPE : sd.mysql.varChar(64),
+            ENGINE : sd.orNull(sd.mysql.varChar(64)),
+            VERSION : sd.orNull(dataType.bigint()),
+            ROW_FORMAT : sd.orNull(sd.mysql.varChar(10)),
+            TABLE_ROWS : sd.orNull(dataType.bigint()),
+            AVG_ROW_LENGTH : sd.orNull(dataType.bigint()),
+            DATA_LENGTH : sd.orNull(dataType.bigint()),
+            MAX_DATA_LENGTH : sd.orNull(dataType.bigint()),
+            INDEX_LENGTH : sd.orNull(dataType.bigint()),
+            DATA_FREE : sd.orNull(dataType.bigint()),
+            AUTO_INCREMENT : sd.orNull(dataType.bigint()),
+            CREATE_TIME : sd.orNull(sd.mysql.dateTime()),
+            UPDATE_TIME : sd.orNull(sd.mysql.dateTime()),
+            CHECK_TIME : sd.orNull(sd.mysql.dateTime()),
+            TABLE_COLLATION : sd.orNull(sd.mysql.varChar(32)),
+            CHECKSUM : sd.orNull(dataType.bigint()),
+            CREATE_OPTIONS : sd.orNull(sd.mysql.varChar(255)),
+            TABLE_COMMENT : sd.mysql.varChar(2048),
         }
     )
         .disallowInsert()

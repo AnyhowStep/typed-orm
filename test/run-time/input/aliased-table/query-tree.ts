@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 
@@ -10,8 +10,8 @@ tape(__filename + "-name", (t) => {
                 alias : "name",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -27,8 +27,8 @@ tape(__filename + "-name", (t) => {
                 alias : "name`",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name`", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -44,8 +44,8 @@ tape(__filename + "-name", (t) => {
                 alias : "name`'",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name`'", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -61,8 +61,8 @@ tape(__filename + "-name", (t) => {
                 alias : "name`'\"",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name`'\"", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -81,8 +81,8 @@ tape(__filename + "-name-with-database", (t) => {
                 alias : "name",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -102,8 +102,8 @@ tape(__filename + "-name-with-database", (t) => {
                 alias : "name`",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name`", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -123,8 +123,8 @@ tape(__filename + "-name-with-database", (t) => {
                 alias : "name`'",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name`'", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -144,8 +144,8 @@ tape(__filename + "-name-with-database", (t) => {
                 alias : "name`'\"",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("name`'\"", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -168,8 +168,8 @@ tape(__filename + "-with-alias", (t) => {
                 alias : "alias",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -189,8 +189,8 @@ tape(__filename + "-with-alias", (t) => {
                 alias : "alias`",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -210,8 +210,8 @@ tape(__filename + "-with-alias", (t) => {
                 alias : "alias`'",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -231,8 +231,8 @@ tape(__filename + "-with-alias", (t) => {
                 alias : "alias`'\"",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -255,8 +255,8 @@ tape(__filename + "-with-alias-with-database", (t) => {
                 alias : "alias",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -276,8 +276,8 @@ tape(__filename + "-with-alias-with-database", (t) => {
                 alias : "alias`",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias`", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -297,8 +297,8 @@ tape(__filename + "-with-alias-with-database", (t) => {
                 alias : "alias`'",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias`'", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {
@@ -318,8 +318,8 @@ tape(__filename + "-with-alias-with-database", (t) => {
                 alias : "alias`'\"",
                 name : "irrelevant",
                 columns : o.ColumnMapUtil.fromAssertMap("alias`'\"", {
-                    x : sd.naturalNumber(),
-                    y : sd.naturalNumber(),
+                    x : sd.unsignedInteger(),
+                    y : sd.unsignedInteger(),
                 }),
             },
             {

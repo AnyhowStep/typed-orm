@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../../src/main";
 
@@ -14,7 +14,7 @@ tape(__filename, (t) => {
             commonA : sd.string(),
             commonB : sd.boolean(),
             commonC : sd.boolean(),
-            differentB : sd.nil(),
+            differentB : sd.null(),
         }
     );
 

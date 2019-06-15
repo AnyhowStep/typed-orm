@@ -1,13 +1,13 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 
 const bigintDelegate = sd.or(
     (name : string, raw : unknown) : bigint => {
         if (typeof raw == "bigint") {
             return raw;
         }
-        throw new Error(`Expected ${name} to be of type bigint, received ${sd.toTypeStr(raw)}`);
+        throw new Error(`Expected ${name} to be of type bigint, received ${sd.TypeUtil.toTypeStr(raw)}`);
     },
-    sd.chain(
+    sd.pipe(
         sd.string(),
         (name : string, str : string) : bigint => {
             try {
@@ -21,7 +21,7 @@ const bigintDelegate = sd.or(
             }
         }
     ),
-    sd.chain(
+    sd.pipe(
         sd.finiteNumber(),
         (name : string, n : number) : bigint => {
             try {
@@ -39,9 +39,9 @@ const bigintDelegate = sd.or(
 function bigint () {
     return bigintDelegate;
 }
-bigint.nullable = () => sd.nullable(bigint());
+bigint.nullable = () => sd.orNull(bigint());
 
-const bigintSignedDelegate = sd.chain(
+const bigintSignedDelegate = sd.pipe(
     bigintDelegate,
     (name : string, value : bigint) => {
         if (value < -9223372036854775808n) {
@@ -56,9 +56,9 @@ const bigintSignedDelegate = sd.chain(
 function bigintSigned () {
     return bigintSignedDelegate;
 }
-bigintSigned.nullable = () => sd.nullable(bigintSigned());
+bigintSigned.nullable = () => sd.orNull(bigintSigned());
 
-const bigintUnsignedDelegate = sd.chain(
+const bigintUnsignedDelegate = sd.pipe(
     bigintDelegate,
     (name : string, value : bigint) => {
         if (value < 0n) {
@@ -73,6 +73,6 @@ const bigintUnsignedDelegate = sd.chain(
 function bigintUnsigned () {
     return bigintUnsignedDelegate;
 }
-bigintUnsigned.nullable = () => sd.nullable(bigintUnsigned());
+bigintUnsigned.nullable = () => sd.orNull(bigintUnsigned());
 
 export {bigint, bigintSigned, bigintUnsigned}

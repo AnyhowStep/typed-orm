@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {AfterFromClause, AssertValidJoinTarget, assertValidJoinTarget} from "../../predicate";
 import {IJoin, Join, JoinType} from "../../../../join";
 import {ColumnRefUtil} from "../../../../column-ref";
@@ -26,7 +26,7 @@ export type JoinToColumn<
         //We allow joining to columns that may potentially be `null`,
         //Of course, joining to `null` just results in the row not
         //appearing in the result set
-        assertDelegate : sd.AssertDelegate<ReturnType<FromColumnT["assertDelegate"]>|null>
+        assertDelegate : sd.SafeMapper<ReturnType<FromColumnT["assertDelegate"]>|null>
     }>
 );
 

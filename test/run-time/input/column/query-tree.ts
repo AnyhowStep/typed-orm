@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 
@@ -8,7 +8,7 @@ tape(__filename, (t) => {
             {
                 tableAlias : "tableAlias",
                 name : "name",
-                assertDelegate : sd.naturalNumber()
+                assertDelegate : sd.unsignedInteger()
             },
             undefined
         ).queryTree(),
@@ -19,7 +19,7 @@ tape(__filename, (t) => {
             {
                 tableAlias : "tableAlias`",
                 name : "name`",
-                assertDelegate : sd.naturalNumber()
+                assertDelegate : sd.unsignedInteger()
             },
             undefined
         ).queryTree(),
@@ -44,7 +44,7 @@ tape(__filename, (t) => {
             {
                 tableAlias : o.ALIASED,
                 name : "name`",
-                assertDelegate : sd.naturalNumber()
+                assertDelegate : sd.unsignedInteger()
             },
             undefined
         ).queryTree(),
@@ -59,7 +59,7 @@ tape(__filename + "-is-in-select-clause", (t) => {
             {
                 tableAlias : "tableAlias",
                 name : "name",
-                assertDelegate : sd.naturalNumber()
+                assertDelegate : sd.unsignedInteger()
             },
             true
         ).queryTree(),
@@ -70,7 +70,7 @@ tape(__filename + "-is-in-select-clause", (t) => {
             {
                 tableAlias : "tableAlias`",
                 name : "name`",
-                assertDelegate : sd.naturalNumber()
+                assertDelegate : sd.unsignedInteger()
             },
             true
         ).queryTree(),
@@ -81,7 +81,7 @@ tape(__filename + "-is-in-select-clause", (t) => {
             {
                 tableAlias : o.ALIASED,
                 name : "name`",
-                assertDelegate : sd.naturalNumber()
+                assertDelegate : sd.unsignedInteger()
             },
             true
         ).queryTree(),

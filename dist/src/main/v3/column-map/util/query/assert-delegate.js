@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 function assertDelegate(map) {
     const fields = [];
     for (let columnName in map) {
@@ -10,9 +10,9 @@ function assertDelegate(map) {
             without any outside hack-ery, this should be correct.
         */
         const column = map[columnName];
-        fields.push(sd.field(column.name, column.assertDelegate));
+        fields.push(sd.withName(column.assertDelegate, column.name));
     }
-    return sd.schema(...fields);
+    return sd.objectFromArray(...fields);
 }
 exports.assertDelegate = assertDelegate;
 //# sourceMappingURL=assert-delegate.js.map

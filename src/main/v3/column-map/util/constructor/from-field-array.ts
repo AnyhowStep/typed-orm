@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Writable} from "../../../type";
 import {ColumnMap} from "../../column-map";
 import {Column} from "../../../column";
@@ -14,12 +14,12 @@ export type FromFieldArray<
     FieldsT[number] extends never ?
     {} :
     {
-        readonly [columnName in FieldsT[number]["name"]] : (
+        readonly [columnName in FieldsT[number]["__name"]] : (
             Column<{
                 tableAlias : TableAliasT,
                 name : columnName,
-                assertDelegate : sd.AssertDelegate<sd.TypeOf<
-                    Extract<FieldsT[number], { name : columnName }>["assertDelegate"]
+                assertDelegate : sd.SafeMapper<sd.OutputOf<
+                    Extract<FieldsT[number], sd.Name<columnName>>
                 >>
             }>
         )
@@ -36,10 +36,10 @@ export function fromFieldArray<
 ) {
     const result : Writable<ColumnMap> = {};
     for (let field of fields) {
-        result[field.name] = new Column({
+        result[field.__name] = new Column({
             tableAlias : tableAlias,
-            name : field.name,
-            assertDelegate : field.assertDelegate,
+            name : field.__name,
+            assertDelegate : field,
         });
     }
     return result as FromFieldArray<TableAliasT, FieldsT>;

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -19,7 +19,7 @@ export function format<
             RawExprUtil.UsedRef<X> &
             RawExprUtil.UsedRef<DecimalPlacesT>
         ),
-        assertDelegate : sd.AssertDelegate<string>,
+        assertDelegate : sd.SafeMapper<string>,
     }>
 );
 export function format<
@@ -37,7 +37,7 @@ export function format<
             RawExprUtil.UsedRef<DecimalPlacesT> &
             RawExprUtil.UsedRef<LocaleT>
         ),
-        assertDelegate : sd.AssertDelegate<string>,
+        assertDelegate : sd.SafeMapper<string>,
     }>
 );
 export function format (...args : RawExpr<any>[]) {

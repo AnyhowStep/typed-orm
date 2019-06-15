@@ -1,9 +1,9 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { Expr } from "../../../expr";
 import { RawExpr } from "../../../raw-expr";
 import { RawExprUtil } from "../../../raw-expr";
 import { PrimitiveExpr } from "../../../primitive-expr";
 export declare function max<RawExprT extends RawExpr<PrimitiveExpr>>(rawExpr: RawExprT): (Expr<{
     usedRef: RawExprUtil.UsedRef<RawExprT>;
-    assertDelegate: sd.AssertDelegate<RawExprUtil.TypeOf<RawExprT> | null>;
+    assertDelegate: sd.SafeMapper<RawExprUtil.TypeOf<RawExprT> | null>;
 }>);

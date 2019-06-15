@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr, RawExprUtil} from "../../../../raw-expr";
 import {Expr} from "../../../../expr";
 import {ColumnRefUtil} from "../../../../column-ref";
@@ -18,7 +18,7 @@ export function integerDiv<
             RawExprUtil.UsedRef<RightT>
         >,
         //1 DIV 0 === NULL
-        assertDelegate : sd.AssertDelegate<bigint|null>,
+        assertDelegate : sd.SafeMapper<bigint|null>,
     }>
 ) {
     return new Expr(
@@ -27,7 +27,7 @@ export function integerDiv<
                 RawExprUtil.usedRef(left),
                 RawExprUtil.usedRef(right)
             ),
-            assertDelegate : sd.nullable(dataType.bigint()),
+            assertDelegate : sd.orNull(dataType.bigint()),
         },
         [
             RawExprUtil.queryTree(left),

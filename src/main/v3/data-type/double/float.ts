@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {double} from "./double";
 
 /*
@@ -8,5 +8,5 @@ import {double} from "./double";
 function float () {
     return double();
 }
-float.nullable = () => sd.nullable(float());
+float.nullable = () => sd.orNull(float());
 export {float}

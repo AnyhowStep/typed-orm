@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const table_1 = require("../../table");
 const key_1 = require("../../../key");
 const column_map_1 = require("../../../column-map");
@@ -10,7 +10,7 @@ function setAutoIncrement(table, delegate) {
     const columns = table.columns;
     //https://github.com/Microsoft/TypeScript/issues/24277
     const autoIncrement = delegate(columns);
-    if (sd.isNullable(autoIncrement.assertDelegate)) {
+    if (sd.canOutputNull(autoIncrement.assertDelegate)) {
         throw new Error(`A primary key cannot have a nullable column; ${autoIncrement.tableAlias}.${autoIncrement.name} is nullable`);
     }
     const key = [autoIncrement.name];

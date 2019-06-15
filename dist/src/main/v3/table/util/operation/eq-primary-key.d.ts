@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { ITable } from "../../table";
 import { ColumnRefUtil } from "../../../column-ref";
 import { ColumnUtil } from "../../../column";
@@ -9,5 +9,5 @@ export declare function eqPrimaryKey<TableT extends ITable & {
     primaryKey: Key;
 }>(table: TableT, pk: PrimaryKey<TableT>): (Expr<{
     usedRef: ColumnRefUtil.FromColumnArray<ColumnUtil.FromColumnMap<TableT["columns"]>[]>;
-    assertDelegate: sd.AssertDelegate<boolean>;
+    assertDelegate: sd.SafeMapper<boolean>;
 }>);

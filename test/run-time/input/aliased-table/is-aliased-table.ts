@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 
@@ -9,8 +9,8 @@ tape(__filename + "-aliased-table", (t) => {
             alias : "name",
             name : "name",
             columns : o.ColumnMapUtil.fromAssertMap("name", {
-                x : sd.naturalNumber(),
-                y : sd.naturalNumber(),
+                x : sd.unsignedInteger(),
+                y : sd.unsignedInteger(),
             }),
         },
         {
@@ -22,8 +22,8 @@ tape(__filename + "-aliased-table", (t) => {
         alias : "name",
         name : "name",
         columns : o.ColumnMapUtil.fromAssertMap("name", {
-            x : sd.naturalNumber(),
-            y : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
+            y : sd.unsignedInteger(),
         }),
         unaliasedQuery : "`name`",
     }));
@@ -31,22 +31,22 @@ tape(__filename + "-aliased-table", (t) => {
         alias : () => "name",
         name : "name",
         columns : o.ColumnMapUtil.fromAssertMap("name", {
-            x : sd.naturalNumber(),
-            y : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
+            y : sd.unsignedInteger(),
         }),
     }));
     t.false(o.AliasedTableUtil.isAliasedTable({
         name : "name",
         columns : o.ColumnMapUtil.fromAssertMap("name", {
-            x : sd.naturalNumber(),
-            y : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
+            y : sd.unsignedInteger(),
         }),
     }));
     t.false(o.AliasedTableUtil.isAliasedTable({
         alias : "name",
         columns : o.ColumnMapUtil.fromAssertMap("name", {
-            x : sd.naturalNumber(),
-            y : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
+            y : sd.unsignedInteger(),
         }),
     }));
     t.false(o.AliasedTableUtil.isAliasedTable({
@@ -78,8 +78,8 @@ tape(__filename + "-aliased-table", (t) => {
             alias : "name",
             name : "name",
             columns : o.ColumnMapUtil.fromAssertMap("name", {
-                x : sd.naturalNumber(),
-                y : sd.naturalNumber(),
+                x : sd.unsignedInteger(),
+                y : sd.unsignedInteger(),
             }),
         },
         {
@@ -90,8 +90,8 @@ tape(__filename + "-aliased-table", (t) => {
         alias : "name",
         name : "name",
         columns : o.ColumnMapUtil.fromAssertMap("name", {
-            x : sd.naturalNumber(),
-            y : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
+            y : sd.unsignedInteger(),
         }),
     }));
     t.false(o.AliasedTableUtil.isAliasedTable({
@@ -123,8 +123,8 @@ tape(__filename + "-aliased-table", (t) => {
             alias : "name",
             name : "name",
             columns : o.ColumnMapUtil.fromAssertMap("name", {
-                x : sd.naturalNumber(),
-                y : sd.naturalNumber(),
+                x : sd.unsignedInteger(),
+                y : sd.unsignedInteger(),
             }),
         },
         {
@@ -136,8 +136,8 @@ tape(__filename + "-aliased-table", (t) => {
         alias : "name",
         name : "name",
         columns : o.ColumnMapUtil.fromAssertMap("name", {
-            x : sd.naturalNumber(),
-            y : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
+            y : sd.unsignedInteger(),
         }),
     }));
     t.false(o.AliasedTableUtil.isAliasedTable({

@@ -1,13 +1,13 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr, ExprUtil} from "../../expr";
 
 let trueCache : Expr<{
     usedRef: {};
-    assertDelegate: sd.AssertDelegate<true>;
+    assertDelegate: sd.SafeMapper<true>;
 }>|undefined = undefined;
 let falseCache : Expr<{
     usedRef: {};
-    assertDelegate: sd.AssertDelegate<false>;
+    assertDelegate: sd.SafeMapper<false>;
 }>|undefined = undefined;
 
 function trueLiteral () {

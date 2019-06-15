@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr} from "../../../expr";
 import * as dataType from "../../../data-type";
@@ -11,7 +11,7 @@ export function neg<
 ) : (
     Expr<{
         usedRef : RawExprUtil.UsedRef<RawExprT>,
-        assertDelegate : sd.AssertDelegate<number>,
+        assertDelegate : sd.SafeMapper<number>,
     }>
 ) {
     return new Expr(

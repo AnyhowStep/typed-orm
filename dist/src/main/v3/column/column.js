@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
 const ColumnUtil = require("./util");
 class Column {
     constructor(data, __isFromExprSelectItem) {
@@ -40,7 +39,7 @@ function column(tableAlias, name, assertFunc) {
     return new Column({
         tableAlias,
         name,
-        assertDelegate: sd.toAssertDelegate(assertFunc),
+        assertDelegate: assertFunc,
     });
 }
 exports.column = column;

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {ITable} from "../../../table";
 import * as exprLib from "../../../expr-library";
 import {superKeyAssertDelegate} from "./super-key-assert-delegate";
@@ -17,7 +17,7 @@ export function eqSuperKey<
         usedRef : ColumnRefUtil.FromColumnArray<
             ColumnUtil.FromColumnMap<TableT["columns"]|TableT["parents"][number]["columns"]>[]
         >,
-        assertDelegate : sd.AssertDelegate<boolean>
+        assertDelegate : sd.SafeMapper<boolean>
     }>
 ) {
     const assertDelegate = superKeyAssertDelegate(table);

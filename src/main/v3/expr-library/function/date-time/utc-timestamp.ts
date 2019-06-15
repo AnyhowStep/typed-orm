@@ -1,11 +1,11 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {dateTime} from "../../../data-type";
 
 const cache : {
     [index in 0|1|2|3]? : Expr<{
         usedRef : {},
-        assertDelegate : sd.AssertDelegate<Date>
+        assertDelegate : sd.SafeMapper<Date>
     }>
 } = [undefined, undefined, undefined, undefined];
 /*

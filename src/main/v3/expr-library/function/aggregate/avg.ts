@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -12,13 +12,13 @@ export function avg<RawExprT extends RawExpr<number|bigint|null>>(
     Expr<{
         usedRef : RawExprUtil.UsedRef<RawExprT>,
         //If there are no matching rows, AVG() returns NULL.
-        assertDelegate : sd.AssertDelegate<number|null>,
+        assertDelegate : sd.SafeMapper<number|null>,
     }>
 ) {
     const result = new Expr(
         {
             usedRef : RawExprUtil.usedRef(rawExpr),
-            assertDelegate : sd.nullable(dataType.double()),
+            assertDelegate : sd.orNull(dataType.double()),
         },
         new FunctionCall(
             "AVG",

@@ -1,37 +1,41 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 
 export interface BufferDelegateNullable {
-    (minLength : number, maxLength : number) : sd.AssertDelegate<Buffer|null>,
-    (maxLength : number) : sd.AssertDelegate<Buffer|null>,
-    () : sd.AssertDelegate<Buffer|null>,
+    (minLength : number, maxLength : number) : sd.SafeMapper<Buffer|null>,
+    (maxLength : number) : sd.SafeMapper<Buffer|null>,
+    () : sd.SafeMapper<Buffer|null>,
 }
 export function bufferDelegate (
     dataTypeStr : string,
     absoluteMax : number,
 ) : {
-    (minLength : number, maxLength : number) : sd.AssertDelegate<Buffer>,
-    (maxLength : number) : sd.AssertDelegate<Buffer>,
-    () : sd.AssertDelegate<Buffer>,
+    (minLength : number, maxLength : number) : sd.SafeMapper<Buffer>,
+    (maxLength : number) : sd.SafeMapper<Buffer>,
+    () : sd.SafeMapper<Buffer>,
 
     nullable : BufferDelegateNullable,
 } {
     const result = (a? : number, b? : number) => {
         if (a == undefined) {
-            return sd.bufferLength(absoluteMax);
+            return sd.bufferLength({
+                max : absoluteMax,
+            });
         } else if (b == undefined) {
-            a = sd.chain(
+            a = sd.pipe(
                 sd.integer(),
                 sd.gtEq(1),
                 sd.ltEq(absoluteMax)
             )("maxLength", a);
-            return sd.bufferLength(a);
+            return sd.bufferLength({
+                max : a,
+            });
         } else {
-            a = sd.chain(
+            a = sd.pipe(
                 sd.integer(),
                 sd.gtEq(0),
                 sd.ltEq(absoluteMax)
             )("minLength", a);
-            b = sd.chain(
+            b = sd.pipe(
                 sd.integer(),
                 sd.gtEq(1),
                 sd.ltEq(absoluteMax)
@@ -39,11 +43,14 @@ export function bufferDelegate (
             if (a > b) {
                 throw new Error(`${dataTypeStr} minLength must be <= maxLength`);
             }
-            return sd.bufferLength(a, b);
+            return sd.bufferLength({
+                min : a,
+                max : b,
+            });
         }
     }
     result.nullable = (a? : number, b? : number) => {
-        return sd.nullable(result(a, b));
+        return sd.orNull(result(a, b));
     };
     return result;
 }

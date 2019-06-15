@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../../dist/src/main";
 import {pool} from "../../../pool";
@@ -40,8 +40,8 @@ tape(__filename, async (t) => {
         const fkA = o.table(
             "fkA",
             {
-                value : sd.nullable(sd.or(
-                    sd.numberToString(),
+                value : sd.orNull(sd.or(
+                    sd.finiteNumberToFiniteNumberString(),
                     sd.string()
                 )),
             }
@@ -49,8 +49,8 @@ tape(__filename, async (t) => {
         const fkB = o.table(
             "fkB",
             {
-                value : sd.nullable(sd.or(
-                    sd.numberToString(),
+                value : sd.orNull(sd.or(
+                    sd.finiteNumberToFiniteNumberString(),
                     sd.string()
                 )),
             }

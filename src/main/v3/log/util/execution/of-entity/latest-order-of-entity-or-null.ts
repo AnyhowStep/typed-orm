@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {LogNoTrackedDefaults} from "../../../log";
 import {QueryUtil} from "../../../../query";
 import {ALIASED} from "../../../../constants";
@@ -15,7 +15,7 @@ export type LatestOrderOfEntityOrNull<
             usedRef : ColumnRefUtil.FromColumnArray<
                 ColumnUtil.FromColumnMap<LogT["entity"]["columns"]>[]
             >,
-            assertDelegate : sd.AssertDelegate<
+            assertDelegate : sd.SafeMapper<
                 ReturnType<
                     LogT["latestOrder"][0]["assertDelegate"]
                 >|

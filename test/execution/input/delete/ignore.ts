@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 import {pool} from "../../pool";
@@ -40,7 +40,7 @@ tape(__filename, async (t) => {
         const fkA = o.table(
             "fkA",
             {
-                value : sd.nullable(sd.string()),
+                value : sd.orNull(sd.string()),
             }
         );
         const deleteResult = await o.from(fkA)

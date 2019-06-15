@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Key} from "../key";
 import {AliasedTableData, IAliasedTable} from "../aliased-table";
 import {AssertMap} from "../assert-map";
@@ -57,7 +57,7 @@ export interface TableData extends AliasedTableData {
         const t1 = table(
             "tableName",
             {
-                column : sd.nullable(o.bigint())
+                column : sd.orNull(o.bigint())
             }
         );
 

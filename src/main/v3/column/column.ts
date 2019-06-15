@@ -1,11 +1,11 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as ColumnUtil from "./util";
 import {SortDirection} from "../order";
 
 export interface ColumnData {
     readonly tableAlias : string;
     readonly name : string;
-    readonly assertDelegate : sd.AssertDelegate<any>;
+    readonly assertDelegate : sd.SafeMapper<any>;
 }
 export interface IColumn<DataT extends ColumnData=ColumnData> {
     readonly tableAlias : DataT["tableAlias"];
@@ -18,7 +18,7 @@ export interface IColumn<DataT extends ColumnData=ColumnData> {
 export type IAnonymousTypedColumn<T> = IColumn<{
     readonly tableAlias : string,
     readonly name : string,
-    readonly assertDelegate : sd.AssertDelegate<T>,
+    readonly assertDelegate : sd.SafeMapper<T>,
 }>;
 
 export class Column<DataT extends ColumnData> implements IColumn<DataT> {
@@ -54,7 +54,7 @@ export class Column<DataT extends ColumnData> implements IColumn<DataT> {
     ) {
         return ColumnUtil.withTableAlias(this, newTableAlias);
     }
-    withType<NewAssertFuncT extends sd.AnyAssertFunc> (
+    withType<NewAssertFuncT extends sd.AnySafeMapper> (
         newAssertFunc : NewAssertFuncT
     ) : (
         ColumnUtil.WithType<this, NewAssertFuncT>
@@ -80,7 +80,7 @@ export class Column<DataT extends ColumnData> implements IColumn<DataT> {
 export function column<
     TableAliasT extends string,
     NameT extends string,
-    AssertFuncT extends sd.AnyAssertFunc
+    AssertFuncT extends sd.AnySafeMapper
 > (
     tableAlias : TableAliasT,
     name : NameT,
@@ -88,11 +88,11 @@ export function column<
 ) : Column<{
     readonly tableAlias : TableAliasT,
     readonly name : NameT,
-    readonly assertDelegate : sd.AssertDelegate<sd.TypeOf<AssertFuncT>>,
+    readonly assertDelegate : sd.SafeMapper<sd.OutputOf<AssertFuncT>>,
 }> {
     return new Column({
         tableAlias,
         name,
-        assertDelegate : sd.toAssertDelegate(assertFunc) as sd.AssertDelegate<sd.TypeOf<AssertFuncT>>,
+        assertDelegate : assertFunc as sd.SafeMapper<sd.OutputOf<AssertFuncT>>,
     });
 }

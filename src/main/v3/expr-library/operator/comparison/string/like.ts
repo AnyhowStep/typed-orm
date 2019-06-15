@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../../expr";
 import {RawExpr} from "../../../../raw-expr";
 import {RawExprUtil} from "../../../../raw-expr";
@@ -18,7 +18,7 @@ export function like<
             RawExprUtil.UsedRef<RawExprT>,
             RawExprUtil.UsedRef<PatternT>
         >,
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }> &
     {
         escape : (escapeChar : string) => (
@@ -27,7 +27,7 @@ export function like<
                     RawExprUtil.UsedRef<RawExprT>,
                     RawExprUtil.UsedRef<PatternT>
                 >,
-                assertDelegate : sd.AssertDelegate<boolean>,
+                assertDelegate : sd.SafeMapper<boolean>,
             }>
         )
     }
@@ -47,7 +47,7 @@ export function like<
         ]
     );
     (result as any).escape = (escapeChar : string) => {
-        escapeChar = sd.varChar(0, 1)("escapeChar", escapeChar);
+        escapeChar = sd.mysql.varChar(0, 1)("escapeChar", escapeChar);
         return new Expr(
             {
                 usedRef : ColumnRefUtil.intersect(

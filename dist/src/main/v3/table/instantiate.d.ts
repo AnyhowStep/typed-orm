@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { ITable } from "./table";
 import { Tuple } from "../tuple";
 import { AssertMap } from "../assert-map";

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { IQuery } from "../query";
 import { QueryTreeArray, QueryTree } from "../../query-tree";
 import { AfterSelectClause, BeforeSelectClause, OneSelectItemQuery, OneRowQuery, ZeroOrOneRowQuery } from "./predicate";
@@ -24,7 +24,7 @@ export declare function queryTreeUnion(query: IQuery): QueryTreeArray;
 export declare function queryTreeUnionOrderBy(query: IQuery): QueryTreeArray;
 export declare function queryTreeUnionLimit(query: IQuery): QueryTreeArray;
 export declare type TypeOf<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> = (QueryT extends OneRowQuery ? SelectItemUtil.TypeOf<QueryT["_selects"][0]> : null | SelectItemUtil.TypeOf<QueryT["_selects"][0]>);
-export declare type AssertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> = (sd.AssertDelegate<TypeOf<QueryT>>);
+export declare type AssertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> = (sd.SafeMapper<TypeOf<QueryT>>);
 export declare function assertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery>(rawExpr: QueryT): AssertDelegate<QueryT>;
 export declare function printSql(query: AfterSelectClause): void;
 export declare function printSqlPretty(query: AfterSelectClause): void;

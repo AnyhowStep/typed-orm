@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {FunctionCall, QueryTree} from "../../../query-tree";
 import {QueryUtil} from "../../../query";
@@ -16,7 +16,7 @@ export function exists<QueryT extends QueryUtil.AfterFromClause|QueryUtil.AfterS
             ColumnRefUtil.FromJoinArray<QueryT["_parentJoins"]> :
             {}
         ),
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 ) {
     const usedRef = (

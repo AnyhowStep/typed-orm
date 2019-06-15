@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../../dist/src/main";
 
@@ -7,9 +7,9 @@ tape(__filename, (t) => {
     const columnMap = o.ColumnMapUtil.fromAssertMap(
         "someTable",
         {
-            x : sd.naturalNumber(),
-            y : sd.date(),
-            z : sd.buffer(),
+            x : sd.unsignedInteger(),
+            y : sd.mysql.dateTime(3),
+            z : sd.instanceOfBuffer(),
         }
     );
     const arr = o.ColumnIdentifierUtil.Array.fromColumnMap(columnMap);

@@ -1,26 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 function strDelegate(dataTypeStr, absoluteMax) {
     const result = (a, b) => {
         if (a == undefined) {
-            return sd.varChar(absoluteMax);
+            return sd.mysql.varChar(absoluteMax);
         }
         else if (b == undefined) {
-            a = sd.chain(sd.integer(), sd.gtEq(1), sd.ltEq(absoluteMax))("maxLength", a);
-            return sd.varChar(a);
+            a = sd.pipe(sd.integer(), sd.gtEq(1), sd.ltEq(absoluteMax))("maxLength", a);
+            return sd.mysql.varChar(a);
         }
         else {
-            a = sd.chain(sd.integer(), sd.gtEq(0), sd.ltEq(absoluteMax))("minLength", a);
-            b = sd.chain(sd.integer(), sd.gtEq(1), sd.ltEq(absoluteMax))("maxLength", b);
+            a = sd.pipe(sd.integer(), sd.gtEq(0), sd.ltEq(absoluteMax))("minLength", a);
+            b = sd.pipe(sd.integer(), sd.gtEq(1), sd.ltEq(absoluteMax))("maxLength", b);
             if (a > b) {
                 throw new Error(`${dataTypeStr} minLength must be <= maxLength`);
             }
-            return sd.varChar(a, b);
+            return sd.mysql.varChar(a, b);
         }
     };
     result.nullable = (a, b) => {
-        return sd.nullable(result(a, b));
+        return sd.orNull(result(a, b));
     };
     return result;
 }
@@ -31,7 +31,7 @@ exports.tinyText = strDelegate("TINYTEXT", 255);
 exports.text = strDelegate("TEXT", 65535);
 exports.mediumText = strDelegate("MEDIUMTEXT", 16777215);
 exports.longText = strDelegate("LONGTEXT", 4294967295);
-/*import * as sd from "schema-decorator";
+/*import * as sd from "type-mapping";
 import {DataType, IDataType, buildDataType} from "../data-type";
 import {Collation} from "../collation";
 import {escape} from "sqlstring";
@@ -42,15 +42,15 @@ export function char (
     collation : Collation,
     assert : ((name : string, str : string) => string) = ((_name : string, str : string) => str)
 ) : IDataType<string> {
-    characterMaximumLength = sd.chain(
+    characterMaximumLength = sd.pipe(
         sd.integer(),
         sd.gtEq(1),
         sd.ltEq(255)
     )("length", characterMaximumLength);
 
     return buildDataType(
-        sd.chain(
-            sd.varChar(0, characterMaximumLength),
+        sd.pipe(
+            sd.mysql.varChar(0, characterMaximumLength),
             assert
         ),
         {

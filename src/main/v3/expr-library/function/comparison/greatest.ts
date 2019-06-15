@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -31,7 +31,7 @@ export function greatest<
             usedRef : RawExprUtil.intersectUsedRefTuple(arg0, arg1, ...(args as any)),
             assertDelegate : sd.or(
                 RawExprUtil.assertDelegate(arg0),
-                RawExprUtil.assertDelegate(arg1) as sd.AssertDelegate<any>,
+                RawExprUtil.assertDelegate(arg1) as sd.SafeMapper<any>,
                 ...args.map(RawExprUtil.assertDelegate)
             ),
         },

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 import {pool} from "../../pool";
@@ -16,7 +16,7 @@ tape(__filename, async (t) => {
         const dateTable3 = o.table(
             "dateTable3",
             {
-                value : sd.date(),
+                value : sd.mysql.dateTime(3),
             }
         ).addCandidateKey(c => [c.value]);
         return o.insertInto(dateTable3)

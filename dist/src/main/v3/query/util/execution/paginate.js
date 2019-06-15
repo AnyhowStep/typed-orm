@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const operation_1 = require("../operation");
 const fetch_all_unmapped_1 = require("./fetch-all-unmapped");
 const fetch_value_1 = require("./fetch-value");

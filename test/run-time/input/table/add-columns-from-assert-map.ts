@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 
@@ -6,14 +6,14 @@ tape(__filename, (t) => {
     const table = o.table(
         "table",
         {
-            x : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
             y : sd.string(),
             z : sd.boolean(),
         }
     ).addColumns({
-        a : sd.naturalNumber(),
+        a : sd.unsignedInteger(),
         b : sd.string(),
-        c : sd.nullable(sd.boolean())
+        c : sd.orNull(sd.boolean())
     });
 
     t.deepEqual(table.alias, "table");
@@ -71,9 +71,9 @@ tape(__filename, (t) => {
         "table",
         {}
     ).addColumns({
-        a : sd.naturalNumber(),
+        a : sd.unsignedInteger(),
         b : sd.string(),
-        c : sd.nullable(sd.boolean())
+        c : sd.orNull(sd.boolean())
     });
 
     t.deepEqual(table.alias, "table");
@@ -114,14 +114,14 @@ tape(__filename, (t) => {
     const table = o.table(
         "table",
         {
-            x : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
             y : sd.string(),
             z : sd.boolean(),
         }
     ).addColumns({
-        a : sd.naturalNumber(),
+        a : sd.unsignedInteger(),
         b : sd.string(),
-        c : sd.nullable(sd.boolean())
+        c : sd.orNull(sd.boolean())
     }).addColumns({
         c : sd.boolean()
     });

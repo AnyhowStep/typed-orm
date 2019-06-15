@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -20,7 +20,7 @@ export function exportSet<
             RawExprUtil.UsedRef<OnT> &
             RawExprUtil.UsedRef<OffT>
         ),
-        assertDelegate : sd.AssertDelegate<string>,
+        assertDelegate : sd.SafeMapper<string>,
     }>
 );
 export function exportSet<
@@ -41,7 +41,7 @@ export function exportSet<
             RawExprUtil.UsedRef<OffT> &
             RawExprUtil.UsedRef<SeparatorT>
         ),
-        assertDelegate : sd.AssertDelegate<string>,
+        assertDelegate : sd.SafeMapper<string>,
     }>
 );
 export function exportSet<
@@ -65,7 +65,7 @@ export function exportSet<
             RawExprUtil.UsedRef<SeparatorT> &
             RawExprUtil.UsedRef<NumberOfBitsT>
         ),
-        assertDelegate : sd.AssertDelegate<string>,
+        assertDelegate : sd.SafeMapper<string>,
     }>
 );
 export function exportSet (...args : RawExpr<any>[]) {

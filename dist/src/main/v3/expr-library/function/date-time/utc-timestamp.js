@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const expr_1 = require("../../../expr");
 const data_type_1 = require("../../../data-type");
 const cache = [undefined, undefined, undefined, undefined];

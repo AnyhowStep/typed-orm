@@ -1,5 +1,5 @@
 import {escapeId} from "sqlstring";
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Table} from "../../table";
 import {Tuple} from "../../../tuple";
 import {ColumnMapUtil} from "../../../column-map";
@@ -22,7 +22,7 @@ export type FromFieldTuple<
         readonly generated : [];
         readonly isNullable : FieldArrayUtil.NullableNameUnion<FieldsT>[];
         readonly hasExplicitDefaultValue : [];
-        readonly mutable : FieldsT[number]["name"][];
+        readonly mutable : FieldsT[number]["__name"][];
 
         readonly parents : [];
         readonly insertAllowed : true;
@@ -42,7 +42,7 @@ export function fromFieldTuple<
 
     const isNullable = FieldArrayUtil.nullableNames(fields);
 
-    const mutable : FieldsT[number]["name"][] = fields.map(field => field.name);
+    const mutable : FieldsT[number]["__name"][] = fields.map(field => field.__name);
 
     return new Table(
         {

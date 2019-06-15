@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {ITable} from "../../../table";
 import {ColumnNames, uniqueColumnNames} from "./column-names";
 import {ColumnType} from "./column-type";
@@ -13,16 +13,16 @@ export type TypeMap<TableT extends ITable> = (
 );
 export function assertDelegate<TableT extends ITable> (
     table : TableT
-) : sd.AssertDelegate<TypeMap<TableT>> {
+) : sd.SafeMapper<TypeMap<TableT>> {
     const assertMap : any = {};
     for (let columnName of uniqueColumnNames(table)) {
         const columns = getColumnsWithName(table, columnName);
         if (columns.length == 0) {
             throw new Error(`No columns found for ${table.alias}.${columnName}`);
         }
-        assertMap[columnName] = sd.and(
+        assertMap[columnName] = sd.unsafeDeepMerge(
             ...columns.map(c => c.assertDelegate)
         );
     }
-    return sd.toSchema(assertMap) as any;
+    return sd.objectFromMap(assertMap) as any;
 }

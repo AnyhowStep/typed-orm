@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr} from "../../../../../../../raw-expr";
 import {NonNullPrimitiveExpr, PrimitiveExprUtil} from "../../../../../../../primitive-expr";
 import {RawExprUtil} from "../../../../../../../raw-expr";
@@ -9,7 +9,7 @@ export type When<
     BuilderT extends ICaseValue,
     WhenT extends RawExpr<ReturnType<BuilderT["value"]>>,
     ThenT extends RawExpr<
-        BuilderT["result"] extends sd.AssertDelegate<any> ?
+        BuilderT["result"] extends sd.SafeMapper<any> ?
         ReturnType<BuilderT["result"]> :
         NonNullPrimitiveExpr
     >
@@ -22,9 +22,9 @@ export type When<
         ),
         value : BuilderT["value"],
         result : (
-            BuilderT["result"] extends sd.AssertDelegate<any> ?
+            BuilderT["result"] extends sd.SafeMapper<any> ?
             BuilderT["result"] :
-            sd.AssertDelegate<
+            sd.SafeMapper<
                 /*
                     We use ToSuperType<> so that the following works,
 
@@ -50,7 +50,7 @@ export function when<
     BuilderT extends ICaseValue,
     WhenT extends RawExpr<ReturnType<BuilderT["value"]>>,
     ThenT extends RawExpr<
-        BuilderT["result"] extends sd.AssertDelegate<any> ?
+        BuilderT["result"] extends sd.SafeMapper<any> ?
         ReturnType<BuilderT["result"]> :
         NonNullPrimitiveExpr
     >
@@ -58,7 +58,7 @@ export function when<
     When<BuilderT, WhenT, ThenT>
 ) {
     const thenAssertDelegate = RawExprUtil.assertDelegate(thenExpr);
-    if (sd.isNullable(thenAssertDelegate)) {
+    if (sd.canOutputNull(thenAssertDelegate)) {
         throw new Error(`Nullable expression not allowed, try calling .nullableWhen()`);
     }
     return new CaseValue(

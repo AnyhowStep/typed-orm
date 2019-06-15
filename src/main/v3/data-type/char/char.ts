@@ -1,37 +1,37 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 
 export interface StrDelegateNullable {
-    (minLength : number, maxLength : number) : sd.AssertDelegate<string|null>,
-    (maxLength : number) : sd.AssertDelegate<string|null>,
-    () : sd.AssertDelegate<string|null>,
+    (minLength : number, maxLength : number) : sd.SafeMapper<string|null>,
+    (maxLength : number) : sd.SafeMapper<string|null>,
+    () : sd.SafeMapper<string|null>,
 }
 export function strDelegate (
     dataTypeStr : string,
     absoluteMax : number,
 ) : {
-    (minLength : number, maxLength : number) : sd.AssertDelegate<string>,
-    (maxLength : number) : sd.AssertDelegate<string>,
-    () : sd.AssertDelegate<string>,
+    (minLength : number, maxLength : number) : sd.SafeMapper<string>,
+    (maxLength : number) : sd.SafeMapper<string>,
+    () : sd.SafeMapper<string>,
 
     nullable : StrDelegateNullable,
 } {
     const result = (a? : number, b? : number) => {
         if (a == undefined) {
-            return sd.varChar(absoluteMax);
+            return sd.mysql.varChar(absoluteMax);
         } else if (b == undefined) {
-            a = sd.chain(
+            a = sd.pipe(
                 sd.integer(),
                 sd.gtEq(1),
                 sd.ltEq(absoluteMax)
             )("maxLength", a);
-            return sd.varChar(a);
+            return sd.mysql.varChar(a);
         } else {
-            a = sd.chain(
+            a = sd.pipe(
                 sd.integer(),
                 sd.gtEq(0),
                 sd.ltEq(absoluteMax)
             )("minLength", a);
-            b = sd.chain(
+            b = sd.pipe(
                 sd.integer(),
                 sd.gtEq(1),
                 sd.ltEq(absoluteMax)
@@ -39,11 +39,11 @@ export function strDelegate (
             if (a > b) {
                 throw new Error(`${dataTypeStr} minLength must be <= maxLength`);
             }
-            return sd.varChar(a, b);
+            return sd.mysql.varChar(a, b);
         }
     }
     result.nullable = (a? : number, b? : number) => {
-        return sd.nullable(result(a, b));
+        return sd.orNull(result(a, b));
     };
     return result;
 }
@@ -54,7 +54,7 @@ export const text = strDelegate("TEXT", 65535);
 export const mediumText = strDelegate("MEDIUMTEXT", 16777215);
 export const longText = strDelegate("LONGTEXT", 4294967295);
 
-/*import * as sd from "schema-decorator";
+/*import * as sd from "type-mapping";
 import {DataType, IDataType, buildDataType} from "../data-type";
 import {Collation} from "../collation";
 import {escape} from "sqlstring";
@@ -65,15 +65,15 @@ export function char (
     collation : Collation,
     assert : ((name : string, str : string) => string) = ((_name : string, str : string) => str)
 ) : IDataType<string> {
-    characterMaximumLength = sd.chain(
+    characterMaximumLength = sd.pipe(
         sd.integer(),
         sd.gtEq(1),
         sd.ltEq(255)
     )("length", characterMaximumLength);
 
     return buildDataType(
-        sd.chain(
-            sd.varChar(0, characterMaximumLength),
+        sd.pipe(
+            sd.mysql.varChar(0, characterMaximumLength),
             assert
         ),
         {

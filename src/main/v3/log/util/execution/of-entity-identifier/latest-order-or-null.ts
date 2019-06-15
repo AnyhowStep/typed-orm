@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {EntityIdentifier, LogNoTrackedDefaults} from "../../../log";
 import {ALIASED} from "../../../../constants";
 import {ExprUtil, IExpr} from "../../../../expr";
@@ -10,7 +10,7 @@ export type LatestOrderOrNull<
     ExprUtil.As<
         IExpr<{
             usedRef : {},
-            assertDelegate : sd.AssertDelegate<
+            assertDelegate : sd.SafeMapper<
                 ReturnType<
                     LogT["latestOrder"][0]["assertDelegate"]
                 >|

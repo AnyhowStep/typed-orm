@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const expr_1 = require("./expr");
 const column_1 = require("./column");
 const column_ref_1 = require("./column-ref");
@@ -52,7 +52,7 @@ var RawExprUtil;
         if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(rawExpr)) {
             return rawExpr.usedRef;
         }
-        throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
+        throw new Error(`Unknown rawExpr ${sd.TypeUtil.toTypeStr(rawExpr)}`);
     }
     RawExprUtil.usedRef = usedRef;
     function assertDelegate(rawExpr) {
@@ -75,10 +75,10 @@ var RawExprUtil;
             return dataType.dateTime(3);
         }
         if (rawExpr instanceof Buffer) {
-            return sd.buffer();
+            return sd.instanceOfBuffer();
         }
         if (rawExpr === null) {
-            return sd.nil();
+            return sd.null();
         }
         if (expr_1.ExprUtil.isExpr(rawExpr)) {
             return rawExpr.assertDelegate;
@@ -94,7 +94,7 @@ var RawExprUtil;
         if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(rawExpr)) {
             return rawExpr.assertDelegate;
         }
-        throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
+        throw new Error(`Unknown rawExpr ${sd.TypeUtil.toTypeStr(rawExpr)}`);
     }
     RawExprUtil.assertDelegate = assertDelegate;
     function queryTree(rawExpr) {
@@ -135,7 +135,7 @@ var RawExprUtil;
         if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(rawExpr)) {
             return query_tree_1.Parentheses.Create(rawExpr.unaliasedQuery, false /*canUnwrap*/);
         }
-        throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
+        throw new Error(`Unknown rawExpr ${sd.TypeUtil.toTypeStr(rawExpr)}`);
     }
     RawExprUtil.queryTree = queryTree;
     function intersectUsedRefTuple(...arr) {

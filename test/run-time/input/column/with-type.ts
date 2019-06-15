@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 
@@ -7,7 +7,7 @@ tape(__filename, (t) => {
         {
             tableAlias : "tableAlias",
             name : "name",
-            assertDelegate : sd.naturalNumber()
+            assertDelegate : sd.unsignedInteger()
         },
         undefined
     );
@@ -28,7 +28,7 @@ tape(__filename, (t) => {
         c.assertDelegate("n", -1);
     });
 
-    const c2 = c.withType(sd.varChar(3));
+    const c2 = c.withType(sd.mysql.varChar(3));
     t.deepEqual(
         c2.assertDelegate("s", ""),
         ""

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Table, ITable} from "../../table";
 import {ToUnknownIfAllFieldsNever} from "../../../type";
 import {KeyUtil} from "../../../key";
@@ -117,8 +117,8 @@ export function addParent<
             continue;
         }
         if (
-            sd.isNullable(table.columns[columnName].assertDelegate) !=
-            sd.isNullable(parentColumn.assertDelegate)
+            sd.canOutputNull(table.columns[columnName].assertDelegate) !=
+            sd.canOutputNull(parentColumn.assertDelegate)
         ) {
             throw new Error(`Parent ${parent.alias}.${columnName} and ${table.alias}.${columnName} have incompatible types; one is nullable, the other is not`);
         }

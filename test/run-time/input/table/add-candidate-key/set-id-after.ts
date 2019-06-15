@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../../dist/src/main";
 
@@ -6,8 +6,8 @@ tape(__filename, (t) => {
     const joined1 = o.table(
         "joined1",
         {
-            a : sd.date(),
-            b : sd.buffer(),
+            a : sd.mysql.dateTime(3),
+            b : sd.instanceOfBuffer(),
             y : sd.string(),
             c : sd.string(),
             d : sd.string(),

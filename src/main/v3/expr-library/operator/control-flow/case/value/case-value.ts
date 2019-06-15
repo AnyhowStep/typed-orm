@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr} from "../../../../../raw-expr";
 import {PrimitiveExpr, NonNullPrimitiveExpr} from "../../../../../primitive-expr";
 import {ColumnRef} from "../../../../../column-ref";
@@ -18,8 +18,8 @@ import * as CaseValueUtil from "./util";
 */
 export interface CaseValueData {
     readonly usedRef : ColumnRef,
-    readonly value : sd.AssertDelegate<any>,
-    readonly result : sd.AssertDelegate<any>|undefined,
+    readonly value : sd.SafeMapper<any>,
+    readonly result : sd.SafeMapper<any>|undefined,
 }
 export interface ICaseValue<DataT extends CaseValueData=CaseValueData> {
     readonly usedRef : DataT["usedRef"];
@@ -47,7 +47,7 @@ export class CaseValue<DataT extends CaseValueData> implements ICaseValue<DataT>
     when<
         WhenT extends RawExpr<ReturnType<this["value"]>>,
         ThenT extends RawExpr<
-            this["result"] extends sd.AssertDelegate<any> ?
+            this["result"] extends sd.SafeMapper<any> ?
             ReturnType<this["result"]> :
             NonNullPrimitiveExpr
         >
@@ -59,7 +59,7 @@ export class CaseValue<DataT extends CaseValueData> implements ICaseValue<DataT>
     nullableWhen<
         WhenT extends RawExpr<ReturnType<this["value"]>>,
         ThenT extends RawExpr<
-            this["result"] extends sd.AssertDelegate<any> ?
+            this["result"] extends sd.SafeMapper<any> ?
             ReturnType<this["result"]>|null :
             PrimitiveExpr
         >

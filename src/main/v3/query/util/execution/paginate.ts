@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {AfterSelectClause, MainQuery} from "../predicate";
 import {IConnection} from "../../../execution";
 import {MappedType, limit, offset, sqlCalcFoundRows, selectExpr, unionOffset, unionLimit} from "../operation";

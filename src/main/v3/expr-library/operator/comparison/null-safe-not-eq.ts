@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {PrimitiveExpr} from "../../../primitive-expr";
@@ -25,7 +25,7 @@ export function nullSafeNotEq<
             RawExprUtil.UsedRef<LeftT>,
             RawExprUtil.UsedRef<RightT>
         >,
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 ) {
     //Strange that I cannot compose them in a generic context

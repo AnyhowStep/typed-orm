@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {ITable} from "../table";
 import {ColumnMap, ColumnMapUtil} from "../column-map";
 import {TypeMapUtil} from "../type-map";
@@ -19,14 +19,14 @@ export type CandidateKey<TableT extends ITable> = (
 );
 export namespace CandidateKeyUtil {
     export type AssertDelegate<TableT extends ITable> = (
-        sd.AssertDelegate<CandidateKey<TableT>>
+        sd.SafeMapper<CandidateKey<TableT>>
     );
     export function assertDelegate<TableT extends ITable> (
         table : TableT
     ) : (
         AssertDelegate<TableT>
     ) {
-        return sd.or(
+        return sd.unsafeOr(
             ...table.candidateKeys.map((candidateKey) => {
                 return ColumnMapUtil.assertDelegate(
                     ColumnMapUtil.pick(table.columns, candidateKey)

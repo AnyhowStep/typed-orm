@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as DateTimeUtil from "./util";
 
 //Just a type alias since we don't support DATETIME(4/5/6)
@@ -8,8 +8,8 @@ function buildDateTimeDelegate (
     fractionalSecondPrecision : 0|1|2|3/*|4|5|6*/
 ) {
     return sd.or(
-        sd.instanceOf(Date),
-        sd.chain(
+        sd.instanceOfDate(),
+        sd.pipe(
             sd.string(),
             (name : string, str : string) => {
                 try {
@@ -29,12 +29,12 @@ const dateTimeDelegateArr = [
 ];
 function dateTime (
     fractionalSecondPrecision : 0|1|2|3/*|4|5|6*/ = 0
-) : sd.AssertDelegate<DateTime> /*IDataType<DateTime>*/ {
+) : sd.SafeMapper<DateTime> /*IDataType<DateTime>*/ {
     return dateTimeDelegateArr[fractionalSecondPrecision];
     /*return buildDataType(
         sd.or(
-            sd.instanceOf(Date),
-            sd.chain(
+            sd.instanceOfDate(),
+            sd.pipe(
                 sd.string(),
                 (name : string, str : string) => {
                     try {
@@ -62,5 +62,5 @@ function dateTime (
 }
 dateTime.nullable = (
     fractionalSecondPrecision : 0|1|2|3/*|4|5|6*/ = 0
-) => sd.nullable(dateTime(fractionalSecondPrecision));
+) => sd.orNull(dateTime(fractionalSecondPrecision));
 export {dateTime}

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const table_1 = require("../../table");
 const key_1 = require("../../../key");
 //+ Must share at least one unique key
@@ -26,8 +26,8 @@ function addParent(table, parent) {
         if (parentColumn == undefined) {
             continue;
         }
-        if (sd.isNullable(table.columns[columnName].assertDelegate) !=
-            sd.isNullable(parentColumn.assertDelegate)) {
+        if (sd.canOutputNull(table.columns[columnName].assertDelegate) !=
+            sd.canOutputNull(parentColumn.assertDelegate)) {
             throw new Error(`Parent ${parent.alias}.${columnName} and ${table.alias}.${columnName} have incompatible types; one is nullable, the other is not`);
         }
     }

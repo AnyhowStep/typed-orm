@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 
@@ -6,18 +6,18 @@ tape(__filename, (t) => {
     const table = o.table(
         "table",
         {
-            x : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
             y : sd.string(),
             z : sd.boolean(),
         }
     ).addColumns([
-        sd.field("a", sd.naturalNumber()),
-        sd.field("b", sd.string()),
-        sd.field("b", sd.string()),
-        sd.field("b", sd.string()),
-        sd.field("c", sd.nullable(sd.boolean())),
-        sd.field("c", sd.nullable(sd.boolean())),
-        sd.field("c", sd.nullable(sd.boolean())),
+        sd.withName(sd.unsignedInteger(), "a"),
+        sd.withName(sd.string(), "b"),
+        sd.withName(sd.string(), "b"),
+        sd.withName(sd.string(), "b"),
+        sd.withName(sd.orNull(sd.boolean()), "c"),
+        sd.withName(sd.orNull(sd.boolean()), "c"),
+        sd.withName(sd.orNull(sd.boolean()), "c"),
     ]);
 
     t.deepEqual(table.alias, "table");
@@ -76,11 +76,11 @@ tape(__filename, (t) => {
         "table",
         {}
     ).addColumns([
-        sd.field("a", sd.naturalNumber()),
-        sd.field("b", sd.string()),
-        sd.field("c", sd.nullable(sd.boolean())),
-        sd.field("c", sd.nullable(sd.boolean())),
-        sd.field("b", sd.string()),
+        sd.withName(sd.unsignedInteger(), "a"),
+        sd.withName(sd.string(), "b"),
+        sd.withName(sd.orNull(sd.boolean()), "c"),
+        sd.withName(sd.orNull(sd.boolean()), "c"),
+        sd.withName(sd.string(), "b"),
     ]);
 
     t.deepEqual(table.alias, "table");
@@ -122,22 +122,22 @@ tape(__filename, (t) => {
     const table = o.table(
         "table",
         {
-            x : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
             y : sd.string(),
             z : sd.boolean(),
         }
     ).addColumns([
-        sd.field("a", sd.naturalNumber()),
-        sd.field("b", sd.string()),
-        sd.field("b", sd.string()),
-        sd.field("b", sd.string()),
-        sd.field("c", sd.nullable(sd.boolean())),
-        sd.field("c", sd.nullable(sd.boolean())),
-        sd.field("c", sd.nullable(sd.boolean())),
+        sd.withName(sd.unsignedInteger(), "a"),
+        sd.withName(sd.string(), "b"),
+        sd.withName(sd.string(), "b"),
+        sd.withName(sd.string(), "b"),
+        sd.withName(sd.orNull(sd.boolean()), "c"),
+        sd.withName(sd.orNull(sd.boolean()), "c"),
+        sd.withName(sd.orNull(sd.boolean()), "c"),
     ]).addColumns([
-        sd.field("c", sd.boolean()),
-        sd.field("c", sd.boolean()),
-        sd.field("c", sd.boolean()),
+        sd.withName(sd.boolean(), "c"),
+        sd.withName(sd.boolean(), "c"),
+        sd.withName(sd.boolean(), "c"),
     ]);
 
     t.deepEqual(table.alias, "table");
@@ -196,22 +196,22 @@ tape(__filename, (t) => {
     const table = o.table(
         "table",
         {
-            x : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
             y : sd.string(),
             z : sd.boolean(),
         }
     ).addColumns([
-        sd.field("a", sd.naturalNumber()),
-        sd.field("b", sd.string()),
-        sd.field("b", sd.string()),
-        sd.field("b", sd.string()),
-        sd.field("c", sd.nullable(sd.boolean())),
-        sd.field("c", sd.nullable(sd.boolean())),
-        sd.field("c", sd.nullable(sd.boolean())),
-        sd.field("c", sd.boolean()),
-        sd.field("c", sd.boolean()),
-        sd.field("c", sd.boolean()),
-        sd.field("c", sd.nullable(sd.boolean())),
+        sd.withName(sd.unsignedInteger(), "a"),
+        sd.withName(sd.string(), "b"),
+        sd.withName(sd.string(), "b"),
+        sd.withName(sd.string(), "b"),
+        sd.withName(sd.orNull(sd.boolean()), "c"),
+        sd.withName(sd.orNull(sd.boolean()), "c"),
+        sd.withName(sd.orNull(sd.boolean()), "c"),
+        sd.withName(sd.boolean(), "c"),
+        sd.withName(sd.boolean(), "c"),
+        sd.withName(sd.boolean(), "c"),
+        sd.withName(sd.orNull(sd.boolean()), "c"),
     ]);
 
     t.deepEqual(table.alias, "table");

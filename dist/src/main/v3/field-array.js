@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 var FieldArrayUtil;
 (function (FieldArrayUtil) {
     function nullableNames(fields) {
         return fields
-            .filter(field => sd.isNullable(field.assertDelegate))
-            .map(field => field.name);
+            .filter(field => sd.canOutputNull(field))
+            .map(field => field.__name);
     }
     FieldArrayUtil.nullableNames = nullableNames;
 })(FieldArrayUtil = exports.FieldArrayUtil || (exports.FieldArrayUtil = {}));

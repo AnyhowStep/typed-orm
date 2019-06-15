@@ -1,69 +1,22 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 
-export const assertBoolean = sd.or(
-    sd.boolean(),
-    sd.chain(
-        sd.literal("0", "1", 0, 1),
-        (name : string, v : "0"|"1"|0|1) => {
-            switch (v) {
-                case "0": return false;
-                case "1": return true;
-                case 0: return false;
-                case 1: return true;
-                default : {
-                    //Shouldn't happen
-                    throw new Error(`Expected ${name} to be one of '0'|'1'|0|1`);
-                }
-            }
-        }
-    )
-);
-export const assertTrue = sd.or(
-    sd.literal(true),
-    sd.chain(
-        sd.literal("1", 1),
-        (name : string, v : "1"|1) => {
-            switch (v) {
-                case "1": return true;
-                case 1: return true;
-                default : {
-                    //Shouldn't happen
-                    throw new Error(`Expected ${name} to be one of '1'|1`);
-                }
-            }
-        }
-    )
-);
-export const assertFalse = sd.or(
-    sd.literal(false),
-    sd.chain(
-        sd.literal("0", 0),
-        (name : string, v : "0"|0) => {
-            switch (v) {
-                case "0": return true;
-                case 0: return true;
-                default : {
-                    //Shouldn't happen
-                    throw new Error(`Expected ${name} to be one of '0'|0`);
-                }
-            }
-        }
-    )
-);
+export const assertBoolean = sd.mysql.boolean();
+export const assertTrue = sd.mysql.true();
+export const assertFalse = sd.mysql.false();
 
 function boolean () {
-    return assertBoolean;
+    return sd.mysql.boolean();
 }
-boolean.nullable = () => sd.nullable(boolean());
+boolean.nullable = () => sd.orNull(boolean());
 
 function getTrue () {
-    return assertTrue;
+    return sd.mysql.true();
 }
-getTrue.nullable = () => sd.nullable(getTrue());
+getTrue.nullable = () => sd.orNull(getTrue());
 function getFalse () {
-    return assertFalse;
+    return sd.mysql.false();
 }
-getFalse.nullable = () => sd.nullable(getFalse());
+getFalse.nullable = () => sd.orNull(getFalse());
 export {
     boolean,
     getTrue as true,

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {IJoinDeclaration} from "../../join-declaration";
 import {Expr} from "../../../expr";
 import {ColumnRefUtil} from "../../../column-ref";
@@ -15,7 +15,7 @@ export type Eq<JoinDeclT extends IJoinDeclaration> = (
                 >
             )[]
         >,
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 );
 export function eq<JoinDeclT extends IJoinDeclaration> (

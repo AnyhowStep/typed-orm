@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr, RawExprUtil} from "../../../../raw-expr";
 import {Expr} from "../../../../expr";
 import {ColumnRefUtil} from "../../../../column-ref";
@@ -19,7 +19,7 @@ export function bigIntDiv<
         >,
         //1 / 0 === NULL
         //CAST(5 AS UNSIGNED) / CAST(2 AS UNSIGNED) === 2.5
-        assertDelegate : sd.AssertDelegate<number|null>,
+        assertDelegate : sd.SafeMapper<number|null>,
     }>
 ) {
     return new Expr(
@@ -28,7 +28,7 @@ export function bigIntDiv<
                 RawExprUtil.usedRef(left),
                 RawExprUtil.usedRef(right)
             ),
-            assertDelegate : sd.nullable(dataType.double()),
+            assertDelegate : sd.orNull(dataType.double()),
         },
         [
             RawExprUtil.queryTree(left),

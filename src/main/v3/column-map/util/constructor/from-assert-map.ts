@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Writable} from "../../../type";
 import {ColumnMap} from "../../column-map";
 import {Column} from "../../../column";
@@ -13,7 +13,7 @@ export type FromAssertMap<
             Column<{
                 tableAlias : TableAliasT,
                 name : columnName,
-                assertDelegate : sd.AssertDelegate<sd.TypeOf<AssertMapT[columnName]>>
+                assertDelegate : sd.SafeMapper<sd.OutputOf<AssertMapT[columnName]>>
             }>
         )
     }
@@ -21,7 +21,7 @@ export type FromAssertMap<
 export function fromAssertMap<
     TableAliasT extends string,
     AssertMapT extends {
-        readonly [columnName : string] : sd.AnyAssertFunc
+        readonly [columnName : string] : sd.AnySafeMapper
     }
 > (
     tableAlias : TableAliasT,
@@ -34,7 +34,7 @@ export function fromAssertMap<
         result[columnName] = new Column({
             tableAlias : tableAlias,
             name : columnName,
-            assertDelegate : sd.toAssertDelegate(assertMap[columnName]),
+            assertDelegate : assertMap[columnName],
         });
     }
     return result as FromAssertMap<TableAliasT, AssertMapT>;

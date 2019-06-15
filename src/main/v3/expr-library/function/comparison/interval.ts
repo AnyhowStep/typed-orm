@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -23,7 +23,7 @@ export function interval<
             RawExprUtil.UsedRef<Arg1> &
             RawExprUtil.IntersectUsedRefTuple<Args>
         ),
-        assertDelegate : sd.AssertDelegate<bigint>,
+        assertDelegate : sd.SafeMapper<bigint>,
     }>
 ) {
     return new Expr(

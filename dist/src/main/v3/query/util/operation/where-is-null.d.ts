@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { Query } from "../../query";
 import { AfterFromClause } from "../predicate";
 import { ColumnRefUtil } from "../../../column-ref";
@@ -12,7 +12,7 @@ export declare type WhereIsNull<QueryT extends AfterFromClause, DelegateT extend
     readonly _joins: (JoinUtil.Array.ReplaceColumn<QueryT["_joins"], Column<{
         tableAlias: ReturnType<DelegateT>["tableAlias"];
         name: ReturnType<DelegateT>["name"];
-        assertDelegate: sd.AssertDelegate<null>;
+        assertDelegate: sd.SafeMapper<null>;
     }>>);
     readonly _parentJoins: QueryT["_parentJoins"];
     readonly _selects: QueryT["_selects"];

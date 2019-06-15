@@ -1,8 +1,8 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {ICaseValue} from "../../case-value";
 
 export type AfterWhenCase = ICaseValue<{
     usedRef : {},
     value : any,
-    result : sd.AssertDelegate<any>,
+    result : sd.SafeMapper<any>,
 }>;

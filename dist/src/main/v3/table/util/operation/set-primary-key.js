@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 //import {IColumn} from "../../../column";
 const table_1 = require("../../table");
 const add_candidate_key_1 = require("./add-candidate-key");
@@ -10,7 +10,7 @@ function setPrimaryKey(table, delegate) {
     //https://github.com/Microsoft/TypeScript/issues/24277
     const primaryKeyColumns = delegate(columns);
     for (let c of primaryKeyColumns) {
-        if (sd.isNullable(c.assertDelegate)) {
+        if (sd.canOutputNull(c.assertDelegate)) {
             throw new Error(`A primary key cannot have a nullable column; ${c.tableAlias}.${c.name} is nullable`);
         }
     }

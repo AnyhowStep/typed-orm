@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {TableWithPk} from "../table";
 import {ColumnMapUtil} from "../column-map";
 import {TypeMapUtil} from "../type-map";
@@ -15,7 +15,7 @@ export type PrimaryKey<TableT extends TableWithPk> = (
 );
 export namespace PrimaryKeyUtil {
     export type AssertDelegate<TableT extends TableWithPk> = (
-        sd.AssertDelegate<PrimaryKey<TableT>>
+        sd.SafeMapper<PrimaryKey<TableT>>
     );
     export function assertDelegate<TableT extends TableWithPk> (
         table : TableT

@@ -1,9 +1,9 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 
 tape(__filename, (t) => {
-    const column = o.column("tableAlias", "name", sd.naturalNumber());
+    const column = o.column("tableAlias", "name", sd.unsignedInteger());
     const columnMap = o.ColumnMapUtil.fromSingleValueSelectItem(column);
 
     t.true(o.ColumnMapUtil.isColumnMap(columnMap));
@@ -23,11 +23,11 @@ tape(__filename, (t) => {
                 someColumn : o.IColumn<{
                     tableAlias : "someTable",
                     name : "someColumn",
-                    assertDelegate : sd.AssertDelegate<boolean>,
+                    assertDelegate : sd.SafeMapper<boolean>,
                 }>
             }
         };
-        readonly assertDelegate : sd.AssertDelegate<Date>;
+        readonly assertDelegate : sd.SafeMapper<Date>;
 
         readonly tableAlias : "someTableAlias";
         readonly alias : "someAlias";
@@ -37,7 +37,7 @@ tape(__filename, (t) => {
                 someColumn : new o.Column<{
                     tableAlias : "someTable",
                     name : "someColumn",
-                    assertDelegate : sd.AssertDelegate<boolean>,
+                    assertDelegate : sd.SafeMapper<boolean>,
                 }>({
                     tableAlias : "someTable",
                     name : "someColumn",
@@ -45,7 +45,7 @@ tape(__filename, (t) => {
                 }),
             },
         },
-        assertDelegate : sd.date(),
+        assertDelegate : sd.mysql.dateTime(3),
 
         tableAlias : "someTableAlias",
         alias : "someAlias",

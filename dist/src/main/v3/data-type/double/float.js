@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const double_1 = require("./double");
 /*
     Alias for DOUBLE for now.
@@ -10,5 +10,5 @@ function float() {
     return double_1.double();
 }
 exports.float = float;
-float.nullable = () => sd.nullable(float());
+float.nullable = () => sd.orNull(float());
 //# sourceMappingURL=float.js.map

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr} from "../../../../../../../raw-expr";
 import {RawExprUtil} from "../../../../../../../raw-expr";
 import {ColumnRefUtil} from "../../../../../../../column-ref";
@@ -31,7 +31,7 @@ function ElseFunction<
     Else<BuilderT, ElseT>
 ) {
     const elseAssertDelegate = RawExprUtil.assertDelegate(elseExpr);
-    if (sd.isNullable(elseAssertDelegate)) {
+    if (sd.canOutputNull(elseAssertDelegate)) {
         throw new Error(`Nullable expression not allowed, try calling .nullableElse()`);
     }
 

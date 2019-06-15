@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 import * as fs from "fs";
@@ -19,9 +19,9 @@ const user = o.table(
     "user",
     {
         appId : o.bigint(),
-        externalUserId : sd.varChar(1, 255),
-        displayName : sd.varChar(1, 255),
-        banned : sd.numberToBoolean(),
+        externalUserId : sd.mysql.varChar(1, 255),
+        displayName : sd.mysql.varChar(1, 255),
+        banned : sd.finiteNumberToBoolean(),
         createdAt : o.dateTime(),
     }
 )
@@ -39,7 +39,7 @@ const personalInformation = o.table(
     "personalInformation",
     {
         appId : o.bigint(),
-        externalUserId : sd.varChar(1, 255)
+        externalUserId : sd.mysql.varChar(1, 255)
     }
 );
 const business = o.table(
@@ -48,10 +48,10 @@ const business = o.table(
         appId : o.bigint(),
         businessId : o.bigint(),
         businessTypeId : o.bigint(),
-        externalUserId : sd.varChar(1, 255),
+        externalUserId : sd.mysql.varChar(1, 255),
         countryId : o.bigint(),
         createdAt : o.dateTime(),
-        createdByExternalUserId : sd.varChar(1, 255),
+        createdByExternalUserId : sd.mysql.varChar(1, 255),
     }
 )
     .setAutoIncrement(c => c.businessId)
@@ -63,10 +63,10 @@ const payOutMethod = o.table(
     {
         appId : o.bigint(),
         payOutMethodId : o.bigint(),
-        externalUserId : sd.varChar(1, 255),
+        externalUserId : sd.mysql.varChar(1, 255),
         payOutMethodTypeId : o.bigint(),
         createdAt : o.dateTime(),
-        createdByExternalUserId : sd.varChar(1, 255)
+        createdByExternalUserId : sd.mysql.varChar(1, 255)
     }
 )
     .setAutoIncrement(c => c.payOutMethodId)
@@ -79,9 +79,9 @@ const businessPayOutMethod = o.table(
         appId : o.bigint(),
         businessId : o.bigint(),
         payOutMethodId : o.bigint(),
-        externalUserId : sd.varChar(1, 255),
+        externalUserId : sd.mysql.varChar(1, 255),
         createdAt : o.dateTime(),
-        createdByExternalUserId : sd.varChar(1, 255),
+        createdByExternalUserId : sd.mysql.varChar(1, 255),
     }
 )
     .addCandidateKey(c => [
@@ -126,7 +126,7 @@ const merchantEnabled = o.table(
     "merchantEnabled",
     {
         merchantId : o.bigint(),
-        enabled : sd.numberToBoolean(),
+        enabled : sd.finiteNumberToBoolean(),
         updatedAt : o.dateTime()
     }
 );
@@ -135,7 +135,7 @@ const businessEnabled = o.table(
     "businessEnabled",
     {
         businessId : o.bigint(),
-        enabled : sd.numberToBoolean(),
+        enabled : sd.finiteNumberToBoolean(),
         updatedAt : o.dateTime(),
     }
 );

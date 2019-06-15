@@ -1,9 +1,9 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 
 tape(__filename, (t) => {
-    const column = o.column("tableAlias", "name", sd.naturalNumber());
+    const column = o.column("tableAlias", "name", sd.unsignedInteger());
     const columnMap = o.ColumnMapUtil.fromColumn(column);
 
     t.true(o.ColumnMapUtil.isColumnMap(columnMap));

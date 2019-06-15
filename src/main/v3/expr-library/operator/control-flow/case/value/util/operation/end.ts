@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../../../../../expr";
 import {AfterWhenCase} from "./after-when-case";
 
@@ -7,7 +7,7 @@ export type End<
 > = (
     Expr<{
         usedRef : BuilderT["usedRef"],
-        assertDelegate : sd.AssertDelegate<
+        assertDelegate : sd.SafeMapper<
             ReturnType<BuilderT["result"]>|
             null
         >,
@@ -23,7 +23,7 @@ function EndFunction<
     return new Expr(
         {
             usedRef : builder.usedRef,
-            assertDelegate : sd.nullable(builder.result),
+            assertDelegate : sd.orNull(builder.result),
         },
         [
             ...builder.queryTree,

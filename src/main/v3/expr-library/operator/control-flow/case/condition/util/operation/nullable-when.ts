@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr} from "../../../../../../../raw-expr";
 import {PrimitiveExpr, PrimitiveExprUtil} from "../../../../../../../primitive-expr";
 import {RawExprUtil} from "../../../../../../../raw-expr";
@@ -9,7 +9,7 @@ export type NullableWhen<
     BuilderT extends ICaseCondition,
     WhenT extends RawExpr<boolean>,
     ThenT extends RawExpr<
-        BuilderT["result"] extends sd.AssertDelegate<any> ?
+        BuilderT["result"] extends sd.SafeMapper<any> ?
         ReturnType<BuilderT["result"]>|null :
         PrimitiveExpr
     >
@@ -21,12 +21,12 @@ export type NullableWhen<
             RawExprUtil.UsedRef<ThenT>
         ),
         result : (
-            BuilderT["result"] extends sd.AssertDelegate<any> ?
-            sd.AssertDelegate<
+            BuilderT["result"] extends sd.SafeMapper<any> ?
+            sd.SafeMapper<
                 ReturnType<BuilderT["result"]> |
                 RawExprUtil.TypeOf<ThenT>
             > :
-            sd.AssertDelegate<
+            sd.SafeMapper<
                 /*
                     We use ToSuperType<> so that the following works,
 
@@ -52,7 +52,7 @@ export function nullableWhen<
     BuilderT extends ICaseCondition,
     WhenT extends RawExpr<boolean>,
     ThenT extends RawExpr<
-        BuilderT["result"] extends sd.AssertDelegate<any> ?
+        BuilderT["result"] extends sd.SafeMapper<any> ?
         ReturnType<BuilderT["result"]>|null :
         PrimitiveExpr
     >

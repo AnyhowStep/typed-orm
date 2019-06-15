@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {FunctionCall} from "../../../query-tree";
 import * as dataType from "../../../data-type";
@@ -7,7 +7,7 @@ import * as dataType from "../../../data-type";
 export function foundRows() : (
     Expr<{
         usedRef : {},
-        assertDelegate : sd.AssertDelegate<bigint>,
+        assertDelegate : sd.SafeMapper<bigint>,
     }>
 ) {
     return new Expr(

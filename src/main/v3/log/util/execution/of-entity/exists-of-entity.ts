@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {LogNoTrackedDefaults} from "../../../log";
 import {QueryUtil} from "../../../../query";
 import {ALIASED} from "../../../../constants";
@@ -16,7 +16,7 @@ export type ExistsOfEntity<
             usedRef : ColumnRefUtil.FromColumnArray<
                 ColumnUtil.FromColumnMap<LogT["entity"]["columns"]>[]
             >,
-            assertDelegate : sd.AssertDelegate<boolean>,
+            assertDelegate : sd.SafeMapper<boolean>,
             tableAlias : typeof ALIASED,
         }>,
         "exists"

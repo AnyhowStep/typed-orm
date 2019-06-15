@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 //import {IColumn} from "../../../column";
 import {Table, ITable} from "../../table";
 import {IAnonymousTypedColumn} from "../../../column";
@@ -85,7 +85,7 @@ export function setPrimaryKey<
     const primaryKeyColumns : ReturnType<DelegateT> = delegate(columns) as any;
 
     for (let c of primaryKeyColumns) {
-        if (sd.isNullable(c.assertDelegate)) {
+        if (sd.canOutputNull(c.assertDelegate)) {
             throw new Error(`A primary key cannot have a nullable column; ${c.tableAlias}.${c.name} is nullable`);
         }
     }

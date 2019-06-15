@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 import {pool} from "../../pool";
@@ -28,14 +28,14 @@ tape(__filename, async (t) => {
             "tableA",
             {
                 tableAId : o.bigint(),
-                name : sd.varChar(1,256),
+                name : sd.mysql.varChar(1,256),
             }
         );
         const tableB = o.table(
             "tableB",
             {
                 tableBId : o.bigint(),
-                name : sd.varChar(1,256),
+                name : sd.mysql.varChar(1,256),
             }
         ).addCandidateKey(c => [c.tableBId]);
         return o.from(tableA)

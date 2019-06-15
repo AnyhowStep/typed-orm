@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const expr_1 = require("../../../expr");
 const raw_expr_1 = require("../../../raw-expr");
 const query_tree_1 = require("../../../query-tree");
@@ -9,14 +9,14 @@ const constant_1 = require("../../constant");
 function toChar(arg0, ...args) {
     const result = new expr_1.Expr({
         usedRef: raw_expr_1.RawExprUtil.intersectUsedRefTuple(arg0, ...args),
-        assertDelegate: sd.buffer(),
+        assertDelegate: sd.instanceOfBuffer(),
     }, new query_tree_1.FunctionCall("CHAR", [
         raw_expr_1.RawExprUtil.queryTree(arg0),
         ...args.map(raw_expr_1.RawExprUtil.queryTree)
     ]));
     result.using = (transcodingName) => {
         //Defend ourself against invalid values during run-time.
-        sd.enumeration(constant_1.TranscodingName)("transcodingName", transcodingName);
+        sd.enumValue(constant_1.TranscodingName)("transcodingName", transcodingName);
         const arr = [arg0, ...args];
         return new expr_1.Expr({
             usedRef: result.usedRef,

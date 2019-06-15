@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -19,7 +19,7 @@ export function toChar<
             RawExprUtil.UsedRef<Arg0> &
             RawExprUtil.IntersectUsedRefTuple<Args>
         ),
-        assertDelegate : sd.AssertDelegate<Buffer>,
+        assertDelegate : sd.SafeMapper<Buffer>,
     }> &
     {
         using : (transcodingName : TranscodingName) => (
@@ -28,7 +28,7 @@ export function toChar<
                     RawExprUtil.UsedRef<Arg0> &
                     RawExprUtil.IntersectUsedRefTuple<Args>
                 ),
-                assertDelegate : sd.AssertDelegate<string>,
+                assertDelegate : sd.SafeMapper<string>,
             }>
         )
     }
@@ -39,7 +39,7 @@ export function toChar<
                 arg0,
                 ...(args as any)
             ),
-            assertDelegate : sd.buffer(),
+            assertDelegate : sd.instanceOfBuffer(),
         },
         new FunctionCall(
             "CHAR",
@@ -51,7 +51,7 @@ export function toChar<
     );
     (result as any).using = (transcodingName : TranscodingName) => {
         //Defend ourself against invalid values during run-time.
-        sd.enumeration(TranscodingName)("transcodingName", transcodingName);
+        sd.enumValue(TranscodingName)("transcodingName", transcodingName);
         const arr = [arg0, ...args];
         return new Expr(
             {

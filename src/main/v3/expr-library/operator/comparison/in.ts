@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr, ExprUtil} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -32,7 +32,7 @@ function inSubQuery<
                 {}
             )
         ),
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 ) {
     return new Expr(
@@ -68,7 +68,7 @@ function inPrimitiveList<
 ) : (
     Expr<{
         usedRef : RawExprUtil.UsedRef<LeftT>,
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 ) {
     if (args.length == 0) {
@@ -109,7 +109,7 @@ function inList<
             RawExprUtil.UsedRef<Arg0> &
             RawExprUtil.IntersectUsedRefTuple<Args>
         ),
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 ) {
     return new Expr(
@@ -138,7 +138,7 @@ function In<
 ) : (
     Expr<{
         usedRef : RawExprUtil.UsedRef<LeftT>,
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 );
 function In<
@@ -157,7 +157,7 @@ function In<
             RawExprUtil.UsedRef<Arg0> &
             RawExprUtil.IntersectUsedRefTuple<Args>
         ),
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 );
 function In<
@@ -180,7 +180,7 @@ function In<
                 {}
             )
         ),
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 );
 function In (left : any, arg0 : any, ...args : any[]) {

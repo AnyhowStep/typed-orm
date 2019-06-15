@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {LogNoTrackedDefaults} from "../../../log";
 import {ALIASED} from "../../../../constants";
 import {ExprUtil, IExpr} from "../../../../expr";
@@ -17,7 +17,7 @@ export type IsLatest<
             usedRef : ColumnRefUtil.FromColumnArray<
                 ColumnUtil.FromColumnMap<LogT["table"]["columns"]>[]
             >,
-            assertDelegate : sd.AssertDelegate<boolean>,
+            assertDelegate : sd.SafeMapper<boolean>,
             tableAlias : typeof ALIASED,
         }>,
         "isLatest"

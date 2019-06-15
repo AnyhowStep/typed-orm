@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {FieldUtil} from "./field";
 
 export namespace FieldArrayUtil {
@@ -13,7 +13,7 @@ export namespace FieldArrayUtil {
         NullableNameUnion<FieldsT>[]
     ) {
         return fields
-            .filter(field => sd.isNullable(field.assertDelegate))
-            .map(field => field.name);
+            .filter(field => sd.canOutputNull(field))
+            .map(field => field.__name) as any;
     }
 }

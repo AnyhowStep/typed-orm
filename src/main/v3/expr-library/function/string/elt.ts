@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -22,7 +22,7 @@ export function elt<
             RawExprUtil.IntersectUsedRefTuple<Args>
         ),
         //Returns NULL if N is less than 1 or greater than the number of arguments.
-        assertDelegate : sd.AssertDelegate<string|null>,
+        assertDelegate : sd.SafeMapper<string|null>,
     }>
 ) {
     const result = new Expr(
@@ -32,7 +32,7 @@ export function elt<
                 arg0,
                 ...(args as any)
             ),
-            assertDelegate : sd.nullable(sd.string()),
+            assertDelegate : sd.orNull(sd.string()),
         },
         new FunctionCall(
             "ELT",

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 declare const x: {
     COLUMNS: import("../table").Table<{
         readonly usedRef: {};
@@ -7,107 +7,107 @@ declare const x: {
             readonly PRIVILEGES: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "PRIVILEGES";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly TABLE_CATALOG: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "TABLE_CATALOG";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly TABLE_SCHEMA: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "TABLE_SCHEMA";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly TABLE_NAME: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "TABLE_NAME";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly COLUMN_NAME: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "COLUMN_NAME";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly ORDINAL_POSITION: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "ORDINAL_POSITION";
-                assertDelegate: sd.AssertDelegate<number>;
+                assertDelegate: sd.Mapper<unknown, number>;
             }>;
             readonly COLUMN_DEFAULT: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "COLUMN_DEFAULT";
-                assertDelegate: sd.AssertDelegate<string | null>;
+                assertDelegate: sd.Mapper<unknown, string | null>;
             }>;
             readonly IS_NULLABLE: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "IS_NULLABLE";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly DATA_TYPE: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "DATA_TYPE";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly CHARACTER_MAXIMUM_LENGTH: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "CHARACTER_MAXIMUM_LENGTH";
-                assertDelegate: sd.AssertDelegate<bigint | null>;
+                assertDelegate: sd.Mapper<unknown, bigint | null>;
             }>;
             readonly CHARACTER_OCTET_LENGTH: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "CHARACTER_OCTET_LENGTH";
-                assertDelegate: sd.AssertDelegate<bigint | null>;
+                assertDelegate: sd.Mapper<unknown, bigint | null>;
             }>;
             readonly NUMERIC_PRECISION: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "NUMERIC_PRECISION";
-                assertDelegate: sd.AssertDelegate<number | null>;
+                assertDelegate: sd.Mapper<unknown, number | null>;
             }>;
             readonly NUMERIC_SCALE: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "NUMERIC_SCALE";
-                assertDelegate: sd.AssertDelegate<number | null>;
+                assertDelegate: sd.Mapper<unknown, number | null>;
             }>;
             readonly DATETIME_PRECISION: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "DATETIME_PRECISION";
-                assertDelegate: sd.AssertDelegate<number | null>;
+                assertDelegate: sd.Mapper<unknown, number | null>;
             }>;
             readonly CHARACTER_SET_NAME: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "CHARACTER_SET_NAME";
-                assertDelegate: sd.AssertDelegate<string | null>;
+                assertDelegate: sd.Mapper<unknown, string | null>;
             }>;
             readonly COLLATION_NAME: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "COLLATION_NAME";
-                assertDelegate: sd.AssertDelegate<string | null>;
+                assertDelegate: sd.Mapper<unknown, string | null>;
             }>;
             readonly COLUMN_TYPE: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "COLUMN_TYPE";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly COLUMN_KEY: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "COLUMN_KEY";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly EXTRA: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "EXTRA";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly COLUMN_COMMENT: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "COLUMN_COMMENT";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly GENERATION_EXPRESSION: import("..").Column<{
                 tableAlias: "COLUMNS";
                 name: "GENERATION_EXPRESSION";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
         };
         readonly autoIncrement: undefined;

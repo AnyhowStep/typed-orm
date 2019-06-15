@@ -1,44 +1,38 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 
 export interface JsonDelegateNullable {
-    (minLength : number, maxLength : number) : sd.AssertDelegate<string|null>,
-    (maxLength : number) : sd.AssertDelegate<string|null>,
-    () : sd.AssertDelegate<string|null>,
+    (minLength : number, maxLength : number) : sd.SafeMapper<string|null>,
+    (maxLength : number) : sd.SafeMapper<string|null>,
+    () : sd.SafeMapper<string|null>,
 }
 export function jsonDelegate (
     dataTypeStr : string,
     absoluteMax : number,
     defaultSize : number,
 ) : {
-    (minLength : number, maxLength : number) : sd.AssertDelegate<string>,
-    (maxLength : number) : sd.AssertDelegate<string>,
-    () : sd.AssertDelegate<string>,
+    (minLength : number, maxLength : number) : sd.SafeMapper<string>,
+    (maxLength : number) : sd.SafeMapper<string>,
+    () : sd.SafeMapper<string>,
 
     nullable : JsonDelegateNullable,
 } {
     const result =(a? : number, b? : number) => {
         if (a == undefined) {
-            return sd.chain(
-                sd.jsonObjectStr(),
-                sd.varChar(defaultSize)
-            );
+            return sd.mysql.json(defaultSize);
         } else if (b == undefined) {
-            a = sd.chain(
+            a = sd.pipe(
                 sd.integer(),
                 sd.gtEq(1),
                 sd.ltEq(absoluteMax)
             )("maxLength", a);
-            return sd.chain(
-                sd.jsonObjectStr(),
-                sd.varChar(a)
-            );
+            return sd.mysql.json(a);
         } else {
-            a = sd.chain(
+            a = sd.pipe(
                 sd.integer(),
                 sd.gtEq(0),
                 sd.ltEq(absoluteMax)
             )("minLength", a);
-            b = sd.chain(
+            b = sd.pipe(
                 sd.integer(),
                 sd.gtEq(1),
                 sd.ltEq(absoluteMax)
@@ -46,14 +40,11 @@ export function jsonDelegate (
             if (a > b) {
                 throw new Error(`${dataTypeStr} minLength must be <= maxLength`);
             }
-            return sd.chain(
-                sd.jsonObjectStr(),
-                sd.varChar(a, b)
-            );
+            return sd.mysql.json(a, b);
         }
     }
     result.nullable = (a? : number, b? : number) => {
-        return sd.nullable(result(a, b));
+        return sd.orNull(result(a, b));
     };
     return result;
 }

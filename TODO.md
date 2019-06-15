@@ -1,0 +1,1 @@
++ Remove `data-type` folder, use `type-mapping`'s `mysql` mappers instead

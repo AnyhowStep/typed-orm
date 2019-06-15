@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr} from "../../../../../../../raw-expr";
 import {RawExprUtil} from "../../../../../../../raw-expr";
 import {ColumnRefUtil} from "../../../../../../../column-ref";
@@ -16,7 +16,7 @@ export type NullableElse<
             BuilderT["usedRef"] &
             RawExprUtil.UsedRef<ElseT>
         ),
-        assertDelegate : sd.AssertDelegate<
+        assertDelegate : sd.SafeMapper<
             ReturnType<BuilderT["result"]> |
             RawExprUtil.TypeOf<ElseT>
         >,

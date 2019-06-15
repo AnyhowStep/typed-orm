@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr} from "../../../expr";
 import {ColumnRefUtil} from "../../../column-ref";
@@ -17,7 +17,7 @@ export function div<
             RawExprUtil.UsedRef<LeftT>,
             RawExprUtil.UsedRef<RightT>
         >,
-        assertDelegate : sd.AssertDelegate<number|null>,
+        assertDelegate : sd.SafeMapper<number|null>,
     }>
 ) {
     return new Expr(
@@ -26,7 +26,7 @@ export function div<
                 RawExprUtil.usedRef(left),
                 RawExprUtil.usedRef(right)
             ),
-            assertDelegate : sd.nullable(dataType.double()),
+            assertDelegate : sd.orNull(dataType.double()),
         },
         [
             RawExprUtil.queryTree(left),

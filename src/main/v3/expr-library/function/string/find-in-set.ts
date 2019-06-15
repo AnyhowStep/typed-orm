@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -18,7 +18,7 @@ export function findInSet<
             RawExprUtil.UsedRef<NeedleT> &
             RawExprUtil.UsedRef<SetT>
         ),
-        assertDelegate : sd.AssertDelegate<number>,
+        assertDelegate : sd.SafeMapper<number>,
     }>
 ) {
     const result = new Expr(

@@ -1,16 +1,16 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 
 function set<ElementArr extends string[]> (
     ...elements : ElementArr
-) : sd.AssertDelegate<string>{
+) : sd.SafeMapper<string>{
     if (elements.length > 64) {
         throw new Error(`SET type can only have up to 64 elements`);
     }
-    sd.array(sd.nonMatch(
+    sd.array(sd.notMatch(
         /\,/,
         name => `${name} must not have commas`
     ))("elements", elements);
-    return sd.chain(
+    return sd.pipe(
         sd.string(),
         (name : string, raw : string) : string => {
             const arr = raw.split(",");
@@ -25,7 +25,7 @@ function set<ElementArr extends string[]> (
 }
 set.nullable = <ElementArr extends string[]> (
     ...elements : ElementArr
-) : sd.AssertDelegate<string|null> => (
-    sd.nullable(set(...elements))
+) : sd.SafeMapper<string|null> => (
+    sd.orNull(set(...elements))
 );
 export {set}

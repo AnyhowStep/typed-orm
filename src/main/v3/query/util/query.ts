@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {IQuery} from "../query";
 import {QueryTreeArray, QueryTree, Parentheses, QueryTreeUtil} from "../../query-tree";
 import {AliasedTableUtil} from "../../aliased-table";
@@ -523,7 +523,7 @@ export type TypeOf<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> =
     null|SelectItemUtil.TypeOf<QueryT["_selects"][0]>
 );
 export type AssertDelegate<QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery> = (
-    sd.AssertDelegate<TypeOf<QueryT>>
+    sd.SafeMapper<TypeOf<QueryT>>
 );
 export function assertDelegate<
     QueryT extends OneSelectItemQuery<any> & ZeroOrOneRowQuery
@@ -531,7 +531,7 @@ export function assertDelegate<
     if (isOneRowQuery(rawExpr)) {
         return rawExpr._selects[0].assertDelegate as any;
     } else {
-        return sd.nullable(rawExpr._selects[0].assertDelegate) as any;
+        return sd.orNull(rawExpr._selects[0].assertDelegate) as any;
     }
 }
 

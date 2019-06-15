@@ -1,4 +1,4 @@
-import * as  sd from "schema-decorator";
+import * as  sd from "type-mapping";
 import {ITable, TableUtil, InsertableTable} from "../table"
 import * as InsertSelectUtil from "./util";
 import {QueryUtil} from "../query";
@@ -30,7 +30,7 @@ export type InsertSelectRow<
                     >
                 >,
                 {
-                    assertDelegate : sd.AssertDelegate<
+                    assertDelegate : sd.SafeMapper<
                         ReturnType<TableT["columns"][name]["assertDelegate"]>
                     >
                 }
@@ -47,7 +47,7 @@ export type InsertSelectRow<
                     >
                 >,
                 {
-                    assertDelegate : sd.AssertDelegate<
+                    assertDelegate : sd.SafeMapper<
                         ReturnType<TableT["columns"][name]["assertDelegate"]>
                     >
                 }

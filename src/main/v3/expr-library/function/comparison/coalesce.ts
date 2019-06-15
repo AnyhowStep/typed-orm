@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr, ExprData} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -93,11 +93,11 @@ export function coalesce(
     return new Expr(
         {
             usedRef : RawExprUtil.intersectUsedRefTuple(...(args as any)),
-            assertDelegate : sd.or(...args.map((arg, index) => {
+            assertDelegate : sd.unsafeOr(...args.map((arg, index) => {
                 if (index == args.length-1) {
                     return RawExprUtil.assertDelegate(arg);
                 } else {
-                    return sd.notNullable(RawExprUtil.assertDelegate(arg));
+                    return sd.notNull(RawExprUtil.assertDelegate(arg));
                 }
             })),
         },

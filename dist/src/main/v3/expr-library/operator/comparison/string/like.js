@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const expr_1 = require("../../../../expr");
 const raw_expr_1 = require("../../../../raw-expr");
 const column_ref_1 = require("../../../../column-ref");
@@ -16,7 +16,7 @@ function like(rawExpr, pattern) {
         raw_expr_1.RawExprUtil.queryTree(pattern),
     ]);
     result.escape = (escapeChar) => {
-        escapeChar = sd.varChar(0, 1)("escapeChar", escapeChar);
+        escapeChar = sd.mysql.varChar(0, 1)("escapeChar", escapeChar);
         return new expr_1.Expr({
             usedRef: column_ref_1.ColumnRefUtil.intersect(raw_expr_1.RawExprUtil.usedRef(rawExpr), raw_expr_1.RawExprUtil.usedRef(pattern)),
             assertDelegate: dataType.boolean(),

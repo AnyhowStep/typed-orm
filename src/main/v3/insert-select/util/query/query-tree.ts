@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {escapeId} from "sqlstring";
 import {TableUtil} from "../../../table";
 import {ExecutableInsertSelect, InsertSelectModifier} from "../../insert-select";
@@ -26,7 +26,7 @@ export function queryTree_Row (
             result.push(".");
             result.push(escapeId(`${expr.tableAlias}${SEPARATOR}${expr.name}`));
         } else {
-            throw new Error(`Unknown INSERT ... SELECT value, ${sd.toTypeStr(expr)}`);
+            throw new Error(`Unknown INSERT ... SELECT value, ${sd.TypeUtil.toTypeStr(expr)}`);
         }
     }
     return result;

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const query_1 = require("../query");
 function assertDelegateFromCandidateKey(candidateKey, table) {
     const assertMap = {};
@@ -10,17 +10,17 @@ function assertDelegateFromCandidateKey(candidateKey, table) {
             throw new Error(`No columns found for ${table.alias}.${columnName}`);
         }
         if (candidateKey.indexOf(columnName) >= 0) {
-            assertMap[columnName] = sd.and(...columns.map(c => c.assertDelegate));
+            assertMap[columnName] = sd.unsafeDeepMerge(...columns.map(c => c.assertDelegate));
         }
         else {
-            assertMap[columnName] = sd.optional(sd.and(...columns.map(c => c.assertDelegate)));
+            assertMap[columnName] = sd.optional(sd.unsafeDeepMerge(...columns.map(c => c.assertDelegate)));
         }
     }
-    return sd.toSchema(assertMap);
+    return sd.objectFromMap(assertMap);
 }
 function assertDelegateFromCandidateKeyArray(candidateKeyArr, table) {
     const arr = candidateKeyArr.map(candidateKey => assertDelegateFromCandidateKey(candidateKey, table));
-    return sd.or(...arr);
+    return sd.unsafeOr(...arr);
 }
 function superKeyAssertDelegate(table) {
     return assertDelegateFromCandidateKeyArray(

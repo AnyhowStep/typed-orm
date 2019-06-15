@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../dist/src/main";
 
@@ -7,7 +7,7 @@ tape(__filename, (t) => {
         {
             tableAlias : "tableAlias",
             name : "name",
-            assertDelegate : sd.naturalNumber()
+            assertDelegate : sd.unsignedInteger()
         },
         undefined
     );
@@ -16,14 +16,14 @@ tape(__filename, (t) => {
     t.true(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         name : "name",
-        assertDelegate : sd.naturalNumber(),
+        assertDelegate : sd.unsignedInteger(),
         __isFromExprSelectItem : true,
     }));
 
     t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         name : "name",
-        assertDelegate : sd.naturalNumber(),
+        assertDelegate : sd.unsignedInteger(),
         __isFromExprSelectItem : undefined,
     }));
     t.false(o.ColumnUtil.isColumn({
@@ -33,18 +33,18 @@ tape(__filename, (t) => {
     }));
     t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
-        assertDelegate : sd.naturalNumber(),
+        assertDelegate : sd.unsignedInteger(),
         __isFromExprSelectItem : true,
     }));
     t.false(o.ColumnUtil.isColumn({
         name : "name",
-        assertDelegate : sd.naturalNumber(),
+        assertDelegate : sd.unsignedInteger(),
         __isFromExprSelectItem : true,
     }));
     t.false(o.ColumnUtil.isColumn({
         tableAlias : "tableAlias",
         name : "name",
-        assertDelegate : sd.naturalNumber(),
+        assertDelegate : sd.unsignedInteger(),
     }));
 
     t.end();

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Query, UnionQuery} from "../../query";
 import {AfterSelectClause} from "../predicate";
 import {DISTINCT, ALL} from "../../../constants";
@@ -60,7 +60,7 @@ export type AssertUnionCompatibleSelectArray<
                 A[index] extends IColumn ?
                 (
                     B[index] extends {
-                        assertDelegate : sd.AssertDelegate<
+                        assertDelegate : sd.SafeMapper<
                             ReturnType<A[index]["assertDelegate"]>
                         >
                     } ?
@@ -71,7 +71,7 @@ export type AssertUnionCompatibleSelectArray<
                         index,
                         B[index]["assertDelegate"],
                         "not assignable to",
-                        sd.AssertDelegate<
+                        sd.SafeMapper<
                             ReturnType<A[index]["assertDelegate"]>
                         >
                     ] :
@@ -85,7 +85,7 @@ export type AssertUnionCompatibleSelectArray<
                 A[index] extends IExprSelectItem ?
                 (
                     B[index] extends {
-                        assertDelegate : sd.AssertDelegate<
+                        assertDelegate : sd.SafeMapper<
                             ReturnType<A[index]["assertDelegate"]>
                         >
                     } ?
@@ -96,7 +96,7 @@ export type AssertUnionCompatibleSelectArray<
                         index,
                         B[index]["assertDelegate"],
                         "not assignable to",
-                        sd.AssertDelegate<
+                        sd.SafeMapper<
                             ReturnType<A[index]["assertDelegate"]>
                         >
                     ] :
@@ -120,7 +120,7 @@ export type AssertUnionCompatibleSelectArray<
                             B[index] extends {
                                 [columnName in Extract<keyof A[index], string>] : (
                                     {
-                                        assertDelegate : sd.AssertDelegate<
+                                        assertDelegate : sd.SafeMapper<
                                             ReturnType<A[index][columnName]["assertDelegate"]>
                                         >
                                     }

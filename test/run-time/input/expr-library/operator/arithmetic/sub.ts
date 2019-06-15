@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../../../dist/src/main";
 
@@ -6,12 +6,12 @@ tape(__filename, (t) => {
     const table = o.table(
         "table",
         {
-            x : sd.number(),
-            y : sd.number(),
-            z : sd.number(),
-            a : sd.number(),
-            b : sd.number(),
-            c : sd.number(),
+            x : sd.finiteNumber(),
+            y : sd.finiteNumber(),
+            z : sd.finiteNumber(),
+            a : sd.finiteNumber(),
+            b : sd.finiteNumber(),
+            c : sd.finiteNumber(),
         }
     );
 

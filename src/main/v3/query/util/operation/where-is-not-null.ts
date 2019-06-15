@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Query} from "../../query";
 import {AfterFromClause} from "../predicate";
 import {ColumnRefUtil} from "../../../column-ref";
@@ -36,7 +36,7 @@ export type WhereIsNotNull<
             JoinUtil.Array.ReplaceColumn<QueryT["_joins"], Column<{
                 tableAlias : ReturnType<DelegateT>["tableAlias"],
                 name : ReturnType<DelegateT>["name"],
-                assertDelegate : sd.AssertDelegate<
+                assertDelegate : sd.SafeMapper<
                     Exclude<
                         ReturnType<ReturnType<DelegateT>["assertDelegate"]>,
                         null
@@ -79,7 +79,7 @@ export function whereIsNotNull<
     ) as unknown as ReturnType<DelegateT>;
 
     ColumnIdentifierRefUtil.assertHasColumnIdentifier(queryRef, rawColumn);
-    if (!sd.isNullable(rawColumn.assertDelegate)) {
+    if (!sd.canOutputNull(rawColumn.assertDelegate)) {
         throw new Error(`${rawColumn.tableAlias}.${rawColumn.name} is not nullable`);
     }
 
@@ -90,7 +90,7 @@ export function whereIsNotNull<
             {
                 tableAlias : rawColumn.tableAlias,
                 name : rawColumn.name,
-                assertDelegate : sd.notNullable(rawColumn.assertDelegate),
+                assertDelegate : sd.notNull(rawColumn.assertDelegate),
             },
             rawColumn.__isFromExprSelectItem
         )

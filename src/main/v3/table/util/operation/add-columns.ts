@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {ITable} from "../../table";
 import {AssertMap} from "../../../assert-map";
 import {AddColumnsFromAssertMap, addColumnsFromAssertMap} from "./add-columns-from-assert-map";

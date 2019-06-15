@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const sqlstring_1 = require("sqlstring");
 const table_1 = require("../../../table");
 const insert_select_1 = require("../../insert-select");
@@ -25,7 +25,7 @@ function queryTree_Row(columnNames, insert) {
             result.push(sqlstring_1.escapeId(`${expr.tableAlias}${constants_1.SEPARATOR}${expr.name}`));
         }
         else {
-            throw new Error(`Unknown INSERT ... SELECT value, ${sd.toTypeStr(expr)}`);
+            throw new Error(`Unknown INSERT ... SELECT value, ${sd.TypeUtil.toTypeStr(expr)}`);
         }
     }
     return result;

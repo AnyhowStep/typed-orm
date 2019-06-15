@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {RawExpr, RawExprUtil} from "../../../raw-expr";
 import {Expr, ExprUtil} from "../../../expr";
 import {Parentheses} from "../../../query-tree";
@@ -10,7 +10,7 @@ export function not<RawExprT extends RawExpr<boolean>> (
 ) : (
     Expr<{
         usedRef : RawExprUtil.UsedRef<RawExprT>,
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 ) {
     if (rawExpr === true) {

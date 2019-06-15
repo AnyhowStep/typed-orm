@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Table, ITable} from "../../table";
 import {KeyUtil} from "../../../key";
 import {ColumnMapUtil} from "../../../column-map";
@@ -73,7 +73,7 @@ export function setId<
     //https://github.com/Microsoft/TypeScript/issues/24277
     const id : ReturnType<DelegateT> = delegate(columns) as any;
 
-    if (sd.isNullable(id.assertDelegate)) {
+    if (sd.canOutputNull(id.assertDelegate)) {
         throw new Error(`A primary key cannot have a nullable column; ${id.tableAlias}.${id.name} is nullable`);
     }
 

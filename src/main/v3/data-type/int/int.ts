@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 
 const unsafeIntDelegate = sd.or(
     sd.stringToInteger(),
@@ -11,15 +11,15 @@ const unsafeIntDelegate = sd.or(
                 return result;
             }
         }
-        throw new Error(`Expected ${name} to be of type bigint, received ${sd.toTypeStr(raw)}`);
+        throw new Error(`Expected ${name} to be of type bigint, received ${sd.TypeUtil.toTypeStr(raw)}`);
     },
 );
 function unsafeInt () {
     return unsafeIntDelegate;
 }
-unsafeInt.nullable = () => sd.nullable(unsafeInt());
+unsafeInt.nullable = () => sd.orNull(unsafeInt());
 function intDelegate (min : number, max : number) {
-    return sd.chain(
+    return sd.pipe(
         unsafeInt(),
         sd.gtEq(min),
         sd.ltEq(max)
@@ -28,35 +28,35 @@ function intDelegate (min : number, max : number) {
 function tinyIntSigned () {
     return intDelegate(-128, 127);
 }
-tinyIntSigned.nullable = () => sd.nullable(tinyIntSigned());
+tinyIntSigned.nullable = () => sd.orNull(tinyIntSigned());
 function smallIntSigned () {
     return intDelegate(-32768, 32767);
 }
-smallIntSigned.nullable = () => sd.nullable(smallIntSigned());
+smallIntSigned.nullable = () => sd.orNull(smallIntSigned());
 function mediumIntSigned () {
     return intDelegate(-8388608, 8388607);
 }
-mediumIntSigned.nullable = () => sd.nullable(mediumIntSigned());
+mediumIntSigned.nullable = () => sd.orNull(mediumIntSigned());
 function intSigned () {
     return intDelegate(-2147483648, 2147483647);
 }
-intSigned.nullable = () => sd.nullable(intSigned());
+intSigned.nullable = () => sd.orNull(intSigned());
 function tinyIntUnsigned () {
     return intDelegate(0, 255);
 }
-tinyIntUnsigned.nullable = () => sd.nullable(tinyIntUnsigned());
+tinyIntUnsigned.nullable = () => sd.orNull(tinyIntUnsigned());
 function smallIntUnsigned () {
     return intDelegate(0, 65535);
 }
-smallIntUnsigned.nullable = () => sd.nullable(smallIntUnsigned());
+smallIntUnsigned.nullable = () => sd.orNull(smallIntUnsigned());
 function mediumIntUnsigned () {
     return intDelegate(0, 16777215);
 }
-mediumIntUnsigned.nullable = () => sd.nullable(mediumIntUnsigned());
+mediumIntUnsigned.nullable = () => sd.orNull(mediumIntUnsigned());
 function intUnsigned () {
     return intDelegate(0, 4294967295);
 }
-intUnsigned.nullable = () => sd.nullable(intUnsigned());
+intUnsigned.nullable = () => sd.orNull(intUnsigned());
 export {
     unsafeInt,
 

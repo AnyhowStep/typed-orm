@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { ITable, TableUtil, InsertableTable } from "../table";
 import * as InsertSelectUtil from "./util";
 import { QueryUtil } from "../query";
@@ -8,11 +8,11 @@ import { IConnection } from "../execution";
 export declare type InsertSelectRowDelegate<QueryT extends QueryUtil.AfterSelectClause, TableT extends ITable> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromSelectItemArray<QueryT["_selects"]>>) => InsertSelectRow<QueryT, TableT>);
 export declare type InsertSelectRow<QueryT extends QueryUtil.AfterSelectClause, TableT extends ITable> = ({
     [name in TableUtil.RequiredColumnNames<TableT>]: (ReturnType<TableT["columns"][name]["assertDelegate"]> | Extract<ColumnUtil.FromColumnRef<ColumnRefUtil.FromSelectItemArray<QueryT["_selects"]>>, {
-        assertDelegate: sd.AssertDelegate<ReturnType<TableT["columns"][name]["assertDelegate"]>>;
+        assertDelegate: sd.SafeMapper<ReturnType<TableT["columns"][name]["assertDelegate"]>>;
     }>);
 } & {
     [name in TableUtil.OptionalColumnNames<TableT>]?: (ReturnType<TableT["columns"][name]["assertDelegate"]> | Extract<ColumnUtil.FromColumnRef<ColumnRefUtil.FromSelectItemArray<QueryT["_selects"]>>, {
-        assertDelegate: sd.AssertDelegate<ReturnType<TableT["columns"][name]["assertDelegate"]>>;
+        assertDelegate: sd.SafeMapper<ReturnType<TableT["columns"][name]["assertDelegate"]>>;
     }>);
 });
 export declare type InsertSelectRowLiteral<TableT extends ITable> = ({

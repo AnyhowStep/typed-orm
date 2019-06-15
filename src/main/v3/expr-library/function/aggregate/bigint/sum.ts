@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../../expr";
 import {RawExpr} from "../../../../raw-expr";
 import {RawExprUtil} from "../../../../raw-expr";
@@ -12,13 +12,13 @@ export function bigIntSum<RawExprT extends RawExpr<bigint|null>>(
     Expr<{
         usedRef : RawExprUtil.UsedRef<RawExprT>,
         //If there are no matching rows, SUM() returns NULL.
-        assertDelegate : sd.AssertDelegate<bigint|null>,
+        assertDelegate : sd.SafeMapper<bigint|null>,
     }>
 ) {
     const result = new Expr(
         {
             usedRef : RawExprUtil.usedRef(rawExpr),
-            assertDelegate : sd.nullable(dataType.bigint()),
+            assertDelegate : sd.orNull(dataType.bigint()),
         },
         new FunctionCall(
             "SUM",

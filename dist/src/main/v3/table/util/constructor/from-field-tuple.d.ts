@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { Table } from "../../table";
 import { Tuple } from "../../../tuple";
 import { ColumnMapUtil } from "../../../column-map";
@@ -14,7 +14,7 @@ export declare type FromFieldTuple<NameT extends string, FieldsT extends Tuple<s
     readonly generated: [];
     readonly isNullable: FieldArrayUtil.NullableNameUnion<FieldsT>[];
     readonly hasExplicitDefaultValue: [];
-    readonly mutable: FieldsT[number]["name"][];
+    readonly mutable: FieldsT[number]["__name"][];
     readonly parents: [];
     readonly insertAllowed: true;
     readonly deleteAllowed: true;

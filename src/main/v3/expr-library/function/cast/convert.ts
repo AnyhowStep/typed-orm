@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -13,11 +13,11 @@ export function convert<
 ) : (
     Expr<{
         usedRef : RawExprUtil.UsedRef<RawExprT>,
-        assertDelegate : sd.AssertDelegate<string>,
+        assertDelegate : sd.SafeMapper<string>,
     }>
 ) {
     //Defend ourself against invalid values during run-time.
-    sd.enumeration(TranscodingName)("transcodingName", transcodingName);
+    sd.enumValue(TranscodingName)("transcodingName", transcodingName);
     return new Expr(
         {
             usedRef : RawExprUtil.usedRef(rawExpr),

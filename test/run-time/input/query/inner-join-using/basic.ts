@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../../dist/src/main";
 
@@ -6,7 +6,7 @@ tape(__filename, (t) => {
     const table = o.table(
         "table",
         {
-            x : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
             y : sd.string(),
             z : sd.boolean(),
         }
@@ -14,8 +14,8 @@ tape(__filename, (t) => {
     const joined1 = o.table(
         "joined1",
         {
-            a : sd.date(),
-            b : sd.buffer(),
+            a : sd.mysql.dateTime(3),
+            b : sd.instanceOfBuffer(),
             y : sd.string()
         }
     );
@@ -61,7 +61,7 @@ tape(__filename, (t) => {
     const table = o.table(
         "table",
         {
-            x : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
             y : sd.string(),
             z : sd.boolean(),
         }
@@ -69,17 +69,17 @@ tape(__filename, (t) => {
     const joined1 = o.table(
         "joined1",
         {
-            a : sd.date(),
-            b : sd.buffer(),
+            a : sd.mysql.dateTime(3),
+            b : sd.instanceOfBuffer(),
             y : sd.string()
         }
     );
     const joined2 = o.table(
         "joined2",
         {
-            a : sd.nil(),
-            b : sd.buffer(),
-            x : sd.naturalNumber()
+            a : sd.null(),
+            b : sd.instanceOfBuffer(),
+            x : sd.unsignedInteger()
         }
     );
 

@@ -1,13 +1,7 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 export declare type Decimal = string;
-declare function decimal(): sd.AssertDelegate<string> & {
-    __accepts: string | number;
-    __canAccept: string | number;
-};
+declare function decimal(): sd.FluentMapper<sd.Mapper<unknown, string> & sd.ExpectedInput<string> & sd.MappableInput<string | number>>;
 declare namespace decimal {
-    var nullable: () => sd.AssertDelegate<string | null> & {
-        __accepts: string | number | null;
-        __canAccept: string | number | null;
-    };
+    var nullable: () => sd.Mapper<unknown, string | null> & sd.ExpectedInput<string | null> & sd.MappableInput<string | number | null>;
 }
 export { decimal };

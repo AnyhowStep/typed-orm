@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Table, ITable} from "../../table";
 import {IAnonymousTypedColumn} from "../../../column";
 import {KeyUtil} from "../../../key";
@@ -83,7 +83,7 @@ export function setAutoIncrement<
     //https://github.com/Microsoft/TypeScript/issues/24277
     const autoIncrement : ReturnType<DelegateT> = delegate(columns) as any;
 
-    if (sd.isNullable(autoIncrement.assertDelegate)) {
+    if (sd.canOutputNull(autoIncrement.assertDelegate)) {
         throw new Error(`A primary key cannot have a nullable column; ${autoIncrement.tableAlias}.${autoIncrement.name} is nullable`);
     }
 

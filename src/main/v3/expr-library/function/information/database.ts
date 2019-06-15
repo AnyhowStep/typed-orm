@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {FunctionCall} from "../../../query-tree";
 
@@ -6,13 +6,13 @@ import {FunctionCall} from "../../../query-tree";
 export function database() : (
     Expr<{
         usedRef : {},
-        assertDelegate : sd.AssertDelegate<string|null>,
+        assertDelegate : sd.SafeMapper<string|null>,
     }>
 ) {
     return new Expr(
         {
             usedRef : {},
-            assertDelegate : sd.nullable(sd.string()),
+            assertDelegate : sd.orNull(sd.string()),
         },
         new FunctionCall("DATABASE", [])
     );

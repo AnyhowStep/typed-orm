@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -18,7 +18,7 @@ function notInPrimitiveList<
 ) : (
     Expr<{
         usedRef : RawExprUtil.UsedRef<LeftT>,
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 ) {
     if (args.length == 0) {
@@ -65,7 +65,7 @@ function notInExprList<
             RawExprUtil.UsedRef<Arg0> &
             RawExprUtil.IntersectUsedRefTuple<Args>
         ),
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 ) {
     return new Expr(
@@ -94,7 +94,7 @@ export function notIn<
 ) : (
     Expr<{
         usedRef : RawExprUtil.UsedRef<LeftT>,
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 );
 export function notIn<
@@ -113,7 +113,7 @@ export function notIn<
             RawExprUtil.UsedRef<Arg0> &
             RawExprUtil.IntersectUsedRefTuple<Args>
         ),
-        assertDelegate : sd.AssertDelegate<boolean>,
+        assertDelegate : sd.SafeMapper<boolean>,
     }>
 );
 export function notIn (left : RawExpr<NonNullPrimitiveExpr>, ...args : any[]) {

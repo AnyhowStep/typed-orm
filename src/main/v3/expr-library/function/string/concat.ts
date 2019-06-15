@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {Expr} from "../../../expr";
 import {RawExpr} from "../../../raw-expr";
 import {RawExprUtil} from "../../../raw-expr";
@@ -21,7 +21,7 @@ export function concat<
             RawExprUtil.UsedRef<Arg0> &
             RawExprUtil.IntersectUsedRefTuple<Args>
         ),
-        assertDelegate : sd.AssertDelegate<string>,
+        assertDelegate : sd.SafeMapper<string>,
     }>
 ) {
     const result = new Expr(

@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {PrimitiveExpr} from "./primitive-expr";
 import {IAnonymousTypedExpr, IExpr, ExprUtil} from "./expr";
 import {IAnonymousTypedColumn, IColumn, ColumnUtil} from "./column";
@@ -39,7 +39,7 @@ export type RawExprNoUsedRef<TypeT> = (
     ) |
     IExpr<{
         usedRef : {},
-        assertDelegate : sd.AssertDelegate<TypeT>,
+        assertDelegate : sd.SafeMapper<TypeT>,
     }> |
     (
         null extends TypeT ?
@@ -48,7 +48,7 @@ export type RawExprNoUsedRef<TypeT> = (
     ) |
     IExprSelectItem<{
         usedRef : {},
-        assertDelegate : sd.AssertDelegate<TypeT>,
+        assertDelegate : sd.SafeMapper<TypeT>,
         tableAlias : string,
         alias : string,
     }>
@@ -121,7 +121,7 @@ export namespace RawExprUtil {
             return rawExpr.usedRef as any;
         }
 
-        throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
+        throw new Error(`Unknown rawExpr ${sd.TypeUtil.toTypeStr(rawExpr)}`);
     }
     export type TypeOf<RawExprT extends RawExpr<any>> = (
         RawExprT extends PrimitiveExpr ?
@@ -137,7 +137,7 @@ export namespace RawExprUtil {
         never
     );
     export type AssertDelegate<RawExprT extends RawExpr<any>> = (
-        sd.AssertDelegate<TypeOf<RawExprT>>
+        sd.SafeMapper<TypeOf<RawExprT>>
     );
     export function assertDelegate<RawExprT extends RawExpr<any>> (
         rawExpr : RawExprT
@@ -162,10 +162,10 @@ export namespace RawExprUtil {
             return dataType.dateTime(3) as any;
         }
         if (rawExpr instanceof Buffer) {
-            return sd.buffer() as any;
+            return sd.instanceOfBuffer() as any;
         }
         if (rawExpr === null) {
-            return sd.nil() as any;
+            return sd.null() as any;
         }
 
         if (ExprUtil.isExpr(rawExpr)) {
@@ -188,7 +188,7 @@ export namespace RawExprUtil {
             return rawExpr.assertDelegate as any;
         }
 
-        throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
+        throw new Error(`Unknown rawExpr ${sd.TypeUtil.toTypeStr(rawExpr)}`);
     }
 
     export function queryTree (rawExpr : RawExpr<any>) : QueryTree {
@@ -234,7 +234,7 @@ export namespace RawExprUtil {
             return Parentheses.Create(rawExpr.unaliasedQuery, false/*canUnwrap*/);
         }
 
-        throw new Error(`Unknown rawExpr ${sd.toTypeStr(rawExpr)}`);
+        throw new Error(`Unknown rawExpr ${sd.TypeUtil.toTypeStr(rawExpr)}`);
     }
 
     export type IntersectUsedRefTuple<ArrT extends RawExpr<any>[]> = (

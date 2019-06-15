@@ -1,11 +1,11 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { Expr } from "../../expr";
 declare function trueLiteral(): Expr<{
     usedRef: {};
-    assertDelegate: sd.AssertDelegate<true>;
+    assertDelegate: sd.Mapper<unknown, true>;
 }>;
 declare function getFalse(): Expr<{
     usedRef: {};
-    assertDelegate: sd.AssertDelegate<false>;
+    assertDelegate: sd.Mapper<unknown, false>;
 }>;
 export { trueLiteral as trueLiteral, getFalse as falseLiteral, };

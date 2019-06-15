@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import {ITable} from "../../../table";
 import {Key} from "../../../key";
 import {ColumnNames, ColumnType, uniqueColumnNames, getColumnsWithName} from "../query";
@@ -26,7 +26,7 @@ function assertDelegateFromCandidateKey<
     CandidateKeyT extends Key,
     TableT extends ITable
 > (candidateKey : CandidateKeyT, table : TableT) : (
-    sd.AssertDelegate<SuperKeyUnionFromCandidateKey<CandidateKeyT, TableT>>
+    sd.SafeMapper<SuperKeyUnionFromCandidateKey<CandidateKeyT, TableT>>
 ) {
     const assertMap : any = {};
     for (let columnName of uniqueColumnNames(table)) {
@@ -35,16 +35,16 @@ function assertDelegateFromCandidateKey<
             throw new Error(`No columns found for ${table.alias}.${columnName}`);
         }
         if (candidateKey.indexOf(columnName) >= 0) {
-            assertMap[columnName] = sd.and(
+            assertMap[columnName] = sd.unsafeDeepMerge(
                 ...columns.map(c => c.assertDelegate)
             );
         } else {
-            assertMap[columnName] = sd.optional(sd.and(
+            assertMap[columnName] = sd.optional(sd.unsafeDeepMerge(
                 ...columns.map(c => c.assertDelegate)
             ));
         }
     }
-    return sd.toSchema(assertMap) as any;
+    return sd.objectFromMap(assertMap) as any;
 }
 export type SuperKeyUnionFromCandidateKeyArray<
     CandidateKeyArrayT extends Key[],
@@ -59,7 +59,7 @@ function assertDelegateFromCandidateKeyArray<
     CandidateKeyArrayT extends Key[],
     TableT extends ITable
 > (candidateKeyArr : CandidateKeyArrayT, table : TableT) : (
-    sd.AssertDelegate<SuperKeyUnionFromCandidateKeyArray<CandidateKeyArrayT, TableT>>
+    sd.SafeMapper<SuperKeyUnionFromCandidateKeyArray<CandidateKeyArrayT, TableT>>
 ) {
     const arr = candidateKeyArr.map(
         candidateKey => assertDelegateFromCandidateKey(
@@ -67,7 +67,7 @@ function assertDelegateFromCandidateKeyArray<
             table
         )
     );
-    return sd.or(
+    return sd.unsafeOr(
         ...arr
     ) as any;
 }
@@ -78,7 +78,7 @@ export type SuperKey<TableT extends ITable> = (
     >
 );
 export type SuperKeyAssertDelegate<TableT extends ITable> = (
-    sd.AssertDelegate<SuperKey<TableT>>
+    sd.SafeMapper<SuperKey<TableT>>
 );
 export function superKeyAssertDelegate<TableT extends ITable> (
     table : TableT

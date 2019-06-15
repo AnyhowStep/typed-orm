@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../../dist/src/main";
 
@@ -6,7 +6,7 @@ tape(__filename, (t) => {
     const table = o.table(
         "table",
         {
-            x : sd.naturalNumber(),
+            x : sd.unsignedInteger(),
             y : sd.string(),
             z : sd.boolean(),
         }
@@ -15,9 +15,9 @@ tape(__filename, (t) => {
     const parent = o.table(
         "parent",
         {
-            x : sd.buffer(),
-            y : sd.buffer(),
-            z : sd.buffer(),
+            x : sd.instanceOfBuffer(),
+            y : sd.instanceOfBuffer(),
+            z : sd.instanceOfBuffer(),
         }
     );
     t.throws(() => {

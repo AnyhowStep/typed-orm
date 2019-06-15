@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 const DateTimeUtil = require("./util");
 function buildDateTimeDelegate(fractionalSecondPrecision /*|4|5|6*/) {
-    return sd.or(sd.instanceOf(Date), sd.chain(sd.string(), (name, str) => {
+    return sd.or(sd.instanceOfDate(), sd.pipe(sd.string(), (name, str) => {
         try {
             return DateTimeUtil.fromSqlUtc(str, fractionalSecondPrecision);
         }
@@ -22,8 +22,8 @@ function dateTime(fractionalSecondPrecision = 0) {
     return dateTimeDelegateArr[fractionalSecondPrecision];
     /*return buildDataType(
         sd.or(
-            sd.instanceOf(Date),
-            sd.chain(
+            sd.instanceOfDate(),
+            sd.pipe(
                 sd.string(),
                 (name : string, str : string) => {
                     try {
@@ -50,5 +50,5 @@ function dateTime(fractionalSecondPrecision = 0) {
     );*/
 }
 exports.dateTime = dateTime;
-dateTime.nullable = (fractionalSecondPrecision = 0) => sd.nullable(dateTime(fractionalSecondPrecision));
+dateTime.nullable = (fractionalSecondPrecision = 0) => sd.orNull(dateTime(fractionalSecondPrecision));
 //# sourceMappingURL=date-time.js.map

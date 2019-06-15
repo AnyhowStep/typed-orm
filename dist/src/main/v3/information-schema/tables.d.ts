@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 declare const x: {
     TABLES: import("../table").Table<{
         readonly usedRef: {};
@@ -7,107 +7,107 @@ declare const x: {
             readonly AUTO_INCREMENT: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "AUTO_INCREMENT";
-                assertDelegate: sd.AssertDelegate<bigint | null>;
+                assertDelegate: sd.Mapper<unknown, bigint | null>;
             }>;
             readonly CHECKSUM: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "CHECKSUM";
-                assertDelegate: sd.AssertDelegate<bigint | null>;
+                assertDelegate: sd.Mapper<unknown, bigint | null>;
             }>;
             readonly ENGINE: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "ENGINE";
-                assertDelegate: sd.AssertDelegate<string | null>;
+                assertDelegate: sd.Mapper<unknown, string | null>;
             }>;
             readonly ROW_FORMAT: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "ROW_FORMAT";
-                assertDelegate: sd.AssertDelegate<string | null>;
+                assertDelegate: sd.Mapper<unknown, string | null>;
             }>;
             readonly TABLE_CATALOG: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "TABLE_CATALOG";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly TABLE_SCHEMA: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "TABLE_SCHEMA";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly TABLE_NAME: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "TABLE_NAME";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly TABLE_TYPE: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "TABLE_TYPE";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
             readonly VERSION: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "VERSION";
-                assertDelegate: sd.AssertDelegate<bigint | null>;
+                assertDelegate: sd.Mapper<unknown, bigint | null>;
             }>;
             readonly TABLE_ROWS: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "TABLE_ROWS";
-                assertDelegate: sd.AssertDelegate<bigint | null>;
+                assertDelegate: sd.Mapper<unknown, bigint | null>;
             }>;
             readonly AVG_ROW_LENGTH: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "AVG_ROW_LENGTH";
-                assertDelegate: sd.AssertDelegate<bigint | null>;
+                assertDelegate: sd.Mapper<unknown, bigint | null>;
             }>;
             readonly DATA_LENGTH: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "DATA_LENGTH";
-                assertDelegate: sd.AssertDelegate<bigint | null>;
+                assertDelegate: sd.Mapper<unknown, bigint | null>;
             }>;
             readonly MAX_DATA_LENGTH: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "MAX_DATA_LENGTH";
-                assertDelegate: sd.AssertDelegate<bigint | null>;
+                assertDelegate: sd.Mapper<unknown, bigint | null>;
             }>;
             readonly INDEX_LENGTH: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "INDEX_LENGTH";
-                assertDelegate: sd.AssertDelegate<bigint | null>;
+                assertDelegate: sd.Mapper<unknown, bigint | null>;
             }>;
             readonly DATA_FREE: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "DATA_FREE";
-                assertDelegate: sd.AssertDelegate<bigint | null>;
+                assertDelegate: sd.Mapper<unknown, bigint | null>;
             }>;
             readonly CREATE_TIME: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "CREATE_TIME";
-                assertDelegate: sd.AssertDelegate<Date | null>;
+                assertDelegate: sd.Mapper<unknown, Date | null>;
             }>;
             readonly UPDATE_TIME: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "UPDATE_TIME";
-                assertDelegate: sd.AssertDelegate<Date | null>;
+                assertDelegate: sd.Mapper<unknown, Date | null>;
             }>;
             readonly CHECK_TIME: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "CHECK_TIME";
-                assertDelegate: sd.AssertDelegate<Date | null>;
+                assertDelegate: sd.Mapper<unknown, Date | null>;
             }>;
             readonly TABLE_COLLATION: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "TABLE_COLLATION";
-                assertDelegate: sd.AssertDelegate<string | null>;
+                assertDelegate: sd.Mapper<unknown, string | null>;
             }>;
             readonly CREATE_OPTIONS: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "CREATE_OPTIONS";
-                assertDelegate: sd.AssertDelegate<string | null>;
+                assertDelegate: sd.Mapper<unknown, string | null>;
             }>;
             readonly TABLE_COMMENT: import("..").Column<{
                 tableAlias: "TABLES";
                 name: "TABLE_COMMENT";
-                assertDelegate: sd.AssertDelegate<string>;
+                assertDelegate: sd.Mapper<unknown, string>;
             }>;
         };
         readonly autoIncrement: undefined;

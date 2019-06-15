@@ -1,9 +1,9 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import { ColumnRef } from "./column-ref";
 import { QueryTreeArray, QueryTree } from "./query-tree";
 export interface ExprSelectItemData {
     readonly usedRef: ColumnRef;
-    readonly assertDelegate: sd.AssertDelegate<any>;
+    readonly assertDelegate: sd.SafeMapper<any>;
     readonly tableAlias: string;
     readonly alias: string;
 }
@@ -16,7 +16,7 @@ export interface IExprSelectItem<DataT extends ExprSelectItemData = ExprSelectIt
 }
 export declare type IAnonymousTypedExprSelectItem<TypeT> = (IExprSelectItem<{
     usedRef: ColumnRef;
-    assertDelegate: sd.AssertDelegate<TypeT>;
+    assertDelegate: sd.SafeMapper<TypeT>;
     tableAlias: string;
     alias: string;
 }>);

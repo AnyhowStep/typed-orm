@@ -1,4 +1,4 @@
-import * as sd from "schema-decorator";
+import * as sd from "type-mapping";
 import * as tape from "tape";
 import * as o from "../../../../../dist/src/main";
 import {pool} from "../../../pool";
@@ -51,7 +51,7 @@ tape(__filename, async (t) => {
                 someId : o.bigint(),
                 sharedValue : sd.string(),
                 childSpecific : sd.string(),
-                nullableChild : sd.nullable(sd.string()),
+                nullableChild : sd.orNull(sd.string()),
                 generatedChildOnly : o.bigint(),
                 generatedParentRequiredChild : o.bigint(),
                 generatedChildRequiredParent : o.bigint(),

@@ -1,26 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const sd = require("schema-decorator");
+const sd = require("type-mapping");
 function jsonDelegate(dataTypeStr, absoluteMax, defaultSize) {
     const result = (a, b) => {
         if (a == undefined) {
-            return sd.chain(sd.jsonObjectStr(), sd.varChar(defaultSize));
+            return sd.mysql.json(defaultSize);
         }
         else if (b == undefined) {
-            a = sd.chain(sd.integer(), sd.gtEq(1), sd.ltEq(absoluteMax))("maxLength", a);
-            return sd.chain(sd.jsonObjectStr(), sd.varChar(a));
+            a = sd.pipe(sd.integer(), sd.gtEq(1), sd.ltEq(absoluteMax))("maxLength", a);
+            return sd.mysql.json(a);
         }
         else {
-            a = sd.chain(sd.integer(), sd.gtEq(0), sd.ltEq(absoluteMax))("minLength", a);
-            b = sd.chain(sd.integer(), sd.gtEq(1), sd.ltEq(absoluteMax))("maxLength", b);
+            a = sd.pipe(sd.integer(), sd.gtEq(0), sd.ltEq(absoluteMax))("minLength", a);
+            b = sd.pipe(sd.integer(), sd.gtEq(1), sd.ltEq(absoluteMax))("maxLength", b);
             if (a > b) {
                 throw new Error(`${dataTypeStr} minLength must be <= maxLength`);
             }
-            return sd.chain(sd.jsonObjectStr(), sd.varChar(a, b));
+            return sd.mysql.json(a, b);
         }
     };
     result.nullable = (a, b) => {
-        return sd.nullable(result(a, b));
+        return sd.orNull(result(a, b));
     };
     return result;
 }
