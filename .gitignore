@@ -7,3 +7,4 @@ test/compile-time/actual-output/*
 test/run-time/dist/*
 test/execution/db.env
 coverage
+report.*.json
