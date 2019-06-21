@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const expr_1 = require("../../expr");
+//import {IExprSelectItem} from "../../../expr-select-item";
 const constants_1 = require("../../../constants");
 function as(expr, alias) {
     const result = new expr_1.Expr(expr, expr.queryTree);

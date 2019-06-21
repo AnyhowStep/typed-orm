@@ -1,5 +1,5 @@
 import {Expr, IExpr} from "../../expr";
-import {IExprSelectItem} from "../../../expr-select-item";
+//import {IExprSelectItem} from "../../../expr-select-item";
 import {ALIASED} from "../../../constants";
 import { QueryTree } from "../../../query-tree";
 import { SortDirection } from "../../../order";
@@ -13,6 +13,7 @@ export interface ExprLite<ExprT extends IExpr> {
     desc () : Desc<ExprT>;
     sort (sortDirection : SortDirection) : Sort<ExprT>;
 }
+//Originally mean to be `Expr<> & IExprSelectItem<>`
 export type As<ExprT extends IExpr, AliasT extends string> = (
     //This particular method has always given me problems
     //Always reaching the max instantiation depth.
@@ -29,7 +30,24 @@ export type As<ExprT extends IExpr, AliasT extends string> = (
         readonly usedRef : ExprT["usedRef"];
         readonly assertDelegate : ExprT["assertDelegate"];
     }> &*/
-    ExprLite<ExprT> &
+    //ExprLite<ExprT> &
+    {
+        //This is ExprLite<ExprT>
+        readonly queryTree : QueryTree;
+
+        asc () : Asc<ExprT>;
+        desc () : Desc<ExprT>;
+        sort (sortDirection : SortDirection) : Sort<ExprT>;
+
+        //This is the same type as the commented IExpreSelectItem<> type...
+        //However, when expressed this way, TS doesn't consume extra instantiation depth
+        readonly usedRef: ExprT["usedRef"];
+        readonly assertDelegate: ExprT["assertDelegate"];
+        readonly tableAlias: typeof ALIASED;
+        readonly alias: AliasT;
+        readonly unaliasedQuery: QueryTree;
+    }
+    /*
     IExprSelectItem<{
         readonly usedRef : ExprT["usedRef"];
         readonly assertDelegate : ExprT["assertDelegate"];
@@ -39,6 +57,7 @@ export type As<ExprT extends IExpr, AliasT extends string> = (
         readonly tableAlias : typeof ALIASED;
         readonly alias : AliasT;
     }>
+    */
 );
 export function as<ExprT extends IExpr, AliasT extends string> (
     expr : ExprT,
