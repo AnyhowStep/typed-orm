@@ -4,6 +4,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./bigint"));
+__export(require("./add-as-decimal"));
 __export(require("./add"));
 __export(require("./div"));
 __export(require("./mod"));

@@ -8,5 +8,6 @@ __export(require("./avg"));
 __export(require("./count"));
 __export(require("./max"));
 __export(require("./min"));
+__export(require("./sum-as-decimal"));
 __export(require("./sum"));
 //# sourceMappingURL=index.js.map

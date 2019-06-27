@@ -1,3 +1,5 @@
+export * from "./__internal-cast-as-decimal";
+export * from "./__internal-cast-as-double";
 export * from "./cast-as-date-time";
 export * from "./cast-as-double";
 export * from "./cast-as-signed-integer";
