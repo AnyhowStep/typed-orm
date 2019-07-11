@@ -3,6 +3,7 @@ import {ColumnRef} from "../column-ref";
 import {QueryTree, Parentheses} from "../query-tree";
 import {SortDirection} from "../order";
 import * as ExprUtil from "./util";
+import { ColumnMap } from "../column-map";
 
 export interface ExprData {
     readonly usedRef : ColumnRef;
@@ -81,3 +82,13 @@ export type IAnonymousTypedExpr<TypeT> = (
         assertDelegate : sd.SafeMapper<TypeT>
     }>
 );
+
+export type TableExpr<
+    TableT extends { alias : string, columns : ColumnMap },
+    TypeT
+> = Expr<{
+    usedRef : {
+        [alias in TableT["alias"]] : TableT["columns"]
+    },
+    assertDelegate : sd.SafeMapper<TypeT>
+}>;
