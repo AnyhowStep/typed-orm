@@ -1,9 +1,9 @@
 import * as sd from "type-mapping";
 import {RawExpr, RawExprUtil} from "../../../../raw-expr";
 import {Expr, ExprUtil} from "../../../../expr";
-import {Tuple} from "../../../../tuple";
 import {Parentheses, QueryTreeArray} from "../../../../query-tree";
 import * as dataType from "../../../../data-type";
+import {castAsSignedInteger} from "../../../function";
 
 //https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_times
 function tryGetMulQueryTree (rawExpr : RawExpr<bigint>) : QueryTreeArray|undefined {
@@ -26,7 +26,7 @@ function tryGetMulQueryTree (rawExpr : RawExpr<bigint>) : QueryTreeArray|undefin
     }
     return undefined;
 }
-export function bigIntMul<ArrT extends Tuple<RawExpr<bigint>>> (
+export function bigIntMul<ArrT extends RawExpr<bigint>[]> (
     ...arr : ArrT
 ) : (
     Expr<{
@@ -73,4 +73,39 @@ export function bigIntMul<ArrT extends Tuple<RawExpr<bigint>>> (
             queryTree
         );
     }
+}
+/**
+ * We cannot always perform integer multiplication naively in SQL.
+ *
+ * Error #1690 - BIGINT UNSIGNED value is out of range
+ * ```sql
+ * SELECT CAST(1 AS UNSIGNED INTEGER) * CAST(-2 AS SIGNED INTEGER)
+ * ```
+ *
+ * -----
+ *
+ * If either `x` or `y` are `UNSIGNED`,
+ * we need to cast both to `SIGNED` before performing multiplication,
+ * if we want to allow negative numbers.
+ *
+ * ```sql
+ * SELECT CAST(x AS SIGNED INTEGER) * CAST(y AS SIGNED INTEGER)
+ * ```
+ *
+ * @param arr
+ */
+export function bigIntMulAsSignedInteger<ArrT extends RawExpr<bigint>[]> (
+    ...arr : ArrT
+) : (
+    Expr<{
+        usedRef : RawExprUtil.IntersectUsedRefTuple<ArrT>,
+        assertDelegate : sd.SafeMapper<bigint>,
+    }>
+) {
+    return bigIntMul(
+        ...arr.map(x => castAsSignedInteger(x))
+    ) as Expr<{
+        usedRef : RawExprUtil.IntersectUsedRefTuple<ArrT>,
+        assertDelegate : sd.SafeMapper<bigint>,
+    }>;
 }

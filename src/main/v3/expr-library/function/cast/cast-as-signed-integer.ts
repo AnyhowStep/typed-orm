@@ -7,7 +7,7 @@ import * as dataType from "../../../data-type";
 
 //https://dev.mysql.com/doc/refman/8.0/en/cast-functions.html#function_cast
 export function castAsSignedInteger<
-    RawExprT extends RawExpr<number>
+    RawExprT extends RawExpr<number|bigint>
 >(
     rawExpr : RawExprT
 ) : (
