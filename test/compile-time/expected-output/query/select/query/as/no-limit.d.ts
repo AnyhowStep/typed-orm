@@ -28,30 +28,11 @@ export declare const query: o.Query<{
     readonly _sqlCalcFoundRows: false;
     readonly _joins: undefined;
     readonly _parentJoins: undefined;
-    readonly _selects: [o.IAliasedTable<{
-        usedRef: {};
-        alias: "test";
-        columns: {
-            readonly now: o.Column<{
-                readonly tableAlias: "test";
-                readonly name: "now";
-                readonly assertDelegate: import("type-mapping").Mapper<unknown, Date>;
-            }>;
-        };
-    }> & {
+    readonly _selects: [o.QueryUtil.UseRefErasedExprSelectItem<{
         assertDelegate: import("type-mapping").Mapper<unknown, Date>;
         tableAlias: "__aliased";
-        asc: () => [{
-            usedRef: {};
-            assertDelegate: import("type-mapping").Mapper<unknown, Date>;
-            queryTree: o.QueryTree;
-        }, "ASC"];
-        desc: () => [{
-            usedRef: {};
-            assertDelegate: import("type-mapping").Mapper<unknown, Date>;
-            queryTree: o.QueryTree;
-        }, "DESC"];
-    }];
+        alias: "test";
+    }>];
     readonly _where: undefined;
     readonly _grouped: undefined;
     readonly _having: undefined;

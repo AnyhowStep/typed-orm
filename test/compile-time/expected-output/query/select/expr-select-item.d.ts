@@ -55,45 +55,18 @@ export declare const query: o.Query<{
         nullable: false;
     }>[];
     readonly _parentJoins: undefined;
-    readonly _selects: [o.IExprSelectItem<{
-        readonly usedRef: {
-            readonly table: {
-                readonly x: o.Column<{
-                    tableAlias: "table";
-                    name: "x";
-                    assertDelegate: import("type-mapping").Mapper<unknown, number>;
-                }>;
-            };
-        };
-        readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
-        readonly tableAlias: "table";
-        readonly alias: "a";
-    }>, o.IExprSelectItem<{
-        readonly usedRef: {
-            readonly table: {
-                readonly y: o.Column<{
-                    tableAlias: "table";
-                    name: "y";
-                    assertDelegate: import("type-mapping").Mapper<unknown, string>;
-                }>;
-            };
-        };
-        readonly assertDelegate: import("type-mapping").Mapper<unknown, string>;
-        readonly tableAlias: "table";
-        readonly alias: "b";
-    }>, o.IExprSelectItem<{
-        readonly usedRef: {
-            readonly table: {
-                readonly z: o.Column<{
-                    tableAlias: "table";
-                    name: "z";
-                    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
-                }>;
-            };
-        };
-        readonly assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
-        readonly tableAlias: "table";
-        readonly alias: "c";
+    readonly _selects: [o.QueryUtil.UseRefErasedExprSelectItem<{
+        assertDelegate: import("type-mapping").Mapper<unknown, number>;
+        tableAlias: "table";
+        alias: "a";
+    }>, o.QueryUtil.UseRefErasedExprSelectItem<{
+        assertDelegate: import("type-mapping").Mapper<unknown, string>;
+        tableAlias: "table";
+        alias: "b";
+    }>, o.QueryUtil.UseRefErasedExprSelectItem<{
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
+        tableAlias: "table";
+        alias: "c";
     }>];
     readonly _where: undefined;
     readonly _grouped: undefined;

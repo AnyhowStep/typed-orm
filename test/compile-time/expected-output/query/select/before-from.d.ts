@@ -4,32 +4,11 @@ export declare const query: o.Query<{
     readonly _sqlCalcFoundRows: false;
     readonly _joins: undefined;
     readonly _parentJoins: undefined;
-    readonly _selects: [{
-        readonly queryTree: o.QueryTree;
-        asc(): [{
-            usedRef: {};
-            assertDelegate: import("type-mapping").Mapper<unknown, Date>;
-        } & {
-            queryTree: o.QueryTree;
-        }, "ASC"];
-        desc(): [{
-            usedRef: {};
-            assertDelegate: import("type-mapping").Mapper<unknown, Date>;
-        } & {
-            queryTree: o.QueryTree;
-        }, "DESC"];
-        sort(sortDirection: o.SortDirection): [{
-            usedRef: {};
-            assertDelegate: import("type-mapping").Mapper<unknown, Date>;
-        } & {
-            queryTree: o.QueryTree;
-        }, o.SortDirection];
-        readonly usedRef: {};
-        readonly assertDelegate: import("type-mapping").Mapper<unknown, Date>;
-        readonly tableAlias: "__aliased";
-        readonly alias: "now";
-        readonly unaliasedQuery: o.QueryTree;
-    }];
+    readonly _selects: [o.QueryUtil.UseRefErasedExprSelectItem<{
+        assertDelegate: import("type-mapping").Mapper<unknown, Date>;
+        tableAlias: "__aliased";
+        alias: "now";
+    }>];
     readonly _where: undefined;
     readonly _grouped: undefined;
     readonly _having: undefined;

@@ -10,6 +10,8 @@ import {IExprSelectItem, ExprSelectItemUtil} from "../../../expr-select-item";
 import {IColumn, ColumnUtil} from "../../../column";
 import {ColumnIdentifierUtil} from "../../../column-identifier";
 import {ColumnIdentifierRefUtil} from "../../../column-identifier-ref";
+import { ASC, DESC, SortDirection } from "../../../order";
+import { IExpr } from "../../../expr";
 
 export type SelectDelegate<
     QueryT extends BeforeUnionClause
@@ -21,7 +23,84 @@ export type SelectDelegate<
         query : QueryT
     ) => NonEmptyTuple<SelectItem>
 );
+export interface UseRefErasedExprSelectItem<DataT extends {
+    assertDelegate : sd.SafeMapper<any>,
+    tableAlias : string,
+    alias : string,
+}> extends IExprSelectItem<{
+    assertDelegate : DataT["assertDelegate"],
+    tableAlias : DataT["tableAlias"],
+    alias : DataT["alias"],
+    usedRef : {},
+}> {
+    asc : () => [IExpr<{ readonly usedRef : {}, readonly assertDelegate : DataT["assertDelegate"] }>, typeof ASC],
+    desc : () => [IExpr<{ readonly usedRef : {}, readonly assertDelegate : DataT["assertDelegate"] }>, typeof DESC],
+    sort : (sortDirection : SortDirection) => [IExpr<{ readonly usedRef : {}, readonly assertDelegate : DataT["assertDelegate"] }>, SortDirection],
+}
+export type EraseSelectsUsedRef<ArrT extends SelectItem[]> = (
+    {
+        [k in keyof ArrT] : (
+            ArrT[k] extends IExprSelectItem ?
+            UseRefErasedExprSelectItem<{
+                assertDelegate : ArrT[k]["assertDelegate"];
 
+                tableAlias : ArrT[k]["tableAlias"];
+                alias : ArrT[k]["alias"];
+            }> :
+            ArrT[k]
+        )
+    }
+);
+export function eraseSelectsUsedRef<ArrT extends SelectItem[]> (
+    arr : ArrT
+) : (
+    EraseSelectsUsedRef<ArrT>
+) {
+    return arr.map(selectItem => {
+        if (ExprSelectItemUtil.isExprSelectItem(selectItem)) {
+            const result : UseRefErasedExprSelectItem<{
+                assertDelegate : sd.AnySafeMapper;
+
+                tableAlias : string;
+                alias : string;
+            }> = {
+                assertDelegate : selectItem.assertDelegate,
+                tableAlias : selectItem.tableAlias,
+                alias : selectItem.alias,
+                usedRef : {},
+                unaliasedQuery : selectItem.unaliasedQuery,
+
+                asc : () => [
+                    {
+                        usedRef : {},
+                        assertDelegate : selectItem.assertDelegate,
+                        queryTree : selectItem.unaliasedQuery
+                    },
+                    ASC
+                ],
+                desc : () => [
+                    {
+                        usedRef : {},
+                        assertDelegate : selectItem.assertDelegate,
+                        queryTree : selectItem.unaliasedQuery
+                    },
+                    DESC
+                ],
+                sort : (sortDirection : SortDirection) => [
+                    {
+                        usedRef : {},
+                        assertDelegate : selectItem.assertDelegate,
+                        queryTree : selectItem.unaliasedQuery
+                    },
+                    sortDirection
+                ],
+            };
+            return result;
+        } else {
+            return selectItem;
+        }
+    }) as any;
+};
 //Must be called before UNION because it will change the number of
 //columns expected.
 //Can be called before FROM clause; e.g. SELECT NOW()
@@ -39,9 +118,15 @@ export type Select<
             QueryT["_selects"] extends SelectItem[] ?
             TupleUtil.Concat<
                 QueryT["_selects"],
-                ReturnType<SelectDelegateT>
+                Extract<
+                    EraseSelectsUsedRef<ReturnType<SelectDelegateT>>,
+                    NonEmptyTuple<SelectItem>
+                >
             > :
-            ReturnType<SelectDelegateT>
+            Extract<
+                EraseSelectsUsedRef<ReturnType<SelectDelegateT>>,
+                NonEmptyTuple<SelectItem>
+            >
         ),
         readonly _where : QueryT["_where"],
 
@@ -321,8 +406,8 @@ export function select<
         ReturnType<SelectDelegateT>
     ) = (
         (query._selects == undefined) ?
-            selects :
-            [...query._selects, ...selects]
+            eraseSelectsUsedRef(selects) :
+            [...query._selects, ...eraseSelectsUsedRef(selects) as any]
     ) as any;
 
     const {
@@ -366,5 +451,5 @@ export function select<
         _unionLimit,
 
         _mapDelegate,
-    });
+    }) as any;
 }

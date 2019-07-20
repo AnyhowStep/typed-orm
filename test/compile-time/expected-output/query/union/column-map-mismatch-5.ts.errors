@@ -5,7 +5,7 @@
       "category": 1,
       "code": 2345,
       "next": {
-        "messageText": "Type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly usedRef: {}; readonly alias: \"other\"; readonly columns: { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: Mapper<...>; }>; readonly b: Column<...>; readonly x: Column<...>...' is not assignable to type '[\"Invalid SELECT item columnMap\", \"0\", \"a\" | \"b\" | \"x\" | \"y\" | \"z\" | \"c\", \"not assignable to\", \"desc\" | \"assertDelegate\" | \"sort\" | \"usedRef\" | \"tableAlias\" | \"alias\" | \"unaliasedQuery\" | \"queryTree\" | \"asc\"]'.",
+        "messageText": "Type 'Query<{ readonly _distinct: false; readonly _sqlCalcFoundRows: false; readonly _joins: Join<{ aliasedTable: Table<{ readonly usedRef: {}; readonly alias: \"other\"; readonly columns: { readonly a: Column<{ tableAlias: \"other\"; name: \"a\"; assertDelegate: Mapper<...>; }>; readonly b: Column<...>; readonly x: Column<...>...' is not assignable to type '[\"Invalid SELECT item columnMap\", \"0\", \"a\" | \"b\" | \"x\" | \"y\" | \"z\" | \"c\", \"not assignable to\", \"desc\" | \"assertDelegate\" | \"sort\" | \"usedRef\" | \"tableAlias\" | \"alias\" | \"unaliasedQuery\" | \"asc\"]'.",
         "category": 1,
         "code": 2322
       }

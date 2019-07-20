@@ -30,10 +30,7 @@ tape(__filename, (t) => {
         "=",
         o.ColumnUtil.queryTree(table.columns.w),
     ]));
-    t.deepEqual(query._selects[0].usedRef, o.ColumnRefUtil.fromColumnArray([
-        table.columns.x,
-        table.columns.w
-    ]));
+    t.deepEqual(query._selects[0].usedRef, {});
 
     t.end();
 });

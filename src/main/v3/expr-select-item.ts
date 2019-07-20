@@ -23,7 +23,6 @@ export interface IExprSelectItem<DataT extends ExprSelectItemData=ExprSelectItem
     readonly unaliasedQuery : QueryTree;
 }
 
-
 export type IAnonymousTypedExprSelectItem<TypeT> = (
     IExprSelectItem<{
         usedRef : ColumnRef,

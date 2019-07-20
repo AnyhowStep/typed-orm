@@ -55,76 +55,14 @@ export declare const query: o.Query<{
         nullable: false;
     }>[];
     readonly _parentJoins: undefined;
-    readonly _selects: [{
-        readonly queryTree: o.QueryTree;
-        asc(): [{
-            usedRef: {
-                readonly table: {
-                    readonly x: o.IColumn<{
-                        readonly tableAlias: "table";
-                        readonly name: "x";
-                        readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
-                    }>;
-                } & {};
-            } & {};
-            assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
-        } & {
-            queryTree: o.QueryTree;
-        }, "ASC"];
-        desc(): [{
-            usedRef: {
-                readonly table: {
-                    readonly x: o.IColumn<{
-                        readonly tableAlias: "table";
-                        readonly name: "x";
-                        readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
-                    }>;
-                } & {};
-            } & {};
-            assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
-        } & {
-            queryTree: o.QueryTree;
-        }, "DESC"];
-        sort(sortDirection: o.SortDirection): [{
-            usedRef: {
-                readonly table: {
-                    readonly x: o.IColumn<{
-                        readonly tableAlias: "table";
-                        readonly name: "x";
-                        readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
-                    }>;
-                } & {};
-            } & {};
-            assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
-        } & {
-            queryTree: o.QueryTree;
-        }, o.SortDirection];
-        readonly usedRef: {
-            readonly table: {
-                readonly x: o.IColumn<{
-                    readonly tableAlias: "table";
-                    readonly name: "x";
-                    readonly assertDelegate: import("type-mapping").Mapper<unknown, number>;
-                }>;
-            } & {};
-        } & {};
-        readonly assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
-        readonly tableAlias: "__aliased";
-        readonly alias: "eq";
-        readonly unaliasedQuery: o.QueryTree;
-    }, o.IExprSelectItem<{
-        readonly usedRef: {
-            readonly table: {
-                readonly z: o.Column<{
-                    tableAlias: "table";
-                    name: "z";
-                    assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
-                }>;
-            };
-        };
-        readonly assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
-        readonly tableAlias: "table";
-        readonly alias: "test";
+    readonly _selects: [o.QueryUtil.UseRefErasedExprSelectItem<{
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
+        tableAlias: "__aliased";
+        alias: "eq";
+    }>, o.QueryUtil.UseRefErasedExprSelectItem<{
+        assertDelegate: import("type-mapping").Mapper<unknown, boolean>;
+        tableAlias: "table";
+        alias: "test";
     }>];
     readonly _where: undefined;
     readonly _grouped: undefined;

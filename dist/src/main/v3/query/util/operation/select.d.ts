@@ -1,3 +1,4 @@
+import * as sd from "type-mapping";
 import { ToUnknownIfAllFieldsNever } from "../../../type";
 import { Query } from "../../query";
 import { BeforeUnionClause } from "../predicate";
@@ -8,13 +9,46 @@ import { SelectItem } from "../../../select-item";
 import { IExprSelectItem } from "../../../expr-select-item";
 import { IColumn, ColumnUtil } from "../../../column";
 import { ColumnIdentifierUtil } from "../../../column-identifier";
+import { ASC, DESC, SortDirection } from "../../../order";
+import { IExpr } from "../../../expr";
 export declare type SelectDelegate<QueryT extends BeforeUnionClause> = ((columns: ColumnRefUtil.ToConvenient<ColumnRefUtil.FromQueryJoins<QueryT>>, query: QueryT) => NonEmptyTuple<SelectItem>);
+export interface UseRefErasedExprSelectItem<DataT extends {
+    assertDelegate: sd.SafeMapper<any>;
+    tableAlias: string;
+    alias: string;
+}> extends IExprSelectItem<{
+    assertDelegate: DataT["assertDelegate"];
+    tableAlias: DataT["tableAlias"];
+    alias: DataT["alias"];
+    usedRef: {};
+}> {
+    asc: () => [IExpr<{
+        readonly usedRef: {};
+        readonly assertDelegate: DataT["assertDelegate"];
+    }>, typeof ASC];
+    desc: () => [IExpr<{
+        readonly usedRef: {};
+        readonly assertDelegate: DataT["assertDelegate"];
+    }>, typeof DESC];
+    sort: (sortDirection: SortDirection) => [IExpr<{
+        readonly usedRef: {};
+        readonly assertDelegate: DataT["assertDelegate"];
+    }>, SortDirection];
+}
+export declare type EraseSelectsUsedRef<ArrT extends SelectItem[]> = ({
+    [k in keyof ArrT]: (ArrT[k] extends IExprSelectItem ? UseRefErasedExprSelectItem<{
+        assertDelegate: ArrT[k]["assertDelegate"];
+        tableAlias: ArrT[k]["tableAlias"];
+        alias: ArrT[k]["alias"];
+    }> : ArrT[k]);
+});
+export declare function eraseSelectsUsedRef<ArrT extends SelectItem[]>(arr: ArrT): (EraseSelectsUsedRef<ArrT>);
 export declare type Select<QueryT extends BeforeUnionClause, SelectDelegateT extends SelectDelegate<QueryT>> = (Query<{
     readonly _distinct: QueryT["_distinct"];
     readonly _sqlCalcFoundRows: QueryT["_sqlCalcFoundRows"];
     readonly _joins: QueryT["_joins"];
     readonly _parentJoins: QueryT["_parentJoins"];
-    readonly _selects: (QueryT["_selects"] extends SelectItem[] ? TupleUtil.Concat<QueryT["_selects"], ReturnType<SelectDelegateT>> : ReturnType<SelectDelegateT>);
+    readonly _selects: (QueryT["_selects"] extends SelectItem[] ? TupleUtil.Concat<QueryT["_selects"], Extract<EraseSelectsUsedRef<ReturnType<SelectDelegateT>>, NonEmptyTuple<SelectItem>>> : Extract<EraseSelectsUsedRef<ReturnType<SelectDelegateT>>, NonEmptyTuple<SelectItem>>);
     readonly _where: QueryT["_where"];
     readonly _grouped: QueryT["_grouped"];
     readonly _having: QueryT["_having"];

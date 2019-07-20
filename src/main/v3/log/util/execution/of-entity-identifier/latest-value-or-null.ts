@@ -39,7 +39,7 @@ export function latestValueOrNull<
     const expr = ExprUtil.fromRawExpr(
         query
     );
-    const result = expr.as(query._selects[0].name);
+    const result = expr.as((query._selects[0] as any).name);
 
     return result;
 }

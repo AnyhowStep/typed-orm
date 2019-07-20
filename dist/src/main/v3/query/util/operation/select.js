@@ -8,6 +8,50 @@ const expr_select_item_1 = require("../../../expr-select-item");
 const column_1 = require("../../../column");
 const column_identifier_1 = require("../../../column-identifier");
 const column_identifier_ref_1 = require("../../../column-identifier-ref");
+const order_1 = require("../../../order");
+function eraseSelectsUsedRef(arr) {
+    return arr.map(selectItem => {
+        if (expr_select_item_1.ExprSelectItemUtil.isExprSelectItem(selectItem)) {
+            const result = {
+                assertDelegate: selectItem.assertDelegate,
+                tableAlias: selectItem.tableAlias,
+                alias: selectItem.alias,
+                usedRef: {},
+                unaliasedQuery: selectItem.unaliasedQuery,
+                asc: () => [
+                    {
+                        usedRef: {},
+                        assertDelegate: selectItem.assertDelegate,
+                        queryTree: selectItem.unaliasedQuery
+                    },
+                    order_1.ASC
+                ],
+                desc: () => [
+                    {
+                        usedRef: {},
+                        assertDelegate: selectItem.assertDelegate,
+                        queryTree: selectItem.unaliasedQuery
+                    },
+                    order_1.DESC
+                ],
+                sort: (sortDirection) => [
+                    {
+                        usedRef: {},
+                        assertDelegate: selectItem.assertDelegate,
+                        queryTree: selectItem.unaliasedQuery
+                    },
+                    sortDirection
+                ],
+            };
+            return result;
+        }
+        else {
+            return selectItem;
+        }
+    });
+}
+exports.eraseSelectsUsedRef = eraseSelectsUsedRef;
+;
 function select(query, delegate) {
     if (query._unions != undefined) {
         throw new Error(`Cannot use SELECT after UNION clause`);
@@ -77,8 +121,8 @@ function select(query, delegate) {
         column_identifier_1.ColumnIdentifierUtil.Array.assertDisjoint(selectColumnIdentifiers, querySelectColumnIdentifiers);
     }
     const newSelects = ((query._selects == undefined) ?
-        selects :
-        [...query._selects, ...selects]);
+        eraseSelectsUsedRef(selects) :
+        [...query._selects, ...eraseSelectsUsedRef(selects)]);
     const { _distinct, _sqlCalcFoundRows, _joins, _parentJoins, _where, _grouped, _having, _orders, _limit, _unions, _unionOrders, _unionLimit, _mapDelegate, } = query;
     return new query_1.Query({
         _distinct,

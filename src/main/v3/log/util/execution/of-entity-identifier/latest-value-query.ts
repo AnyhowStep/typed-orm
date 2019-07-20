@@ -36,5 +36,5 @@ export function latestValueQuery<
     return QueryUtil.select(
         latest(log, entityIdentifier),
         (() => [column]) as any
-    );
+    ) as any;
 }

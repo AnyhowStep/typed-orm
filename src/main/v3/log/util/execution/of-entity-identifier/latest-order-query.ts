@@ -23,5 +23,5 @@ export function latestOrderQuery<
     return QueryUtil.select(
         latest(log, entityIdentifier),
         (() => [log.latestOrder[0]]) as any
-    );
+    ) as any;
 }
