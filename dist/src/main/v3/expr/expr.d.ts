@@ -4,6 +4,8 @@ import { QueryTree } from "../query-tree";
 import { SortDirection } from "../order";
 import * as ExprUtil from "./util";
 import { ColumnMap } from "../column-map";
+import { Asc, Desc, Sort } from "./util";
+import { ALIASED } from "../constants";
 export interface ExprData {
     readonly usedRef: ColumnRef;
     readonly assertDelegate: sd.SafeMapper<any>;
@@ -33,8 +35,42 @@ export declare type TableExpr<TableT extends {
     alias: string;
     columns: ColumnMap;
 }, TypeT> = Expr<{
+    assertDelegate: sd.SafeMapper<TypeT>;
     usedRef: {
         [alias in TableT["alias"]]: TableT["columns"];
     };
-    assertDelegate: sd.SafeMapper<TypeT>;
 }>;
+export declare type TableExprSelectItem<TableT extends {
+    alias: string;
+    columns: ColumnMap;
+}, TypeT, AliasT extends string> = ({
+    readonly assertDelegate: sd.SafeMapper<TypeT>;
+    readonly tableAlias: typeof ALIASED;
+    readonly alias: AliasT;
+    readonly usedRef: {
+        [alias in TableT["alias"]]: TableT["columns"];
+    };
+    asc(): Asc<{
+        assertDelegate: sd.SafeMapper<TypeT>;
+        usedRef: {
+            [alias in TableT["alias"]]: TableT["columns"];
+        };
+        queryTree: QueryTree;
+    }>;
+    desc(): Desc<{
+        assertDelegate: sd.SafeMapper<TypeT>;
+        usedRef: {
+            [alias in TableT["alias"]]: TableT["columns"];
+        };
+        queryTree: QueryTree;
+    }>;
+    sort(sortDirection: SortDirection): Sort<{
+        assertDelegate: sd.SafeMapper<TypeT>;
+        usedRef: {
+            [alias in TableT["alias"]]: TableT["columns"];
+        };
+        queryTree: QueryTree;
+    }>;
+    readonly queryTree: QueryTree;
+    readonly unaliasedQuery: QueryTree;
+});

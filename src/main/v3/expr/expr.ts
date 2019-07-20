@@ -3,7 +3,9 @@ import {ColumnRef} from "../column-ref";
 import {QueryTree, Parentheses} from "../query-tree";
 import {SortDirection} from "../order";
 import * as ExprUtil from "./util";
-import { ColumnMap } from "../column-map";
+import {ColumnMap} from "../column-map";
+import {Asc, Desc, Sort} from "./util";
+import {ALIASED} from "../constants";
 
 export interface ExprData {
     readonly usedRef : ColumnRef;
@@ -87,8 +89,55 @@ export type TableExpr<
     TableT extends { alias : string, columns : ColumnMap },
     TypeT
 > = Expr<{
+    assertDelegate : sd.SafeMapper<TypeT>,
     usedRef : {
         [alias in TableT["alias"]] : TableT["columns"]
     },
-    assertDelegate : sd.SafeMapper<TypeT>
 }>;
+
+
+export type TableExprSelectItem<
+    TableT extends {
+        alias: string;
+        columns: ColumnMap;
+    },
+    TypeT,
+    AliasT extends string
+> = (
+    {
+        readonly assertDelegate: sd.SafeMapper<TypeT>;
+        readonly tableAlias: typeof ALIASED;
+        readonly alias: AliasT;
+
+        //This is the same type as the commented IExpreSelectItem<> type...
+        //However, when expressed this way, TS doesn't consume extra instantiation depth
+        readonly usedRef: {
+            [alias in TableT["alias"]]: TableT["columns"];
+        };
+
+        asc () : Asc<{
+            assertDelegate : sd.SafeMapper<TypeT>,
+            usedRef : {
+                [alias in TableT["alias"]]: TableT["columns"];
+            },
+            queryTree : QueryTree,
+        }>;
+        desc () : Desc<{
+            assertDelegate : sd.SafeMapper<TypeT>,
+            usedRef : {
+                [alias in TableT["alias"]]: TableT["columns"];
+            },
+            queryTree : QueryTree,
+        }>;
+        sort (sortDirection : SortDirection) : Sort<{
+            assertDelegate : sd.SafeMapper<TypeT>,
+            usedRef : {
+                [alias in TableT["alias"]]: TableT["columns"];
+            },
+            queryTree : QueryTree,
+        }>;
+
+        readonly queryTree : QueryTree;
+        readonly unaliasedQuery: QueryTree;
+    }
+);
