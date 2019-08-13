@@ -18,7 +18,8 @@ import {UpdateUtil, UpdatableQuery} from "../update";
 import {DeletableQuery, DeleteUtil, Delete, DeleteModifier} from "../delete";
 import {Row} from "../row";
 import {CandidateKey} from "../candidate-key";
-import { PrimaryKey } from "../primary-key";
+import {PrimaryKey} from "../primary-key";
+import {SuperKey} from "../super-key";
 
 export interface UnionQuery {
     //Defaults to true
@@ -1500,6 +1501,20 @@ export class Query<DataT extends QueryData> {
         key : PrimaryKey<TableT>
     ) : QueryUtil.WhereEqPk<Extract<this, QueryUtil.AfterFromClause>> {
         return QueryUtil.whereEqPk(
+            this,
+            table,
+            key
+        );
+    }
+
+    whereEqSk<
+        TableT extends ITable,
+    > (
+        this : Extract<this, QueryUtil.AfterFromClause>,
+        table : TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"],
+        key : SuperKey<TableT>
+    ) : QueryUtil.WhereEqSuperKey<Extract<this, QueryUtil.AfterFromClause>> {
+        return QueryUtil.whereEqSuperKey(
             this,
             table,
             key

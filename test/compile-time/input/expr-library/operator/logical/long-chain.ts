@@ -1,0 +1,50 @@
+import * as o from "../../../../../../dist/src/main";
+
+export const expr = o.and(
+    o.and(
+        o.and(
+            o.and(
+                o.and(
+                    o.and(
+                        o.and(
+                            o.and(
+                                o.and(
+                                    o.and(
+                                        o.and(
+                                            o.and(
+                                                o.and(
+                                                    o.and(
+                                                        o.and(
+                                                            true,
+                                                            true
+                                                        ),
+                                                        true
+                                                    ),
+                                                    true
+                                                ),
+                                                true
+                                            ),
+                                            true
+                                        ),
+                                        true
+                                    ),
+                                    true
+                                ),
+                                true
+                            ),
+                            true
+                        ),
+                        true
+                    ),
+                    true
+                ),
+                true
+            ),
+            true
+        ),
+        true
+    ),
+    true
+)
+
+o.and(expr)

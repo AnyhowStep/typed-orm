@@ -18,6 +18,7 @@ import { DeletableQuery, DeleteUtil, Delete, DeleteModifier } from "../delete";
 import { Row } from "../row";
 import { CandidateKey } from "../candidate-key";
 import { PrimaryKey } from "../primary-key";
+import { SuperKey } from "../super-key";
 export interface UnionQuery {
     readonly distinct: boolean;
     readonly query: QueryUtil.AfterSelectClause;
@@ -129,6 +130,7 @@ export declare class Query<DataT extends QueryData> {
     whereEqCk<TableT extends ITable>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], key: CandidateKey<TableT>): QueryUtil.WhereEqCandidateKey<Extract<this, QueryUtil.AfterFromClause>>;
     whereEqColumns<TableT extends ITable>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], columns: Partial<Row<TableT>>): QueryUtil.WhereEqColumns<Extract<this, QueryUtil.AfterFromClause>>;
     whereEqPk<TableT extends TableWithPk>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], key: PrimaryKey<TableT>): QueryUtil.WhereEqPk<Extract<this, QueryUtil.AfterFromClause>>;
+    whereEqSk<TableT extends ITable>(this: Extract<this, QueryUtil.AfterFromClause>, table: TableT & Extract<this, QueryUtil.AfterFromClause>["_joins"][number]["aliasedTable"], key: SuperKey<TableT>): QueryUtil.WhereEqSuperKey<Extract<this, QueryUtil.AfterFromClause>>;
     useJoin<JoinDeclT extends IJoinDeclaration>(this: Extract<this, QueryUtil.AfterFromClause>, joinDecl: QueryUtil.AssertValidJoinDeclaration<Extract<this, QueryUtil.AfterFromClause>, JoinDeclT>): (QueryUtil.UseJoin<Extract<this, QueryUtil.AfterFromClause>, JoinDeclT>);
     useJoins<ArrT extends NonEmptyTuple<IJoinDeclaration>>(this: Extract<this, QueryUtil.AfterFromClause>, ...arr: QueryUtil.AssertValidJoinDeclarationArray<Extract<this, QueryUtil.AfterFromClause>, ArrT>): (QueryUtil.UseJoins<Extract<this, QueryUtil.AfterFromClause>, ArrT>);
     useJoinsUnsafe<ArrT extends NonEmptyTuple<IJoinDeclaration>>(this: Extract<this, QueryUtil.AfterFromClause>, ...arr: ArrT): (QueryUtil.UseJoins<Extract<this, QueryUtil.AfterFromClause>, ArrT>);

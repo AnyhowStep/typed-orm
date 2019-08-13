@@ -24,7 +24,9 @@
     "c8-run-time": "c8 -r html npm run test-run-time",
     "c8-all-run-time": "c8 -r html npm run test-all-run-time",
     "c8-execution": "c8 npm run test-execution",
-    "c8-report": "c8 report"
+    "c8-report": "c8 report",
+    "lint": "eslint --ext .ts",
+    "lint-all": "npm run lint -- ./src"
   },
   "author": "Justin Ng",
   "license": "MIT",
@@ -48,8 +50,11 @@
     "@types/diff": "^3.5.2",
     "@types/node": "^10.0.4",
     "@types/tape": "^4.2.32",
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
     "c8": "^3.2.1",
     "diff": "^3.5.0",
+    "eslint": "^6.1.0",
     "schema-decorator": "^2.61.2",
     "tape": "^4.9.0",
     "ts-node": "^6.0.3",

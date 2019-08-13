@@ -200,6 +200,9 @@ class Query {
     whereEqPk(table, key) {
         return QueryUtil.whereEqPk(this, table, key);
     }
+    whereEqSk(table, key) {
+        return QueryUtil.whereEqSuperKey(this, table, key);
+    }
     useJoin(joinDecl) {
         return QueryUtil.useJoin(this, joinDecl);
     }

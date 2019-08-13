@@ -37,6 +37,7 @@ __export(require("./use-joins"));
 __export(require("./where-eq-candidate-key"));
 __export(require("./where-eq-columns"));
 __export(require("./where-eq-pk"));
+__export(require("./where-eq-super-key"));
 __export(require("./where-eq"));
 __export(require("./where-is-not-null"));
 __export(require("./where-is-null"));
