@@ -133,6 +133,13 @@ export class Connection implements IConnection, ITransactionConnection {
                     } else {
                         const fieldObj : any = {};
                         for (let f of fieldArr) {
+                            /**
+                             * Sometimes, `fieldArr` is an array of `undefined` values.
+                             * I don't know why.
+                             */
+                            if (f == undefined) {
+                                continue;
+                            }
                             fieldObj[f.name] = f;
                         }
                         resolve({

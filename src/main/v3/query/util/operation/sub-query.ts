@@ -5,6 +5,9 @@ import {IJoin} from "../../../join";
     TODO-Feature Subquery and allow selected items
     to be visible?
 
+    PostgreSQL does not allow this.
+    MySQL and SQLite allow this.
+
     Contrived example:
 
     SELECT

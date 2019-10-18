@@ -118,6 +118,13 @@ class Connection {
                 else {
                     const fieldObj = {};
                     for (let f of fieldArr) {
+                        /**
+                         * Sometimes, `fieldArr` is an array of `undefined` values.
+                         * I don't know why.
+                         */
+                        if (f == undefined) {
+                            continue;
+                        }
                         fieldObj[f.name] = f;
                     }
                     resolve({
