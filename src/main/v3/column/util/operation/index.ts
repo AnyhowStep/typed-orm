@@ -6,6 +6,7 @@ export * from "./extract-nullable";
 export * from "./set-is-from-expr-select-item";
 export * from "./sort";
 export * from "./to-interface";
+export * from "./to-non-nullable";
 export * from "./to-nullable";
 export * from "./to-super-type";
 export * from "./with-table-alias";
