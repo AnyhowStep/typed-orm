@@ -98,6 +98,14 @@ export async function fetchAllUnmapped<
                     //Probably `__aliased`
                     continue;
                 }
+                if (query._joins != undefined) {
+                    const join = query._joins.find(
+                        j => j.aliasedTable.alias == tableAlias
+                    );
+                    if (join != undefined && !join.nullable) {
+                        continue;
+                    }
+                }
                 const map = row[tableAlias];
                 const allNull = Object.keys(map)
                     .every(columnName => map[columnName] === null);
