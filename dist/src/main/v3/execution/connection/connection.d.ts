@@ -1,4 +1,4 @@
-import { TransactionCallback } from "../pool";
+import { TransactionCallback, IPool } from "../pool";
 export declare const enum Types {
     DECIMAL = 0,
     TINY = 1,
@@ -131,6 +131,7 @@ export declare type DeleteOneResult = (DeleteResult & {
     deletedRowCount: 1;
 });
 export interface IConnection {
+    readonly pool: IPool;
     isInTransaction(): this is ITransactionConnection;
     transaction<ResultT>(callback: TransactionCallback<ResultT>): Promise<ResultT>;
     transactionIfNotInOne<ResultT>(callback: TransactionCallback<ResultT>): Promise<ResultT>;

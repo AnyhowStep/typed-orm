@@ -1,4 +1,4 @@
-import {TransactionCallback} from "../pool";
+import {TransactionCallback, IPool} from "../pool";
 
 //From "@types/mysql"
 export const enum Types {
@@ -175,6 +175,8 @@ export type DeleteOneResult = (
 );
 
 export interface IConnection {
+    readonly pool : IPool;
+
     isInTransaction () : this is ITransactionConnection;
     transaction<ResultT> (
         callback : TransactionCallback<ResultT>

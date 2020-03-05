@@ -20,22 +20,36 @@ export async function executeAndFetch<
         const result = await execute(insert, connection);
         if (result.insertId > 0n && insert._table.autoIncrement != undefined) {
             //Prefer auto-increment id, if possible
-            return QueryUtil.fetchOneByCk(
+            const fetchedRow = await QueryUtil.fetchOneByCk(
                 connection,
                 insert._table,
                 {
                     [insert._table.autoIncrement] : result.insertId
                 }
             );
+            await connection.pool.onInsertAndFetch.invoke({
+                type : "insertAndFetch",
+                table : insert._table,
+                connection,
+                row : fetchedRow,
+            });
+            return fetchedRow;
         } else {
             //*Try* and get a candidate key.
             //May fail if the candidate keys are Expr
             const lastRow = insert._values[insert._values.length-1];
-            return QueryUtil.fetchOneByCk(
+            const fetchedRow = await QueryUtil.fetchOneByCk(
                 connection,
                 insert._table,
                 lastRow
             );
+            await connection.pool.onInsertAndFetch.invoke({
+                type : "insertAndFetch",
+                table : insert._table,
+                connection,
+                row : fetchedRow,
+            });
+            return fetchedRow;
         }
     }) as any;
 }

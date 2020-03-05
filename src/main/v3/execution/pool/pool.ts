@@ -1,4 +1,6 @@
 import {IConnection, ITransactionConnection} from "../connection";
+import {EventImpl} from "../../event";
+import {ITable} from "../../table";
 
 export type ConnectionCallback<ResultT> = (
     (connection : IConnection) => Promise<ResultT>
@@ -19,4 +21,20 @@ export interface IPool {
     ) : Promise<ResultT>;
 
     disconnect () : Promise<void>;
+
+    /**
+     * Quick and dirty event system.
+     */
+    readonly onInsertAndFetch : EventImpl<{
+        type : "insertAndFetch",
+        table : ITable,
+        connection : IConnection,
+        row : Record<string, unknown>,
+    }>;
+    readonly onUpdateAndFetch : EventImpl<{
+        type : "updateAndFetch",
+        table : ITable,
+        connection : IConnection,
+        row : Record<string, unknown>,
+    }>;
 }

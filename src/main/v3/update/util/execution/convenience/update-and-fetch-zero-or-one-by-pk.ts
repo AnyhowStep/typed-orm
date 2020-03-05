@@ -47,6 +47,12 @@ export function updateAndFetchZeroOrOneByPk<
             table,
             pk
         );
+        await connection.pool.onUpdateAndFetch.invoke({
+            type : "updateAndFetch",
+            table : table,
+            connection,
+            row : row,
+        });
         return {
             ...updateResult,
             row : row as any,

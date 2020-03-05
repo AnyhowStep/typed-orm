@@ -1,9 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const mysql = require("mysql");
+const event_1 = require("../../event");
 class Connection {
-    constructor(connection) {
+    constructor(pool, connection) {
         this.inTransaction = false;
+        this.pool = pool;
         this.connection = connection;
     }
     rollback() {
@@ -232,6 +234,8 @@ class Connection {
 exports.Connection = Connection;
 class Pool {
     constructor(args) {
+        this.onInsertAndFetch = new event_1.EventImpl();
+        this.onUpdateAndFetch = new event_1.EventImpl();
         this.pool = mysql.createPool({
             ...args,
             supportBigNumbers: true,
@@ -255,7 +259,7 @@ class Pool {
                     reject(err);
                     return;
                 }
-                const connection = new Connection(rawConnection);
+                const connection = new Connection(this, rawConnection);
                 connection.rawQuery("SET @@session.time_zone = '+00:00'")
                     .then(() => {
                     callback(connection)

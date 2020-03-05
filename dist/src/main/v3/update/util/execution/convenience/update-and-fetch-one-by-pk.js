@@ -6,6 +6,12 @@ function updateAndFetchOneByPk(connection, table, pk, delegate) {
     return connection.transactionIfNotInOne(async (connection) => {
         const updateResult = await update_one_by_pk_1.updateOneByPk(connection, table, pk, delegate);
         const row = await query_1.QueryUtil.fetchOneByPk(connection, table, pk);
+        await connection.pool.onUpdateAndFetch.invoke({
+            type: "updateAndFetch",
+            table: table,
+            connection,
+            row: row,
+        });
         return {
             ...updateResult,
             row: row,

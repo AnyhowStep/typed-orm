@@ -11,10 +11,17 @@ import {
     RawDeleteResult
 } from "../connection";
 import {Omit} from "../../type";
+import {EventImpl} from "../../event";
+import {ITable} from "../../table";
 
 export class Connection implements IConnection, ITransactionConnection {
+    readonly pool : IPool;
     private readonly connection : mysql.PoolConnection;
-    constructor (connection : mysql.PoolConnection) {
+    constructor (
+        pool : IPool,
+        connection : mysql.PoolConnection
+    ) {
+        this.pool = pool;
         this.connection = connection;
     }
 
@@ -294,7 +301,7 @@ export class Pool implements IPool {
                     reject(err);
                     return;
                 }
-                const connection = new Connection(rawConnection);
+                const connection = new Connection(this, rawConnection);
                 connection.rawQuery("SET @@session.time_zone = '+00:00'")
                     .then(() => {
                         callback(connection)
@@ -336,4 +343,18 @@ export class Pool implements IPool {
             });
         });
     }
+
+
+    readonly onInsertAndFetch = new EventImpl<{
+        type : "insertAndFetch",
+        table : ITable,
+        connection : IConnection,
+        row : Record<string, unknown>,
+    }>();
+    readonly onUpdateAndFetch = new EventImpl<{
+        type : "updateAndFetch",
+        table : ITable,
+        connection : IConnection,
+        row : Record<string, unknown>,
+    }>();
 }

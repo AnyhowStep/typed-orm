@@ -3,9 +3,12 @@ import { IPool, ConnectionCallback, TransactionCallback } from "../pool";
 import { CharSet } from "../../data-type";
 import { IConnection, ITransactionConnection, RawQueryResult, SelectResult, InsertResult, RawUpdateResult, RawDeleteResult } from "../connection";
 import { Omit } from "../../type";
+import { EventImpl } from "../../event";
+import { ITable } from "../../table";
 export declare class Connection implements IConnection, ITransactionConnection {
+    readonly pool: IPool;
     private readonly connection;
-    constructor(connection: mysql.PoolConnection);
+    constructor(pool: IPool, connection: mysql.PoolConnection);
     rollback(): Promise<void>;
     commit(): Promise<void>;
     private inTransaction;
@@ -32,4 +35,16 @@ export declare class Pool implements IPool {
     acquire<ResultT>(callback: ConnectionCallback<ResultT>): Promise<ResultT>;
     acquireTransaction<ResultT>(callback: TransactionCallback<ResultT>): Promise<ResultT>;
     disconnect(): Promise<void>;
+    readonly onInsertAndFetch: EventImpl<{
+        type: "insertAndFetch";
+        table: ITable<import("../../table").TableData>;
+        connection: IConnection;
+        row: Record<string, unknown>;
+    }>;
+    readonly onUpdateAndFetch: EventImpl<{
+        type: "updateAndFetch";
+        table: ITable<import("../../table").TableData>;
+        connection: IConnection;
+        row: Record<string, unknown>;
+    }>;
 }

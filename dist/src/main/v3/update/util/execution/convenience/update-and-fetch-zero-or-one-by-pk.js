@@ -12,6 +12,12 @@ function updateAndFetchZeroOrOneByPk(connection, table, pk, delegate) {
             };
         }
         const row = await query_1.QueryUtil.fetchOneByPk(connection, table, pk);
+        await connection.pool.onUpdateAndFetch.invoke({
+            type: "updateAndFetch",
+            table: table,
+            connection,
+            row: row,
+        });
         return {
             ...updateResult,
             row: row,
