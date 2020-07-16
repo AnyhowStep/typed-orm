@@ -16,6 +16,12 @@ Instead, look at,
 
 -----
 
+### Documentation
+
+Documentation may be found [here](doc/README.md)
+
+-----
+
 ### Examples
 
 Examples may be found in `test/compile-time`, `test/run-time`, `test/execution`.
