@@ -114,4 +114,4 @@ const book = sql.table("book")
 
 Source code for the `mysql` namespace may be found [here](https://github.com/AnyhowStep/type-mapping/tree/master/src/mysql-lib).
 
-If a data type you want to use is not part of the `mysql` namespace, you will hav to create your own mapper function.
+If a data type you want to use is not part of the `mysql` namespace, you will have to create your own mapper function.

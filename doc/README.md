@@ -25,6 +25,7 @@ Each new version of TypeScript generally makes breaking changes to the type syst
 whether they are new features, bug fixes, or even new bugs.
 
 These changes to the type system are generally [not backported](https://github.com/microsoft/TypeScript/issues/38237).
+
 Therefore, a complex-enough TypeScript library will find it very difficult to support more than one TypeScript version.
 
 -----
@@ -33,4 +34,5 @@ Therefore, a complex-enough TypeScript library will find it very difficult to su
 
 1. [Data Types](data-types/README.md)
 1. [Table Declaration](table-declaration/README.md)
+1. [INSERT/UPDATE/DELETE statements](insert-update-delete-statements/README.md)
 1. Expressions
