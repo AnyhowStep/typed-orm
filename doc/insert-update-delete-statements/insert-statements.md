@@ -45,7 +45,7 @@ import * as sql from "typed-orm";
  */
 import {myTable} from "./table";
 
-const insertResult = await myTable.insertOne(
+const insertResult = await myTable.insert(
     connection,
     {
         //Column values can be literal values
@@ -114,7 +114,7 @@ import * as sql from "typed-orm";
  */
 import {myTable} from "./table";
 
-const myRow = await myTable.insertOne(
+const myRow = await myTable.insertAndFetch(
     connection,
     {
         //Column values can be literal values
