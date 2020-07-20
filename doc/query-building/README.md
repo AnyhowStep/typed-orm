@@ -1,7 +1,7 @@
 ### Query Building
 
 1. [`FROM` clause](from-clause.md)
-1. [`WHERE` clause]()
+1. [`WHERE` clause](where-clause.md)
 1. [`SELECT` clause]()
 1. [`ORDER BY` clause]()
 1. [`LIMIT` clause]()
