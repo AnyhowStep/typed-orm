@@ -20,6 +20,7 @@
 
 ### Query Execution
 
+1. [`.map()`]()
 1. [`.fetchAllXxx()`]()
 1. [`.fetchOneXxx()`]()
 1. [`.fetchValueArray()`]()
