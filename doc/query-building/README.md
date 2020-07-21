@@ -14,7 +14,7 @@
 ### Query Misc
 
 1. [Correlated Subqueries](correlated-subqueries.md)
-1. [Derived Table]()
+1. [Derived Table](derived-table.md)
 
 -----
 
