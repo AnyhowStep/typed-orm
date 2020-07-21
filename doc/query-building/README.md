@@ -6,8 +6,8 @@
 1. [`ORDER BY` clause](order-by-clause.md)
 1. [`LIMIT` clause](limit-clause.md)
 1. [Compound Query `UNION` clause](union-clause.md)
-1. [Compound Query `ORDER BY` clause]()
-1. [Compound Query `LIMIT` clause]()
+1. [Compound Query `ORDER BY` clause](compound-query-order-by-clause.md)
+1. [Compound Query `LIMIT` clause](compound-query-limit-clause.md)
 
 -----
 
