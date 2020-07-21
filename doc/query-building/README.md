@@ -20,8 +20,8 @@
 
 ### Query Execution
 
-1. [`.map()`]()
-1. [`.fetchAllXxx()`]()
+1. [`.map()`](map.md)
+1. [`.fetchAllXxx()`](fetch-all-xxx.md)
 1. [`.fetchOneXxx()`]()
 1. [`.fetchValueArray()`]()
 1. [`.fetchValueXxx()`]()
