@@ -36,4 +36,4 @@ Therefore, a complex-enough TypeScript library will find it very difficult to su
 1. [Table Declaration](table-declaration/README.md)
 1. [INSERT/UPDATE/DELETE statements](insert-update-delete-statements/README.md)
 1. [Query Building](query-building/README.md)
-1. Expressions
+1. [Expressions](expressions/README.md)
