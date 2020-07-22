@@ -2,13 +2,16 @@ Asterisks (*) denote expressions not natively from MySQL.
 
 + Aggregate
   + `avg(number|bigint|null)`
-    https://dev.mysql.com/doc/refman/8.0/en/group-by-functions.html#function_avg
+    https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_avg
   + `count()`
-    https://dev.mysql.com/doc/refman/8.0/en/group-by-functions.html#function_count
-  + MAX
-  + MIN
-  + SUM
-  + SUM_AS_DECIMAL*
+    https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_count
+  + `max(bigint|number|string|boolean|Date|Buffer|null)`
+    https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_max
+  + `min(bigint|number|string|boolean|Date|Buffer|null)`
+    https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_min
+  + `(number|null)`/`bigIntSum(bigint|null)`
+    https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_sum
+  + [`sumAsDecimal(number|null, { maxDigitCount, fractionalDigitCount })`*](sum-as-decimal.md)
 + Cast
   + CAST( AS DATETIME)
   + CAST( AS DOUBLE)
