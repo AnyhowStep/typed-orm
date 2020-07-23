@@ -56,33 +56,33 @@ Asterisks (*) denote expressions not natively from MySQL.
   + [`utcTimestamp(0|1|2|3)`](https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_utc-timestamp)
 
 + Information
-  + DATABASE
-  + FOUND_ROWS
+  + [`database()`](https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_database)
+  + [`foundRows()`](https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_found-rows)
 
 + Math
-  + CEIL
-  + FLOOR
-  + RAND
-  + ROUND
+  + [`ceil(number)`](https://dev.mysql.com/doc/refman/8.0/en/mathematical-functions.html#function_ceil)
+  + [`floor(number)`](https://dev.mysql.com/doc/refman/8.0/en/mathematical-functions.html#function_floor)
+  + [`rand()`/`rand(bigint)`](https://dev.mysql.com/doc/refman/8.0/en/mathematical-functions.html#function_rand)
+  + [`round(number)`](https://dev.mysql.com/doc/refman/8.0/en/mathematical-functions.html#function_round)
 
 + String
-  + ASCII
-  + BIN
-  + BIT_LENGTH
-  + CHAR
-  + CHAR_LENGTH
-  + CONCAT
-  + CONCAT_WS
-  + ELT
-  + EXPORT_SET
-  + FIELD
-  + FIND_IN_SET
-  + FORMAT
-  + FROM_BASE64
-  + HEX
+  + [`ascii(string)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_ascii)
+  + [`bin(bigint|number`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_bin)
+  + [`bitLength(string)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_bit-length)
+  + [`char(number, ...)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_char)
+  + [`charLength(string)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_char-length)
+  + [`concat(string, ...)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_concat)
+  + [`concatWs(string, string|null, ...)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_concat-ws)
+  + [`elt(number, string, ...)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_elt)
+  + [`exportSet(number, string, string)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_export-set)
+  + [`field(string, string, ...)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_field)
+  + [`findInSet(string, string)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_find-in-set)
+  + [`format(number, number)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_format)
+  + [`fromBase64(string)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_from-base64)
+  + [`hex(bigint|number|string)`](https://dev.mysql.com/doc/refman/8.0/en/string-functions.html#function_hex)
 
 + Subquery
-  + EXISTS
+  + [`exists(query)`](https://dev.mysql.com/doc/refman/8.0/en/exists-and-not-exists-subqueries.html)
 
 + Arithmetic
   + ADD

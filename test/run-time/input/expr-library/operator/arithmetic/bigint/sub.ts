@@ -45,7 +45,7 @@ tape(__filename, (t) => {
         new o.SqlFormatter().format(
             o.QueryTreeUtil.toSql(bigIntSub3.queryTree)
         ),
-        "(`table`.`x` - `table`.`y` - `table`.`a`)"
+        "((`table`.`x` - `table`.`y`) - `table`.`a`)"
     );
 
     const bigIntSub4 = o.bigIntSub(
@@ -56,7 +56,7 @@ tape(__filename, (t) => {
         new o.SqlFormatter().format(
             o.QueryTreeUtil.toSql(bigIntSub4.queryTree)
         ),
-        "(\n  `table`.`x` - `table`.`y` - `table`.`a` - `table`.`b`\n)"
+        "(\n  ((`table`.`x` - `table`.`y`) - `table`.`a`) - `table`.`b`\n)"
     );
 
     const bigIntSub5 = o.bigIntSub(
