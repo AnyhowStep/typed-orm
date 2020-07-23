@@ -42,25 +42,29 @@ Asterisks (*) denote expressions not natively from MySQL.
   + [`notEq(expr, expr)` (in MySQL, both `<>` and `!=` are valid)](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_not-equal)
   + [`notIn(expr, ...)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_not-in)
   + [`nullSafeEq(expr, expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_equal-to)
-  + [`nullSafeNotEq(expr, expr)`*]
+  + `nullSafeNotEq(expr, expr)`*
 
     Internally, `NOT (a <=> b)`
 
 + Control-flow
-  + IF
-  + CASE
+  + [`if(boolean, expr, expr)`](https://dev.mysql.com/doc/refman/8.0/en/control-flow-functions.html#function_if)
+  + [`case()`/`case(expr)`](https://dev.mysql.com/doc/refman/8.0/en/control-flow-functions.html#operator_case)
+
 + Date-time
-  + TIMESTAMP_ADD
-  + TIMESTAMP_DIFF
-  + UTC_TIMESTAMP
+  + [`timestampAdd(TemporalUnit, bigint, Date)`](https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_timestampadd)
+  + [`timestampDiff(TemporalUnit, Date, Date)`](https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_timestampdiff)
+  + [`utcTimestamp(0|1|2|3)`](https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html#function_utc-timestamp)
+
 + Information
   + DATABASE
   + FOUND_ROWS
+
 + Math
   + CEIL
   + FLOOR
   + RAND
   + ROUND
+
 + String
   + ASCII
   + BIN
@@ -76,8 +80,10 @@ Asterisks (*) denote expressions not natively from MySQL.
   + FORMAT
   + FROM_BASE64
   + HEX
+
 + Subquery
   + EXISTS
+
 + Arithmetic
   + ADD
   + ADD_AS_DECIMAL*
@@ -87,10 +93,12 @@ Asterisks (*) denote expressions not natively from MySQL.
   + MUL
   + NEG
   + SUB
+
 + Logical
   + AND
   + IS NOT NULL AND
   + NOT
   + OR
   + XOR
+
 + Custom Functions
