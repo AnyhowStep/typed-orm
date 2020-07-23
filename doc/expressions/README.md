@@ -1,3 +1,11 @@
+### Expressions
+
+This library does not have many expressions/functions/operators from MySQL built-in.
+
+However, you can create your own [custom expressions](custom-expressions.md)
+
+-----
+
 Asterisks (*) denote expressions not natively from MySQL.
 
 + Aggregate
@@ -85,20 +93,26 @@ Asterisks (*) denote expressions not natively from MySQL.
   + [`exists(query)`](https://dev.mysql.com/doc/refman/8.0/en/exists-and-not-exists-subqueries.html)
 
 + Arithmetic
-  + ADD
-  + ADD_AS_DECIMAL*
-  + DIV
-  + INTEGER_DIV
-  + MOD
-  + MUL
-  + NEG
-  + SUB
+  + [`add(number, ...)`/`bigIntAdd(bigint, ...)`](https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_plus)
+  + `addAsDecimal({ maxDigitCount, fractionalDigitCount }, number, ...)`*
+
+    Like `add(number, ...)` but casts to `DECIMAL`, performs addition, then casts to `DOUBLE`
+
+  + [`div(number, number)`/`bigIntDiv(bigint, bigint)`](https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_divide)
+  + [`integerDiv(bigint, bigint)`](https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_div)
+  + [`mod(number, number)`,`bigIntMod(bigint, bigint)`](https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_mod)
+  + [`mul(number, ...)`/`bigIntMul(bigint, ...)`](https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_times)
+  + [`neg(number)`/`bigIntNeg(bigint)`](https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_unary-minus)
+  + [`sub(number, ...)`/`bigIntSub(bigint, ...)`](https://dev.mysql.com/doc/refman/8.0/en/arithmetic-functions.html#operator_minus)
 
 + Logical
-  + AND
-  + IS NOT NULL AND
-  + NOT
-  + OR
-  + XOR
+  + [`and(boolean, ...)`](https://dev.mysql.com/doc/refman/8.0/en/logical-operators.html#operator_and)
+  + `isNotNullAnd(expr, (expr) => boolean)`*
 
-+ Custom Functions
+    Equivalent to `(expr IS NOT NULL) AND (boolean)`.
+    
+    This function narrows the type of `expr` from `T|null` to `T`.
+
+  + [`not(boolean)`](https://dev.mysql.com/doc/refman/8.0/en/logical-operators.html#operator_not)
+  + [`or(boolean, ...)`](https://dev.mysql.com/doc/refman/8.0/en/logical-operators.html#operator_or)
+  + [`xor(boolean, boolean)`](https://dev.mysql.com/doc/refman/8.0/en/logical-operators.html#operator_xor)
