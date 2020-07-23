@@ -1,49 +1,51 @@
 Asterisks (*) denote expressions not natively from MySQL.
 
 + Aggregate
-  + `avg(number|bigint|null)`
-    https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_avg
-  + `count()`
-    https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_count
-  + `max(bigint|number|string|boolean|Date|Buffer|null)`
-    https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_max
-  + `min(bigint|number|string|boolean|Date|Buffer|null)`
-    https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_min
-  + `(number|null)`/`bigIntSum(bigint|null)`
-    https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_sum
+  + [`avg(number|bigint|null)`](https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_avg)
+  + [`count()`](https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_count)
+  + [`max(expr)`](https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_max)
+  + [`min(expr)`](https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_min)
+  + [`(number|null)`/`bigIntSum(bigint|null)`](https://dev.mysql.com/doc/refman/8.0/en/aggregate-functions.html#function_sum)
   + [`sumAsDecimal(number|null, { maxDigitCount, fractionalDigitCount })`*](sum-as-decimal.md)
+
 + Cast
-  + CAST( AS DATETIME)
-  + CAST( AS DOUBLE)
-  + CAST( AS SIGNED INTEGER)
-  + CAST( AS UNSIGNED INTEGER)
+  + [`castAsDateTime(Date|string, 0|1|2|3)`](https://dev.mysql.com/doc/refman/8.0/en/cast-functions.html#function_cast)
+  + `castAsDouble(bigint)*`
+
+    MySQL 5.7 does not have `CAST(x AS DOUBLE)`.
+    However, `(x + 0e0)` has the same effect.
+
+  + [`castAsSignedInteger(number|bigint)`](https://dev.mysql.com/doc/refman/8.0/en/cast-functions.html#function_cast)
+  + [`castAsUnsignedInteger(number|bigint)`](https://dev.mysql.com/doc/refman/8.0/en/cast-functions.html#function_cast)
+
 + Comparison
-  + STR_CMP
-  + COALESCE
-  + GREATEST
-  + INTERVAL
-  + LEASE
-  + LIKE
-  + BETWEEN
-  + COMPARISON
-  + EQ
-  + GT
-  + GTEQ
-  + IN
-  + IS FALSE
-  + IS NOT FALSE
-  + IS NOT NULL
-  + IS NOT TRUE
-  + IS NULL
-  + IS TRUE
-  + LT
-  + LTEQ
-  + NOT BETWEEN
-  + NOT EQ
-  + NOT IN
-  + NULL SAFE EQ
-  + NULL SAFE NOT EQ
-  + 
+  + [`strCmp(string, string)`](https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html#function_strcmp)
+  + [`coalesce(expr, ...)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_coalesce)
+  + [`greatest(expr, expr, ...)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_greatest)
+  + [`interval(number|bigint, number|bigint, ...)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_interval)
+  + [`least(expr, expr, ...)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_least)
+  + [`like(string, string)`](https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html#operator_like)
+  + [`between(expr, expr, expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_between)
+  + [`eq(expr, expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_equal)
+  + [`gt(expr, expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_greater-than)
+  + [`gtEq(expr, expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_greater-than-or-equal)
+  + [`in(expr, ...)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_in)
+  + [`isFalse(expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_is)
+  + [`isNotFalse(expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_is-not)
+  + [`isNotNull(expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_is-not-null)
+  + [`isNotTrue(expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_is-not)
+  + [`isNull(expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_is-null)
+  + [`isTrue(expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_is)
+  + [`lt(expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_less-than)
+  + [`ltEq(expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_less-than-or-equal)
+  + [`notBetween(expr, expr, expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_not-between)
+  + [`notEq(expr, expr)` (in MySQL, both `<>` and `!=` are valid)](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_not-equal)
+  + [`notIn(expr, ...)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#function_not-in)
+  + [`nullSafeEq(expr, expr)`](https://dev.mysql.com/doc/refman/8.0/en/comparison-operators.html#operator_equal-to)
+  + [`nullSafeNotEq(expr, expr)`*]
+
+    Internally, `NOT (a <=> b)`
+
 + Control-flow
   + IF
   + CASE
